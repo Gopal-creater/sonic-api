@@ -152,13 +152,16 @@ export class SonickeyService {
     sonicKeyDto?: SonicKeyDto,
   ) {
     const musicData = await this.exractMusicMetaFromFile(file.path);
-    
+    sonicKeyDto.contentSize=file.size;
+    sonicKeyDto.contentFileName=file.filename;
+    sonicKeyDto.contentType=file.mimetype;
+    sonicKeyDto.contentFileType=file.mimetype;
     sonicKeyDto.contentDuration=musicData.format.duration;
     sonicKeyDto.contentEncoding=`${musicData.format.codec}, ${musicData.format.sampleRate} Hz, ${musicData.format.codecProfile}, ${musicData.format.bitrate} ch`;
-    sonicKeyDto.contentSamplingFrequency=`${musicData.format.sampleRate} Hz`
-    sonicKeyDto.contentName= musicData.common.title||""
-    sonicKeyDto.contentOwner= musicData.common.artist||""
-    sonicKeyDto.contentDescription= musicData.common.description?musicData.common.description[0]:""
+    sonicKeyDto.contentSamplingFrequency=`${musicData.format.sampleRate} Hz`;
+    sonicKeyDto.contentName= musicData.common.title||"";
+    sonicKeyDto.contentOwner= musicData.common.artist||"";
+    sonicKeyDto.contentDescription= musicData.common.description?musicData.common.description[0]:"";
     return sonicKeyDto
   }
 
