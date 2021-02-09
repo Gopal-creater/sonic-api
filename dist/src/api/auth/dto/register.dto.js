@@ -14,7 +14,7 @@ const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 class RegisterDTO {
     static _OPENAPI_METADATA_FACTORY() {
-        return { userName: { required: true, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, email: { required: true, type: () => String }, licenseKey: { required: true, type: () => String } };
+        return { userName: { required: true, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, email: { required: true, type: () => String } };
     }
 }
 __decorate([
@@ -33,9 +33,5 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], RegisterDTO.prototype, "email", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], RegisterDTO.prototype, "licenseKey", void 0);
 exports.RegisterDTO = RegisterDTO;
 //# sourceMappingURL=register.dto.js.map

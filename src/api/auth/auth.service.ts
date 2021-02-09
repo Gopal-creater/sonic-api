@@ -13,7 +13,6 @@ import { CognitoIdentityServiceProvider } from 'aws-sdk';
 import { KeygenService } from '../../shared/modules/keygen/keygen.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
-import { UpdateLicenseKeysDTO } from './dto/updateLicenseKeys.dto';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +32,7 @@ export class AuthService {
   }
 
   registerUser(registerDTO: RegisterDTO) {
-    const { userName, email, password } = registerDTO;
+    const { userName, email, password,phoneNumber } = registerDTO;
     return new Promise((resolve, reject) => {
       return this.userPool.signUp(
         userName,

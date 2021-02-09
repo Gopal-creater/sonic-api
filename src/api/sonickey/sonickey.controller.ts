@@ -1,3 +1,4 @@
+import { UpdateSonicKeyDto } from './dtos/update-sonickey.dto';
 import { ConfigService } from '@nestjs/config';
 import { DecodeDto } from './dtos/decode.dto';
 import { EncodeDto } from './dtos/encode.dto';
@@ -18,6 +19,7 @@ import {
   Req,
   BadRequestException,
   UseGuards,
+  Patch,
 } from '@nestjs/common';
 import { SonickeyService } from './sonickey.service';
 import { SonicKey } from '../../schemas/sonickey.schema';
@@ -203,19 +205,18 @@ export class SonickeyController {
   }
 
 
-  // @Patch('/meta/:sonickey')
-  // @Auth()
-  // @ApiBearerAuth()
-  // @ApiOperation({ summary: 'Update Sonic Keys meta data' })
-  // async updateMeta(
-  //   @Param('sonickey') sonickey: string,
-  //   @Body() updateMetaDto: UpdateMetaDto,
-  // ) {
-  //   return this.sonicKeyService.findBySonicKeyAndUpdateMetaDataOrFail(
-  //     sonickey,
-  //     updateMetaDto.sonicContent,
-  //   );
-  // }
+  @Patch('/:sonickey')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update Sonic Keys meta data' })
+  async updateMeta(
+    @Param('sonickey') sonickey: string,
+    @Body() updateSonicKeyDto: UpdateSonicKeyDto,
+  ) {
+    const oldKey = await this.sonicKeyService.findBySonicKeyOrFail(sonickey)
+    const dataToUpdate = new SonicKey(Object.assign(oldKey,updateSonicKeyDto))
+    return this.sonicKeyService.sonicKeyRepository.update(dataToUpdate)
+  }
 
   @Delete('/:sonickey')
   @UseGuards(JwtAuthGuard)

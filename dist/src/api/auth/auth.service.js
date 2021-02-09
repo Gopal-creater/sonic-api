@@ -30,7 +30,7 @@ let AuthService = class AuthService {
         this.cognitoIdentityServiceProvider = globalAwsService.getCognitoIdentityServiceProvider();
     }
     registerUser(registerDTO) {
-        const { userName, email, password } = registerDTO;
+        const { userName, email, password, phoneNumber } = registerDTO;
         return new Promise((resolve, reject) => {
             return this.userPool.signUp(userName, password, [new amazon_cognito_identity_js_1.CognitoUserAttribute({ Name: 'email', Value: email })], null, (error, result) => {
                 if (!result) {

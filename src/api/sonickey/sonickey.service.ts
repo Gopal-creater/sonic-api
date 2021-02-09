@@ -1,3 +1,4 @@
+import { UpdateSonicKeyDto } from './dtos/update-sonickey.dto';
 import { SonicKeyDto } from './dtos/sonicKey.dto';
 import { IUploadedFile } from './../../shared/interfaces/UploadedFile.interface';
 import { FileHandlerService } from './../../shared/services/file-handler.service';
@@ -191,14 +192,4 @@ export class SonickeyService {
       return data;
     });
   }
-
-  // async findBySonicKeyAndUpdateMetaDataOrFail(
-  //   sonickey: string,
-  //   updatedMeta: SonicContent,
-  // ) {
-  //   var oldKey = await this.findBySonicKeyOrFail(sonickey);
-  //   const modifiedContent = deepmerge(oldKey.sonicContent,lodash.omit(updatedMeta,['staticMetadata']));
-  //   oldKey.sonicContent = modifiedContent;
-  //   return this.sonicKeyRepository.update(oldKey);
-  // }
 }

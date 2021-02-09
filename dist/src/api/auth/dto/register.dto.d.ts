@@ -3,5 +3,4 @@ export declare class RegisterDTO {
     password: string;
     phoneNumber?: string;
     email: string;
-    licenseKey: string;
 }

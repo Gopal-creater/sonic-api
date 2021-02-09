@@ -30,7 +30,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   // Arun: Passport will build a 'user' object based on the return value of our validate() 
   // method, and attach it as a property on the Request object. So we can add more business logic here.
   public async validate(request: Request, payload:any) {
-    console.log('payload: ' + JSON.stringify(payload));
     var token = request.headers['authorization']?.split(" ")[1] as string
     payload.token = token
     return payload;

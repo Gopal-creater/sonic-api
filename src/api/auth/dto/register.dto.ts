@@ -12,7 +12,4 @@ export class RegisterDTO {
 
   @ApiProperty()
   email: string;
-
-  @ApiProperty()
-  licenseKey: string;
 }

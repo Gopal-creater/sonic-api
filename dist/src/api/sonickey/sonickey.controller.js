@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonickeyController = void 0;
 const openapi = require("@nestjs/swagger");
+const update_sonickey_dto_1 = require("./dtos/update-sonickey.dto");
 const decode_dto_1 = require("./dtos/decode.dto");
 const encode_dto_1 = require("./dtos/encode.dto");
 const sonicKey_dto_1 = require("./dtos/sonicKey.dto");
@@ -79,6 +80,11 @@ let SonickeyController = class SonickeyController {
         return this.sonicKeyService.decode(file).then(({ sonicKey }) => {
             return this.sonicKeyService.findBySonicKeyOrFail(sonicKey);
         });
+    }
+    async updateMeta(sonickey, updateSonicKeyDto) {
+        const oldKey = await this.sonicKeyService.findBySonicKeyOrFail(sonickey);
+        const dataToUpdate = new sonickey_schema_1.SonicKey(Object.assign(oldKey, updateSonicKeyDto));
+        return this.sonicKeyService.sonicKeyRepository.update(dataToUpdate);
     }
     async delete(sonickey) {
         const found = await this.sonicKeyService.findBySonicKeyOrFail(sonickey);
@@ -204,6 +210,18 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], SonickeyController.prototype, "decode", null);
+__decorate([
+    common_1.Patch('/:sonickey'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Update Sonic Keys meta data' }),
+    openapi.ApiResponse({ status: 200, type: require("../../schemas/sonickey.schema").SonicKey }),
+    __param(0, common_1.Param('sonickey')),
+    __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_sonickey_dto_1.UpdateSonicKeyDto]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "updateMeta", null);
 __decorate([
     common_1.Delete('/:sonickey'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
