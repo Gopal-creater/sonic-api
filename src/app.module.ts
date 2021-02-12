@@ -11,6 +11,7 @@ import { SonickeyModule } from './api/sonickey/sonickey.module';
 import { diskStorage } from 'multer';
 import { UserModule } from './api/user/user.module';
 import {appConfig} from './config';
+import { StreamModule } from './api/stream/stream.module';
 import * as uniqid from 'uniqid';
 
 @Module({
@@ -30,6 +31,7 @@ import * as uniqid from 'uniqid';
     UserModule,
     SonickeyModule,
     ExternalSonickeyModule,
+    StreamModule,
   ],
   controllers: [AppController],
   providers: [AppService],
