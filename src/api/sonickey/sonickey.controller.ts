@@ -1,3 +1,4 @@
+import { CreateSonicKeyDto } from './dtos/create-sonickey.dto';
 import { UpdateSonicKeyDto } from './dtos/update-sonickey.dto';
 import { ConfigService } from '@nestjs/config';
 import { DecodeDto } from './dtos/decode.dto';
@@ -55,6 +56,36 @@ export class SonickeyController {
     return await this.sonicKeyService.getAll();
   }
 
+  @UseGuards(JwtAuthGuard,LicenseValidationGuard)
+  @Post('/')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Save to database after local encode.' })
+  async create(
+    @Body() createSonicKeyDto:CreateSonicKeyDto ,
+    @User('sub') owner: string,
+    @Req() req: any,
+  ) {
+    if(!createSonicKeyDto.sonicKey){
+      throw new BadRequestException('sonicKey must be present');
+    }
+    const licenseId = req?.validLicense?.id as string;
+      return this.keygenService.incrementUsage(licenseId, 1)
+      .then(async keygenResult => {
+        if (keygenResult['errors']) {
+          throw new BadRequestException(
+            'Unable to increment the license usage!',
+          );
+        }
+        console.log('Going to save key in db.');
+        const dataToSave = new SonicKey(Object.assign(createSonicKeyDto,{
+          owner: owner,
+          licenseId: licenseId, //modified
+        }))
+        return this.sonicKeyService.sonicKeyRepository
+          .put(dataToSave)
+      });
+  }
+
   @Get('/owner/:ownerId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -62,6 +93,8 @@ export class SonickeyController {
   async getOwnersKeys(@Param('ownerId') ownerId: string) {
     return await this.sonicKeyService.findByOwner(ownerId);
   }
+
+
 
   // @Get('/search')
   // @ApiOperation({ summary: 'Search on sonicKey' })

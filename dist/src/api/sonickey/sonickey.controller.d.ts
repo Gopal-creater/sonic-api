@@ -1,3 +1,4 @@
+import { CreateSonicKeyDto } from './dtos/create-sonickey.dto';
 import { UpdateSonicKeyDto } from './dtos/update-sonickey.dto';
 import { SonicKeyDto } from './dtos/sonicKey.dto';
 import { IUploadedFile } from './../../shared/interfaces/UploadedFile.interface';
@@ -9,6 +10,7 @@ export declare class SonickeyController {
     private readonly keygenService;
     constructor(sonicKeyService: SonickeyService, keygenService: KeygenService);
     getAll(): Promise<any[]>;
+    create(createSonicKeyDto: CreateSonicKeyDto, owner: string, req: any): Promise<SonicKey>;
     getOwnersKeys(ownerId: string): Promise<SonicKey[]>;
     getOne(sonickey: string): Promise<SonicKey>;
     encode(sonicKeyDto: SonicKeyDto, file: IUploadedFile, owner: string, req: any): Promise<SonicKey>;

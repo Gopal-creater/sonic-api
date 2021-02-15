@@ -1036,7 +1036,7 @@
         "signature": "17d0601882b9ab77dc854b7f5105f437a5f9d22210f40c729814844dd540570d",
         "affectsGlobalScope": false
       },
-      "../node_modules/axios/index.d.ts": {
+      "../node_modules/@nestjs/common/node_modules/axios/index.d.ts": {
         "version": "e7df7eb51c5090db4bdcdbf9efe053530dff0e33796f40b08b1a3be6c3a351d0",
         "signature": "e7df7eb51c5090db4bdcdbf9efe053530dff0e33796f40b08b1a3be6c3a351d0",
         "affectsGlobalScope": false
@@ -3466,6 +3466,11 @@
         "signature": "651ea1ce4a1c4fbebcd0e3ca0c8df9bff909a5fcb205739205a751d28e0d1904",
         "affectsGlobalScope": false
       },
+      "../src/api/sonickey/dtos/create-sonickey.dto.ts": {
+        "version": "3a164358cb98dcf8c3519b48222ca7a48cb35ee4adbfd81f43227008eadc3176",
+        "signature": "1b137e1ba4a2c1b57fe03fd6538bb6c1dd37cc664bd604ba65190197028e07ad",
+        "affectsGlobalScope": false
+      },
       "../src/api/sonickey/dtos/update-sonickey.dto.ts": {
         "version": "7119ded71c976501ca2152e1b21fa7fc39b54972da65d6e805d13d72ac293a08",
         "signature": "9a1e2452b8f427a218fc1bb9ea7c2f0dca0baae942df1e9fbfe74af442e9f1a6",
@@ -4037,8 +4042,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.controller.ts": {
-        "version": "75f0d76f8322e994e9801f3cf99ecb75ea8a5ba788a0906ce790764f241d8227",
-        "signature": "e84f02e3199f9ea04c107c8cf9a3ff8028a9e38e32565b491638a744eb2944a6",
+        "version": "05dd4c0a308e4cbb0c1688e17e02477ed3d210a5bafca461965a4bfd19893659",
+        "signature": "ed5ab450bdb6162b0940f234ff9a922c60ddedb5bd8fb67e8e29e0a25cf166ed",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.module.ts": {
@@ -5838,12 +5843,12 @@
         "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/@nestjs/common/http/http.service.d.ts": [
+        "../node_modules/@nestjs/common/node_modules/axios/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
-        "../node_modules/axios/index.d.ts",
         "../node_modules/rxjs/index.d.ts"
       ],
       "../node_modules/@nestjs/common/http/index.d.ts": [
@@ -5858,12 +5863,12 @@
       ],
       "../node_modules/@nestjs/common/http/interfaces/http-module.interface.d.ts": [
         "../node_modules/@nestjs/common/interfaces/index.d.ts",
+        "../node_modules/@nestjs/common/node_modules/axios/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/axios/index.d.ts"
+        "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/@nestjs/common/http/interfaces/index.d.ts": [
         "../node_modules/@nestjs/common/http/interfaces/http-module.interface.d.ts",
@@ -6332,6 +6337,13 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/rxjs/index.d.ts"
+      ],
+      "../node_modules/@nestjs/common/node_modules/axios/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/@nestjs/common/pipes/default-value.pipe.d.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -12060,13 +12072,6 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
-      "../node_modules/axios/index.d.ts": [
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts"
-      ],
       "../node_modules/jest-diff/build/cleanupsemantic.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -13423,6 +13428,15 @@
         "../node_modules/@types/node/util.d.ts",
         "../src/api/sonickey/sonickey.service.ts"
       ],
+      "../src/api/sonickey/dtos/create-sonickey.dto.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/api/sonickey/dtos/sonickey.dto.ts"
+      ],
       "../src/api/sonickey/dtos/decode.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -13473,6 +13487,7 @@
         "../src/api/auth/decorators/index.ts",
         "../src/api/auth/guards/index.ts",
         "../src/api/auth/guards/license-validation.guard.ts",
+        "../src/api/sonickey/dtos/create-sonickey.dto.ts",
         "../src/api/sonickey/dtos/decode.dto.ts",
         "../src/api/sonickey/dtos/encode.dto.ts",
         "../src/api/sonickey/dtos/sonickey.dto.ts",
@@ -15595,6 +15610,13 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/rxjs/index.d.ts"
       ],
+      "../node_modules/@nestjs/common/node_modules/axios/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/@nestjs/common/pipes/default-value.pipe.d.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -21322,13 +21344,6 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
-      "../node_modules/axios/index.d.ts": [
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts"
-      ],
       "../node_modules/jest-diff/build/cleanupsemantic.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -22519,6 +22534,9 @@
       "../src/api/externalapi/externalsonickey/externalsonickey.service.ts": [
         "../src/api/sonickey/sonickey.service.ts"
       ],
+      "../src/api/sonickey/dtos/create-sonickey.dto.ts": [
+        "../src/api/sonickey/dtos/sonickey.dto.ts"
+      ],
       "../src/api/sonickey/dtos/encode.dto.ts": [
         "../src/api/sonickey/dtos/sonickey.dto.ts"
       ],
@@ -22527,6 +22545,7 @@
         "../src/api/sonickey/dtos/sonickey.dto.ts"
       ],
       "../src/api/sonickey/sonickey.controller.ts": [
+        "../src/api/sonickey/dtos/create-sonickey.dto.ts",
         "../src/api/sonickey/dtos/sonickey.dto.ts",
         "../src/api/sonickey/dtos/update-sonickey.dto.ts",
         "../src/api/sonickey/sonickey.service.ts",
@@ -22778,6 +22797,7 @@
       "../node_modules/@nestjs/common/interfaces/scope-options.interface.d.ts",
       "../node_modules/@nestjs/common/interfaces/type.interface.d.ts",
       "../node_modules/@nestjs/common/interfaces/websockets/web-socket-adapter.interface.d.ts",
+      "../node_modules/@nestjs/common/node_modules/axios/index.d.ts",
       "../node_modules/@nestjs/common/pipes/default-value.pipe.d.ts",
       "../node_modules/@nestjs/common/pipes/index.d.ts",
       "../node_modules/@nestjs/common/pipes/parse-array.pipe.d.ts",
@@ -23297,7 +23317,6 @@
       "../node_modules/aws-sdk/lib/services/polly.d.ts",
       "../node_modules/aws-sdk/lib/services/s3.d.ts",
       "../node_modules/aws-sdk/lib/shared-ini/ini-loader.d.ts",
-      "../node_modules/axios/index.d.ts",
       "../node_modules/jest-diff/build/cleanupsemantic.d.ts",
       "../node_modules/jest-diff/build/difflines.d.ts",
       "../node_modules/jest-diff/build/index.d.ts",
@@ -23446,6 +23465,7 @@
       "../src/api/externalapi/externalsonickey/externalsonickey.controller.ts",
       "../src/api/externalapi/externalsonickey/externalsonickey.module.ts",
       "../src/api/externalapi/externalsonickey/externalsonickey.service.ts",
+      "../src/api/sonickey/dtos/create-sonickey.dto.ts",
       "../src/api/sonickey/dtos/decode.dto.ts",
       "../src/api/sonickey/dtos/encode.dto.ts",
       "../src/api/sonickey/dtos/sonickey.dto.ts",
