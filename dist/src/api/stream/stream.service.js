@@ -20,7 +20,7 @@ let StreamService = class StreamService {
         var streamResponse = await axios_1.default({
             method: 'get',
             url: streamUrl,
-            responseType: 'stream'
+            responseType: 'stream',
         });
         streamResponse.data.pipe(writeStream);
     }

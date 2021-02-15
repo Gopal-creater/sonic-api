@@ -4277,7 +4277,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/stream/stream.service.ts": {
-        "version": "de6fb08399208bc1c38ed1403f612ef5835db851021a91e553cc5f6c1933490c",
+        "version": "e04d4ed861d302768f3ee77ac9fbd2e83a66207fd060e96d18cc9785cb3cbe87",
         "signature": "cb06f602fbc15801c1bdf8177836afb6f0a0ca50b46d8f0c68f486da6df16db9",
         "affectsGlobalScope": false
       },
