@@ -8,21 +8,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StreamService = void 0;
 const common_1 = require("@nestjs/common");
-const https = require("https");
+const axios_1 = require("axios");
 const fs = require("fs");
 let StreamService = class StreamService {
     create(createStreamDto) {
         return 'This action adds a new stream';
     }
-    readStream() {
-        let writeStream = fs.createWriteStream('stream.mpeg');
-        var streamUrl = "https://wg.cdn.tibus.net/fm104MP3128?aw_0_1st.platform=wireless-web&amp;aw_0_1st.playerid=wireless-web&amp;aw_0_req.gdpr=true";
-        https.get(streamUrl, (response) => {
-            response.pipe(writeStream);
+    async readStream() {
+        let writeStream = fs.createWriteStream('stream.mp3');
+        var streamUrl = 'http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio1_mf_p';
+        var streamResponse = await axios_1.default({
+            method: 'get',
+            url: streamUrl,
+            responseType: 'stream'
         });
-        writeStream.on('close', function () {
-            console.log('All done!');
-        });
+        streamResponse.data.pipe(writeStream);
     }
     findAll() {
         return `This action returns all stream`;
