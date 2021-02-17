@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
+const cron_service_1 = require("./shared/services/cron.service");
 const externalsonickey_module_1 = require("./api/externalApi/externalsonickey/externalsonickey.module");
 const global_aws_module_1 = require("./shared/modules/global-aws/global-aws.module");
 const common_1 = require("@nestjs/common");
@@ -24,6 +25,7 @@ const user_module_1 = require("./api/user/user.module");
 const config_2 = require("./config");
 const stream_module_1 = require("./api/stream/stream.module");
 const uniqid = require("uniqid");
+const schedule_1 = require("@nestjs/schedule");
 let AppModule = class AppModule {
     constructor() {
     }
@@ -31,6 +33,7 @@ let AppModule = class AppModule {
 AppModule = __decorate([
     common_1.Module({
         imports: [
+            schedule_1.ScheduleModule.forRoot(),
             auth_module_1.AuthModule,
             config_1.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba' }),
             platform_express_1.MulterModule.register({
@@ -49,7 +52,7 @@ AppModule = __decorate([
             stream_module_1.StreamModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [app_service_1.AppService, cron_service_1.CronService],
     }),
     __metadata("design:paramtypes", [])
 ], AppModule);
