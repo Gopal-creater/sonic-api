@@ -22,6 +22,7 @@ const sonickey_module_1 = require("./api/sonickey/sonickey.module");
 const multer_1 = require("multer");
 const user_module_1 = require("./api/user/user.module");
 const config_2 = require("./config");
+const job_module_1 = require("./api/job/job.module");
 const uniqid = require("uniqid");
 let AppModule = class AppModule {
     constructor() {
@@ -45,6 +46,7 @@ AppModule = __decorate([
             user_module_1.UserModule,
             sonickey_module_1.SonickeyModule,
             externalsonickey_module_1.ExternalSonickeyModule,
+            job_module_1.JobModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

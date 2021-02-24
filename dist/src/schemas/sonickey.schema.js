@@ -29,6 +29,14 @@ __decorate([
     __metadata("design:type", String)
 ], SonicKey.prototype, "owner", void 0);
 __decorate([
+    dynamodb_data_mapper_annotations_1.attribute({
+        indexKeyConfigurations: {
+            jobIndex: 'HASH',
+        },
+    }),
+    __metadata("design:type", String)
+], SonicKey.prototype, "job", void 0);
+__decorate([
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "licenseId", void 0);

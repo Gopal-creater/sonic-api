@@ -1702,8 +1702,8 @@
         "affectsGlobalScope": false
       },
       "../src/schemas/sonickey.schema.ts": {
-        "version": "d0e7ea0cb955cdd3b4967e836f60c94730421a1c9cc9afe9eb045e200578039b",
-        "signature": "85642040aea7fae895f454ddd3de2d8da42b023d586fcfcdf22f5480540c17b5",
+        "version": "bf9b700331ce1bf0791d1917c83a993d8fab0f3b7607b6a6d9540f90df1847cf",
+        "signature": "b52d63f68b0411ffd217f253fb614e7e4522ffeeb8ed604f997f363aedbe69bf",
         "affectsGlobalScope": false
       },
       "../node_modules/aws-sdk/clients/acm.d.ts": {
@@ -3272,7 +3272,7 @@
         "affectsGlobalScope": false
       },
       "../src/repositories/sonickey.repository.ts": {
-        "version": "cedc936fa5e8032654a9451006509d8e331f76305bf17f316bc2baefd4dbe0af",
+        "version": "0a9cce91d2948202aa622386c8518ccc8ad1e6946bc2a1695e23a0bf81cbdddf",
         "signature": "33cf8e014cffcc34ac778165856682ed8eb24bc4bfeda59724a5d53ce596610d",
         "affectsGlobalScope": false
       },
@@ -3467,8 +3467,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/create-sonickey.dto.ts": {
-        "version": "3a164358cb98dcf8c3519b48222ca7a48cb35ee4adbfd81f43227008eadc3176",
-        "signature": "1b137e1ba4a2c1b57fe03fd6538bb6c1dd37cc664bd604ba65190197028e07ad",
+        "version": "edae133f6cfc849620c46430af5632934263983927e581405ec11627b7fe04a4",
+        "signature": "f9a7c474a22ab93cc775a85bdbd56febcf3b0b92f82df4d2ca77ea3a038551a7",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/update-sonickey.dto.ts": {
@@ -3632,8 +3632,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.service.ts": {
-        "version": "6ae7accf6fd95eb3f3039512f8fad8120ce18dd68b67b18315e2602ffdd1d432",
-        "signature": "c8e50b112cc158983c584357f70ace641760f4e004f8bebc2b2fab5fd971a5a3",
+        "version": "4317dc111b57230e641ac4663818a7a509f19d592ceb92f0ed1d1b3df1179728",
+        "signature": "d7cb30ed29d0cbfe4c81a4a36f1d209c9e6981feee77f89887ca02d58107df0d",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/core/adapters/http-adapter.d.ts": {
@@ -4042,8 +4042,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.controller.ts": {
-        "version": "05dd4c0a308e4cbb0c1688e17e02477ed3d210a5bafca461965a4bfd19893659",
-        "signature": "ed5ab450bdb6162b0940f234ff9a922c60ddedb5bd8fb67e8e29e0a25cf166ed",
+        "version": "fb48ce28047454b08932d46331647ba82587353130809ff4aa398d5ca14916fa",
+        "signature": "7d2e0af64d25d5f4ac4cd27f8e2d37785977fe92392889605f47b9aa1789f190",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.module.ts": {
@@ -4226,8 +4226,83 @@
         "signature": "482b8f0d35a3d453500a15b6c6057c1e4c40baa4329b39da9e1026d8e1de4329",
         "affectsGlobalScope": false
       },
+      "../src/api/job/dto/create-job.dto.ts": {
+        "version": "11514307dcac13423360c7dac375377e4b3b352ff60cf0238a75b365e53c17d5",
+        "signature": "1124bb10dafa567ae0c7af0e3afdf675b2ea6b834a1f936406cc7333684b2e9d",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts": {
+        "version": "2bad09c4dc0810666ef5b6150aa910dd711051ce5f2184050c9859c708092a36",
+        "signature": "2bad09c4dc0810666ef5b6150aa910dd711051ce5f2184050c9859c708092a36",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/intersection-type.helper.d.ts": {
+        "version": "f9466e9b33fddf349c95d02835d174b946f1e81d61b72100d91ce5ff2f9abe3b",
+        "signature": "f9466e9b33fddf349c95d02835d174b946f1e81d61b72100d91ce5ff2f9abe3b",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/omit-type.helper.d.ts": {
+        "version": "c938dac97b83703e7bd03862b5bc558425acc9f16ad9e24220771df184d25fcf",
+        "signature": "c938dac97b83703e7bd03862b5bc558425acc9f16ad9e24220771df184d25fcf",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/partial-type.helper.d.ts": {
+        "version": "8941525aa2f1e097f0352e586bb9c755e2d533e9945508b7518346759b26e1b8",
+        "signature": "8941525aa2f1e097f0352e586bb9c755e2d533e9945508b7518346759b26e1b8",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/pick-type.helper.d.ts": {
+        "version": "8acfefd1aec7626a3016ce7e82e3ac1a0e5b57248cffd8255b833503c29954c7",
+        "signature": "8acfefd1aec7626a3016ce7e82e3ac1a0e5b57248cffd8255b833503c29954c7",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/type-helpers.utils.d.ts": {
+        "version": "3cf73a203d499608e5b91d0c8f6ec729a39dd547cc2651a0d4647cdb420cc1fc",
+        "signature": "3cf73a203d499608e5b91d0c8f6ec729a39dd547cc2651a0d4647cdb420cc1fc",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/index.d.ts": {
+        "version": "c729e8cece7aead6e3edecca7ca0dbc1ad79d94a85ba010ec9dec5c0146b4552",
+        "signature": "c729e8cece7aead6e3edecca7ca0dbc1ad79d94a85ba010ec9dec5c0146b4552",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/index.d.ts": {
+        "version": "8f1241f5d9f0d3d72117768b3c974e462840fbd85026fb66685078945404cf2f",
+        "signature": "8f1241f5d9f0d3d72117768b3c974e462840fbd85026fb66685078945404cf2f",
+        "affectsGlobalScope": false
+      },
+      "../src/api/job/dto/update-job.dto.ts": {
+        "version": "34710a00c6dfa1e592f97922247011865aa71e0022c26e55415dc01bc49c67fe",
+        "signature": "30e48b8e58ab82fbe48eb1cc85e6d21ad73f2136ad713b2da20320d47248e693",
+        "affectsGlobalScope": false
+      },
+      "../src/schemas/job.schema.ts": {
+        "version": "fcd31419e431521d435171409014dbe7185954368b755275b3f3a03952e0994c",
+        "signature": "06a1a8f3653951656ad8b2be976c910a2daaf6175e31141081cf4d0c4b42b25c",
+        "affectsGlobalScope": false
+      },
+      "../src/repositories/job.repository.ts": {
+        "version": "bcf6e6a4a748bd8e4396e0d18ee0d900dacaab0ace952dbca2ace81cac2cbab5",
+        "signature": "f79de256dd0260298ca3c4b783bd976dd71ea314f1510c2db3cff742a55b109e",
+        "affectsGlobalScope": false
+      },
+      "../src/api/job/job.service.ts": {
+        "version": "2bbc8c1202fcc7b82e4e8f43c6b3bd7422779ecc4bdfddc46d1ad74ccc69bffc",
+        "signature": "5dd0f30f61c8d2702990c651408ccc289088b5375bfad146b01ce11c407eafc1",
+        "affectsGlobalScope": false
+      },
+      "../src/api/job/job.controller.ts": {
+        "version": "e5462f98f22a06a11ea9ff648157a0c41913f6a9a0166b4a5a58989e1f95d59a",
+        "signature": "5f542d0d10abd03db63caeadbf3731c89c1b55eadca46fe205cb781e72379677",
+        "affectsGlobalScope": false
+      },
+      "../src/api/job/job.module.ts": {
+        "version": "d228b86b8e141a05921c4dd2b2c16f369c4e393e78f68a79e32e53f97a83e425",
+        "signature": "791c7edbc29f755701954b9afed14db750dce2510c9b9eb7c0fd6807fc02d8f5",
+        "affectsGlobalScope": false
+      },
       "../src/app.module.ts": {
-        "version": "c2b172e6eb8465422d515b1ab1a171c399e129b380bb2a14e9860abfb3f1418c",
+        "version": "6b961189ca609a4a6966acfda29a7e4ef1f15f098f4525f99ef309c458b0854c",
         "signature": "098267cfef1e0a4afbfa6ce9d4e75d6e915635b0357421ffe5b8b2f3a91cfdee",
         "affectsGlobalScope": false
       },
@@ -4304,6 +4379,16 @@
       "../node_modules/@types/cookiejar/index.d.ts": {
         "version": "16b7fb094ffaa5d270f934e7406e8baee2f8245cfabf6dcc20f693389f005f56",
         "signature": "16b7fb094ffaa5d270f934e7406e8baee2f8245cfabf6dcc20f693389f005f56",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/moment/ts3.1-typings/moment.d.ts": {
+        "version": "f97edc4d3b4dd0b32766e9633086497565c37657fb591cc84a35864db4bc2fc5",
+        "signature": "f97edc4d3b4dd0b32766e9633086497565c37657fb591cc84a35864db4bc2fc5",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/cron/index.d.ts": {
+        "version": "a88aa41ef28a1c632437f648c7f432da9e075567f4cbe35dbf6611bc76b86093",
+        "signature": "a88aa41ef28a1c632437f648c7f432da9e075567f4cbe35dbf6611bc76b86093",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/debug/index.d.ts": {
@@ -6942,6 +7027,79 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/@nestjs/mapped-types/dist/index.d.ts": [
+        "../node_modules/@nestjs/mapped-types/dist/intersection-type.helper.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/omit-type.helper.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/partial-type.helper.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/pick-type.helper.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/type-helpers.utils.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/dist/intersection-type.helper.d.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/dist/omit-type.helper.d.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/dist/partial-type.helper.d.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/dist/pick-type.helper.d.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/dist/type-helpers.utils.d.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/index.d.ts": [
+        "../node_modules/@nestjs/mapped-types/dist/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/@nestjs/passport/dist/abstract.strategy.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -7583,6 +7741,16 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/cron/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/child_process.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/ts3.7/index.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/moment/ts3.1-typings/moment.d.ts"
       ],
       "../node_modules/@types/debug/index.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -12131,6 +12299,13 @@
         "../node_modules/@types/node/ts3.7/index.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/moment/ts3.1-typings/moment.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/music-metadata/lib/apev2/apev2token.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -13428,6 +13603,56 @@
         "../node_modules/@types/node/util.d.ts",
         "../src/api/sonickey/sonickey.service.ts"
       ],
+      "../src/api/job/dto/create-job.dto.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../src/api/job/dto/update-job.dto.ts": [
+        "../node_modules/@nestjs/mapped-types/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/api/job/dto/create-job.dto.ts"
+      ],
+      "../src/api/job/job.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/api/job/dto/create-job.dto.ts",
+        "../src/api/job/dto/update-job.dto.ts",
+        "../src/api/job/job.service.ts"
+      ],
+      "../src/api/job/job.module.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/api/job/job.controller.ts",
+        "../src/api/job/job.service.ts",
+        "../src/repositories/job.repository.ts"
+      ],
+      "../src/api/job/job.service.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/api/job/dto/create-job.dto.ts",
+        "../src/api/job/dto/update-job.dto.ts",
+        "../src/repositories/job.repository.ts"
+      ],
       "../src/api/sonickey/dtos/create-sonickey.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -13597,6 +13822,7 @@
         "../node_modules/@types/uniqid/index.d.ts",
         "../src/api/auth/auth.module.ts",
         "../src/api/externalapi/externalsonickey/externalsonickey.module.ts",
+        "../src/api/job/job.module.ts",
         "../src/api/sonickey/sonickey.module.ts",
         "../src/api/user/user.module.ts",
         "../src/app.controller.ts",
@@ -13658,6 +13884,16 @@
         "../src/app.module.ts",
         "../src/shared/filters/http-exception.filter.ts"
       ],
+      "../src/repositories/job.repository.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/schemas/job.schema.ts",
+        "../src/shared/modules/global-aws/global-aws.service.ts"
+      ],
       "../src/repositories/sonickey.repository.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -13667,6 +13903,14 @@
         "../node_modules/@types/node/util.d.ts",
         "../src/schemas/sonickey.schema.ts",
         "../src/shared/modules/global-aws/global-aws.service.ts"
+      ],
+      "../src/schemas/job.schema.ts": [
+        "../node_modules/@aws/dynamodb-data-mapper-annotations/build/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
       ],
       "../src/schemas/sonickey.schema.ts": [
         "../node_modules/@aws/dynamodb-data-mapper-annotations/build/index.d.ts",
@@ -16214,6 +16458,79 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/@nestjs/mapped-types/dist/index.d.ts": [
+        "../node_modules/@nestjs/mapped-types/dist/intersection-type.helper.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/omit-type.helper.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/partial-type.helper.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/pick-type.helper.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/type-helpers.utils.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/dist/intersection-type.helper.d.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/dist/omit-type.helper.d.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/dist/partial-type.helper.d.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/dist/pick-type.helper.d.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/dist/type-helpers.utils.d.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@nestjs/mapped-types/index.d.ts": [
+        "../node_modules/@nestjs/mapped-types/dist/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/@nestjs/passport/dist/abstract.strategy.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -16855,6 +17172,16 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/cron/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/child_process.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/ts3.7/index.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/moment/ts3.1-typings/moment.d.ts"
       ],
       "../node_modules/@types/debug/index.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -21403,6 +21730,13 @@
         "../node_modules/@types/node/ts3.7/index.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/moment/ts3.1-typings/moment.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/music-metadata/lib/apev2/apev2token.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -22534,6 +22868,20 @@
       "../src/api/externalapi/externalsonickey/externalsonickey.service.ts": [
         "../src/api/sonickey/sonickey.service.ts"
       ],
+      "../src/api/job/dto/update-job.dto.ts": [
+        "../node_modules/@nestjs/mapped-types/index.d.ts",
+        "../src/api/job/dto/create-job.dto.ts"
+      ],
+      "../src/api/job/job.controller.ts": [
+        "../src/api/job/dto/create-job.dto.ts",
+        "../src/api/job/dto/update-job.dto.ts",
+        "../src/api/job/job.service.ts"
+      ],
+      "../src/api/job/job.service.ts": [
+        "../src/api/job/dto/create-job.dto.ts",
+        "../src/api/job/dto/update-job.dto.ts",
+        "../src/repositories/job.repository.ts"
+      ],
       "../src/api/sonickey/dtos/create-sonickey.dto.ts": [
         "../src/api/sonickey/dtos/sonickey.dto.ts"
       ],
@@ -22576,6 +22924,9 @@
       ],
       "../src/config/index.ts": [
         "../src/config/app.config.ts"
+      ],
+      "../src/repositories/job.repository.ts": [
+        "../src/shared/modules/global-aws/global-aws.service.ts"
       ],
       "../src/repositories/sonickey.repository.ts": [
         "../src/shared/modules/global-aws/global-aws.service.ts"
@@ -22861,6 +23212,14 @@
       "../node_modules/@nestjs/core/router/request/request-constants.d.ts",
       "../node_modules/@nestjs/core/services/index.d.ts",
       "../node_modules/@nestjs/core/services/reflector.service.d.ts",
+      "../node_modules/@nestjs/mapped-types/dist/index.d.ts",
+      "../node_modules/@nestjs/mapped-types/dist/intersection-type.helper.d.ts",
+      "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts",
+      "../node_modules/@nestjs/mapped-types/dist/omit-type.helper.d.ts",
+      "../node_modules/@nestjs/mapped-types/dist/partial-type.helper.d.ts",
+      "../node_modules/@nestjs/mapped-types/dist/pick-type.helper.d.ts",
+      "../node_modules/@nestjs/mapped-types/dist/type-helpers.utils.d.ts",
+      "../node_modules/@nestjs/mapped-types/index.d.ts",
       "../node_modules/@nestjs/passport/dist/abstract.strategy.d.ts",
       "../node_modules/@nestjs/passport/dist/auth.guard.d.ts",
       "../node_modules/@nestjs/passport/dist/index.d.ts",
@@ -22935,6 +23294,7 @@
       "../node_modules/@types/color-name/index.d.ts",
       "../node_modules/@types/connect/index.d.ts",
       "../node_modules/@types/cookiejar/index.d.ts",
+      "../node_modules/@types/cron/index.d.ts",
       "../node_modules/@types/debug/index.d.ts",
       "../node_modules/@types/eslint-visitor-keys/index.d.ts",
       "../node_modules/@types/express-jwt/index.d.ts",
@@ -23324,6 +23684,7 @@
       "../node_modules/jest-diff/build/types.d.ts",
       "../node_modules/jwks-rsa/index.d.ts",
       "../node_modules/make-dir/index.d.ts",
+      "../node_modules/moment/ts3.1-typings/moment.d.ts",
       "../node_modules/music-metadata/lib/apev2/apev2token.d.ts",
       "../node_modules/music-metadata/lib/common/generictagtypes.d.ts",
       "../node_modules/music-metadata/lib/core.d.ts",
@@ -23465,6 +23826,11 @@
       "../src/api/externalapi/externalsonickey/externalsonickey.controller.ts",
       "../src/api/externalapi/externalsonickey/externalsonickey.module.ts",
       "../src/api/externalapi/externalsonickey/externalsonickey.service.ts",
+      "../src/api/job/dto/create-job.dto.ts",
+      "../src/api/job/dto/update-job.dto.ts",
+      "../src/api/job/job.controller.ts",
+      "../src/api/job/job.module.ts",
+      "../src/api/job/job.service.ts",
       "../src/api/sonickey/dtos/create-sonickey.dto.ts",
       "../src/api/sonickey/dtos/decode.dto.ts",
       "../src/api/sonickey/dtos/encode.dto.ts",
@@ -23485,7 +23851,9 @@
       "../src/constants/permissions.ts",
       "../src/constants/roles.ts",
       "../src/main.ts",
+      "../src/repositories/job.repository.ts",
       "../src/repositories/sonickey.repository.ts",
+      "../src/schemas/job.schema.ts",
       "../src/schemas/sonickey.schema.ts",
       "../src/shared/filters/http-exception.filter.ts",
       "../src/shared/interfaces/uploadedfile.interface.ts",

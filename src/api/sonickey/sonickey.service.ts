@@ -188,6 +188,18 @@ export class SonickeyService {
     return items;
   }
 
+  async findByJob(job: string) {
+    var items: SonicKey[] = [];
+    for await (const item of this.sonicKeyRepository.query(
+      SonicKey,
+      { job: job },
+      { indexName: 'jobIndex' },
+    )) {
+      items.push(item);
+    }
+    return items;
+  }
+
 
   async findBySonicKeyOrFail(sonicKey: string) {
     return this.findBySonicKey(sonicKey).then(data => {

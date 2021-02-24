@@ -11,7 +11,9 @@ export declare class SonickeyController {
     constructor(sonicKeyService: SonickeyService, keygenService: KeygenService);
     getAll(): Promise<any[]>;
     create(createSonicKeyDto: CreateSonicKeyDto, owner: string, req: any): Promise<SonicKey>;
+    createForJob(createSonicKeyDto: CreateSonicKeyDto, owner: string, req: any): Promise<SonicKey>;
     getOwnersKeys(ownerId: string): Promise<SonicKey[]>;
+    getKeysByJob(jobId: string): Promise<SonicKey[]>;
     getOne(sonickey: string): Promise<SonicKey>;
     encode(sonicKeyDto: SonicKeyDto, file: IUploadedFile, owner: string, req: any): Promise<SonicKey>;
     decode(file: IUploadedFile): Promise<SonicKey>;

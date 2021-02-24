@@ -4,4 +4,7 @@ import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
 export class CreateSonicKeyDto extends SonicKeyDto {
     @ApiProperty()
     sonicKey:string
+
+    @ApiProperty()
+    job:string
 }

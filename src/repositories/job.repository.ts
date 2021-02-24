@@ -1,17 +1,17 @@
-import { SonicKey } from './../schemas/sonickey.schema';
-import { GlobalDynamoDbDataMapper } from './../shared/modules/global-aws/global-aws.service';
+import { Job } from '../schemas/job.schema';
+import { GlobalDynamoDbDataMapper } from '../shared/modules/global-aws/global-aws.service';
 import { GlobalAwsService } from 'src/shared/modules/global-aws/global-aws.service';
 import { Injectable } from '@nestjs/common';
 
 
 @Injectable()
-export class SonicKeyRepository extends GlobalDynamoDbDataMapper {
+export class JobRepository extends GlobalDynamoDbDataMapper {
   constructor(private readonly globalAwsService:GlobalAwsService) {
     super()
   }
 
   ensureTableExistsAndCreate() {
-    return this.ensureTableExists(SonicKey, {
+    return this.ensureTableExists(Job, {
       readCapacityUnits: 5,
       writeCapacityUnits: 5,
       indexOptions: {
@@ -20,13 +20,7 @@ export class SonicKeyRepository extends GlobalDynamoDbDataMapper {
           projection: 'all',
           readCapacityUnits: 5,
           writeCapacityUnits: 5,
-        },
-        jobIndex: {
-          type: 'global',
-          projection: 'all',
-          readCapacityUnits: 5,
-          writeCapacityUnits: 5,
-        },
+        }
       }
     });
   }

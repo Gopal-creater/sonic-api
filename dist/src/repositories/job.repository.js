@@ -9,18 +9,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SonicKeyRepository = void 0;
-const sonickey_schema_1 = require("./../schemas/sonickey.schema");
-const global_aws_service_1 = require("./../shared/modules/global-aws/global-aws.service");
+exports.JobRepository = void 0;
+const job_schema_1 = require("../schemas/job.schema");
+const global_aws_service_1 = require("../shared/modules/global-aws/global-aws.service");
 const global_aws_service_2 = require("../shared/modules/global-aws/global-aws.service");
 const common_1 = require("@nestjs/common");
-let SonicKeyRepository = class SonicKeyRepository extends global_aws_service_1.GlobalDynamoDbDataMapper {
+let JobRepository = class JobRepository extends global_aws_service_1.GlobalDynamoDbDataMapper {
     constructor(globalAwsService) {
         super();
         this.globalAwsService = globalAwsService;
     }
     ensureTableExistsAndCreate() {
-        return this.ensureTableExists(sonickey_schema_1.SonicKey, {
+        return this.ensureTableExists(job_schema_1.Job, {
             readCapacityUnits: 5,
             writeCapacityUnits: 5,
             indexOptions: {
@@ -29,20 +29,14 @@ let SonicKeyRepository = class SonicKeyRepository extends global_aws_service_1.G
                     projection: 'all',
                     readCapacityUnits: 5,
                     writeCapacityUnits: 5,
-                },
-                jobIndex: {
-                    type: 'global',
-                    projection: 'all',
-                    readCapacityUnits: 5,
-                    writeCapacityUnits: 5,
-                },
+                }
             }
         });
     }
 };
-SonicKeyRepository = __decorate([
+JobRepository = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [global_aws_service_2.GlobalAwsService])
-], SonicKeyRepository);
-exports.SonicKeyRepository = SonicKeyRepository;
-//# sourceMappingURL=sonickey.repository.js.map
+], JobRepository);
+exports.JobRepository = JobRepository;
+//# sourceMappingURL=job.repository.js.map

@@ -180,6 +180,24 @@ let SonickeyService = class SonickeyService {
         }
         return items;
     }
+    async findByJob(job) {
+        var e_6, _a;
+        var items = [];
+        try {
+            for (var _b = __asyncValues(this.sonicKeyRepository.query(sonickey_schema_1.SonicKey, { job: job }, { indexName: 'jobIndex' })), _c; _c = await _b.next(), !_c.done;) {
+                const item = _c.value;
+                items.push(item);
+            }
+        }
+        catch (e_6_1) { e_6 = { error: e_6_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
+            }
+            finally { if (e_6) throw e_6.error; }
+        }
+        return items;
+    }
     async findBySonicKeyOrFail(sonicKey) {
         return this.findBySonicKey(sonicKey).then(data => {
             if (!data)

@@ -15,12 +15,16 @@ const sonicKey_dto_1 = require("./sonicKey.dto");
 const swagger_1 = require("@nestjs/swagger");
 class CreateSonicKeyDto extends sonicKey_dto_1.SonicKeyDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { sonicKey: { required: true, type: () => String } };
+        return { sonicKey: { required: true, type: () => String }, job: { required: true, type: () => String } };
     }
 }
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateSonicKeyDto.prototype, "sonicKey", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateSonicKeyDto.prototype, "job", void 0);
 exports.CreateSonicKeyDto = CreateSonicKeyDto;
 //# sourceMappingURL=create-sonickey.dto.js.map

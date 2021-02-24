@@ -21,6 +21,13 @@ export class SonicKey {
   })
   owner: string;
 
+  @attribute({
+    indexKeyConfigurations: {
+      jobIndex: 'HASH',
+    },
+  })
+  job: string; //Relation
+
   @attribute()
   licenseId?: string;
 

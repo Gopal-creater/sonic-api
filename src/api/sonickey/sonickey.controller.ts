@@ -27,9 +27,15 @@ import { SonicKey } from '../../schemas/sonickey.schema';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as makeDir from 'make-dir';
 import { diskStorage } from 'multer';
-import {appConfig} from '../../config';
+import { appConfig } from '../../config';
 import { LicenseValidationGuard } from '../auth/guards/license-validation.guard';
-import { ApiBearerAuth, ApiOperation, ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiTags,
+  ApiConsumes,
+  ApiBody,
+} from '@nestjs/swagger';
 import * as uniqid from 'uniqid';
 import { JwtAuthGuard } from '../auth/guards';
 import { User } from '../auth/decorators';
@@ -56,20 +62,24 @@ export class SonickeyController {
     return await this.sonicKeyService.getAll();
   }
 
-  @UseGuards(JwtAuthGuard,LicenseValidationGuard)
+  @UseGuards(JwtAuthGuard, LicenseValidationGuard)
   @Post('/')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Save to database after local encode.' })
   async create(
-    @Body() createSonicKeyDto:CreateSonicKeyDto ,
+    @Body() createSonicKeyDto: CreateSonicKeyDto,
     @User('sub') owner: string,
     @Req() req: any,
   ) {
-    if(!createSonicKeyDto.sonicKey){
+    if (!createSonicKeyDto.sonicKey) {
       throw new BadRequestException('sonicKey must be present');
     }
+    if (!createSonicKeyDto.job) {
+      throw new BadRequestException('jobId must be present');
+    }
     const licenseId = req?.validLicense?.id as string;
-      return this.keygenService.incrementUsage(licenseId, 1)
+    return this.keygenService
+      .incrementUsage(licenseId, 1)
       .then(async keygenResult => {
         if (keygenResult['errors']) {
           throw new BadRequestException(
@@ -77,13 +87,40 @@ export class SonickeyController {
           );
         }
         console.log('Going to save key in db.');
-        const dataToSave = new SonicKey(Object.assign(createSonicKeyDto,{
-          owner: owner,
-          licenseId: licenseId, //modified
-        }))
-        return this.sonicKeyService.sonicKeyRepository
-          .put(dataToSave)
+        const dataToSave = new SonicKey(
+          Object.assign(createSonicKeyDto, {
+            owner: owner,
+            licenseId: licenseId, //modified
+          }),
+        );
+        return this.sonicKeyService.sonicKeyRepository.put(dataToSave);
       });
+  }
+
+  @UseGuards(JwtAuthGuard, LicenseValidationGuard)
+  @Post('/create-from-job')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Save to database after local encode from job.' })
+  async createForJob(
+    @Body() createSonicKeyDto: CreateSonicKeyDto,
+    @User('sub') owner: string,
+    @Req() req: any,
+  ) {
+    if (!createSonicKeyDto.sonicKey) {
+      throw new BadRequestException('sonicKey must be present');
+    }
+    if (!createSonicKeyDto.job) {
+      throw new BadRequestException('jobId must be present');
+    }
+    const licenseId = req?.validLicense?.id as string;
+    console.log('Going to save key in db.');
+    const dataToSave = new SonicKey(
+      Object.assign(createSonicKeyDto, {
+        owner: owner,
+        licenseId: licenseId, //modified
+      }),
+    );
+    return this.sonicKeyService.sonicKeyRepository.put(dataToSave);
   }
 
   @Get('/owner/:ownerId')
@@ -94,7 +131,13 @@ export class SonickeyController {
     return await this.sonicKeyService.findByOwner(ownerId);
   }
 
-
+  @Get('/jobs/:jobId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get All Sonic Keys of particular job' })
+  async getKeysByJob(@Param('jobId') jobId: string) {
+    return await this.sonicKeyService.findByJob(jobId);
+  }
 
   // @Get('/search')
   // @ApiOperation({ summary: 'Search on sonicKey' })
@@ -109,8 +152,6 @@ export class SonickeyController {
   async getOne(@Param('sonickey') sonickey: string) {
     return this.sonicKeyService.findBySonicKeyOrFail(sonickey);
   }
-
- 
 
   @UseInterceptors(
     FileInterceptor('mediaFile', {
@@ -131,12 +172,14 @@ export class SonickeyController {
           const imagePath = await makeDir(
             `${appConfig.MULTER_DEST}/${currentUserId}`,
           );
-          await makeDir(`${appConfig.MULTER_DEST}/${currentUserId}/encodedFiles`);
+          await makeDir(
+            `${appConfig.MULTER_DEST}/${currentUserId}/encodedFiles`,
+          );
           cb(null, imagePath);
         },
         filename: (req, file, cb) => {
           let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-          const randomName = uniqid()
+          const randomName = uniqid();
           cb(null, `${randomName}-${orgName}`);
         },
       }),
@@ -147,12 +190,12 @@ export class SonickeyController {
     description: 'File To Encode',
     type: EncodeDto,
   })
-  @UseGuards(JwtAuthGuard,LicenseValidationGuard)
+  @UseGuards(JwtAuthGuard, LicenseValidationGuard)
   @Post('/encode')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Encode File And save to database' })
   encode(
-    @Body('data', JsonParsePipe) sonicKeyDto:SonicKeyDto ,
+    @Body('data', JsonParsePipe) sonicKeyDto: SonicKeyDto,
     @UploadedFile() file: IUploadedFile,
     @User('sub') owner: string,
     @Req() req: any,
@@ -182,14 +225,14 @@ export class SonickeyController {
           sonicKeyDto,
         );
 
-        
-        const dataToSave = new SonicKey(Object.assign(sonicKeyDtoWithAudioData,{
-          owner: owner,
-          sonicKey: sonicKey,
-          licenseId: licenseId, //modified
-        }))
-        return this.sonicKeyService.sonicKeyRepository
-          .put(dataToSave)
+        const dataToSave = new SonicKey(
+          Object.assign(sonicKeyDtoWithAudioData, {
+            owner: owner,
+            sonicKey: sonicKey,
+            licenseId: licenseId, //modified
+          }),
+        );
+        return this.sonicKeyService.sonicKeyRepository.put(dataToSave);
       });
   }
 
@@ -216,7 +259,7 @@ export class SonickeyController {
         },
         filename: (req, file, cb) => {
           let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-          const randomName = uniqid()
+          const randomName = uniqid();
           cb(null, `${randomName}-${orgName}`);
         },
       }),
@@ -237,7 +280,6 @@ export class SonickeyController {
     });
   }
 
-
   @Patch('/:sonickey')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -246,9 +288,9 @@ export class SonickeyController {
     @Param('sonickey') sonickey: string,
     @Body() updateSonicKeyDto: UpdateSonicKeyDto,
   ) {
-    const oldKey = await this.sonicKeyService.findBySonicKeyOrFail(sonickey)
-    const dataToUpdate = new SonicKey(Object.assign(oldKey,updateSonicKeyDto))
-    return this.sonicKeyService.sonicKeyRepository.update(dataToUpdate)
+    const oldKey = await this.sonicKeyService.findBySonicKeyOrFail(sonickey);
+    const dataToUpdate = new SonicKey(Object.assign(oldKey, updateSonicKeyDto));
+    return this.sonicKeyService.sonicKeyRepository.update(dataToUpdate);
   }
 
   @Delete('/:sonickey')

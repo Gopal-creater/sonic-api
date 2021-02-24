@@ -2,6 +2,7 @@ export declare class SonicKey {
     constructor(data?: Partial<SonicKey>);
     sonicKey?: string;
     owner: string;
+    job: string;
     licenseId?: string;
     createdAt: Date;
     status?: boolean;

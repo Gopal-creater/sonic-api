@@ -46,8 +46,12 @@ let SonickeyController = class SonickeyController {
         if (!createSonicKeyDto.sonicKey) {
             throw new common_1.BadRequestException('sonicKey must be present');
         }
+        if (!createSonicKeyDto.job) {
+            throw new common_1.BadRequestException('jobId must be present');
+        }
         const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.id;
-        return this.keygenService.incrementUsage(licenseId, 1)
+        return this.keygenService
+            .incrementUsage(licenseId, 1)
             .then(async (keygenResult) => {
             if (keygenResult['errors']) {
                 throw new common_1.BadRequestException('Unable to increment the license usage!');
@@ -57,12 +61,30 @@ let SonickeyController = class SonickeyController {
                 owner: owner,
                 licenseId: licenseId,
             }));
-            return this.sonicKeyService.sonicKeyRepository
-                .put(dataToSave);
+            return this.sonicKeyService.sonicKeyRepository.put(dataToSave);
         });
+    }
+    async createForJob(createSonicKeyDto, owner, req) {
+        var _a;
+        if (!createSonicKeyDto.sonicKey) {
+            throw new common_1.BadRequestException('sonicKey must be present');
+        }
+        if (!createSonicKeyDto.job) {
+            throw new common_1.BadRequestException('jobId must be present');
+        }
+        const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.id;
+        console.log('Going to save key in db.');
+        const dataToSave = new sonickey_schema_1.SonicKey(Object.assign(createSonicKeyDto, {
+            owner: owner,
+            licenseId: licenseId,
+        }));
+        return this.sonicKeyService.sonicKeyRepository.put(dataToSave);
     }
     async getOwnersKeys(ownerId) {
         return await this.sonicKeyService.findByOwner(ownerId);
+    }
+    async getKeysByJob(jobId) {
+        return await this.sonicKeyService.findByJob(jobId);
     }
     async getOne(sonickey) {
         return this.sonicKeyService.findBySonicKeyOrFail(sonickey);
@@ -93,8 +115,7 @@ let SonickeyController = class SonickeyController {
                 sonicKey: sonicKey,
                 licenseId: licenseId,
             }));
-            return this.sonicKeyService.sonicKeyRepository
-                .put(dataToSave);
+            return this.sonicKeyService.sonicKeyRepository.put(dataToSave);
         });
     }
     decode(file) {
@@ -141,6 +162,19 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "create", null);
 __decorate([
+    common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
+    common_1.Post('/create-from-job'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Save to database after local encode from job.' }),
+    openapi.ApiResponse({ status: 201, type: require("../../schemas/sonickey.schema").SonicKey }),
+    __param(0, common_1.Body()),
+    __param(1, decorators_1.User('sub')),
+    __param(2, common_1.Req()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto, String, Object]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "createForJob", null);
+__decorate([
     common_1.Get('/owner/:ownerId'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
@@ -151,6 +185,17 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getOwnersKeys", null);
+__decorate([
+    common_1.Get('/jobs/:jobId'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular job' }),
+    openapi.ApiResponse({ status: 200, type: [require("../../schemas/sonickey.schema").SonicKey] }),
+    __param(0, common_1.Param('jobId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "getKeysByJob", null);
 __decorate([
     common_1.Get('/:sonickey'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
