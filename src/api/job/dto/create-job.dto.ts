@@ -7,5 +7,5 @@ export class CreateJobDto {
     licenseId: string
   
     @ApiProperty()
-    jobDetails: { [key: string]: any }[]
+    jobDetails: Record<string, any>[]
 }

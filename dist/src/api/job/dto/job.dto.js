@@ -14,7 +14,7 @@ const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 class JobDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { owner: { required: true, type: () => String }, licenseId: { required: true, type: () => String }, jobDetails: { required: true } };
+        return { owner: { required: true, type: () => String }, licenseId: { required: true, type: () => String }, jobDetails: { required: true, type: () => [Object] } };
     }
 }
 __decorate([

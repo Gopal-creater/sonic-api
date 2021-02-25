@@ -22,9 +22,9 @@ export declare class JobController {
     update(id: string, updateJobDto: UpdateJobDto): Promise<import("../../../schemas/job.schema").Job & {
         id: string;
     } & UpdateJobDto>;
-    updateJobDetailByFileId(id: string, fileId: string, updateJobFileDto: UpdateJobFileDto): Promise<import("@nestjs/common").NotFoundException | (import("../../../schemas/job.schema").Job & {
+    updateJobDetailByFileId(id: string, fileId: string, updateJobFileDto: UpdateJobFileDto): Promise<(import("../../../schemas/job.schema").Job & {
         id: string;
-    })>;
+    }) | import("@nestjs/common").NotFoundException>;
     remove(id: string): Promise<import("../../../schemas/job.schema").Job & {
         id: string;
     }>;

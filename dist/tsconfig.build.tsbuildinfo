@@ -4227,8 +4227,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/create-job.dto.ts": {
-        "version": "bb11315b35b1cf121162c5aa6c2ebfc8fa13a2cf664e416950ea094baddcf552",
-        "signature": "ff3055d02f03d373e81779ee96bc1dc2b641d621c0dd0cddc75db6bedb0557c2",
+        "version": "c3fefc3a46277decdafee6cb6e80d46afdd8c831d3dbd0c369070c93bf935dd3",
+        "signature": "e6fe49925abc9f889c096560a37b911bfbdb0431940666e63ee84e90a66085fd",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts": {
@@ -4272,8 +4272,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/update-job.dto.ts": {
-        "version": "77133d66c82dcdbb3833bd31aa8bfe8608f55310b77306b94e89b4d747eb1267",
-        "signature": "30e48b8e58ab82fbe48eb1cc85e6d21ad73f2136ad713b2da20320d47248e693",
+        "version": "7537264fc8e27a5caa3e030fa18590827b8489dc742c82b17e8621283505ab18",
+        "signature": "09e517bc3af7c37984cd890f12f73fbe09695267e3a719883ddf3f7308fe9c94",
         "affectsGlobalScope": false
       },
       "../src/schemas/job.schema.ts": {
@@ -4308,7 +4308,7 @@
       },
       "../src/api/job/controllers/job.controller.ts": {
         "version": "93cbe43fe5b3239ec8d4fa6ba632260007315b3a98d66dc22c6ff4b7dbbe2ffb",
-        "signature": "ce3c9d632a29b3cc3a4c240f4a9a204b7dc988325a91a254cb1a2074ec84bff8",
+        "signature": "6672ad87e13c2ab3f050e8d34c8177b8b6f040dd50a114b093153d2c1d3070f4",
         "affectsGlobalScope": false
       },
       "../src/api/job/services/job-file.service.ts": {
@@ -4318,7 +4318,7 @@
       },
       "../src/api/job/controllers/job-file.controller.ts": {
         "version": "2d2afdfdfefaa6adc547b32ee8a87f87f84fbd32a6339baf0d6d43568b57fa94",
-        "signature": "ac70b18c8c5897624d8c5b7e67901bf19fef694ffd6c032c3ef00fe5ff7fbc58",
+        "signature": "cc12ef6e7b28c5a02c432810ae1171d057e5b7d17ed67060edddb8cdba1e96d3",
         "affectsGlobalScope": false
       },
       "../src/api/job/job.module.ts": {
@@ -4352,8 +4352,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/job.dto.ts": {
-        "version": "cfc146f018ce4e0640bca675bccee59138198d265313659444b6c28a151b80aa",
-        "signature": "3bb10460360b84b3cfdd99e4a22694faa27f5026247b38f20d8fb4871a83b2a3",
+        "version": "d6d0cc5a476b20c2dabef871c1b255b7032988b0ee1d66b2f0713107db9d3104",
+        "signature": "e942aa994d3c28bb7046c99e1b2501aba674d53eddaacd843a5926901e4b388e",
         "affectsGlobalScope": false
       },
       "../src/constants/permissions.ts": {
@@ -22949,10 +22949,6 @@
         "../src/api/job/services/job.service.ts",
         "../src/api/sonickey/sonickey.service.ts",
         "../src/schemas/job.schema.ts"
-      ],
-      "../src/api/job/dto/update-job.dto.ts": [
-        "../node_modules/@nestjs/mapped-types/index.d.ts",
-        "../src/api/job/dto/create-job.dto.ts"
       ],
       "../src/api/job/services/job-file.service.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
