@@ -32,6 +32,9 @@ let SonickeyService = class SonickeyService {
         this.fileOperationService = fileOperationService;
         this.fileHandlerService = fileHandlerService;
     }
+    generateUniqueSonicKey() {
+        return nanoid_1.nanoid(11);
+    }
     async getAll() {
         var e_1, _a;
         const items = [];
@@ -69,7 +72,7 @@ let SonickeyService = class SonickeyService {
         return items;
     }
     async encode(file, encodingStrength = 10) {
-        const random11CharKey = nanoid_1.nanoid(11);
+        const random11CharKey = this.generateUniqueSonicKey();
         file.path = upath.toUnix(file.path);
         file.destination = upath.toUnix(file.destination);
         const inFilePath = file.path;

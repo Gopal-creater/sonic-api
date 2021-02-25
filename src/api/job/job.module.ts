@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
-import { JobService } from './job.service';
-import { JobController } from './job.controller';
+import { JobService } from './services/job.service';
+import { JobController } from './controllers/job.controller';
+import { JobFileController } from './controllers/job-file.controller';
 import { JobRepository } from '../../repositories/job.repository';
+import { KeygenService } from '../../shared/modules/keygen/keygen.service';
+import { SonickeyModule } from '../sonickey/sonickey.module';
+import { JobFileService } from './services/job-file.service';
 
 @Module({
-  controllers: [JobController],
-  providers: [JobService,JobRepository]
+  imports: [SonickeyModule],
+controllers: [JobController,JobFileController],
+  providers: [JobService,JobFileService, JobRepository, KeygenService],
 })
 export class JobModule {}

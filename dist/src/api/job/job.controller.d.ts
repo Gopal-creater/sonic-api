@@ -1,15 +1,32 @@
 import { JobService } from './job.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
+import { SonickeyService } from '../sonickey/sonickey.service';
+import { UpdateJobFileDto } from './dto/update-job-file.dto';
 export declare class JobController {
     private readonly jobService;
-    constructor(jobService: JobService);
-    create(createJobDto: CreateJobDto): string;
-    findAll(): string;
-    findOne(id: string): string;
-    getOwnersJobs(ownerId: string): Promise<string>;
-    update(id: string, updateJobDto: UpdateJobDto): string;
-    updateJobDetailByFilePath(id: string, filePath: string, updateJobDto: UpdateJobDto): string;
-    remove(id: string): string;
+    private readonly sonickeyService;
+    constructor(jobService: JobService, sonickeyService: SonickeyService);
+    create(createJobDto: CreateJobDto, owner: string, req: any): Promise<CreateJobDto>;
+    findAll(): Promise<any[]>;
+    makeCompleted(id: string): Promise<import("../../schemas/job.schema").Job & {
+        id: string;
+    } & {
+        isComplete: boolean;
+        completedAt: Date;
+    }>;
+    findOne(id: string): Promise<import("../../schemas/job.schema").Job & {
+        id: string;
+    }>;
+    getOwnersJobs(ownerId: string): Promise<import("../../schemas/job.schema").Job[]>;
+    update(id: string, updateJobDto: UpdateJobDto): Promise<import("../../schemas/job.schema").Job & {
+        id: string;
+    } & UpdateJobDto>;
+    updateJobDetailByFileId(id: string, fileId: string, updateJobFileDto: UpdateJobFileDto): Promise<(import("../../schemas/job.schema").Job & {
+        id: string;
+    }) | import("@nestjs/common").NotFoundException>;
+    remove(id: string): Promise<import("../../schemas/job.schema").Job & {
+        id: string;
+    }>;
     createTable(): Promise<string>;
 }

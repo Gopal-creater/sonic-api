@@ -22,6 +22,11 @@ export class SonickeyService {
     private readonly fileHandlerService: FileHandlerService,
   ) {}
 
+   generateUniqueSonicKey(){
+    // TODO: Must verify for uniqueness of generated key
+    return nanoid(11);
+  }
+
   async getAll() {
     const items = [];
     for await (const item of this.sonicKeyRepository.scan(SonicKey)) {
@@ -54,7 +59,7 @@ export class SonickeyService {
    */
   async encode(file: IUploadedFile, encodingStrength: number = 10) {
     // The sonic key generation - done randomely.
-    const random11CharKey = nanoid(11);
+    const random11CharKey = this.generateUniqueSonicKey();
     // TODO: Must verify for uniqueness of generated key
 
     file.path = upath.toUnix(file.path); //Convert windows path to unix path

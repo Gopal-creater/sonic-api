@@ -41,6 +41,9 @@ let SonickeyController = class SonickeyController {
     async getAll() {
         return await this.sonicKeyService.getAll();
     }
+    async generateUniqueSonicKey() {
+        return await this.sonicKeyService.generateUniqueSonicKey();
+    }
     async create(createSonicKeyDto, owner, req) {
         var _a;
         if (!createSonicKeyDto.sonicKey) {
@@ -65,18 +68,18 @@ let SonickeyController = class SonickeyController {
         });
     }
     async createForJob(createSonicKeyDto, owner, req) {
-        var _a;
         if (!createSonicKeyDto.sonicKey) {
             throw new common_1.BadRequestException('sonicKey must be present');
         }
         if (!createSonicKeyDto.job) {
             throw new common_1.BadRequestException('jobId must be present');
         }
-        const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.id;
+        if (!createSonicKeyDto.licenseId) {
+            throw new common_1.BadRequestException('licenseId must be present');
+        }
         console.log('Going to save key in db.');
         const dataToSave = new sonickey_schema_1.SonicKey(Object.assign(createSonicKeyDto, {
             owner: owner,
-            licenseId: licenseId,
         }));
         return this.sonicKeyService.sonicKeyRepository.put(dataToSave);
     }
@@ -149,6 +152,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getAll", null);
 __decorate([
+    common_1.Get('/generate-unique-sonic-key'),
+    swagger_1.ApiOperation({ summary: 'Generate unique sonic key' }),
+    openapi.ApiResponse({ status: 200, type: String }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "generateUniqueSonicKey", null);
+__decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
     common_1.Post('/'),
     swagger_1.ApiBearerAuth(),
@@ -171,7 +182,7 @@ __decorate([
     __param(1, decorators_1.User('sub')),
     __param(2, common_1.Req()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto, String, Object]),
+    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromJobDto, String, Object]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "createForJob", null);
 __decorate([

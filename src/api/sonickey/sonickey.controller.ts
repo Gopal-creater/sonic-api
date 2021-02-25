@@ -1,4 +1,4 @@
-import { CreateSonicKeyDto } from './dtos/create-sonickey.dto';
+import { CreateSonicKeyDto, CreateSonicKeyFromJobDto } from './dtos/create-sonickey.dto';
 import { UpdateSonicKeyDto } from './dtos/update-sonickey.dto';
 import { ConfigService } from '@nestjs/config';
 import { DecodeDto } from './dtos/decode.dto';
@@ -62,6 +62,12 @@ export class SonickeyController {
     return await this.sonicKeyService.getAll();
   }
 
+  @Get('/generate-unique-sonic-key')
+  @ApiOperation({ summary: 'Generate unique sonic key' })
+  async generateUniqueSonicKey() {
+    return await this.sonicKeyService.generateUniqueSonicKey();
+  }
+
   @UseGuards(JwtAuthGuard, LicenseValidationGuard)
   @Post('/')
   @ApiBearerAuth()
@@ -102,7 +108,7 @@ export class SonickeyController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Save to database after local encode from job.' })
   async createForJob(
-    @Body() createSonicKeyDto: CreateSonicKeyDto,
+    @Body() createSonicKeyDto: CreateSonicKeyFromJobDto,
     @User('sub') owner: string,
     @Req() req: any,
   ) {
@@ -112,12 +118,14 @@ export class SonickeyController {
     if (!createSonicKeyDto.job) {
       throw new BadRequestException('jobId must be present');
     }
-    const licenseId = req?.validLicense?.id as string;
+
+    if (!createSonicKeyDto.licenseId) {
+      throw new BadRequestException('licenseId must be present');
+    }
     console.log('Going to save key in db.');
     const dataToSave = new SonicKey(
       Object.assign(createSonicKeyDto, {
         owner: owner,
-        licenseId: licenseId, //modified
       }),
     );
     return this.sonicKeyService.sonicKeyRepository.put(dataToSave);

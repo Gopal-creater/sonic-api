@@ -10,6 +10,7 @@ export declare class SonickeyService {
     private readonly fileOperationService;
     private readonly fileHandlerService;
     constructor(sonicKeyRepository: SonicKeyRepository, fileOperationService: FileOperationService, fileHandlerService: FileHandlerService);
+    generateUniqueSonicKey(): string;
     getAll(): Promise<any[]>;
     getAllWithFilter(queryParams: Object): Promise<any[]>;
     encode(file: IUploadedFile, encodingStrength?: number): Promise<{

@@ -8,3 +8,15 @@ export class CreateSonicKeyDto extends SonicKeyDto {
     @ApiProperty()
     job:string
 }
+
+
+export class CreateSonicKeyFromJobDto extends SonicKeyDto {
+    @ApiProperty()
+    sonicKey:string
+
+    @ApiProperty()
+    job:string
+
+    @ApiProperty()
+    licenseId:string
+}

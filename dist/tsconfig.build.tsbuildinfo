@@ -1036,7 +1036,7 @@
         "signature": "17d0601882b9ab77dc854b7f5105f437a5f9d22210f40c729814844dd540570d",
         "affectsGlobalScope": false
       },
-      "../node_modules/@nestjs/common/node_modules/axios/index.d.ts": {
+      "../node_modules/axios/index.d.ts": {
         "version": "e7df7eb51c5090db4bdcdbf9efe053530dff0e33796f40b08b1a3be6c3a351d0",
         "signature": "e7df7eb51c5090db4bdcdbf9efe053530dff0e33796f40b08b1a3be6c3a351d0",
         "affectsGlobalScope": false
@@ -1157,12 +1157,12 @@
         "affectsGlobalScope": false
       },
       "../package.json": {
-        "version": "df3fdfb5212c1375dbd6c8de3e01432ba002a04597e0e550f2ac47e79138787e",
-        "signature": "2853ccff6242b96efc44ecbbb872947eb9d7a46d42863dd45648623b0cc3ad6c",
+        "version": "e0e2784e6ea4c6ecad2ac1ac046f811599b3d10a24b055de420c8965dcc713ca",
+        "signature": "bb8eaaf77f5e5059bc307af5966b90b87e05e3b0efd98432ff212ea86f9595b0",
         "affectsGlobalScope": true
       },
       "../src/app.service.ts": {
-        "version": "f0e6a6c90b9ff69e28b4990eb76527db149ea5c47ee7a45b330c74a7ddb2bcc2",
+        "version": "5897e882a7fe9beb67a8acf71df40c4ba567646ed53c62002a82b94b7a1db16a",
         "signature": "653711fba8904aa27fd8911b63cf526e7b334e13a292da4cefdbbe179ac3f3f2",
         "affectsGlobalScope": false
       },
@@ -3467,8 +3467,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/create-sonickey.dto.ts": {
-        "version": "edae133f6cfc849620c46430af5632934263983927e581405ec11627b7fe04a4",
-        "signature": "f9a7c474a22ab93cc775a85bdbd56febcf3b0b92f82df4d2ca77ea3a038551a7",
+        "version": "9cf8eff7c142eeb14e1e1693a680ce873a546dea352a13810edaf4c404a9e4e3",
+        "signature": "053a7c906d6c1f3dc80d7933dea4894b9bee392c2d65e6578613bb4a67e80e0f",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/update-sonickey.dto.ts": {
@@ -3632,8 +3632,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.service.ts": {
-        "version": "4317dc111b57230e641ac4663818a7a509f19d592ceb92f0ed1d1b3df1179728",
-        "signature": "d7cb30ed29d0cbfe4c81a4a36f1d209c9e6981feee77f89887ca02d58107df0d",
+        "version": "7c64465380c300ef73345163e828ce2352435769b0c54dc6a5c44172e8078a13",
+        "signature": "4bbce9ec23caa4d42ccd99e84f0d4b492d862cef9165f7d19f57076dbcba47dc",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/core/adapters/http-adapter.d.ts": {
@@ -4042,8 +4042,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.controller.ts": {
-        "version": "fb48ce28047454b08932d46331647ba82587353130809ff4aa398d5ca14916fa",
-        "signature": "7d2e0af64d25d5f4ac4cd27f8e2d37785977fe92392889605f47b9aa1789f190",
+        "version": "11b61be615c04fb1dd24eac9edd50e7b905a507b263ad034123dc77b7da74c42",
+        "signature": "f028b2922f82e94198db3f8d86fd2864e94be544ffd621e5c25298e7c702dc71",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.module.ts": {
@@ -4227,8 +4227,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/create-job.dto.ts": {
-        "version": "11514307dcac13423360c7dac375377e4b3b352ff60cf0238a75b365e53c17d5",
-        "signature": "1124bb10dafa567ae0c7af0e3afdf675b2ea6b834a1f936406cc7333684b2e9d",
+        "version": "bb11315b35b1cf121162c5aa6c2ebfc8fa13a2cf664e416950ea094baddcf552",
+        "signature": "ff3055d02f03d373e81779ee96bc1dc2b641d621c0dd0cddc75db6bedb0557c2",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts": {
@@ -4272,7 +4272,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/update-job.dto.ts": {
-        "version": "34710a00c6dfa1e592f97922247011865aa71e0022c26e55415dc01bc49c67fe",
+        "version": "77133d66c82dcdbb3833bd31aa8bfe8608f55310b77306b94e89b4d747eb1267",
         "signature": "30e48b8e58ab82fbe48eb1cc85e6d21ad73f2136ad713b2da20320d47248e693",
         "affectsGlobalScope": false
       },
@@ -4286,18 +4286,43 @@
         "signature": "f79de256dd0260298ca3c4b783bd976dd71ea314f1510c2db3cff742a55b109e",
         "affectsGlobalScope": false
       },
-      "../src/api/job/job.service.ts": {
-        "version": "2bbc8c1202fcc7b82e4e8f43c6b3bd7422779ecc4bdfddc46d1ad74ccc69bffc",
-        "signature": "5dd0f30f61c8d2702990c651408ccc289088b5375bfad146b01ce11c407eafc1",
+      "../src/api/job/dto/update-job-file.dto.ts": {
+        "version": "16887ee97d3b8a89818f976725ca22a023880ffd401bf1fa01be8e068b8b8767",
+        "signature": "15c9ca762214043a2b344218e1fec2ea1d57d647d0676c83e2920787f6388b7a",
         "affectsGlobalScope": false
       },
-      "../src/api/job/job.controller.ts": {
-        "version": "e5462f98f22a06a11ea9ff648157a0c41913f6a9a0166b4a5a58989e1f95d59a",
-        "signature": "5f542d0d10abd03db63caeadbf3731c89c1b55eadca46fe205cb781e72379677",
+      "../src/api/job/services/job.service.ts": {
+        "version": "81c8c8f2a69b2749984461a8411670ba2becf15213a9d7b8ed6f39b646fe948f",
+        "signature": "6119bfe5e8e4c6236b6490d74369948392d43768113d1e31c005ef50aa68056c",
+        "affectsGlobalScope": false
+      },
+      "../src/api/auth/guards/job-license-validation.guard.ts": {
+        "version": "18c96478696df72b7110c9fe478f61d321fa3922d24440ec1a7ced7cf965e921",
+        "signature": "e27a7140d469a2bdabc94b6bc5696fa1877d28737ea6d4a3a826cf952521767d",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/uuid/index.d.ts": {
+        "version": "96b49a9de749afcf92b5bce1d8cc42cfae6816cdf5ea36584fd9256b8b2e5292",
+        "signature": "96b49a9de749afcf92b5bce1d8cc42cfae6816cdf5ea36584fd9256b8b2e5292",
+        "affectsGlobalScope": false
+      },
+      "../src/api/job/controllers/job.controller.ts": {
+        "version": "93cbe43fe5b3239ec8d4fa6ba632260007315b3a98d66dc22c6ff4b7dbbe2ffb",
+        "signature": "ce3c9d632a29b3cc3a4c240f4a9a204b7dc988325a91a254cb1a2074ec84bff8",
+        "affectsGlobalScope": false
+      },
+      "../src/api/job/services/job-file.service.ts": {
+        "version": "029c068b41aa0d4d52fc505bc3cdfa4fdf0455c50c770a5eb13f1e6a1fe9b1af",
+        "signature": "988ca67d2d4ea52ee322b038916ad41ccd3279ce157383a163d270317d178f84",
+        "affectsGlobalScope": false
+      },
+      "../src/api/job/controllers/job-file.controller.ts": {
+        "version": "2d2afdfdfefaa6adc547b32ee8a87f87f84fbd32a6339baf0d6d43568b57fa94",
+        "signature": "ac70b18c8c5897624d8c5b7e67901bf19fef694ffd6c032c3ef00fe5ff7fbc58",
         "affectsGlobalScope": false
       },
       "../src/api/job/job.module.ts": {
-        "version": "d228b86b8e141a05921c4dd2b2c16f369c4e393e78f68a79e32e53f97a83e425",
+        "version": "435448056156300d1f04ed687a48f2f8c9eca42d565d10f6de3e0065612fd6e1",
         "signature": "791c7edbc29f755701954b9afed14db750dce2510c9b9eb7c0fd6807fc02d8f5",
         "affectsGlobalScope": false
       },
@@ -4324,6 +4349,11 @@
       "../src/api/auth/guards/istargetuserloggedin.guard.ts": {
         "version": "b58879f1229a144b3187e8aaf6ea0823825ae8ba957f9412686b882cf655709f",
         "signature": "a74c3eaf9d47906edbabb1e1a14429a72d22aa074daa0eff03f77964fe631e5d",
+        "affectsGlobalScope": false
+      },
+      "../src/api/job/dto/job.dto.ts": {
+        "version": "cfc146f018ce4e0640bca675bccee59138198d265313659444b6c28a151b80aa",
+        "signature": "3bb10460360b84b3cfdd99e4a22694faa27f5026247b38f20d8fb4871a83b2a3",
         "affectsGlobalScope": false
       },
       "../src/constants/permissions.ts": {
@@ -4379,16 +4409,6 @@
       "../node_modules/@types/cookiejar/index.d.ts": {
         "version": "16b7fb094ffaa5d270f934e7406e8baee2f8245cfabf6dcc20f693389f005f56",
         "signature": "16b7fb094ffaa5d270f934e7406e8baee2f8245cfabf6dcc20f693389f005f56",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/moment/ts3.1-typings/moment.d.ts": {
-        "version": "f97edc4d3b4dd0b32766e9633086497565c37657fb591cc84a35864db4bc2fc5",
-        "signature": "f97edc4d3b4dd0b32766e9633086497565c37657fb591cc84a35864db4bc2fc5",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@types/cron/index.d.ts": {
-        "version": "a88aa41ef28a1c632437f648c7f432da9e075567f4cbe35dbf6611bc76b86093",
-        "signature": "a88aa41ef28a1c632437f648c7f432da9e075567f4cbe35dbf6611bc76b86093",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/debug/index.d.ts": {
@@ -5928,12 +5948,12 @@
         "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/@nestjs/common/http/http.service.d.ts": [
-        "../node_modules/@nestjs/common/node_modules/axios/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
+        "../node_modules/axios/index.d.ts",
         "../node_modules/rxjs/index.d.ts"
       ],
       "../node_modules/@nestjs/common/http/index.d.ts": [
@@ -5948,12 +5968,12 @@
       ],
       "../node_modules/@nestjs/common/http/interfaces/http-module.interface.d.ts": [
         "../node_modules/@nestjs/common/interfaces/index.d.ts",
-        "../node_modules/@nestjs/common/node_modules/axios/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts"
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/axios/index.d.ts"
       ],
       "../node_modules/@nestjs/common/http/interfaces/index.d.ts": [
         "../node_modules/@nestjs/common/http/interfaces/http-module.interface.d.ts",
@@ -6422,13 +6442,6 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/rxjs/index.d.ts"
-      ],
-      "../node_modules/@nestjs/common/node_modules/axios/index.d.ts": [
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/@nestjs/common/pipes/default-value.pipe.d.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -7742,16 +7755,6 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
-      "../node_modules/@types/cron/index.d.ts": [
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/node/child_process.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/ts3.7/index.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/moment/ts3.1-typings/moment.d.ts"
-      ],
       "../node_modules/@types/debug/index.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -8742,6 +8745,13 @@
         "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/@types/uniqid/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/uuid/index.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
@@ -12240,6 +12250,13 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/axios/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/jest-diff/build/cleanupsemantic.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -12297,13 +12314,6 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/ts3.7/index.d.ts",
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/moment/ts3.1-typings/moment.d.ts": [
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/music-metadata/lib/apev2/apev2token.d.ts": [
@@ -13504,6 +13514,16 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/rxjs/index.d.ts"
       ],
+      "../src/api/auth/guards/job-license-validation.guard.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/api/job/dto/create-job.dto.ts",
+        "../src/shared/modules/keygen/keygen.service.ts"
+      ],
       "../src/api/auth/guards/jwt-auth.guard.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/passport/index.d.ts",
@@ -13603,12 +13623,60 @@
         "../node_modules/@types/node/util.d.ts",
         "../src/api/sonickey/sonickey.service.ts"
       ],
+      "../src/api/job/controllers/job-file.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/api/job/dto/update-job-file.dto.ts",
+        "../src/api/job/services/job-file.service.ts"
+      ],
+      "../src/api/job/controllers/job.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/uuid/index.d.ts",
+        "../src/api/auth/decorators/user.decorator.ts",
+        "../src/api/auth/guards/job-license-validation.guard.ts",
+        "../src/api/auth/guards/jwt-auth.guard.ts",
+        "../src/api/auth/guards/license-validation.guard.ts",
+        "../src/api/job/dto/create-job.dto.ts",
+        "../src/api/job/dto/update-job-file.dto.ts",
+        "../src/api/job/dto/update-job.dto.ts",
+        "../src/api/job/services/job.service.ts",
+        "../src/api/sonickey/sonickey.service.ts"
+      ],
       "../src/api/job/dto/create-job.dto.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
+      ],
+      "../src/api/job/dto/job.dto.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../src/api/job/dto/update-job-file.dto.ts": [
+        "../node_modules/@nestjs/mapped-types/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/api/job/dto/create-job.dto.ts"
       ],
       "../src/api/job/dto/update-job.dto.ts": [
         "../node_modules/@nestjs/mapped-types/index.d.ts",
@@ -13619,18 +13687,6 @@
         "../node_modules/@types/node/util.d.ts",
         "../src/api/job/dto/create-job.dto.ts"
       ],
-      "../src/api/job/job.controller.ts": [
-        "../node_modules/@nestjs/common/index.d.ts",
-        "../node_modules/@nestjs/swagger/index.d.ts",
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../src/api/job/dto/create-job.dto.ts",
-        "../src/api/job/dto/update-job.dto.ts",
-        "../src/api/job/job.service.ts"
-      ],
       "../src/api/job/job.module.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -13638,11 +13694,26 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
-        "../src/api/job/job.controller.ts",
-        "../src/api/job/job.service.ts",
+        "../src/api/job/controllers/job-file.controller.ts",
+        "../src/api/job/controllers/job.controller.ts",
+        "../src/api/job/services/job-file.service.ts",
+        "../src/api/job/services/job.service.ts",
+        "../src/api/sonickey/sonickey.module.ts",
+        "../src/repositories/job.repository.ts",
+        "../src/shared/modules/keygen/keygen.service.ts"
+      ],
+      "../src/api/job/services/job-file.service.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/api/job/dto/update-job-file.dto.ts",
+        "../src/api/job/services/job.service.ts",
         "../src/repositories/job.repository.ts"
       ],
-      "../src/api/job/job.service.ts": [
+      "../src/api/job/services/job.service.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -13650,8 +13721,10 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../src/api/job/dto/create-job.dto.ts",
+        "../src/api/job/dto/update-job-file.dto.ts",
         "../src/api/job/dto/update-job.dto.ts",
-        "../src/repositories/job.repository.ts"
+        "../src/repositories/job.repository.ts",
+        "../src/schemas/job.schema.ts"
       ],
       "../src/api/sonickey/dtos/create-sonickey.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
@@ -15854,13 +15927,6 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/rxjs/index.d.ts"
       ],
-      "../node_modules/@nestjs/common/node_modules/axios/index.d.ts": [
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts"
-      ],
       "../node_modules/@nestjs/common/pipes/default-value.pipe.d.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -17173,16 +17239,6 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
-      "../node_modules/@types/cron/index.d.ts": [
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/node/child_process.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/ts3.7/index.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/moment/ts3.1-typings/moment.d.ts"
-      ],
       "../node_modules/@types/debug/index.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -18173,6 +18229,13 @@
         "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/@types/uniqid/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/uuid/index.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
@@ -21671,6 +21734,13 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/axios/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/jest-diff/build/cleanupsemantic.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -21728,13 +21798,6 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/ts3.7/index.d.ts",
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../node_modules/moment/ts3.1-typings/moment.d.ts": [
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/music-metadata/lib/apev2/apev2token.d.ts": [
@@ -22839,6 +22902,10 @@
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/rxjs/index.d.ts"
       ],
+      "../src/api/auth/guards/job-license-validation.guard.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../src/shared/modules/keygen/keygen.service.ts"
+      ],
       "../src/api/auth/guards/jwt-auth.guard.ts": [
         "../node_modules/@nestjs/passport/index.d.ts"
       ],
@@ -22868,19 +22935,39 @@
       "../src/api/externalapi/externalsonickey/externalsonickey.service.ts": [
         "../src/api/sonickey/sonickey.service.ts"
       ],
+      "../src/api/job/controllers/job-file.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../src/api/job/dto/update-job-file.dto.ts",
+        "../src/api/job/services/job-file.service.ts",
+        "../src/schemas/job.schema.ts"
+      ],
+      "../src/api/job/controllers/job.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../src/api/job/dto/create-job.dto.ts",
+        "../src/api/job/dto/update-job-file.dto.ts",
+        "../src/api/job/dto/update-job.dto.ts",
+        "../src/api/job/services/job.service.ts",
+        "../src/api/sonickey/sonickey.service.ts",
+        "../src/schemas/job.schema.ts"
+      ],
       "../src/api/job/dto/update-job.dto.ts": [
         "../node_modules/@nestjs/mapped-types/index.d.ts",
         "../src/api/job/dto/create-job.dto.ts"
       ],
-      "../src/api/job/job.controller.ts": [
-        "../src/api/job/dto/create-job.dto.ts",
-        "../src/api/job/dto/update-job.dto.ts",
-        "../src/api/job/job.service.ts"
+      "../src/api/job/services/job-file.service.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../src/api/job/dto/update-job-file.dto.ts",
+        "../src/api/job/services/job.service.ts",
+        "../src/repositories/job.repository.ts",
+        "../src/schemas/job.schema.ts"
       ],
-      "../src/api/job/job.service.ts": [
+      "../src/api/job/services/job.service.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
         "../src/api/job/dto/create-job.dto.ts",
+        "../src/api/job/dto/update-job-file.dto.ts",
         "../src/api/job/dto/update-job.dto.ts",
-        "../src/repositories/job.repository.ts"
+        "../src/repositories/job.repository.ts",
+        "../src/schemas/job.schema.ts"
       ],
       "../src/api/sonickey/dtos/create-sonickey.dto.ts": [
         "../src/api/sonickey/dtos/sonickey.dto.ts"
@@ -23148,7 +23235,6 @@
       "../node_modules/@nestjs/common/interfaces/scope-options.interface.d.ts",
       "../node_modules/@nestjs/common/interfaces/type.interface.d.ts",
       "../node_modules/@nestjs/common/interfaces/websockets/web-socket-adapter.interface.d.ts",
-      "../node_modules/@nestjs/common/node_modules/axios/index.d.ts",
       "../node_modules/@nestjs/common/pipes/default-value.pipe.d.ts",
       "../node_modules/@nestjs/common/pipes/index.d.ts",
       "../node_modules/@nestjs/common/pipes/parse-array.pipe.d.ts",
@@ -23294,7 +23380,6 @@
       "../node_modules/@types/color-name/index.d.ts",
       "../node_modules/@types/connect/index.d.ts",
       "../node_modules/@types/cookiejar/index.d.ts",
-      "../node_modules/@types/cron/index.d.ts",
       "../node_modules/@types/debug/index.d.ts",
       "../node_modules/@types/eslint-visitor-keys/index.d.ts",
       "../node_modules/@types/express-jwt/index.d.ts",
@@ -23395,6 +23480,7 @@
       "../node_modules/@types/uglify-js/index.d.ts",
       "../node_modules/@types/uglify-js/node_modules/source-map/source-map.d.ts",
       "../node_modules/@types/uniqid/index.d.ts",
+      "../node_modules/@types/uuid/index.d.ts",
       "../node_modules/@types/validator/index.d.ts",
       "../node_modules/@types/webpack-sources/index.d.ts",
       "../node_modules/@types/webpack/index.d.ts",
@@ -23677,6 +23763,7 @@
       "../node_modules/aws-sdk/lib/services/polly.d.ts",
       "../node_modules/aws-sdk/lib/services/s3.d.ts",
       "../node_modules/aws-sdk/lib/shared-ini/ini-loader.d.ts",
+      "../node_modules/axios/index.d.ts",
       "../node_modules/jest-diff/build/cleanupsemantic.d.ts",
       "../node_modules/jest-diff/build/difflines.d.ts",
       "../node_modules/jest-diff/build/index.d.ts",
@@ -23684,7 +23771,6 @@
       "../node_modules/jest-diff/build/types.d.ts",
       "../node_modules/jwks-rsa/index.d.ts",
       "../node_modules/make-dir/index.d.ts",
-      "../node_modules/moment/ts3.1-typings/moment.d.ts",
       "../node_modules/music-metadata/lib/apev2/apev2token.d.ts",
       "../node_modules/music-metadata/lib/common/generictagtypes.d.ts",
       "../node_modules/music-metadata/lib/core.d.ts",
@@ -23817,6 +23903,7 @@
       "../src/api/auth/guards/failedalways.guard.ts",
       "../src/api/auth/guards/index.ts",
       "../src/api/auth/guards/istargetuserloggedin.guard.ts",
+      "../src/api/auth/guards/job-license-validation.guard.ts",
       "../src/api/auth/guards/jwt-auth.guard.ts",
       "../src/api/auth/guards/license-validation.guard.ts",
       "../src/api/auth/guards/role-based.guard.ts",
@@ -23826,11 +23913,15 @@
       "../src/api/externalapi/externalsonickey/externalsonickey.controller.ts",
       "../src/api/externalapi/externalsonickey/externalsonickey.module.ts",
       "../src/api/externalapi/externalsonickey/externalsonickey.service.ts",
+      "../src/api/job/controllers/job-file.controller.ts",
+      "../src/api/job/controllers/job.controller.ts",
       "../src/api/job/dto/create-job.dto.ts",
+      "../src/api/job/dto/job.dto.ts",
+      "../src/api/job/dto/update-job-file.dto.ts",
       "../src/api/job/dto/update-job.dto.ts",
-      "../src/api/job/job.controller.ts",
       "../src/api/job/job.module.ts",
-      "../src/api/job/job.service.ts",
+      "../src/api/job/services/job-file.service.ts",
+      "../src/api/job/services/job.service.ts",
       "../src/api/sonickey/dtos/create-sonickey.dto.ts",
       "../src/api/sonickey/dtos/decode.dto.ts",
       "../src/api/sonickey/dtos/encode.dto.ts",
