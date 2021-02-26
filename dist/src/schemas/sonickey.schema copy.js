@@ -11,19 +11,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonicKey = void 0;
 const dynamodb_data_mapper_annotations_1 = require("@aws/dynamodb-data-mapper-annotations");
-const swagger_1 = require("@nestjs/swagger");
 let SonicKey = class SonicKey {
     constructor(data) {
         Object.assign(this, data);
     }
 };
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.hashKey(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "sonicKey", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute({
         indexKeyConfigurations: {
             ownerIndex: 'HASH',
@@ -32,97 +29,78 @@ __decorate([
     __metadata("design:type", String)
 ], SonicKey.prototype, "owner", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "licenseId", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.rangeKey({ defaultProvider: () => new Date() }),
     __metadata("design:type", Date)
 ], SonicKey.prototype, "createdAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute({ defaultProvider: () => true }),
     __metadata("design:type", Boolean)
 ], SonicKey.prototype, "status", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", Number)
 ], SonicKey.prototype, "encodingStrength", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentType", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentDescription", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute({ defaultProvider: () => new Date() }),
     __metadata("design:type", Date)
 ], SonicKey.prototype, "contentCreatedDate", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", Number)
 ], SonicKey.prototype, "contentDuration", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", Number)
 ], SonicKey.prototype, "contentSize", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentFilePath", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentFileType", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentEncoding", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentSamplingFrequency", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentName", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentOwner", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", Boolean)
 ], SonicKey.prototype, "contentValidation", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentFileName", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentQuality", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", Object)
 ], SonicKey.prototype, "additionalMetadata", void 0);
@@ -131,4 +109,4 @@ SonicKey = __decorate([
     __metadata("design:paramtypes", [Object])
 ], SonicKey);
 exports.SonicKey = SonicKey;
-//# sourceMappingURL=sonickey.schema.js.map
+//# sourceMappingURL=sonickey.schema copy.js.map

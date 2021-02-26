@@ -12,11 +12,11 @@ import { SonickeyModule } from './api/sonickey/sonickey.module';
 import { diskStorage } from 'multer';
 import { UserModule } from './api/user/user.module';
 import {appConfig} from './config';
-import { StreamModule } from './api/stream/stream.module';
 import * as uniqid from 'uniqid';
 
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppGateway } from './app.gateway';
+import { RadiostationModule } from './api/radiostation/radiostation.module';
 
 @Module({
   imports: [
@@ -36,7 +36,7 @@ import { AppGateway } from './app.gateway';
     UserModule,
     SonickeyModule,
     ExternalSonickeyModule,
-    StreamModule,
+    RadiostationModule,
   ],
   controllers: [AppController],
   providers: [AppService,CronService, AppGateway],

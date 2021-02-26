@@ -23,9 +23,10 @@ const sonickey_module_1 = require("./api/sonickey/sonickey.module");
 const multer_1 = require("multer");
 const user_module_1 = require("./api/user/user.module");
 const config_2 = require("./config");
-const stream_module_1 = require("./api/stream/stream.module");
 const uniqid = require("uniqid");
 const schedule_1 = require("@nestjs/schedule");
+const app_gateway_1 = require("./app.gateway");
+const radiostation_module_1 = require("./api/radiostation/radiostation.module");
 let AppModule = class AppModule {
     constructor() {
     }
@@ -49,10 +50,10 @@ AppModule = __decorate([
             user_module_1.UserModule,
             sonickey_module_1.SonickeyModule,
             externalsonickey_module_1.ExternalSonickeyModule,
-            stream_module_1.StreamModule,
+            radiostation_module_1.RadiostationModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService, cron_service_1.CronService],
+        providers: [app_service_1.AppService, cron_service_1.CronService, app_gateway_1.AppGateway],
     }),
     __metadata("design:paramtypes", [])
 ], AppModule);
