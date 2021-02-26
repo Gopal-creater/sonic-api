@@ -16,6 +16,7 @@ import { StreamModule } from './api/stream/stream.module';
 import * as uniqid from 'uniqid';
 
 import { ScheduleModule } from '@nestjs/schedule';
+import { AppGateway } from './app.gateway';
 
 @Module({
   imports: [
@@ -38,7 +39,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     StreamModule,
   ],
   controllers: [AppController],
-  providers: [AppService,CronService],
+  providers: [AppService,CronService, AppGateway],
 })
 export class AppModule {
   constructor(){
