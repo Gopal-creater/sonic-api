@@ -21,4 +21,13 @@ export declare class RadiostationService {
     remove(id: string): Promise<RadioStation & {
         id: string;
     }>;
+    bulkRemove(ids: [string]): Promise<(RadioStation & {
+        id: string;
+    })[]>;
+    bulkStartListeningStream(ids: [string]): Promise<(RadioStation & {
+        id: string;
+    })[]>;
+    bulkStopListeningStream(ids: [string]): Promise<(RadioStation & {
+        id: string;
+    })[]>;
 }

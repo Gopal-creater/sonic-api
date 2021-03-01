@@ -27,6 +27,6 @@ export class CreateRadiostationDto {
     @ApiProperty()
     owner: string;
 
-    @ApiProperty()
-    logs: { [key: string]: any };
+    @ApiProperty({required:false})
+    notes?: { [key: string]: any };
 }

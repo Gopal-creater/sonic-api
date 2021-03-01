@@ -4427,8 +4427,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/create-radiostation.dto.ts": {
-        "version": "e62a98043db0f6465cb711b99c78a9d419be417542f64189eeb5e5efd5ba43d2",
-        "signature": "dce3719430f666c05566a459377f2ca5c53820c8dbc67988b09ff11809f365bb",
+        "version": "68625dff16f9c846876dc1426a487b8d634ae1bc18c0ec4ba5fd1bd08f3583f9",
+        "signature": "aa5c86a03c7e89c32b58e94113a310b116f09bbe820f4b4ef5575ef09f4e96bd",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts": {
@@ -4487,13 +4487,18 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/radiostation.service.ts": {
-        "version": "871d15bb4205a6b2f4251059a0192fd4cab7ada88a6dfb7d0766a4e6d4c947b1",
-        "signature": "cef15131c9ee9fc7f14cd6312b14b6d0b171ebb0d7199cea811326204d535e03",
+        "version": "5b8651317c8149db12e4f0d79b1da40e9a2af740e37d2bbec9ee8bfb59f93825",
+        "signature": "b20616058d3c981c4d6586f932b78a40aaa3c5edc1d082f8c62701bccf402d5d",
+        "affectsGlobalScope": false
+      },
+      "../src/api/radiostation/dto/bulk-radiostation.dto.ts": {
+        "version": "653ae6eacd6e338e5789689dfdc9b1769ad3c705bd457e86e59d022342176f37",
+        "signature": "3d1b04021baa0b506492fbe8544108a0634cb4e960bdea564d75e817229ec798",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/radiostation.controller.ts": {
-        "version": "6e4c63367b06033027f7343b167bd1c32b5d4fcfc1051e43165275ecc7d03221",
-        "signature": "f881432891583abadfe3b0f3bc8ebb4f47192e63eb18010ddc9cca7cb2d3040c",
+        "version": "adefd5f6d669e3636bc3ba047c028ad925dd8d4e2c852eff5919171b5892b0b7",
+        "signature": "4293e290fcbad72c6372d7a8cb51126d0b8624da005f7a928f8905d945e554cd",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/radiostation.module.ts": {
@@ -4524,6 +4529,11 @@
       "../src/api/auth/guards/istargetuserloggedin.guard.ts": {
         "version": "b58879f1229a144b3187e8aaf6ea0823825ae8ba957f9412686b882cf655709f",
         "signature": "a74c3eaf9d47906edbabb1e1a14429a72d22aa074daa0eff03f77964fe631e5d",
+        "affectsGlobalScope": false
+      },
+      "../src/api/radiostation/dto/deletebulk-radiostation.dto.ts": {
+        "version": "535eefb75499f267741915e0faaa86aa44b88dfcdaee96a5e03c7111af708391",
+        "signature": "f9d359d2558bcf6cb3f78634312cb6783afdae101937e146a96ca3704d8c2cc8",
         "affectsGlobalScope": false
       },
       "../src/constants/permissions.ts": {
@@ -14106,7 +14116,23 @@
         "../node_modules/@types/node/util.d.ts",
         "../src/api/sonickey/sonickey.service.ts"
       ],
+      "../src/api/radiostation/dto/bulk-radiostation.dto.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../src/api/radiostation/dto/create-radiostation.dto.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../src/api/radiostation/dto/deletebulk-radiostation.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -14132,6 +14158,7 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../src/api/auth/guards/jwt-auth.guard.ts",
+        "../src/api/radiostation/dto/bulk-radiostation.dto.ts",
         "../src/api/radiostation/dto/create-radiostation.dto.ts",
         "../src/api/radiostation/dto/update-radiostation.dto.ts",
         "../src/api/radiostation/radiostation.service.ts"
@@ -15881,12 +15908,12 @@
         "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/@nestjs/common/http/http.service.d.ts": [
+        "../node_modules/@nestjs/common/node_modules/axios/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
-        "../node_modules/axios/index.d.ts",
         "../node_modules/rxjs/index.d.ts"
       ],
       "../node_modules/@nestjs/common/http/index.d.ts": [
@@ -15901,12 +15928,12 @@
       ],
       "../node_modules/@nestjs/common/http/interfaces/http-module.interface.d.ts": [
         "../node_modules/@nestjs/common/interfaces/index.d.ts",
+        "../node_modules/@nestjs/common/node_modules/axios/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/axios/index.d.ts"
+        "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/@nestjs/common/http/interfaces/index.d.ts": [
         "../node_modules/@nestjs/common/http/interfaces/http-module.interface.d.ts",
@@ -23708,6 +23735,7 @@
         "../src/api/radiostation/dto/create-radiostation.dto.ts"
       ],
       "../src/api/radiostation/radiostation.controller.ts": [
+        "../src/api/radiostation/dto/bulk-radiostation.dto.ts",
         "../src/api/radiostation/dto/create-radiostation.dto.ts",
         "../src/api/radiostation/dto/update-radiostation.dto.ts",
         "../src/api/radiostation/radiostation.service.ts",
@@ -24703,7 +24731,9 @@
       "../src/api/externalapi/externalsonickey/externalsonickey.controller.ts",
       "../src/api/externalapi/externalsonickey/externalsonickey.module.ts",
       "../src/api/externalapi/externalsonickey/externalsonickey.service.ts",
+      "../src/api/radiostation/dto/bulk-radiostation.dto.ts",
       "../src/api/radiostation/dto/create-radiostation.dto.ts",
+      "../src/api/radiostation/dto/deletebulk-radiostation.dto.ts",
       "../src/api/radiostation/dto/update-radiostation.dto.ts",
       "../src/api/radiostation/radiostation.controller.ts",
       "../src/api/radiostation/radiostation.module.ts",

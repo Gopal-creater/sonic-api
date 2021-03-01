@@ -90,6 +90,18 @@ let RadiostationService = class RadiostationService {
     remove(id) {
         return this.radioStationRepository.delete(Object.assign(new radiostation_schema_1.RadioStation(), { id: id }));
     }
+    bulkRemove(ids) {
+        const promises = ids.map(id => this.remove(id));
+        return Promise.all(promises);
+    }
+    bulkStartListeningStream(ids) {
+        const promises = ids.map(id => this.startListeningStream(id));
+        return Promise.all(promises);
+    }
+    bulkStopListeningStream(ids) {
+        const promises = ids.map(id => this.stopListeningStream(id));
+        return Promise.all(promises);
+    }
 };
 RadiostationService = __decorate([
     common_1.Injectable(),

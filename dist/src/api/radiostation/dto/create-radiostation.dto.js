@@ -56,8 +56,8 @@ __decorate([
     __metadata("design:type", String)
 ], CreateRadiostationDto.prototype, "owner", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    swagger_1.ApiProperty({ required: false }),
     __metadata("design:type", Object)
-], CreateRadiostationDto.prototype, "logs", void 0);
+], CreateRadiostationDto.prototype, "notes", void 0);
 exports.CreateRadiostationDto = CreateRadiostationDto;
 //# sourceMappingURL=create-radiostation.dto.js.map

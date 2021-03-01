@@ -9,7 +9,7 @@ export declare class CreateRadiostationDto {
     logo?: string;
     credential?: Credential;
     owner: string;
-    logs: {
+    notes?: {
         [key: string]: any;
     };
 }

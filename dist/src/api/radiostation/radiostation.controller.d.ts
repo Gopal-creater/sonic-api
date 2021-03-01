@@ -1,6 +1,7 @@
 import { RadiostationService } from './radiostation.service';
 import { CreateRadiostationDto } from './dto/create-radiostation.dto';
 import { UpdateRadiostationDto } from './dto/update-radiostation.dto';
+import { BulkRadiostationDto } from './dto/bulk-radiostation.dto';
 export declare class RadiostationController {
     private readonly radiostationService;
     constructor(radiostationService: RadiostationService);
@@ -20,5 +21,14 @@ export declare class RadiostationController {
     remove(id: string): Promise<import("../../schemas/radiostation.schema").RadioStation & {
         id: string;
     }>;
+    removeBulk(bulkDto: BulkRadiostationDto): Promise<(import("../../schemas/radiostation.schema").RadioStation & {
+        id: string;
+    })[]>;
+    bulkStartListeningStream(bulkDto: BulkRadiostationDto): Promise<(import("../../schemas/radiostation.schema").RadioStation & {
+        id: string;
+    })[]>;
+    bulkStopListeningStream(bulkDto: BulkRadiostationDto): Promise<(import("../../schemas/radiostation.schema").RadioStation & {
+        id: string;
+    })[]>;
     createTable(): Promise<string>;
 }

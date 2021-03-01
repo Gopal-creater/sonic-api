@@ -71,4 +71,19 @@ export class RadiostationService {
       Object.assign(new RadioStation(), { id: id }),
     );
   }
+
+  bulkRemove(ids: [string]) {
+    const promises = ids.map(id=>this.remove(id))
+    return Promise.all(promises)
+  }
+
+  bulkStartListeningStream(ids: [string]) {
+    const promises = ids.map(id=>this.startListeningStream(id))
+    return Promise.all(promises)
+  }
+
+  bulkStopListeningStream(ids: [string]) {
+    const promises = ids.map(id=>this.stopListeningStream(id))
+    return Promise.all(promises)
+  }
 }

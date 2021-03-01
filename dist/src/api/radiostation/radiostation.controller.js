@@ -20,6 +20,7 @@ const create_radiostation_dto_1 = require("./dto/create-radiostation.dto");
 const update_radiostation_dto_1 = require("./dto/update-radiostation.dto");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
+const bulk_radiostation_dto_1 = require("./dto/bulk-radiostation.dto");
 let RadiostationController = class RadiostationController {
     constructor(radiostationService) {
         this.radiostationService = radiostationService;
@@ -47,6 +48,15 @@ let RadiostationController = class RadiostationController {
     }
     remove(id) {
         return this.radiostationService.remove(id);
+    }
+    removeBulk(bulkDto) {
+        return this.radiostationService.bulkRemove(bulkDto.ids);
+    }
+    bulkStartListeningStream(bulkDto) {
+        return this.radiostationService.bulkStartListeningStream(bulkDto.ids);
+    }
+    bulkStopListeningStream(bulkDto) {
+        return this.radiostationService.bulkStopListeningStream(bulkDto.ids);
     }
     async createTable() {
         return await this.radiostationService.radioStationRepository
@@ -141,6 +151,39 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], RadiostationController.prototype, "remove", null);
+__decorate([
+    common_1.Delete('bulk/delete'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Delete Radio Station in bulk' }),
+    openapi.ApiResponse({ status: 200, type: [Object] }),
+    __param(0, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [bulk_radiostation_dto_1.BulkRadiostationDto]),
+    __metadata("design:returntype", void 0)
+], RadiostationController.prototype, "removeBulk", null);
+__decorate([
+    common_1.Put('bulk/start-listening-stream'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'stop listening stream' }),
+    openapi.ApiResponse({ status: 200, type: [Object] }),
+    __param(0, common_1.Body('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [bulk_radiostation_dto_1.BulkRadiostationDto]),
+    __metadata("design:returntype", void 0)
+], RadiostationController.prototype, "bulkStartListeningStream", null);
+__decorate([
+    common_1.Put('bulk/stop-listening-stream'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'stop listening stream' }),
+    openapi.ApiResponse({ status: 200, type: [Object] }),
+    __param(0, common_1.Body('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [bulk_radiostation_dto_1.BulkRadiostationDto]),
+    __metadata("design:returntype", void 0)
+], RadiostationController.prototype, "bulkStopListeningStream", null);
 __decorate([
     common_1.Get('/new/create-table'),
     swagger_1.ApiOperation({ summary: 'Create Radio Stationy table in Dynamo DB' }),
