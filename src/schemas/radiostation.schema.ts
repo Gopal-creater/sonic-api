@@ -73,5 +73,5 @@ export class RadioStation {
 
   @ApiProperty()
   @attribute()
-  logs: { [key: string]: any };
+  notes: { [key: string]: any };
 }

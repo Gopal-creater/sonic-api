@@ -93,7 +93,7 @@ __decorate([
     swagger_1.ApiProperty(),
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", Object)
-], RadioStation.prototype, "logs", void 0);
+], RadioStation.prototype, "notes", void 0);
 RadioStation = __decorate([
     dynamodb_data_mapper_annotations_1.table('RadioStation'),
     __metadata("design:paramtypes", [Object])

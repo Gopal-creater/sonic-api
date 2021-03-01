@@ -15,7 +15,7 @@ export declare class RadioStation {
     startedAt: Date;
     stopAt: Date;
     isStreamStarted: boolean;
-    logs: {
+    notes: {
         [key: string]: any;
     };
 }

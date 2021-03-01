@@ -4477,8 +4477,8 @@
         "affectsGlobalScope": false
       },
       "../src/schemas/radiostation.schema.ts": {
-        "version": "caefa8a6c2868fff88d49f0c1fc3ba9781eecada65864d1543992e2e755551be",
-        "signature": "75e99cbb21e8b51b2191d676c60a443f3b923fbe1bd5a971c914cc1fa6ef72a2",
+        "version": "d71f1f26bd39f49a31d59d3185d46a211746a0df52033570e876dad4ecb9233b",
+        "signature": "1730dc580fb992a6e26e2b3effc87116c0a48f2e4ba73f715f35a5e730afbf5d",
         "affectsGlobalScope": false
       },
       "../src/repositories/radiostation.repository.ts": {
