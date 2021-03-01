@@ -8,33 +8,34 @@ import { RadioStation } from '../../schemas/radiostation.schema';
 export class RadiostationService {
   constructor(public readonly radioStationRepository: RadioStationRepository) {}
   create(createRadiostationDto: CreateRadiostationDto) {
-    return this.radioStationRepository.put(createRadiostationDto);
+    const dataToSave = Object.assign(new RadioStation(), createRadiostationDto);
+    return this.radioStationRepository.put(dataToSave);
   }
 
   async stopListeningStream(id: string) {
-    const radioStation = await this.findOne(id)
-    if(!radioStation.isStreamStarted){
-      throw new BadRequestException("Not started to stop.")
+    const radioStation = await this.findOne(id);
+    if (!radioStation.isStreamStarted) {
+      throw new BadRequestException('Not started to stop.');
     }
     //Do Stop Listening Stuff
-    radioStation.stopAt=new Date()
-    radioStation.isStreamStarted=false
-    return this.radioStationRepository.update(radioStation)
+    radioStation.stopAt = new Date();
+    radioStation.isStreamStarted = false;
+    return this.radioStationRepository.update(radioStation);
   }
 
   async startListeningStream(id: string) {
-    const radioStation = await this.findOne(id)
-    if(radioStation.isStreamStarted){
-      throw new BadRequestException("Already started")
+    const radioStation = await this.findOne(id);
+    if (radioStation.isStreamStarted) {
+      throw new BadRequestException('Already started');
     }
     //Do Start Listening Stuff
-    radioStation.startedAt=new Date()
-    radioStation.isStreamStarted=true
-    return this.radioStationRepository.update(radioStation)
+    radioStation.startedAt = new Date();
+    radioStation.isStreamStarted = true;
+    return this.radioStationRepository.update(radioStation);
   }
 
   async findAll() {
-    const items = [];
+    const items: RadioStation[] = [];
     for await (const item of this.radioStationRepository.scan(RadioStation)) {
       // individual items will be yielded as the scan is performed
       items.push(item);
@@ -42,15 +43,21 @@ export class RadiostationService {
     return items;
   }
 
-  findOne(id: string) {
-    return this.radioStationRepository.get(
-      Object.assign(new RadioStation(), { id: id }),
-    );
+  async findOne(id: string) {
+    const items: RadioStation[] = [];
+    for await (const item of this.radioStationRepository.query(RadioStation, {
+      id: id,
+    })) {
+      items.push(item);
+    }
+
+    return items[0];
   }
 
-  update(id: string, updateRadiostationDto: UpdateRadiostationDto) {
+  async update(id: string, updateRadiostationDto: UpdateRadiostationDto) {
+    const radioStation = await this.findOne(id);
     return this.radioStationRepository.update(
-      Object.assign(new RadioStation(), updateRadiostationDto),
+      Object.assign(radioStation, updateRadiostationDto),
     );
   }
 
@@ -66,24 +73,23 @@ export class RadiostationService {
     return items;
   }
 
-  remove(id: string) {
-    return this.radioStationRepository.delete(
-      Object.assign(new RadioStation(), { id: id }),
-    );
+  async remove(id: string) {
+    const radioStation = await this.findOne(id);
+    return this.radioStationRepository.delete(radioStation);
   }
 
   bulkRemove(ids: [string]) {
-    const promises = ids.map(id=>this.remove(id))
-    return Promise.all(promises)
+    const promises = ids.map(id => this.remove(id));
+    return Promise.all(promises);
   }
 
   bulkStartListeningStream(ids: [string]) {
-    const promises = ids.map(id=>this.startListeningStream(id))
-    return Promise.all(promises)
+    const promises = ids.map(id => this.startListeningStream(id));
+    return Promise.all(promises);
   }
 
   bulkStopListeningStream(ids: [string]) {
-    const promises = ids.map(id=>this.stopListeningStream(id))
-    return Promise.all(promises)
+    const promises = ids.map(id => this.stopListeningStream(id));
+    return Promise.all(promises);
   }
 }

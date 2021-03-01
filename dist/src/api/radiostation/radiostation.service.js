@@ -25,12 +25,13 @@ let RadiostationService = class RadiostationService {
         this.radioStationRepository = radioStationRepository;
     }
     create(createRadiostationDto) {
-        return this.radioStationRepository.put(createRadiostationDto);
+        const dataToSave = Object.assign(new radiostation_schema_1.RadioStation(), createRadiostationDto);
+        return this.radioStationRepository.put(dataToSave);
     }
     async stopListeningStream(id) {
         const radioStation = await this.findOne(id);
         if (!radioStation.isStreamStarted) {
-            throw new common_1.BadRequestException("Not started to stop.");
+            throw new common_1.BadRequestException('Not started to stop.');
         }
         radioStation.stopAt = new Date();
         radioStation.isStreamStarted = false;
@@ -39,7 +40,7 @@ let RadiostationService = class RadiostationService {
     async startListeningStream(id) {
         const radioStation = await this.findOne(id);
         if (radioStation.isStreamStarted) {
-            throw new common_1.BadRequestException("Already started");
+            throw new common_1.BadRequestException('Already started');
         }
         radioStation.startedAt = new Date();
         radioStation.isStreamStarted = true;
@@ -63,17 +64,13 @@ let RadiostationService = class RadiostationService {
         }
         return items;
     }
-    findOne(id) {
-        return this.radioStationRepository.get(Object.assign(new radiostation_schema_1.RadioStation(), { id: id }));
-    }
-    update(id, updateRadiostationDto) {
-        return this.radioStationRepository.update(Object.assign(new radiostation_schema_1.RadioStation(), updateRadiostationDto));
-    }
-    async findByOwner(owner) {
+    async findOne(id) {
         var e_2, _a;
-        var items = [];
+        const items = [];
         try {
-            for (var _b = __asyncValues(this.radioStationRepository.query(radiostation_schema_1.RadioStation, { owner: owner }, { indexName: 'ownerIndex' })), _c; _c = await _b.next(), !_c.done;) {
+            for (var _b = __asyncValues(this.radioStationRepository.query(radiostation_schema_1.RadioStation, {
+                id: id,
+            })), _c; _c = await _b.next(), !_c.done;) {
                 const item = _c.value;
                 items.push(item);
             }
@@ -85,10 +82,33 @@ let RadiostationService = class RadiostationService {
             }
             finally { if (e_2) throw e_2.error; }
         }
+        return items[0];
+    }
+    async update(id, updateRadiostationDto) {
+        const radioStation = await this.findOne(id);
+        return this.radioStationRepository.update(Object.assign(radioStation, updateRadiostationDto));
+    }
+    async findByOwner(owner) {
+        var e_3, _a;
+        var items = [];
+        try {
+            for (var _b = __asyncValues(this.radioStationRepository.query(radiostation_schema_1.RadioStation, { owner: owner }, { indexName: 'ownerIndex' })), _c; _c = await _b.next(), !_c.done;) {
+                const item = _c.value;
+                items.push(item);
+            }
+        }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
+            }
+            finally { if (e_3) throw e_3.error; }
+        }
         return items;
     }
-    remove(id) {
-        return this.radioStationRepository.delete(Object.assign(new radiostation_schema_1.RadioStation(), { id: id }));
+    async remove(id) {
+        const radioStation = await this.findOne(id);
+        return this.radioStationRepository.delete(radioStation);
     }
     bulkRemove(ids) {
         const promises = ids.map(id => this.remove(id));

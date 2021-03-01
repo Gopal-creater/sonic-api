@@ -5,29 +5,15 @@ import { RadioStation } from '../../schemas/radiostation.schema';
 export declare class RadiostationService {
     readonly radioStationRepository: RadioStationRepository;
     constructor(radioStationRepository: RadioStationRepository);
-    create(createRadiostationDto: CreateRadiostationDto): Promise<CreateRadiostationDto>;
-    stopListeningStream(id: string): Promise<RadioStation & {
-        id: string;
-    }>;
-    startListeningStream(id: string): Promise<RadioStation & {
-        id: string;
-    }>;
-    findAll(): Promise<any[]>;
-    findOne(id: string): Promise<RadioStation & {
-        id: string;
-    }>;
+    create(createRadiostationDto: CreateRadiostationDto): Promise<RadioStation & CreateRadiostationDto>;
+    stopListeningStream(id: string): Promise<RadioStation>;
+    startListeningStream(id: string): Promise<RadioStation>;
+    findAll(): Promise<RadioStation[]>;
+    findOne(id: string): Promise<RadioStation>;
     update(id: string, updateRadiostationDto: UpdateRadiostationDto): Promise<RadioStation & UpdateRadiostationDto>;
     findByOwner(owner: string): Promise<RadioStation[]>;
-    remove(id: string): Promise<RadioStation & {
-        id: string;
-    }>;
-    bulkRemove(ids: [string]): Promise<(RadioStation & {
-        id: string;
-    })[]>;
-    bulkStartListeningStream(ids: [string]): Promise<(RadioStation & {
-        id: string;
-    })[]>;
-    bulkStopListeningStream(ids: [string]): Promise<(RadioStation & {
-        id: string;
-    })[]>;
+    remove(id: string): Promise<RadioStation>;
+    bulkRemove(ids: [string]): Promise<RadioStation[]>;
+    bulkStartListeningStream(ids: [string]): Promise<RadioStation[]>;
+    bulkStopListeningStream(ids: [string]): Promise<RadioStation[]>;
 }
