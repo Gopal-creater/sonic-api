@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards } from '@nestjs/common';
-import { RadiostationService } from './radiostation.service';
-import { CreateRadiostationDto } from './dto/create-radiostation.dto';
-import { UpdateRadiostationDto } from './dto/update-radiostation.dto';
+import { RadiostationService } from '../services/radiostation.service';
+import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
+import { UpdateRadiostationDto } from '../dto/update-radiostation.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { BulkRadiostationDto } from './dto/bulk-radiostation.dto';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { BulkRadiostationDto } from '../dto/bulk-radiostation.dto';
 
 @ApiTags('Radio Station Contrller')
 @Controller('radiostations')

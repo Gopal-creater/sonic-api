@@ -4486,9 +4486,9 @@
         "signature": "dd7bc95ff9d8e57d01522db1a6757b62e99859104f497234d0b30d973d870802",
         "affectsGlobalScope": false
       },
-      "../src/api/radiostation/radiostation.service.ts": {
-        "version": "1871fe1fe4b05bca408107e1920a4b58a986368a6b8421364b4693c2b281b601",
-        "signature": "342f37e5d039ff30c8a00645c731d50ec07a3fe157f5a1c50c2730479675cf6b",
+      "../src/api/radiostation/services/radiostation.service.ts": {
+        "version": "8fd642c6f00af63abe8f5147aea65e1b2017a6859b1792f1bbd4dde93c9fc2b8",
+        "signature": "81398ac7c3e5c21f0ef711fdfe22b6cd6e6c7505874cb206f4352da424d522bb",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/bulk-radiostation.dto.ts": {
@@ -4496,18 +4496,43 @@
         "signature": "3d1b04021baa0b506492fbe8544108a0634cb4e960bdea564d75e817229ec798",
         "affectsGlobalScope": false
       },
-      "../src/api/radiostation/radiostation.controller.ts": {
-        "version": "adefd5f6d669e3636bc3ba047c028ad925dd8d4e2c852eff5919171b5892b0b7",
-        "signature": "c0ff4c3996485370b5d57f2769727d1c609b4bba67155824eab90299ebb8dde2",
+      "../src/api/radiostation/controllers/radiostation.controller.ts": {
+        "version": "3b0ee214bea18438d513994a9c6e69ecd4b5b5cc7d7993f5a8b1474cb079f84c",
+        "signature": "d0c03ecad4d1aa4e594d67b62943f5f02c35b2949ab48330612f6f4daa0beeab",
+        "affectsGlobalScope": false
+      },
+      "../src/schemas/radiostationsonickey.schema.ts": {
+        "version": "d6e6f66816e676b3431f09254036f52935520111c01dbead6086dd862644858b",
+        "signature": "895b742fe2dec56ebe7094fb17b3f590711f3dae3027b082c9dbecd47ee0df39",
+        "affectsGlobalScope": false
+      },
+      "../src/repositories/radiostationsonickey.repository.ts": {
+        "version": "17ff3dee165f2417a193a3b0157a8ab3df9d4a47fdee1a60a6c8ab5733ec91d6",
+        "signature": "5bdc327749e7ae3287b4e22d1b9a12709bd7d03bd729d8b6fc284e5f128edcf5",
+        "affectsGlobalScope": false
+      },
+      "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts": {
+        "version": "513548ac1a280f1044da5c43d50246943393e89a778cc8eb73f66ba70db78e92",
+        "signature": "d8c4545acd1d92c657076fbcf149b5c2a63aa44cd09905e6513ae7700d8717fa",
+        "affectsGlobalScope": false
+      },
+      "../src/api/radiostation/services/radiostation-sonickeys.service.ts": {
+        "version": "163f7ae0726d7785aaaabc3a730d154f6a66d675026ceea94170f33227eee0b9",
+        "signature": "acf10269e8ee4e42cf83c3801c6a067ccd1126c0c058ca1b812e037f32748efc",
+        "affectsGlobalScope": false
+      },
+      "../src/api/radiostation/controllers/radiostation-sonickeys.controller.ts": {
+        "version": "c40ae5bf658b6065f470289ed817051f098d9219c789db58a1ea17d19cfeacbd",
+        "signature": "a5ea4ea490475eed01b3d133fa4be7d08bdd76d0f93ec5c58d36a6c9355a647c",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/radiostation.module.ts": {
-        "version": "9b011d6dd6b8eb137aef4f0784e902c43d9d047a98bc280189e1b32ada5505ed",
+        "version": "842a53dd8e77fc8e8a92066340811664460f1abd3844267a2f3e1bf8f6ae0789",
         "signature": "af84e5d7ebe9c9274cc60d5ae88ab11c8ba296e3ec602f698d99ee431e5fc9f1",
         "affectsGlobalScope": false
       },
       "../src/app.module.ts": {
-        "version": "943593914c46b7340336988b4e134aa8a4b5dcc269ac54324880f44ae0fec711",
+        "version": "af77ec610c15c0082da623cfe44dfb9670f5a7939c5036cd41bc3344bd62efa2",
         "signature": "098267cfef1e0a4afbfa6ce9d4e75d6e915635b0357421ffe5b8b2f3a91cfdee",
         "affectsGlobalScope": false
       },
@@ -14116,6 +14141,32 @@
         "../node_modules/@types/node/util.d.ts",
         "../src/api/sonickey/sonickey.service.ts"
       ],
+      "../src/api/radiostation/controllers/radiostation-sonickeys.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/api/auth/guards/jwt-auth.guard.ts",
+        "../src/api/radiostation/services/radiostation-sonickeys.service.ts",
+        "../src/api/radiostation/services/radiostation.service.ts"
+      ],
+      "../src/api/radiostation/controllers/radiostation.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/api/auth/guards/jwt-auth.guard.ts",
+        "../src/api/radiostation/dto/bulk-radiostation.dto.ts",
+        "../src/api/radiostation/dto/create-radiostation.dto.ts",
+        "../src/api/radiostation/dto/update-radiostation.dto.ts",
+        "../src/api/radiostation/services/radiostation.service.ts"
+      ],
       "../src/api/radiostation/dto/bulk-radiostation.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -14140,6 +14191,14 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../src/api/radiostation/dto/update-radiostation.dto.ts": [
         "../node_modules/@nestjs/mapped-types/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -14149,20 +14208,6 @@
         "../node_modules/@types/node/util.d.ts",
         "../src/api/radiostation/dto/create-radiostation.dto.ts"
       ],
-      "../src/api/radiostation/radiostation.controller.ts": [
-        "../node_modules/@nestjs/common/index.d.ts",
-        "../node_modules/@nestjs/swagger/index.d.ts",
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../src/api/auth/guards/jwt-auth.guard.ts",
-        "../src/api/radiostation/dto/bulk-radiostation.dto.ts",
-        "../src/api/radiostation/dto/create-radiostation.dto.ts",
-        "../src/api/radiostation/dto/update-radiostation.dto.ts",
-        "../src/api/radiostation/radiostation.service.ts"
-      ],
       "../src/api/radiostation/radiostation.module.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -14170,11 +14215,26 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
-        "../src/api/radiostation/radiostation.controller.ts",
-        "../src/api/radiostation/radiostation.service.ts",
-        "../src/repositories/radiostation.repository.ts"
+        "../src/api/radiostation/controllers/radiostation-sonickeys.controller.ts",
+        "../src/api/radiostation/controllers/radiostation.controller.ts",
+        "../src/api/radiostation/services/radiostation-sonickeys.service.ts",
+        "../src/api/radiostation/services/radiostation.service.ts",
+        "../src/repositories/radiostation.repository.ts",
+        "../src/repositories/radiostationsonickey.repository.ts"
       ],
-      "../src/api/radiostation/radiostation.service.ts": [
+      "../src/api/radiostation/services/radiostation-sonickeys.service.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts",
+        "../src/repositories/radiostation.repository.ts",
+        "../src/repositories/radiostationsonickey.repository.ts",
+        "../src/schemas/radiostationsonickey.schema.ts"
+      ],
+      "../src/api/radiostation/services/radiostation.service.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -14363,6 +14423,7 @@
         "../src/app.gateway.ts",
         "../src/app.service.ts",
         "../src/config/index.ts",
+        "../src/repositories/sonickey.repository.ts",
         "../src/shared/modules/global-aws/global-aws.module.ts",
         "../src/shared/services/cron.service.ts"
       ],
@@ -14430,6 +14491,17 @@
         "../src/schemas/radiostation.schema.ts",
         "../src/shared/modules/global-aws/global-aws.service.ts"
       ],
+      "../src/repositories/radiostationsonickey.repository.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../src/schemas/radiostationsonickey.schema.ts",
+        "../src/schemas/sonickey.schema.ts",
+        "../src/shared/modules/global-aws/global-aws.service.ts"
+      ],
       "../src/repositories/sonickey.repository.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -14443,6 +14515,15 @@
       "../src/schemas/radiostation.schema.ts": [
         "../node_modules/@aws/dynamodb-data-mapper-annotations/build/index.d.ts",
         "../node_modules/@aws/dynamodb-data-mapper/build/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../src/schemas/radiostationsonickey.schema.ts": [
+        "../node_modules/@aws/dynamodb-data-mapper-annotations/build/index.d.ts",
         "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -23730,18 +23811,29 @@
       "../src/api/externalapi/externalsonickey/externalsonickey.service.ts": [
         "../src/api/sonickey/sonickey.service.ts"
       ],
+      "../src/api/radiostation/controllers/radiostation-sonickeys.controller.ts": [
+        "../src/api/radiostation/services/radiostation-sonickeys.service.ts",
+        "../src/api/radiostation/services/radiostation.service.ts",
+        "../src/schemas/radiostationsonickey.schema.ts"
+      ],
+      "../src/api/radiostation/controllers/radiostation.controller.ts": [
+        "../src/api/radiostation/dto/bulk-radiostation.dto.ts",
+        "../src/api/radiostation/dto/create-radiostation.dto.ts",
+        "../src/api/radiostation/dto/update-radiostation.dto.ts",
+        "../src/api/radiostation/services/radiostation.service.ts",
+        "../src/schemas/radiostation.schema.ts"
+      ],
       "../src/api/radiostation/dto/update-radiostation.dto.ts": [
         "../node_modules/@nestjs/mapped-types/index.d.ts",
         "../src/api/radiostation/dto/create-radiostation.dto.ts"
       ],
-      "../src/api/radiostation/radiostation.controller.ts": [
-        "../src/api/radiostation/dto/bulk-radiostation.dto.ts",
-        "../src/api/radiostation/dto/create-radiostation.dto.ts",
-        "../src/api/radiostation/dto/update-radiostation.dto.ts",
-        "../src/api/radiostation/radiostation.service.ts",
-        "../src/schemas/radiostation.schema.ts"
+      "../src/api/radiostation/services/radiostation-sonickeys.service.ts": [
+        "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts",
+        "../src/repositories/radiostation.repository.ts",
+        "../src/repositories/radiostationsonickey.repository.ts",
+        "../src/schemas/radiostationsonickey.schema.ts"
       ],
-      "../src/api/radiostation/radiostation.service.ts": [
+      "../src/api/radiostation/services/radiostation.service.ts": [
         "../src/api/radiostation/dto/create-radiostation.dto.ts",
         "../src/api/radiostation/dto/update-radiostation.dto.ts",
         "../src/repositories/radiostation.repository.ts",
@@ -23791,6 +23883,9 @@
         "../src/config/app.config.ts"
       ],
       "../src/repositories/radiostation.repository.ts": [
+        "../src/shared/modules/global-aws/global-aws.service.ts"
+      ],
+      "../src/repositories/radiostationsonickey.repository.ts": [
         "../src/shared/modules/global-aws/global-aws.service.ts"
       ],
       "../src/repositories/sonickey.repository.ts": [
@@ -24731,13 +24826,16 @@
       "../src/api/externalapi/externalsonickey/externalsonickey.controller.ts",
       "../src/api/externalapi/externalsonickey/externalsonickey.module.ts",
       "../src/api/externalapi/externalsonickey/externalsonickey.service.ts",
+      "../src/api/radiostation/controllers/radiostation-sonickeys.controller.ts",
+      "../src/api/radiostation/controllers/radiostation.controller.ts",
       "../src/api/radiostation/dto/bulk-radiostation.dto.ts",
       "../src/api/radiostation/dto/create-radiostation.dto.ts",
       "../src/api/radiostation/dto/deletebulk-radiostation.dto.ts",
+      "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts",
       "../src/api/radiostation/dto/update-radiostation.dto.ts",
-      "../src/api/radiostation/radiostation.controller.ts",
       "../src/api/radiostation/radiostation.module.ts",
-      "../src/api/radiostation/radiostation.service.ts",
+      "../src/api/radiostation/services/radiostation-sonickeys.service.ts",
+      "../src/api/radiostation/services/radiostation.service.ts",
       "../src/api/sonickey/dtos/decode.dto.ts",
       "../src/api/sonickey/dtos/encode.dto.ts",
       "../src/api/sonickey/dtos/sonickey.dto.ts",
@@ -24759,8 +24857,10 @@
       "../src/constants/roles.ts",
       "../src/main.ts",
       "../src/repositories/radiostation.repository.ts",
+      "../src/repositories/radiostationsonickey.repository.ts",
       "../src/repositories/sonickey.repository.ts",
       "../src/schemas/radiostation.schema.ts",
+      "../src/schemas/radiostationsonickey.schema.ts",
       "../src/schemas/sonickey.schema.ts",
       "../src/shared/filters/http-exception.filter.ts",
       "../src/shared/interfaces/uploadedfile.interface.ts",

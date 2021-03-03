@@ -1,8 +1,8 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { CreateRadiostationDto } from './dto/create-radiostation.dto';
-import { UpdateRadiostationDto } from './dto/update-radiostation.dto';
-import { RadioStationRepository } from '../../repositories/radiostation.repository';
-import { RadioStation } from '../../schemas/radiostation.schema';
+import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
+import { UpdateRadiostationDto } from '../dto/update-radiostation.dto';
+import { RadioStationRepository } from '../../../repositories/radiostation.repository';
+import { RadioStation } from '../../../schemas/radiostation.schema';
 
 @Injectable()
 export class RadiostationService {

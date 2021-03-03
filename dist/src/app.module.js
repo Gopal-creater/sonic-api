@@ -27,6 +27,7 @@ const uniqid = require("uniqid");
 const schedule_1 = require("@nestjs/schedule");
 const app_gateway_1 = require("./app.gateway");
 const radiostation_module_1 = require("./api/radiostation/radiostation.module");
+const sonickey_repository_1 = require("./repositories/sonickey.repository");
 let AppModule = class AppModule {
     constructor() {
     }
@@ -53,7 +54,7 @@ AppModule = __decorate([
             radiostation_module_1.RadiostationModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService, cron_service_1.CronService, app_gateway_1.AppGateway],
+        providers: [app_service_1.AppService, sonickey_repository_1.SonicKeyRepository, cron_service_1.CronService, app_gateway_1.AppGateway],
     }),
     __metadata("design:paramtypes", [])
 ], AppModule);

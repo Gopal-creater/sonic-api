@@ -17,10 +17,10 @@ import * as uniqid from 'uniqid';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppGateway } from './app.gateway';
 import { RadiostationModule } from './api/radiostation/radiostation.module';
-
+import { SonicKeyRepository } from './repositories/sonickey.repository';
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
+  ScheduleModule.forRoot(),
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true,envFilePath:'.env.arba' }),
     MulterModule.register({
@@ -39,7 +39,7 @@ import { RadiostationModule } from './api/radiostation/radiostation.module';
     RadiostationModule,
   ],
   controllers: [AppController],
-  providers: [AppService,CronService, AppGateway],
+  providers: [AppService,SonicKeyRepository,CronService, AppGateway],
 })
 export class AppModule {
   constructor(){
