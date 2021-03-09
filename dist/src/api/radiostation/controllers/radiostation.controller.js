@@ -21,6 +21,17 @@ const update_radiostation_dto_1 = require("../dto/update-radiostation.dto");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const bulk_radiostation_dto_1 = require("../dto/bulk-radiostation.dto");
+const radiostation_schema_1 = require("../../../schemas/radiostation.schema");
+class Query {
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], Query.prototype, "limit", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", radiostation_schema_1.RadioStation)
+], Query.prototype, "lastKey", void 0);
 let RadiostationController = class RadiostationController {
     constructor(radiostationService) {
         this.radiostationService = radiostationService;
@@ -135,7 +146,8 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update Single Radio Station' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('id')), __param(1, common_1.Body()),
+    __param(0, common_1.Param('id')),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_radiostation_dto_1.UpdateRadiostationDto]),
     __metadata("design:returntype", void 0)
@@ -168,7 +180,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'stop listening stream' }),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/radiostation.schema").RadioStation] }),
-    __param(0, common_1.Body('id')),
+    __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [bulk_radiostation_dto_1.BulkRadiostationDto]),
     __metadata("design:returntype", void 0)
@@ -179,7 +191,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'stop listening stream' }),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/radiostation.schema").RadioStation] }),
-    __param(0, common_1.Body('id')),
+    __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [bulk_radiostation_dto_1.BulkRadiostationDto]),
     __metadata("design:returntype", void 0)

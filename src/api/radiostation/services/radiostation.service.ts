@@ -3,6 +3,7 @@ import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
 import { UpdateRadiostationDto } from '../dto/update-radiostation.dto';
 import { RadioStationRepository } from '../../../repositories/radiostation.repository';
 import { RadioStation } from '../../../schemas/radiostation.schema';
+import { QueryOptions, ScanOptions } from '@aws/dynamodb-data-mapper';
 
 @Injectable()
 export class RadiostationService {
@@ -34,12 +35,30 @@ export class RadiostationService {
     return this.radioStationRepository.update(radioStation);
   }
 
-  async findAll() {
+  async findAll(scanOption?:ScanOptions) {
     const items: RadioStation[] = [];
-    for await (const item of this.radioStationRepository.scan(RadioStation)) {
+    const iterator = this.radioStationRepository.scan(RadioStation,{...scanOption})
+    for await (const item of iterator) {
       // individual items will be yielded as the scan is performed
       items.push(item);
     }
+    return items;
+  }
+
+  async findAllWithPagination(scanOption?:ScanOptions) {
+    var items: RadioStation[] = [];
+    const paginator = this.radioStationRepository.scan(RadioStation,{...scanOption}).pages()
+    for await (const item of paginator) {
+      console.log(
+        paginator.count,
+        paginator.scannedCount,
+        paginator.lastEvaluatedKey
+    );
+      // individual items will be yielded as the scan is performed
+      items=item
+    }
+    console.log("paginator",paginator);
+    
     return items;
   }
 
@@ -61,13 +80,14 @@ export class RadiostationService {
     );
   }
 
-  async findByOwner(owner: string) {
+  async findByOwner(owner: string,queryOptions?:QueryOptions) {
     var items: RadioStation[] = [];
-    for await (const item of this.radioStationRepository.query(
+    const iterator = this.radioStationRepository.query(
       RadioStation,
       { owner: owner },
-      { indexName: 'ownerIndex' },
-    )) {
+      { indexName: 'ownerIndex',...queryOptions },
+    )
+    for await (const item of iterator) {
       items.push(item);
     }
     return items;

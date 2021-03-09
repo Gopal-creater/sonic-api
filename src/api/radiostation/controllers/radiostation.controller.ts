@@ -1,16 +1,41 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { RadiostationService } from '../services/radiostation.service';
 import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
 import { UpdateRadiostationDto } from '../dto/update-radiostation.dto';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiProperty,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { BulkRadiostationDto } from '../dto/bulk-radiostation.dto';
+import { QueryOptions } from '@aws/dynamodb-data-mapper';
+import { RadioStation } from '../../../schemas/radiostation.schema';
+
+class Query {
+  @ApiProperty()
+  limit?: number;
+
+  @ApiProperty()
+  lastKey?: RadioStation;
+}
 
 @ApiTags('Radio Station Contrller')
 @Controller('radiostations')
 export class RadiostationController {
   constructor(private readonly radiostationService: RadiostationService) {}
-  
+
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -22,6 +47,7 @@ export class RadiostationController {
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  // @ApiQuery({ name: 'query', type: Query, required: false })
   @ApiOperation({ summary: 'Get All Radio Stations' })
   findAll() {
     return this.radiostationService.findAll();
@@ -51,7 +77,6 @@ export class RadiostationController {
     return this.radiostationService.stopListeningStream(id);
   }
 
-
   @Put(':id/start-listening-stream')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -60,13 +85,14 @@ export class RadiostationController {
     return this.radiostationService.startListeningStream(id);
   }
 
-
-
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Single Radio Station' })
-  update(@Param('id') id: string, @Body() updateRadiostationDto: UpdateRadiostationDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateRadiostationDto: UpdateRadiostationDto,
+  ) {
     return this.radiostationService.update(id, updateRadiostationDto);
   }
 
@@ -92,16 +118,15 @@ export class RadiostationController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'stop listening stream' })
-  bulkStartListeningStream(@Body('id') bulkDto: BulkRadiostationDto) {
+  bulkStartListeningStream(@Body() bulkDto: BulkRadiostationDto) {
     return this.radiostationService.bulkStartListeningStream(bulkDto.ids);
   }
-
 
   @Put('bulk/stop-listening-stream')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'stop listening stream' })
-  bulkStopListeningStream(@Body('id') bulkDto: BulkRadiostationDto) {
+  bulkStopListeningStream(@Body() bulkDto: BulkRadiostationDto) {
     return this.radiostationService.bulkStopListeningStream(bulkDto.ids);
   }
 

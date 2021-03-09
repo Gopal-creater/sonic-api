@@ -46,53 +46,53 @@ let RadiostationService = class RadiostationService {
         radioStation.isStreamStarted = true;
         return this.radioStationRepository.update(radioStation);
     }
-    async findAll() {
+    async findAll(scanOption) {
         var e_1, _a;
         const items = [];
+        const iterator = this.radioStationRepository.scan(radiostation_schema_1.RadioStation, Object.assign({}, scanOption));
         try {
-            for (var _b = __asyncValues(this.radioStationRepository.scan(radiostation_schema_1.RadioStation)), _c; _c = await _b.next(), !_c.done;) {
-                const item = _c.value;
+            for (var iterator_1 = __asyncValues(iterator), iterator_1_1; iterator_1_1 = await iterator_1.next(), !iterator_1_1.done;) {
+                const item = iterator_1_1.value;
                 items.push(item);
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
+                if (iterator_1_1 && !iterator_1_1.done && (_a = iterator_1.return)) await _a.call(iterator_1);
             }
             finally { if (e_1) throw e_1.error; }
         }
         return items;
     }
-    async findOne(id) {
+    async findAllWithPagination(scanOption) {
         var e_2, _a;
-        const items = [];
+        var items = [];
+        const paginator = this.radioStationRepository.scan(radiostation_schema_1.RadioStation, Object.assign({}, scanOption)).pages();
         try {
-            for (var _b = __asyncValues(this.radioStationRepository.query(radiostation_schema_1.RadioStation, {
-                id: id,
-            })), _c; _c = await _b.next(), !_c.done;) {
-                const item = _c.value;
-                items.push(item);
+            for (var paginator_1 = __asyncValues(paginator), paginator_1_1; paginator_1_1 = await paginator_1.next(), !paginator_1_1.done;) {
+                const item = paginator_1_1.value;
+                console.log(paginator.count, paginator.scannedCount, paginator.lastEvaluatedKey);
+                items = item;
             }
         }
         catch (e_2_1) { e_2 = { error: e_2_1 }; }
         finally {
             try {
-                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
+                if (paginator_1_1 && !paginator_1_1.done && (_a = paginator_1.return)) await _a.call(paginator_1);
             }
             finally { if (e_2) throw e_2.error; }
         }
-        return items[0];
+        console.log("paginator", paginator);
+        return items;
     }
-    async update(id, updateRadiostationDto) {
-        const radioStation = await this.findOne(id);
-        return this.radioStationRepository.update(Object.assign(radioStation, updateRadiostationDto));
-    }
-    async findByOwner(owner) {
+    async findOne(id) {
         var e_3, _a;
-        var items = [];
+        const items = [];
         try {
-            for (var _b = __asyncValues(this.radioStationRepository.query(radiostation_schema_1.RadioStation, { owner: owner }, { indexName: 'ownerIndex' })), _c; _c = await _b.next(), !_c.done;) {
+            for (var _b = __asyncValues(this.radioStationRepository.query(radiostation_schema_1.RadioStation, {
+                id: id,
+            })), _c; _c = await _b.next(), !_c.done;) {
                 const item = _c.value;
                 items.push(item);
             }
@@ -103,6 +103,29 @@ let RadiostationService = class RadiostationService {
                 if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
             }
             finally { if (e_3) throw e_3.error; }
+        }
+        return items[0];
+    }
+    async update(id, updateRadiostationDto) {
+        const radioStation = await this.findOne(id);
+        return this.radioStationRepository.update(Object.assign(radioStation, updateRadiostationDto));
+    }
+    async findByOwner(owner, queryOptions) {
+        var e_4, _a;
+        var items = [];
+        const iterator = this.radioStationRepository.query(radiostation_schema_1.RadioStation, { owner: owner }, Object.assign({ indexName: 'ownerIndex' }, queryOptions));
+        try {
+            for (var iterator_2 = __asyncValues(iterator), iterator_2_1; iterator_2_1 = await iterator_2.next(), !iterator_2_1.done;) {
+                const item = iterator_2_1.value;
+                items.push(item);
+            }
+        }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        finally {
+            try {
+                if (iterator_2_1 && !iterator_2_1.done && (_a = iterator_2.return)) await _a.call(iterator_2);
+            }
+            finally { if (e_4) throw e_4.error; }
         }
         return items;
     }
