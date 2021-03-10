@@ -20,9 +20,11 @@ exports.JobService = void 0;
 const common_1 = require("@nestjs/common");
 const job_repository_1 = require("../../../repositories/job.repository");
 const job_schema_1 = require("../../../schemas/job.schema");
+const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
 let JobService = class JobService {
-    constructor(jobRepository) {
+    constructor(jobRepository, keygenService) {
         this.jobRepository = jobRepository;
+        this.keygenService = keygenService;
     }
     create(createJobDto) {
         return this.jobRepository.put(createJobDto);
@@ -68,6 +70,28 @@ let JobService = class JobService {
         const job = await this.findOne(id);
         return this.jobRepository.update(Object.assign(job, { isComplete: true, completedAt: new Date() }));
     }
+    async addReservedDetailsInLicence(licenseId, reserves) {
+        var _a, _b, _c;
+        const { data, errors } = await this.keygenService.getLicenseById(licenseId);
+        const oldReserves = (_b = (_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) === null || _b === void 0 ? void 0 : _b.reserves;
+        const { data: updatedData, errors: errorsUpdate } = await this.keygenService.updateLicense(licenseId, {
+            metadata: Object.assign(Object.assign({}, (_c = data === null || data === void 0 ? void 0 : data.attributes) === null || _c === void 0 ? void 0 : _c.metadata), { reserves: [...oldReserves, ...reserves] }),
+        });
+        if (errorsUpdate)
+            return Promise.reject(errorsUpdate);
+        return updatedData;
+    }
+    async removeReservedDetailsInLicence(licenseId, jobId) {
+        var _a, _b, _c;
+        const { data, errors } = await this.keygenService.getLicenseById(licenseId);
+        const oldReserves = (_b = (_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) === null || _b === void 0 ? void 0 : _b.reserves;
+        const { data: updatedData, errors: errorsUpdate } = await this.keygenService.updateLicense(licenseId, {
+            metadata: Object.assign(Object.assign({}, (_c = data === null || data === void 0 ? void 0 : data.attributes) === null || _c === void 0 ? void 0 : _c.metadata), { reserves: oldReserves === null || oldReserves === void 0 ? void 0 : oldReserves.filter(reser => reser.jobId !== jobId) }),
+        });
+        if (errorsUpdate)
+            return Promise.reject(errorsUpdate);
+        return updatedData;
+    }
     async findByOwner(owner) {
         var e_2, _a;
         var items = [];
@@ -89,7 +113,8 @@ let JobService = class JobService {
 };
 JobService = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [job_repository_1.JobRepository])
+    __metadata("design:paramtypes", [job_repository_1.JobRepository,
+        keygen_service_1.KeygenService])
 ], JobService);
 exports.JobService = JobService;
 //# sourceMappingURL=job.service.js.map

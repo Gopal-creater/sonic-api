@@ -4,4 +4,8 @@ export declare class JobLicenseValidationGuard implements CanActivate {
     private readonly keygenService;
     constructor(keygenService: KeygenService);
     canActivate(context: ExecutionContext): Promise<boolean>;
+    isAllowedForJobCreation(remaniningUses: number, usesToBeUsed: number, reserves?: {
+        jobId: string;
+        count: number;
+    }[]): Promise<boolean>;
 }

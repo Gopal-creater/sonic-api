@@ -30,13 +30,13 @@ export class JobController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a Job' })
   @Post()
-  create(
+  async create(
     @Body() createJobDto: CreateJobDto,
     @User('sub') owner: string,
     @Req() req: any,
   ) {
     createJobDto.owner=owner
-    createJobDto.jobDetails.map((job)=>{
+    createJobDto.jobDetails=createJobDto.jobDetails.map((job)=>{
       job["fileId"]=uuidv4()
       job["sonicKey"]=this.sonickeyService.generateUniqueSonicKey()
       return job

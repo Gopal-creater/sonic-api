@@ -15,11 +15,12 @@ const job_repository_1 = require("../../repositories/job.repository");
 const keygen_service_1 = require("../../shared/modules/keygen/keygen.service");
 const sonickey_module_1 = require("../sonickey/sonickey.module");
 const job_file_service_1 = require("./services/job-file.service");
+const keygen_module_1 = require("../../shared/modules/keygen/keygen.module");
 let JobModule = class JobModule {
 };
 JobModule = __decorate([
     common_1.Module({
-        imports: [sonickey_module_1.SonickeyModule],
+        imports: [sonickey_module_1.SonickeyModule, keygen_module_1.KeygenModule],
         controllers: [job_controller_1.JobController, job_file_controller_1.JobFileController],
         providers: [job_service_1.JobService, job_file_service_1.JobFileService, job_repository_1.JobRepository, keygen_service_1.KeygenService],
     })

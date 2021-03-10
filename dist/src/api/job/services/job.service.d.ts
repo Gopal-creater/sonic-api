@@ -4,9 +4,11 @@ import { UpdateJobDto } from '../dto/update-job.dto';
 import { JobRepository } from '../../../repositories/job.repository';
 import { Job } from '../../../schemas/job.schema';
 import { UpdateJobFileDto } from '../dto/update-job-file.dto';
+import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 export declare class JobService {
     readonly jobRepository: JobRepository;
-    constructor(jobRepository: JobRepository);
+    readonly keygenService: KeygenService;
+    constructor(jobRepository: JobRepository, keygenService: KeygenService);
     create(createJobDto: CreateJobDto): Promise<CreateJobDto>;
     findAll(): Promise<any[]>;
     findOne(id: string): Promise<Job & {
@@ -27,5 +29,10 @@ export declare class JobService {
         isComplete: boolean;
         completedAt: Date;
     }>;
+    addReservedDetailsInLicence(licenseId: string, reserves: {
+        jobId: string;
+        count: number;
+    }[]): Promise<any>;
+    removeReservedDetailsInLicence(licenseId: string, jobId: string): Promise<any>;
     findByOwner(owner: string): Promise<Job[]>;
 }

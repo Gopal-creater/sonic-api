@@ -6,7 +6,7 @@ export declare class JobFileService {
     readonly jobRepository: JobRepository;
     readonly jobService: JobService;
     constructor(jobRepository: JobRepository, jobService: JobService);
-    update(jobId: string, fileId: string, updateJobFileDto: UpdateJobFileDto): Promise<(import("../../../schemas/job.schema").Job & {
+    update(jobId: string, fileId: string, updateJobFileDto: UpdateJobFileDto): Promise<NotFoundException | (import("../../../schemas/job.schema").Job & {
         id: string;
-    }) | NotFoundException>;
+    })>;
 }
