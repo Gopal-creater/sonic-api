@@ -115,7 +115,7 @@ export class RadiostationService {
     return this.radioStationRepository.delete(radioStation);
   }
 
-  bulkRemove(ids: [string]) {
+  async bulkRemove(ids: [string]) {
     const promises = ids.map(id => this.removeById(id).catch(err=>({promiseError:err,data:id})));
     return Promise.all(promises).then(values=>{
       const failedData=values.filter(item=>item["promiseError"]) as {promiseError:any,data:string}[]
@@ -127,7 +127,7 @@ export class RadiostationService {
     })
   }
 
-  bulkStartListeningStream(ids: [string]) {
+  async bulkStartListeningStream(ids: [string]) {
     const promises = ids.map(id => this.startListeningStream(id).catch(err=>({promiseError:err,data:id})));
     return Promise.all(promises).then(values=>{
       const failedData=values.filter(item=>item["promiseError"]) as {promiseError:any,data:string}[]
@@ -139,7 +139,7 @@ export class RadiostationService {
     })
   }
 
-  bulkStopListeningStream(ids: [string]) {
+  async bulkStopListeningStream(ids: [string]) {
     const promises = ids.map(id => this.stopListeningStream(id).catch(err=>({promiseError:err,data:id})));
     return Promise.all(promises).then(values=>{
       const failedData=values.filter(item=>item["promiseError"]) as {promiseError:any,data:string}[]

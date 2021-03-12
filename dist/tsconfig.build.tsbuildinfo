@@ -4487,7 +4487,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/services/radiostation.service.ts": {
-        "version": "061dce90c6c303985274a5503561f480be01fc5da116cc6a87ff827f103a4dc1",
+        "version": "67858c0583586e8e65da7f0ea1899f3636472c0e1390ba76714e47af134ec755",
         "signature": "757a32a9f31c6a82b4fea2c0681f7d7fa7b0318fb154428389db520906be5946",
         "affectsGlobalScope": false
       },
@@ -4497,8 +4497,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/controllers/radiostation.controller.ts": {
-        "version": "7ba0b4dec14d00384791dbe45dd12823eeb6e30949183fb2b807c0294832a5f4",
-        "signature": "fe7c56bf24959d56bf46bbf0f32f22b52765b19835b040669b31d5d78faf0eff",
+        "version": "a7966b74893ead28d566438d78c50996fdec674d87524023732b1d09bfd6cf98",
+        "signature": "93e64097afa69071f73432520804962f63afab751eb0c6eedb3efed0776d3b4c",
         "affectsGlobalScope": false
       },
       "../src/schemas/radiostationsonickey.schema.ts": {

@@ -96,6 +96,24 @@ export class RadiostationController {
     })
   }
 
+  @Put('start-listening-stream/bulk')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'stop listening stream' })
+  bulkStartListeningStream(@Body() bulkDto: BulkRadiostationDto) {
+    console.log("bulkDto",bulkDto);
+    
+    return this.radiostationService.bulkStartListeningStream(bulkDto.ids);
+  }
+
+  @Put('stop-listening-stream/bulk')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'stop listening stream' })
+  bulkStopListeningStream(@Body() bulkDto: BulkRadiostationDto) {
+    return this.radiostationService.bulkStopListeningStream(bulkDto.ids);
+  }
+
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -105,6 +123,14 @@ export class RadiostationController {
     @Body() updateRadiostationDto: UpdateRadiostationDto,
   ) {
     return this.radiostationService.update(id, updateRadiostationDto);
+  }
+
+  @Delete('delete/bulk')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete Radio Station in bulk' })
+  removeBulk(@Body() bulkDto: BulkRadiostationDto) {
+    return this.radiostationService.bulkRemove(bulkDto.ids)
   }
 
   @Delete(':id')
@@ -118,32 +144,6 @@ export class RadiostationController {
       }
       throw err
     })
-  }
-
-  //Bulk Opeartions
-
-  @Delete('bulk/delete')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Delete Radio Station in bulk' })
-  removeBulk(@Body() bulkDto: BulkRadiostationDto) {
-    return this.radiostationService.bulkRemove(bulkDto.ids)
-  }
-
-  @Put('bulk/start-listening-stream')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'stop listening stream' })
-  bulkStartListeningStream(@Body() bulkDto: BulkRadiostationDto) {
-    return this.radiostationService.bulkStartListeningStream(bulkDto.ids);
-  }
-
-  @Put('bulk/stop-listening-stream')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'stop listening stream' })
-  bulkStopListeningStream(@Body() bulkDto: BulkRadiostationDto) {
-    return this.radiostationService.bulkStopListeningStream(bulkDto.ids);
   }
 
   @Get('/new/create-table')

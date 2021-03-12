@@ -149,7 +149,7 @@ let RadiostationService = class RadiostationService {
         }
         return this.radioStationRepository.delete(radioStation);
     }
-    bulkRemove(ids) {
+    async bulkRemove(ids) {
         const promises = ids.map(id => this.removeById(id).catch(err => ({ promiseError: err, data: id })));
         return Promise.all(promises).then(values => {
             const failedData = values.filter(item => item["promiseError"]);
@@ -160,7 +160,7 @@ let RadiostationService = class RadiostationService {
             };
         });
     }
-    bulkStartListeningStream(ids) {
+    async bulkStartListeningStream(ids) {
         const promises = ids.map(id => this.startListeningStream(id).catch(err => ({ promiseError: err, data: id })));
         return Promise.all(promises).then(values => {
             const failedData = values.filter(item => item["promiseError"]);
@@ -171,7 +171,7 @@ let RadiostationService = class RadiostationService {
             };
         });
     }
-    bulkStopListeningStream(ids) {
+    async bulkStopListeningStream(ids) {
         const promises = ids.map(id => this.stopListeningStream(id).catch(err => ({ promiseError: err, data: id })));
         return Promise.all(promises).then(values => {
             const failedData = values.filter(item => item["promiseError"]);
