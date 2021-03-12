@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { RadiostationService } from '../services/radiostation.service';
 import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
@@ -66,7 +67,7 @@ export class RadiostationController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Single Radio Station' })
   findOne(@Param('id') id: string) {
-    return this.radiostationService.findOne(id);
+    return this.radiostationService.findByIdOrFail(id);
   }
 
   @Put(':id/stop-listening-stream')
@@ -74,7 +75,12 @@ export class RadiostationController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'stop listening stream' })
   stopListeningStream(@Param('id') id: string) {
-    return this.radiostationService.stopListeningStream(id);
+    return this.radiostationService.stopListeningStream(id).catch(err=>{
+      if(err.status==404){
+        throw new NotFoundException()
+      }
+      throw err
+    })
   }
 
   @Put(':id/start-listening-stream')
@@ -82,7 +88,12 @@ export class RadiostationController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'start listening stream' })
   startListeningStream(@Param('id') id: string) {
-    return this.radiostationService.startListeningStream(id);
+    return this.radiostationService.startListeningStream(id).catch(err=>{
+      if(err.status==404){
+        throw new NotFoundException()
+      }
+      throw err
+    })
   }
 
   @Put(':id')
@@ -101,7 +112,12 @@ export class RadiostationController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete Radio Station' })
   remove(@Param('id') id: string) {
-    return this.radiostationService.remove(id);
+    return this.radiostationService.removeById(id).catch(err=>{
+      if(err.status==404){
+        throw new NotFoundException()
+      }
+      throw err
+    })
   }
 
   //Bulk Opeartions
@@ -111,7 +127,7 @@ export class RadiostationController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete Radio Station in bulk' })
   removeBulk(@Body() bulkDto: BulkRadiostationDto) {
-    return this.radiostationService.bulkRemove(bulkDto.ids);
+    return this.radiostationService.bulkRemove(bulkDto.ids)
   }
 
   @Put('bulk/start-listening-stream')

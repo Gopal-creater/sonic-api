@@ -46,19 +46,34 @@ let RadiostationController = class RadiostationController {
         return await this.radiostationService.findByOwner(ownerId);
     }
     findOne(id) {
-        return this.radiostationService.findOne(id);
+        return this.radiostationService.findByIdOrFail(id);
     }
     stopListeningStream(id) {
-        return this.radiostationService.stopListeningStream(id);
+        return this.radiostationService.stopListeningStream(id).catch(err => {
+            if (err.status == 404) {
+                throw new common_1.NotFoundException();
+            }
+            throw err;
+        });
     }
     startListeningStream(id) {
-        return this.radiostationService.startListeningStream(id);
+        return this.radiostationService.startListeningStream(id).catch(err => {
+            if (err.status == 404) {
+                throw new common_1.NotFoundException();
+            }
+            throw err;
+        });
     }
     update(id, updateRadiostationDto) {
         return this.radiostationService.update(id, updateRadiostationDto);
     }
     remove(id) {
-        return this.radiostationService.remove(id);
+        return this.radiostationService.removeById(id).catch(err => {
+            if (err.status == 404) {
+                throw new common_1.NotFoundException();
+            }
+            throw err;
+        });
     }
     removeBulk(bulkDto) {
         return this.radiostationService.bulkRemove(bulkDto.ids);
@@ -168,7 +183,7 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Delete Radio Station in bulk' }),
-    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/radiostation.schema").RadioStation] }),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [bulk_radiostation_dto_1.BulkRadiostationDto]),
@@ -179,7 +194,7 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'stop listening stream' }),
-    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/radiostation.schema").RadioStation] }),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [bulk_radiostation_dto_1.BulkRadiostationDto]),
@@ -190,7 +205,7 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'stop listening stream' }),
-    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/radiostation.schema").RadioStation] }),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [bulk_radiostation_dto_1.BulkRadiostationDto]),

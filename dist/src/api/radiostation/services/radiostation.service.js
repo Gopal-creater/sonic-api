@@ -29,18 +29,24 @@ let RadiostationService = class RadiostationService {
         return this.radioStationRepository.put(dataToSave);
     }
     async stopListeningStream(id) {
-        const radioStation = await this.findOne(id);
+        const radioStation = await this.findById(id);
+        if (!radioStation) {
+            return Promise.reject({ notFound: true, status: 404, message: "Item not found" });
+        }
         if (!radioStation.isStreamStarted) {
-            throw new common_1.BadRequestException('Not started to stop.');
+            return radioStation;
         }
         radioStation.stopAt = new Date();
         radioStation.isStreamStarted = false;
         return this.radioStationRepository.update(radioStation);
     }
     async startListeningStream(id) {
-        const radioStation = await this.findOne(id);
+        const radioStation = await this.findById(id);
+        if (!radioStation) {
+            return Promise.reject({ notFound: true, status: 404, message: "Item not found" });
+        }
         if (radioStation.isStreamStarted) {
-            throw new common_1.BadRequestException('Already started');
+            return radioStation;
         }
         radioStation.startedAt = new Date();
         radioStation.isStreamStarted = true;
@@ -86,7 +92,7 @@ let RadiostationService = class RadiostationService {
         console.log("paginator", paginator);
         return items;
     }
-    async findOne(id) {
+    async findById(id) {
         var e_3, _a;
         const items = [];
         try {
@@ -106,8 +112,15 @@ let RadiostationService = class RadiostationService {
         }
         return items[0];
     }
+    async findByIdOrFail(id) {
+        const radioStation = await this.findById(id);
+        if (!radioStation) {
+            throw new common_1.NotFoundException();
+        }
+        return radioStation;
+    }
     async update(id, updateRadiostationDto) {
-        const radioStation = await this.findOne(id);
+        const radioStation = await this.findByIdOrFail(id);
         return this.radioStationRepository.update(Object.assign(radioStation, updateRadiostationDto));
     }
     async findByOwner(owner, queryOptions) {
@@ -129,21 +142,45 @@ let RadiostationService = class RadiostationService {
         }
         return items;
     }
-    async remove(id) {
-        const radioStation = await this.findOne(id);
+    async removeById(id) {
+        const radioStation = await this.findById(id);
+        if (!radioStation) {
+            return Promise.reject({ notFound: true, status: 404, message: "Item not found" });
+        }
         return this.radioStationRepository.delete(radioStation);
     }
     bulkRemove(ids) {
-        const promises = ids.map(id => this.remove(id));
-        return Promise.all(promises);
+        const promises = ids.map(id => this.removeById(id).catch(err => ({ promiseError: err, data: id })));
+        return Promise.all(promises).then(values => {
+            const failedData = values.filter(item => item["promiseError"]);
+            const passedData = values.filter(item => !item["promiseError"]);
+            return {
+                passedData: passedData,
+                failedData: failedData
+            };
+        });
     }
     bulkStartListeningStream(ids) {
-        const promises = ids.map(id => this.startListeningStream(id));
-        return Promise.all(promises);
+        const promises = ids.map(id => this.startListeningStream(id).catch(err => ({ promiseError: err, data: id })));
+        return Promise.all(promises).then(values => {
+            const failedData = values.filter(item => item["promiseError"]);
+            const passedData = values.filter(item => !item["promiseError"]);
+            return {
+                passedData: passedData,
+                failedData: failedData
+            };
+        });
     }
     bulkStopListeningStream(ids) {
-        const promises = ids.map(id => this.stopListeningStream(id));
-        return Promise.all(promises);
+        const promises = ids.map(id => this.stopListeningStream(id).catch(err => ({ promiseError: err, data: id })));
+        return Promise.all(promises).then(values => {
+            const failedData = values.filter(item => item["promiseError"]);
+            const passedData = values.filter(item => !item["promiseError"]);
+            return {
+                passedData: passedData,
+                failedData: failedData
+            };
+        });
     }
 };
 RadiostationService = __decorate([

@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
 import { UpdateRadiostationDto } from '../dto/update-radiostation.dto';
 import { RadioStationRepository } from '../../../repositories/radiostation.repository';
@@ -14,9 +14,12 @@ export class RadiostationService {
   }
 
   async stopListeningStream(id: string) {
-    const radioStation = await this.findOne(id);
+    const radioStation = await this.findById(id);
+    if(!radioStation){
+      return Promise.reject({notFound:true,status:404,message:"Item not found"})
+    }
     if (!radioStation.isStreamStarted) {
-      throw new BadRequestException('Not started to stop.');
+      return radioStation
     }
     //Do Stop Listening Stuff
     radioStation.stopAt = new Date();
@@ -25,9 +28,12 @@ export class RadiostationService {
   }
 
   async startListeningStream(id: string) {
-    const radioStation = await this.findOne(id);
+    const radioStation = await this.findById(id);
+    if(!radioStation){
+      return Promise.reject({notFound:true,status:404,message:"Item not found"})
+    }
     if (radioStation.isStreamStarted) {
-      throw new BadRequestException('Already started');
+      return radioStation
     }
     //Do Start Listening Stuff
     radioStation.startedAt = new Date();
@@ -62,7 +68,7 @@ export class RadiostationService {
     return items;
   }
 
-  async findOne(id: string) {
+  async findById(id: string) {
     const items: RadioStation[] = [];
     for await (const item of this.radioStationRepository.query(RadioStation, {
       id: id,
@@ -73,8 +79,16 @@ export class RadiostationService {
     return items[0];
   }
 
+  async findByIdOrFail(id: string) {
+    const radioStation = await this.findById(id); 
+    if(!radioStation){
+      throw new NotFoundException()
+    }
+    return radioStation
+  }
+
   async update(id: string, updateRadiostationDto: UpdateRadiostationDto) {
-    const radioStation = await this.findOne(id);
+    const radioStation = await this.findByIdOrFail(id);
     return this.radioStationRepository.update(
       Object.assign(radioStation, updateRadiostationDto),
     );
@@ -93,23 +107,47 @@ export class RadiostationService {
     return items;
   }
 
-  async remove(id: string) {
-    const radioStation = await this.findOne(id);
+  async removeById(id: string) {
+    const radioStation = await this.findById(id);
+    if(!radioStation){
+      return Promise.reject({notFound:true,status:404,message:"Item not found"})
+    }
     return this.radioStationRepository.delete(radioStation);
   }
 
   bulkRemove(ids: [string]) {
-    const promises = ids.map(id => this.remove(id));
-    return Promise.all(promises);
+    const promises = ids.map(id => this.removeById(id).catch(err=>({promiseError:err,data:id})));
+    return Promise.all(promises).then(values=>{
+      const failedData=values.filter(item=>item["promiseError"]) as {promiseError:any,data:string}[]
+      const passedData=values.filter(item=>!item["promiseError"]) as RadioStation[]
+      return{
+        passedData:passedData,
+        failedData:failedData
+      }
+    })
   }
 
   bulkStartListeningStream(ids: [string]) {
-    const promises = ids.map(id => this.startListeningStream(id));
-    return Promise.all(promises);
+    const promises = ids.map(id => this.startListeningStream(id).catch(err=>({promiseError:err,data:id})));
+    return Promise.all(promises).then(values=>{
+      const failedData=values.filter(item=>item["promiseError"]) as {promiseError:any,data:string}[]
+      const passedData=values.filter(item=>!item["promiseError"]) as RadioStation[]
+      return{
+        passedData:passedData,
+        failedData:failedData
+      }
+    })
   }
 
   bulkStopListeningStream(ids: [string]) {
-    const promises = ids.map(id => this.stopListeningStream(id));
-    return Promise.all(promises);
+    const promises = ids.map(id => this.stopListeningStream(id).catch(err=>({promiseError:err,data:id})));
+    return Promise.all(promises).then(values=>{
+      const failedData=values.filter(item=>item["promiseError"]) as {promiseError:any,data:string}[]
+      const passedData=values.filter(item=>!item["promiseError"]) as RadioStation[]
+      return{
+        passedData:passedData,
+        failedData:failedData
+      }
+    })
   }
 }

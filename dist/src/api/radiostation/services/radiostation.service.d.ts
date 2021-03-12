@@ -11,11 +11,30 @@ export declare class RadiostationService {
     startListeningStream(id: string): Promise<RadioStation>;
     findAll(scanOption?: ScanOptions): Promise<RadioStation[]>;
     findAllWithPagination(scanOption?: ScanOptions): Promise<RadioStation[]>;
-    findOne(id: string): Promise<RadioStation>;
+    findById(id: string): Promise<RadioStation>;
+    findByIdOrFail(id: string): Promise<RadioStation>;
     update(id: string, updateRadiostationDto: UpdateRadiostationDto): Promise<RadioStation & UpdateRadiostationDto>;
     findByOwner(owner: string, queryOptions?: QueryOptions): Promise<RadioStation[]>;
-    remove(id: string): Promise<RadioStation>;
-    bulkRemove(ids: [string]): Promise<RadioStation[]>;
-    bulkStartListeningStream(ids: [string]): Promise<RadioStation[]>;
-    bulkStopListeningStream(ids: [string]): Promise<RadioStation[]>;
+    removeById(id: string): Promise<RadioStation>;
+    bulkRemove(ids: [string]): Promise<{
+        passedData: RadioStation[];
+        failedData: {
+            promiseError: any;
+            data: string;
+        }[];
+    }>;
+    bulkStartListeningStream(ids: [string]): Promise<{
+        passedData: RadioStation[];
+        failedData: {
+            promiseError: any;
+            data: string;
+        }[];
+    }>;
+    bulkStopListeningStream(ids: [string]): Promise<{
+        passedData: RadioStation[];
+        failedData: {
+            promiseError: any;
+            data: string;
+        }[];
+    }>;
 }

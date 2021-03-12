@@ -17,7 +17,7 @@ let HttpExceptionFilter = class HttpExceptionFilter {
         const request = ctx.getRequest();
         const status = error instanceof common_1.HttpException
             ? error.getStatus()
-            : common_1.HttpStatus.INTERNAL_SERVER_ERROR;
+            : (error['status'] || common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         const message = error instanceof common_1.HttpException
             ? error.message
             : { error: error.name, message: error.message };

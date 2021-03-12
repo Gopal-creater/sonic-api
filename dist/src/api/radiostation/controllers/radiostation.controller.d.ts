@@ -14,8 +14,26 @@ export declare class RadiostationController {
     startListeningStream(id: string): Promise<RadioStation>;
     update(id: string, updateRadiostationDto: UpdateRadiostationDto): Promise<RadioStation & UpdateRadiostationDto>;
     remove(id: string): Promise<RadioStation>;
-    removeBulk(bulkDto: BulkRadiostationDto): Promise<RadioStation[]>;
-    bulkStartListeningStream(bulkDto: BulkRadiostationDto): Promise<RadioStation[]>;
-    bulkStopListeningStream(bulkDto: BulkRadiostationDto): Promise<RadioStation[]>;
+    removeBulk(bulkDto: BulkRadiostationDto): Promise<{
+        passedData: RadioStation[];
+        failedData: {
+            promiseError: any;
+            data: string;
+        }[];
+    }>;
+    bulkStartListeningStream(bulkDto: BulkRadiostationDto): Promise<{
+        passedData: RadioStation[];
+        failedData: {
+            promiseError: any;
+            data: string;
+        }[];
+    }>;
+    bulkStopListeningStream(bulkDto: BulkRadiostationDto): Promise<{
+        passedData: RadioStation[];
+        failedData: {
+            promiseError: any;
+            data: string;
+        }[];
+    }>;
     createTable(): Promise<string>;
 }
