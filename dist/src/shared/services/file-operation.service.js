@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const child_process_1 = require("child_process");
 const fs = require("fs");
 const readline = require("line-reader");
+const readlineByline = require("readline");
 let FileOperationService = class FileOperationService {
     encodeFile(sonicEncodeCmd, outFilePath) {
         return new Promise((resolve, reject) => {
@@ -37,11 +38,44 @@ let FileOperationService = class FileOperationService {
                     });
                 }
                 readline.eachLine(logFilePath, function (line) {
-                    var _a;
                     console.log('Decoder output line: ', line);
-                    const sonicKey = (_a = line === null || line === void 0 ? void 0 : line.split(': ')[1]) === null || _a === void 0 ? void 0 : _a.trim();
-                    resolve({ sonicKey: sonicKey });
+                    resolve({ sonicKey: line });
                     return false;
+                });
+            }
+            catch (err) {
+                console.error('Caught error while decodibng:', err);
+                reject({
+                    message: 'Error while decoding'
+                });
+            }
+        });
+    }
+    decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath) {
+        return new Promise((resolve, reject) => {
+            try {
+                child_process_1.execSync('bash ' + sonicDecodeCmd);
+                var fileSizeInBytes = fs.statSync(logFilePath).size;
+                if (fileSizeInBytes <= 0) {
+                    console.error('empty logfile while decoding. no key found!');
+                    reject({
+                        message: 'Key not found'
+                    });
+                }
+                var sonicKeys = [];
+                var lineReader = readlineByline.createInterface({
+                    input: fs.createReadStream(logFilePath)
+                });
+                lineReader.on('line', function (line) {
+                    console.log('Line from file:', line);
+                    const isPresent = sonicKeys.find(key => key == line);
+                    if (line && !isPresent) {
+                        sonicKeys.push(line);
+                    }
+                });
+                lineReader.on('close', function (line) {
+                    console.log("Finished");
+                    resolve({ sonicKeys: sonicKeys });
                 });
             }
             catch (err) {

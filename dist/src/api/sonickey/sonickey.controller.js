@@ -97,9 +97,19 @@ let SonickeyController = class SonickeyController {
                 .put(dataToSave);
         });
     }
-    decode(file) {
-        return this.sonicKeyService.decode(file).then(({ sonicKey }) => {
-            return this.sonicKeyService.findBySonicKeyOrFail(sonicKey);
+    async decode(file) {
+        return this.sonicKeyService.decodeAllKeys(file).then(async ({ sonicKeys }) => {
+            console.log("Detected keys from Decode", sonicKeys);
+            var sonicKeysMetadata = [];
+            for (var i = 0; i < sonicKeys.length; i++) {
+                const sonicKey = sonicKeys[i];
+                const metadata = await this.sonicKeyService.findBySonicKey(sonicKey);
+                if (!metadata) {
+                    continue;
+                }
+                sonicKeysMetadata.push(metadata);
+            }
+            return sonicKeysMetadata;
         });
     }
     async updateMeta(sonickey, updateSonicKeyDto) {
@@ -238,11 +248,11 @@ __decorate([
     common_1.Post('/decode'),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
-    openapi.ApiResponse({ status: 201, type: require("../../schemas/sonickey.schema").SonicKey }),
+    openapi.ApiResponse({ status: 201, type: [Object] }),
     __param(0, common_1.UploadedFile()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "decode", null);
 __decorate([
     common_1.Patch('/:sonickey'),

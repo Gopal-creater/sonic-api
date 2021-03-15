@@ -14,7 +14,7 @@ export declare class SonickeyController {
     getOwnersKeys(ownerId: string): Promise<SonicKey[]>;
     getOne(sonickey: string): Promise<SonicKey>;
     encode(sonicKeyDto: SonicKeyDto, file: IUploadedFile, owner: string, req: any): Promise<SonicKey>;
-    decode(file: IUploadedFile): Promise<SonicKey>;
+    decode(file: IUploadedFile): Promise<any[]>;
     updateMeta(sonickey: string, updateSonicKeyDto: UpdateSonicKeyDto): Promise<SonicKey>;
     delete(sonickey: string): Promise<SonicKey>;
     createTable(): Promise<string>;

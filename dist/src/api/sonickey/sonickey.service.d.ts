@@ -18,6 +18,7 @@ export declare class SonickeyService {
         sonicKey: string;
     }>;
     decode(file: IUploadedFile): Promise<unknown>;
+    decodeAllKeys(file: IUploadedFile): Promise<unknown>;
     search(): Promise<SonicKey>;
     exractMusicMetaFromFile(filePath: string): Promise<mm.IAudioMetadata>;
     autoPopulateSonicContentWithMusicMetaForFile(file: IUploadedFile, sonicKeyDto?: SonicKeyDto): Promise<SonicKeyDto>;

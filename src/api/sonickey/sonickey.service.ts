@@ -131,6 +131,33 @@ export class SonickeyService {
     );
   }
 
+  /**
+   * Decodes the uploaded file and finds out all the Sonic Keys used. All the detected Keys will be printed to stdout/stderr
+   * by the decoder binary (note that decoder binary name is "detect") and return the array metadata of all the Sonic Keys.
+   *
+   * @param file
+   * @param ownerId
+   */
+   async decodeAllKeys(file: IUploadedFile) {
+    console.log('file', file);
+
+    file.path = upath.toUnix(file.path); //Convert windows path to unix path
+    const inFilePath = file.path;
+    const logFilePath = inFilePath + '.log';
+    const argList = ' ' + inFilePath + ' ' + logFilePath;
+
+    const sonicDecodeCmd = `${appConfig.DECODER_EXE_PATH}` + argList;
+    console.log('sonicDecodeCmd: ', sonicDecodeCmd);
+
+    //Prabin:Dont wait file to decode. just return Promise itself
+    return this.fileOperationService
+      .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
+      .finally(() => {
+        this.fileHandlerService.deleteFileAtPath(inFilePath);
+      })
+  }
+
+
   async search(){
     var items: SonicKey[] = [];
     for await (const item of this.sonicKeyRepository.query(

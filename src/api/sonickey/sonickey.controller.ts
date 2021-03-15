@@ -231,9 +231,20 @@ export class SonickeyController {
   @Post('/decode')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Decode File and retrive key information' })
-  decode(@UploadedFile() file: IUploadedFile) {
-    return this.sonicKeyService.decode(file).then(({ sonicKey }) => {
-      return this.sonicKeyService.findBySonicKeyOrFail(sonicKey);
+  async decode(@UploadedFile() file: IUploadedFile) {
+    return this.sonicKeyService.decodeAllKeys(file).then(async({ sonicKeys }) => {
+      console.log("Detected keys from Decode", sonicKeys);
+      //iterate all the sonicKeys from decode function in order to get metadata
+      var sonicKeysMetadata = [];
+      for (var i = 0; i <sonicKeys.length; i++) {
+        const sonicKey=sonicKeys[i]
+        const metadata = await this.sonicKeyService.findBySonicKey(sonicKey);
+        if(!metadata){
+          continue;
+        }
+        sonicKeysMetadata.push(metadata);
+      }
+      return sonicKeysMetadata;
     });
   }
 

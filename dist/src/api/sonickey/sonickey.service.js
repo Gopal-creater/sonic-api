@@ -109,6 +109,20 @@ let SonickeyService = class SonickeyService {
             this.fileHandlerService.deleteFileAtPath(inFilePath);
         }));
     }
+    async decodeAllKeys(file) {
+        console.log('file', file);
+        file.path = upath.toUnix(file.path);
+        const inFilePath = file.path;
+        const logFilePath = inFilePath + '.log';
+        const argList = ' ' + inFilePath + ' ' + logFilePath;
+        const sonicDecodeCmd = `${config_1.appConfig.DECODER_EXE_PATH}` + argList;
+        console.log('sonicDecodeCmd: ', sonicDecodeCmd);
+        return this.fileOperationService
+            .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
+            .finally(() => {
+            this.fileHandlerService.deleteFileAtPath(inFilePath);
+        });
+    }
     async search() {
         var e_3, _a;
         var items = [];
