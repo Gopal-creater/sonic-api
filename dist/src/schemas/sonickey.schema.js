@@ -83,6 +83,18 @@ __decorate([
 __decorate([
     dynamodb_data_mapper_annotations_1.attribute(),
     __metadata("design:type", String)
+], SonicKey.prototype, "isrcCode", void 0);
+__decorate([
+    dynamodb_data_mapper_annotations_1.attribute(),
+    __metadata("design:type", String)
+], SonicKey.prototype, "iswcCode", void 0);
+__decorate([
+    dynamodb_data_mapper_annotations_1.attribute(),
+    __metadata("design:type", String)
+], SonicKey.prototype, "tuneCode", void 0);
+__decorate([
+    dynamodb_data_mapper_annotations_1.attribute(),
+    __metadata("design:type", String)
 ], SonicKey.prototype, "contentName", void 0);
 __decorate([
     dynamodb_data_mapper_annotations_1.attribute(),

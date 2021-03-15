@@ -17,7 +17,7 @@ class SonicKeyDto {
         this.encodingStrength = 10;
     }
     static _OPENAPI_METADATA_FACTORY() {
-        return { encodingStrength: { required: false, type: () => Number, default: 10 }, contentType: { required: false, type: () => String }, contentDescription: { required: false, type: () => String }, contentCreatedDate: { required: false, type: () => Date }, contentDuration: { required: false, type: () => Number }, contentSize: { required: false, type: () => Number }, contentFilePath: { required: false, type: () => String }, contentFileType: { required: false, type: () => String }, contentEncoding: { required: false, type: () => String }, contentSamplingFrequency: { required: false, type: () => String }, contentName: { required: false, type: () => String }, contentOwner: { required: false, type: () => String }, contentValidation: { required: false, type: () => Boolean }, contentFileName: { required: false, type: () => String }, contentQuality: { required: false, type: () => String } };
+        return { encodingStrength: { required: false, type: () => Number, default: 10 }, contentType: { required: false, type: () => String }, contentDescription: { required: false, type: () => String }, contentCreatedDate: { required: false, type: () => Date }, contentDuration: { required: false, type: () => Number }, contentSize: { required: false, type: () => Number }, contentFilePath: { required: false, type: () => String }, contentFileType: { required: false, type: () => String }, contentEncoding: { required: false, type: () => String }, contentSamplingFrequency: { required: false, type: () => String }, isrcCode: { required: false, type: () => String }, iswcCode: { required: false, type: () => String }, tuneCode: { required: false, type: () => String }, contentName: { required: false, type: () => String }, contentOwner: { required: false, type: () => String }, contentValidation: { required: false, type: () => Boolean }, contentFileName: { required: false, type: () => String }, contentQuality: { required: false, type: () => String } };
     }
 }
 __decorate([
@@ -60,6 +60,18 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], SonicKeyDto.prototype, "contentSamplingFrequency", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], SonicKeyDto.prototype, "isrcCode", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], SonicKeyDto.prototype, "iswcCode", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], SonicKeyDto.prototype, "tuneCode", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)

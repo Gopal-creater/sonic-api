@@ -15,6 +15,9 @@ export declare class SonicKey {
     contentFileType: string;
     contentEncoding: string;
     contentSamplingFrequency: string;
+    isrcCode?: string;
+    iswcCode?: string;
+    tuneCode?: string;
     contentName?: string;
     contentOwner?: string;
     contentValidation?: boolean;

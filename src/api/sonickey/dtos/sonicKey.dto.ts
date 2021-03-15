@@ -38,6 +38,15 @@ export class SonicKeyDto {
   @ApiProperty()
   contentSamplingFrequency?: string;
 
+  @ApiProperty()
+  isrcCode?: string;
+
+  @ApiProperty()
+  iswcCode?: string;
+
+  @ApiProperty()
+  tuneCode?: string;
+
 
   @ApiProperty()
   contentName?: string;

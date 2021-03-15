@@ -62,6 +62,15 @@ export class SonicKey {
   contentSamplingFrequency: string;
 
   @attribute()
+  isrcCode?: string;
+
+  @attribute()
+  iswcCode?: string;
+
+  @attribute()
+  tuneCode?: string;
+
+  @attribute()
   contentName?: string;
 
   @attribute()
