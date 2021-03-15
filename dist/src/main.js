@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = require("@nestjs/config");
 const http_exception_filter_1 = require("./shared/filters/http-exception.filter");
-const appRootPath = require("app-root-path");
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const common_1 = require("@nestjs/common");
@@ -15,7 +14,6 @@ async function bootstrap() {
     const configService = app.get(config_1.ConfigService);
     app.enableCors();
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());
-    app.useStaticAssets(appRootPath.path.toString() + '/storage', { prefix: '/storage' });
     app.useGlobalPipes(new common_1.ValidationPipe({ transform: true }));
     const PORT = configService.get('PORT', 8000);
     const options = new swagger_1.DocumentBuilder()

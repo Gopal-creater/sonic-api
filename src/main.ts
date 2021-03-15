@@ -17,7 +17,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   app.enableCors()
   app.useGlobalFilters(new HttpExceptionFilter());
-  app.useStaticAssets(appRootPath.path.toString()+'/storage',{prefix:'/storage'})
+  // app.useStaticAssets(appRootPath.path.toString()+'/storage',{prefix:'/storage'})
   app.useGlobalPipes(new ValidationPipe({transform:true}))
   const PORT = configService.get('PORT',8000)
 
