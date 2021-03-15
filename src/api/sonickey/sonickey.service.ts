@@ -188,7 +188,7 @@ export class SonickeyService {
     sonicKeyDto.contentSamplingFrequency=`${musicData.format.sampleRate} Hz`;
     sonicKeyDto.contentName= sonicKeyDto.contentName ||  musicData.common.title||"";
     sonicKeyDto.contentOwner= sonicKeyDto.contentOwner || musicData.common.artist||"";
-    sonicKeyDto.contentDescription=sonicKeyDto.contentDescription || musicData.common.description?musicData.common.description[0]:"";
+    sonicKeyDto.contentDescription=musicData.common.description?musicData.common.description[0]:"";
     return sonicKeyDto
   }
 

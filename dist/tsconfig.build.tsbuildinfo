@@ -3632,7 +3632,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.service.ts": {
-        "version": "eb686c6fdf8e1d4e0c1cb465f714b66417bff309fc844dd2810700e6b0c76183",
+        "version": "3b8430691a79a1e2e4a2626e1435a3fd6ecb3d04e786dddd79dd96258e434317",
         "signature": "6767858e73c647e18c880b1b92adf0576664baec9d5cb23d210812ff86fb4272",
         "affectsGlobalScope": false
       },
