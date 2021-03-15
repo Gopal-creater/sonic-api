@@ -41,6 +41,8 @@ const uniqid = require("uniqid");
 const guards_1 = require("../auth/guards");
 const decorators_1 = require("../auth/decorators");
 const file_handler_service_1 = require("../../shared/services/file-handler.service");
+const download_dto_1 = require("./dtos/download.dto");
+const appRootPath = require("app-root-path");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, keygenService, fileHandlerService) {
         this.sonicKeyService = sonicKeyService;
@@ -78,6 +80,7 @@ let SonickeyController = class SonickeyController {
     }
     encode(sonicKeyDto, file, owner, req) {
         var _a;
+        console.log("file", file);
         const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.id;
         var downloadFileUrl;
         var outFilePath;
@@ -142,6 +145,35 @@ let SonickeyController = class SonickeyController {
     async delete(sonickey) {
         const found = await this.sonicKeyService.findBySonicKeyOrFail(sonickey);
         return this.sonicKeyService.sonicKeyRepository.delete(found);
+    }
+    async downloadFile(data, userId, response) {
+        try {
+            var checkForAuth = false;
+            console.log('url', data.fileURL);
+            console.log('uid', userId);
+            if (data.fileURL.includes(userId)) {
+                console.log('Inside if');
+                checkForAuth = true;
+            }
+            if (checkForAuth == false) {
+                throw new common_1.BadRequestException('You are not authenticated to download the file.');
+            }
+            if (!(data.contentType.includes('audio') || data.contentType.includes('video'))) {
+                throw new common_1.BadRequestException('Only audio and video files are supported');
+            }
+            const filePath = `${appRootPath.toString()}` + data.fileURL;
+            console.log('file-path:', filePath);
+            const fileStream = await this.fileHandlerService.downloadFileFromPath(filePath);
+            response.set({
+                'Content-Type': data.contentType,
+            });
+            return fileStream.pipe(response).on('close', function (err) {
+                console.log('Stream has been destroyed and file has been closed');
+            });
+        }
+        catch (e) {
+            throw new common_1.BadRequestException(e.message);
+        }
     }
     async createTable() {
         return await this.sonicKeyService.sonicKeyRepository
@@ -299,6 +331,17 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "delete", null);
+__decorate([
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Post('/download-file'),
+    swagger_1.ApiOperation({ summary: 'Secure Download of a file' }),
+    openapi.ApiResponse({ status: 201, type: Object }),
+    __param(0, common_1.Body()), __param(1, decorators_1.User('sub')), __param(2, common_1.Res()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [download_dto_1.DownloadDto, String, Object]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "downloadFile", null);
 __decorate([
     common_1.Get('/new/create-table'),
     swagger_1.ApiOperation({ summary: 'Create Sonic Key table in Dynamo DB' }),

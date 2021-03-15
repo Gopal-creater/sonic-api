@@ -6,6 +6,7 @@ import { KeygenService } from './../../shared/modules/keygen/keygen.service';
 import { SonickeyService } from './sonickey.service';
 import { SonicKey } from '../../schemas/sonickey.schema';
 import { FileHandlerService } from '../../shared/services/file-handler.service';
+import { DownloadDto } from './dtos/download.dto';
 export declare class SonickeyController {
     private readonly sonicKeyService;
     private readonly keygenService;
@@ -19,5 +20,6 @@ export declare class SonickeyController {
     decode(file: IUploadedFile): Promise<any[]>;
     updateMeta(sonickey: string, updateSonicKeyDto: UpdateSonicKeyDto): Promise<SonicKey>;
     delete(sonickey: string): Promise<SonicKey>;
+    downloadFile(data: DownloadDto, userId: string, response: any): Promise<any>;
     createTable(): Promise<string>;
 }

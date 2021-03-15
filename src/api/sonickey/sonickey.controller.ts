@@ -21,6 +21,7 @@ import {
   BadRequestException,
   UseGuards,
   Patch,
+  Res,
 } from '@nestjs/common';
 import { SonickeyService } from './sonickey.service';
 import { SonicKey } from '../../schemas/sonickey.schema';
@@ -34,6 +35,8 @@ import * as uniqid from 'uniqid';
 import { JwtAuthGuard } from '../auth/guards';
 import { User } from '../auth/decorators';
 import { FileHandlerService } from '../../shared/services/file-handler.service';
+import { DownloadDto } from './dtos/download.dto';
+import * as appRootPath from 'app-root-path';
 
 /**
  * Prabin:
@@ -159,6 +162,8 @@ export class SonickeyController {
     @User('sub') owner: string,
     @Req() req: any,
   ) {
+    console.log("file",file);
+    
     const licenseId = req?.validLicense?.id as string;
     var downloadFileUrl: string;
     var outFilePath: string;
@@ -273,6 +278,48 @@ export class SonickeyController {
   async delete(@Param('sonickey') sonickey: string) {
     const found = await this.sonicKeyService.findBySonicKeyOrFail(sonickey);
     return this.sonicKeyService.sonicKeyRepository.delete(found);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post('/download-file')
+  @ApiOperation({ summary: 'Secure Download of a file' })
+  async downloadFile(@Body() data: DownloadDto, @User('sub') userId: string, @Res() response): Promise<any> {
+    try {
+      /* Checks for authenticated user in order to download the file */
+      var checkForAuth = false;
+      console.log('url',data.fileURL);
+      console.log('uid',userId)
+      if(data.fileURL.includes(userId)){
+        console.log('Inside if')
+        checkForAuth = true;
+      }
+      if (checkForAuth == false) {
+        throw new BadRequestException('You are not authenticated to download the file.');
+      }
+
+      /*TODO : Check to accept only audio and video file content types*/
+      if (!(data.contentType.includes('audio') || data.contentType.includes('video'))) {
+        throw new BadRequestException('Only audio and video files are supported');
+      }
+
+      /*TODO : Convert into a readable stream by passing the file path. The readable stream will return the file using pipe method*/
+      const filePath = `${appRootPath.toString()}` + data.fileURL;
+      console.log('file-path:', filePath);
+      const fileStream = await this.fileHandlerService.downloadFileFromPath(filePath);
+
+      response.set({
+        'Content-Type': data.contentType,
+      });
+
+      /*TODO: Return the file and close the stream*/
+      return fileStream.pipe(response).on('close', function (err) {
+        console.log('Stream has been destroyed and file has been closed');
+      });
+
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
   }
 
   @Get('/new/create-table')

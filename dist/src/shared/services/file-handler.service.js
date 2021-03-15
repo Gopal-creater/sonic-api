@@ -58,6 +58,12 @@ let FileHandlerService = class FileHandlerService {
             });
         });
     }
+    downloadFileFromPath(pathFromRoot) {
+        return new Promise(async (resolve, reject) => {
+            const stream = fs.createReadStream(pathFromRoot);
+            resolve(stream);
+        });
+    }
 };
 FileHandlerService = __decorate([
     common_1.Injectable()

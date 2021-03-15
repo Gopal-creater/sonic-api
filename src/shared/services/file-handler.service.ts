@@ -57,4 +57,10 @@ export class FileHandlerService {
       });
     });
   }
+  downloadFileFromPath(pathFromRoot: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+        const stream = fs.createReadStream(pathFromRoot)
+        resolve(stream);
+    });
+}
 }

@@ -8,4 +8,5 @@ export declare class FileHandlerService {
         path: string;
     }>;
     fileExistsAtPath(path: string): Promise<boolean>;
+    downloadFileFromPath(pathFromRoot: string): Promise<any>;
 }
