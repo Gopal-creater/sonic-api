@@ -40,7 +40,8 @@ export class FileOperationService {
         // read lines from the logfile. each line will be a detected key.
         readline.eachLine(logFilePath, function(line) {
           console.log('Decoder output line: ', line);
-          resolve({ sonicKey: line });          
+          const sonicKey = line?.split(': ')[1]?.trim()
+          resolve({ sonicKey: sonicKey });          
           // we need only the first line from logfile. returning false stops further reading.
           return false; 
         });
@@ -75,9 +76,10 @@ export class FileOperationService {
         
         lineReader.on('line', function (line) {
           console.log('Line from file:', line);
-          const isPresent = sonicKeys.find(key=>key==line)
-          if(line && !isPresent){
-            sonicKeys.push(line); //push each line in the file into the lineArray
+          const sonicKey = line?.split(': ')[1]?.trim()
+          const isPresent = sonicKeys.find(key=>key==sonicKey)
+          if(sonicKey && !isPresent){
+            sonicKeys.push(sonicKey); //push each line in the file into the lineArray
           }
         });
         lineReader.on('close', function (line) {

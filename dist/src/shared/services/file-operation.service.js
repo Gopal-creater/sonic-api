@@ -38,8 +38,10 @@ let FileOperationService = class FileOperationService {
                     });
                 }
                 readline.eachLine(logFilePath, function (line) {
+                    var _a;
                     console.log('Decoder output line: ', line);
-                    resolve({ sonicKey: line });
+                    const sonicKey = (_a = line === null || line === void 0 ? void 0 : line.split(': ')[1]) === null || _a === void 0 ? void 0 : _a.trim();
+                    resolve({ sonicKey: sonicKey });
                     return false;
                 });
             }
@@ -67,10 +69,12 @@ let FileOperationService = class FileOperationService {
                     input: fs.createReadStream(logFilePath)
                 });
                 lineReader.on('line', function (line) {
+                    var _a;
                     console.log('Line from file:', line);
-                    const isPresent = sonicKeys.find(key => key == line);
-                    if (line && !isPresent) {
-                        sonicKeys.push(line);
+                    const sonicKey = (_a = line === null || line === void 0 ? void 0 : line.split(': ')[1]) === null || _a === void 0 ? void 0 : _a.trim();
+                    const isPresent = sonicKeys.find(key => key == sonicKey);
+                    if (sonicKey && !isPresent) {
+                        sonicKeys.push(sonicKey);
                     }
                 });
                 lineReader.on('close', function (line) {
