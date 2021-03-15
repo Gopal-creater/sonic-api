@@ -186,9 +186,9 @@ export class SonickeyService {
     sonicKeyDto.contentDuration=musicData.format.duration;
     sonicKeyDto.contentEncoding=`${musicData.format.codec}, ${musicData.format.sampleRate} Hz, ${musicData.format.codecProfile}, ${musicData.format.bitrate} ch`;
     sonicKeyDto.contentSamplingFrequency=`${musicData.format.sampleRate} Hz`;
-    sonicKeyDto.contentName= musicData.common.title||"";
-    sonicKeyDto.contentOwner= musicData.common.artist||"";
-    sonicKeyDto.contentDescription= musicData.common.description?musicData.common.description[0]:"";
+    sonicKeyDto.contentName= sonicKeyDto.contentName ||  musicData.common.title||"";
+    sonicKeyDto.contentOwner= sonicKeyDto.contentOwner || musicData.common.artist||"";
+    sonicKeyDto.contentDescription=sonicKeyDto.contentDescription || musicData.common.description?musicData.common.description[0]:"";
     return sonicKeyDto
   }
 
