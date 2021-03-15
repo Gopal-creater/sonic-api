@@ -101,6 +101,7 @@ let SonickeyController = class SonickeyController {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const dataToSave = new sonickey_schema_1.SonicKey(Object.assign(sonicKeyDtoWithAudioData, {
+                contentFilePath: downloadFileUrl,
                 owner: owner,
                 sonicKey: sonicKey,
                 licenseId: licenseId,

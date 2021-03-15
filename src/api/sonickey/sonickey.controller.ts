@@ -191,6 +191,7 @@ export class SonickeyController {
 
         
         const dataToSave = new SonicKey(Object.assign(sonicKeyDtoWithAudioData,{
+          contentFilePath:downloadFileUrl,
           owner: owner,
           sonicKey: sonicKey,
           licenseId: licenseId, //modified
