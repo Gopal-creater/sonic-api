@@ -236,8 +236,7 @@ export class SonickeyController {
       console.log("Detected keys from Decode", sonicKeys);
       //iterate all the sonicKeys from decode function in order to get metadata
       var sonicKeysMetadata = [];
-      for (var i = 0; i <sonicKeys.length; i++) {
-        const sonicKey=sonicKeys[i]
+      for await (const sonicKey of sonicKeys) {
         const metadata = await this.sonicKeyService.findBySonicKey(sonicKey);
         if(!metadata){
           continue;

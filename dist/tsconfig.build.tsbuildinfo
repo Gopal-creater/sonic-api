@@ -4042,7 +4042,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.controller.ts": {
-        "version": "54b5edbdeb258bfa1ea474d400ddee5cab605c7240d7052130b88ea1271664fb",
+        "version": "02fe0e4ddb0c2e0947d315a1b84ffe28c68747f922e65906e95269e804da24de",
         "signature": "5d2531539baa413f8905aee20774342dcef6b548c3a8a51a27e01f12cd114461",
         "affectsGlobalScope": false
       },

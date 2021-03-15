@@ -11,6 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonickeyController = void 0;
 const openapi = require("@nestjs/swagger");
@@ -99,15 +106,25 @@ let SonickeyController = class SonickeyController {
     }
     async decode(file) {
         return this.sonicKeyService.decodeAllKeys(file).then(async ({ sonicKeys }) => {
+            var e_1, _a;
             console.log("Detected keys from Decode", sonicKeys);
             var sonicKeysMetadata = [];
-            for (var i = 0; i < sonicKeys.length; i++) {
-                const sonicKey = sonicKeys[i];
-                const metadata = await this.sonicKeyService.findBySonicKey(sonicKey);
-                if (!metadata) {
-                    continue;
+            try {
+                for (var sonicKeys_1 = __asyncValues(sonicKeys), sonicKeys_1_1; sonicKeys_1_1 = await sonicKeys_1.next(), !sonicKeys_1_1.done;) {
+                    const sonicKey = sonicKeys_1_1.value;
+                    const metadata = await this.sonicKeyService.findBySonicKey(sonicKey);
+                    if (!metadata) {
+                        continue;
+                    }
+                    sonicKeysMetadata.push(metadata);
                 }
-                sonicKeysMetadata.push(metadata);
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (sonicKeys_1_1 && !sonicKeys_1_1.done && (_a = sonicKeys_1.return)) await _a.call(sonicKeys_1);
+                }
+                finally { if (e_1) throw e_1.error; }
             }
             return sonicKeysMetadata;
         });
