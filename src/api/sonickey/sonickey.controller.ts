@@ -33,6 +33,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags, ApiConsumes, ApiBody } from '@nes
 import * as uniqid from 'uniqid';
 import { JwtAuthGuard } from '../auth/guards';
 import { User } from '../auth/decorators';
+import { FileHandlerService } from '../../shared/services/file-handler.service';
 
 /**
  * Prabin:
@@ -46,6 +47,7 @@ export class SonickeyController {
   constructor(
     private readonly sonicKeyService: SonickeyService,
     private readonly keygenService: KeygenService,
+    private readonly fileHandlerService:FileHandlerService
   ) {}
 
   @Get('/')
@@ -190,6 +192,9 @@ export class SonickeyController {
         }))
         return this.sonicKeyService.sonicKeyRepository
           .put(dataToSave)
+          .finally(() => {
+            this.fileHandlerService.deleteFileAtPath(file.path);
+          });
       });
   }
 

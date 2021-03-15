@@ -5,10 +5,12 @@ import { IUploadedFile } from './../../shared/interfaces/UploadedFile.interface'
 import { KeygenService } from './../../shared/modules/keygen/keygen.service';
 import { SonickeyService } from './sonickey.service';
 import { SonicKey } from '../../schemas/sonickey.schema';
+import { FileHandlerService } from '../../shared/services/file-handler.service';
 export declare class SonickeyController {
     private readonly sonicKeyService;
     private readonly keygenService;
-    constructor(sonicKeyService: SonickeyService, keygenService: KeygenService);
+    private readonly fileHandlerService;
+    constructor(sonicKeyService: SonickeyService, keygenService: KeygenService, fileHandlerService: FileHandlerService);
     getAll(): Promise<any[]>;
     create(createSonicKeyDto: CreateSonicKeyDto, owner: string, req: any): Promise<SonicKey>;
     getOwnersKeys(ownerId: string): Promise<SonicKey[]>;

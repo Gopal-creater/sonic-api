@@ -3632,7 +3632,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.service.ts": {
-        "version": "6bfef432cb60c31666744bb187f9a2b43c3a9b8a3ac9b40ab87eff7fe04a4ff8",
+        "version": "ee5824aa29a57af6733d13510934f541941deb5d8de70d8c0156e44fad71be23",
         "signature": "6767858e73c647e18c880b1b92adf0576664baec9d5cb23d210812ff86fb4272",
         "affectsGlobalScope": false
       },
@@ -4042,8 +4042,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.controller.ts": {
-        "version": "02fe0e4ddb0c2e0947d315a1b84ffe28c68747f922e65906e95269e804da24de",
-        "signature": "5d2531539baa413f8905aee20774342dcef6b548c3a8a51a27e01f12cd114461",
+        "version": "aa1c4448238570237ad98c5163ce2a43a5c54c76ef46338d5e63e8da30d689c0",
+        "signature": "0a448f767c6875b76009999d281947cc311f1e1605559f9bc6ce868add006b6c",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.module.ts": {
@@ -13497,7 +13497,8 @@
         "../src/schemas/sonickey.schema.ts",
         "../src/shared/interfaces/uploadedfile.interface.ts",
         "../src/shared/modules/keygen/keygen.service.ts",
-        "../src/shared/pipes/jsonparse.pipe.ts"
+        "../src/shared/pipes/jsonparse.pipe.ts",
+        "../src/shared/services/file-handler.service.ts"
       ],
       "../src/api/sonickey/sonickey.module.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -22552,7 +22553,8 @@
         "../src/api/sonickey/sonickey.service.ts",
         "../src/schemas/sonickey.schema.ts",
         "../src/shared/interfaces/uploadedfile.interface.ts",
-        "../src/shared/modules/keygen/keygen.service.ts"
+        "../src/shared/modules/keygen/keygen.service.ts",
+        "../src/shared/services/file-handler.service.ts"
       ],
       "../src/api/sonickey/sonickey.service.ts": [
         "../node_modules/music-metadata/lib/index.d.ts",

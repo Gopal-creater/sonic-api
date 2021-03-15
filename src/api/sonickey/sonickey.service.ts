@@ -90,7 +90,7 @@ export class SonickeyService {
         };
       })
       .finally(() => {
-        this.fileHandlerService.deleteFileAtPath(inFilePath);
+        // this.fileHandlerService.deleteFileAtPath(inFilePath);
       });
   }
 

@@ -40,10 +40,12 @@ const swagger_1 = require("@nestjs/swagger");
 const uniqid = require("uniqid");
 const guards_1 = require("../auth/guards");
 const decorators_1 = require("../auth/decorators");
+const file_handler_service_1 = require("../../shared/services/file-handler.service");
 let SonickeyController = class SonickeyController {
-    constructor(sonicKeyService, keygenService) {
+    constructor(sonicKeyService, keygenService, fileHandlerService) {
         this.sonicKeyService = sonicKeyService;
         this.keygenService = keygenService;
+        this.fileHandlerService = fileHandlerService;
     }
     async getAll() {
         return await this.sonicKeyService.getAll();
@@ -101,7 +103,10 @@ let SonickeyController = class SonickeyController {
                 licenseId: licenseId,
             }));
             return this.sonicKeyService.sonicKeyRepository
-                .put(dataToSave);
+                .put(dataToSave)
+                .finally(() => {
+                this.fileHandlerService.deleteFileAtPath(file.path);
+            });
         });
     }
     async decode(file) {
@@ -306,7 +311,8 @@ SonickeyController = __decorate([
     swagger_1.ApiTags('SonicKeys Contrller'),
     common_1.Controller('sonic-keys'),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
-        keygen_service_1.KeygenService])
+        keygen_service_1.KeygenService,
+        file_handler_service_1.FileHandlerService])
 ], SonickeyController);
 exports.SonickeyController = SonickeyController;
 //# sourceMappingURL=sonickey.controller.js.map

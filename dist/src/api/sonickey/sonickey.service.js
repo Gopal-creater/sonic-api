@@ -93,7 +93,6 @@ let SonickeyService = class SonickeyService {
             };
         })
             .finally(() => {
-            this.fileHandlerService.deleteFileAtPath(inFilePath);
         });
     }
     async decode(file) {
