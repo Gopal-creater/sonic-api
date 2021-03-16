@@ -12,7 +12,12 @@ async function bootstrap() {
         bodyParser: true
     });
     const configService = app.get(config_1.ConfigService);
-    app.enableCors();
+    app.use((req, res, next) => {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET,PUT');
+        res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+        next();
+    });
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());
     app.useGlobalPipes(new common_1.ValidationPipe({ transform: true }));
     const PORT = configService.get('PORT', 8000);
