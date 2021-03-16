@@ -162,7 +162,7 @@ let SonickeyController = class SonickeyController {
             if (!(data.contentType.includes('audio') || data.contentType.includes('video'))) {
                 throw new common_1.BadRequestException('Only audio and video files are supported');
             }
-            const filePath = `${appRootPath.toString()}` + data.fileURL;
+            const filePath = `${appRootPath.toString()}/` + data.fileURL;
             console.log('file-path:', filePath);
             const fileStream = await this.fileHandlerService.downloadFileFromPath(filePath);
             response.set({

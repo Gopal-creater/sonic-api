@@ -305,7 +305,7 @@ export class SonickeyController {
       }
 
       /*TODO : Convert into a readable stream by passing the file path. The readable stream will return the file using pipe method*/
-      const filePath = `${appRootPath.toString()}` + data.fileURL;
+      const filePath = `${appRootPath.toString()}/` + data.fileURL;
       console.log('file-path:', filePath);
       const fileStream = await this.fileHandlerService.downloadFileFromPath(filePath);
 
