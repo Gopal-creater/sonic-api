@@ -15,7 +15,7 @@
 # !!! IMPORANT: Change BIN_PATH according to the installation folder. 
 # -----------------------------------------------------------------------------------------
 
-BIN_PATH=/home/ubuntu/sonicdata-portal/backend/bin/
+BIN_PATH=/home/ubuntu/code/Sonic-API/bin/
 # BIN_PATH=/home/arun/Work/Sonic/Phase-2/src/github/sonic-core/
 BIN_DETECT=detect
 
@@ -36,7 +36,7 @@ echo "Input: filename: $infilename. Extension: $inext"
 
 in_tmpfile_path=$1-in-tmp.wav
 
-if [[ $inext == "wav" || $inext == "WAV" ]]; then
+if [[ $inext == "wavx" || $inext == "WAVX" ]]; then
     echo "Wave file processing"
     echo "Detecting..."
 

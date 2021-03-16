@@ -19,7 +19,7 @@
 # !!! IMPORANT: Change BIN_PATH according to the installation folder.
 # -----------------------------------------------------------------------------------------
 
-BIN_PATH=/home/ubuntu/sonicdata-portal/backend/bin/
+BIN_PATH=/home/ubuntu/code/Sonic-API/bin/
 # BIN_PATH=/home/arun/Work/Sonic/Phase-2/src/github/sonic-core/
 BIN_WATERMARK=watermark
 
@@ -48,7 +48,7 @@ echo "Input: filename: $infilename. Extension: $inext"
 echo "Input temp file path: $in_tmpfile_path"
 echo "Otput temp file path: $out_tmpfile_path"
 
-if [[ $inext == "wav" || $inext == "WAV" ]]; then
+if [[ $inext == "wavx" || $inext == "WAVX" ]]; then
     echo "Wave file processing"
     echo "Watermarking..."
 
