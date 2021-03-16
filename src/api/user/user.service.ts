@@ -71,6 +71,31 @@ export class UserService {
     });
   }
 
+  async exportFromLic(){
+    const params = {
+      UserPoolId: this.cognitoUserPoolId
+    };
+    this.cognitoIdentityServiceProvider.listUsers(params, function(
+      err,
+      data,
+    ) {
+console.log("users",data);
+console.log("users count",data.Users.length);
+for (let index = 0; index < data.Users.length; index++) {
+  const user = data.Users[index];
+  const licencesInString = user.Attributes.find(attr=>attr.Name=="custom:licenseKey")?.Value
+  if(licencesInString){
+    const licences = JSON.parse(licencesInString)
+    console.log(`licences for user ${user.Username}`,licences);
+    licences.forEach(lic => {
+      
+    });
+  }
+}
+
+    })
+  }
+
   async updateUserWithCustomField(
     username: string,
     updateUserAttributes: [{ Name: string, Value: any }],

@@ -8,6 +8,16 @@ import { Controller, Get, Param, Post, Put, Body, BadRequestException, UseGuards
 @Controller('users')
 export class UserController {
   constructor(private readonly userServices: UserService) {}
+
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
+  // @ApiOperation({ summary: 'Get all licenses of particular user' })
+  // @Get('/export-lic')
+  // async exportLic() {
+  //   return this.userServices.exportFromLic();
+  // }
+
+
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all licenses of particular user' })

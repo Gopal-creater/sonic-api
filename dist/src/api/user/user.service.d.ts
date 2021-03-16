@@ -12,6 +12,7 @@ export declare class UserService {
     addNewLicense(licenseId: string, ownerId: string): Promise<any>;
     addBulkNewLicenses(licenseIds: [string], ownerId: string): Promise<any[]>;
     getUserProfile(username: string): Promise<unknown>;
+    exportFromLic(): Promise<void>;
     updateUserWithCustomField(username: string, updateUserAttributes: [{
         Name: string;
         Value: any;
