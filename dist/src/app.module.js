@@ -31,7 +31,7 @@ AppModule = __decorate([
     common_1.Module({
         imports: [
             auth_module_1.AuthModule,
-            config_1.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba' }),
+            config_1.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
             platform_express_1.MulterModule.register({
                 storage: multer_1.diskStorage({
                     destination: config_2.appConfig.MULTER_DEST,
