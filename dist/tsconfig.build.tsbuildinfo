@@ -4072,8 +4072,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/externalapi/externalsonickey/externalsonickey.controller.ts": {
-        "version": "9437ffbb48dc3a02cd1670bf55d4a0fa412cf62693c273c4fc7a3d5542577035",
-        "signature": "d8905a9bd341f6e8eb1699c2fded6e8dce09aae5a02d3fcd66617d18f25cf38f",
+        "version": "86c0c7e6b78dbc29f9fed6ffd3471312438d2dd6b23e7d7633c8cf8197b1f3d7",
+        "signature": "b73885af2446317ac80814e6baa8a85679b71d61c8d069e422081845b1b62e70",
         "affectsGlobalScope": false
       },
       "../src/api/externalapi/externalsonickey/externalsonickey.module.ts": {
@@ -22543,9 +22543,7 @@
       ],
       "../src/api/externalapi/externalsonickey/externalsonickey.controller.ts": [
         "../src/api/externalapi/externalsonickey/externalsonickey.service.ts",
-        "../src/api/sonickey/dtos/sonickey.dto.ts",
         "../src/api/sonickey/sonickey.service.ts",
-        "../src/schemas/sonickey.schema.ts",
         "../src/shared/interfaces/uploadedfile.interface.ts"
       ],
       "../src/api/externalapi/externalsonickey/externalsonickey.service.ts": [
