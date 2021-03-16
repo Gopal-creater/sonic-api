@@ -15,14 +15,10 @@ async function bootstrap() {
     bodyParser:true
   });
   const configService = app.get(ConfigService);
-  // app.enableCors()
-  //handling CORS error
-app.use((req,res,next)=>{
-  res.setHeader("Access-Control-Allow-Origin","*");
-  res.setHeader('Access-Control-Allow-Methods','PUT, POST, PATCH, DELETE, GET,PUT');
-  res.setHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  next()
-})
+  app.enableCors({
+    origin:'https://portal.sonicdata.com',
+    optionsSuccessStatus: 200
+  })
   app.useGlobalFilters(new HttpExceptionFilter());
   // app.useStaticAssets(appRootPath.path.toString()+'/storage',{prefix:'/storage'})
   app.useGlobalPipes(new ValidationPipe({transform:true}))

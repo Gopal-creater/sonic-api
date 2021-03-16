@@ -4242,7 +4242,7 @@
         "affectsGlobalScope": false
       },
       "../src/main.ts": {
-        "version": "8e4c17081697559ca9f4616e092264b97cc530474cc0b9957f42f6c2909baf9c",
+        "version": "4584433f78d9b36cb5fd00dab5c44b320c12f0b8d859ea347c36dc3043b6d8ae",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
