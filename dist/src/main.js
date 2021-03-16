@@ -12,10 +12,7 @@ async function bootstrap() {
         bodyParser: true
     });
     const configService = app.get(config_1.ConfigService);
-    app.enableCors({
-        origin: 'https://portal.sonicdata.com',
-        optionsSuccessStatus: 200
-    });
+    app.enableCors();
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());
     app.useGlobalPipes(new common_1.ValidationPipe({ transform: true }));
     const PORT = configService.get('PORT', 8000);
