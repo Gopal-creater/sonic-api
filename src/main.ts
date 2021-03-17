@@ -17,8 +17,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   // app.enableCors()
   app.enableCors({
-    origin:'https://portal.sonicdata.com',
-    optionsSuccessStatus: 200
+    origin:['https://portal.sonicdata.com','https://sonicportal.arba-dev.uk']
   })
   app.useGlobalFilters(new HttpExceptionFilter());
   // app.useStaticAssets(appRootPath.path.toString()+'/storage',{prefix:'/storage'})

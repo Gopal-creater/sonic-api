@@ -19,7 +19,7 @@
 # !!! IMPORANT: Change BIN_PATH according to the installation folder.
 # -----------------------------------------------------------------------------------------
 
-BIN_PATH=/home/ubuntu/code/Sonic-API/bin/
+BIN_PATH=/home/ubuntu/sonic-staging/Sonic-API/bin/
 # BIN_PATH=/home/arun/Work/Sonic/Phase-2/src/github/sonic-core/
 BIN_WATERMARK=watermark
 

@@ -13,8 +13,7 @@ async function bootstrap() {
     });
     const configService = app.get(config_1.ConfigService);
     app.enableCors({
-        origin: 'https://portal.sonicdata.com',
-        optionsSuccessStatus: 200
+        origin: ['https://portal.sonicdata.com', 'https://sonicportal.arba-dev.uk']
     });
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());
     app.useGlobalPipes(new common_1.ValidationPipe({ transform: true }));
