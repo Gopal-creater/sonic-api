@@ -27,7 +27,12 @@ let UserController = class UserController {
         return this.userServices.listAllLicensesOfOwner(userId);
     }
     async addNewLicense(userId, addNewLicenseDto) {
-        return this.userServices.addNewLicense(addNewLicenseDto.licenseKey, userId);
+        return this.userServices.addNewLicense(addNewLicenseDto.licenseKey, userId).catch(err => {
+            if (err.status == 404) {
+                throw new common_1.NotFoundException(err.message);
+            }
+            throw err;
+        });
     }
     async addBulkNewLicense(userId, addBulkNewLicensesDto) {
         return this.userServices.addBulkNewLicenses(addBulkNewLicensesDto.licenseKeys, userId);
@@ -68,7 +73,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Add Bulk License Keys' }),
     common_1.Post('/:userId/add-new-licenses'),
-    openapi.ApiResponse({ status: 201, type: [Object] }),
+    openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Param('userId')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),

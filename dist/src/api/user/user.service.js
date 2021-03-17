@@ -23,30 +23,43 @@ let UserService = class UserService {
         this.cognitoUserPoolId = this.configService.get('COGNITO_USER_POOL_ID');
     }
     async listAllLicensesOfOwner(ownerId) {
-        const { data, errors } = await this.keygenService.getAllLicenses(`metadata[ownerId]=${ownerId}`);
+        const { data, errors } = await this.keygenService.getAllLicenses(`metadata[owner-${ownerId}]=${ownerId}`);
         if (errors)
             return Promise.reject(errors);
         return data;
     }
     async addNewLicense(licenseId, ownerId) {
-        var _a, _b, _c;
+        var _a;
         const { data, errors } = await this.keygenService.getLicenseById(licenseId);
         if (!data) {
-            throw new common_1.NotFoundException('Invalid license key');
+            return Promise.reject({
+                notFound: true,
+                status: 404,
+                message: 'Invalid license key',
+            });
         }
-        if ((_b = (_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) === null || _b === void 0 ? void 0 : _b.ownerId) {
-            throw new common_1.BadRequestException('This key is already used by someone');
-        }
-        const { data: updatedData, errors: errorsUpdate } = await this.keygenService.updateLicense(licenseId, {
-            metadata: Object.assign(Object.assign({}, (_c = data === null || data === void 0 ? void 0 : data.attributes) === null || _c === void 0 ? void 0 : _c.metadata), { ownerId: ownerId }),
+        const oldMetaData = ((_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) || {};
+        oldMetaData[`owner-${ownerId}`] = ownerId;
+        const { data: updatedData, errors: errorsUpdate, } = await this.keygenService.updateLicense(licenseId, {
+            metadata: Object.assign({}, oldMetaData),
         });
         if (errorsUpdate)
             return Promise.reject(errorsUpdate);
         return updatedData;
     }
     async addBulkNewLicenses(licenseIds, ownerId) {
-        const promises = licenseIds.map(id => this.addNewLicense(id, ownerId));
-        return Promise.all(promises);
+        const promises = licenseIds.map(licenseId => this.addNewLicense(licenseId, ownerId).catch(err => ({
+            promiseError: err,
+            data: licenseId,
+        })));
+        return Promise.all(promises).then(values => {
+            const failedData = values.filter(item => item['promiseError']);
+            const passedData = values.filter(item => !item['promiseError']);
+            return {
+                passedData: passedData,
+                failedData: failedData,
+            };
+        });
     }
     async getUserProfile(username) {
         const params = {
@@ -69,20 +82,19 @@ let UserService = class UserService {
     }
     async exportFromLic() {
         const params = {
-            UserPoolId: this.cognitoUserPoolId
+            UserPoolId: this.cognitoUserPoolId,
         };
-        this.cognitoIdentityServiceProvider.listUsers(params, function (err, data) {
+        this.cognitoIdentityServiceProvider.listUsers(params, (err, data) => {
             var _a;
-            console.log("users", data);
-            console.log("users count", data.Users.length);
+            console.log('users', data);
+            console.log('users count', data.Users.length);
             for (let index = 0; index < data.Users.length; index++) {
                 const user = data.Users[index];
-                const licencesInString = (_a = user.Attributes.find(attr => attr.Name == "custom:licenseKey")) === null || _a === void 0 ? void 0 : _a.Value;
+                const licencesInString = (_a = user.Attributes.find(attr => attr.Name == 'custom:licenseKey')) === null || _a === void 0 ? void 0 : _a.Value;
                 if (licencesInString) {
-                    const licences = JSON.parse(licencesInString);
-                    console.log(`licences for user ${user.Username}`, licences);
-                    licences.forEach(lic => {
-                    });
+                    const licenceIds = JSON.parse(licencesInString);
+                    const ownerId = user.Attributes.find(att => att.Name == 'sub').Value;
+                    console.log(`licences for user ${user.Username} id ${ownerId}`, licenceIds);
                 }
             }
         });

@@ -10,7 +10,13 @@ export declare class UserService {
     constructor(keygenService: KeygenService, globalAwsService: GlobalAwsService, configService: ConfigService);
     listAllLicensesOfOwner(ownerId: string): Promise<any>;
     addNewLicense(licenseId: string, ownerId: string): Promise<any>;
-    addBulkNewLicenses(licenseIds: [string], ownerId: string): Promise<any[]>;
+    addBulkNewLicenses(licenseIds: [string], ownerId: string): Promise<{
+        passedData: any[];
+        failedData: {
+            promiseError: any;
+            data: string;
+        }[];
+    }>;
     getUserProfile(username: string): Promise<unknown>;
     exportFromLic(): Promise<void>;
     updateUserWithCustomField(username: string, updateUserAttributes: [{

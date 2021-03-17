@@ -2,49 +2,75 @@ import { ConfigService } from '@nestjs/config';
 import { GlobalAwsService } from './../../shared/modules/global-aws/global-aws.service';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
 import { KeygenService } from 'src/shared/modules/keygen/keygen.service';
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 
 @Injectable()
 export class UserService {
   private cognitoIdentityServiceProvider: CognitoIdentityServiceProvider;
-  private cognitoUserPoolId:string;
+  private cognitoUserPoolId: string;
   constructor(
     private readonly keygenService: KeygenService,
     private readonly globalAwsService: GlobalAwsService,
     private readonly configService: ConfigService,
   ) {
     this.cognitoIdentityServiceProvider = globalAwsService.getCognitoIdentityServiceProvider();
-    this.cognitoUserPoolId = this.configService.get('COGNITO_USER_POOL_ID')
+    this.cognitoUserPoolId = this.configService.get('COGNITO_USER_POOL_ID');
   }
 
   async listAllLicensesOfOwner(ownerId: string) {
-    const {data,errors} = await this.keygenService.getAllLicenses(`metadata[ownerId]=${ownerId}`);
-    if(errors) return Promise.reject(errors)
-    return data
+    const { data, errors } = await this.keygenService.getAllLicenses(
+      `metadata[owner-${ownerId}]=${ownerId}`,
+    );
+    if (errors) return Promise.reject(errors);
+    return data;
   }
 
   //Add new existing license: Meaning just update the metadata field with ownerId
   async addNewLicense(licenseId: string, ownerId: string) {
-    const {data,errors} = await this.keygenService.getLicenseById(licenseId)
+    const { data, errors } = await this.keygenService.getLicenseById(licenseId);
     if (!data) {
-      throw new NotFoundException('Invalid license key');
+      return Promise.reject({
+        notFound: true,
+        status: 404,
+        message: 'Invalid license key',
+      });
     }
-    if(data?.attributes?.metadata?.ownerId){
-      throw new BadRequestException('This key is already used by someone');
-    }
-    const {data:updatedData,errors:errorsUpdate} = await this.keygenService.updateLicense(licenseId, {
+    const oldMetaData = data?.attributes?.metadata || {};
+    oldMetaData[`owner-${ownerId}`] = ownerId;
+    const {
+      data: updatedData,
+      errors: errorsUpdate,
+    } = await this.keygenService.updateLicense(licenseId, {
       metadata: {
-        ...data?.attributes?.metadata,
-        ownerId: ownerId,
+        ...oldMetaData,
       },
     });
-    if(errorsUpdate) return Promise.reject(errorsUpdate)
-    return updatedData
+    if (errorsUpdate) return Promise.reject(errorsUpdate);
+    return updatedData;
   }
 
   async addBulkNewLicenses(licenseIds: [string], ownerId: string) {
-   const promises = licenseIds.map(id=>this.addNewLicense(id,ownerId))
-   return Promise.all(promises)
+    const promises = licenseIds.map(licenseId =>
+      this.addNewLicense(licenseId, ownerId).catch(err => ({
+        promiseError: err,
+        data: licenseId,
+      })),
+    );
+    return Promise.all(promises).then(values => {
+      const failedData = values.filter(item => item['promiseError']) as {
+        promiseError: any;
+        data: string;
+      }[];
+      const passedData = values.filter(item => !item['promiseError']);
+      return {
+        passedData: passedData,
+        failedData: failedData,
+      };
+    });
   }
 
   async getUserProfile(username: string) {
@@ -71,34 +97,34 @@ export class UserService {
     });
   }
 
-  async exportFromLic(){
+  async exportFromLic() {
     const params = {
-      UserPoolId: this.cognitoUserPoolId
+      UserPoolId: this.cognitoUserPoolId,
     };
-    this.cognitoIdentityServiceProvider.listUsers(params, function(
-      err,
-      data,
-    ) {
-console.log("users",data);
-console.log("users count",data.Users.length);
-for (let index = 0; index < data.Users.length; index++) {
-  const user = data.Users[index];
-  const licencesInString = user.Attributes.find(attr=>attr.Name=="custom:licenseKey")?.Value
-  if(licencesInString){
-    const licences = JSON.parse(licencesInString)
-    console.log(`licences for user ${user.Username}`,licences);
-    licences.forEach(lic => {
-      
+    this.cognitoIdentityServiceProvider.listUsers(params,(err, data)=> {
+      console.log('users', data);
+      console.log('users count', data.Users.length);
+      for (let index = 0; index < data.Users.length; index++) {
+        const user = data.Users[index];
+        const licencesInString = user.Attributes.find(
+          attr => attr.Name == 'custom:licenseKey',
+        )?.Value;
+        if (licencesInString) {
+          const licenceIds = JSON.parse(licencesInString);
+          const ownerId = user.Attributes.find(att => att.Name == 'sub').Value;
+          // console.log("ownerId",ownerId);
+          console.log(
+            `licences for user ${user.Username} id ${ownerId}`,
+            licenceIds,
+          );
+        }
+      }
     });
-  }
-}
-
-    })
   }
 
   async updateUserWithCustomField(
     username: string,
-    updateUserAttributes: [{ Name: string, Value: any }],
+    updateUserAttributes: [{ Name: string; Value: any }],
   ) {
     const params = {
       UserAttributes: [...updateUserAttributes],
