@@ -57,13 +57,6 @@ let FileOperationService = class FileOperationService {
         return new Promise((resolve, reject) => {
             try {
                 child_process_1.execSync('bash ' + sonicDecodeCmd);
-                var fileSizeInBytes = fs.statSync(logFilePath).size;
-                if (fileSizeInBytes <= 0) {
-                    console.error('empty logfile while decoding. no key found!');
-                    reject({
-                        message: 'Key not found'
-                    });
-                }
                 var sonicKeys = [];
                 var lineReader = readlineByline.createInterface({
                     input: fs.createReadStream(logFilePath)

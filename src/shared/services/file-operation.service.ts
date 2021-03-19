@@ -61,14 +61,14 @@ export class FileOperationService {
         // in the log file (given as part of the commandline).
         execSync('bash ' + sonicDecodeCmd);
         
-        // see if there is anything in the logile.
-        var fileSizeInBytes = fs.statSync(logFilePath).size;
-        if (fileSizeInBytes <= 0) {
-          console.error('empty logfile while decoding. no key found!');
-          reject({
-            message:'Key not found'
-          });
-        }
+        // see if there is anything in the logfile.
+        // var fileSizeInBytes = fs.statSync(logFilePath).size;
+        // if (fileSizeInBytes <= 0) {
+        //   console.error('empty logfile while decoding. no key found!');
+        //   reject({
+        //     message:'Key not found'
+        //   });
+        // }
         var sonicKeys = [];
         var lineReader = readlineByline.createInterface({
           input: fs.createReadStream(logFilePath)
