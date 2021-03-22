@@ -16,7 +16,7 @@ import * as uniqid from 'uniqid';
 @Module({
   imports: [
     AuthModule,
-    ConfigModule.forRoot({ isGlobal: true,envFilePath:'.env' }),
+    ConfigModule.forRoot({ isGlobal: true,envFilePath:'.env,arba' }),
     MulterModule.register({
       storage: diskStorage({
         destination: appConfig.MULTER_DEST,
