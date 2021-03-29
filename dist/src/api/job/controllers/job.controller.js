@@ -24,16 +24,16 @@ const user_decorator_1 = require("../../auth/decorators/user.decorator");
 const job_license_validation_guard_1 = require("../../auth/guards/job-license-validation.guard");
 const uuid_1 = require("uuid");
 const sonickey_service_1 = require("../../sonickey/sonickey.service");
-const update_job_file_dto_1 = require("../dto/update-job-file.dto");
 let JobController = class JobController {
     constructor(jobService, sonickeyService) {
         this.jobService = jobService;
         this.sonickeyService = sonickeyService;
     }
-    create(createJobDto, owner, req) {
+    async create(createJobDto, owner, req) {
         createJobDto.owner = owner;
-        createJobDto.jobDetails.map((job) => {
+        createJobDto.jobDetails = createJobDto.jobDetails.map((job) => {
             job["fileId"] = uuid_1.v4();
+            job["isComplete"] = false;
             job["sonicKey"] = this.sonickeyService.generateUniqueSonicKey();
             return job;
         });
@@ -54,9 +54,6 @@ let JobController = class JobController {
     update(id, updateJobDto) {
         return this.jobService.update(id, updateJobDto);
     }
-    updateJobDetailByFileId(id, fileId, updateJobFileDto) {
-        return this.jobService.updateJobDetailByFileId(id, fileId, updateJobFileDto);
-    }
     remove(id) {
         return this.jobService.remove(id);
     }
@@ -71,26 +68,30 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create a Job' }),
     common_1.Post(),
-    openapi.ApiResponse({ status: 201, type: require("../dto/create-job.dto").CreateJobDto }),
+    openapi.ApiResponse({ status: 201, type: require("../../../schemas/job.schema").Job }),
     __param(0, common_1.Body()),
     __param(1, user_decorator_1.User('sub')),
     __param(2, common_1.Req()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_job_dto_1.CreateJobDto, String, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], JobController.prototype, "create", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get All Jobs' }),
+    swagger_1.ApiBearerAuth(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get(),
-    openapi.ApiResponse({ status: 200, type: [Object] }),
+    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/job.schema").Job] }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], JobController.prototype, "findAll", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Make this job completed' }),
+    swagger_1.ApiBearerAuth(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get(':id/make-completed'),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../../../schemas/job.schema").Job }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -98,8 +99,10 @@ __decorate([
 ], JobController.prototype, "makeCompleted", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get One Job' }),
+    swagger_1.ApiBearerAuth(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get(':id'),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../../../schemas/job.schema").Job }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -107,6 +110,8 @@ __decorate([
 ], JobController.prototype, "findOne", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get All Jobs of particular user' }),
+    swagger_1.ApiBearerAuth(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get('/owners/:ownerId'),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/job.schema").Job] }),
     __param(0, common_1.Param('ownerId')),
@@ -116,28 +121,21 @@ __decorate([
 ], JobController.prototype, "getOwnersJobs", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Update one Job' }),
+    swagger_1.ApiBearerAuth(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Put(':id'),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../../../schemas/job.schema").Job }),
     __param(0, common_1.Param('id')), __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_job_dto_1.UpdateJobDto]),
     __metadata("design:returntype", void 0)
 ], JobController.prototype, "update", null);
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Update single jobDetails using filePath' }),
-    common_1.Put(':id/:fileId'),
-    openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('id')),
-    __param(1, common_1.Param('fileId')),
-    __param(2, common_1.Body()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, update_job_file_dto_1.UpdateJobFileDto]),
-    __metadata("design:returntype", void 0)
-], JobController.prototype, "updateJobDetailByFileId", null);
-__decorate([
     swagger_1.ApiOperation({ summary: 'Delete one Job' }),
+    swagger_1.ApiBearerAuth(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Delete(':id'),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../../../schemas/job.schema").Job }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -152,7 +150,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], JobController.prototype, "createTable", null);
 JobController = __decorate([
-    swagger_1.ApiTags('Jobs Contrller'),
+    swagger_1.ApiTags('Jobs Controller'),
     common_1.Controller('jobs'),
     __metadata("design:paramtypes", [job_service_1.JobService, sonickey_service_1.SonickeyService])
 ], JobController);

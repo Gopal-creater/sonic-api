@@ -21,13 +21,25 @@ const common_1 = require("@nestjs/common");
 const job_repository_1 = require("../../../repositories/job.repository");
 const job_schema_1 = require("../../../schemas/job.schema");
 const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
+const utils_1 = require("../../../shared/utils");
 let JobService = class JobService {
     constructor(jobRepository, keygenService) {
         this.jobRepository = jobRepository;
         this.keygenService = keygenService;
     }
-    create(createJobDto) {
-        return this.jobRepository.put(createJobDto);
+    async create(createJobDto) {
+        const dataToSave = Object.assign(new job_schema_1.Job(), createJobDto, {
+            reservedLicenceCount: createJobDto.jobDetails.length,
+            usedLicenceCount: 0,
+        });
+        const createdJob = await this.jobRepository.put(dataToSave);
+        await this.addReservedDetailsInLicence(createJobDto.licenseId, [
+            { jobId: createdJob.id, count: createJobDto.jobDetails.length },
+        ]).catch(async (err) => {
+            await this.jobRepository.delete(createdJob);
+            throw new common_1.BadRequestException('Error adding reserved licence count');
+        });
+        return createdJob;
     }
     async findAll() {
         var e_1, _a;
@@ -48,7 +60,7 @@ let JobService = class JobService {
         return items;
     }
     findOne(id) {
-        return this.jobRepository.get(Object.assign(new job_schema_1.Job, { id: id }));
+        return this.jobRepository.get(Object.assign(new job_schema_1.Job(), { id: id }));
     }
     async update(id, updateJobDto) {
         const job = await this.findOne(id);
@@ -60,22 +72,49 @@ let JobService = class JobService {
         if (!oldFile) {
             return new common_1.NotFoundException();
         }
-        const updatedFile = Object.assign(oldFile, updateJobFileDto, { fileId: fileId });
+        const updatedFile = Object.assign(oldFile, updateJobFileDto, {
+            fileId: fileId,
+        });
+        const index = job.jobDetails.findIndex(itm => itm.fileId == fileId);
+        job.jobDetails[index] = updatedFile;
         return this.jobRepository.update(job);
     }
     remove(id) {
-        return this.jobRepository.delete(Object.assign(new job_schema_1.Job, { id: id }));
+        return this.jobRepository.delete(Object.assign(new job_schema_1.Job(), { id: id }));
     }
-    async makeCompleted(id) {
-        const job = await this.findOne(id);
-        return this.jobRepository.update(Object.assign(job, { isComplete: true, completedAt: new Date() }));
+    async makeCompleted(jobId) {
+        const job = await this.findOne(jobId);
+        if (job.isComplete) {
+            return job;
+        }
+        const totalCompletedFiles = job.jobDetails.filter(file => file.isComplete == true);
+        const totalInCompletedFiles = job.jobDetails.filter(file => file.isComplete == false);
+        await this.removeReservedDetailsInLicence(job.licenseId, job.id).catch(err => {
+            throw new common_1.BadRequestException('Error removing reserved licence count ');
+        });
+        await this.keygenService
+            .decrementUsage(job.licenseId, totalCompletedFiles.length)
+            .catch(err => {
+            throw new common_1.BadRequestException('Error decrementing licence usages');
+        });
+        const completedJob = await this.jobRepository
+            .update(Object.assign(job, {
+            isComplete: true,
+            completedAt: new Date(),
+            usedLicenceCount: totalCompletedFiles.length,
+        }))
+            .catch(async (err) => {
+            await this.keygenService.incrementUsage(job.licenseId, totalCompletedFiles.length);
+            throw new common_1.BadRequestException('Error making job completed');
+        });
+        return completedJob;
     }
     async addReservedDetailsInLicence(licenseId, reserves) {
         var _a, _b, _c;
         const { data, errors } = await this.keygenService.getLicenseById(licenseId);
-        const oldReserves = (_b = (_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) === null || _b === void 0 ? void 0 : _b.reserves;
-        const { data: updatedData, errors: errorsUpdate } = await this.keygenService.updateLicense(licenseId, {
-            metadata: Object.assign(Object.assign({}, (_c = data === null || data === void 0 ? void 0 : data.attributes) === null || _c === void 0 ? void 0 : _c.metadata), { reserves: [...oldReserves, ...reserves] }),
+        const oldReserves = utils_1.JSONUtils.parse((_b = (_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) === null || _b === void 0 ? void 0 : _b.reserves, []);
+        const { data: updatedData, errors: errorsUpdate, } = await this.keygenService.updateLicense(licenseId, {
+            metadata: Object.assign(Object.assign({}, (_c = data === null || data === void 0 ? void 0 : data.attributes) === null || _c === void 0 ? void 0 : _c.metadata), { reserves: JSON.stringify([...oldReserves, ...reserves]) }),
         });
         if (errorsUpdate)
             return Promise.reject(errorsUpdate);
@@ -84,9 +123,9 @@ let JobService = class JobService {
     async removeReservedDetailsInLicence(licenseId, jobId) {
         var _a, _b, _c;
         const { data, errors } = await this.keygenService.getLicenseById(licenseId);
-        const oldReserves = (_b = (_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) === null || _b === void 0 ? void 0 : _b.reserves;
-        const { data: updatedData, errors: errorsUpdate } = await this.keygenService.updateLicense(licenseId, {
-            metadata: Object.assign(Object.assign({}, (_c = data === null || data === void 0 ? void 0 : data.attributes) === null || _c === void 0 ? void 0 : _c.metadata), { reserves: oldReserves === null || oldReserves === void 0 ? void 0 : oldReserves.filter(reser => reser.jobId !== jobId) }),
+        const oldReserves = utils_1.JSONUtils.parse((_b = (_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) === null || _b === void 0 ? void 0 : _b.reserves, []);
+        const { data: updatedData, errors: errorsUpdate, } = await this.keygenService.updateLicense(licenseId, {
+            metadata: Object.assign(Object.assign({}, (_c = data === null || data === void 0 ? void 0 : data.attributes) === null || _c === void 0 ? void 0 : _c.metadata), { reserves: JSON.stringify(oldReserves === null || oldReserves === void 0 ? void 0 : oldReserves.filter(reser => reser.jobId !== jobId)) }),
         });
         if (errorsUpdate)
             return Promise.reject(errorsUpdate);

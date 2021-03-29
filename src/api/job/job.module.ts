@@ -9,8 +9,8 @@ import { JobFileService } from './services/job-file.service';
 import { KeygenModule } from 'src/shared/modules/keygen/keygen.module';
 
 @Module({
-  imports: [SonickeyModule,KeygenModule],
-controllers: [JobController,JobFileController],
-  providers: [JobService,JobFileService, JobRepository, KeygenService],
+  imports: [SonickeyModule, KeygenModule],
+  controllers: [JobController, JobFileController],
+  providers: [JobService, JobFileService, JobRepository, KeygenService],
 })
 export class JobModule {}

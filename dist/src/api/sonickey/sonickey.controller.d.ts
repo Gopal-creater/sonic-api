@@ -1,4 +1,3 @@
-import { CreateSonicKeyDto, CreateSonicKeyFromJobDto } from './dtos/create-sonickey.dto';
 import { UpdateSonicKeyDto } from './dtos/update-sonickey.dto';
 import { SonicKeyDto } from './dtos/sonicKey.dto';
 import { IUploadedFile } from './../../shared/interfaces/UploadedFile.interface';
@@ -11,8 +10,6 @@ export declare class SonickeyController {
     constructor(sonicKeyService: SonickeyService, keygenService: KeygenService);
     getAll(): Promise<any[]>;
     generateUniqueSonicKey(): Promise<string>;
-    create(createSonicKeyDto: CreateSonicKeyDto, owner: string, req: any): Promise<SonicKey>;
-    createForJob(createSonicKeyDto: CreateSonicKeyFromJobDto, owner: string, req: any): Promise<SonicKey>;
     getOwnersKeys(ownerId: string): Promise<SonicKey[]>;
     getKeysByJob(jobId: string): Promise<SonicKey[]>;
     getOne(sonickey: string): Promise<SonicKey>;

@@ -13,25 +13,52 @@ exports.JobFileService = void 0;
 const common_1 = require("@nestjs/common");
 const job_repository_1 = require("../../../repositories/job.repository");
 const job_service_1 = require("./job.service");
+const sonickey_service_1 = require("../../sonickey/sonickey.service");
 let JobFileService = class JobFileService {
-    constructor(jobRepository, jobService) {
+    constructor(jobRepository, jobService, sonickeyService) {
         this.jobRepository = jobRepository;
         this.jobService = jobService;
+        this.sonickeyService = sonickeyService;
     }
-    async update(jobId, fileId, updateJobFileDto) {
+    async updateJobFile(jobId, fileId, updateJobFileDto) {
         const job = await this.jobService.findOne(jobId);
+        if (!job) {
+            new common_1.NotFoundException();
+        }
         const elementsIndex = job.jobDetails.findIndex(element => element.fileId == fileId);
-        if (!elementsIndex) {
+        if (!elementsIndex || elementsIndex < 0) {
             return new common_1.NotFoundException();
         }
-        job.jobDetails[elementsIndex] = Object.assign(Object.assign({}, job.jobDetails[elementsIndex]), updateJobFileDto, { fileId: fileId });
+        job.jobDetails[elementsIndex] = Object.assign(Object.assign({}, job.jobDetails[elementsIndex]), updateJobFileDto.fileDetail, { fileId: fileId });
         return this.jobRepository.update(job);
+    }
+    async addKeyToDbAndUpdateJobFile(jobId, fileId, addKeyAndUpdateJobFileDto) {
+        const job = await this.jobService.findOne(jobId);
+        if (!job) {
+            new common_1.NotFoundException();
+        }
+        console.log("job", job, fileId);
+        const elementsIndex = job.jobDetails.findIndex(element => element.fileId == fileId);
+        console.log("elementsIndex", elementsIndex);
+        if (elementsIndex < 0) {
+            return new common_1.NotFoundException();
+        }
+        const createdSonicKey = await this.sonickeyService.createFromJob(addKeyAndUpdateJobFileDto.sonicKey);
+        const updatedOldFile = Object.assign(Object.assign({}, job.jobDetails[elementsIndex]), addKeyAndUpdateJobFileDto.fileDetail, { fileId: fileId });
+        job.jobDetails[elementsIndex] = updatedOldFile;
+        const updatedJob = await this.jobRepository.update(job);
+        return {
+            createdSonicKey: createdSonicKey,
+            fileDetail: updatedOldFile,
+            updatedJob: updatedJob
+        };
     }
 };
 JobFileService = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [job_repository_1.JobRepository,
-        job_service_1.JobService])
+        job_service_1.JobService,
+        sonickey_service_1.SonickeyService])
 ], JobFileService);
 exports.JobFileService = JobFileService;
 //# sourceMappingURL=job-file.service.js.map

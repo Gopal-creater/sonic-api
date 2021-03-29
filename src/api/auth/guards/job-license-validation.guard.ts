@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { CreateJobDto } from '../../job/dto/create-job.dto';
+import { JSONUtils } from '../../../shared/utils';
 /**
  * This Guard is responsible for checking valid license with max usages for creating job.
  */
@@ -45,10 +46,10 @@ export class JobLicenseValidationGuard implements CanActivate {
     const remaniningUses = maxUses - uses;
     const usesToBeUsed = body.jobDetails.length;
 
-    const reserves = data?.attributes?.metadata?.reserves as {
+    const reserves = JSONUtils.parse(data?.attributes?.metadata?.reserves,[]) as {
       jobId: string;
       count: number;
-    }[];
+    }[]
     if (
       await this.isAllowedForJobCreation(remaniningUses, usesToBeUsed, reserves)
     ) {

@@ -35,6 +35,10 @@ let SonickeyService = class SonickeyService {
     generateUniqueSonicKey() {
         return nanoid_1.nanoid(11);
     }
+    async createFromJob(createSonicKeyDto) {
+        const dataToSave = Object.assign(new sonickey_schema_1.SonicKey(), createSonicKeyDto);
+        return this.sonicKeyRepository.put(dataToSave);
+    }
     async getAll() {
         var e_1, _a;
         const items = [];
@@ -116,7 +120,9 @@ let SonickeyService = class SonickeyService {
         var e_3, _a;
         var items = [];
         try {
-            for (var _b = __asyncValues(this.sonicKeyRepository.query(sonickey_schema_1.SonicKey, { "sonicKey.sonicContent.volatileMetadata.contentOwner": "Arba" })), _c; _c = await _b.next(), !_c.done;) {
+            for (var _b = __asyncValues(this.sonicKeyRepository.query(sonickey_schema_1.SonicKey, {
+                'sonicKey.sonicContent.volatileMetadata.contentOwner': 'Arba',
+            })), _c; _c = await _b.next(), !_c.done;) {
                 const item = _c.value;
                 items.push(item);
             }
@@ -142,16 +148,20 @@ let SonickeyService = class SonickeyService {
         sonicKeyDto.contentDuration = musicData.format.duration;
         sonicKeyDto.contentEncoding = `${musicData.format.codec}, ${musicData.format.sampleRate} Hz, ${musicData.format.codecProfile}, ${musicData.format.bitrate} ch`;
         sonicKeyDto.contentSamplingFrequency = `${musicData.format.sampleRate} Hz`;
-        sonicKeyDto.contentName = musicData.common.title || "";
-        sonicKeyDto.contentOwner = musicData.common.artist || "";
-        sonicKeyDto.contentDescription = musicData.common.description ? musicData.common.description[0] : "";
+        sonicKeyDto.contentName = musicData.common.title || '';
+        sonicKeyDto.contentOwner = musicData.common.artist || '';
+        sonicKeyDto.contentDescription = musicData.common.description
+            ? musicData.common.description[0]
+            : '';
         return sonicKeyDto;
     }
     async findBySonicKey(sonicKey) {
         var e_4, _a;
         var items = [];
         try {
-            for (var _b = __asyncValues(this.sonicKeyRepository.query(sonickey_schema_1.SonicKey, { sonicKey: sonicKey })), _c; _c = await _b.next(), !_c.done;) {
+            for (var _b = __asyncValues(this.sonicKeyRepository.query(sonickey_schema_1.SonicKey, {
+                sonicKey: sonicKey,
+            })), _c; _c = await _b.next(), !_c.done;) {
                 const item = _c.value;
                 items.push(item);
             }

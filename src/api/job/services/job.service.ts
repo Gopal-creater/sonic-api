@@ -9,6 +9,7 @@ import { JobRepository } from '../../../repositories/job.repository';
 import { Job } from '../../../schemas/job.schema';
 import { UpdateJobFileDto } from '../dto/update-job-file.dto';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
+import { JSONUtils } from '../../../shared/utils';
 
 @Injectable()
 export class JobService {
@@ -20,7 +21,8 @@ export class JobService {
     const dataToSave = Object.assign(new Job(), createJobDto, {
       reservedLicenceCount: createJobDto.jobDetails.length,
       usedLicenceCount: 0,
-    });
+    }) as Job;
+
     const createdJob = await this.jobRepository.put(dataToSave);
     await this.addReservedDetailsInLicence(createJobDto.licenseId, [
       { jobId: createdJob.id, count: createJobDto.jobDetails.length },
@@ -28,11 +30,11 @@ export class JobService {
       await this.jobRepository.delete(createdJob);
       throw new BadRequestException('Error adding reserved licence count');
     });
-    return createJobDto;
+    return createdJob;
   }
 
   async findAll() {
-    const items = [];
+    const items:Job[] =[];
     for await (const item of this.jobRepository.scan(Job)) {
       // individual items will be yielded as the scan is performed
       items.push(item);
@@ -40,13 +42,13 @@ export class JobService {
     return items;
   }
 
-  findOne(id: string) {
-    return this.jobRepository.get(Object.assign(new Job(), { id: id }));
+  findOne(id: string){
+    return this.jobRepository.get(Object.assign(new Job(), { id: id }) as Job);
   }
 
   async update(id: string, updateJobDto: UpdateJobDto) {
     const job = await this.findOne(id);
-    return this.jobRepository.update(Object.assign(job, updateJobDto));
+    return this.jobRepository.update(Object.assign(job, updateJobDto) as Job);
   }
 
   async updateJobDetailByFileId(
@@ -69,11 +71,11 @@ export class JobService {
   }
 
   remove(id: string) {
-    return this.jobRepository.delete(Object.assign(new Job(), { id: id }));
+    return this.jobRepository.delete(Object.assign(new Job(), { id: id }) as Job);
   }
 
-  async makeCompleted(id: string) {
-    const job = await this.findOne(id);
+  async makeCompleted(jobId: string) {
+    const job = await this.findOne(jobId);
     if (job.isComplete) {
       return job;
     }
@@ -99,7 +101,7 @@ export class JobService {
           isComplete: true,
           completedAt: new Date(),
           usedLicenceCount: totalCompletedFiles.length,
-        }),
+        }) as Job
       )
       .catch(async err => {
         await this.keygenService.incrementUsage(
@@ -116,7 +118,7 @@ export class JobService {
     reserves: { jobId: string; count: number }[],
   ) {
     const { data, errors } = await this.keygenService.getLicenseById(licenseId);
-    const oldReserves = data?.attributes?.metadata?.reserves as {
+    const oldReserves = JSONUtils.parse(data?.attributes?.metadata?.reserves,[])as {
       jobId: string;
       count: number;
     }[];
@@ -126,7 +128,7 @@ export class JobService {
     } = await this.keygenService.updateLicense(licenseId, {
       metadata: {
         ...data?.attributes?.metadata,
-        reserves: [...oldReserves, ...reserves],
+        reserves: JSON.stringify([...oldReserves, ...reserves]),
       },
     });
     if (errorsUpdate) return Promise.reject(errorsUpdate);
@@ -134,7 +136,7 @@ export class JobService {
   }
   async removeReservedDetailsInLicence(licenseId: string, jobId: string) {
     const { data, errors } = await this.keygenService.getLicenseById(licenseId);
-    const oldReserves = data?.attributes?.metadata?.reserves as {
+    const oldReserves = JSONUtils.parse(data?.attributes?.metadata?.reserves,[])as {
       jobId: string;
       count: number;
     }[];
@@ -144,7 +146,7 @@ export class JobService {
     } = await this.keygenService.updateLicense(licenseId, {
       metadata: {
         ...data?.attributes?.metadata,
-        reserves: oldReserves?.filter(reser => reser.jobId !== jobId),
+        reserves: JSON.stringify(oldReserves?.filter(reser => reser.jobId !== jobId)),
       },
     });
     if (errorsUpdate) return Promise.reject(errorsUpdate);

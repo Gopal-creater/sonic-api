@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobLicenseValidationGuard = void 0;
 const common_1 = require("@nestjs/common");
 const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
+const utils_1 = require("../../../shared/utils");
 let JobLicenseValidationGuard = class JobLicenseValidationGuard {
     constructor(keygenService) {
         this.keygenService = keygenService;
@@ -45,7 +46,7 @@ let JobLicenseValidationGuard = class JobLicenseValidationGuard {
         const maxUses = data['attributes']['maxUses'];
         const remaniningUses = maxUses - uses;
         const usesToBeUsed = body.jobDetails.length;
-        const reserves = (_d = (_c = data === null || data === void 0 ? void 0 : data.attributes) === null || _c === void 0 ? void 0 : _c.metadata) === null || _d === void 0 ? void 0 : _d.reserves;
+        const reserves = utils_1.JSONUtils.parse((_d = (_c = data === null || data === void 0 ? void 0 : data.attributes) === null || _c === void 0 ? void 0 : _c.metadata) === null || _d === void 0 ? void 0 : _d.reserves, []);
         if (await this.isAllowedForJobCreation(remaniningUses, usesToBeUsed, reserves)) {
             request.validLicense = data;
             return true;

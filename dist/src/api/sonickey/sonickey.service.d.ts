@@ -5,12 +5,14 @@ import { FileOperationService } from './../../shared/services/file-operation.ser
 import { SonicKeyRepository } from './../../repositories/sonickey.repository';
 import { SonicKey } from '../../schemas/sonickey.schema';
 import * as mm from 'music-metadata';
+import { CreateSonicKeyFromJobDto } from './dtos/create-sonickey.dto';
 export declare class SonickeyService {
     readonly sonicKeyRepository: SonicKeyRepository;
     private readonly fileOperationService;
     private readonly fileHandlerService;
     constructor(sonicKeyRepository: SonicKeyRepository, fileOperationService: FileOperationService, fileHandlerService: FileHandlerService);
     generateUniqueSonicKey(): string;
+    createFromJob(createSonicKeyDto: CreateSonicKeyFromJobDto): Promise<SonicKey & CreateSonicKeyFromJobDto>;
     getAll(): Promise<any[]>;
     getAllWithFilter(queryParams: Object): Promise<any[]>;
     encode(file: IUploadedFile, encodingStrength?: number): Promise<{

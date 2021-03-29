@@ -14,7 +14,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonickeyController = void 0;
 const openapi = require("@nestjs/swagger");
-const create_sonickey_dto_1 = require("./dtos/create-sonickey.dto");
 const update_sonickey_dto_1 = require("./dtos/update-sonickey.dto");
 const decode_dto_1 = require("./dtos/decode.dto");
 const encode_dto_1 = require("./dtos/encode.dto");
@@ -43,45 +42,6 @@ let SonickeyController = class SonickeyController {
     }
     async generateUniqueSonicKey() {
         return await this.sonicKeyService.generateUniqueSonicKey();
-    }
-    async create(createSonicKeyDto, owner, req) {
-        var _a;
-        if (!createSonicKeyDto.sonicKey) {
-            throw new common_1.BadRequestException('sonicKey must be present');
-        }
-        if (!createSonicKeyDto.job) {
-            throw new common_1.BadRequestException('jobId must be present');
-        }
-        const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.id;
-        return this.keygenService
-            .incrementUsage(licenseId, 1)
-            .then(async (keygenResult) => {
-            if (keygenResult['errors']) {
-                throw new common_1.BadRequestException('Unable to increment the license usage!');
-            }
-            console.log('Going to save key in db.');
-            const dataToSave = new sonickey_schema_1.SonicKey(Object.assign(createSonicKeyDto, {
-                owner: owner,
-                licenseId: licenseId,
-            }));
-            return this.sonicKeyService.sonicKeyRepository.put(dataToSave);
-        });
-    }
-    async createForJob(createSonicKeyDto, owner, req) {
-        if (!createSonicKeyDto.sonicKey) {
-            throw new common_1.BadRequestException('sonicKey must be present');
-        }
-        if (!createSonicKeyDto.job) {
-            throw new common_1.BadRequestException('jobId must be present');
-        }
-        if (!createSonicKeyDto.licenseId) {
-            throw new common_1.BadRequestException('licenseId must be present');
-        }
-        console.log('Going to save key in db.');
-        const dataToSave = new sonickey_schema_1.SonicKey(Object.assign(createSonicKeyDto, {
-            owner: owner,
-        }));
-        return this.sonicKeyService.sonicKeyRepository.put(dataToSave);
     }
     async getOwnersKeys(ownerId) {
         return await this.sonicKeyService.findByOwner(ownerId);
@@ -159,32 +119,6 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "generateUniqueSonicKey", null);
-__decorate([
-    common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
-    common_1.Post('/'),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Save to database after local encode.' }),
-    openapi.ApiResponse({ status: 201, type: require("../../schemas/sonickey.schema").SonicKey }),
-    __param(0, common_1.Body()),
-    __param(1, decorators_1.User('sub')),
-    __param(2, common_1.Req()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto, String, Object]),
-    __metadata("design:returntype", Promise)
-], SonickeyController.prototype, "create", null);
-__decorate([
-    common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
-    common_1.Post('/create-from-job'),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Save to database after local encode from job.' }),
-    openapi.ApiResponse({ status: 201, type: require("../../schemas/sonickey.schema").SonicKey }),
-    __param(0, common_1.Body()),
-    __param(1, decorators_1.User('sub')),
-    __param(2, common_1.Req()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromJobDto, String, Object]),
-    __metadata("design:returntype", Promise)
-], SonickeyController.prototype, "createForJob", null);
 __decorate([
     common_1.Get('/owner/:ownerId'),
     common_1.UseGuards(guards_1.JwtAuthGuard),

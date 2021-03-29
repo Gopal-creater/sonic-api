@@ -9,26 +9,13 @@ export declare class JobService {
     readonly jobRepository: JobRepository;
     readonly keygenService: KeygenService;
     constructor(jobRepository: JobRepository, keygenService: KeygenService);
-    create(createJobDto: CreateJobDto): Promise<CreateJobDto>;
-    findAll(): Promise<any[]>;
-    findOne(id: string): Promise<Job & {
-        id: string;
-    }>;
-    update(id: string, updateJobDto: UpdateJobDto): Promise<Job & {
-        id: string;
-    } & UpdateJobDto>;
-    updateJobDetailByFileId(id: string, fileId: string, updateJobFileDto: UpdateJobFileDto): Promise<(Job & {
-        id: string;
-    }) | NotFoundException>;
-    remove(id: string): Promise<Job & {
-        id: string;
-    }>;
-    makeCompleted(id: string): Promise<Job & {
-        id: string;
-    } & {
-        isComplete: boolean;
-        completedAt: Date;
-    }>;
+    create(createJobDto: CreateJobDto): Promise<Job>;
+    findAll(): Promise<Job[]>;
+    findOne(id: string): Promise<Job>;
+    update(id: string, updateJobDto: UpdateJobDto): Promise<Job>;
+    updateJobDetailByFileId(id: string, fileId: string, updateJobFileDto: UpdateJobFileDto): Promise<Job | NotFoundException>;
+    remove(id: string): Promise<Job>;
+    makeCompleted(jobId: string): Promise<Job>;
     addReservedDetailsInLicence(licenseId: string, reserves: {
         jobId: string;
         count: number;

@@ -4,15 +4,13 @@ import { IUploadedFile } from './../../shared/interfaces/UploadedFile.interface'
 import { FileHandlerService } from './../../shared/services/file-handler.service';
 import { FileOperationService } from './../../shared/services/file-operation.service';
 import { SonicKeyRepository } from './../../repositories/sonickey.repository';
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { SonicKey } from '../../schemas/sonickey.schema';
 import * as mm from 'music-metadata';
 import * as upath from 'upath';
 import { nanoid } from 'nanoid';
 import { appConfig } from '../../config';
+import { CreateSonicKeyFromJobDto } from './dtos/create-sonickey.dto';
 
 @Injectable()
 export class SonickeyService {
@@ -22,9 +20,14 @@ export class SonickeyService {
     private readonly fileHandlerService: FileHandlerService,
   ) {}
 
-   generateUniqueSonicKey(){
+  generateUniqueSonicKey() {
     // TODO: Must verify for uniqueness of generated key
     return nanoid(11);
+  }
+
+  async createFromJob(createSonicKeyDto: CreateSonicKeyFromJobDto) {
+    const dataToSave = Object.assign(new SonicKey(),createSonicKeyDto);
+    return this.sonicKeyRepository.put(dataToSave);
   }
 
   async getAll() {
@@ -136,17 +139,15 @@ export class SonickeyService {
     );
   }
 
-  async search(){
+  async search() {
     var items: SonicKey[] = [];
-    for await (const item of this.sonicKeyRepository.query(
-      SonicKey,
-      { "sonicKey.sonicContent.volatileMetadata.contentOwner": "Arba" },
-    )) {
+    for await (const item of this.sonicKeyRepository.query(SonicKey, {
+      'sonicKey.sonicContent.volatileMetadata.contentOwner': 'Arba',
+    })) {
       items.push(item);
     }
     return items[0];
   }
-
 
   async exractMusicMetaFromFile(filePath: string) {
     return mm.parseFile(filePath);
@@ -157,25 +158,26 @@ export class SonickeyService {
     sonicKeyDto?: SonicKeyDto,
   ) {
     const musicData = await this.exractMusicMetaFromFile(file.path);
-    sonicKeyDto.contentSize=file.size;
-    sonicKeyDto.contentFileName=file.filename;
-    sonicKeyDto.contentType=file.mimetype;
-    sonicKeyDto.contentFileType=file.mimetype;
-    sonicKeyDto.contentDuration=musicData.format.duration;
-    sonicKeyDto.contentEncoding=`${musicData.format.codec}, ${musicData.format.sampleRate} Hz, ${musicData.format.codecProfile}, ${musicData.format.bitrate} ch`;
-    sonicKeyDto.contentSamplingFrequency=`${musicData.format.sampleRate} Hz`;
-    sonicKeyDto.contentName= musicData.common.title||"";
-    sonicKeyDto.contentOwner= musicData.common.artist||"";
-    sonicKeyDto.contentDescription= musicData.common.description?musicData.common.description[0]:"";
-    return sonicKeyDto
+    sonicKeyDto.contentSize = file.size;
+    sonicKeyDto.contentFileName = file.filename;
+    sonicKeyDto.contentType = file.mimetype;
+    sonicKeyDto.contentFileType = file.mimetype;
+    sonicKeyDto.contentDuration = musicData.format.duration;
+    sonicKeyDto.contentEncoding = `${musicData.format.codec}, ${musicData.format.sampleRate} Hz, ${musicData.format.codecProfile}, ${musicData.format.bitrate} ch`;
+    sonicKeyDto.contentSamplingFrequency = `${musicData.format.sampleRate} Hz`;
+    sonicKeyDto.contentName = musicData.common.title || '';
+    sonicKeyDto.contentOwner = musicData.common.artist || '';
+    sonicKeyDto.contentDescription = musicData.common.description
+      ? musicData.common.description[0]
+      : '';
+    return sonicKeyDto;
   }
 
   async findBySonicKey(sonicKey: string) {
     var items: SonicKey[] = [];
-    for await (const item of this.sonicKeyRepository.query(
-      SonicKey,
-      { sonicKey: sonicKey },
-    )) {
+    for await (const item of this.sonicKeyRepository.query(SonicKey, {
+      sonicKey: sonicKey,
+    })) {
       items.push(item);
     }
     return items[0];
@@ -204,7 +206,6 @@ export class SonickeyService {
     }
     return items;
   }
-
 
   async findBySonicKeyOrFail(sonicKey: string) {
     return this.findBySonicKey(sonicKey).then(data => {

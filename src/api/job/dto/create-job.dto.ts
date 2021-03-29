@@ -1,11 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-export class CreateJobDto {
-    @ApiProperty()
-    owner: string;
+import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { Job } from '../../../schemas/job.schema';
+export class CreateJobDto extends OmitType(Job, [
+    'id',
+    'reservedLicenceCount',
+    'usedLicenceCount',
+    'isComplete',
+    'createdAt',
+    'completedAt',
 
-    @ApiProperty()
-    licenseId: string
-  
-    @ApiProperty()
-    jobDetails: Record<string, any>[]
-}
+  ]) {}

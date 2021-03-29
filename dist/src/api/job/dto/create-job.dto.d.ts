@@ -1,5 +1,5 @@
-export declare class CreateJobDto {
-    owner: string;
-    licenseId: string;
-    jobDetails: Record<string, any>[];
+import { Job } from '../../../schemas/job.schema';
+declare const CreateJobDto_base: import("@nestjs/common").Type<Pick<Job, "name" | "owner" | "licenseId" | "jobDetails">>;
+export declare class CreateJobDto extends CreateJobDto_base {
 }
+export {};
