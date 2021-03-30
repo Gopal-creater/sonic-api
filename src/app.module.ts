@@ -1,3 +1,4 @@
+import { CronService } from './shared/services/cron.service';
 import { ExternalSonickeyModule } from './api/externalApi/externalsonickey/externalsonickey.module';
 import { GlobalAwsModule } from './shared/modules/global-aws/global-aws.module';
 import { Module } from '@nestjs/common';
@@ -14,8 +15,13 @@ import {appConfig} from './config';
 import { JobModule } from './api/job/job.module';
 import * as uniqid from 'uniqid';
 
+import { ScheduleModule } from '@nestjs/schedule';
+import { AppGateway } from './app.gateway';
+import { RadiostationModule } from './api/radiostation/radiostation.module';
+import { SonicKeyRepository } from './repositories/sonickey.repository';
 @Module({
   imports: [
+  ScheduleModule.forRoot(),
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true,envFilePath:'.env.arba' }),
     MulterModule.register({
@@ -32,9 +38,10 @@ import * as uniqid from 'uniqid';
     SonickeyModule,
     ExternalSonickeyModule,
     JobModule,
+    RadiostationModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,SonicKeyRepository,CronService, AppGateway],
 })
 export class AppModule {
   constructor(){
