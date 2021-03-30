@@ -19,10 +19,7 @@ export class JobService {
     public readonly keygenService: KeygenService,
   ) {}
   async create(createJobDto: CreateJobDto) {
-    const dataToSave = Object.assign(new Job(), createJobDto, {
-      reservedLicenceCount: createJobDto.jobDetails.length,
-      usedLicenceCount: 0,
-    }) as Job;
+    const dataToSave = Object.assign(new Job(), createJobDto) as Job;
 
     const createdJob = await this.jobRepository.put(dataToSave);
     await this.addReservedDetailsInLicence(createJobDto.licenseId, [
@@ -109,8 +106,7 @@ export class JobService {
       .update(
         Object.assign(job, {
           isComplete: true,
-          completedAt: new Date(),
-          usedLicenceCount: totalCompletedFiles.length,
+          completedAt: new Date()
         }) as Job
       )
       .catch(async err => {
@@ -157,6 +153,56 @@ export class JobService {
       metadata: {
         ...data?.attributes?.metadata,
         reserves: JSON.stringify(oldReserves?.filter(reser => reser.jobId !== jobId)),
+      },
+    });
+    if (errorsUpdate) return Promise.reject(errorsUpdate);
+    return updatedData;
+  }
+
+  async incrementReservedDetailsInLicenceBy(licenseId: string, jobId: string,count:number) {
+    const { data, errors } = await this.keygenService.getLicenseById(licenseId);
+    const oldReserves = JSONUtils.parse(data?.attributes?.metadata?.reserves,[])as {
+      jobId: string;
+      count: number;
+    }[];
+    const updatedReserves = oldReserves.map(reserve=>{
+      if(reserve.jobId==jobId){
+        reserve.count=reserve.count+count
+      }
+      return reserve
+    })
+    const {
+      data: updatedData,
+      errors: errorsUpdate,
+    } = await this.keygenService.updateLicense(licenseId, {
+      metadata: {
+        ...data?.attributes?.metadata,
+        reserves: JSON.stringify(updatedReserves),
+      },
+    });
+    if (errorsUpdate) return Promise.reject(errorsUpdate);
+    return updatedData;
+  }
+
+  async decrementReservedDetailsInLicenceBy(licenseId: string, jobId: string,count:number) {
+    const { data, errors } = await this.keygenService.getLicenseById(licenseId);
+    const oldReserves = JSONUtils.parse(data?.attributes?.metadata?.reserves,[])as {
+      jobId: string;
+      count: number;
+    }[];
+    const updatedReserves = oldReserves.map(reserve=>{
+      if(reserve.jobId==jobId){
+        reserve.count=reserve.count-count
+      }
+      return reserve
+    })
+    const {
+      data: updatedData,
+      errors: errorsUpdate,
+    } = await this.keygenService.updateLicense(licenseId, {
+      metadata: {
+        ...data?.attributes?.metadata,
+        reserves: JSON.stringify(updatedReserves),
       },
     });
     if (errorsUpdate) return Promise.reject(errorsUpdate);

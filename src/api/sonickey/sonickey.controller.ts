@@ -85,7 +85,9 @@ export class SonickeyController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys of particular user' })
   async getOwnersKeys(@Param('ownerId') ownerId: string) {
-    return await this.sonicKeyService.findByOwner(ownerId);
+    const keys =  await this.sonicKeyService.findByOwner(ownerId);
+    console.log("keys length",keys.length);
+    return keys
   }
 
   @Get('/jobs/:jobId')

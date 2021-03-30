@@ -46,14 +46,6 @@ export class Job {
   licenseId: string;
 
   @ApiProperty()
-  @attribute()
-  reservedLicenceCount: number;
-
-  @ApiProperty()
-  @attribute()
-  usedLicenceCount: number;
-
-  @ApiProperty()
   @attribute({ defaultProvider: () => false })
   isComplete?: boolean;
 

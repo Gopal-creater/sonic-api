@@ -2,6 +2,8 @@ import {
     Controller,
     Body,
     Put,
+    Post,
+    Delete,
     Param,
     UseGuards,
     NotImplementedException
@@ -34,7 +36,7 @@ import { JobService } from '../services/job.service';
       );
     }
 
-    @ApiOperation({ summary: 'Update the file details using fileId' })
+    @ApiOperation({ summary: 'Update the single file details using fileId' })
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @Put('/updatefile/:fileId')
@@ -50,15 +52,32 @@ import { JobService } from '../services/job.service';
       );
     }
 
-    @ApiOperation({ summary: 'Update the file details using fileId' })
+    @ApiOperation({ summary: 'Add files to job' })
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
-    @Put('/addfiles')
+    @Post('/addfiles')
     async addFilesToJob(
       @Param('jobId') jobId: string,
       @Body() addFilesDto: AddFilesDto,
     ) {
-     throw new NotImplementedException()
+       return this.jobFileService.addFilesToJob(
+        jobId,
+        addFilesDto,
+      );
+    }
+
+    @ApiOperation({ summary: 'Delete the file details using fileId' })
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Delete('/deletefile/:fileId')
+    deleteJobFile(
+      @Param('jobId') jobId: string,
+      @Param('fileId') fileId: string,
+    ) {
+        return this.jobFileService.deleteFileFromJob(
+        jobId,
+        fileId
+      );
     }
   }
   
