@@ -12,5 +12,5 @@ export class AddKeyAndUpdateJobFileDto {
     fileDetail:{ [key: string]: any }
 
     @ApiProperty()
-    sonicKey:CreateSonicKeyFromJobDto
+    sonicKeyDetail:CreateSonicKeyFromJobDto
 }

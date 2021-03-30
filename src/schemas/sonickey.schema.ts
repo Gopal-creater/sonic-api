@@ -7,6 +7,15 @@ import {
 import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
 import { IsNotEmpty,IsArray } from 'class-validator';
 
+
+/**
+ * Info About Dynamodb data mapper
+ * https://github.com/awslabs/dynamodb-data-mapper-js
+ * QueryOptions==> https://github.com/awslabs/dynamodb-data-mapper-js/blob/c504011/packages/dynamodb-data-mapper/src/namedParameters/QueryOptions.ts#L19
+ * DynamoDb-Expression ==> https://awslabs.github.io/dynamodb-data-mapper-js/packages/dynamodb-expressions/#attribute-paths
+ * 
+ */
+
 @table('SonicKey-New-Schema')
 export class SonicKey {
   constructor(data?: Partial<SonicKey>) {

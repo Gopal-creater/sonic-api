@@ -8,6 +8,14 @@ import {
 import { IsNotEmpty,IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
+/**
+ * Info About Dynamodb data mapper
+ * https://github.com/awslabs/dynamodb-data-mapper-js
+ * QueryOptions==> https://github.com/awslabs/dynamodb-data-mapper-js/blob/c504011/packages/dynamodb-data-mapper/src/namedParameters/QueryOptions.ts#L19
+ * DynamoDb-Expression ==> https://awslabs.github.io/dynamodb-data-mapper-js/packages/dynamodb-expressions/#attribute-paths
+ * 
+ */
+
 @table('SonicJob-New-Schema')
 export class Job {
   constructor(data?: Partial<Job>) {

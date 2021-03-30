@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { JobRepository } from '../../../repositories/job.repository';
 import { UpdateJobFileDto,AddKeyAndUpdateJobFileDto } from '../dto/update-job-file.dto';
 import { JobService } from './job.service';
@@ -16,30 +16,38 @@ export class JobFileService {
   async updateJobFile(jobId: string,fileId:string, updateJobFileDto: UpdateJobFileDto) {
     const job = await this.jobService.findOne(jobId)
     if(!job){
-      new NotFoundException()
+      throw new NotFoundException()
     }
+    
     const elementsIndex = job.jobDetails.findIndex(element => element.fileId == fileId )
-    if(!elementsIndex || elementsIndex<0){
-        return new NotFoundException()
+    if(elementsIndex<0){
+        throw new NotFoundException()
       }
-    job.jobDetails[elementsIndex]=Object.assign({...job.jobDetails[elementsIndex]},updateJobFileDto.fileDetail,{fileId:fileId})
-    return  this.jobRepository.update(job);
+
+    const updatedOldFile = Object.assign({...job.jobDetails[elementsIndex]},updateJobFileDto.fileDetail,{fileId:fileId})
+    job.jobDetails[elementsIndex]=updatedOldFile
+    const updatedJob = await this.jobRepository.update(job);
+    return {
+      fileDetail:updatedOldFile,
+      updatedJob:updatedJob
+    }
   }
 
   async addKeyToDbAndUpdateJobFile(jobId: string,fileId:string, addKeyAndUpdateJobFileDto: AddKeyAndUpdateJobFileDto) {
     const job = await this.jobService.findOne(jobId)
     if(!job){
-      new NotFoundException()
+      throw new NotFoundException()
     }
-    console.log("job",job,fileId);
     
     const elementsIndex = job.jobDetails.findIndex(element => element.fileId == fileId )
-    console.log("elementsIndex",elementsIndex);
     if(elementsIndex<0){
-        return new NotFoundException()
+        throw new NotFoundException()
       }
-    //Add sonickey to db
-    const createdSonicKey = await this.sonickeyService.createFromJob(addKeyAndUpdateJobFileDto.sonicKey) as SonicKey
+    //Add sonickey to db if not present.
+    var createdSonicKey = await this.sonickeyService.findBySonicKey(addKeyAndUpdateJobFileDto.sonicKeyDetail.sonicKey)
+    if(!createdSonicKey){
+      createdSonicKey = await this.sonickeyService.createFromJob(addKeyAndUpdateJobFileDto.sonicKeyDetail) as SonicKey
+    }
     const updatedOldFile = Object.assign({...job.jobDetails[elementsIndex]},addKeyAndUpdateJobFileDto.fileDetail,{fileId:fileId})
     job.jobDetails[elementsIndex]=updatedOldFile
     const updatedJob = await this.jobRepository.update(job);

@@ -10,6 +10,7 @@ import { Job } from '../../../schemas/job.schema';
 import { UpdateJobFileDto } from '../dto/update-job-file.dto';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { JSONUtils } from '../../../shared/utils';
+import { QueryOptions } from '@aws/dynamodb-data-mapper';
 
 @Injectable()
 export class JobService {
@@ -70,8 +71,17 @@ export class JobService {
     return this.jobRepository.update(job);
   }
 
-  remove(id: string) {
-    return this.jobRepository.delete(Object.assign(new Job(), { id: id }) as Job);
+  async remove(id: string) {
+    const job = await this.findOne(id);
+    if(!job){
+      return new NotFoundException();
+    }
+    await this.removeReservedDetailsInLicence(job.licenseId, job.id).catch(
+      err => {
+        throw new BadRequestException('Error removing reserved licence count ');
+      },
+    );
+    return this.jobRepository.delete(job);
   }
 
   async makeCompleted(jobId: string) {
@@ -153,12 +163,12 @@ export class JobService {
     return updatedData;
   }
 
-  async findByOwner(owner: string) {
+  async findByOwner(owner: string,queryOptions?:QueryOptions) {
     var items: Job[] = [];
     for await (const item of this.jobRepository.query(
       Job,
-      { owner: owner },
-      { indexName: 'ownerIndex' },
+      { owner: owner},
+      { indexName: 'ownerIndex',...queryOptions },
     )) {
       items.push(item);
     }

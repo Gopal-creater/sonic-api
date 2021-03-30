@@ -11,6 +11,7 @@ import * as upath from 'upath';
 import { nanoid } from 'nanoid';
 import { appConfig } from '../../config';
 import { CreateSonicKeyFromJobDto } from './dtos/create-sonickey.dto';
+import { QueryOptions } from '@aws/dynamodb-data-mapper';
 
 @Injectable()
 export class SonickeyService {
@@ -33,18 +34,6 @@ export class SonickeyService {
   async getAll() {
     const items = [];
     for await (const item of this.sonicKeyRepository.scan(SonicKey)) {
-      // individual items will be yielded as the scan is performed
-      items.push(item);
-    }
-    return items;
-  }
-
-  async getAllWithFilter(queryParams: Object) {
-    const items = [];
-    for await (const item of this.sonicKeyRepository.query(
-      SonicKey,
-      queryParams,
-    )) {
       // individual items will be yielded as the scan is performed
       items.push(item);
     }
@@ -183,24 +172,24 @@ export class SonickeyService {
     return items[0];
   }
 
-  async findByOwner(owner: string) {
+  async findByOwner(owner: string,queryOptions?:QueryOptions) {
     var items: SonicKey[] = [];
     for await (const item of this.sonicKeyRepository.query(
       SonicKey,
       { owner: owner },
-      { indexName: 'ownerIndex' },
+      { indexName: 'ownerIndex',...queryOptions },
     )) {
       items.push(item);
     }
     return items;
   }
 
-  async findByJob(job: string) {
+  async findByJob(job: string,queryOptions?:QueryOptions) {
     var items: SonicKey[] = [];
     for await (const item of this.sonicKeyRepository.query(
       SonicKey,
       { job: job },
-      { indexName: 'jobIndex' },
+      { indexName: 'jobIndex',...queryOptions },
     )) {
       items.push(item);
     }

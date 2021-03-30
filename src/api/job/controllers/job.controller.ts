@@ -17,12 +17,17 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from '../../auth/decorators/user.decorator';
 import { JobLicenseValidationGuard } from '../../auth/guards/job-license-validation.guard';
 import { v4 as uuidv4 } from 'uuid';
+import { equals, ConditionExpression } from '@aws/dynamodb-expressions';
 import { SonickeyService } from '../../sonickey/sonickey.service';
+import { BadRequestException } from '@nestjs/common';
 
 @ApiTags('Jobs Controller')
 @Controller('jobs')
 export class JobController {
-  constructor(private readonly jobService: JobService,private readonly sonickeyService: SonickeyService) {}
+  constructor(
+    private readonly jobService: JobService,
+    private readonly sonickeyService: SonickeyService,
+  ) {}
 
   @UseGuards(JwtAuthGuard, JobLicenseValidationGuard)
   @ApiBearerAuth()
@@ -33,13 +38,29 @@ export class JobController {
     @User('sub') owner: string,
     @Req() req: any,
   ) {
-    createJobDto.owner=owner
-    createJobDto.jobDetails=createJobDto.jobDetails.map((job)=>{
-      job["fileId"]=uuidv4()
-      job["isComplete"]=false
-      job["sonicKey"]=this.sonickeyService.generateUniqueSonicKey()
-      return job
-    })
+    /**
+     * check if job with same name exists on db using ConditionExpression
+     * https://awslabs.github.io/dynamodb-data-mapper-js/packages/dynamodb-expressions/#attribute-paths
+     * **/
+    var equalsExpressionPredicate = equals(createJobDto.name);
+    const equalsExpression: ConditionExpression = {
+      ...equalsExpressionPredicate,
+      subject: 'name',
+    };
+    const existingJobs = await this.jobService.findByOwner(owner, {
+      filter: equalsExpression,
+    });
+    if (existingJobs.length > 0) {
+      throw new BadRequestException('Job with same name already exists.');
+    }
+    createJobDto.owner = owner;
+    createJobDto.jobDetails = createJobDto.jobDetails.map(job => {
+      job['fileId'] = job['fileId'] || uuidv4();
+      job['isComplete'] = job['isComplete'] || false;
+      job['sonicKey'] =
+        job['sonicKey'] || this.sonickeyService.generateUniqueSonicKey();
+      return job;
+    });
     return this.jobService.create(createJobDto);
   }
 
