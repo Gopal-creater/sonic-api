@@ -85,6 +85,8 @@ export class JobFileService {
       { fileId: fileId },
     );
     job.jobDetails[elementsIndex] = updatedOldFile;
+    console.log("job",job);
+    
     const updatedJob = await this.jobRepository.update(job);
     return {
       createdSonicKey: createdSonicKey,
