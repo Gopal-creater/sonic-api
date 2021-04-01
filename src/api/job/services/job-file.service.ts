@@ -79,15 +79,21 @@ export class JobFileService {
         addKeyAndUpdateJobFileDto.sonicKeyDetail,
       )) as SonicKey;
     }
-    const updatedOldFile = Object.assign(
-      { ...job.jobDetails[elementsIndex] },
+    // const updatedOldFile = Object.assign(
+    //   { ...job.jobDetails[elementsIndex] },
+    //   addKeyAndUpdateJobFileDto.fileDetail,
+    //   { fileId: fileId },
+    // );
+    // job.jobDetails[elementsIndex] = updatedOldFile;
+    // console.log("job",job);
+    const jobToUpdate = await this.jobService.findOne(jobId);
+      const updatedOldFile = Object.assign(
+      { ...jobToUpdate.jobDetails[elementsIndex] },
       addKeyAndUpdateJobFileDto.fileDetail,
       { fileId: fileId },
     );
-    job.jobDetails[elementsIndex] = updatedOldFile;
-    console.log("job",job);
-    
-    const updatedJob = await this.jobRepository.update(job);
+    jobToUpdate.jobDetails[elementsIndex] = updatedOldFile
+    const updatedJob = await this.jobRepository.update(jobToUpdate);
     return {
       createdSonicKey: createdSonicKey,
       fileDetail: updatedOldFile,
