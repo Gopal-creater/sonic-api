@@ -15,6 +15,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationQueryDto } from '../../shared/dtos/paginationquery.dto';
 import { QueryDto } from '../../shared/dtos/query.dto';
+import { IMongoosePaginate } from '../../shared/interfaces/MongoosePaginate.interface';
+import { MongoosePaginateDto } from '../../shared/dtos/mongoosepaginate.dto';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -38,6 +40,11 @@ export class SonickeyService {
 
   async getAll(queryDto: QueryDto = {}) {
     const { limit, offset, ...query } = queryDto;
+    const options = {
+      limit,
+      offset
+    };
+    // return await this.sonicKeyModel["paginate"](query || {},options) as MongoosePaginateDto<SonicKey>
     return this.sonicKeyModel
       .find(query || {})
       .skip(offset)
@@ -191,6 +198,11 @@ export class SonickeyService {
 
   async findByOwner(owner: string, queryDto: QueryDto = {}) {
     const { limit, offset, ...query } = queryDto;
+    const options = {
+      limit,
+      offset
+    };
+    // return await this.sonicKeyModel["paginate"]({ owner: owner, ...query },options) as MongoosePaginateDto<SonicKey>
     return this.sonicKeyModel
       .find({ owner: owner, ...query })
       .skip(offset)
@@ -200,6 +212,11 @@ export class SonickeyService {
 
   async findByJob(job: string, queryDto: QueryDto = {}) {
     const { limit, offset, ...query } = queryDto;
+    const options = {
+      limit,
+      offset
+    };
+    // return await this.sonicKeyModel["paginate"]({ job: job, ...query },options) as MongoosePaginateDto<SonicKey>
     return this.sonicKeyModel
       .find({ job: job, ...query })
       .skip(offset)

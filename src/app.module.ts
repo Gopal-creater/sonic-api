@@ -20,6 +20,11 @@ import { AppGateway } from './app.gateway';
 import { RadiostationModule } from './api/radiostation/radiostation.module';
 import { SonicKeyRepository } from './repositories/sonickey.repository';
 import { MongooseModule } from '@nestjs/mongoose';
+import mongoosePaginate = require('mongoose-paginate-v2');
+mongoosePaginate.paginate.options = {
+  limit: 50,
+};
+
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -32,7 +37,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         useNewUrlParser: true,
         useUnifiedTopology: true,
         connectionFactory: (connection) => {
-          connection.plugin(require('mongoose-paginate-v2'));
+          connection.plugin(mongoosePaginate);
           return connection;
         }
       }),

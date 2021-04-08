@@ -14,8 +14,8 @@ export declare class JobService {
     findAll(): Promise<Job[]>;
     findOne(id: string): Promise<Job>;
     update(id: string, updateJobDto: UpdateJobDto): Promise<Job>;
-    updateJobDetailByFileId(id: string, fileId: string, updateJobFileDto: UpdateJobFileDto): Promise<Job | NotFoundException>;
-    remove(id: string): Promise<Job | NotFoundException>;
+    updateJobDetailByFileId(id: string, fileId: string, updateJobFileDto: UpdateJobFileDto): Promise<NotFoundException | Job>;
+    remove(id: string): Promise<NotFoundException | Job>;
     makeCompleted(jobId: string): Promise<Job>;
     addReservedDetailsInLicence(licenseId: string, reserves: {
         jobId: string;

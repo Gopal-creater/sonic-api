@@ -47,12 +47,16 @@ import { FileHandlerService } from '../../shared/services/file-handler.service';
 import { DownloadDto } from './dtos/download.dto';
 import * as appRootPath from 'app-root-path';
 import { QueryDto } from '../../shared/dtos/query.dto';
+import { IMongoosePaginate } from '../../shared/interfaces/MongoosePaginate.interface';
+import { MongoosePaginateDto } from '../../shared/dtos/mongoosepaginate.dto';
 
 /**
  * Prabin:
  * Our DynamoDb table has a sonickey as a hash key. So we can perform all CURD using sonickey.
  * To get all owner's sonickeys we have to create a global secondary index table.
  */
+
+class TestT extends MongoosePaginateDto<SonicKey>{}
 
 @ApiTags('SonicKeys Contrller')
 @Controller('sonic-keys')

@@ -43,6 +43,9 @@ const file_handler_service_1 = require("../../shared/services/file-handler.servi
 const download_dto_1 = require("./dtos/download.dto");
 const appRootPath = require("app-root-path");
 const query_dto_1 = require("../../shared/dtos/query.dto");
+const mongoosepaginate_dto_1 = require("../../shared/dtos/mongoosepaginate.dto");
+class TestT extends mongoosepaginate_dto_1.MongoosePaginateDto {
+}
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, keygenService, fileHandlerService) {
         this.sonicKeyService = sonicKeyService;

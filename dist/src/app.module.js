@@ -30,6 +30,10 @@ const app_gateway_1 = require("./app.gateway");
 const radiostation_module_1 = require("./api/radiostation/radiostation.module");
 const sonickey_repository_1 = require("./repositories/sonickey.repository");
 const mongoose_1 = require("@nestjs/mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
+mongoosePaginate.paginate.options = {
+    limit: 50,
+};
 let AppModule = class AppModule {
     constructor() { }
 };
@@ -46,7 +50,7 @@ AppModule = __decorate([
                     useNewUrlParser: true,
                     useUnifiedTopology: true,
                     connectionFactory: (connection) => {
-                        connection.plugin(require('mongoose-paginate-v2'));
+                        connection.plugin(mongoosePaginate);
                         return connection;
                     }
                 }),

@@ -145,6 +145,5 @@ SonicKey = __decorate([
 ], SonicKey);
 exports.SonicKey = SonicKey;
 const SonicKeySche = mongoose_1.SchemaFactory.createForClass(SonicKey);
-SonicKeySche.plugin(require('mongoose-paginate-v2'));
 exports.SonicKeySchema = SonicKeySche;
 //# sourceMappingURL=sonickey.schema.js.map

@@ -1,4 +1,4 @@
-import { Document, Schema as MSchema } from 'mongoose';
+import { Document } from 'mongoose';
 export declare class SonicKey extends Document {
     constructor(data?: Partial<SonicKey>);
     sonicKey: string;
@@ -26,4 +26,4 @@ export declare class SonicKey extends Document {
     contentQuality: string;
     additionalMetadata: Map<string, any>;
 }
-export declare const SonicKeySchema: MSchema<SonicKey, import("mongoose").Model<any, any>, undefined>;
+export declare const SonicKeySchema: import("mongoose").Schema<SonicKey, import("mongoose").Model<any, any>, undefined>;

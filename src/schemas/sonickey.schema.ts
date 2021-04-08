@@ -133,8 +133,9 @@
 // }
 
 import { Prop, Schema, SchemaFactory, } from '@nestjs/mongoose';
-import { Document,Schema as MSchema } from 'mongoose';
+import { Document,model} from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+// import mongoosePaginate = require('mongoose-paginate-v2');
 
 @Schema({ timestamps: true,collection:"sonickeys"})
 export class SonicKey extends Document {
@@ -242,5 +243,5 @@ export class SonicKey extends Document {
 }
 
 const SonicKeySche = SchemaFactory.createForClass(SonicKey);
-SonicKeySche.plugin(require('mongoose-paginate-v2'))
+// SonicKeySche.plugin(mongoosePaginate)
 export const SonicKeySchema = SonicKeySche

@@ -50,6 +50,10 @@ let SonickeyService = class SonickeyService {
     }
     async getAll(queryDto = {}) {
         const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
+        const options = {
+            limit,
+            offset
+        };
         return this.sonicKeyModel
             .find(query || {})
             .skip(offset)
@@ -136,6 +140,10 @@ let SonickeyService = class SonickeyService {
     }
     async findByOwner(owner, queryDto = {}) {
         const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
+        const options = {
+            limit,
+            offset
+        };
         return this.sonicKeyModel
             .find(Object.assign({ owner: owner }, query))
             .skip(offset)
@@ -144,6 +152,10 @@ let SonickeyService = class SonickeyService {
     }
     async findByJob(job, queryDto = {}) {
         const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
+        const options = {
+            limit,
+            offset
+        };
         return this.sonicKeyModel
             .find(Object.assign({ job: job }, query))
             .skip(offset)
