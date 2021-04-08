@@ -11,12 +11,16 @@ import * as upath from 'upath';
 import { nanoid } from 'nanoid';
 import { appConfig } from '../../config';
 import { CreateSonicKeyFromJobDto } from './dtos/create-sonickey.dto';
-import { QueryOptions } from '@aws/dynamodb-data-mapper';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { PaginationQueryDto } from '../../shared/dtos/paginationquery.dto';
+import { QueryDto } from '../../shared/dtos/query.dto';
 
+// PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
 export class SonickeyService {
   constructor(
-    public readonly sonicKeyRepository: SonicKeyRepository,
+    @InjectModel(SonicKey.name) public sonicKeyModel: Model<SonicKey>,
     private readonly fileOperationService: FileOperationService,
     private readonly fileHandlerService: FileHandlerService,
   ) {}
@@ -27,17 +31,18 @@ export class SonickeyService {
   }
 
   async createFromJob(createSonicKeyDto: CreateSonicKeyFromJobDto) {
-    const dataToSave = Object.assign(new SonicKey(),createSonicKeyDto);
-    return this.sonicKeyRepository.put(dataToSave);
+    const dataToSave = Object.assign(new SonicKey(), createSonicKeyDto);
+    const newSonicKey = new this.sonicKeyModel(dataToSave);
+    return newSonicKey.save();
   }
 
-  async getAll() {
-    const items = [];
-    for await (const item of this.sonicKeyRepository.scan(SonicKey)) {
-      // individual items will be yielded as the scan is performed
-      items.push(item);
-    }
-    return items;
+  async getAll(queryDto: QueryDto = {}) {
+    const { limit, offset, ...query } = queryDto;
+    return this.sonicKeyModel
+      .find(query || {})
+      .skip(offset)
+      .limit(limit)
+      .exec();
   }
 
   /**
@@ -135,7 +140,7 @@ export class SonickeyService {
    * @param file
    * @param ownerId
    */
-   async decodeAllKeys(file: IUploadedFile) {
+  async decodeAllKeys(file: IUploadedFile) {
     console.log('file', file);
 
     file.path = upath.toUnix(file.path); //Convert windows path to unix path
@@ -151,18 +156,7 @@ export class SonickeyService {
       .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
       .finally(() => {
         this.fileHandlerService.deleteFileAtPath(inFilePath);
-      })
-  }
-
-
-  async search(){
-    var items: SonicKey[] = [];
-    for await (const item of this.sonicKeyRepository.query(SonicKey, {
-      'sonicKey.sonicContent.volatileMetadata.contentOwner': 'Arba',
-    })) {
-      items.push(item);
-    }
-    return items[0];
+      });
   }
 
   async exractMusicMetaFromFile(filePath: string) {
@@ -174,56 +168,48 @@ export class SonickeyService {
     sonicKeyDto?: SonicKeyDto,
   ) {
     const musicData = await this.exractMusicMetaFromFile(file.path);
-    sonicKeyDto.contentSize=file.size;
-    sonicKeyDto.contentFileName=file.filename;
-    sonicKeyDto.contentType=file.mimetype;
-    sonicKeyDto.contentFileType=file.mimetype;
-    sonicKeyDto.contentDuration=musicData.format.duration;
-    sonicKeyDto.contentEncoding=`${musicData.format.codec}, ${musicData.format.sampleRate} Hz, ${musicData.format.codecProfile}, ${musicData.format.bitrate} ch`;
-    sonicKeyDto.contentSamplingFrequency=`${musicData.format.sampleRate} Hz`;
-    sonicKeyDto.contentName= sonicKeyDto.contentName ||  musicData.common.title||"";
-    sonicKeyDto.contentOwner= sonicKeyDto.contentOwner || musicData.common.artist||"";
-    sonicKeyDto.contentDescription=musicData.common.description?musicData.common.description[0]:"";
-    return sonicKeyDto
+    sonicKeyDto.contentSize = file.size;
+    sonicKeyDto.contentFileName = file.filename;
+    sonicKeyDto.contentType = file.mimetype;
+    sonicKeyDto.contentFileType = file.mimetype;
+    sonicKeyDto.contentDuration = musicData.format.duration;
+    sonicKeyDto.contentEncoding = `${musicData.format.codec}, ${musicData.format.sampleRate} Hz, ${musicData.format.codecProfile}, ${musicData.format.bitrate} ch`;
+    sonicKeyDto.contentSamplingFrequency = `${musicData.format.sampleRate} Hz`;
+    sonicKeyDto.contentName =
+      sonicKeyDto.contentName || musicData.common.title || '';
+    sonicKeyDto.contentOwner =
+      sonicKeyDto.contentOwner || musicData.common.artist || '';
+    sonicKeyDto.contentDescription = musicData.common.description
+      ? musicData.common.description[0]
+      : '';
+    return sonicKeyDto;
   }
 
   async findBySonicKey(sonicKey: string) {
-    var items: SonicKey[] = [];
-    for await (const item of this.sonicKeyRepository.query(SonicKey, {
-      sonicKey: sonicKey,
-    })) {
-      items.push(item);
-    }
-    return items[0];
+    return this.sonicKeyModel.findOne({ sonicKey: sonicKey });
   }
 
-  async findByOwner(owner: string,queryOptions?:QueryOptions) {
-    var items: SonicKey[] = [];
-    for await (const item of this.sonicKeyRepository.query(
-      SonicKey,
-      { owner: owner },
-      { indexName: 'ownerIndex',...queryOptions },
-    )) {
-      items.push(item);
-    }
-    return items;
+  async findByOwner(owner: string, queryDto: QueryDto = {}) {
+    const { limit, offset, ...query } = queryDto;
+    return this.sonicKeyModel
+      .find({ owner: owner, ...query })
+      .skip(offset)
+      .limit(limit)
+      .exec();
   }
 
-  async findByJob(job: string,queryOptions?:QueryOptions) {
-    var items: SonicKey[] = [];
-    for await (const item of this.sonicKeyRepository.query(
-      SonicKey,
-      { job: job },
-      { indexName: 'jobIndex',...queryOptions },
-    )) {
-      items.push(item);
-    }
-    return items;
+  async findByJob(job: string, queryDto: QueryDto = {}) {
+    const { limit, offset, ...query } = queryDto;
+    return this.sonicKeyModel
+      .find({ job: job, ...query })
+      .skip(offset)
+      .limit(limit)
+      .exec();
   }
 
   async findBySonicKeyOrFail(sonicKey: string) {
     return this.findBySonicKey(sonicKey).then(data => {
-      if (!data) throw new NotFoundException('key not found');
+      if (!data) throw new NotFoundException('Not found');
       return data;
     });
   }

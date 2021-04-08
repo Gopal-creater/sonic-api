@@ -50,9 +50,6 @@ let JobFileService = class JobFileService {
             throw new common_1.NotFoundException();
         }
         var createdSonicKey = await this.sonickeyService.findBySonicKey(addKeyAndUpdateJobFileDto.sonicKeyDetail.sonicKey);
-        if (!createdSonicKey) {
-            createdSonicKey = (await this.sonickeyService.createFromJob(addKeyAndUpdateJobFileDto.sonicKeyDetail));
-        }
         const updatedOldFile = Object.assign(Object.assign({}, job.jobDetails[elementsIndex]), addKeyAndUpdateJobFileDto.fileDetail, { fileId: fileId });
         job.jobDetails[elementsIndex] = updatedOldFile;
         const updatedJob = await this.jobRepository.update(job);

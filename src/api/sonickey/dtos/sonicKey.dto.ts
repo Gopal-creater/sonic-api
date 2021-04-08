@@ -5,7 +5,5 @@ export class SonicKeyDto extends OmitType(SonicKey, [
     'owner',
     'job',
     'licenseId',
-    'createdAt',
     'status'
-
   ]) {}

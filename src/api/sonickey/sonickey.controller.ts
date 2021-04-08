@@ -21,6 +21,8 @@ import {
   UseGuards,
   Patch,
   Res,
+  NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { SonickeyService } from './sonickey.service';
 import { SonicKey } from '../../schemas/sonickey.schema';
@@ -35,6 +37,8 @@ import {
   ApiTags,
   ApiConsumes,
   ApiBody,
+  ApiAcceptedResponse,
+  ApiOkResponse,
 } from '@nestjs/swagger';
 import * as uniqid from 'uniqid';
 import { JwtAuthGuard } from '../auth/guards';
@@ -42,6 +46,7 @@ import { User } from '../auth/decorators';
 import { FileHandlerService } from '../../shared/services/file-handler.service';
 import { DownloadDto } from './dtos/download.dto';
 import * as appRootPath from 'app-root-path';
+import { QueryDto } from '../../shared/dtos/query.dto';
 
 /**
  * Prabin:
@@ -55,15 +60,17 @@ export class SonickeyController {
   constructor(
     private readonly sonicKeyService: SonickeyService,
     private readonly keygenService: KeygenService,
-    private readonly fileHandlerService:FileHandlerService
+    private readonly fileHandlerService: FileHandlerService,
   ) {}
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys' })
-  async getAll() {
-    return await this.sonicKeyService.getAll();
+  async getAll(@Query() queryDto: QueryDto,) {
+    console.log("queryDto",queryDto);
+    
+    return this.sonicKeyService.getAll(queryDto);
   }
 
   @Get('/generate-unique-sonic-key')
@@ -89,25 +96,18 @@ export class SonickeyController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys of particular user' })
-  async getOwnersKeys(@Param('ownerId') ownerId: string) {
-    const keys =  await this.sonicKeyService.findByOwner(ownerId);
-    console.log("keys length",keys.length);
-    return keys
+  async getOwnersKeys(@Param('ownerId') ownerId: string,@Query() queryDto: QueryDto,) {
+    const keys = await this.sonicKeyService.findByOwner(ownerId,queryDto);
+    return keys;
   }
 
   @Get('/jobs/:jobId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys of particular job' })
-  async getKeysByJob(@Param('jobId') jobId: string) {
-    return await this.sonicKeyService.findByJob(jobId);
+  async getKeysByJob(@Param('jobId') jobId: string,@Query() queryDto: QueryDto,) {
+    return await this.sonicKeyService.findByJob(jobId,queryDto);
   }
-
-  // @Get('/search')
-  // @ApiOperation({ summary: 'Search on sonicKey' })
-  // async search() {
-  //   return this.sonicKeyService.search();
-  // }
 
   @Get('/:sonickey')
   @UseGuards(JwtAuthGuard)
@@ -164,8 +164,8 @@ export class SonickeyController {
     @User('sub') owner: string,
     @Req() req: any,
   ) {
-    console.log("file",file);
-    
+    console.log('file', file);
+
     const licenseId = req?.validLicense?.id as string;
     var downloadFileUrl: string;
     var outFilePath: string;
@@ -191,18 +191,18 @@ export class SonickeyController {
           sonicKeyDto,
         );
 
-        
-        const dataToSave = new SonicKey(Object.assign(sonicKeyDtoWithAudioData,{
-          contentFilePath:downloadFileUrl,
-          owner: owner,
-          sonicKey: sonicKey,
-          licenseId: licenseId, //modified
-        }))
-        return this.sonicKeyService.sonicKeyRepository
-          .put(dataToSave)
-          .finally(() => {
-            this.fileHandlerService.deleteFileAtPath(file.path);
-          });
+        const dataToSave = new SonicKey(
+          Object.assign(sonicKeyDtoWithAudioData, {
+            contentFilePath: downloadFileUrl,
+            owner: owner,
+            sonicKey: sonicKey,
+            licenseId: licenseId, //modified
+          }),
+        );
+        const newSonicKey = new this.sonicKeyService.sonicKeyModel(dataToSave);
+        return newSonicKey.save().finally(() => {
+          this.fileHandlerService.deleteFileAtPath(file.path);
+        });
       });
   }
 
@@ -245,19 +245,21 @@ export class SonickeyController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Decode File and retrive key information' })
   async decode(@UploadedFile() file: IUploadedFile) {
-    return this.sonicKeyService.decodeAllKeys(file).then(async({ sonicKeys }) => {
-      console.log("Detected keys from Decode", sonicKeys);
-      //iterate all the sonicKeys from decode function in order to get metadata
-      var sonicKeysMetadata = [];
-      for await (const sonicKey of sonicKeys) {
-        const metadata = await this.sonicKeyService.findBySonicKey(sonicKey);
-        if(!metadata){
-          continue;
+    return this.sonicKeyService
+      .decodeAllKeys(file)
+      .then(async ({ sonicKeys }) => {
+        console.log('Detected keys from Decode', sonicKeys);
+        //iterate all the sonicKeys from decode function in order to get metadata
+        var sonicKeysMetadata = [];
+        for await (const sonicKey of sonicKeys) {
+          const metadata = await this.sonicKeyService.findBySonicKey(sonicKey);
+          if (!metadata) {
+            continue;
+          }
+          sonicKeysMetadata.push(metadata);
         }
-        sonicKeysMetadata.push(metadata);
-      }
-      return sonicKeysMetadata;
-    });
+        return sonicKeysMetadata;
+      });
   }
 
   @Patch('/:sonickey')
@@ -268,9 +270,14 @@ export class SonickeyController {
     @Param('sonickey') sonickey: string,
     @Body() updateSonicKeyDto: UpdateSonicKeyDto,
   ) {
-    const oldKey = await this.sonicKeyService.findBySonicKeyOrFail(sonickey);
-    const dataToUpdate = new SonicKey(Object.assign(oldKey, updateSonicKeyDto));
-    return this.sonicKeyService.sonicKeyRepository.update(dataToUpdate);
+    const updatedSonickey =  await this.sonicKeyService.sonicKeyModel.updateOne(
+      { sonicKey: sonickey },
+      updateSonicKeyDto,
+    );
+    if (!updatedSonickey) {
+      throw new NotFoundException();
+    }
+    return updateSonicKeyDto
   }
 
   @Delete('/:sonickey')
@@ -278,57 +285,66 @@ export class SonickeyController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete Sonic Key data' })
   async delete(@Param('sonickey') sonickey: string) {
-    const found = await this.sonicKeyService.findBySonicKeyOrFail(sonickey);
-    return this.sonicKeyService.sonicKeyRepository.delete(found);
+    const deletedSonickey = await this.sonicKeyService.sonicKeyModel.deleteOne({ sonicKey: sonickey });
+    if (!deletedSonickey) {
+      throw new NotFoundException();
+    }
+    return deletedSonickey
   }
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post('/download-file')
   @ApiOperation({ summary: 'Secure Download of a file' })
-  async downloadFile(@Body() data: DownloadDto, @User('sub') userId: string, @Res() response): Promise<any> {
+  async downloadFile(
+    @Body() data: DownloadDto,
+    @User('sub') userId: string,
+    @Res() response,
+  ): Promise<any> {
     try {
       /* Checks for authenticated user in order to download the file */
       var checkForAuth = false;
-      console.log('url',data.fileURL);
-      console.log('uid',userId)
-      if(data.fileURL.includes(userId)){
-        console.log('Inside if')
+      console.log('url', data.fileURL);
+      console.log('uid', userId);
+      if (data.fileURL.includes(userId)) {
+        console.log('Inside if');
         checkForAuth = true;
       }
       if (checkForAuth == false) {
-        throw new BadRequestException('You are not authenticated to download the file.');
+        throw new BadRequestException(
+          'You are not authenticated to download the file.',
+        );
       }
 
       /*TODO : Check to accept only audio and video file content types*/
-      if (!(data.contentType.includes('audio') || data.contentType.includes('video'))) {
-        throw new BadRequestException('Only audio and video files are supported');
+      if (
+        !(
+          data.contentType.includes('audio') ||
+          data.contentType.includes('video')
+        )
+      ) {
+        throw new BadRequestException(
+          'Only audio and video files are supported',
+        );
       }
 
       /*TODO : Convert into a readable stream by passing the file path. The readable stream will return the file using pipe method*/
       const filePath = `${appRootPath.toString()}/` + data.fileURL;
       console.log('file-path:', filePath);
-      const fileStream = await this.fileHandlerService.downloadFileFromPath(filePath);
+      const fileStream = await this.fileHandlerService.downloadFileFromPath(
+        filePath,
+      );
 
       response.set({
         'Content-Type': data.contentType,
       });
 
       /*TODO: Return the file and close the stream*/
-      return fileStream.pipe(response).on('close', function (err) {
+      return fileStream.pipe(response).on('close', function(err) {
         console.log('Stream has been destroyed and file has been closed');
       });
-
     } catch (e) {
       throw new BadRequestException(e.message);
     }
-  }
-
-  @Get('/new/create-table')
-  @ApiOperation({ summary: 'Create Sonic Key table in Dynamo DB' })
-  async createTable() {
-    return await this.sonicKeyService.sonicKeyRepository
-      .ensureTableExistsAndCreate()
-      .then(() => 'Created New Table');
   }
 }

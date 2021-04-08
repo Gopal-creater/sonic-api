@@ -74,11 +74,11 @@ export class JobFileService {
     var createdSonicKey = await this.sonickeyService.findBySonicKey(
       addKeyAndUpdateJobFileDto.sonicKeyDetail.sonicKey,
     );
-    if (!createdSonicKey) {
-      createdSonicKey = (await this.sonickeyService.createFromJob(
-        addKeyAndUpdateJobFileDto.sonicKeyDetail,
-      )) as SonicKey;
-    }
+    // if (!createdSonicKey) {
+    //   createdSonicKey = (await this.sonickeyService.createFromJob(
+    //     addKeyAndUpdateJobFileDto.sonicKeyDetail,
+    //   )) as SonicKey;
+    // }
     const updatedOldFile = Object.assign(
       { ...job.jobDetails[elementsIndex] },
       addKeyAndUpdateJobFileDto.fileDetail,

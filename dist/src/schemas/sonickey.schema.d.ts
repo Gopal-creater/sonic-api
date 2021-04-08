@@ -1,11 +1,11 @@
-export declare class SonicKey {
+import { Document, Schema as MSchema } from 'mongoose';
+export declare class SonicKey extends Document {
     constructor(data?: Partial<SonicKey>);
-    sonicKey?: string;
+    sonicKey: string;
     owner: string;
     job: string;
-    licenseId?: string;
-    createdAt: Date;
-    status?: boolean;
+    licenseId: string;
+    status: boolean;
     encodingStrength: number;
     contentType?: string;
     contentDescription: string;
@@ -24,7 +24,6 @@ export declare class SonicKey {
     contentValidation?: boolean;
     contentFileName: string;
     contentQuality: string;
-    additionalMetadata: {
-        [key: string]: any;
-    };
+    additionalMetadata: Map<string, any>;
 }
+export declare const SonicKeySchema: MSchema<SonicKey, import("mongoose").Model<any, any>, undefined>;

@@ -2,19 +2,19 @@ import { SonicKeyDto } from './dtos/sonicKey.dto';
 import { IUploadedFile } from './../../shared/interfaces/UploadedFile.interface';
 import { FileHandlerService } from './../../shared/services/file-handler.service';
 import { FileOperationService } from './../../shared/services/file-operation.service';
-import { SonicKeyRepository } from './../../repositories/sonickey.repository';
 import { SonicKey } from '../../schemas/sonickey.schema';
 import * as mm from 'music-metadata';
 import { CreateSonicKeyFromJobDto } from './dtos/create-sonickey.dto';
-import { QueryOptions } from '@aws/dynamodb-data-mapper';
+import { Model } from 'mongoose';
+import { QueryDto } from '../../shared/dtos/query.dto';
 export declare class SonickeyService {
-    readonly sonicKeyRepository: SonicKeyRepository;
+    sonicKeyModel: Model<SonicKey>;
     private readonly fileOperationService;
     private readonly fileHandlerService;
-    constructor(sonicKeyRepository: SonicKeyRepository, fileOperationService: FileOperationService, fileHandlerService: FileHandlerService);
+    constructor(sonicKeyModel: Model<SonicKey>, fileOperationService: FileOperationService, fileHandlerService: FileHandlerService);
     generateUniqueSonicKey(): string;
-    createFromJob(createSonicKeyDto: CreateSonicKeyFromJobDto): Promise<SonicKey & CreateSonicKeyFromJobDto>;
-    getAll(): Promise<any[]>;
+    createFromJob(createSonicKeyDto: CreateSonicKeyFromJobDto): Promise<SonicKey>;
+    getAll(queryDto?: QueryDto): Promise<SonicKey[]>;
     encode(file: IUploadedFile, encodingStrength?: number): Promise<{
         downloadFileUrl: string;
         outFilePath: string;
@@ -22,11 +22,10 @@ export declare class SonickeyService {
     }>;
     decode(file: IUploadedFile): Promise<unknown>;
     decodeAllKeys(file: IUploadedFile): Promise<unknown>;
-    search(): Promise<SonicKey>;
     exractMusicMetaFromFile(filePath: string): Promise<mm.IAudioMetadata>;
     autoPopulateSonicContentWithMusicMetaForFile(file: IUploadedFile, sonicKeyDto?: SonicKeyDto): Promise<SonicKeyDto>;
     findBySonicKey(sonicKey: string): Promise<SonicKey>;
-    findByOwner(owner: string, queryOptions?: QueryOptions): Promise<SonicKey[]>;
-    findByJob(job: string, queryOptions?: QueryOptions): Promise<SonicKey[]>;
+    findByOwner(owner: string, queryDto?: QueryDto): Promise<SonicKey[]>;
+    findByJob(job: string, queryDto?: QueryDto): Promise<SonicKey[]>;
     findBySonicKeyOrFail(sonicKey: string): Promise<SonicKey>;
 }

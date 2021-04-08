@@ -29,9 +29,9 @@ const schedule_1 = require("@nestjs/schedule");
 const app_gateway_1 = require("./app.gateway");
 const radiostation_module_1 = require("./api/radiostation/radiostation.module");
 const sonickey_repository_1 = require("./repositories/sonickey.repository");
+const mongoose_1 = require("@nestjs/mongoose");
 let AppModule = class AppModule {
-    constructor() {
-    }
+    constructor() { }
 };
 AppModule = __decorate([
     common_1.Module({
@@ -39,13 +39,26 @@ AppModule = __decorate([
             schedule_1.ScheduleModule.forRoot(),
             auth_module_1.AuthModule,
             config_1.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba' }),
+            mongoose_1.MongooseModule.forRootAsync({
+                imports: [config_1.ConfigModule],
+                useFactory: async (configService) => ({
+                    uri: configService.get('MONGODB_URI'),
+                    useNewUrlParser: true,
+                    useUnifiedTopology: true,
+                    connectionFactory: (connection) => {
+                        connection.plugin(require('mongoose-paginate-v2'));
+                        return connection;
+                    }
+                }),
+                inject: [config_1.ConfigService],
+            }),
             platform_express_1.MulterModule.register({
                 storage: multer_1.diskStorage({
                     destination: config_2.appConfig.MULTER_DEST,
                     filename: (req, file, cb) => {
                         const randomName = uniqid();
                         cb(null, `${randomName}-${file.originalname}`);
-                    }
+                    },
                 }),
             }),
             global_aws_module_1.GlobalAwsModule,

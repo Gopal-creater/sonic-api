@@ -42,32 +42,33 @@ const decorators_1 = require("../auth/decorators");
 const file_handler_service_1 = require("../../shared/services/file-handler.service");
 const download_dto_1 = require("./dtos/download.dto");
 const appRootPath = require("app-root-path");
+const query_dto_1 = require("../../shared/dtos/query.dto");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, keygenService, fileHandlerService) {
         this.sonicKeyService = sonicKeyService;
         this.keygenService = keygenService;
         this.fileHandlerService = fileHandlerService;
     }
-    async getAll() {
-        return await this.sonicKeyService.getAll();
+    async getAll(queryDto) {
+        console.log("queryDto", queryDto);
+        return this.sonicKeyService.getAll(queryDto);
     }
     async generateUniqueSonicKey() {
         return await this.sonicKeyService.generateUniqueSonicKey();
     }
-    async getOwnersKeys(ownerId) {
-        const keys = await this.sonicKeyService.findByOwner(ownerId);
-        console.log("keys length", keys.length);
+    async getOwnersKeys(ownerId, queryDto) {
+        const keys = await this.sonicKeyService.findByOwner(ownerId, queryDto);
         return keys;
     }
-    async getKeysByJob(jobId) {
-        return await this.sonicKeyService.findByJob(jobId);
+    async getKeysByJob(jobId, queryDto) {
+        return await this.sonicKeyService.findByJob(jobId, queryDto);
     }
     async getOne(sonickey) {
         return this.sonicKeyService.findBySonicKeyOrFail(sonickey);
     }
     encode(sonicKeyDto, file, owner, req) {
         var _a;
-        console.log("file", file);
+        console.log('file', file);
         const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.id;
         var downloadFileUrl;
         var outFilePath;
@@ -93,17 +94,18 @@ let SonickeyController = class SonickeyController {
                 sonicKey: sonicKey,
                 licenseId: licenseId,
             }));
-            return this.sonicKeyService.sonicKeyRepository
-                .put(dataToSave)
-                .finally(() => {
+            const newSonicKey = new this.sonicKeyService.sonicKeyModel(dataToSave);
+            return newSonicKey.save().finally(() => {
                 this.fileHandlerService.deleteFileAtPath(file.path);
             });
         });
     }
     async decode(file) {
-        return this.sonicKeyService.decodeAllKeys(file).then(async ({ sonicKeys }) => {
+        return this.sonicKeyService
+            .decodeAllKeys(file)
+            .then(async ({ sonicKeys }) => {
             var e_1, _a;
-            console.log("Detected keys from Decode", sonicKeys);
+            console.log('Detected keys from Decode', sonicKeys);
             var sonicKeysMetadata = [];
             try {
                 for (var sonicKeys_1 = __asyncValues(sonicKeys), sonicKeys_1_1; sonicKeys_1_1 = await sonicKeys_1.next(), !sonicKeys_1_1.done;) {
@@ -126,13 +128,18 @@ let SonickeyController = class SonickeyController {
         });
     }
     async updateMeta(sonickey, updateSonicKeyDto) {
-        const oldKey = await this.sonicKeyService.findBySonicKeyOrFail(sonickey);
-        const dataToUpdate = new sonickey_schema_1.SonicKey(Object.assign(oldKey, updateSonicKeyDto));
-        return this.sonicKeyService.sonicKeyRepository.update(dataToUpdate);
+        const updatedSonickey = await this.sonicKeyService.sonicKeyModel.updateOne({ sonicKey: sonickey }, updateSonicKeyDto);
+        if (!updatedSonickey) {
+            throw new common_1.NotFoundException();
+        }
+        return updateSonicKeyDto;
     }
     async delete(sonickey) {
-        const found = await this.sonicKeyService.findBySonicKeyOrFail(sonickey);
-        return this.sonicKeyService.sonicKeyRepository.delete(found);
+        const deletedSonickey = await this.sonicKeyService.sonicKeyModel.deleteOne({ sonicKey: sonickey });
+        if (!deletedSonickey) {
+            throw new common_1.NotFoundException();
+        }
+        return deletedSonickey;
     }
     async downloadFile(data, userId, response) {
         try {
@@ -146,7 +153,8 @@ let SonickeyController = class SonickeyController {
             if (checkForAuth == false) {
                 throw new common_1.BadRequestException('You are not authenticated to download the file.');
             }
-            if (!(data.contentType.includes('audio') || data.contentType.includes('video'))) {
+            if (!(data.contentType.includes('audio') ||
+                data.contentType.includes('video'))) {
                 throw new common_1.BadRequestException('Only audio and video files are supported');
             }
             const filePath = `${appRootPath.toString()}/` + data.fileURL;
@@ -163,20 +171,16 @@ let SonickeyController = class SonickeyController {
             throw new common_1.BadRequestException(e.message);
         }
     }
-    async createTable() {
-        return await this.sonicKeyService.sonicKeyRepository
-            .ensureTableExistsAndCreate()
-            .then(() => 'Created New Table');
-    }
 };
 __decorate([
     common_1.Get('/'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys' }),
-    openapi.ApiResponse({ status: 200, type: [Object] }),
+    openapi.ApiResponse({ status: 200, type: [require("../../schemas/sonickey.schema").SonicKey] }),
+    __param(0, common_1.Query()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getAll", null);
 __decorate([
@@ -193,9 +197,9 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user' }),
     openapi.ApiResponse({ status: 200, type: [require("../../schemas/sonickey.schema").SonicKey] }),
-    __param(0, common_1.Param('ownerId')),
+    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getOwnersKeys", null);
 __decorate([
@@ -204,9 +208,9 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular job' }),
     openapi.ApiResponse({ status: 200, type: [require("../../schemas/sonickey.schema").SonicKey] }),
-    __param(0, common_1.Param('jobId')),
+    __param(0, common_1.Param('jobId')), __param(1, common_1.Query()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getKeysByJob", null);
 __decorate([
@@ -307,7 +311,7 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update Sonic Keys meta data' }),
-    openapi.ApiResponse({ status: 200, type: require("../../schemas/sonickey.schema").SonicKey }),
+    openapi.ApiResponse({ status: 200, type: require("./dtos/update-sonickey.dto").UpdateSonicKeyDto }),
     __param(0, common_1.Param('sonickey')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
@@ -319,7 +323,7 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Delete Sonic Key data' }),
-    openapi.ApiResponse({ status: 200, type: require("../../schemas/sonickey.schema").SonicKey }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('sonickey')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -331,19 +335,13 @@ __decorate([
     common_1.Post('/download-file'),
     swagger_1.ApiOperation({ summary: 'Secure Download of a file' }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body()), __param(1, decorators_1.User('sub')), __param(2, common_1.Res()),
+    __param(0, common_1.Body()),
+    __param(1, decorators_1.User('sub')),
+    __param(2, common_1.Res()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [download_dto_1.DownloadDto, String, Object]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "downloadFile", null);
-__decorate([
-    common_1.Get('/new/create-table'),
-    swagger_1.ApiOperation({ summary: 'Create Sonic Key table in Dynamo DB' }),
-    openapi.ApiResponse({ status: 200, type: String }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], SonickeyController.prototype, "createTable", null);
 SonickeyController = __decorate([
     swagger_1.ApiTags('SonicKeys Contrller'),
     common_1.Controller('sonic-keys'),

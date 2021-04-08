@@ -8,27 +8,35 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __asyncValues = (this && this.__asyncValues) || function (o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonickeyService = void 0;
 const file_handler_service_1 = require("./../../shared/services/file-handler.service");
 const file_operation_service_1 = require("./../../shared/services/file-operation.service");
-const sonickey_repository_1 = require("./../../repositories/sonickey.repository");
 const common_1 = require("@nestjs/common");
 const sonickey_schema_1 = require("../../schemas/sonickey.schema");
 const mm = require("music-metadata");
 const upath = require("upath");
 const nanoid_1 = require("nanoid");
 const config_1 = require("../../config");
+const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
 let SonickeyService = class SonickeyService {
-    constructor(sonicKeyRepository, fileOperationService, fileHandlerService) {
-        this.sonicKeyRepository = sonicKeyRepository;
+    constructor(sonicKeyModel, fileOperationService, fileHandlerService) {
+        this.sonicKeyModel = sonicKeyModel;
         this.fileOperationService = fileOperationService;
         this.fileHandlerService = fileHandlerService;
     }
@@ -37,25 +45,16 @@ let SonickeyService = class SonickeyService {
     }
     async createFromJob(createSonicKeyDto) {
         const dataToSave = Object.assign(new sonickey_schema_1.SonicKey(), createSonicKeyDto);
-        return this.sonicKeyRepository.put(dataToSave);
+        const newSonicKey = new this.sonicKeyModel(dataToSave);
+        return newSonicKey.save();
     }
-    async getAll() {
-        var e_1, _a;
-        const items = [];
-        try {
-            for (var _b = __asyncValues(this.sonicKeyRepository.scan(sonickey_schema_1.SonicKey)), _c; _c = await _b.next(), !_c.done;) {
-                const item = _c.value;
-                items.push(item);
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-        return items;
+    async getAll(queryDto = {}) {
+        const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
+        return this.sonicKeyModel
+            .find(query || {})
+            .skip(offset)
+            .limit(limit)
+            .exec();
     }
     async encode(file, encodingStrength = 10) {
         const random11CharKey = this.generateUniqueSonicKey();
@@ -111,26 +110,6 @@ let SonickeyService = class SonickeyService {
             this.fileHandlerService.deleteFileAtPath(inFilePath);
         });
     }
-    async search() {
-        var e_2, _a;
-        var items = [];
-        try {
-            for (var _b = __asyncValues(this.sonicKeyRepository.query(sonickey_schema_1.SonicKey, {
-                'sonicKey.sonicContent.volatileMetadata.contentOwner': 'Arba',
-            })), _c; _c = await _b.next(), !_c.done;) {
-                const item = _c.value;
-                items.push(item);
-            }
-        }
-        catch (e_2_1) { e_2 = { error: e_2_1 }; }
-        finally {
-            try {
-                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
-            }
-            finally { if (e_2) throw e_2.error; }
-        }
-        return items[0];
-    }
     async exractMusicMetaFromFile(filePath) {
         return mm.parseFile(filePath);
     }
@@ -143,78 +122,46 @@ let SonickeyService = class SonickeyService {
         sonicKeyDto.contentDuration = musicData.format.duration;
         sonicKeyDto.contentEncoding = `${musicData.format.codec}, ${musicData.format.sampleRate} Hz, ${musicData.format.codecProfile}, ${musicData.format.bitrate} ch`;
         sonicKeyDto.contentSamplingFrequency = `${musicData.format.sampleRate} Hz`;
-        sonicKeyDto.contentName = sonicKeyDto.contentName || musicData.common.title || "";
-        sonicKeyDto.contentOwner = sonicKeyDto.contentOwner || musicData.common.artist || "";
-        sonicKeyDto.contentDescription = musicData.common.description ? musicData.common.description[0] : "";
+        sonicKeyDto.contentName =
+            sonicKeyDto.contentName || musicData.common.title || '';
+        sonicKeyDto.contentOwner =
+            sonicKeyDto.contentOwner || musicData.common.artist || '';
+        sonicKeyDto.contentDescription = musicData.common.description
+            ? musicData.common.description[0]
+            : '';
         return sonicKeyDto;
     }
     async findBySonicKey(sonicKey) {
-        var e_3, _a;
-        var items = [];
-        try {
-            for (var _b = __asyncValues(this.sonicKeyRepository.query(sonickey_schema_1.SonicKey, {
-                sonicKey: sonicKey,
-            })), _c; _c = await _b.next(), !_c.done;) {
-                const item = _c.value;
-                items.push(item);
-            }
-        }
-        catch (e_3_1) { e_3 = { error: e_3_1 }; }
-        finally {
-            try {
-                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
-            }
-            finally { if (e_3) throw e_3.error; }
-        }
-        return items[0];
+        return this.sonicKeyModel.findOne({ sonicKey: sonicKey });
     }
-    async findByOwner(owner, queryOptions) {
-        var e_4, _a;
-        var items = [];
-        try {
-            for (var _b = __asyncValues(this.sonicKeyRepository.query(sonickey_schema_1.SonicKey, { owner: owner }, Object.assign({ indexName: 'ownerIndex' }, queryOptions))), _c; _c = await _b.next(), !_c.done;) {
-                const item = _c.value;
-                items.push(item);
-            }
-        }
-        catch (e_4_1) { e_4 = { error: e_4_1 }; }
-        finally {
-            try {
-                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
-            }
-            finally { if (e_4) throw e_4.error; }
-        }
-        return items;
+    async findByOwner(owner, queryDto = {}) {
+        const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
+        return this.sonicKeyModel
+            .find(Object.assign({ owner: owner }, query))
+            .skip(offset)
+            .limit(limit)
+            .exec();
     }
-    async findByJob(job, queryOptions) {
-        var e_5, _a;
-        var items = [];
-        try {
-            for (var _b = __asyncValues(this.sonicKeyRepository.query(sonickey_schema_1.SonicKey, { job: job }, Object.assign({ indexName: 'jobIndex' }, queryOptions))), _c; _c = await _b.next(), !_c.done;) {
-                const item = _c.value;
-                items.push(item);
-            }
-        }
-        catch (e_5_1) { e_5 = { error: e_5_1 }; }
-        finally {
-            try {
-                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
-            }
-            finally { if (e_5) throw e_5.error; }
-        }
-        return items;
+    async findByJob(job, queryDto = {}) {
+        const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
+        return this.sonicKeyModel
+            .find(Object.assign({ job: job }, query))
+            .skip(offset)
+            .limit(limit)
+            .exec();
     }
     async findBySonicKeyOrFail(sonicKey) {
         return this.findBySonicKey(sonicKey).then(data => {
             if (!data)
-                throw new common_1.NotFoundException('key not found');
+                throw new common_1.NotFoundException('Not found');
             return data;
         });
     }
 };
 SonickeyService = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [sonickey_repository_1.SonicKeyRepository,
+    __param(0, mongoose_1.InjectModel(sonickey_schema_1.SonicKey.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
         file_operation_service_1.FileOperationService,
         file_handler_service_1.FileHandlerService])
 ], SonickeyService);

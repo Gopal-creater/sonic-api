@@ -9,7 +9,6 @@ class SonicKeyDto extends swagger_1.OmitType(sonickey_schema_1.SonicKey, [
     'owner',
     'job',
     'licenseId',
-    'createdAt',
     'status'
 ]) {
     static _OPENAPI_METADATA_FACTORY() {
