@@ -4,15 +4,14 @@ import { IUploadedFile } from './../../shared/interfaces/UploadedFile.interface'
 import { FileHandlerService } from './../../shared/services/file-handler.service';
 import { FileOperationService } from './../../shared/services/file-operation.service';
 import { SonicKeyRepository } from './../../repositories/sonickey.repository';
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { SonicKey } from '../../schemas/sonickey.schema';
 import * as mm from 'music-metadata';
 import * as upath from 'upath';
 import { nanoid } from 'nanoid';
 import { appConfig } from '../../config';
+import { CreateSonicKeyFromJobDto } from './dtos/create-sonickey.dto';
+import { QueryOptions } from '@aws/dynamodb-data-mapper';
 
 @Injectable()
 export class SonickeyService {
@@ -22,21 +21,19 @@ export class SonickeyService {
     private readonly fileHandlerService: FileHandlerService,
   ) {}
 
+  generateUniqueSonicKey() {
+    // TODO: Must verify for uniqueness of generated key
+    return nanoid(11);
+  }
+
+  async createFromJob(createSonicKeyDto: CreateSonicKeyFromJobDto) {
+    const dataToSave = Object.assign(new SonicKey(),createSonicKeyDto);
+    return this.sonicKeyRepository.put(dataToSave);
+  }
+
   async getAll() {
     const items = [];
     for await (const item of this.sonicKeyRepository.scan(SonicKey)) {
-      // individual items will be yielded as the scan is performed
-      items.push(item);
-    }
-    return items;
-  }
-
-  async getAllWithFilter(queryParams: Object) {
-    const items = [];
-    for await (const item of this.sonicKeyRepository.query(
-      SonicKey,
-      queryParams,
-    )) {
       // individual items will be yielded as the scan is performed
       items.push(item);
     }
@@ -54,7 +51,7 @@ export class SonickeyService {
    */
   async encode(file: IUploadedFile, encodingStrength: number = 10) {
     // The sonic key generation - done randomely.
-    const random11CharKey = nanoid(11);
+    const random11CharKey = this.generateUniqueSonicKey();
     // TODO: Must verify for uniqueness of generated key
 
     file.path = upath.toUnix(file.path); //Convert windows path to unix path
@@ -160,15 +157,13 @@ export class SonickeyService {
 
   async search(){
     var items: SonicKey[] = [];
-    for await (const item of this.sonicKeyRepository.query(
-      SonicKey,
-      { "sonicKey.sonicContent.volatileMetadata.contentOwner": "Arba" },
-    )) {
+    for await (const item of this.sonicKeyRepository.query(SonicKey, {
+      'sonicKey.sonicContent.volatileMetadata.contentOwner': 'Arba',
+    })) {
       items.push(item);
     }
     return items[0];
   }
-
 
   async exractMusicMetaFromFile(filePath: string) {
     return mm.parseFile(filePath);
@@ -194,27 +189,37 @@ export class SonickeyService {
 
   async findBySonicKey(sonicKey: string) {
     var items: SonicKey[] = [];
-    for await (const item of this.sonicKeyRepository.query(
-      SonicKey,
-      { sonicKey: sonicKey },
-    )) {
+    for await (const item of this.sonicKeyRepository.query(SonicKey, {
+      sonicKey: sonicKey,
+    })) {
       items.push(item);
     }
     return items[0];
   }
 
-  async findByOwner(owner: string) {
+  async findByOwner(owner: string,queryOptions?:QueryOptions) {
     var items: SonicKey[] = [];
     for await (const item of this.sonicKeyRepository.query(
       SonicKey,
       { owner: owner },
-      { indexName: 'ownerIndex' },
+      { indexName: 'ownerIndex',...queryOptions },
     )) {
       items.push(item);
     }
     return items;
   }
 
+  async findByJob(job: string,queryOptions?:QueryOptions) {
+    var items: SonicKey[] = [];
+    for await (const item of this.sonicKeyRepository.query(
+      SonicKey,
+      { job: job },
+      { indexName: 'jobIndex',...queryOptions },
+    )) {
+      items.push(item);
+    }
+    return items;
+  }
 
   async findBySonicKeyOrFail(sonicKey: string) {
     return this.findBySonicKey(sonicKey).then(data => {
