@@ -140,10 +140,9 @@ __decorate([
     __metadata("design:type", Map)
 ], SonicKey.prototype, "additionalMetadata", void 0);
 SonicKey = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: "sonickeys" }),
+    mongoose_1.Schema({ timestamps: true, collection: "Sonickeys" }),
     __metadata("design:paramtypes", [Object])
 ], SonicKey);
 exports.SonicKey = SonicKey;
-const SonicKeySche = mongoose_1.SchemaFactory.createForClass(SonicKey);
-exports.SonicKeySchema = SonicKeySche;
+exports.SonicKeySchema = mongoose_1.SchemaFactory.createForClass(SonicKey);
 //# sourceMappingURL=sonickey.schema.js.map

@@ -133,11 +133,10 @@
 // }
 
 import { Prop, Schema, SchemaFactory, } from '@nestjs/mongoose';
-import { Document,model} from 'mongoose';
+import { Document} from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-// import mongoosePaginate = require('mongoose-paginate-v2');
 
-@Schema({ timestamps: true,collection:"sonickeys"})
+@Schema({ timestamps: true,collection:"Sonickeys"})
 export class SonicKey extends Document {
   constructor(data?: Partial<SonicKey>) {
     super()
@@ -242,6 +241,4 @@ export class SonicKey extends Document {
   additionalMetadata: Map<string, any>;
 }
 
-const SonicKeySche = SchemaFactory.createForClass(SonicKey);
-// SonicKeySche.plugin(mongoosePaginate)
-export const SonicKeySchema = SonicKeySche
+export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);

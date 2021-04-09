@@ -96,12 +96,16 @@ export class SonickeyController {
   //   return this.sonicKeyService.createFromJob(createSonicKeyDto);
   // }
 
-  @Get('/owner/:ownerId')
+  @Get('/owners/:ownerId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys of particular user' })
   async getOwnersKeys(@Param('ownerId') ownerId: string,@Query() queryDto: QueryDto,) {
-    const keys = await this.sonicKeyService.findByOwner(ownerId,queryDto);
+    const query={
+      ...queryDto,
+      owner:ownerId
+    }
+    const keys = await this.sonicKeyService.getAll(query);
     return keys;
   }
 
@@ -110,7 +114,11 @@ export class SonickeyController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys of particular job' })
   async getKeysByJob(@Param('jobId') jobId: string,@Query() queryDto: QueryDto,) {
-    return await this.sonicKeyService.findByJob(jobId,queryDto);
+    const query={
+      ...queryDto,
+      job:jobId
+    }
+    return await this.sonicKeyService.getAll(query);
   }
 
   @Get('/:sonickey')

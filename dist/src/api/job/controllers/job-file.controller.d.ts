@@ -1,32 +1,21 @@
+/// <reference types="mongoose" />
 import { UpdateJobFileDto, AddKeyAndUpdateJobFileDto } from '../dto/update-job-file.dto';
 import { JobFileService } from '../services/job-file.service';
-import { AddFilesDto } from '../dto/add-files.dto';
 import { JobService } from '../services/job.service';
+import { CreateJobFileDto } from '../dto/create-job-file.dto';
+import { JobFile } from '../../../schemas/jobfile.schema';
+import { QueryDto } from '../../../shared/dtos/query.dto';
 export declare class JobFileController {
     private readonly jobFileService;
     private readonly jobService;
     constructor(jobFileService: JobFileService, jobService: JobService);
-    addKeyToDbAndUpdateJobFile(jobId: string, fileId: string, addKeyAndUpdateJobFileDto: AddKeyAndUpdateJobFileDto): Promise<{
+    findAll(queryDto: QueryDto): Promise<JobFile[]>;
+    addKeyToDbAndUpdateJobFile(fileId: string, addKeyAndUpdateJobFileDto: AddKeyAndUpdateJobFileDto): Promise<{
         createdSonicKey: import("../../../schemas/sonickey.schema").SonicKey;
-        fileDetail: {
-            [x: string]: any;
-        } & {
-            [key: string]: any;
-        } & {
-            fileId: string;
-        };
-        updatedJob: import("../../../schemas/job.schema").Job;
+        updatedJobFile: JobFile;
     }>;
-    updateJobFile(jobId: string, fileId: string, updateJobFileDto: UpdateJobFileDto): Promise<{
-        fileDetail: {
-            [x: string]: any;
-        } & {
-            [key: string]: any;
-        } & {
-            fileId: string;
-        };
-        updatedJob: import("../../../schemas/job.schema").Job;
-    }>;
-    addFilesToJob(jobId: string, addFilesDto: AddFilesDto): Promise<import("../../../schemas/job.schema").Job>;
-    deleteJobFile(jobId: string, fileId: string): Promise<import("../../../schemas/job.schema").Job>;
+    updateJobFile(id: string, updateJobFileDto: UpdateJobFileDto): Promise<import("mongoose").UpdateWriteOpResult>;
+    createJobFile(createJobFileDto: CreateJobFileDto): Promise<JobFile>;
+    addFilesToJob(createJobFileDto: CreateJobFileDto[]): Promise<JobFile[]>;
+    deleteJobFile(id: string): Promise<JobFile>;
 }

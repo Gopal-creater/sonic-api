@@ -21,17 +21,17 @@ let JobLicenseValidationGuard = class JobLicenseValidationGuard {
         var _a, _b, _c, _d;
         const request = context.switchToHttp().getRequest();
         const body = request.body;
-        if (!body.licenseId || !body.owner || !body.jobDetails) {
+        if (!body.license || !body.owner || !body.jobFiles) {
             throw new common_1.BadRequestException({
                 message: 'missing parameters',
             });
         }
-        if (body.jobDetails.length < 0) {
+        if (body.jobFiles.length < 0) {
             throw new common_1.BadRequestException({
                 message: 'Please add some files to create job',
             });
         }
-        const { meta, data, errors } = await this.keygenService.validateLicence(body.licenseId);
+        const { meta, data, errors } = await this.keygenService.validateLicence(body.license);
         if (errors || !meta['valid']) {
             throw new common_1.BadRequestException({
                 message: 'Invalid license.',
@@ -45,7 +45,7 @@ let JobLicenseValidationGuard = class JobLicenseValidationGuard {
         const uses = data['attributes']['uses'];
         const maxUses = data['attributes']['maxUses'];
         const remaniningUses = maxUses - uses;
-        const usesToBeUsed = body.jobDetails.length;
+        const usesToBeUsed = body.jobFiles.length;
         const reserves = utils_1.JSONUtils.parse((_d = (_c = data === null || data === void 0 ? void 0 : data.attributes) === null || _c === void 0 ? void 0 : _c.metadata) === null || _d === void 0 ? void 0 : _d.reserves, []);
         if (await this.isAllowedForJobCreation(remaniningUses, usesToBeUsed, reserves)) {
             request.validLicense = data;

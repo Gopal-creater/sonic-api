@@ -16,11 +16,21 @@ const keygen_service_1 = require("../../shared/modules/keygen/keygen.service");
 const sonickey_module_1 = require("../sonickey/sonickey.module");
 const job_file_service_1 = require("./services/job-file.service");
 const keygen_module_1 = require("../../shared/modules/keygen/keygen.module");
+const mongoose_1 = require("@nestjs/mongoose");
+const job_schema_1 = require("../../schemas/job.schema");
+const jobfile_schema_1 = require("../../schemas/jobfile.schema");
 let JobModule = class JobModule {
 };
 JobModule = __decorate([
     common_1.Module({
-        imports: [sonickey_module_1.SonickeyModule, keygen_module_1.KeygenModule],
+        imports: [
+            sonickey_module_1.SonickeyModule,
+            keygen_module_1.KeygenModule,
+            mongoose_1.MongooseModule.forFeature([
+                { name: job_schema_1.Job.name, schema: job_schema_1.JobSchema },
+                { name: jobfile_schema_1.JobFile.name, schema: jobfile_schema_1.JobFileSchema },
+            ]),
+        ],
         controllers: [job_controller_1.JobController, job_file_controller_1.JobFileController],
         providers: [job_service_1.JobService, job_file_service_1.JobFileService, job_repository_1.JobRepository, keygen_service_1.KeygenService],
     })

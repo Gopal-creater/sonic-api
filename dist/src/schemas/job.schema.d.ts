@@ -1,13 +1,12 @@
-export declare class Job {
+import { Document, Schema as MogSchema } from 'mongoose';
+import { JobFile } from './jobfile.schema';
+export declare const JobSchemaName = "Job";
+export declare class Job extends Document {
     constructor(data?: Partial<Job>);
-    id: string;
     name: string;
     owner: string;
-    licenseId: string;
-    isComplete?: boolean;
-    createdAt: Date;
-    completedAt: Date;
-    jobDetails: {
-        [key: string]: any;
-    }[];
+    license: string;
+    isComplete: boolean;
+    jobFiles: JobFile[];
 }
+export declare const JobSchema: MogSchema<Job, import("mongoose").Model<any, any>, undefined>;

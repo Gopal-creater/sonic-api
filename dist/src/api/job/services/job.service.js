@@ -8,106 +8,88 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __asyncValues = (this && this.__asyncValues) || function (o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobService = void 0;
 const common_1 = require("@nestjs/common");
 const job_repository_1 = require("../../../repositories/job.repository");
 const job_schema_1 = require("../../../schemas/job.schema");
+const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
 const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
 const utils_1 = require("../../../shared/utils");
+const jobfile_schema_1 = require("../../../schemas/jobfile.schema");
 let JobService = class JobService {
-    constructor(jobRepository, keygenService) {
+    constructor(jobModel, jobFileModel, jobRepository, keygenService) {
+        this.jobModel = jobModel;
+        this.jobFileModel = jobFileModel;
         this.jobRepository = jobRepository;
         this.keygenService = keygenService;
     }
     async create(createJobDto) {
         const dataToSave = Object.assign(new job_schema_1.Job(), createJobDto);
-        const createdJob = await this.jobRepository.put(dataToSave);
-        await this.addReservedDetailsInLicence(createJobDto.licenseId, [
-            { jobId: createdJob.id, count: createJobDto.jobDetails.length },
+        const newJob = new this.jobModel(dataToSave);
+        const createdJob = await newJob.save();
+        await this.addReservedDetailsInLicence(createJobDto.license, [
+            { jobId: createdJob.id, count: createJobDto.jobFiles.length },
         ]).catch(async (err) => {
-            await this.jobRepository.delete(createdJob);
+            await this.jobModel.remove({ _id: createdJob.id });
             throw new common_1.BadRequestException('Error adding reserved licence count');
         });
         return createdJob;
     }
-    async findAll() {
-        var e_1, _a;
-        const items = [];
-        try {
-            for (var _b = __asyncValues(this.jobRepository.scan(job_schema_1.Job)), _c; _c = await _b.next(), !_c.done;) {
-                const item = _c.value;
-                items.push(item);
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-        return items;
-    }
-    findOne(id) {
-        return this.jobRepository.get(Object.assign(new job_schema_1.Job(), { id: id }));
-    }
-    async update(id, updateJobDto) {
-        const job = await this.findOne(id);
-        return this.jobRepository.update(Object.assign(job, updateJobDto));
-    }
-    async updateJobDetailByFileId(id, fileId, updateJobFileDto) {
-        const job = await this.findOne(id);
-        const oldFile = job.jobDetails.find(itm => itm.fileId == fileId);
-        if (!oldFile) {
-            return new common_1.NotFoundException();
-        }
-        const updatedFile = Object.assign(oldFile, updateJobFileDto, {
-            fileId: fileId,
-        });
-        const index = job.jobDetails.findIndex(itm => itm.fileId == fileId);
-        job.jobDetails[index] = updatedFile;
-        return this.jobRepository.update(job);
+    async findAll(queryDto = {}) {
+        const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
+        return this.jobModel
+            .find(query || {})
+            .skip(offset)
+            .limit(limit)
+            .exec();
     }
     async remove(id) {
-        const job = await this.findOne(id);
+        const job = await this.jobModel.findById(id);
         if (!job) {
-            return new common_1.NotFoundException();
+            throw new common_1.NotFoundException();
         }
-        await this.removeReservedDetailsInLicence(job.licenseId, job.id).catch(err => {
+        await this.removeReservedDetailsInLicence(job.license, job.id).catch(err => {
             throw new common_1.BadRequestException('Error removing reserved licence count ');
         });
-        return this.jobRepository.delete(job);
+        return this.jobModel.findOneAndDelete({ id: job.id });
     }
     async makeCompleted(jobId) {
-        const job = await this.findOne(jobId);
+        const job = await this.jobModel.findById(jobId);
         if (job.isComplete) {
             return job;
         }
-        const totalCompletedFiles = job.jobDetails.filter(file => file.isComplete == true);
-        const totalInCompletedFiles = job.jobDetails.filter(file => file.isComplete == false);
-        await this.removeReservedDetailsInLicence(job.licenseId, job.id).catch(err => {
+        const totalCompletedFiles = job.jobFiles.filter(file => file.isComplete == true);
+        const totalInCompletedFiles = job.jobFiles.filter(file => file.isComplete == false);
+        await this.removeReservedDetailsInLicence(job.license, job.id).catch(err => {
             throw new common_1.BadRequestException('Error removing reserved licence count ');
         });
         await this.keygenService
-            .decrementUsage(job.licenseId, totalCompletedFiles.length)
+            .decrementUsage(job.license, totalCompletedFiles.length)
             .catch(err => {
             throw new common_1.BadRequestException('Error decrementing licence usages');
         });
-        const completedJob = await this.jobRepository
-            .update(Object.assign(job, {
+        const completedJob = await this.jobModel.findOneAndUpdate({ id: job.id }, {
             isComplete: true,
             completedAt: new Date()
-        }))
+        })
             .catch(async (err) => {
-            await this.keygenService.incrementUsage(job.licenseId, totalCompletedFiles.length);
+            await this.keygenService.incrementUsage(job.license, totalCompletedFiles.length);
             throw new common_1.BadRequestException('Error making job completed');
         });
         return completedJob;
@@ -168,28 +150,14 @@ let JobService = class JobService {
             return Promise.reject(errorsUpdate);
         return updatedData;
     }
-    async findByOwner(owner, queryOptions) {
-        var e_2, _a;
-        var items = [];
-        try {
-            for (var _b = __asyncValues(this.jobRepository.query(job_schema_1.Job, { owner: owner }, Object.assign({ indexName: 'ownerIndex' }, queryOptions))), _c; _c = await _b.next(), !_c.done;) {
-                const item = _c.value;
-                items.push(item);
-            }
-        }
-        catch (e_2_1) { e_2 = { error: e_2_1 }; }
-        finally {
-            try {
-                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
-            }
-            finally { if (e_2) throw e_2.error; }
-        }
-        return items;
-    }
 };
 JobService = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [job_repository_1.JobRepository,
+    __param(0, mongoose_1.InjectModel(job_schema_1.Job.name)),
+    __param(1, mongoose_1.InjectModel(jobfile_schema_1.JobFile.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
+        job_repository_1.JobRepository,
         keygen_service_1.KeygenService])
 ], JobService);
 exports.JobService = JobService;

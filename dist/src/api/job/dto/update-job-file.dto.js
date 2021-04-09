@@ -13,25 +13,26 @@ exports.AddKeyAndUpdateJobFileDto = exports.UpdateJobFileDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const create_sonickey_dto_1 = require("../../sonickey/dtos/create-sonickey.dto");
-class UpdateJobFileDto {
+const create_job_file_dto_1 = require("./create-job-file.dto");
+class UpdateJobFileDto extends swagger_1.PartialType(create_job_file_dto_1.CreateJobFileDto) {
     static _OPENAPI_METADATA_FACTORY() {
-        return {};
+        return { isComplete: { required: false, type: () => Boolean } };
     }
 }
 __decorate([
     swagger_1.ApiProperty(),
-    __metadata("design:type", Object)
-], UpdateJobFileDto.prototype, "fileDetail", void 0);
+    __metadata("design:type", Boolean)
+], UpdateJobFileDto.prototype, "isComplete", void 0);
 exports.UpdateJobFileDto = UpdateJobFileDto;
 class AddKeyAndUpdateJobFileDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { sonicKeyDetail: { required: true, type: () => require("../../sonickey/dtos/create-sonickey.dto").CreateSonicKeyFromJobDto } };
+        return { jobFile: { required: true, type: () => require("./update-job-file.dto").UpdateJobFileDto }, sonicKeyDetail: { required: true, type: () => require("../../sonickey/dtos/create-sonickey.dto").CreateSonicKeyFromJobDto } };
     }
 }
 __decorate([
     swagger_1.ApiProperty(),
-    __metadata("design:type", Object)
-], AddKeyAndUpdateJobFileDto.prototype, "fileDetail", void 0);
+    __metadata("design:type", UpdateJobFileDto)
+], AddKeyAndUpdateJobFileDto.prototype, "jobFile", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", create_sonickey_dto_1.CreateSonicKeyFromJobDto)

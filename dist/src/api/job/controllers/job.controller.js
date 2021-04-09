@@ -22,58 +22,81 @@ const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const user_decorator_1 = require("../../auth/decorators/user.decorator");
 const job_license_validation_guard_1 = require("../../auth/guards/job-license-validation.guard");
-const uuid_1 = require("uuid");
-const dynamodb_expressions_1 = require("@aws/dynamodb-expressions");
 const sonickey_service_1 = require("../../sonickey/sonickey.service");
 const common_2 = require("@nestjs/common");
+const query_dto_1 = require("../../../shared/dtos/query.dto");
 let JobController = class JobController {
     constructor(jobService, sonickeyService) {
         this.jobService = jobService;
         this.sonickeyService = sonickeyService;
     }
+    findAll(queryDto) {
+        return this.jobService.findAll(queryDto);
+    }
+    getOwnerJobs(ownerId, queryDto) {
+        const query = Object.assign(Object.assign({}, queryDto), { owner: ownerId });
+        return this.jobService.findAll(query);
+    }
     async create(createJobDto, owner, req) {
-        var equalsExpressionPredicate = dynamodb_expressions_1.equals(createJobDto.name);
-        const equalsExpression = Object.assign(Object.assign({}, equalsExpressionPredicate), { subject: 'name' });
-        const existingJobs = await this.jobService.findByOwner(owner, {
-            filter: equalsExpression,
-        });
-        if (existingJobs.length > 0) {
+        const existingJob = await this.jobService.jobModel.findOne({ name: createJobDto.name, owner: owner });
+        if (existingJob) {
             throw new common_2.BadRequestException('Job with same name already exists.');
         }
         createJobDto.owner = owner;
-        createJobDto.jobDetails = createJobDto.jobDetails.map(job => {
-            job['fileId'] = job['fileId'] || uuid_1.v4();
-            job['isComplete'] = job['isComplete'] || false;
+        createJobDto.jobFiles = createJobDto.jobFiles.map(job => {
             job['sonicKey'] =
                 job['sonicKey'] || this.sonickeyService.generateUniqueSonicKey();
             return job;
         });
         return this.jobService.create(createJobDto);
     }
-    findAll() {
-        return this.jobService.findAll();
-    }
     makeCompleted(id) {
         return this.jobService.makeCompleted(id);
     }
-    findOne(id) {
-        return this.jobService.findOne(id);
+    async findOne(id) {
+        const job = await this.jobService.jobModel.findById(id);
+        if (!job) {
+            throw new common_1.NotFoundException();
+        }
+        return job;
     }
-    async getOwnersJobs(ownerId) {
-        return this.jobService.findByOwner(ownerId);
+    async update(id, updateJobDto) {
+        const updatedJob = await this.jobService.jobModel.findOneAndUpdate({ id: id }, updateJobDto);
+        if (!updatedJob) {
+            throw new common_1.NotFoundException();
+        }
+        return updatedJob;
     }
-    update(id, updateJobDto) {
-        return this.jobService.update(id, updateJobDto);
-    }
-    remove(id) {
-        return this.jobService.remove(id);
-    }
-    async createTable() {
-        return await this.jobService.jobRepository
-            .ensureTableExistsAndCreate()
-            .then(() => 'Created New Table');
+    async remove(id) {
+        const deletedJob = await this.jobService.remove(id);
+        if (!deletedJob) {
+            throw new common_1.NotFoundException();
+        }
+        return deletedJob;
     }
 };
+__decorate([
+    swagger_1.ApiOperation({ summary: 'Get All Jobs' }),
+    swagger_1.ApiBearerAuth(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    common_1.Get(),
+    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/job.schema").Job] }),
+    __param(0, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [query_dto_1.QueryDto]),
+    __metadata("design:returntype", void 0)
+], JobController.prototype, "findAll", null);
+__decorate([
+    swagger_1.ApiOperation({ summary: 'Get All Jobs of particular owner' }),
+    swagger_1.ApiBearerAuth(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    common_1.Get('/owners/:ownerId'),
+    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/job.schema").Job] }),
+    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
+    __metadata("design:returntype", void 0)
+], JobController.prototype, "getOwnerJobs", null);
 __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, job_license_validation_guard_1.JobLicenseValidationGuard),
     swagger_1.ApiBearerAuth(),
@@ -88,16 +111,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], JobController.prototype, "create", null);
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Get All Jobs' }),
-    swagger_1.ApiBearerAuth(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    common_1.Get(),
-    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/job.schema").Job] }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], JobController.prototype, "findAll", null);
-__decorate([
     swagger_1.ApiOperation({ summary: 'Make this job completed' }),
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
@@ -109,7 +122,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], JobController.prototype, "makeCompleted", null);
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Get One Job' }),
+    swagger_1.ApiOperation({ summary: 'Get One Job By Id' }),
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get(':id'),
@@ -117,19 +130,8 @@ __decorate([
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], JobController.prototype, "findOne", null);
-__decorate([
-    swagger_1.ApiOperation({ summary: 'Get All Jobs of particular user' }),
-    swagger_1.ApiBearerAuth(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    common_1.Get('/owners/:ownerId'),
-    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/job.schema").Job] }),
-    __param(0, common_1.Param('ownerId')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], JobController.prototype, "getOwnersJobs", null);
+], JobController.prototype, "findOne", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Update one Job' }),
     swagger_1.ApiBearerAuth(),
@@ -139,27 +141,19 @@ __decorate([
     __param(0, common_1.Param('id')), __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_job_dto_1.UpdateJobDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], JobController.prototype, "update", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Delete one Job' }),
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Delete(':id'),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../../../schemas/job.schema").Job }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], JobController.prototype, "remove", null);
-__decorate([
-    common_1.Get('/new/create-table'),
-    swagger_1.ApiOperation({ summary: 'Create Job table in Dynamo DB' }),
-    openapi.ApiResponse({ status: 200, type: String }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], JobController.prototype, "createTable", null);
+], JobController.prototype, "remove", null);
 JobController = __decorate([
     swagger_1.ApiTags('Jobs Controller'),
     common_1.Controller('jobs'),

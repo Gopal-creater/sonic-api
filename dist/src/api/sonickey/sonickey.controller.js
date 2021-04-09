@@ -60,11 +60,13 @@ let SonickeyController = class SonickeyController {
         return await this.sonicKeyService.generateUniqueSonicKey();
     }
     async getOwnersKeys(ownerId, queryDto) {
-        const keys = await this.sonicKeyService.findByOwner(ownerId, queryDto);
+        const query = Object.assign(Object.assign({}, queryDto), { owner: ownerId });
+        const keys = await this.sonicKeyService.getAll(query);
         return keys;
     }
     async getKeysByJob(jobId, queryDto) {
-        return await this.sonicKeyService.findByJob(jobId, queryDto);
+        const query = Object.assign(Object.assign({}, queryDto), { job: jobId });
+        return await this.sonicKeyService.getAll(query);
     }
     async getOne(sonickey) {
         return this.sonicKeyService.findBySonicKeyOrFail(sonickey);
@@ -195,7 +197,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "generateUniqueSonicKey", null);
 __decorate([
-    common_1.Get('/owner/:ownerId'),
+    common_1.Get('/owners/:ownerId'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user' }),
