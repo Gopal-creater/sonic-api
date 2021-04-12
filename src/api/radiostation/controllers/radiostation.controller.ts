@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { RadiostationService } from '../services/radiostation.service';
 import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
@@ -15,31 +16,22 @@ import { UpdateRadiostationDto } from '../dto/update-radiostation.dto';
 import {
   ApiBearerAuth,
   ApiOperation,
-  ApiProperty,
-  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { BulkRadiostationDto } from '../dto/bulk-radiostation.dto';
-import { QueryOptions } from '@aws/dynamodb-data-mapper';
-import { RadioStation } from '../../../schemas/radiostation.schema';
+import { QueryDto } from '../../../shared/dtos/query.dto';
+import { ConvertIntObj } from '../../../shared/pipes/convertIntObj.pipe';
 
-class Query {
-  @ApiProperty()
-  limit?: number;
 
-  @ApiProperty()
-  lastKey?: RadioStation;
-}
-
-@ApiTags('Radio Station Contrller')
+@ApiTags('Radio Station Controller')
 @Controller('radiostations')
 export class RadiostationController {
   constructor(private readonly radiostationService: RadiostationService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Radio Station' })
   create(@Body() createRadiostationDto: CreateRadiostationDto) {
     return this.radiostationService.create(createRadiostationDto);
@@ -48,26 +40,33 @@ export class RadiostationController {
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  // @ApiQuery({ name: 'query', type: Query, required: false })
   @ApiOperation({ summary: 'Get All Radio Stations' })
-  findAll() {
-    return this.radiostationService.findAll();
+  findAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
+    return this.radiostationService.findAll(queryDto);
   }
 
   @Get('/owner/:ownerId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Radio Stations of particular user' })
-  async getOwnersKeys(@Param('ownerId') ownerId: string) {
-    return await this.radiostationService.findByOwner(ownerId);
+  async getOwnersRadioStations(@Param('ownerId') ownerId: string,@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
+    const query={
+      ...queryDto,
+      owner:ownerId
+    }
+    return this.radiostationService.findAll(query);
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Single Radio Station' })
-  findOne(@Param('id') id: string) {
-    return this.radiostationService.findByIdOrFail(id);
+  async findOne(@Param('id') id: string) {
+    const radioStation = await this.radiostationService.radioStationModel.findById(id)
+    if(!radioStation){
+      throw new NotFoundException()
+    }
+    return radioStation
   }
 
   @Put(':id/stop-listening-stream')
@@ -118,11 +117,15 @@ export class RadiostationController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Single Radio Station' })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateRadiostationDto: UpdateRadiostationDto,
   ) {
-    return this.radiostationService.update(id, updateRadiostationDto);
+    const updatedRadioStation = await this.radiostationService.radioStationModel.findOneAndUpdate({id:id},updateRadiostationDto)
+    if(!updatedRadioStation){
+      throw new NotFoundException()
+    }
+    return updatedRadioStation
   }
 
   @Delete('delete/bulk')
@@ -144,13 +147,5 @@ export class RadiostationController {
       }
       throw err
     })
-  }
-
-  @Get('/new/create-table')
-  @ApiOperation({ summary: 'Create Radio Stationy table in Dynamo DB' })
-  async createTable() {
-    return await this.radiostationService.radioStationRepository
-      .ensureTableExistsAndCreate()
-      .then(() => 'Created New Table');
   }
 }

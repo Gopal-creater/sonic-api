@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { GlobalAwsService } from './../../shared/modules/global-aws/global-aws.service';
-import { KeygenService } from 'src/shared/modules/keygen/keygen.service';
+import { KeygenService } from './../../shared/modules/keygen/keygen.service';
 export declare class UserService {
     private readonly keygenService;
     private readonly globalAwsService;

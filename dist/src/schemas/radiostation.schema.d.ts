@@ -1,22 +1,21 @@
-declare class Credential {
+import { Document, Schema as MogSchema } from 'mongoose';
+export declare const RadioStationSchemaName = "RadioStation";
+export declare class Credential {
     username: string;
     password: string;
 }
-export declare class RadioStation {
+export declare class RadioStation extends Document {
     constructor(data?: Partial<RadioStation>);
-    id?: string;
     name: string;
     streamingUrl: string;
     website: string;
     logo: string;
     credential: Credential;
     owner: string;
-    createdAt: Date;
     startedAt: Date;
     stopAt: Date;
     isStreamStarted: boolean;
-    notes: {
-        [key: string]: any;
-    };
+    notes: string;
+    metaData: Map<string, any>;
 }
-export {};
+export declare const RadioStationSchema: MogSchema<RadioStation, import("mongoose").Model<any, any>, undefined>;

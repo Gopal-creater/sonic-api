@@ -13,14 +13,14 @@ exports.RadioStationSonicKeyRepository = void 0;
 const global_aws_service_1 = require("../shared/modules/global-aws/global-aws.service");
 const global_aws_service_2 = require("../shared/modules/global-aws/global-aws.service");
 const common_1 = require("@nestjs/common");
-const radiostationSonickey_schema_1 = require("../schemas/radiostationSonickey.schema");
+const radiostation_sonickey_schema_1 = require("../schemas/radiostation-sonickey.schema");
 let RadioStationSonicKeyRepository = class RadioStationSonicKeyRepository extends global_aws_service_1.GlobalDynamoDbDataMapper {
     constructor(globalAwsService) {
         super();
         this.globalAwsService = globalAwsService;
     }
     ensureTableExistsAndCreate() {
-        return this.ensureTableExists(radiostationSonickey_schema_1.RadioStationSonicKey, {
+        return this.ensureTableExists(radiostation_sonickey_schema_1.RadioStationSonicKey, {
             readCapacityUnits: 5,
             writeCapacityUnits: 5,
             indexOptions: {

@@ -1,15 +1,5 @@
-export declare class Credential {
-    username: string;
-    password: string;
+import { RadioStation } from '../../../schemas/radiostation.schema';
+declare const CreateRadiostationDto_base: import("@nestjs/common").Type<Pick<RadioStation, "metaData" | "_id" | "__v" | "$getAllSubdocs" | "$ignore" | "$isDefault" | "$isDeleted" | "$getPopulatedDocs" | "$isEmpty" | "$isValid" | "$locals" | "$markValid" | "$op" | "$session" | "$set" | "$where" | "baseModelName" | "collection" | "db" | "delete" | "deleteOne" | "depopulate" | "directModifiedPaths" | "equals" | "errors" | "execPopulate" | "get" | "getChanges" | "id" | "increment" | "init" | "invalidate" | "isDirectModified" | "isDirectSelected" | "isInit" | "isModified" | "isNew" | "isSelected" | "markModified" | "modifiedPaths" | "model" | "modelName" | "overwrite" | "populate" | "populated" | "remove" | "replaceOne" | "save" | "schema" | "set" | "toJSON" | "toObject" | "unmarkModified" | "update" | "updateOne" | "validate" | "validateSync" | "name" | "owner" | "streamingUrl" | "website" | "logo" | "credential" | "notes">>;
+export declare class CreateRadiostationDto extends CreateRadiostationDto_base {
 }
-export declare class CreateRadiostationDto {
-    name: string;
-    streamingUrl: string;
-    website?: string;
-    logo?: string;
-    credential?: Credential;
-    owner: string;
-    notes?: {
-        [key: string]: any;
-    };
-}
+export {};

@@ -1,12 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty,OmitType } from '@nestjs/swagger';
+import { RadioStationSonicKey } from '../../../../schemas/radiostation-sonickey.schema';
 
-export class CreateRadiostationSonicKeyDto {
-    @ApiProperty()
-    radioStation: string;
-
-    @ApiProperty()
-    sonicKey: string;
-
-    @ApiProperty()
-    owner: string;
-}
+export class CreateRadiostationSonicKeyDto extends OmitType(RadioStationSonicKey, [
+ 'count'
+]) {}

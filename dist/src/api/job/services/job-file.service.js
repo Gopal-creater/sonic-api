@@ -25,7 +25,6 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobFileService = void 0;
 const common_1 = require("@nestjs/common");
-const job_repository_1 = require("../../../repositories/job.repository");
 const job_service_1 = require("./job.service");
 const sonickey_service_1 = require("../../sonickey/sonickey.service");
 const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
@@ -33,8 +32,7 @@ const jobfile_schema_1 = require("../../../schemas/jobfile.schema");
 const mongoose_1 = require("mongoose");
 const mongoose_2 = require("@nestjs/mongoose");
 let JobFileService = class JobFileService {
-    constructor(jobRepository, jobFileModel, jobService, keygenService, sonickeyService) {
-        this.jobRepository = jobRepository;
+    constructor(jobFileModel, jobService, keygenService, sonickeyService) {
         this.jobFileModel = jobFileModel;
         this.jobService = jobService;
         this.keygenService = keygenService;
@@ -57,7 +55,7 @@ let JobFileService = class JobFileService {
         if (!createdSonicKey) {
             createdSonicKey = (await this.sonickeyService.createFromJob(addKeyAndUpdateJobFileDto.sonicKeyDetail));
         }
-        const updatedJobFile = await this.jobService.jobFileModel.findOneAndUpdate({ id: fileId }, addKeyAndUpdateJobFileDto.jobFile);
+        const updatedJobFile = await this.jobService.jobFileModel.findOneAndUpdate({ id: fileId }, Object.assign(Object.assign({}, addKeyAndUpdateJobFileDto.jobFile), { sonicKey: createdSonicKey }));
         return {
             createdSonicKey: createdSonicKey,
             updatedJobFile: updatedJobFile,
@@ -66,9 +64,8 @@ let JobFileService = class JobFileService {
 };
 JobFileService = __decorate([
     common_1.Injectable(),
-    __param(1, mongoose_2.InjectModel(jobfile_schema_1.JobFile.name)),
-    __metadata("design:paramtypes", [job_repository_1.JobRepository,
-        mongoose_1.Model,
+    __param(0, mongoose_2.InjectModel(jobfile_schema_1.JobFile.name)),
+    __metadata("design:paramtypes", [mongoose_1.Model,
         job_service_1.JobService,
         keygen_service_1.KeygenService,
         sonickey_service_1.SonickeyService])

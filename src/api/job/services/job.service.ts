@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { CreateJobDto } from '../dto/create-job.dto';
 import { UpdateJobDto } from '../dto/update-job.dto';
-import { JobRepository } from '../../../repositories/job.repository';
 import { Job } from '../../../schemas/job.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -20,15 +19,22 @@ import { JobFile } from '../../../schemas/jobfile.schema';
 @Injectable()
 export class JobService {
   constructor(
-    @InjectModel(Job.name) public jobModel: Model<Job>,
-    @InjectModel(JobFile.name) public jobFileModel: Model<JobFile>,
-    public readonly jobRepository: JobRepository,
+    @InjectModel(Job.name) public readonly jobModel: Model<Job>,
+    @InjectModel(JobFile.name) public  readonly jobFileModel: Model<JobFile>,
     public readonly keygenService: KeygenService,
   ) {}
   async create(createJobDto: CreateJobDto) {
-    const dataToSave = Object.assign(new Job(), createJobDto) as Job;
-    const newJob = new this.jobModel(dataToSave);
+    const{jobFiles,...job}=createJobDto
+    const newJob = new this.jobModel(job);
     const createdJob = await newJob.save();
+    const newJobFiles = jobFiles.map(jobFile => {
+      const newJobFile = new this.jobFileModel({...jobFile,job:createdJob});
+      return newJobFile;
+    });
+    const savedJobFiles = await this.jobFileModel.insertMany(
+      newJobFiles,
+    );
+    createdJob.jobFiles=savedJobFiles
     await this.addReservedDetailsInLicence(createJobDto.license, [
       { jobId: createdJob.id, count: createJobDto.jobFiles.length },
     ]).catch(async err => {
@@ -42,6 +48,7 @@ export class JobService {
     const { limit, offset, ...query } = queryDto;
         return this.jobModel
         .find(query || {})
+        .populate("JobFile")
         .skip(offset)
         .limit(limit)
         .exec();

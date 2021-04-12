@@ -1,38 +1,53 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { RadioStationRepository } from '../../../repositories/radiostation.repository';
-import { RadioStationSonicKeyRepository } from '../../../repositories/radiostationSonickey.repository';
-import { RadioStationSonicKey } from '../../../schemas/radiostationSonickey.schema';
+import { RadioStationSonicKey } from '../../../schemas/radiostation-sonickey.schema';
 import { CreateRadiostationSonicKeyDto } from '../dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { QueryDto } from '../../../shared/dtos/query.dto';
+import { RadioStation } from '../../../schemas/radiostation.schema';
+import { SonicKey } from '../../../schemas/sonickey.schema';
 
 @Injectable()
 export class RadiostationSonicKeysService {
-  constructor(public readonly radioStationRepository: RadioStationRepository,public readonly radioStationSonicKeysRepository: RadioStationSonicKeyRepository) {}
-  create(createRadiostationSonicKeyDto: CreateRadiostationSonicKeyDto) {
-    const dataToSave = Object.assign(new RadioStationSonicKey(), createRadiostationSonicKeyDto,{count:1});
-    return this.radioStationSonicKeysRepository.put(dataToSave);
+  constructor(
+    @InjectModel(RadioStationSonicKey.name)
+    public radioStationSonickeyModel: Model<RadioStationSonicKey>
+  ) {}
+  create(createRadiostationSonicKeyDto: CreateRadiostationSonicKeyDto):Promise<RadioStationSonicKey> {
+    const newRadioStationSonicKey = new this.radioStationSonickeyModel({...createRadiostationSonicKeyDto,count:1})
+    return newRadioStationSonicKey.save()
   }
 
+  async findAll(queryDto: QueryDto = {}) {
+    const { limit, offset, ...query } = queryDto;
+    const options = {
+      limit,
+      offset,
+    };
+    // return await this.sonicKeyModel["paginate"](query || {},options) as MongoosePaginateDto<SonicKey>
+    return this.radioStationSonickeyModel
+      .find(query || {})
+      .skip(offset)
+      .limit(limit)
+      .exec();
+  }
 
-  async findAllSonicKeysForRadioStation(radioStation:string) {
-    const items: RadioStationSonicKey[] = [];
-    for await (const item of this.radioStationSonicKeysRepository.query(RadioStationSonicKey,{radioStation:radioStation})) {
-      items.push(item);
+  async findOne(radioStation: string, sonicKey: string) {
+    return this.radioStationSonickeyModel.findOne({
+      radioStation: new RadioStation({ id: radioStation }),
+      sonicKey: new SonicKey({ id: sonicKey }),
+    });
+  }
+
+  async findById(id: string) {
+    return this.radioStationSonickeyModel.findById(id);
+  }
+
+  async incrementCount(radioStation: string, sonicKey: string) {
+    const radioStationSonicKey = await this.findOne(radioStation, sonicKey);
+    if (radioStationSonicKey) {
+      radioStationSonicKey.count = radioStationSonicKey.count + 1;
+      return radioStationSonicKey.update();
     }
-    return items;
   }
-
-  async findOne(radioStation: string,sonicKey:string) {
-    return this.radioStationSonicKeysRepository.get(Object.assign(new RadioStationSonicKey,{radioStation:radioStation,sonicKey:sonicKey}))
-  }
-
-  async incrementCount(radioStation: string,sonicKey:string) {
-    const radioStationSonicKey = await this.findOne(radioStation,sonicKey);
-    if(radioStationSonicKey){
-      return this.radioStationSonicKeysRepository.update(
-        Object.assign(radioStationSonicKey, {count:radioStationSonicKey.count+1}),
-      );
-    }
- 
-  }
-
 }

@@ -1,9 +1,7 @@
-import { UpdateSonicKeyDto } from './dtos/update-sonickey.dto';
 import { SonicKeyDto } from './dtos/sonicKey.dto';
 import { IUploadedFile } from './../../shared/interfaces/UploadedFile.interface';
 import { FileHandlerService } from './../../shared/services/file-handler.service';
 import { FileOperationService } from './../../shared/services/file-operation.service';
-import { SonicKeyRepository } from './../../repositories/sonickey.repository';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { SonicKey } from '../../schemas/sonickey.schema';
 import * as mm from 'music-metadata';
@@ -13,10 +11,8 @@ import { appConfig } from '../../config';
 import { CreateSonicKeyFromJobDto } from './dtos/create-sonickey.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { PaginationQueryDto } from '../../shared/dtos/paginationquery.dto';
 import { QueryDto } from '../../shared/dtos/query.dto';
-import { IMongoosePaginate } from '../../shared/interfaces/MongoosePaginate.interface';
-import { MongoosePaginateDto } from '../../shared/dtos/mongoosepaginate.dto';
+import { Job } from '../../schemas/job.schema';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -33,8 +29,7 @@ export class SonickeyService {
   }
 
   async createFromJob(createSonicKeyDto: CreateSonicKeyFromJobDto) {
-    const dataToSave = Object.assign(new SonicKey(), createSonicKeyDto);
-    const newSonicKey = new this.sonicKeyModel(dataToSave);
+    const newSonicKey = new this.sonicKeyModel(createSonicKeyDto);
     return newSonicKey.save();
   }
 
@@ -218,7 +213,7 @@ export class SonickeyService {
     };
     // return await this.sonicKeyModel["paginate"]({ job: job, ...query },options) as MongoosePaginateDto<SonicKey>
     return this.sonicKeyModel
-      .find({ job: job, ...query })
+      .find({ job: new Job({id:job}), ...query })
       .skip(offset)
       .limit(limit)
       .exec();

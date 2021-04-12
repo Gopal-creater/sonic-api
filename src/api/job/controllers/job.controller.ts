@@ -23,6 +23,7 @@ import { equals, ConditionExpression } from '@aws/dynamodb-expressions';
 import { SonickeyService } from '../../sonickey/sonickey.service';
 import { BadRequestException } from '@nestjs/common';
 import { QueryDto } from '../../../shared/dtos/query.dto';
+import { ConvertIntObj } from '../../../shared/pipes/convertIntObj.pipe';
 
 @ApiTags('Jobs Controller')
 @Controller('jobs')
@@ -36,7 +37,7 @@ export class JobController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Query() queryDto: QueryDto,) {
+  findAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
     return this.jobService.findAll(queryDto);
   }
 
@@ -44,7 +45,7 @@ export class JobController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('/owners/:ownerId')
-  getOwnerJobs(@Param('ownerId') ownerId: string,@Query() queryDto: QueryDto,) {
+  getOwnerJobs(@Param('ownerId') ownerId: string,@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
     const query={
       ...queryDto,
       owner:ownerId
@@ -52,7 +53,7 @@ export class JobController {
     return this.jobService.findAll(query);
   }
 
-  @UseGuards(JwtAuthGuard, JobLicenseValidationGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a Job' })
   @Post()
@@ -61,16 +62,21 @@ export class JobController {
     @User('sub') owner: string,
     @Req() req: any,
   ) {
+    console.log("createJobDto",createJobDto);
+    
     const existingJob = await this.jobService.jobModel.findOne({name:createJobDto.name,owner:owner});
     if (existingJob) {
       throw new BadRequestException('Job with same name already exists.');
     }
     createJobDto.owner = owner;
-    createJobDto.jobFiles = createJobDto.jobFiles.map(job => {
-      job['sonicKey'] =
-        job['sonicKey'] || this.sonickeyService.generateUniqueSonicKey();
-      return job;
-    });
+    if(createJobDto.jobFiles){
+      createJobDto.jobFiles = createJobDto.jobFiles.map(job => {
+        job['sonicKeyToBe'] =this.sonickeyService.generateUniqueSonicKey()
+        return job;
+      });
+    }
+   
+    console.log("createJobDto",createJobDto);
     return this.jobService.create(createJobDto);
   }
 

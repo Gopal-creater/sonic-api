@@ -21,10 +21,10 @@ const update_job_dto_1 = require("../dto/update-job.dto");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const user_decorator_1 = require("../../auth/decorators/user.decorator");
-const job_license_validation_guard_1 = require("../../auth/guards/job-license-validation.guard");
 const sonickey_service_1 = require("../../sonickey/sonickey.service");
 const common_2 = require("@nestjs/common");
 const query_dto_1 = require("../../../shared/dtos/query.dto");
+const convertIntObj_pipe_1 = require("../../../shared/pipes/convertIntObj.pipe");
 let JobController = class JobController {
     constructor(jobService, sonickeyService) {
         this.jobService = jobService;
@@ -38,16 +38,19 @@ let JobController = class JobController {
         return this.jobService.findAll(query);
     }
     async create(createJobDto, owner, req) {
+        console.log("createJobDto", createJobDto);
         const existingJob = await this.jobService.jobModel.findOne({ name: createJobDto.name, owner: owner });
         if (existingJob) {
             throw new common_2.BadRequestException('Job with same name already exists.');
         }
         createJobDto.owner = owner;
-        createJobDto.jobFiles = createJobDto.jobFiles.map(job => {
-            job['sonicKey'] =
-                job['sonicKey'] || this.sonickeyService.generateUniqueSonicKey();
-            return job;
-        });
+        if (createJobDto.jobFiles) {
+            createJobDto.jobFiles = createJobDto.jobFiles.map(job => {
+                job['sonicKeyToBe'] = this.sonickeyService.generateUniqueSonicKey();
+                return job;
+            });
+        }
+        console.log("createJobDto", createJobDto);
         return this.jobService.create(createJobDto);
     }
     makeCompleted(id) {
@@ -81,7 +84,7 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get(),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/job.schema").Job] }),
-    __param(0, common_1.Query()),
+    __param(0, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
     __metadata("design:returntype", void 0)
@@ -92,13 +95,13 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get('/owners/:ownerId'),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/job.schema").Job] }),
-    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query()),
+    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", void 0)
 ], JobController.prototype, "getOwnerJobs", null);
 __decorate([
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, job_license_validation_guard_1.JobLicenseValidationGuard),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create a Job' }),
     common_1.Post(),

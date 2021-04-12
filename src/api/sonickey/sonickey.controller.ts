@@ -49,6 +49,7 @@ import * as appRootPath from 'app-root-path';
 import { QueryDto } from '../../shared/dtos/query.dto';
 import { IMongoosePaginate } from '../../shared/interfaces/MongoosePaginate.interface';
 import { MongoosePaginateDto } from '../../shared/dtos/mongoosepaginate.dto';
+import { ConvertIntObj } from '../../shared/pipes/convertIntObj.pipe';
 
 /**
  * Prabin:
@@ -58,7 +59,7 @@ import { MongoosePaginateDto } from '../../shared/dtos/mongoosepaginate.dto';
 
 class TestT extends MongoosePaginateDto<SonicKey>{}
 
-@ApiTags('SonicKeys Contrller')
+@ApiTags('SonicKeys Controller')
 @Controller('sonic-keys')
 export class SonickeyController {
   constructor(
@@ -71,7 +72,7 @@ export class SonickeyController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys' })
-  async getAll(@Query() queryDto: QueryDto,) {
+  async getAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
     console.log("queryDto",queryDto);
     
     return this.sonicKeyService.getAll(queryDto);
@@ -100,7 +101,7 @@ export class SonickeyController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys of particular user' })
-  async getOwnersKeys(@Param('ownerId') ownerId: string,@Query() queryDto: QueryDto,) {
+  async getOwnersKeys(@Param('ownerId') ownerId: string,@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
     const query={
       ...queryDto,
       owner:ownerId
@@ -113,7 +114,7 @@ export class SonickeyController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys of particular job' })
-  async getKeysByJob(@Param('jobId') jobId: string,@Query() queryDto: QueryDto,) {
+  async getKeysByJob(@Param('jobId') jobId: string,@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
     const query={
       ...queryDto,
       job:jobId
@@ -203,15 +204,13 @@ export class SonickeyController {
           sonicKeyDto,
         );
 
-        const dataToSave = new SonicKey(
-          Object.assign(sonicKeyDtoWithAudioData, {
+        const newSonicKey = new this.sonicKeyService.sonicKeyModel({
+          ...sonicKeyDtoWithAudioData,
             contentFilePath: downloadFileUrl,
             owner: owner,
             sonicKey: sonicKey,
-            licenseId: licenseId, //modified
-          }),
-        );
-        const newSonicKey = new this.sonicKeyService.sonicKeyModel(dataToSave);
+            licenseId: licenseId
+        });
         return newSonicKey.save().finally(() => {
           this.fileHandlerService.deleteFileAtPath(file.path);
         });
@@ -289,7 +288,7 @@ export class SonickeyController {
     if (!updatedSonickey) {
       throw new NotFoundException();
     }
-    return updateSonicKeyDto
+    return updatedSonickey
   }
 
   @Delete('/:sonickey')

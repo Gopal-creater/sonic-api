@@ -17,45 +17,32 @@ const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const radiostation_service_1 = require("../services/radiostation.service");
 const swagger_1 = require("@nestjs/swagger");
-const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const radiostation_sonickeys_service_1 = require("../services/radiostation-sonickeys.service");
+const query_dto_1 = require("../../../shared/dtos/query.dto");
+const convertIntObj_pipe_1 = require("../../../shared/pipes/convertIntObj.pipe");
 let RadiostationSonicKeysController = class RadiostationSonicKeysController {
     constructor(radiostationService, radiostationSonicKeysService) {
         this.radiostationService = radiostationService;
         this.radiostationSonicKeysService = radiostationSonicKeysService;
     }
-    findAllSonicKeys(radiostationId) {
-        return this.radiostationSonicKeysService.findAllSonicKeysForRadioStation(radiostationId);
-    }
-    async createTable() {
-        return await this.radiostationSonicKeysService.radioStationSonicKeysRepository
-            .ensureTableExistsAndCreate()
-            .then(() => 'Created New Table');
+    findAll(queryDto) {
+        return this.radiostationSonicKeysService.findAll(queryDto);
     }
 };
 __decorate([
-    common_1.Get('/:radiostationId/sonic-keys'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get All SonicKeys for this Radio Station' }),
-    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/radiostationSonickey.schema").RadioStationSonicKey] }),
-    __param(0, common_1.Param('radiostationId')),
+    common_1.Get('/'),
+    swagger_1.ApiOperation({ summary: 'Get All radiostations-sonickeys' }),
+    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/radiostation-sonickey.schema").RadioStationSonicKey] }),
+    __param(0, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [query_dto_1.QueryDto]),
     __metadata("design:returntype", void 0)
-], RadiostationSonicKeysController.prototype, "findAllSonicKeys", null);
-__decorate([
-    common_1.Get('/new/create-r_s-aux-table'),
-    swagger_1.ApiOperation({ summary: 'Create RadioStation-SonicKey Aux table in Dynamo DB' }),
-    openapi.ApiResponse({ status: 200, type: String }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], RadiostationSonicKeysController.prototype, "createTable", null);
+], RadiostationSonicKeysController.prototype, "findAll", null);
 RadiostationSonicKeysController = __decorate([
-    swagger_1.ApiTags('Radio Station Contrller'),
-    common_1.Controller('radiostations'),
-    __metadata("design:paramtypes", [radiostation_service_1.RadiostationService, radiostation_sonickeys_service_1.RadiostationSonicKeysService])
+    swagger_1.ApiTags('RadioStation-SonicKeys Controller'),
+    common_1.Controller('radiostations-sonickeys'),
+    __metadata("design:paramtypes", [radiostation_service_1.RadiostationService,
+        radiostation_sonickeys_service_1.RadiostationSonicKeysService])
 ], RadiostationSonicKeysController);
 exports.RadiostationSonicKeysController = RadiostationSonicKeysController;
 //# sourceMappingURL=radiostation-sonickeys.controller.js.map

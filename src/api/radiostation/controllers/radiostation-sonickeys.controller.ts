@@ -1,28 +1,24 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { RadiostationService } from '../services/radiostation.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RadiostationSonicKeysService } from '../services/radiostation-sonickeys.service';
+import { QueryDto } from '../../../shared/dtos/query.dto';
+import { ConvertIntObj } from '../../../shared/pipes/convertIntObj.pipe';
 
-@ApiTags('Radio Station Contrller')
-@Controller('radiostations')
+@ApiTags('RadioStation-SonicKeys Controller')
+@Controller('radiostations-sonickeys')
 export class RadiostationSonicKeysController {
-  constructor(private readonly radiostationService: RadiostationService,private readonly radiostationSonicKeysService: RadiostationSonicKeysService) {}
-  
-  @Get('/:radiostationId/sonic-keys')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get All SonicKeys for this Radio Station' })
-  findAllSonicKeys(@Param('radiostationId') radiostationId:string) {
-    return this.radiostationSonicKeysService.findAllSonicKeysForRadioStation(radiostationId);
-  }
+  constructor(
+    private readonly radiostationService: RadiostationService,
+    private readonly radiostationSonicKeysService: RadiostationSonicKeysService,
+  ) {}
 
-
-  @Get('/new/create-r_s-aux-table')
-  @ApiOperation({ summary: 'Create RadioStation-SonicKey Aux table in Dynamo DB' })
-  async createTable() {
-    return await this.radiostationSonicKeysService.radioStationSonicKeysRepository
-      .ensureTableExistsAndCreate()
-      .then(() => 'Created New Table');
+  @Get('/')
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get All radiostations-sonickeys' })
+  findAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto) {
+    return this.radiostationSonicKeysService.findAll(queryDto);
   }
 }

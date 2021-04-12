@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Job,JobSchemaName } from './job.schema';
+import { SonicKey } from './sonickey.schema';
 
 export const JobFileSchemaName="JobFile"
 
@@ -13,10 +14,12 @@ export class JobFile extends Document {
   }
 
   @ApiProperty()
-  @Prop({
-    required: true,
-  })
-  sonicKey: string;
+  @Prop({required:true  })
+  sonicKeyToBe: string;
+
+  @ApiProperty()
+  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Sonickey'})
+  sonicKey: SonicKey;
 
   @ApiProperty()
   @Prop({ default: false })
@@ -26,8 +29,8 @@ export class JobFile extends Document {
   @Prop()
   metaData: Map<string, any>;
 
-  @ApiProperty()
-  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Job' })
+  @ApiProperty({type:String})
+  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Job',required:true })
   job: Job;
 }
 

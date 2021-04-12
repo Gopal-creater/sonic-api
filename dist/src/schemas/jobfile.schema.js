@@ -14,6 +14,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const job_schema_1 = require("./job.schema");
+const sonickey_schema_1 = require("./sonickey.schema");
 exports.JobFileSchemaName = "JobFile";
 let JobFile = class JobFile extends mongoose_2.Document {
     constructor(data) {
@@ -23,10 +24,13 @@ let JobFile = class JobFile extends mongoose_2.Document {
 };
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({
-        required: true,
-    }),
+    mongoose_1.Prop({ required: true }),
     __metadata("design:type", String)
+], JobFile.prototype, "sonicKeyToBe", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Sonickey' }),
+    __metadata("design:type", sonickey_schema_1.SonicKey)
 ], JobFile.prototype, "sonicKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
@@ -39,8 +43,8 @@ __decorate([
     __metadata("design:type", Map)
 ], JobFile.prototype, "metaData", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Job' }),
+    swagger_1.ApiProperty({ type: String }),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Job', required: true }),
     __metadata("design:type", job_schema_1.Job)
 ], JobFile.prototype, "job", void 0);
 JobFile = __decorate([

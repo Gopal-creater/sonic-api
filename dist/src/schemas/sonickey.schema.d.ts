@@ -1,9 +1,11 @@
-import { Document } from 'mongoose';
+import { Document, Schema as MogSchema } from 'mongoose';
+import { Job } from './job.schema';
+export declare const SonicKeySchemaName = "Sonickey";
 export declare class SonicKey extends Document {
     constructor(data?: Partial<SonicKey>);
     sonicKey: string;
     owner: string;
-    job: string;
+    job: Job;
     licenseId: string;
     status: boolean;
     encodingStrength: number;
@@ -26,4 +28,4 @@ export declare class SonicKey extends Document {
     contentQuality: string;
     additionalMetadata: Map<string, any>;
 }
-export declare const SonicKeySchema: import("mongoose").Schema<SonicKey, import("mongoose").Model<any, any>, undefined>;
+export declare const SonicKeySchema: MogSchema<SonicKey, import("mongoose").Model<any, any>, undefined>;

@@ -5,9 +5,25 @@ import { RadioStationRepository } from '../../repositories/radiostation.reposito
 import { RadiostationSonicKeysController } from './controllers/radiostation-sonickeys.controller';
 import { RadiostationSonicKeysService } from './services/radiostation-sonickeys.service';
 import { RadioStationSonicKeyRepository } from '../../repositories/radiostationSonickey.repository';
-
+import { MongooseModule } from '@nestjs/mongoose';
+import {
+  RadioStation,
+  RadioStationSchema,
+} from '../../schemas/radiostation.schema';
+import { RadioStationSonicKey,RadioStationSonicKeySchema } from '../../schemas/radiostation-sonickey.schema';
 @Module({
-  controllers: [RadiostationController,RadiostationSonicKeysController],
-  providers: [RadiostationService,RadiostationSonicKeysService,RadioStationRepository,RadioStationSonicKeyRepository]
+  imports: [
+  MongooseModule.forFeature([
+      { name: RadioStation.name, schema: RadioStationSchema },
+      { name: RadioStationSonicKey.name, schema: RadioStationSonicKeySchema }
+    ]),
+  ],
+  controllers: [RadiostationController, RadiostationSonicKeysController],
+  providers: [
+    RadiostationService,
+    RadiostationSonicKeysService,
+    RadioStationRepository,
+    RadioStationSonicKeyRepository,
+  ],
 })
 export class RadiostationModule {}

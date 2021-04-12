@@ -1,9 +1,9 @@
 import { RadiostationService } from '../services/radiostation.service';
 import { RadiostationSonicKeysService } from '../services/radiostation-sonickeys.service';
+import { QueryDto } from '../../../shared/dtos/query.dto';
 export declare class RadiostationSonicKeysController {
     private readonly radiostationService;
     private readonly radiostationSonicKeysService;
     constructor(radiostationService: RadiostationService, radiostationSonicKeysService: RadiostationSonicKeysService);
-    findAllSonicKeys(radiostationId: string): Promise<import("../../../schemas/radiostationSonickey.schema").RadioStationSonicKey[]>;
-    createTable(): Promise<string>;
+    findAll(queryDto: QueryDto): Promise<import("../../../schemas/radiostation-sonickey.schema").RadioStationSonicKey[]>;
 }

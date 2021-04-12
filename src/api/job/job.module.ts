@@ -6,7 +6,7 @@ import { JobRepository } from '../../repositories/job.repository';
 import { KeygenService } from '../../shared/modules/keygen/keygen.service';
 import { SonickeyModule } from '../sonickey/sonickey.module';
 import { JobFileService } from './services/job-file.service';
-import { KeygenModule } from 'src/shared/modules/keygen/keygen.module';
+import { KeygenModule } from '../../shared/modules/keygen/keygen.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Job, JobSchema } from '../../schemas/job.schema';
 import { JobFile, JobFileSchema } from '../../schemas/jobfile.schema';

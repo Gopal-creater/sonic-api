@@ -9,10 +9,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SonicKeySchema = exports.SonicKey = void 0;
+exports.SonicKeySchema = exports.SonicKey = exports.SonicKeySchemaName = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
+const job_schema_1 = require("./job.schema");
+exports.SonicKeySchemaName = "Sonickey";
 let SonicKey = class SonicKey extends mongoose_2.Document {
     constructor(data) {
         super();
@@ -34,8 +36,8 @@ __decorate([
 ], SonicKey.prototype, "owner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
-    __metadata("design:type", String)
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Job' }),
+    __metadata("design:type", job_schema_1.Job)
 ], SonicKey.prototype, "job", void 0);
 __decorate([
     swagger_1.ApiProperty(),
@@ -140,7 +142,7 @@ __decorate([
     __metadata("design:type", Map)
 ], SonicKey.prototype, "additionalMetadata", void 0);
 SonicKey = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: "Sonickeys" }),
+    mongoose_1.Schema({ timestamps: true, collection: exports.SonicKeySchemaName }),
     __metadata("design:paramtypes", [Object])
 ], SonicKey);
 exports.SonicKey = SonicKey;

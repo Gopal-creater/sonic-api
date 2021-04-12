@@ -6,26 +6,26 @@ import {
   Delete,
   Param,
   UseGuards,
-  NotImplementedException,
   NotFoundException,
   Get,
   Query,
+  UnprocessableEntityException,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import {
   UpdateJobFileDto,
   AddKeyAndUpdateJobFileDto,
 } from '../dto/update-job-file.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { JobFileService } from '../services/job-file.service';
-import { AddJobFilesDto } from '../dto/add-job-files.dto';
 import { JobService } from '../services/job.service';
 import { CreateJobFileDto } from '../dto/create-job-file.dto';
 import { JobFile } from '../../../schemas/jobfile.schema';
 import { QueryDto } from '../../../shared/dtos/query.dto';
+import { ConvertIntObj } from '../../../shared/pipes/convertIntObj.pipe';
 
 @ApiTags('Jobs Files Controller')
-@Controller('job-files')
+@Controller()
 export class JobFileController {
   constructor(
     private readonly jobFileService: JobFileService,
@@ -35,8 +35,8 @@ export class JobFileController {
   @ApiOperation({ summary: 'Get All Job Files' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Get()
-  findAll(@Query() queryDto: QueryDto,) {
+  @Get('/job-files')
+  findAll(@Query(new ConvertIntObj(['limit', 'offset'])) queryDto: QueryDto) {
     return this.jobFileService.findAll(queryDto);
   }
 
@@ -45,8 +45,9 @@ export class JobFileController {
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Put('/addkey-updatejobfile/:fileId')
+  @Put('jobs/:jobId/job-files/addkey-updatejobfile/:fileId')
   addKeyToDbAndUpdateJobFile(
+    @Param('jobId') jobId: string,
     @Param('fileId') fileId: string,
     @Body() addKeyAndUpdateJobFileDto: AddKeyAndUpdateJobFileDto,
   ) {
@@ -78,45 +79,90 @@ export class JobFileController {
   @ApiOperation({ summary: 'Create job file' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Post()
+  @Post('jobs/:jobId/job-files/')
   async createJobFile(
+    @Param('jobId') jobId: string,
     @Body() createJobFileDto: CreateJobFileDto,
   ) {
-    const dataToSave = Object.assign(new JobFile(), createJobFileDto, {
-      sonicKey: this.jobFileService.sonickeyService.generateUniqueSonicKey(),
-    });
-    const newJob = new this.jobFileService.jobFileModel(dataToSave);
-    return newJob.save();
+    const jobData = await this.jobService.jobModel.findById(jobId);
+    if (!jobData) {
+      throw new NotFoundException();
+    }
+    const dataToSave = {
+      ...createJobFileDto,
+      sonicKeyToBe: this.jobFileService.sonickeyService.generateUniqueSonicKey()
+    }
+    const newJobFile = new this.jobFileService.jobFileModel(dataToSave);
+    const savedJobFile = await newJobFile.save();
+    await this.jobService
+      .incrementReservedDetailsInLicenceBy(jobData.license, jobData.id, 1)
+      .catch(async err => {
+        await this.jobService.jobFileModel.remove(savedJobFile.id);
+        throw new UnprocessableEntityException();
+      });
+    return savedJobFile;
   }
 
   @ApiOperation({ summary: 'Create many job file' })
   @ApiBearerAuth()
+  @ApiBody({ type: [CreateJobFileDto] })
   @UseGuards(JwtAuthGuard)
-  @Post('/create-bulk')
+  @Post('jobs/:jobId/job-files/create-bulk')
   async addFilesToJob(
+    @Param('jobId') jobId: string,
     @Body() createJobFileDto: CreateJobFileDto[],
   ) {
-    const newJobFiles =  createJobFileDto.map(jobFile=>{
-      const dataToSave = Object.assign(new JobFile(), jobFile, {
-        sonicKey: this.jobFileService.sonickeyService.generateUniqueSonicKey(),
+    const jobData = await this.jobService.jobModel.findById(jobId);
+    if (!jobData) {
+      throw new NotFoundException();
+    }
+    const newJobFiles = createJobFileDto.map(jobFile => {
+      const dataToSave = {
+        ...jobFile,
+        sonicKeyToBe: this.jobFileService.sonickeyService.generateUniqueSonicKey()
+      }
+      const newJobFile = new this.jobFileService.jobFileModel(dataToSave);
+      return newJobFile;
+    });
+    const savedJobFiles = await this.jobFileService.jobFileModel.insertMany(
+      newJobFiles,
+    );
+    await this.jobService
+      .incrementReservedDetailsInLicenceBy(
+        jobData.license,
+        jobData.id,
+        savedJobFiles.length,
+      )
+      .catch(async err => {
+        await this.jobService.jobFileModel.deleteMany(savedJobFiles);
+        throw new UnprocessableEntityException();
       });
-      const newJob = new this.jobFileService.jobFileModel(dataToSave);
-      return newJob
-    })
-    return this.jobFileService.jobFileModel.insertMany(newJobFiles)
+    return savedJobFiles;
   }
 
   @ApiOperation({ summary: 'Delete the file details using fileId' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Delete('/:id')
+  @Delete('jobs/:jobId/job-files/:fileId')
   async deleteJobFile(
-    @Param('id') id: string
+    @Param('jobId') jobId: string,
+    @Param('fileId') fileId: string,
   ) {
-    const deletedJobFile = await this.jobFileService.jobFileModel.findOneAndDelete({id:id});
-    if(!deletedJobFile){
-      throw new NotFoundException()
+    const jobData = await this.jobService.jobModel.findById(jobId);
+    if (!jobData) {
+      throw new NotFoundException();
     }
-    return deletedJobFile
+    const deletedJobFile = await this.jobFileService.jobFileModel.findOneAndDelete(
+      { id: fileId },
+    );
+    if (!deletedJobFile) {
+      throw new NotFoundException();
+    }
+    await this.jobService.decrementReservedDetailsInLicenceBy(
+      jobData.license,
+      jobData.id,
+      1,
+    );
+    return deletedJobFile;
   }
 }

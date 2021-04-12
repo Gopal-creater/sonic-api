@@ -133,10 +133,13 @@
 // }
 
 import { Prop, Schema, SchemaFactory, } from '@nestjs/mongoose';
-import { Document} from 'mongoose';
+import { Document,Schema as MogSchema} from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { Job } from './job.schema';
 
-@Schema({ timestamps: true,collection:"Sonickeys"})
+export const SonicKeySchemaName="Sonickey"
+
+@Schema({ timestamps: true,collection:SonicKeySchemaName})
 export class SonicKey extends Document {
   constructor(data?: Partial<SonicKey>) {
     super()
@@ -156,8 +159,8 @@ export class SonicKey extends Document {
   owner: string;
 
   @ApiProperty()
-  @Prop()
-  job: string;
+  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Job' })
+  job: Job;
 
   @ApiProperty()
   @Prop()

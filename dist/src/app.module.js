@@ -50,7 +50,8 @@ AppModule = __decorate([
                     useNewUrlParser: true,
                     useUnifiedTopology: true,
                     connectionFactory: (connection) => {
-                        connection.plugin(mongoosePaginate);
+                        connection === null || connection === void 0 ? void 0 : connection.plugin(mongoosePaginate);
+                        connection === null || connection === void 0 ? void 0 : connection.plugin(require('mongoose-autopopulate'));
                         return connection;
                     }
                 }),

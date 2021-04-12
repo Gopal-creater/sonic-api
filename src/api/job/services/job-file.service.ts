@@ -3,7 +3,6 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { JobRepository } from '../../../repositories/job.repository';
 import {
   UpdateJobFileDto,
   AddKeyAndUpdateJobFileDto,
@@ -22,7 +21,6 @@ import { QueryDto } from '../../../shared/dtos/query.dto';
 @Injectable()
 export class JobFileService {
   constructor(
-    public readonly jobRepository: JobRepository,
     @InjectModel(JobFile.name) public jobFileModel: Model<JobFile>,
     public readonly jobService: JobService,
     public readonly keygenService: KeygenService,
@@ -55,7 +53,7 @@ export class JobFileService {
         addKeyAndUpdateJobFileDto.sonicKeyDetail,
       )) as SonicKey;
     }
-    const updatedJobFile = await this.jobService.jobFileModel.findOneAndUpdate({id:fileId},addKeyAndUpdateJobFileDto.jobFile);
+    const updatedJobFile = await this.jobService.jobFileModel.findOneAndUpdate({id:fileId},{...addKeyAndUpdateJobFileDto.jobFile,sonicKey:createdSonicKey});
     return {
       createdSonicKey: createdSonicKey,
       updatedJobFile: updatedJobFile,

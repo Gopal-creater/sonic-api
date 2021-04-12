@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonicKeyRepository = void 0;
 const sonickey_schema_1 = require("./../schemas/sonickey.schema");
 const global_aws_service_1 = require("./../shared/modules/global-aws/global-aws.service");
-const global_aws_service_2 = require("../shared/modules/global-aws/global-aws.service");
+const global_aws_service_2 = require("./../shared/modules/global-aws/global-aws.service");
 const common_1 = require("@nestjs/common");
 let SonicKeyRepository = class SonicKeyRepository extends global_aws_service_1.GlobalDynamoDbDataMapper {
     constructor(globalAwsService) {

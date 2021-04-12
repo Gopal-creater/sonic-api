@@ -9,45 +9,48 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RadioStationSonicKey = void 0;
-const dynamodb_data_mapper_annotations_1 = require("@aws/dynamodb-data-mapper-annotations");
+exports.RadioStationSonicKeySchema = exports.RadioStationSonicKey = exports.RadioStationSonicKeySchemaName = void 0;
+const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
-let RadioStationSonicKey = class RadioStationSonicKey {
+const radiostation_schema_1 = require("./radiostation.schema");
+const sonickey_schema_1 = require("./sonickey.schema");
+exports.RadioStationSonicKeySchemaName = 'RadioStationSonicKey';
+let RadioStationSonicKey = class RadioStationSonicKey extends mongoose_2.Document {
     constructor(data) {
+        super();
         Object.assign(this, data);
     }
 };
 __decorate([
     swagger_1.ApiProperty(),
-    dynamodb_data_mapper_annotations_1.hashKey({
-        indexKeyConfigurations: {
-            RadioStationSonicKey_GSI1: 'RANGE',
-        },
-    }),
-    __metadata("design:type", String)
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'RadioStation', required: true }),
+    __metadata("design:type", radiostation_schema_1.RadioStation)
 ], RadioStationSonicKey.prototype, "radioStation", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    dynamodb_data_mapper_annotations_1.rangeKey({
-        indexKeyConfigurations: {
-            RadioStationSonicKey_GSI1: 'HASH',
-        },
-    }),
-    __metadata("design:type", String)
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Sonickey', required: true }),
+    __metadata("design:type", sonickey_schema_1.SonicKey)
 ], RadioStationSonicKey.prototype, "sonicKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    dynamodb_data_mapper_annotations_1.attribute(),
+    mongoose_1.Prop({ default: 0 }),
     __metadata("design:type", Number)
 ], RadioStationSonicKey.prototype, "count", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    dynamodb_data_mapper_annotations_1.attribute(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], RadioStationSonicKey.prototype, "owner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", Map)
+], RadioStationSonicKey.prototype, "metaData", void 0);
 RadioStationSonicKey = __decorate([
-    dynamodb_data_mapper_annotations_1.table('RadioStation-SonicKey'),
+    mongoose_1.Schema({ timestamps: true, collection: exports.RadioStationSonicKeySchemaName }),
     __metadata("design:paramtypes", [Object])
 ], RadioStationSonicKey);
 exports.RadioStationSonicKey = RadioStationSonicKey;
-//# sourceMappingURL=radiostationSonickey.schema.js.map
+exports.RadioStationSonicKeySchema = mongoose_1.SchemaFactory.createForClass(RadioStationSonicKey);
+//# sourceMappingURL=radiostation-sonickey.schema.js.map

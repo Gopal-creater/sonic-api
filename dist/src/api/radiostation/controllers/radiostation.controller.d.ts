@@ -2,38 +2,37 @@ import { RadiostationService } from '../services/radiostation.service';
 import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
 import { UpdateRadiostationDto } from '../dto/update-radiostation.dto';
 import { BulkRadiostationDto } from '../dto/bulk-radiostation.dto';
-import { RadioStation } from '../../../schemas/radiostation.schema';
+import { QueryDto } from '../../../shared/dtos/query.dto';
 export declare class RadiostationController {
     private readonly radiostationService;
     constructor(radiostationService: RadiostationService);
-    create(createRadiostationDto: CreateRadiostationDto): Promise<RadioStation & CreateRadiostationDto>;
-    findAll(): Promise<RadioStation[]>;
-    getOwnersKeys(ownerId: string): Promise<RadioStation[]>;
-    findOne(id: string): Promise<RadioStation>;
-    stopListeningStream(id: string): Promise<RadioStation>;
-    startListeningStream(id: string): Promise<RadioStation>;
+    create(createRadiostationDto: CreateRadiostationDto): Promise<import("../../../schemas/radiostation.schema").RadioStation>;
+    findAll(queryDto: QueryDto): Promise<import("../../../schemas/radiostation.schema").RadioStation[]>;
+    getOwnersRadioStations(ownerId: string, queryDto: QueryDto): Promise<import("../../../schemas/radiostation.schema").RadioStation[]>;
+    findOne(id: string): Promise<import("../../../schemas/radiostation.schema").RadioStation>;
+    stopListeningStream(id: string): Promise<any>;
+    startListeningStream(id: string): Promise<any>;
     bulkStartListeningStream(bulkDto: BulkRadiostationDto): Promise<{
-        passedData: RadioStation[];
+        passedData: import("../../../schemas/radiostation.schema").RadioStation[];
         failedData: {
             promiseError: any;
             data: string;
         }[];
     }>;
     bulkStopListeningStream(bulkDto: BulkRadiostationDto): Promise<{
-        passedData: RadioStation[];
+        passedData: import("../../../schemas/radiostation.schema").RadioStation[];
         failedData: {
             promiseError: any;
             data: string;
         }[];
     }>;
-    update(id: string, updateRadiostationDto: UpdateRadiostationDto): Promise<RadioStation & UpdateRadiostationDto>;
+    update(id: string, updateRadiostationDto: UpdateRadiostationDto): Promise<import("../../../schemas/radiostation.schema").RadioStation>;
     removeBulk(bulkDto: BulkRadiostationDto): Promise<{
-        passedData: RadioStation[];
+        passedData: import("../../../schemas/radiostation.schema").RadioStation[];
         failedData: {
             promiseError: any;
             data: string;
         }[];
     }>;
-    remove(id: string): Promise<RadioStation>;
-    createTable(): Promise<string>;
+    remove(id: string): Promise<any>;
 }

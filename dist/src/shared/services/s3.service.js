@@ -13,7 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileUpload = exports.S3Service = void 0;
-const global_aws_service_1 = require("../modules/global-aws/global-aws.service");
+const global_aws_service_1 = require("../../shared/modules/global-aws/global-aws.service");
 const common_1 = require("@nestjs/common");
 const AWS = require("aws-sdk");
 const multer = require("multer");

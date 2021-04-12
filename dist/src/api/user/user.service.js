@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const config_1 = require("@nestjs/config");
 const global_aws_service_1 = require("./../../shared/modules/global-aws/global-aws.service");
-const keygen_service_1 = require("../../shared/modules/keygen/keygen.service");
+const keygen_service_1 = require("./../../shared/modules/keygen/keygen.service");
 const common_1 = require("@nestjs/common");
 let UserService = class UserService {
     constructor(keygenService, globalAwsService, configService) {

@@ -34,6 +34,7 @@ const nanoid_1 = require("nanoid");
 const config_1 = require("../../config");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const job_schema_1 = require("../../schemas/job.schema");
 let SonickeyService = class SonickeyService {
     constructor(sonicKeyModel, fileOperationService, fileHandlerService) {
         this.sonicKeyModel = sonicKeyModel;
@@ -44,8 +45,7 @@ let SonickeyService = class SonickeyService {
         return nanoid_1.nanoid(11);
     }
     async createFromJob(createSonicKeyDto) {
-        const dataToSave = Object.assign(new sonickey_schema_1.SonicKey(), createSonicKeyDto);
-        const newSonicKey = new this.sonicKeyModel(dataToSave);
+        const newSonicKey = new this.sonicKeyModel(createSonicKeyDto);
         return newSonicKey.save();
     }
     async getAll(queryDto = {}) {
@@ -157,7 +157,7 @@ let SonickeyService = class SonickeyService {
             offset
         };
         return this.sonicKeyModel
-            .find(Object.assign({ job: job }, query))
+            .find(Object.assign({ job: new job_schema_1.Job({ id: job }) }, query))
             .skip(offset)
             .limit(limit)
             .exec();

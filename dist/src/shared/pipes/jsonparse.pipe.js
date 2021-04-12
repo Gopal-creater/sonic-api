@@ -10,7 +10,13 @@ exports.JsonParsePipe = void 0;
 const common_1 = require("@nestjs/common");
 let JsonParsePipe = class JsonParsePipe {
     transform(value, metadata) {
-        return value && JSON.parse(value);
+        try {
+            console.log("value", value);
+            return value && JSON.parse(value);
+        }
+        catch (error) {
+            throw new common_1.BadRequestException(error);
+        }
     }
 };
 JsonParsePipe = __decorate([

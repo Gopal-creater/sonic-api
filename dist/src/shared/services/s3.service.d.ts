@@ -1,4 +1,4 @@
-import { GlobalAwsService } from 'src/shared/modules/global-aws/global-aws.service';
+import { GlobalAwsService } from '../../shared/modules/global-aws/global-aws.service';
 export declare class S3Service {
     private readonly globalAwsService;
     private s3;

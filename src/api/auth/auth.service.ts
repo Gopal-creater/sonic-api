@@ -1,4 +1,4 @@
-import { GlobalAwsService } from 'src/shared/modules/global-aws/global-aws.service';
+import { GlobalAwsService } from '../../shared/modules/global-aws/global-aws.service';
 import { AuthConfig } from './config/auth.config';
 import { Inject, Injectable } from '@nestjs/common';
 import * as lodash from 'lodash';

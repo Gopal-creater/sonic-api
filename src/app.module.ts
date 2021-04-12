@@ -37,7 +37,8 @@ mongoosePaginate.paginate.options = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         connectionFactory: (connection) => {
-          connection.plugin(mongoosePaginate);
+          connection?.plugin(mongoosePaginate);
+          connection?.plugin(require('mongoose-autopopulate'))
           return connection;
         }
       }),

@@ -21,17 +21,8 @@ const update_radiostation_dto_1 = require("../dto/update-radiostation.dto");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const bulk_radiostation_dto_1 = require("../dto/bulk-radiostation.dto");
-const radiostation_schema_1 = require("../../../schemas/radiostation.schema");
-class Query {
-}
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", Number)
-], Query.prototype, "limit", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", radiostation_schema_1.RadioStation)
-], Query.prototype, "lastKey", void 0);
+const query_dto_1 = require("../../../shared/dtos/query.dto");
+const convertIntObj_pipe_1 = require("../../../shared/pipes/convertIntObj.pipe");
 let RadiostationController = class RadiostationController {
     constructor(radiostationService) {
         this.radiostationService = radiostationService;
@@ -39,14 +30,19 @@ let RadiostationController = class RadiostationController {
     create(createRadiostationDto) {
         return this.radiostationService.create(createRadiostationDto);
     }
-    findAll() {
-        return this.radiostationService.findAll();
+    findAll(queryDto) {
+        return this.radiostationService.findAll(queryDto);
     }
-    async getOwnersKeys(ownerId) {
-        return await this.radiostationService.findByOwner(ownerId);
+    async getOwnersRadioStations(ownerId, queryDto) {
+        const query = Object.assign(Object.assign({}, queryDto), { owner: ownerId });
+        return this.radiostationService.findAll(query);
     }
-    findOne(id) {
-        return this.radiostationService.findByIdOrFail(id);
+    async findOne(id) {
+        const radioStation = await this.radiostationService.radioStationModel.findById(id);
+        if (!radioStation) {
+            throw new common_1.NotFoundException();
+        }
+        return radioStation;
     }
     stopListeningStream(id) {
         return this.radiostationService.stopListeningStream(id).catch(err => {
@@ -71,8 +67,12 @@ let RadiostationController = class RadiostationController {
     bulkStopListeningStream(bulkDto) {
         return this.radiostationService.bulkStopListeningStream(bulkDto.ids);
     }
-    update(id, updateRadiostationDto) {
-        return this.radiostationService.update(id, updateRadiostationDto);
+    async update(id, updateRadiostationDto) {
+        const updatedRadioStation = await this.radiostationService.radioStationModel.findOneAndUpdate({ id: id }, updateRadiostationDto);
+        if (!updatedRadioStation) {
+            throw new common_1.NotFoundException();
+        }
+        return updatedRadioStation;
     }
     removeBulk(bulkDto) {
         return this.radiostationService.bulkRemove(bulkDto.ids);
@@ -85,18 +85,11 @@ let RadiostationController = class RadiostationController {
             throw err;
         });
     }
-    async createTable() {
-        return await this.radiostationService.radioStationRepository
-            .ensureTableExistsAndCreate()
-            .then(() => 'Created New Table');
-    }
 };
 __decorate([
     common_1.Post(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create Radio Station' }),
-    openapi.ApiResponse({ status: 201, type: Object }),
+    openapi.ApiResponse({ status: 201, type: require("../../../schemas/radiostation.schema").RadioStation }),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_radiostation_dto_1.CreateRadiostationDto]),
@@ -108,8 +101,9 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Radio Stations' }),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/radiostation.schema").RadioStation] }),
+    __param(0, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [query_dto_1.QueryDto]),
     __metadata("design:returntype", void 0)
 ], RadiostationController.prototype, "findAll", null);
 __decorate([
@@ -118,11 +112,11 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Radio Stations of particular user' }),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/radiostation.schema").RadioStation] }),
-    __param(0, common_1.Param('ownerId')),
+    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
-], RadiostationController.prototype, "getOwnersKeys", null);
+], RadiostationController.prototype, "getOwnersRadioStations", null);
 __decorate([
     common_1.Get(':id'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
@@ -132,14 +126,14 @@ __decorate([
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], RadiostationController.prototype, "findOne", null);
 __decorate([
     common_1.Put(':id/stop-listening-stream'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'stop listening stream' }),
-    openapi.ApiResponse({ status: 200, type: require("../../../schemas/radiostation.schema").RadioStation }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -150,7 +144,7 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'start listening stream' }),
-    openapi.ApiResponse({ status: 200, type: require("../../../schemas/radiostation.schema").RadioStation }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -183,12 +177,12 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update Single Radio Station' }),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../../../schemas/radiostation.schema").RadioStation }),
     __param(0, common_1.Param('id')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_radiostation_dto_1.UpdateRadiostationDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], RadiostationController.prototype, "update", null);
 __decorate([
     common_1.Delete('delete/bulk'),
@@ -206,22 +200,14 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Delete Radio Station' }),
-    openapi.ApiResponse({ status: 200, type: require("../../../schemas/radiostation.schema").RadioStation }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], RadiostationController.prototype, "remove", null);
-__decorate([
-    common_1.Get('/new/create-table'),
-    swagger_1.ApiOperation({ summary: 'Create Radio Stationy table in Dynamo DB' }),
-    openapi.ApiResponse({ status: 200, type: String }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], RadiostationController.prototype, "createTable", null);
 RadiostationController = __decorate([
-    swagger_1.ApiTags('Radio Station Contrller'),
+    swagger_1.ApiTags('Radio Station Controller'),
     common_1.Controller('radiostations'),
     __metadata("design:paramtypes", [radiostation_service_1.RadiostationService])
 ], RadiostationController);

@@ -25,7 +25,6 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobService = void 0;
 const common_1 = require("@nestjs/common");
-const job_repository_1 = require("../../../repositories/job.repository");
 const job_schema_1 = require("../../../schemas/job.schema");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
@@ -33,16 +32,21 @@ const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service"
 const utils_1 = require("../../../shared/utils");
 const jobfile_schema_1 = require("../../../schemas/jobfile.schema");
 let JobService = class JobService {
-    constructor(jobModel, jobFileModel, jobRepository, keygenService) {
+    constructor(jobModel, jobFileModel, keygenService) {
         this.jobModel = jobModel;
         this.jobFileModel = jobFileModel;
-        this.jobRepository = jobRepository;
         this.keygenService = keygenService;
     }
     async create(createJobDto) {
-        const dataToSave = Object.assign(new job_schema_1.Job(), createJobDto);
-        const newJob = new this.jobModel(dataToSave);
+        const { jobFiles } = createJobDto, job = __rest(createJobDto, ["jobFiles"]);
+        const newJob = new this.jobModel(job);
         const createdJob = await newJob.save();
+        const newJobFiles = jobFiles.map(jobFile => {
+            const newJobFile = new this.jobFileModel(Object.assign(Object.assign({}, jobFile), { job: createdJob }));
+            return newJobFile;
+        });
+        const savedJobFiles = await this.jobFileModel.insertMany(newJobFiles);
+        createdJob.jobFiles = savedJobFiles;
         await this.addReservedDetailsInLicence(createJobDto.license, [
             { jobId: createdJob.id, count: createJobDto.jobFiles.length },
         ]).catch(async (err) => {
@@ -55,6 +59,7 @@ let JobService = class JobService {
         const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
         return this.jobModel
             .find(query || {})
+            .populate("JobFile")
             .skip(offset)
             .limit(limit)
             .exec();
@@ -157,7 +162,6 @@ JobService = __decorate([
     __param(1, mongoose_1.InjectModel(jobfile_schema_1.JobFile.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model,
-        job_repository_1.JobRepository,
         keygen_service_1.KeygenService])
 ], JobService);
 exports.JobService = JobService;

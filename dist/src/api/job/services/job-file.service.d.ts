@@ -1,4 +1,3 @@
-import { JobRepository } from '../../../repositories/job.repository';
 import { AddKeyAndUpdateJobFileDto } from '../dto/update-job-file.dto';
 import { JobService } from './job.service';
 import { SonickeyService } from '../../sonickey/sonickey.service';
@@ -8,12 +7,11 @@ import { JobFile } from '../../../schemas/jobfile.schema';
 import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 export declare class JobFileService {
-    readonly jobRepository: JobRepository;
     jobFileModel: Model<JobFile>;
     readonly jobService: JobService;
     readonly keygenService: KeygenService;
     readonly sonickeyService: SonickeyService;
-    constructor(jobRepository: JobRepository, jobFileModel: Model<JobFile>, jobService: JobService, keygenService: KeygenService, sonickeyService: SonickeyService);
+    constructor(jobFileModel: Model<JobFile>, jobService: JobService, keygenService: KeygenService, sonickeyService: SonickeyService);
     findAll(queryDto?: QueryDto): Promise<JobFile[]>;
     addKeyToDbAndUpdateJobFile(fileId: string, addKeyAndUpdateJobFileDto: AddKeyAndUpdateJobFileDto): Promise<{
         createdSonicKey: SonicKey;

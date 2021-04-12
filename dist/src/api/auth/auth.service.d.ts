@@ -1,4 +1,4 @@
-import { GlobalAwsService } from 'src/shared/modules/global-aws/global-aws.service';
+import { GlobalAwsService } from '../../shared/modules/global-aws/global-aws.service';
 import { AuthConfig } from './config/auth.config';
 import { KeygenService } from '../../shared/modules/keygen/keygen.service';
 import { LoginDto } from './dto/login.dto';

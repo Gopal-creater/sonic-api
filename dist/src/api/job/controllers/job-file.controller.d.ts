@@ -10,12 +10,12 @@ export declare class JobFileController {
     private readonly jobService;
     constructor(jobFileService: JobFileService, jobService: JobService);
     findAll(queryDto: QueryDto): Promise<JobFile[]>;
-    addKeyToDbAndUpdateJobFile(fileId: string, addKeyAndUpdateJobFileDto: AddKeyAndUpdateJobFileDto): Promise<{
+    addKeyToDbAndUpdateJobFile(jobId: string, fileId: string, addKeyAndUpdateJobFileDto: AddKeyAndUpdateJobFileDto): Promise<{
         createdSonicKey: import("../../../schemas/sonickey.schema").SonicKey;
         updatedJobFile: JobFile;
     }>;
     updateJobFile(id: string, updateJobFileDto: UpdateJobFileDto): Promise<import("mongoose").UpdateWriteOpResult>;
-    createJobFile(createJobFileDto: CreateJobFileDto): Promise<JobFile>;
-    addFilesToJob(createJobFileDto: CreateJobFileDto[]): Promise<JobFile[]>;
-    deleteJobFile(id: string): Promise<JobFile>;
+    createJobFile(jobId: string, createJobFileDto: CreateJobFileDto): Promise<JobFile>;
+    addFilesToJob(jobId: string, createJobFileDto: CreateJobFileDto[]): Promise<JobFile[]>;
+    deleteJobFile(jobId: string, fileId: string): Promise<JobFile>;
 }

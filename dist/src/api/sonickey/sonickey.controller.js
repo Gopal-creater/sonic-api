@@ -29,7 +29,6 @@ const keygen_service_1 = require("./../../shared/modules/keygen/keygen.service")
 const jsonparse_pipe_1 = require("./../../shared/pipes/jsonparse.pipe");
 const common_1 = require("@nestjs/common");
 const sonickey_service_1 = require("./sonickey.service");
-const sonickey_schema_1 = require("../../schemas/sonickey.schema");
 const platform_express_1 = require("@nestjs/platform-express");
 const makeDir = require("make-dir");
 const multer_1 = require("multer");
@@ -44,6 +43,7 @@ const download_dto_1 = require("./dtos/download.dto");
 const appRootPath = require("app-root-path");
 const query_dto_1 = require("../../shared/dtos/query.dto");
 const mongoosepaginate_dto_1 = require("../../shared/dtos/mongoosepaginate.dto");
+const convertIntObj_pipe_1 = require("../../shared/pipes/convertIntObj.pipe");
 class TestT extends mongoosepaginate_dto_1.MongoosePaginateDto {
 }
 let SonickeyController = class SonickeyController {
@@ -93,13 +93,7 @@ let SonickeyController = class SonickeyController {
             }
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
-            const dataToSave = new sonickey_schema_1.SonicKey(Object.assign(sonicKeyDtoWithAudioData, {
-                contentFilePath: downloadFileUrl,
-                owner: owner,
-                sonicKey: sonicKey,
-                licenseId: licenseId,
-            }));
-            const newSonicKey = new this.sonicKeyService.sonicKeyModel(dataToSave);
+            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: downloadFileUrl, owner: owner, sonicKey: sonicKey, licenseId: licenseId }));
             return newSonicKey.save().finally(() => {
                 this.fileHandlerService.deleteFileAtPath(file.path);
             });
@@ -137,7 +131,7 @@ let SonickeyController = class SonickeyController {
         if (!updatedSonickey) {
             throw new common_1.NotFoundException();
         }
-        return updateSonicKeyDto;
+        return updatedSonickey;
     }
     async delete(sonickey) {
         const deletedSonickey = await this.sonicKeyService.sonicKeyModel.deleteOne({ sonicKey: sonickey });
@@ -183,7 +177,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys' }),
     openapi.ApiResponse({ status: 200, type: [require("../../schemas/sonickey.schema").SonicKey] }),
-    __param(0, common_1.Query()),
+    __param(0, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
@@ -202,7 +196,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user' }),
     openapi.ApiResponse({ status: 200, type: [require("../../schemas/sonickey.schema").SonicKey] }),
-    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query()),
+    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
@@ -213,7 +207,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular job' }),
     openapi.ApiResponse({ status: 200, type: [require("../../schemas/sonickey.schema").SonicKey] }),
-    __param(0, common_1.Param('jobId')), __param(1, common_1.Query()),
+    __param(0, common_1.Param('jobId')), __param(1, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
@@ -316,7 +310,7 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update Sonic Keys meta data' }),
-    openapi.ApiResponse({ status: 200, type: require("./dtos/update-sonickey.dto").UpdateSonicKeyDto }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('sonickey')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
@@ -348,7 +342,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "downloadFile", null);
 SonickeyController = __decorate([
-    swagger_1.ApiTags('SonicKeys Contrller'),
+    swagger_1.ApiTags('SonicKeys Controller'),
     common_1.Controller('sonic-keys'),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
         keygen_service_1.KeygenService,

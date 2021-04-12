@@ -1,8 +1,8 @@
 import { SonicKey } from '../schemas/sonickey.schema';
 import { GlobalDynamoDbDataMapper } from '../shared/modules/global-aws/global-aws.service';
-import { GlobalAwsService } from 'src/shared/modules/global-aws/global-aws.service';
+import { GlobalAwsService } from '../shared/modules/global-aws/global-aws.service';
 import { Injectable } from '@nestjs/common';
-import { RadioStationSonicKey } from '../schemas/radiostationSonickey.schema';
+import { RadioStationSonicKey } from '../schemas/radiostation-sonickey.schema';
 
 
 @Injectable()
