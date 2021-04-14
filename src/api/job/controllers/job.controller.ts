@@ -34,8 +34,8 @@ export class JobController {
   ) {}
 
   @ApiOperation({ summary: 'Get All Jobs' })
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
     return this.jobService.findAll(queryDto);

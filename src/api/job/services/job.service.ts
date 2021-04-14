@@ -26,7 +26,7 @@ export class JobService {
   async create(createJobDto: CreateJobDto) {
     const{jobFiles,...job}=createJobDto
     const newJob = new this.jobModel(job);
-    const createdJob = await newJob.save();
+    var createdJob = await newJob.save();
     const newJobFiles = jobFiles.map(jobFile => {
       const newJobFile = new this.jobFileModel({...jobFile,job:createdJob});
       return newJobFile;
@@ -34,7 +34,10 @@ export class JobService {
     const savedJobFiles = await this.jobFileModel.insertMany(
       newJobFiles,
     );
-    createdJob.jobFiles=savedJobFiles
+    console.log("savedJobFiles",savedJobFiles);
+    
+    createdJob.jobFiles.push(...savedJobFiles)
+    createdJob = await createdJob.save()
     await this.addReservedDetailsInLicence(createJobDto.license, [
       { jobId: createdJob.id, count: createJobDto.jobFiles.length },
     ]).catch(async err => {
@@ -48,7 +51,7 @@ export class JobService {
     const { limit, offset, ...query } = queryDto;
         return this.jobModel
         .find(query || {})
-        .populate("JobFile")
+        .populate('jobFiles', null, JobFile.name)
         .skip(offset)
         .limit(limit)
         .exec();

@@ -91,8 +91,6 @@ let JobFileController = class JobFileController {
 };
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get All Job Files' }),
-    swagger_1.ApiBearerAuth(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get('/job-files'),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/jobfile.schema").JobFile] }),
     __param(0, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),

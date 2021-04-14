@@ -17,6 +17,7 @@ import { JobFile } from '../../../schemas/jobfile.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
+import { Job } from '../../../schemas/job.schema';
 
 @Injectable()
 export class JobFileService {

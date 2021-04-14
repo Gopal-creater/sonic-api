@@ -30,7 +30,7 @@ export class JobFile extends Document {
   metaData: Map<string, any>;
 
   @ApiProperty({type:String})
-  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Job',required:true })
+  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Job',required:true})
   job: Job;
 }
 

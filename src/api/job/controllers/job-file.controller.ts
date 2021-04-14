@@ -33,8 +33,8 @@ export class JobFileController {
   ) {}
 
   @ApiOperation({ summary: 'Get All Job Files' })
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
   @Get('/job-files')
   findAll(@Query(new ConvertIntObj(['limit', 'offset'])) queryDto: QueryDto) {
     return this.jobFileService.findAll(queryDto);

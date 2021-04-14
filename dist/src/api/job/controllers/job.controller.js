@@ -80,8 +80,6 @@ let JobController = class JobController {
 };
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get All Jobs' }),
-    swagger_1.ApiBearerAuth(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get(),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/job.schema").Job] }),
     __param(0, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
