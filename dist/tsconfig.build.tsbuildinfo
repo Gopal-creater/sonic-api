@@ -4867,7 +4867,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.controller.ts": {
-        "version": "80d9fa83d8d2b0a2515bc85c66a68af7eb65d106b9ec6098da3fef4d7ca600b4",
+        "version": "a67d37332185e7be6e052c9c37b4028f29a5aa6328bb26df74fbae60bededd1d",
         "signature": "d1e076ef518fcbf850f05980862491506db7124628d1f69445b70712994bba26",
         "affectsGlobalScope": false
       },
@@ -4892,7 +4892,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/externalapi/externalsonickey/externalsonickey.controller.ts": {
-        "version": "86c0c7e6b78dbc29f9fed6ffd3471312438d2dd6b23e7d7633c8cf8197b1f3d7",
+        "version": "0d2812a82a5b56b5d09de3444190e434d966822b8acc9e192a1a2e9c15bbdcff",
         "signature": "b73885af2446317ac80814e6baa8a85679b71d61c8d069e422081845b1b62e70",
         "affectsGlobalScope": false
       },
@@ -5306,6 +5306,11 @@
         "signature": "7df3163944694feeac63067632a8dc2e2dea1350119ec8b43df277af69198369",
         "affectsGlobalScope": false
       },
+      "../node_modules/@types/bson/index.d.ts": {
+        "version": "2d23edce1d4a3b33280970484e17ca87b03e2829d8677ae1501de18269f0498f",
+        "signature": "2d23edce1d4a3b33280970484e17ca87b03e2829d8677ae1501de18269f0498f",
+        "affectsGlobalScope": false
+      },
       "../node_modules/@types/color-name/index.d.ts": {
         "version": "f0cb4b3ab88193e3e51e9e2622e4c375955003f1f81239d72c5b7a95415dad3e",
         "signature": "f0cb4b3ab88193e3e51e9e2622e4c375955003f1f81239d72c5b7a95415dad3e",
@@ -5399,6 +5404,16 @@
       "../node_modules/@types/json5/index.d.ts": {
         "version": "96d14f21b7652903852eef49379d04dbda28c16ed36468f8c9fa08f7c14c9538",
         "signature": "96d14f21b7652903852eef49379d04dbda28c16ed36468f8c9fa08f7c14c9538",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/mongodb/index.d.ts": {
+        "version": "257890b41dbcade5cf8f05a666513de9999cd9b53259242581c76e31156c5f53",
+        "signature": "257890b41dbcade5cf8f05a666513de9999cd9b53259242581c76e31156c5f53",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/mongoose/index.d.ts": {
+        "version": "f84843d41e84794bcba963d489bf2f9385836658bcccf73c501754be09327d7f",
+        "signature": "f84843d41e84794bcba963d489bf2f9385836658bcccf73c501754be09327d7f",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/normalize-package-data/index.d.ts": {
@@ -8921,6 +8936,14 @@
         "../node_modules/@types/node/ts3.7/index.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/@types/bson/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/ts3.7/index.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/@types/color-name/index.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -9350,6 +9373,30 @@
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/mongodb/index.d.ts": [
+        "../node_modules/@types/bson/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/events.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/stream.d.ts",
+        "../node_modules/@types/node/tls.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/ts3.7/index.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/mongoose/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongodb/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/events.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/stream.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/ts3.7/index.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/@types/multer/index.d.ts": [
@@ -20062,6 +20109,14 @@
         "../node_modules/@types/node/ts3.7/index.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/@types/bson/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/ts3.7/index.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/@types/color-name/index.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -20491,6 +20546,30 @@
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/mongodb/index.d.ts": [
+        "../node_modules/@types/bson/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/events.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/stream.d.ts",
+        "../node_modules/@types/node/tls.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/ts3.7/index.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/mongoose/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongodb/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/events.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/stream.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/ts3.7/index.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/@types/multer/index.d.ts": [

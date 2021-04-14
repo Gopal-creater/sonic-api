@@ -265,15 +265,6 @@ __decorate([
 ], SonickeyController.prototype, "encode", null);
 __decorate([
     common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
-        fileFilter: (req, file, cb) => {
-            const mimetype = file.mimetype;
-            if (mimetype.includes('audio')) {
-                cb(null, true);
-            }
-            else {
-                cb(new common_1.BadRequestException('Unsupported file type'), false);
-            }
-        },
         storage: multer_1.diskStorage({
             destination: async (req, file, cb) => {
                 const currentUserId = req['user']['sub'];

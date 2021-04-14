@@ -209,16 +209,16 @@ export class SonickeyController {
   @UseInterceptors(
     FileInterceptor('mediaFile', {
       // Check the mimetypes to allow for upload
-      fileFilter: (req: any, file: any, cb: any) => {
-        const mimetype = file.mimetype as string;
-        if (mimetype.includes('audio')) {
-          // Allow storage of file
-          cb(null, true);
-        } else {
-          // Reject file
-          cb(new BadRequestException('Unsupported file type'), false);
-        }
-      },
+      // fileFilter: (req: any, file: any, cb: any) => {
+      //   const mimetype = file.mimetype as string;
+      //   if (mimetype.includes('audio')) {
+      //     // Allow storage of file
+      //     cb(null, true);
+      //   } else {
+      //     // Reject file
+      //     cb(new BadRequestException('Unsupported file type'), false);
+      //   }
+      // },
       storage: diskStorage({
         destination: async (req, file, cb) => {
           const currentUserId = req['user']['sub'];
