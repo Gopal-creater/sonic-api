@@ -23,7 +23,7 @@ import { SonicKeyRepository } from './repositories/sonickey.repository';
   imports: [
   ScheduleModule.forRoot(),
     AuthModule,
-    ConfigModule.forRoot({ isGlobal: true,envFilePath:'.env.arba' }),
+    ConfigModule.forRoot({ isGlobal: true,envFilePath:'.env' }),
     MulterModule.register({
       storage: diskStorage({
         destination: appConfig.MULTER_DEST,
