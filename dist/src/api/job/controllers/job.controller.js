@@ -116,7 +116,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get(':id/make-completed'),
-    openapi.ApiResponse({ status: 200, type: require("../../../schemas/job.schema").Job }),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

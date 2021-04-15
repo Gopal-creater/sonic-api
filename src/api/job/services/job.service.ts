@@ -34,17 +34,17 @@ export class JobService {
     const savedJobFiles = await this.jobFileModel.insertMany(
       newJobFiles,
     );
-    console.log("savedJobFiles",savedJobFiles);
+    // console.log("savedJobFiles",savedJobFiles);
     
-    createdJob.jobFiles.push(...savedJobFiles)
-    createdJob = await createdJob.save()
+    // createdJob.jobFiles.push(...savedJobFiles)
+    // createdJob = await createdJob.save()
     await this.addReservedDetailsInLicence(createJobDto.license, [
       { jobId: createdJob.id, count: createJobDto.jobFiles.length },
     ]).catch(async err => {
       await this.jobModel.remove({_id:createdJob.id});
       throw new BadRequestException('Error adding reserved licence count');
     });
-    return createdJob;
+    return await this.jobModel.findById(createdJob.id).populate('jobFiles', null, JobFile.name);
   }
 
   async findAll(queryDto: QueryDto = {}) {
@@ -71,39 +71,39 @@ export class JobService {
   }
 
   async makeCompleted(jobId: string) {
-    const job = await this.jobModel.findById(jobId);
-    if (job.isComplete) {
-      return job;
-    }
-    const totalCompletedFiles = job.jobFiles.filter(
-      file => file.isComplete == true,
-    );
-    const totalInCompletedFiles = job.jobFiles.filter(
-      file => file.isComplete == false,
-    );
-    await this.removeReservedDetailsInLicence(job.license, job.id).catch(
-      err => {
-        throw new BadRequestException('Error removing reserved licence count ');
-      },
-    );
-    await this.keygenService
-      .decrementUsage(job.license, totalCompletedFiles.length)
-      .catch(err => {
-        throw new BadRequestException('Error decrementing licence usages');
-      });
+    // const job = await this.jobModel.findById(jobId);
+    // if (job.isComplete) {
+    //   return job;
+    // }
+    // const totalCompletedFiles = job.jobFiles.filter(
+    //   file => file.isComplete == true,
+    // );
+    // const totalInCompletedFiles = job.jobFiles.filter(
+    //   file => file.isComplete == false,
+    // );
+    // await this.removeReservedDetailsInLicence(job.license, job.id).catch(
+    //   err => {
+    //     throw new BadRequestException('Error removing reserved licence count ');
+    //   },
+    // );
+    // await this.keygenService
+    //   .decrementUsage(job.license, totalCompletedFiles.length)
+    //   .catch(err => {
+    //     throw new BadRequestException('Error decrementing licence usages');
+    //   });
 
-      const completedJob  = await this.jobModel.findOneAndUpdate({id:job.id},{
-        isComplete:true,
-        completedAt: new Date()
-      })
-      .catch(async err => {
-        await this.keygenService.incrementUsage(
-          job.license,
-          totalCompletedFiles.length,
-        );
-        throw new BadRequestException('Error making job completed');
-      });
-    return completedJob as Job
+    //   const completedJob  = await this.jobModel.findOneAndUpdate({id:job.id},{
+    //     isComplete:true,
+    //     completedAt: new Date()
+    //   })
+    //   .catch(async err => {
+    //     await this.keygenService.incrementUsage(
+    //       job.license,
+    //       totalCompletedFiles.length,
+    //     );
+    //     throw new BadRequestException('Error making job completed');
+    //   });
+    // return completedJob as Job
   }
 
   async addReservedDetailsInLicence(

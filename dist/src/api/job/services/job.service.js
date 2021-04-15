@@ -46,16 +46,13 @@ let JobService = class JobService {
             return newJobFile;
         });
         const savedJobFiles = await this.jobFileModel.insertMany(newJobFiles);
-        console.log("savedJobFiles", savedJobFiles);
-        createdJob.jobFiles.push(...savedJobFiles);
-        createdJob = await createdJob.save();
         await this.addReservedDetailsInLicence(createJobDto.license, [
             { jobId: createdJob.id, count: createJobDto.jobFiles.length },
         ]).catch(async (err) => {
             await this.jobModel.remove({ _id: createdJob.id });
             throw new common_1.BadRequestException('Error adding reserved licence count');
         });
-        return createdJob;
+        return await this.jobModel.findById(createdJob.id).populate('jobFiles', null, jobfile_schema_1.JobFile.name);
     }
     async findAll(queryDto = {}) {
         const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
@@ -77,29 +74,6 @@ let JobService = class JobService {
         return this.jobModel.findOneAndDelete({ id: job.id });
     }
     async makeCompleted(jobId) {
-        const job = await this.jobModel.findById(jobId);
-        if (job.isComplete) {
-            return job;
-        }
-        const totalCompletedFiles = job.jobFiles.filter(file => file.isComplete == true);
-        const totalInCompletedFiles = job.jobFiles.filter(file => file.isComplete == false);
-        await this.removeReservedDetailsInLicence(job.license, job.id).catch(err => {
-            throw new common_1.BadRequestException('Error removing reserved licence count ');
-        });
-        await this.keygenService
-            .decrementUsage(job.license, totalCompletedFiles.length)
-            .catch(err => {
-            throw new common_1.BadRequestException('Error decrementing licence usages');
-        });
-        const completedJob = await this.jobModel.findOneAndUpdate({ id: job.id }, {
-            isComplete: true,
-            completedAt: new Date()
-        })
-            .catch(async (err) => {
-            await this.keygenService.incrementUsage(job.license, totalCompletedFiles.length);
-            throw new common_1.BadRequestException('Error making job completed');
-        });
-        return completedJob;
     }
     async addReservedDetailsInLicence(licenseId, reserves) {
         var _a, _b, _c;

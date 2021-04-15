@@ -12,7 +12,7 @@ export declare class JobService {
     create(createJobDto: CreateJobDto): Promise<Job>;
     findAll(queryDto?: QueryDto): Promise<Job[]>;
     remove(id: string): Promise<Job>;
-    makeCompleted(jobId: string): Promise<Job>;
+    makeCompleted(jobId: string): Promise<void>;
     addReservedDetailsInLicence(licenseId: string, reserves: {
         jobId: string;
         count: number;
