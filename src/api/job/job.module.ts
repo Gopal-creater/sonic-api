@@ -17,7 +17,7 @@ import { JobFile, JobFileSchema } from '../../schemas/jobfile.schema';
     KeygenModule,
     MongooseModule.forFeature([
       { name: Job.name, schema: JobSchema },
-      { name: JobFile.name, schema: JobFileSchema },
+      { name: JobFile.name, schema: JobFileSchema }
     ]),
   ],
   controllers: [JobController, JobFileController],

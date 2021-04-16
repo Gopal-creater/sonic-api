@@ -17,8 +17,8 @@ export class JobFile extends Document {
   @Prop({required:true  })
   sonicKeyToBe: string;
 
-  @ApiProperty()
-  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Sonickey'})
+  @ApiProperty({type:String})
+  @Prop({ type: MogSchema.Types.ObjectId, ref: 'SonicKey',autopopulate: true})
   sonicKey: SonicKey;
 
   @ApiProperty()

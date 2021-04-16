@@ -15,8 +15,8 @@ export class RadiostationSonicKeysController {
   ) {}
 
   @Get('/')
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All radiostations-sonickeys' })
   findAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto) {
     return this.radiostationSonicKeysService.findAll(queryDto);

@@ -1,5 +1,5 @@
-import { SonicKeyDto } from './../../sonickey/dtos/sonicKey.dto';
-import { IUploadedFile } from './../../../shared/interfaces/UploadedFile.interface';
+import { SonicKeyDto } from '../../sonickey/dtos/sonicKey.dto';
+import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { SonickeyService } from '../../sonickey/sonickey.service';
 import { SonicKey } from '../../../schemas/sonickey.schema';
 import { ExtDecodeDto } from './dtos/extdecode.dto';

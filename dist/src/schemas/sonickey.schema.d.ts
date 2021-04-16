@@ -1,6 +1,6 @@
 import { Document, Schema as MogSchema } from 'mongoose';
 import { Job } from './job.schema';
-export declare const SonicKeySchemaName = "Sonickey";
+export declare const SonicKeySchemaName = "SonicKey";
 export declare class SonicKey extends Document {
     constructor(data?: Partial<SonicKey>);
     sonicKey: string;

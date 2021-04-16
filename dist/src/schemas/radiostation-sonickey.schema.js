@@ -24,12 +24,12 @@ let RadioStationSonicKey = class RadioStationSonicKey extends mongoose_2.Documen
 };
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'RadioStation', required: true }),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'RadioStation', required: true, autopopulate: true }),
     __metadata("design:type", radiostation_schema_1.RadioStation)
 ], RadioStationSonicKey.prototype, "radioStation", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Sonickey', required: true }),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'SonicKey', required: true, autopopulate: true }),
     __metadata("design:type", sonickey_schema_1.SonicKey)
 ], RadioStationSonicKey.prototype, "sonicKey", void 0);
 __decorate([

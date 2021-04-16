@@ -30,8 +30,8 @@ export class RadiostationController {
   constructor(private readonly radiostationService: RadiostationService) {}
 
   @Post()
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Radio Station' })
   create(@Body() createRadiostationDto: CreateRadiostationDto) {
     return this.radiostationService.create(createRadiostationDto);
@@ -100,8 +100,6 @@ export class RadiostationController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'stop listening stream' })
   bulkStartListeningStream(@Body() bulkDto: BulkRadiostationDto) {
-    console.log("bulkDto",bulkDto);
-    
     return this.radiostationService.bulkStartListeningStream(bulkDto.ids);
   }
 
@@ -121,7 +119,7 @@ export class RadiostationController {
     @Param('id') id: string,
     @Body() updateRadiostationDto: UpdateRadiostationDto,
   ) {
-    const updatedRadioStation = await this.radiostationService.radioStationModel.findOneAndUpdate({id:id},updateRadiostationDto)
+    const updatedRadioStation = await this.radiostationService.radioStationModel.findOneAndUpdate({_id:id},updateRadiostationDto,{new:true})
     if(!updatedRadioStation){
       throw new NotFoundException()
     }

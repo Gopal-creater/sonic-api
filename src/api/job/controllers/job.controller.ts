@@ -34,8 +34,8 @@ export class JobController {
   ) {}
 
   @ApiOperation({ summary: 'Get All Jobs' })
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
     return this.jobService.findAll(queryDto);
@@ -62,7 +62,6 @@ export class JobController {
     @User('sub') owner: string,
     @Req() req: any,
   ) {
-    console.log("createJobDto",createJobDto);
     
     const existingJob = await this.jobService.jobModel.findOne({name:createJobDto.name,owner:owner});
     if (existingJob) {
@@ -75,8 +74,6 @@ export class JobController {
         return job;
       });
     }
-   
-    console.log("createJobDto",createJobDto);
     return this.jobService.create(createJobDto);
   }
 
@@ -105,7 +102,7 @@ export class JobController {
   @UseGuards(JwtAuthGuard)
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
-    const updatedJob = await this.jobService.jobModel.findOneAndUpdate({id:id},updateJobDto)
+    const updatedJob = await this.jobService.jobModel.findOneAndUpdate({_id:id},updateJobDto,{new:true})
     if(!updatedJob){
       throw new NotFoundException()
     }

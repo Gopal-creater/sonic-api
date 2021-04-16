@@ -10,8 +10,8 @@ export declare class RadiostationController {
     findAll(queryDto: QueryDto): Promise<import("../../../schemas/radiostation.schema").RadioStation[]>;
     getOwnersRadioStations(ownerId: string, queryDto: QueryDto): Promise<import("../../../schemas/radiostation.schema").RadioStation[]>;
     findOne(id: string): Promise<import("../../../schemas/radiostation.schema").RadioStation>;
-    stopListeningStream(id: string): Promise<any>;
-    startListeningStream(id: string): Promise<any>;
+    stopListeningStream(id: string): Promise<import("../../../schemas/radiostation.schema").RadioStation>;
+    startListeningStream(id: string): Promise<import("../../../schemas/radiostation.schema").RadioStation>;
     bulkStartListeningStream(bulkDto: BulkRadiostationDto): Promise<{
         passedData: import("../../../schemas/radiostation.schema").RadioStation[];
         failedData: {

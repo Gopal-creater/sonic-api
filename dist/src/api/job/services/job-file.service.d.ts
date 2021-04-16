@@ -13,7 +13,7 @@ export declare class JobFileService {
     readonly sonickeyService: SonickeyService;
     constructor(jobFileModel: Model<JobFile>, jobService: JobService, keygenService: KeygenService, sonickeyService: SonickeyService);
     findAll(queryDto?: QueryDto): Promise<JobFile[]>;
-    addKeyToDbAndUpdateJobFile(fileId: string, addKeyAndUpdateJobFileDto: AddKeyAndUpdateJobFileDto): Promise<{
+    addKeyToDbAndUpdateJobFile(jobId: string, fileId: string, addKeyAndUpdateJobFileDto: AddKeyAndUpdateJobFileDto): Promise<{
         createdSonicKey: SonicKey;
         updatedJobFile: JobFile;
     }>;

@@ -17,6 +17,7 @@ const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const radiostation_service_1 = require("../services/radiostation.service");
 const swagger_1 = require("@nestjs/swagger");
+const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const radiostation_sonickeys_service_1 = require("../services/radiostation-sonickeys.service");
 const query_dto_1 = require("../../../shared/dtos/query.dto");
 const convertIntObj_pipe_1 = require("../../../shared/pipes/convertIntObj.pipe");
@@ -31,6 +32,8 @@ let RadiostationSonicKeysController = class RadiostationSonicKeysController {
 };
 __decorate([
     common_1.Get('/'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All radiostations-sonickeys' }),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/radiostation-sonickey.schema").RadioStationSonicKey] }),
     __param(0, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),

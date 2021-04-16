@@ -50,7 +50,7 @@ let RadiostationService = class RadiostationService {
         }
         radioStation.stopAt = new Date();
         radioStation.isStreamStarted = false;
-        return radioStation.update();
+        return this.radioStationModel.findOneAndUpdate({ _id: id, radioStation });
     }
     async startListeningStream(id) {
         const radioStation = await this.radioStationModel.findById(id);
@@ -66,7 +66,7 @@ let RadiostationService = class RadiostationService {
         }
         radioStation.startedAt = new Date();
         radioStation.isStreamStarted = true;
-        return radioStation.update();
+        return this.radioStationModel.findOneAndUpdate({ _id: id, radioStation });
     }
     async findAll(queryDto = {}) {
         const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);

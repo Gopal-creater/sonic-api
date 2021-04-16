@@ -211,7 +211,6 @@ export class SonickeyService {
       limit,
       offset
     };
-    // return await this.sonicKeyModel["paginate"]({ job: job, ...query },options) as MongoosePaginateDto<SonicKey>
     return this.sonicKeyModel
       .find({ job: new Job({id:job}), ...query })
       .skip(offset)

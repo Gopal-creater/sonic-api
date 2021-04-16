@@ -1,4 +1,3 @@
-/// <reference types="mongoose" />
 import { UpdateSonicKeyDto } from './dtos/update-sonickey.dto';
 import { SonicKeyDto } from './dtos/sonicKey.dto';
 import { IUploadedFile } from './../../shared/interfaces/UploadedFile.interface';
@@ -20,7 +19,7 @@ export declare class SonickeyController {
     getOne(sonickey: string): Promise<SonicKey>;
     encode(sonicKeyDto: SonicKeyDto, file: IUploadedFile, owner: string, req: any): Promise<SonicKey>;
     decode(file: IUploadedFile): Promise<any[]>;
-    updateMeta(sonickey: string, updateSonicKeyDto: UpdateSonicKeyDto): Promise<import("mongoose").UpdateWriteOpResult>;
+    updateMeta(sonickey: string, updateSonicKeyDto: UpdateSonicKeyDto): Promise<SonicKey>;
     delete(sonickey: string): Promise<{
         ok?: number;
         n?: number;

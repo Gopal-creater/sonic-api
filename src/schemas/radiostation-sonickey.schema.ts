@@ -53,11 +53,11 @@ export class RadioStationSonicKey extends Document {
   }
 
   @ApiProperty()
-  @Prop({ type: MogSchema.Types.ObjectId, ref: 'RadioStation', required: true })
+  @Prop({ type: MogSchema.Types.ObjectId, ref: 'RadioStation', required: true,autopopulate: true })
   radioStation: RadioStation;
 
   @ApiProperty()
-  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Sonickey', required: true })
+  @Prop({ type: MogSchema.Types.ObjectId, ref: 'SonicKey', required: true,autopopulate: true })
   sonicKey: SonicKey;
 
   @ApiProperty()

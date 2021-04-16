@@ -281,9 +281,10 @@ export class SonickeyController {
     @Param('sonickey') sonickey: string,
     @Body() updateSonicKeyDto: UpdateSonicKeyDto,
   ) {
-    const updatedSonickey =  await this.sonicKeyService.sonicKeyModel.updateOne(
+    const updatedSonickey =  await this.sonicKeyService.sonicKeyModel.findOneAndUpdate(
       { sonicKey: sonickey },
       updateSonicKeyDto,
+      {new:true}
     );
     if (!updatedSonickey) {
       throw new NotFoundException();

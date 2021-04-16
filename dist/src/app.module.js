@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const cron_service_1 = require("./shared/services/cron.service");
-const externalsonickey_module_1 = require("./api/externalApi/externalsonickey/externalsonickey.module");
+const externalsonickey_module_1 = require("./api/external-api/externalsonickey/externalsonickey.module");
 const global_aws_module_1 = require("./shared/modules/global-aws/global-aws.module");
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
@@ -30,6 +30,7 @@ const app_gateway_1 = require("./app.gateway");
 const radiostation_module_1 = require("./api/radiostation/radiostation.module");
 const sonickey_repository_1 = require("./repositories/sonickey.repository");
 const mongoose_1 = require("@nestjs/mongoose");
+const thirdparty_detection_module_1 = require("./api/thirdparty-detection/thirdparty-detection.module");
 const mongoosePaginate = require("mongoose-paginate-v2");
 mongoosePaginate.paginate.options = {
     limit: 50,
@@ -41,8 +42,8 @@ AppModule = __decorate([
     common_1.Module({
         imports: [
             schedule_1.ScheduleModule.forRoot(),
-            auth_module_1.AuthModule,
             config_1.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba' }),
+            auth_module_1.AuthModule,
             mongoose_1.MongooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 useFactory: async (configService) => ({
@@ -72,6 +73,7 @@ AppModule = __decorate([
             externalsonickey_module_1.ExternalSonickeyModule,
             job_module_1.JobModule,
             radiostation_module_1.RadiostationModule,
+            thirdparty_detection_module_1.ThirdpartyDetectionModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, sonickey_repository_1.SonicKeyRepository, cron_service_1.CronService, app_gateway_1.AppGateway],

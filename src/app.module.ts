@@ -1,5 +1,5 @@
 import { CronService } from './shared/services/cron.service';
-import { ExternalSonickeyModule } from './api/externalApi/externalsonickey/externalsonickey.module';
+import { ExternalSonickeyModule } from './api/external-api/externalsonickey/externalsonickey.module';
 import { GlobalAwsModule } from './shared/modules/global-aws/global-aws.module';
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
@@ -20,6 +20,7 @@ import { AppGateway } from './app.gateway';
 import { RadiostationModule } from './api/radiostation/radiostation.module';
 import { SonicKeyRepository } from './repositories/sonickey.repository';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ThirdpartyDetectionModule } from './api/thirdparty-detection/thirdparty-detection.module';
 import mongoosePaginate = require('mongoose-paginate-v2');
 mongoosePaginate.paginate.options = {
   limit: 50,
@@ -28,8 +29,8 @@ mongoosePaginate.paginate.options = {
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    AuthModule,
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba' }),
+    AuthModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -59,6 +60,7 @@ mongoosePaginate.paginate.options = {
     ExternalSonickeyModule,
     JobModule,
     RadiostationModule,
+    ThirdpartyDetectionModule
   ],
   controllers: [AppController],
   providers: [AppService, SonicKeyRepository, CronService, AppGateway],

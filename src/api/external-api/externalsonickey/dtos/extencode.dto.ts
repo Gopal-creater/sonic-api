@@ -1,4 +1,4 @@
-import { SonicKeyDto } from './../../../sonickey/dtos/sonicKey.dto';
+import { SonicKeyDto } from '../../../sonickey/dtos/sonicKey.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ExtEncodeDto {

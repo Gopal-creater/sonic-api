@@ -38,7 +38,6 @@ let JobController = class JobController {
         return this.jobService.findAll(query);
     }
     async create(createJobDto, owner, req) {
-        console.log("createJobDto", createJobDto);
         const existingJob = await this.jobService.jobModel.findOne({ name: createJobDto.name, owner: owner });
         if (existingJob) {
             throw new common_2.BadRequestException('Job with same name already exists.');
@@ -50,7 +49,6 @@ let JobController = class JobController {
                 return job;
             });
         }
-        console.log("createJobDto", createJobDto);
         return this.jobService.create(createJobDto);
     }
     makeCompleted(id) {
@@ -64,7 +62,7 @@ let JobController = class JobController {
         return job;
     }
     async update(id, updateJobDto) {
-        const updatedJob = await this.jobService.jobModel.findOneAndUpdate({ id: id }, updateJobDto);
+        const updatedJob = await this.jobService.jobModel.findOneAndUpdate({ _id: id }, updateJobDto, { new: true });
         if (!updatedJob) {
             throw new common_1.NotFoundException();
         }
@@ -80,6 +78,8 @@ let JobController = class JobController {
 };
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get All Jobs' }),
+    swagger_1.ApiBearerAuth(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get(),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/job.schema").Job] }),
     __param(0, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
@@ -116,7 +116,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get(':id/make-completed'),
-    openapi.ApiResponse({ status: 200 }),
+    openapi.ApiResponse({ status: 200, type: require("../../../schemas/job.schema").Job }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

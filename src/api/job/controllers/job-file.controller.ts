@@ -33,8 +33,8 @@ export class JobFileController {
   ) {}
 
   @ApiOperation({ summary: 'Get All Job Files' })
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get('/job-files')
   findAll(@Query(new ConvertIntObj(['limit', 'offset'])) queryDto: QueryDto) {
     return this.jobFileService.findAll(queryDto);
@@ -52,6 +52,7 @@ export class JobFileController {
     @Body() addKeyAndUpdateJobFileDto: AddKeyAndUpdateJobFileDto,
   ) {
     return this.jobFileService.addKeyToDbAndUpdateJobFile(
+      jobId,
       fileId,
       addKeyAndUpdateJobFileDto,
     );
@@ -60,14 +61,15 @@ export class JobFileController {
   @ApiOperation({ summary: 'Update the single file details using fileId' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Put('/:id')
+  @Put('/job-files/:id')
   async updateJobFile(
     @Param('id') id: string,
     @Body() updateJobFileDto: UpdateJobFileDto,
   ) {
     const updatedJobFile = await this.jobFileService.jobFileModel.updateOne(
-      { id: id },
+      { _id: id },
       updateJobFileDto,
+      {new:true}
     );
     if (!updatedJobFile) {
       throw new NotFoundException();
@@ -76,7 +78,7 @@ export class JobFileController {
     return updatedJobFile;
   }
 
-  @ApiOperation({ summary: 'Create job file' })
+  @ApiOperation({ summary: 'Create and Add new jobfile to the job' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post('jobs/:jobId/job-files/')
@@ -94,16 +96,18 @@ export class JobFileController {
     }
     const newJobFile = new this.jobFileService.jobFileModel(dataToSave);
     const savedJobFile = await newJobFile.save();
+    jobData.jobFiles.push(savedJobFile)
+    const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId,jobData);
     await this.jobService
       .incrementReservedDetailsInLicenceBy(jobData.license, jobData.id, 1)
       .catch(async err => {
         await this.jobService.jobFileModel.remove(savedJobFile.id);
         throw new UnprocessableEntityException();
       });
-    return savedJobFile;
+    return {savedJobFile,updatedJob};
   }
 
-  @ApiOperation({ summary: 'Create many job file' })
+  @ApiOperation({ summary: 'Create and Add many new jobfiles to the job' })
   @ApiBearerAuth()
   @ApiBody({ type: [CreateJobFileDto] })
   @UseGuards(JwtAuthGuard)
@@ -127,6 +131,8 @@ export class JobFileController {
     const savedJobFiles = await this.jobFileService.jobFileModel.insertMany(
       newJobFiles,
     );
+    jobData.jobFiles.push(...savedJobFiles)
+    const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId,jobData);
     await this.jobService
       .incrementReservedDetailsInLicenceBy(
         jobData.license,
@@ -137,10 +143,10 @@ export class JobFileController {
         await this.jobService.jobFileModel.deleteMany(savedJobFiles);
         throw new UnprocessableEntityException();
       });
-    return savedJobFiles;
+    return {savedJobFiles,updatedJob};
   }
 
-  @ApiOperation({ summary: 'Delete the file details using fileId' })
+  @ApiOperation({ summary: 'Delete the job file using fileId' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Delete('jobs/:jobId/job-files/:fileId')
@@ -153,16 +159,18 @@ export class JobFileController {
       throw new NotFoundException();
     }
     const deletedJobFile = await this.jobFileService.jobFileModel.findOneAndDelete(
-      { id: fileId },
+      { _id: fileId },
     );
     if (!deletedJobFile) {
       throw new NotFoundException();
     }
+    jobData.jobFiles = jobData.jobFiles.filter(file=>file._id!==fileId)
+    const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId,jobData);
     await this.jobService.decrementReservedDetailsInLicenceBy(
       jobData.license,
       jobData.id,
       1,
     );
-    return deletedJobFile;
+    return {deletedJobFile,updatedJob};
   }
 }

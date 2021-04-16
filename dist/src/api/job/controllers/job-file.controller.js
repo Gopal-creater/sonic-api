@@ -32,10 +32,10 @@ let JobFileController = class JobFileController {
         return this.jobFileService.findAll(queryDto);
     }
     addKeyToDbAndUpdateJobFile(jobId, fileId, addKeyAndUpdateJobFileDto) {
-        return this.jobFileService.addKeyToDbAndUpdateJobFile(fileId, addKeyAndUpdateJobFileDto);
+        return this.jobFileService.addKeyToDbAndUpdateJobFile(jobId, fileId, addKeyAndUpdateJobFileDto);
     }
     async updateJobFile(id, updateJobFileDto) {
-        const updatedJobFile = await this.jobFileService.jobFileModel.updateOne({ id: id }, updateJobFileDto);
+        const updatedJobFile = await this.jobFileService.jobFileModel.updateOne({ _id: id }, updateJobFileDto, { new: true });
         if (!updatedJobFile) {
             throw new common_1.NotFoundException();
         }
@@ -49,13 +49,15 @@ let JobFileController = class JobFileController {
         const dataToSave = Object.assign(Object.assign({}, createJobFileDto), { sonicKeyToBe: this.jobFileService.sonickeyService.generateUniqueSonicKey() });
         const newJobFile = new this.jobFileService.jobFileModel(dataToSave);
         const savedJobFile = await newJobFile.save();
+        jobData.jobFiles.push(savedJobFile);
+        const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId, jobData);
         await this.jobService
             .incrementReservedDetailsInLicenceBy(jobData.license, jobData.id, 1)
             .catch(async (err) => {
             await this.jobService.jobFileModel.remove(savedJobFile.id);
             throw new common_1.UnprocessableEntityException();
         });
-        return savedJobFile;
+        return { savedJobFile, updatedJob };
     }
     async addFilesToJob(jobId, createJobFileDto) {
         const jobData = await this.jobService.jobModel.findById(jobId);
@@ -68,29 +70,35 @@ let JobFileController = class JobFileController {
             return newJobFile;
         });
         const savedJobFiles = await this.jobFileService.jobFileModel.insertMany(newJobFiles);
+        jobData.jobFiles.push(...savedJobFiles);
+        const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId, jobData);
         await this.jobService
             .incrementReservedDetailsInLicenceBy(jobData.license, jobData.id, savedJobFiles.length)
             .catch(async (err) => {
             await this.jobService.jobFileModel.deleteMany(savedJobFiles);
             throw new common_1.UnprocessableEntityException();
         });
-        return savedJobFiles;
+        return { savedJobFiles, updatedJob };
     }
     async deleteJobFile(jobId, fileId) {
         const jobData = await this.jobService.jobModel.findById(jobId);
         if (!jobData) {
             throw new common_1.NotFoundException();
         }
-        const deletedJobFile = await this.jobFileService.jobFileModel.findOneAndDelete({ id: fileId });
+        const deletedJobFile = await this.jobFileService.jobFileModel.findOneAndDelete({ _id: fileId });
         if (!deletedJobFile) {
             throw new common_1.NotFoundException();
         }
+        jobData.jobFiles = jobData.jobFiles.filter(file => file._id !== fileId);
+        const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId, jobData);
         await this.jobService.decrementReservedDetailsInLicenceBy(jobData.license, jobData.id, 1);
-        return deletedJobFile;
+        return { deletedJobFile, updatedJob };
     }
 };
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get All Job Files' }),
+    swagger_1.ApiBearerAuth(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get('/job-files'),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/jobfile.schema").JobFile] }),
     __param(0, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
@@ -117,7 +125,7 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Update the single file details using fileId' }),
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    common_1.Put('/:id'),
+    common_1.Put('/job-files/:id'),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __param(1, common_1.Body()),
@@ -126,11 +134,11 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], JobFileController.prototype, "updateJobFile", null);
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Create job file' }),
+    swagger_1.ApiOperation({ summary: 'Create and Add new jobfile to the job' }),
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Post('jobs/:jobId/job-files/'),
-    openapi.ApiResponse({ status: 201, type: require("../../../schemas/jobfile.schema").JobFile }),
+    openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Param('jobId')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
@@ -138,12 +146,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], JobFileController.prototype, "createJobFile", null);
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Create many job file' }),
+    swagger_1.ApiOperation({ summary: 'Create and Add many new jobfiles to the job' }),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiBody({ type: [create_job_file_dto_1.CreateJobFileDto] }),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Post('jobs/:jobId/job-files/create-bulk'),
-    openapi.ApiResponse({ status: 201, type: [require("../../../schemas/jobfile.schema").JobFile] }),
+    openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Param('jobId')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
@@ -151,11 +159,11 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], JobFileController.prototype, "addFilesToJob", null);
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Delete the file details using fileId' }),
+    swagger_1.ApiOperation({ summary: 'Delete the job file using fileId' }),
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Delete('jobs/:jobId/job-files/:fileId'),
-    openapi.ApiResponse({ status: 200, type: require("../../../schemas/jobfile.schema").JobFile }),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Param('jobId')),
     __param(1, common_1.Param('fileId')),
     __metadata("design:type", Function),

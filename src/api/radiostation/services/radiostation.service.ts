@@ -34,7 +34,7 @@ export class RadiostationService {
     radioStation.stopAt=new Date();
     radioStation.isStreamStarted=false
     //Do Stop Listening Stuff
-    return radioStation.update()
+    return this.radioStationModel.findOneAndUpdate({_id:id,radioStation})
   }
 
   async startListeningStream(id: string) {
@@ -53,7 +53,7 @@ export class RadiostationService {
     radioStation.isStreamStarted=true
     //https://nodejs.org/api/worker_threads.html
     //Do Start Listening Stuff
-    return radioStation.update()
+    return this.radioStationModel.findOneAndUpdate({_id:id,radioStation})
   }
 
   async findAll(queryDto: QueryDto = {}) {

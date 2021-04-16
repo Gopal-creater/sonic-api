@@ -127,7 +127,7 @@ let SonickeyController = class SonickeyController {
         });
     }
     async updateMeta(sonickey, updateSonicKeyDto) {
-        const updatedSonickey = await this.sonicKeyService.sonicKeyModel.updateOne({ sonicKey: sonickey }, updateSonicKeyDto);
+        const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate({ sonicKey: sonickey }, updateSonicKeyDto, { new: true });
         if (!updatedSonickey) {
             throw new common_1.NotFoundException();
         }
@@ -310,7 +310,7 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update Sonic Keys meta data' }),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../../schemas/sonickey.schema").SonicKey }),
     __param(0, common_1.Param('sonickey')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),

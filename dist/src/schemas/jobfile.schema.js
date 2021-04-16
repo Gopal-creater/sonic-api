@@ -28,8 +28,8 @@ __decorate([
     __metadata("design:type", String)
 ], JobFile.prototype, "sonicKeyToBe", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Sonickey' }),
+    swagger_1.ApiProperty({ type: String }),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'SonicKey', autopopulate: true }),
     __metadata("design:type", sonickey_schema_1.SonicKey)
 ], JobFile.prototype, "sonicKey", void 0);
 __decorate([

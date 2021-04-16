@@ -46,8 +46,10 @@ let JobFileService = class JobFileService {
             .limit(limit)
             .exec();
     }
-    async addKeyToDbAndUpdateJobFile(fileId, addKeyAndUpdateJobFileDto) {
-        const jobFile = await this.jobService.jobFileModel.findById(fileId);
+    async addKeyToDbAndUpdateJobFile(jobId, fileId, addKeyAndUpdateJobFileDto) {
+        const job = await this.jobService.jobModel.findById(jobId);
+        const jobFile = await this.jobService.jobFileModel.findOne({ _id: fileId, job: job });
+        console.log("jobFile", jobFile);
         if (!jobFile) {
             throw new common_1.NotFoundException();
         }
@@ -55,7 +57,7 @@ let JobFileService = class JobFileService {
         if (!createdSonicKey) {
             createdSonicKey = (await this.sonickeyService.createFromJob(addKeyAndUpdateJobFileDto.sonicKeyDetail));
         }
-        const updatedJobFile = await this.jobService.jobFileModel.findOneAndUpdate({ id: fileId }, Object.assign(Object.assign({}, addKeyAndUpdateJobFileDto.jobFile), { sonicKey: createdSonicKey }));
+        const updatedJobFile = await this.jobService.jobFileModel.findOneAndUpdate({ _id: fileId }, Object.assign(Object.assign({}, addKeyAndUpdateJobFileDto.jobFile), { sonicKey: createdSonicKey }), { new: true });
         return {
             createdSonicKey: createdSonicKey,
             updatedJobFile: updatedJobFile,

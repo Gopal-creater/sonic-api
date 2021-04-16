@@ -15,7 +15,16 @@ export declare class JobFileController {
         updatedJobFile: JobFile;
     }>;
     updateJobFile(id: string, updateJobFileDto: UpdateJobFileDto): Promise<import("mongoose").UpdateWriteOpResult>;
-    createJobFile(jobId: string, createJobFileDto: CreateJobFileDto): Promise<JobFile>;
-    addFilesToJob(jobId: string, createJobFileDto: CreateJobFileDto[]): Promise<JobFile[]>;
-    deleteJobFile(jobId: string, fileId: string): Promise<JobFile>;
+    createJobFile(jobId: string, createJobFileDto: CreateJobFileDto): Promise<{
+        savedJobFile: JobFile;
+        updatedJob: import("../../../schemas/job.schema").Job;
+    }>;
+    addFilesToJob(jobId: string, createJobFileDto: CreateJobFileDto[]): Promise<{
+        savedJobFiles: JobFile[];
+        updatedJob: import("../../../schemas/job.schema").Job;
+    }>;
+    deleteJobFile(jobId: string, fileId: string): Promise<{
+        deletedJobFile: JobFile;
+        updatedJob: import("../../../schemas/job.schema").Job;
+    }>;
 }

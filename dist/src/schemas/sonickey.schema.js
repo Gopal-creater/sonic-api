@@ -14,7 +14,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const job_schema_1 = require("./job.schema");
-exports.SonicKeySchemaName = "Sonickey";
+exports.SonicKeySchemaName = "SonicKey";
 let SonicKey = class SonicKey extends mongoose_2.Document {
     constructor(data) {
         super();

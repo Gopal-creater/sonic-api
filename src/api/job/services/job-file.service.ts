@@ -38,10 +38,14 @@ export class JobFileService {
     }
 
   async addKeyToDbAndUpdateJobFile(
+    jobId: string,
     fileId: string,
     addKeyAndUpdateJobFileDto: AddKeyAndUpdateJobFileDto,
   ) {
-    const jobFile = await this.jobService.jobFileModel.findById(fileId);
+    const job = await this.jobService.jobModel.findById(jobId)
+    const jobFile = await this.jobService.jobFileModel.findOne({_id:fileId,job:job});
+    console.log("jobFile",jobFile);
+    
     if (!jobFile) {
       throw new NotFoundException();
     }
@@ -54,7 +58,7 @@ export class JobFileService {
         addKeyAndUpdateJobFileDto.sonicKeyDetail,
       )) as SonicKey;
     }
-    const updatedJobFile = await this.jobService.jobFileModel.findOneAndUpdate({id:fileId},{...addKeyAndUpdateJobFileDto.jobFile,sonicKey:createdSonicKey});
+    const updatedJobFile = await this.jobService.jobFileModel.findOneAndUpdate({_id:fileId},{...addKeyAndUpdateJobFileDto.jobFile,sonicKey:createdSonicKey},{new:true});
     return {
       createdSonicKey: createdSonicKey,
       updatedJobFile: updatedJobFile,

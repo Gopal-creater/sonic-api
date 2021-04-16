@@ -61,14 +61,13 @@ let RadiostationController = class RadiostationController {
         });
     }
     bulkStartListeningStream(bulkDto) {
-        console.log("bulkDto", bulkDto);
         return this.radiostationService.bulkStartListeningStream(bulkDto.ids);
     }
     bulkStopListeningStream(bulkDto) {
         return this.radiostationService.bulkStopListeningStream(bulkDto.ids);
     }
     async update(id, updateRadiostationDto) {
-        const updatedRadioStation = await this.radiostationService.radioStationModel.findOneAndUpdate({ id: id }, updateRadiostationDto);
+        const updatedRadioStation = await this.radiostationService.radioStationModel.findOneAndUpdate({ _id: id }, updateRadiostationDto, { new: true });
         if (!updatedRadioStation) {
             throw new common_1.NotFoundException();
         }
@@ -88,6 +87,8 @@ let RadiostationController = class RadiostationController {
 };
 __decorate([
     common_1.Post(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create Radio Station' }),
     openapi.ApiResponse({ status: 201, type: require("../../../schemas/radiostation.schema").RadioStation }),
     __param(0, common_1.Body()),
@@ -133,7 +134,7 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'stop listening stream' }),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../../../schemas/radiostation.schema").RadioStation }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -144,7 +145,7 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'start listening stream' }),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../../../schemas/radiostation.schema").RadioStation }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

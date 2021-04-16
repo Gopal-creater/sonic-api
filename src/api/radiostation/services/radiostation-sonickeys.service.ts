@@ -11,11 +11,39 @@ import { SonicKey } from '../../../schemas/sonickey.schema';
 export class RadiostationSonicKeysService {
   constructor(
     @InjectModel(RadioStationSonicKey.name)
-    public radioStationSonickeyModel: Model<RadioStationSonicKey>
+    public radioStationSonickeyModel: Model<RadioStationSonicKey>,
+    @InjectModel(RadioStation.name)
+    public radioStationModel: Model<RadioStation>,
+    @InjectModel(SonicKey.name)
+    public sonicKeyModel: Model<SonicKey>,
   ) {}
-  create(createRadiostationSonicKeyDto: CreateRadiostationSonicKeyDto):Promise<RadioStationSonicKey> {
-    const newRadioStationSonicKey = new this.radioStationSonickeyModel({...createRadiostationSonicKeyDto,count:1})
-    return newRadioStationSonicKey.save()
+  create(
+    createRadiostationSonicKeyDto: CreateRadiostationSonicKeyDto,
+  ): Promise<RadioStationSonicKey> {
+    const newRadioStationSonicKey = new this.radioStationSonickeyModel({
+      ...createRadiostationSonicKeyDto,
+      count: 1,
+    });
+    return newRadioStationSonicKey.save();
+  }
+
+  async findOrCreateAndIncrementCount(
+    radioStation: string,
+    sonicKey: string,
+    count: number = 1,
+  ) {
+    const radioStationSonicKey = await this.findOne(radioStation, sonicKey);
+    if (!radioStationSonicKey) {
+      const newRadioStationSonicKey = new this.radioStationSonickeyModel({
+        radioStation: radioStationSonicKey.radioStation,
+        sonicKey: radioStationSonicKey.sonicKey,
+        count: count,
+      });
+      return newRadioStationSonicKey.save();
+    } else {
+      radioStationSonicKey.count = radioStationSonicKey.count + count;
+      return radioStationSonicKey.update();
+    }
   }
 
   async findAll(queryDto: QueryDto = {}) {
@@ -33,9 +61,15 @@ export class RadiostationSonicKeysService {
   }
 
   async findOne(radioStation: string, sonicKey: string) {
+    const foundRadioStation = await this.radioStationModel.findById(
+      radioStation,
+    );
+    const foundSonicKey = await this.sonicKeyModel.findOne({
+      sonicKey: sonicKey,
+    });
     return this.radioStationSonickeyModel.findOne({
-      radioStation: new RadioStation({ id: radioStation }),
-      sonicKey: new SonicKey({ id: sonicKey }),
+      radioStation: foundRadioStation,
+      sonicKey: foundSonicKey,
     });
   }
 
@@ -43,11 +77,20 @@ export class RadiostationSonicKeysService {
     return this.radioStationSonickeyModel.findById(id);
   }
 
-  async incrementCount(radioStation: string, sonicKey: string) {
+  async incrementCount(
+    radioStation: string,
+    sonicKey: string,
+    count: number = 1,
+  ) {
     const radioStationSonicKey = await this.findOne(radioStation, sonicKey);
-    if (radioStationSonicKey) {
-      radioStationSonicKey.count = radioStationSonicKey.count + 1;
-      return radioStationSonicKey.update();
+    if (!radioStationSonicKey) {
+      return Promise.reject({
+        notFound: true,
+        status: 404,
+        message: 'Item not found',
+      });
     }
+    radioStationSonicKey.count = radioStationSonicKey.count + count;
+    return radioStationSonicKey.update();
   }
 }

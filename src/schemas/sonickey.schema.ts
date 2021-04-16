@@ -137,7 +137,7 @@ import { Document,Schema as MogSchema} from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Job } from './job.schema';
 
-export const SonicKeySchemaName="Sonickey"
+export const SonicKeySchemaName="SonicKey"
 
 @Schema({ timestamps: true,collection:SonicKeySchemaName})
 export class SonicKey extends Document {
