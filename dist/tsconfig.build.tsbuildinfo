@@ -4977,8 +4977,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.controller.ts": {
-        "version": "846a0ddb917714dc2c6ac8cf0f0b135b82f62fe796f403cb195e83ee7cd686a0",
-        "signature": "37ae5444e7208abec790d2458193e64573228b5e681f356c6f4827923ba3b566",
+        "version": "fb26b1aac08fc3d84d61302c9058e1e252377cf00b5d47b546f0dd41c4a7b4c4",
+        "signature": "4c8894e1d4f8ad285970f7f1b6b292a018254042a8fea807e496690e445c02eb",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.module.ts": {
@@ -5192,7 +5192,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/services/job.service.ts": {
-        "version": "f0a0ae92bb399caac49953034008adf1eccdf10a1cf6af2ce264d81219196dd2",
+        "version": "d18177d884188ce483928e4aabbbaf2780b27c8b4bf4195055a2103ac09c0c44",
         "signature": "85cebf6928f78428fdf6d0cd80c7dfecbf34102f13b1a33ccfcb6c8cceaed484",
         "affectsGlobalScope": false
       },
@@ -5207,7 +5207,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/controllers/job.controller.ts": {
-        "version": "beac918d9ee3fc00d3f158c9c66778701fb820aeb93b84317b7e43512ddf2b3c",
+        "version": "68ff74ff1df02df92b37212c4996c4cf1b53c1ac0153b3d9da86666e5fcc64f0",
         "signature": "d2e41020752fc13445677c129a4935ea7a672c3869cc052ae77d81889710176d",
         "affectsGlobalScope": false
       },
@@ -5222,7 +5222,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/controllers/job-file.controller.ts": {
-        "version": "2f7d23591f60d3da670a8ab300adeb23e0b806b5a663cca9718a499e41594c9f",
+        "version": "2d633315b9fbe25c92206688a4396a84301832c54019b7ebd95346a9cb3889cf",
         "signature": "3f7cd97b9b55d051a606d719517b2ed652c40641c03b89352753e84c5675e1b8",
         "affectsGlobalScope": false
       },
@@ -5247,7 +5247,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/services/radiostation.service.ts": {
-        "version": "2f9859812bcf8c04ed4ad827da37a67014e68245874fe008379436912f3096fe",
+        "version": "680e6ec123b69b74c81400cc86d279169c2ed9031e99ec734a2eb449106d7cc3",
         "signature": "86e16b7df02ae6791a321aaacacd17a262b567185865569f320076f926c7c902",
         "affectsGlobalScope": false
       },
@@ -31932,6 +31932,7 @@
         "../src/api/sonickey/dtos/sonickey.dto.ts"
       ],
       "../src/api/sonickey/sonickey.controller.ts": [
+        "../src/api/sonickey/dtos/create-sonickey.dto.ts",
         "../src/api/sonickey/dtos/download.dto.ts",
         "../src/api/sonickey/dtos/sonickey.dto.ts",
         "../src/api/sonickey/dtos/update-sonickey.dto.ts",

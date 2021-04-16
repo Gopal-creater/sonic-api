@@ -21,6 +21,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonickeyController = void 0;
 const openapi = require("@nestjs/swagger");
+const create_sonickey_dto_1 = require("./dtos/create-sonickey.dto");
 const update_sonickey_dto_1 = require("./dtos/update-sonickey.dto");
 const decode_dto_1 = require("./dtos/decode.dto");
 const encode_dto_1 = require("./dtos/encode.dto");
@@ -58,6 +59,10 @@ let SonickeyController = class SonickeyController {
     }
     async generateUniqueSonicKey() {
         return await this.sonicKeyService.generateUniqueSonicKey();
+    }
+    async createForJob(createSonicKeyDto, owner, req) {
+        createSonicKeyDto.owner = owner;
+        return this.sonicKeyService.createFromJob(createSonicKeyDto);
     }
     async getOwnersKeys(ownerId, queryDto) {
         const query = Object.assign(Object.assign({}, queryDto), { owner: ownerId });
@@ -190,6 +195,19 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "generateUniqueSonicKey", null);
+__decorate([
+    common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
+    common_1.Post('/create-from-job'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Save to database after local encode from job.' }),
+    openapi.ApiResponse({ status: 201, type: require("../../schemas/sonickey.schema").SonicKey }),
+    __param(0, common_1.Body()),
+    __param(1, decorators_1.User('sub')),
+    __param(2, common_1.Req()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromJobDto, String, Object]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "createForJob", null);
 __decorate([
     common_1.Get('/owners/:ownerId'),
     common_1.UseGuards(guards_1.JwtAuthGuard),

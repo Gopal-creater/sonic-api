@@ -48,9 +48,10 @@ let RadiostationService = class RadiostationService {
         if (!radioStation.isStreamStarted) {
             return radioStation;
         }
-        radioStation.stopAt = new Date();
-        radioStation.isStreamStarted = false;
-        return this.radioStationModel.findOneAndUpdate({ _id: id, radioStation });
+        return this.radioStationModel.findOneAndUpdate({ _id: id }, {
+            stopAt: new Date(),
+            isStreamStarted: false,
+        }, { new: true });
     }
     async startListeningStream(id) {
         const radioStation = await this.radioStationModel.findById(id);
@@ -64,15 +65,16 @@ let RadiostationService = class RadiostationService {
         if (radioStation.isStreamStarted) {
             return radioStation;
         }
-        radioStation.startedAt = new Date();
-        radioStation.isStreamStarted = true;
-        return this.radioStationModel.findOneAndUpdate({ _id: id, radioStation });
+        return this.radioStationModel.findOneAndUpdate({ _id: id }, {
+            startedAt: new Date(),
+            isStreamStarted: true,
+        }, { new: true });
     }
     async findAll(queryDto = {}) {
         const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
         const options = {
             limit,
-            offset
+            offset,
         };
         return this.radioStationModel
             .find(query || {})
@@ -89,7 +91,6 @@ let RadiostationService = class RadiostationService {
     }
     async removeById(id) {
         const radioStation = await this.radioStationModel.findById(id);
-        ;
         if (!radioStation) {
             return Promise.reject({
                 notFound: true,

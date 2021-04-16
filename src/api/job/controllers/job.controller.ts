@@ -71,6 +71,7 @@ export class JobController {
     if(createJobDto.jobFiles){
       createJobDto.jobFiles = createJobDto.jobFiles.map(job => {
         job['sonicKeyToBe'] =this.sonickeyService.generateUniqueSonicKey()
+        // job["sonicKeyToBe"]="2KhHfn0-qo6"
         return job;
       });
     }

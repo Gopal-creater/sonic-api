@@ -36,7 +36,7 @@ export class JobService {
     );
     
     createdJob.jobFiles.push(...savedJobFiles)
-    const updatedCreatedJob = await this.jobModel.findByIdAndUpdate(createdJob._id,createdJob);
+    const updatedCreatedJob = await this.jobModel.findByIdAndUpdate(createdJob._id,{jobFiles:createdJob.jobFiles},{new:true});
     await this.addReservedDetailsInLicence(createJobDto.license, [
       { jobId: createdJob.id, count: updatedCreatedJob.jobFiles.length },
     ]).catch(async err => {

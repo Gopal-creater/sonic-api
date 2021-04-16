@@ -50,7 +50,7 @@ let JobFileController = class JobFileController {
         const newJobFile = new this.jobFileService.jobFileModel(dataToSave);
         const savedJobFile = await newJobFile.save();
         jobData.jobFiles.push(savedJobFile);
-        const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId, jobData);
+        const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId, { jobFiles: jobData.jobFiles }, { new: true });
         await this.jobService
             .incrementReservedDetailsInLicenceBy(jobData.license, jobData.id, 1)
             .catch(async (err) => {
@@ -71,7 +71,7 @@ let JobFileController = class JobFileController {
         });
         const savedJobFiles = await this.jobFileService.jobFileModel.insertMany(newJobFiles);
         jobData.jobFiles.push(...savedJobFiles);
-        const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId, jobData);
+        const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId, { jobFiles: jobData.jobFiles }, { new: true });
         await this.jobService
             .incrementReservedDetailsInLicenceBy(jobData.license, jobData.id, savedJobFiles.length)
             .catch(async (err) => {
@@ -90,7 +90,7 @@ let JobFileController = class JobFileController {
             throw new common_1.NotFoundException();
         }
         jobData.jobFiles = jobData.jobFiles.filter(file => file._id !== fileId);
-        const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId, jobData);
+        const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId, { jobFiles: jobData.jobFiles }, { new: true });
         await this.jobService.decrementReservedDetailsInLicenceBy(jobData.license, jobData.id, 1);
         return { deletedJobFile, updatedJob };
     }

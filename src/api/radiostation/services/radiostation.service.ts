@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
 import { RadioStation } from '../../../schemas/radiostation.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -11,13 +8,13 @@ import { QueryDto } from '../../../shared/dtos/query.dto';
 @Injectable()
 export class RadiostationService {
   constructor(
-    @InjectModel(RadioStation.name) public readonly radioStationModel: Model<RadioStation>,
+    @InjectModel(RadioStation.name)
+    public readonly radioStationModel: Model<RadioStation>,
   ) {}
   create(createRadiostationDto: CreateRadiostationDto) {
     const newRadioStation = new this.radioStationModel(createRadiostationDto);
     return newRadioStation.save();
   }
-  
 
   async stopListeningStream(id: string) {
     const radioStation = await this.radioStationModel.findById(id);
@@ -31,10 +28,15 @@ export class RadiostationService {
     if (!radioStation.isStreamStarted) {
       return radioStation;
     }
-    radioStation.stopAt=new Date();
-    radioStation.isStreamStarted=false
     //Do Stop Listening Stuff
-    return this.radioStationModel.findOneAndUpdate({_id:id,radioStation})
+    return this.radioStationModel.findOneAndUpdate(
+      { _id: id },
+      {
+        stopAt: new Date(),
+        isStreamStarted: false,
+      },
+      { new: true },
+    );
   }
 
   async startListeningStream(id: string) {
@@ -49,18 +51,23 @@ export class RadiostationService {
     if (radioStation.isStreamStarted) {
       return radioStation;
     }
-    radioStation.startedAt=new Date();
-    radioStation.isStreamStarted=true
     //https://nodejs.org/api/worker_threads.html
     //Do Start Listening Stuff
-    return this.radioStationModel.findOneAndUpdate({_id:id,radioStation})
+    return this.radioStationModel.findOneAndUpdate(
+      { _id: id },
+      {
+        startedAt: new Date(),
+        isStreamStarted: true,
+      },
+      { new: true },
+    );
   }
 
   async findAll(queryDto: QueryDto = {}) {
     const { limit, offset, ...query } = queryDto;
     const options = {
       limit,
-      offset
+      offset,
     };
     // return await this.sonicKeyModel["paginate"](query || {},options) as MongoosePaginateDto<SonicKey>
     return this.radioStationModel
@@ -78,10 +85,8 @@ export class RadiostationService {
     return radioStation;
   }
 
-
-
   async removeById(id: string) {
-    const radioStation = await this.radioStationModel.findById(id);;
+    const radioStation = await this.radioStationModel.findById(id);
     if (!radioStation) {
       return Promise.reject({
         notFound: true,

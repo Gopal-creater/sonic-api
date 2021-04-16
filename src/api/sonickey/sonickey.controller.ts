@@ -84,18 +84,18 @@ export class SonickeyController {
     return await this.sonicKeyService.generateUniqueSonicKey();
   }
 
-  // @UseGuards(JwtAuthGuard, LicenseValidationGuard)
-  // @Post('/create-from-job')
-  // @ApiBearerAuth()
-  // @ApiOperation({ summary: 'Save to database after local encode from job.' })
-  // async createForJob(
-  //   @Body() createSonicKeyDto: CreateSonicKeyFromJobDto,
-  //   @User('sub') owner: string,
-  //   @Req() req: any,
-  // ) {
-  //   createSonicKeyDto.owner=owner
-  //   return this.sonicKeyService.createFromJob(createSonicKeyDto);
-  // }
+  @UseGuards(JwtAuthGuard, LicenseValidationGuard)
+  @Post('/create-from-job')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Save to database after local encode from job.' })
+  async createForJob(
+    @Body() createSonicKeyDto: CreateSonicKeyFromJobDto,
+    @User('sub') owner: string,
+    @Req() req: any,
+  ) {
+    createSonicKeyDto.owner=owner
+    return this.sonicKeyService.createFromJob(createSonicKeyDto);
+  }
 
   @Get('/owners/:ownerId')
   @UseGuards(JwtAuthGuard)
