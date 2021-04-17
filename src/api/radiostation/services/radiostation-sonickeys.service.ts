@@ -17,11 +17,19 @@ export class RadiostationSonicKeysService {
     @InjectModel(SonicKey.name)
     public sonicKeyModel: Model<SonicKey>,
   ) {}
-  create(
+  async create(
     createRadiostationSonicKeyDto: CreateRadiostationSonicKeyDto,
   ): Promise<RadioStationSonicKey> {
+    const foundRadioStation = await this.radioStationModel.findById(
+      createRadiostationSonicKeyDto.radioStation,
+    );
+    const foundSonicKey = await this.sonicKeyModel.findOne({
+      sonicKey: createRadiostationSonicKeyDto.sonicKey,
+    });
     const newRadioStationSonicKey = new this.radioStationSonickeyModel({
-      ...createRadiostationSonicKeyDto,
+      radioStation:foundRadioStation,
+      sonicKey:foundSonicKey,
+      sonicKeyString:createRadiostationSonicKeyDto.sonicKey,
       count: 1,
     });
     return newRadioStationSonicKey.save();
@@ -37,6 +45,7 @@ export class RadiostationSonicKeysService {
       const newRadioStationSonicKey = new this.radioStationSonickeyModel({
         radioStation: radioStationSonicKey.radioStation,
         sonicKey: radioStationSonicKey.sonicKey,
+        sonicKeyString:sonicKey,
         count: count,
       });
       return newRadioStationSonicKey.save();

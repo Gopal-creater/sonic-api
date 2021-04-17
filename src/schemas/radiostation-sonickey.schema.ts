@@ -61,6 +61,10 @@ export class RadioStationSonicKey extends Document {
   sonicKey: SonicKey;
 
   @ApiProperty()
+  @Prop({required: true})
+  sonicKeyString: string;
+
+  @ApiProperty()
   @Prop({default:0})
   count: number;
 
