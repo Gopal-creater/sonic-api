@@ -28,10 +28,10 @@ const uniqid = require("uniqid");
 const schedule_1 = require("@nestjs/schedule");
 const app_gateway_1 = require("./app.gateway");
 const radiostation_module_1 = require("./api/radiostation/radiostation.module");
-const sonickey_repository_1 = require("./repositories/sonickey.repository");
 const mongoose_1 = require("@nestjs/mongoose");
 const thirdparty_detection_module_1 = require("./api/thirdparty-detection/thirdparty-detection.module");
 const mongoosePaginate = require("mongoose-paginate-v2");
+const event_emitter_1 = require("@nestjs/event-emitter");
 mongoosePaginate.paginate.options = {
     limit: 50,
 };
@@ -42,6 +42,7 @@ AppModule = __decorate([
     common_1.Module({
         imports: [
             schedule_1.ScheduleModule.forRoot(),
+            event_emitter_1.EventEmitterModule.forRoot(),
             config_1.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba' }),
             auth_module_1.AuthModule,
             mongoose_1.MongooseModule.forRootAsync({
@@ -76,7 +77,7 @@ AppModule = __decorate([
             thirdparty_detection_module_1.ThirdpartyDetectionModule
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService, sonickey_repository_1.SonicKeyRepository, cron_service_1.CronService, app_gateway_1.AppGateway],
+        providers: [app_service_1.AppService, cron_service_1.CronService, app_gateway_1.AppGateway],
     }),
     __metadata("design:paramtypes", [])
 ], AppModule);

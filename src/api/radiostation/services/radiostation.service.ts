@@ -5,7 +5,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import children from 'child_process';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SonickeyService } from '../../sonickey/sonickey.service';
+import { STOP_LISTENING, START_LISTENING } from '../listeners/constants';
 
 @Injectable()
 export class RadiostationService {
@@ -13,6 +15,7 @@ export class RadiostationService {
     @InjectModel(RadioStation.name)
     public readonly radioStationModel: Model<RadioStation>,
     public readonly sonickeyService: SonickeyService,
+    private readonly eventEmitter: EventEmitter2
   ) {}
   create(createRadiostationDto: CreateRadiostationDto) {
     const newRadioStation = new this.radioStationModel(createRadiostationDto);
@@ -31,6 +34,8 @@ export class RadiostationService {
     if (!radioStation.isStreamStarted) {
       return radioStation;
     }
+
+    this.eventEmitter.emit(STOP_LISTENING,radioStation)
     //Do Stop Listening Stuff
     return this.radioStationModel.findOneAndUpdate(
       { _id: id },
@@ -56,6 +61,7 @@ export class RadiostationService {
     }
     //https://nodejs.org/api/worker_threads.html
     //Do Start Listening Stuff
+    this.eventEmitter.emit(START_LISTENING,radioStation)
     return this.radioStationModel.findOneAndUpdate(
       { _id: id },
       {

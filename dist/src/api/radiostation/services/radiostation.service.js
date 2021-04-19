@@ -29,11 +29,14 @@ const radiostation_schema_1 = require("../../../schemas/radiostation.schema");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const child_process_1 = require("child_process");
+const event_emitter_1 = require("@nestjs/event-emitter");
 const sonickey_service_1 = require("../../sonickey/sonickey.service");
+const constants_1 = require("../listeners/constants");
 let RadiostationService = class RadiostationService {
-    constructor(radioStationModel, sonickeyService) {
+    constructor(radioStationModel, sonickeyService, eventEmitter) {
         this.radioStationModel = radioStationModel;
         this.sonickeyService = sonickeyService;
+        this.eventEmitter = eventEmitter;
     }
     create(createRadiostationDto) {
         const newRadioStation = new this.radioStationModel(createRadiostationDto);
@@ -51,6 +54,7 @@ let RadiostationService = class RadiostationService {
         if (!radioStation.isStreamStarted) {
             return radioStation;
         }
+        this.eventEmitter.emit(constants_1.STOP_LISTENING, radioStation);
         return this.radioStationModel.findOneAndUpdate({ _id: id }, {
             stopAt: new Date(),
             isStreamStarted: false,
@@ -68,6 +72,7 @@ let RadiostationService = class RadiostationService {
         if (radioStation.isStreamStarted) {
             return radioStation;
         }
+        this.eventEmitter.emit(constants_1.START_LISTENING, radioStation);
         return this.radioStationModel.findOneAndUpdate({ _id: id }, {
             startedAt: new Date(),
             isStreamStarted: true,
@@ -159,7 +164,8 @@ RadiostationService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(radiostation_schema_1.RadioStation.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        sonickey_service_1.SonickeyService])
+        sonickey_service_1.SonickeyService,
+        event_emitter_1.EventEmitter2])
 ], RadiostationService);
 exports.RadiostationService = RadiostationService;
 //# sourceMappingURL=radiostation.service.js.map

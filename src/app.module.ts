@@ -18,10 +18,10 @@ import * as uniqid from 'uniqid';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppGateway } from './app.gateway';
 import { RadiostationModule } from './api/radiostation/radiostation.module';
-import { SonicKeyRepository } from './repositories/sonickey.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThirdpartyDetectionModule } from './api/thirdparty-detection/thirdparty-detection.module';
 import mongoosePaginate = require('mongoose-paginate-v2');
+import { EventEmitterModule } from '@nestjs/event-emitter';
 mongoosePaginate.paginate.options = {
   limit: 50,
 };
@@ -29,6 +29,7 @@ mongoosePaginate.paginate.options = {
 @Module({
   imports: [
     ScheduleModule.forRoot(),
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba' }),
     AuthModule,
     MongooseModule.forRootAsync({
@@ -63,7 +64,7 @@ mongoosePaginate.paginate.options = {
     ThirdpartyDetectionModule
   ],
   controllers: [AppController],
-  providers: [AppService, SonicKeyRepository, CronService, AppGateway],
+  providers: [AppService, CronService, AppGateway],
 })
 export class AppModule {
   constructor() {}

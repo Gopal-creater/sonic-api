@@ -8,7 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonickeyModule = void 0;
 const file_handler_service_1 = require("./../../shared/services/file-handler.service");
-const sonickey_repository_1 = require("./../../repositories/sonickey.repository");
 const common_1 = require("@nestjs/common");
 const sonickey_controller_1 = require("./sonickey.controller");
 const sonickey_service_1 = require("./sonickey.service");
@@ -28,7 +27,6 @@ SonickeyModule = __decorate([
         controllers: [sonickey_controller_1.SonickeyController],
         providers: [
             sonickey_service_1.SonickeyService,
-            sonickey_repository_1.SonicKeyRepository,
             keygen_service_1.KeygenService,
             file_operation_service_1.FileOperationService,
             file_handler_service_1.FileHandlerService,
