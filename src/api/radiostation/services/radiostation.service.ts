@@ -170,6 +170,7 @@ export class RadiostationService {
   }
 
   startListeningLikeAStream(streamUrl: string, outputPath: string) {
+    
     var ffm = children.spawn(
       'ffmpeg',
       `-i ${streamUrl} -f 16_le -ar 41000 -ac 2 -f wav -t 00:00:10 ${outputPath}`.split(
@@ -183,6 +184,10 @@ export class RadiostationService {
 
     ffm.stderr.on('data', data => {
       console.error(`stderr: ${data}`);
+    });
+
+    ffm.on('error', (err) => {
+      console.error('Failed to start subprocess.',err);
     });
 
     ffm.on('close', code => {

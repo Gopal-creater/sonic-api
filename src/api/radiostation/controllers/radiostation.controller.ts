@@ -41,7 +41,7 @@ export class RadiostationController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Radio Stations' })
-  findAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
+  findAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto?: QueryDto,) {
     return this.radiostationService.findAll(queryDto);
   }
 

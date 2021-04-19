@@ -12,7 +12,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 export class ThirdpartyDetectionController {
   constructor(private readonly thirdpartyDetectionService: ThirdpartyDetectionService) {}
   
-  @ApiOperation({ summary: 'Get All Detection' })
+  @ApiOperation({ summary: 'Create Detection' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -20,7 +20,7 @@ export class ThirdpartyDetectionController {
     return this.thirdpartyDetectionService.create(createThirdpartyDetectionDto);
   }
 
-  @ApiOperation({ summary: 'Create Detection' })
+  @ApiOperation({ summary: 'Get All Detection' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get()

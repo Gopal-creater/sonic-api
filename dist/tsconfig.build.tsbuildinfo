@@ -5227,13 +5227,13 @@
         "affectsGlobalScope": false
       },
       "../src/schemas/radiostation.schema.ts": {
-        "version": "efd16e189d92219ea9f97488d9f20144f6cfbf8a8a9414161b1fed2d3caace87",
-        "signature": "c676db21f7dc4ac3b8c52c7ac757c3535ad01b983950294536423d16fc192ead",
+        "version": "38e8fe3a47a28cd7be3cb4498cb96addb2a300cefe051cfae38ab9e775415bfe",
+        "signature": "db10b125aa95c87a20657704f6f81e9564e0873cf3b8b65adec35dbe14a588d7",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/create-radiostation.dto.ts": {
         "version": "8ee536ffffdfb2098b6cf0bfb4cbe24de669953a55183f2abddddb64d507a384",
-        "signature": "ee80ea0e544ce0b6daa4f70f95778088ec7890b041df650ae19eae3e0cbe51d2",
+        "signature": "224ced50d5bf8bef2b5d41e013e0ebf25acac28a9c97f3c6a3de962a907801db",
         "affectsGlobalScope": false
       },
       "../node_modules/eventemitter2/eventemitter2.d.ts": {
@@ -5277,7 +5277,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/services/radiostation.service.ts": {
-        "version": "47d86956f816bd91db1c40a45c4ae4de823393c1949cba52d2e93fb31ae1e9b1",
+        "version": "95a66cb744569bbf8aa41611a40cbc3e04d6b76950dd1e7d56e61e899584c9b6",
         "signature": "ca8222cd9d0f01341ad1956dde48a2fe21b6b7b067d3f73d7d394542af2d2ff2",
         "affectsGlobalScope": false
       },
@@ -5332,8 +5332,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/controllers/radiostation.controller.ts": {
-        "version": "81ac723621c4dc3e2b8368da3b65e9e9e91a177a9aa5a81df02045f854036375",
-        "signature": "4e3fc3984029cb5edc32f8c829ef34caebb2fa1528e50b13459aa0361e3f3230",
+        "version": "cbaa7cfd92ecb5b22939a3f43bfeac7fab99fa32f2ff2df95199efef32445f2f",
+        "signature": "04de7bda48440d73c56c32ab633ab2ef28e0f4b3c8044e894158026e713971d5",
         "affectsGlobalScope": false
       },
       "../src/schemas/radiostation-sonickey.schema.ts": {
@@ -5357,7 +5357,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/listeners/radiostation.listener.ts": {
-        "version": "9e70942a51106db71901fe11d014ad4174f086d6c68cdef77e4da7e704f8ff92",
+        "version": "830c28158c51f8e376d4e0c2a8b11ca9398cc0cc4972577c3abcad77ac736b6e",
         "signature": "4b0ff543e1b1517eec192c2911b04a673159b4e7dd63d2b1cdb6dd9a33a2ea96",
         "affectsGlobalScope": false
       },
@@ -5387,7 +5387,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/thirdparty-detection.controller.ts": {
-        "version": "7ad2524920aa0e44685b44acd9a63923404b788565b013c4c320a79f8775ecbb",
+        "version": "f9c8e60ca50e3c708b67e3e1424c896c1a999bbf0869ef9241dafe1adc0f0165",
         "signature": "d28d88b5fc2bd672674ceff12df43b9a7849042eb3d5b1c576245bfa674008df",
         "affectsGlobalScope": false
       },

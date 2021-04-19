@@ -155,6 +155,9 @@ let RadiostationService = class RadiostationService {
         ffm.stderr.on('data', data => {
             console.error(`stderr: ${data}`);
         });
+        ffm.on('error', (err) => {
+            console.error('Failed to start subprocess.', err);
+        });
         ffm.on('close', code => {
             console.log(`child process exited with code ${code}`);
         });

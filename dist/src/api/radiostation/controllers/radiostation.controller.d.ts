@@ -7,7 +7,7 @@ export declare class RadiostationController {
     private readonly radiostationService;
     constructor(radiostationService: RadiostationService);
     create(createRadiostationDto: CreateRadiostationDto): Promise<import("../../../schemas/radiostation.schema").RadioStation>;
-    findAll(queryDto: QueryDto): Promise<import("../../../schemas/radiostation.schema").RadioStation[]>;
+    findAll(queryDto?: QueryDto): Promise<import("../../../schemas/radiostation.schema").RadioStation[]>;
     getOwnersRadioStations(ownerId: string, queryDto: QueryDto): Promise<import("../../../schemas/radiostation.schema").RadioStation[]>;
     findOne(id: string): Promise<import("../../../schemas/radiostation.schema").RadioStation>;
     stopListeningStream(id: string): Promise<import("../../../schemas/radiostation.schema").RadioStation>;

@@ -8,6 +8,8 @@ export class RadioStationListener {
   @OnEvent(START_LISTENING)
   handleStartListeningEvent(event: RadioStation) {
     console.log(event);
+    // event.str
+
   }
 
 

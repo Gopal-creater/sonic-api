@@ -14,6 +14,7 @@ export declare class RadioStation extends Document {
     startedAt: Date;
     stopAt: Date;
     isStreamStarted: boolean;
+    error: Map<string, any>;
     notes: string;
     metaData: Map<string, any>;
 }

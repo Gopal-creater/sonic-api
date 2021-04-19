@@ -55,7 +55,7 @@ let ThirdpartyDetectionController = class ThirdpartyDetectionController {
     }
 };
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Get All Detection' }),
+    swagger_1.ApiOperation({ summary: 'Create Detection' }),
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Post(),
@@ -66,7 +66,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ThirdpartyDetectionController.prototype, "create", null);
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Create Detection' }),
+    swagger_1.ApiOperation({ summary: 'Get All Detection' }),
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get(),
