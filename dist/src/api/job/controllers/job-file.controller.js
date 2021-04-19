@@ -137,7 +137,7 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Create and Add new jobfile to the job' }),
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    common_1.Post('jobs/:jobId/job-files/'),
+    common_1.Post('jobs/:jobId/job-files'),
     openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Param('jobId')),
     __param(1, common_1.Body()),

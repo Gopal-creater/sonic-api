@@ -70,7 +70,6 @@ import { JobFile,JobFileSchemaName } from './jobfile.schema';
 
 export const JobSchemaName="Job"
 
-export type JobDocument = Omit<Job,'jobFiles'> & {jobFiles:string[]} & Document;
 
 @Schema({ timestamps: true,collection:JobSchemaName})
 export class Job extends Document {
@@ -95,7 +94,7 @@ export class Job extends Document {
 
   @ApiProperty()
   @Prop({ type: [{ type: MogSchema.Types.ObjectId, ref: 'JobFile',autopopulate: true }] })
-  jobFiles: JobFile[];
+  jobFiles: any[];
 }
 
 export const JobSchema = SchemaFactory.createForClass(Job);

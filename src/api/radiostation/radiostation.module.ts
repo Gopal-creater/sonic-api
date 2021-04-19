@@ -7,18 +7,18 @@ import { RadiostationSonicKeysService } from './services/radiostation-sonickeys.
 import { RadioStationSonicKeyRepository } from '../../repositories/radiostationSonickey.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
-  RadioStation,
   RadioStationSchema,
+  RadioStationSchemaName
 } from '../../schemas/radiostation.schema';
 import { SonickeyModule } from '../sonickey/sonickey.module';
-import { RadioStationSonicKey,RadioStationSonicKeySchema } from '../../schemas/radiostation-sonickey.schema';
-import { SonicKey,SonicKeySchema } from '../../schemas/sonickey.schema';
+import { RadioStationSonicKeySchema,RadioStationSonicKeySchemaName } from '../../schemas/radiostation-sonickey.schema';
+import { SonicKeySchema,SonicKeySchemaName } from '../../schemas/sonickey.schema';
 @Module({
   imports: [
 MongooseModule.forFeature([
-      { name: RadioStation.name, schema: RadioStationSchema },
-      { name: RadioStationSonicKey.name, schema: RadioStationSonicKeySchema },
-      { name: SonicKey.name, schema: SonicKeySchema }
+      { name: RadioStationSchemaName, schema: RadioStationSchema },
+      { name: RadioStationSonicKeySchemaName, schema: RadioStationSonicKeySchema },
+      { name: SonicKeySchemaName, schema: SonicKeySchema }
     ]),
     SonickeyModule
   ],

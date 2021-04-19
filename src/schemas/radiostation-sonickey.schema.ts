@@ -40,25 +40,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { RadioStation } from './radiostation.schema';
-import { SonicKey } from './sonickey.schema';
+import { RadioStation,RadioStationSchemaName } from './radiostation.schema';
+import { SonicKey,SonicKeySchemaName } from './sonickey.schema';
 
 export const RadioStationSonicKeySchemaName = 'RadioStationSonicKey';
 
-@Schema({ timestamps: true, collection: RadioStationSonicKeySchemaName })
+@Schema({ timestamps: true, collection: RadioStationSonicKeySchemaName,toJSON:{virtuals:true} })
 export class RadioStationSonicKey extends Document {
 
   @ApiProperty()
-  @Prop({ type: MogSchema.Types.ObjectId, ref: 'RadioStation', required: true,autopopulate: true })
-  radioStation: RadioStation;
+  @Prop({ type: MogSchema.Types.ObjectId, ref: RadioStationSchemaName, required: true,autopopulate: true })
+  radioStation: any;
 
   @ApiProperty()
-  @Prop({ type: MogSchema.Types.ObjectId, ref: 'SonicKey', required: true,autopopulate: true })
-  sonicKey: SonicKey;
-
-  @ApiProperty()
-  @Prop({required: true})
-  sonicKeyString: string;
+  @Prop({ type:String})
+  sonicKey: any;
 
   @ApiProperty()
   @Prop({default:0})
@@ -76,3 +72,11 @@ export class RadioStationSonicKey extends Document {
 export const RadioStationSonicKeySchema = SchemaFactory.createForClass(
   RadioStationSonicKey,
 );
+
+RadioStationSonicKeySchema.virtual('sonicKeyData', {
+  ref: SonicKeySchemaName,
+  localField: 'sonicKey',
+  foreignField: 'sonicKey',
+  justOne: true,
+  autopopulate: true
+});

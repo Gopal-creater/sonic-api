@@ -18,11 +18,14 @@ ThirdpartyDetectionModule = __decorate([
     common_1.Module({
         imports: [
             mongoose_1.MongooseModule.forFeature([
-                { name: thirdparty_detection_schema_1.ThirdpartyDetection.name, schema: thirdparty_detection_schema_1.ThirdpartyDetectionSchema }
-            ])
+                {
+                    name: thirdparty_detection_schema_1.ThirdpartyDetectionSchemaName,
+                    schema: thirdparty_detection_schema_1.ThirdpartyDetectionSchema,
+                },
+            ]),
         ],
         controllers: [thirdparty_detection_controller_1.ThirdpartyDetectionController],
-        providers: [thirdparty_detection_service_1.ThirdpartyDetectionService]
+        providers: [thirdparty_detection_service_1.ThirdpartyDetectionService],
     })
 ], ThirdpartyDetectionModule);
 exports.ThirdpartyDetectionModule = ThirdpartyDetectionModule;

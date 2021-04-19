@@ -30,11 +30,13 @@ export class JobFileService {
 
   async findAll(queryDto: QueryDto = {}) {
     const { limit, offset, ...query } = queryDto;
-        return this.jobFileModel
+        const res = await this.jobFileModel
         .find(query || {})
         .skip(offset)
         .limit(limit)
         .exec();
+        return res
+        
     }
 
   async addKeyToDbAndUpdateJobFile(
@@ -58,7 +60,7 @@ export class JobFileService {
         addKeyAndUpdateJobFileDto.sonicKeyDetail,
       )) as SonicKey;
     }
-    const updatedJobFile = await this.jobService.jobFileModel.findOneAndUpdate({_id:fileId},{...addKeyAndUpdateJobFileDto.jobFile,sonicKey:createdSonicKey},{new:true});
+    const updatedJobFile = await this.jobService.jobFileModel.findOneAndUpdate({_id:fileId},{...addKeyAndUpdateJobFileDto.jobFile,sonicKey:createdSonicKey.sonicKey},{new:true});
     return {
       createdSonicKey: createdSonicKey,
       updatedJobFile: updatedJobFile,

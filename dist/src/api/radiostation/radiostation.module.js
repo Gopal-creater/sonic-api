@@ -25,9 +25,9 @@ RadiostationModule = __decorate([
     common_1.Module({
         imports: [
             mongoose_1.MongooseModule.forFeature([
-                { name: radiostation_schema_1.RadioStation.name, schema: radiostation_schema_1.RadioStationSchema },
-                { name: radiostation_sonickey_schema_1.RadioStationSonicKey.name, schema: radiostation_sonickey_schema_1.RadioStationSonicKeySchema },
-                { name: sonickey_schema_1.SonicKey.name, schema: sonickey_schema_1.SonicKeySchema }
+                { name: radiostation_schema_1.RadioStationSchemaName, schema: radiostation_schema_1.RadioStationSchema },
+                { name: radiostation_sonickey_schema_1.RadioStationSonicKeySchemaName, schema: radiostation_sonickey_schema_1.RadioStationSonicKeySchema },
+                { name: sonickey_schema_1.SonicKeySchemaName, schema: sonickey_schema_1.SonicKeySchema }
             ]),
             sonickey_module_1.SonickeyModule
         ],

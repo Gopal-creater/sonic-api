@@ -2,11 +2,11 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Job,JobSchemaName } from './job.schema';
-import { SonicKey } from './sonickey.schema';
+import { SonicKey,SonicKeySchemaName } from './sonickey.schema';
 
 export const JobFileSchemaName="JobFile"
 
-@Schema({ timestamps: true, collection: JobFileSchemaName })
+@Schema({ timestamps: true, collection: JobFileSchemaName,toJSON:{virtuals:true} })
 export class JobFile extends Document {
 
 
@@ -15,8 +15,8 @@ export class JobFile extends Document {
   sonicKeyToBe: string;
 
   @ApiProperty({type:String})
-  @Prop({ type: MogSchema.Types.ObjectId, ref: 'SonicKey',autopopulate: true})
-  sonicKey: SonicKey;
+  @Prop({ type: String})
+  sonicKey: string;
 
   @ApiProperty()
   @Prop({ default: false })
@@ -27,8 +27,15 @@ export class JobFile extends Document {
   metaData: Map<string, any>;
 
   @ApiProperty({type:String})
-  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Job',required:true})
-  job: Job;
+  @Prop({ type: MogSchema.Types.ObjectId, ref: JobSchemaName,required:true})
+  job: any;
 }
 
 export const JobFileSchema = SchemaFactory.createForClass(JobFile);
+JobFileSchema.virtual('sonicKeyData', {
+  ref: SonicKeySchemaName,
+  localField: 'sonicKey',
+  foreignField: 'sonicKey',
+  justOne: true,
+  autopopulate: true
+});

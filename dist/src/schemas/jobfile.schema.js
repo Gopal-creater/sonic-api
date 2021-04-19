@@ -25,8 +25,8 @@ __decorate([
 ], JobFile.prototype, "sonicKeyToBe", void 0);
 __decorate([
     swagger_1.ApiProperty({ type: String }),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'SonicKey', autopopulate: true }),
-    __metadata("design:type", sonickey_schema_1.SonicKey)
+    mongoose_1.Prop({ type: String }),
+    __metadata("design:type", String)
 ], JobFile.prototype, "sonicKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
@@ -40,12 +40,19 @@ __decorate([
 ], JobFile.prototype, "metaData", void 0);
 __decorate([
     swagger_1.ApiProperty({ type: String }),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Job', required: true }),
-    __metadata("design:type", job_schema_1.Job)
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: job_schema_1.JobSchemaName, required: true }),
+    __metadata("design:type", Object)
 ], JobFile.prototype, "job", void 0);
 JobFile = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.JobFileSchemaName })
+    mongoose_1.Schema({ timestamps: true, collection: exports.JobFileSchemaName, toJSON: { virtuals: true } })
 ], JobFile);
 exports.JobFile = JobFile;
 exports.JobFileSchema = mongoose_1.SchemaFactory.createForClass(JobFile);
+exports.JobFileSchema.virtual('sonicKeyData', {
+    ref: sonickey_schema_1.SonicKeySchemaName,
+    localField: 'sonicKey',
+    foreignField: 'sonicKey',
+    justOne: true,
+    autopopulate: true
+});
 //# sourceMappingURL=jobfile.schema.js.map

@@ -27,8 +27,8 @@ JobModule = __decorate([
             sonickey_module_1.SonickeyModule,
             keygen_module_1.KeygenModule,
             mongoose_1.MongooseModule.forFeature([
-                { name: job_schema_1.Job.name, schema: job_schema_1.JobSchema },
-                { name: jobfile_schema_1.JobFile.name, schema: jobfile_schema_1.JobFileSchema }
+                { name: job_schema_1.JobSchemaName, schema: job_schema_1.JobSchema },
+                { name: jobfile_schema_1.JobFileSchemaName, schema: jobfile_schema_1.JobFileSchema }
             ]),
         ],
         controllers: [job_controller_1.JobController, job_file_controller_1.JobFileController],

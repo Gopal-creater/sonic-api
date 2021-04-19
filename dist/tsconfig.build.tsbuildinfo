@@ -1957,18 +1957,18 @@
         "affectsGlobalScope": false
       },
       "../src/schemas/jobfile.schema.ts": {
-        "version": "87cc5b31f608ed26d306126fe58d3e18a8faf482ffeab85d95091aefe49a21c0",
-        "signature": "ee6de1a9194e9f514ed356069def4a3cf07df1df2e58c75dddc39e487b233bcd",
+        "version": "bf573b0bb5661fd664503226b69c4e9959c618ff26187b150a0c8cc38e2cf4dc",
+        "signature": "9e916091896f06f17eef26272f491fed7eeeb398b5868bcb014cf6db58201620",
         "affectsGlobalScope": false
       },
       "../src/schemas/job.schema.ts": {
-        "version": "13b8b362211afc1167f12259b018bf2bce41229625cd7f1ce449df14dd5c479f",
-        "signature": "df4c7eb98ada7534727b571fe7910dd8addd78c789de167b72084e2a43b95207",
+        "version": "bb6ae6f35fa9eb88c7fbdd357039333404503492a073bc8cdd708f2307ff664a",
+        "signature": "12dda374bfe79d82ce8e1507e38a1e79c00f66caa928d13b266eec9b06a6cb2e",
         "affectsGlobalScope": false
       },
       "../src/schemas/sonickey.schema.ts": {
-        "version": "dd06f71e10175c5b021dd5dd9bb4ceeb899990da1bff1c636a637983a5a51639",
-        "signature": "0ec4090b64301556051a39f15839f54402ef72df2bffd0acd30318292ea1cf0e",
+        "version": "936dcfa306a88f0767b138216f26ad019462f88a0fe766c8e116ab2e9e5cda1b",
+        "signature": "235efb8fd5ac8dc26e48bff868b4c3ee3984e2e9905476e4f0d2aabe77a3357b",
         "affectsGlobalScope": false
       },
       "../node_modules/aws-sdk/lib/error.d.ts": {
@@ -4982,7 +4982,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.module.ts": {
-        "version": "47bb24e5afc5b61c65ea5986eea79b5cb9bb4abc95eb10344b6c38d55e03852f",
+        "version": "3df56a8fc6dc9e291e3f9c288e3761f0826f91b2a3c73becafae3c80064251f3",
         "signature": "a464842fb4f06e582b281b89d678d9ea0fbd7075fb9d81cab2561fac1e30c7b7",
         "affectsGlobalScope": false
       },
@@ -5163,7 +5163,7 @@
       },
       "../src/api/job/dto/create-job-file.dto.ts": {
         "version": "b4e305ab39bd1b7f93e91b1d15507b12448017e180b2353e8ad7de76d6aae922",
-        "signature": "2c79e9ef9e4193e9509bfb482181b3fbbb06dc24b6c08aa6cd21e18bf22f4415",
+        "signature": "ed50991134888592ff8a2e02382288a7ece7d02307ff2d4a016b848cd2f05e1d",
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/create-job.dto.ts": {
@@ -5217,12 +5217,12 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/services/job-file.service.ts": {
-        "version": "462ff122d226a7518900a478e1b6cfd9a224b5c869ee6eafe98c20fc35a38e9f",
+        "version": "d7c42ff15fc75a2835e79b8589661c46e9eaaa38ff1fc97d1773a2ac523eedaf",
         "signature": "d0250fe8fe2d7a0f6d4c8d6f14913e1454f882b4d76c6e8b1464faf94ae80f4a",
         "affectsGlobalScope": false
       },
       "../src/api/job/controllers/job-file.controller.ts": {
-        "version": "2d633315b9fbe25c92206688a4396a84301832c54019b7ebd95346a9cb3889cf",
+        "version": "427bde2368e8ae5c782abe7fb3c2b2f7f8020630b79768865e8031d626209376",
         "signature": "3f7cd97b9b55d051a606d719517b2ed652c40641c03b89352753e84c5675e1b8",
         "affectsGlobalScope": false
       },
@@ -5232,7 +5232,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/job.module.ts": {
-        "version": "6e52a046a5bb943ad3398e515bc0df26dd61464cc679ab3dc22da953d2e5c209",
+        "version": "66fab8b7400c4a688cd90f92b99e0a98c599a5d633d6d03f319d49b8975df303",
         "signature": "791c7edbc29f755701954b9afed14db750dce2510c9b9eb7c0fd6807fc02d8f5",
         "affectsGlobalScope": false
       },
@@ -5243,7 +5243,7 @@
       },
       "../src/api/radiostation/dto/create-radiostation.dto.ts": {
         "version": "8ee536ffffdfb2098b6cf0bfb4cbe24de669953a55183f2abddddb64d507a384",
-        "signature": "9767b98331c9cfd8342a3e691218cdbf67fb9298ef2a5d076d589b83b04f9557",
+        "signature": "ee80ea0e544ce0b6daa4f70f95778088ec7890b041df650ae19eae3e0cbe51d2",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/services/radiostation.service.ts": {
@@ -5312,17 +5312,17 @@
         "affectsGlobalScope": false
       },
       "../src/schemas/radiostation-sonickey.schema.ts": {
-        "version": "acf63be266a637f830c3489aa883c2964b37c5e6b4779b42ecd8db25e0b7807c",
-        "signature": "112a0df31fd5b3e7af6aa65c2288b36755cfe2b519b75a69636221fadefe464e",
+        "version": "402a82633d0bd30a6d74684fdf06a009ba1229d7d92f49d112a06576ed6cb9b7",
+        "signature": "8b071e499cba5a60b01571cd720e48d7c77abc8ed6d7bfe7c8ae4927d28c527b",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts": {
         "version": "059142400ca2ee4eff0d4f2352e540ac8ae42fe68edb295b723673408026eab0",
-        "signature": "31c35e87785bb41deca38ebd7a5e4afcd3e9eb5585ba12dfc92dcfa8a94050bd",
+        "signature": "dcab0a5f9e33db58ea90cb3cb4fd5f0617b3fe1a9a38cad87479398b130b1dfb",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/services/radiostation-sonickeys.service.ts": {
-        "version": "eb036f95427a530749ae88673d22ee3f5e268307f195fc20296cdf4f7a926ff7",
+        "version": "5580551e9afd276206f6d9366adbb0df33e044daaba42628fe638705ef25ab54",
         "signature": "7512fd197ed899e6220800fed05606c39d7ef3c76c379fdbae70f35853ad4f4f",
         "affectsGlobalScope": false
       },
@@ -5337,7 +5337,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/radiostation.module.ts": {
-        "version": "f239fe7f97653e98e54c8c67d5393b644b27914b338e555a050c96c2929de3b0",
+        "version": "5c524d9e235caa595e39a1a6ee169d3a13ad777d1564b119f77b22e1ac7151cb",
         "signature": "af84e5d7ebe9c9274cc60d5ae88ab11c8ba296e3ec602f698d99ee431e5fc9f1",
         "affectsGlobalScope": false
       },
@@ -5367,7 +5367,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/thirdparty-detection.module.ts": {
-        "version": "2599ad123e1e6bb5f48cbc32c6c2b6756b7493915d58b6dc6bb820ade136cf66",
+        "version": "c93e8fbcaa2c143de66d0d29bbad91f6dc7ba0738b5c534ca6c64b383612b5dc",
         "signature": "6dbebbdc386763bed992bf46f17507d970ebcccfb94c893b6cdf84099ccd8f07",
         "affectsGlobalScope": false
       },
@@ -32016,25 +32016,19 @@
         "../src/shared/modules/global-aws/global-aws.service.ts"
       ],
       "../src/schemas/job.schema.ts": [
-        "../node_modules/mongoose/index.d.ts",
-        "../src/schemas/jobfile.schema.ts"
+        "../node_modules/mongoose/index.d.ts"
       ],
       "../src/schemas/jobfile.schema.ts": [
-        "../node_modules/mongoose/index.d.ts",
-        "../src/schemas/job.schema.ts",
-        "../src/schemas/sonickey.schema.ts"
+        "../node_modules/mongoose/index.d.ts"
       ],
       "../src/schemas/radiostation-sonickey.schema.ts": [
-        "../node_modules/mongoose/index.d.ts",
-        "../src/schemas/radiostation.schema.ts",
-        "../src/schemas/sonickey.schema.ts"
+        "../node_modules/mongoose/index.d.ts"
       ],
       "../src/schemas/radiostation.schema.ts": [
         "../node_modules/mongoose/index.d.ts"
       ],
       "../src/schemas/sonickey.schema.ts": [
-        "../node_modules/mongoose/index.d.ts",
-        "../src/schemas/job.schema.ts"
+        "../node_modules/mongoose/index.d.ts"
       ],
       "../src/shared/dtos/query.dto.ts": [
         "../src/shared/dtos/paginationquery.dto.ts"

@@ -1,10 +1,9 @@
 import { Document, Schema as MogSchema } from 'mongoose';
-import { Job } from './job.schema';
 export declare const SonicKeySchemaName = "SonicKey";
 export declare class SonicKey extends Document {
     sonicKey: string;
     owner: string;
-    job: Job;
+    job: any;
     license: string;
     status: boolean;
     encodingStrength: number;

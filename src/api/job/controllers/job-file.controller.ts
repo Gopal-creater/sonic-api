@@ -81,7 +81,7 @@ export class JobFileController {
   @ApiOperation({ summary: 'Create and Add new jobfile to the job' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Post('jobs/:jobId/job-files/')
+  @Post('jobs/:jobId/job-files')
   async createJobFile(
     @Param('jobId') jobId: string,
     @Body() createJobFileDto: CreateJobFileDto,

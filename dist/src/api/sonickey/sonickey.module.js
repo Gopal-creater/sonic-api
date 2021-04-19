@@ -22,7 +22,7 @@ SonickeyModule = __decorate([
     common_1.Module({
         imports: [
             mongoose_1.MongooseModule.forFeature([
-                { name: sonickey_schema_1.SonicKey.name, schema: sonickey_schema_1.SonicKeySchema },
+                { name: sonickey_schema_1.SonicKeySchemaName, schema: sonickey_schema_1.SonicKeySchema },
             ]),
         ],
         controllers: [sonickey_controller_1.SonickeyController],

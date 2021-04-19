@@ -20,19 +20,14 @@ let RadioStationSonicKey = class RadioStationSonicKey extends mongoose_2.Documen
 };
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'RadioStation', required: true, autopopulate: true }),
-    __metadata("design:type", radiostation_schema_1.RadioStation)
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: radiostation_schema_1.RadioStationSchemaName, required: true, autopopulate: true }),
+    __metadata("design:type", Object)
 ], RadioStationSonicKey.prototype, "radioStation", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'SonicKey', required: true, autopopulate: true }),
-    __metadata("design:type", sonickey_schema_1.SonicKey)
+    mongoose_1.Prop({ type: String }),
+    __metadata("design:type", Object)
 ], RadioStationSonicKey.prototype, "sonicKey", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ required: true }),
-    __metadata("design:type", String)
-], RadioStationSonicKey.prototype, "sonicKeyString", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ default: 0 }),
@@ -49,8 +44,15 @@ __decorate([
     __metadata("design:type", Map)
 ], RadioStationSonicKey.prototype, "metaData", void 0);
 RadioStationSonicKey = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.RadioStationSonicKeySchemaName })
+    mongoose_1.Schema({ timestamps: true, collection: exports.RadioStationSonicKeySchemaName, toJSON: { virtuals: true } })
 ], RadioStationSonicKey);
 exports.RadioStationSonicKey = RadioStationSonicKey;
 exports.RadioStationSonicKeySchema = mongoose_1.SchemaFactory.createForClass(RadioStationSonicKey);
+exports.RadioStationSonicKeySchema.virtual('sonicKeyData', {
+    ref: sonickey_schema_1.SonicKeySchemaName,
+    localField: 'sonicKey',
+    foreignField: 'sonicKey',
+    justOne: true,
+    autopopulate: true
+});
 //# sourceMappingURL=radiostation-sonickey.schema.js.map

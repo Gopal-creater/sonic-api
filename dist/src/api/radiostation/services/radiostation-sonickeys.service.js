@@ -37,25 +37,15 @@ let RadiostationSonicKeysService = class RadiostationSonicKeysService {
         this.sonicKeyModel = sonicKeyModel;
     }
     async create(createRadiostationSonicKeyDto) {
-        const foundRadioStation = await this.radioStationModel.findById(createRadiostationSonicKeyDto.radioStation);
-        const foundSonicKey = await this.sonicKeyModel.findOne({
-            sonicKey: createRadiostationSonicKeyDto.sonicKey,
-        });
-        const newRadioStationSonicKey = new this.radioStationSonickeyModel({
-            radioStation: foundRadioStation,
-            sonicKey: foundSonicKey,
-            sonicKeyString: createRadiostationSonicKeyDto.sonicKey,
-            count: 1,
-        });
+        const newRadioStationSonicKey = new this.radioStationSonickeyModel(Object.assign(Object.assign({}, createRadiostationSonicKeyDto), { count: 1 }));
         return newRadioStationSonicKey.save();
     }
     async findOrCreateAndIncrementCount(radioStation, sonicKey, count = 1) {
         const radioStationSonicKey = await this.findOne(radioStation, sonicKey);
         if (!radioStationSonicKey) {
             const newRadioStationSonicKey = new this.radioStationSonickeyModel({
-                radioStation: radioStationSonicKey.radioStation,
-                sonicKey: radioStationSonicKey.sonicKey,
-                sonicKeyString: sonicKey,
+                radioStation: radioStation,
+                sonicKey: sonicKey,
                 count: count,
             });
             return newRadioStationSonicKey.save();
@@ -78,13 +68,9 @@ let RadiostationSonicKeysService = class RadiostationSonicKeysService {
             .exec();
     }
     async findOne(radioStation, sonicKey) {
-        const foundRadioStation = await this.radioStationModel.findById(radioStation);
-        const foundSonicKey = await this.sonicKeyModel.findOne({
-            sonicKey: sonicKey,
-        });
         return this.radioStationSonickeyModel.findOne({
-            radioStation: foundRadioStation,
-            sonicKey: foundSonicKey,
+            radioStation: radioStation,
+            sonicKey: sonicKey,
         });
     }
     async findById(id) {

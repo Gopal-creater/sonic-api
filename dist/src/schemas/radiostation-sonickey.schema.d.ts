@@ -1,11 +1,8 @@
 import { Document, Schema as MogSchema } from 'mongoose';
-import { RadioStation } from './radiostation.schema';
-import { SonicKey } from './sonickey.schema';
 export declare const RadioStationSonicKeySchemaName = "RadioStationSonicKey";
 export declare class RadioStationSonicKey extends Document {
-    radioStation: RadioStation;
-    sonicKey: SonicKey;
-    sonicKeyString: string;
+    radioStation: any;
+    sonicKey: any;
     count: number;
     owner: string;
     metaData: Map<string, any>;

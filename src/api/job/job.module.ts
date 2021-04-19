@@ -8,16 +8,16 @@ import { SonickeyModule } from '../sonickey/sonickey.module';
 import { JobFileService } from './services/job-file.service';
 import { KeygenModule } from '../../shared/modules/keygen/keygen.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Job, JobSchema } from '../../schemas/job.schema';
-import { JobFile, JobFileSchema } from '../../schemas/jobfile.schema';
+import { JobSchema,JobSchemaName} from '../../schemas/job.schema';
+import { JobFileSchema,JobFileSchemaName } from '../../schemas/jobfile.schema';
 
 @Module({
   imports: [
     SonickeyModule,
     KeygenModule,
     MongooseModule.forFeature([
-      { name: Job.name, schema: JobSchema },
-      { name: JobFile.name, schema: JobFileSchema }
+      { name: JobSchemaName, schema: JobSchema },
+      { name: JobFileSchemaName, schema: JobFileSchema }
     ]),
   ],
   controllers: [JobController, JobFileController],

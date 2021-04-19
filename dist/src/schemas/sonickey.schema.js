@@ -32,8 +32,8 @@ __decorate([
 ], SonicKey.prototype, "owner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Job' }),
-    __metadata("design:type", job_schema_1.Job)
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: job_schema_1.JobSchemaName }),
+    __metadata("design:type", Object)
 ], SonicKey.prototype, "job", void 0);
 __decorate([
     swagger_1.ApiProperty(),

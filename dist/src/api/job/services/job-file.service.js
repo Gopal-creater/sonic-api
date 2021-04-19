@@ -40,11 +40,12 @@ let JobFileService = class JobFileService {
     }
     async findAll(queryDto = {}) {
         const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
-        return this.jobFileModel
+        const res = await this.jobFileModel
             .find(query || {})
             .skip(offset)
             .limit(limit)
             .exec();
+        return res;
     }
     async addKeyToDbAndUpdateJobFile(jobId, fileId, addKeyAndUpdateJobFileDto) {
         const job = await this.jobService.jobModel.findById(jobId);
@@ -57,7 +58,7 @@ let JobFileService = class JobFileService {
         if (!createdSonicKey) {
             createdSonicKey = (await this.sonickeyService.createFromJob(addKeyAndUpdateJobFileDto.sonicKeyDetail));
         }
-        const updatedJobFile = await this.jobService.jobFileModel.findOneAndUpdate({ _id: fileId }, Object.assign(Object.assign({}, addKeyAndUpdateJobFileDto.jobFile), { sonicKey: createdSonicKey }), { new: true });
+        const updatedJobFile = await this.jobService.jobFileModel.findOneAndUpdate({ _id: fileId }, Object.assign(Object.assign({}, addKeyAndUpdateJobFileDto.jobFile), { sonicKey: createdSonicKey.sonicKey }), { new: true });
         return {
             createdSonicKey: createdSonicKey,
             updatedJobFile: updatedJobFile,

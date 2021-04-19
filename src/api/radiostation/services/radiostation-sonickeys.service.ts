@@ -20,16 +20,8 @@ export class RadiostationSonicKeysService {
   async create(
     createRadiostationSonicKeyDto: CreateRadiostationSonicKeyDto,
   ): Promise<RadioStationSonicKey> {
-    const foundRadioStation = await this.radioStationModel.findById(
-      createRadiostationSonicKeyDto.radioStation,
-    );
-    const foundSonicKey = await this.sonicKeyModel.findOne({
-      sonicKey: createRadiostationSonicKeyDto.sonicKey,
-    });
     const newRadioStationSonicKey = new this.radioStationSonickeyModel({
-      radioStation:foundRadioStation,
-      sonicKey:foundSonicKey,
-      sonicKeyString:createRadiostationSonicKeyDto.sonicKey,
+      ...createRadiostationSonicKeyDto,
       count: 1,
     });
     return newRadioStationSonicKey.save();
@@ -43,9 +35,8 @@ export class RadiostationSonicKeysService {
     const radioStationSonicKey = await this.findOne(radioStation, sonicKey);
     if (!radioStationSonicKey) {
       const newRadioStationSonicKey = new this.radioStationSonickeyModel({
-        radioStation: radioStationSonicKey.radioStation,
-        sonicKey: radioStationSonicKey.sonicKey,
-        sonicKeyString:sonicKey,
+        radioStation: radioStation,
+        sonicKey: sonicKey,
         count: count,
       });
       return newRadioStationSonicKey.save();
@@ -70,15 +61,9 @@ export class RadiostationSonicKeysService {
   }
 
   async findOne(radioStation: string, sonicKey: string) {
-    const foundRadioStation = await this.radioStationModel.findById(
-      radioStation,
-    );
-    const foundSonicKey = await this.sonicKeyModel.findOne({
-      sonicKey: sonicKey,
-    });
     return this.radioStationSonickeyModel.findOne({
-      radioStation: foundRadioStation,
-      sonicKey: foundSonicKey,
+      radioStation: radioStation,
+      sonicKey: sonicKey,
     });
   }
 
