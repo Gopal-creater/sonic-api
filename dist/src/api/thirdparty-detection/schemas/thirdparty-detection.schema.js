@@ -13,13 +13,8 @@ exports.ThirdpartyDetectionSchema = exports.ThirdpartyDetection = exports.Thirdp
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
-const sonickey_schema_1 = require("../../../schemas/sonickey.schema");
 exports.ThirdpartyDetectionSchemaName = 'ThirdpartyDetection';
 let ThirdpartyDetection = class ThirdpartyDetection extends mongoose_2.Document {
-    constructor(data) {
-        super();
-        Object.assign(this, data);
-    }
 };
 __decorate([
     swagger_1.ApiProperty(),
@@ -28,8 +23,7 @@ __decorate([
 ], ThirdpartyDetection.prototype, "customer", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'SonicKey', autopopulate: true }),
-    __metadata("design:type", sonickey_schema_1.SonicKey)
+    __metadata("design:type", String)
 ], ThirdpartyDetection.prototype, "sonicKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
@@ -42,8 +36,7 @@ __decorate([
     __metadata("design:type", Map)
 ], ThirdpartyDetection.prototype, "metaData", void 0);
 ThirdpartyDetection = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.ThirdpartyDetectionSchemaName }),
-    __metadata("design:paramtypes", [Object])
+    mongoose_1.Schema({ timestamps: true, collection: exports.ThirdpartyDetectionSchemaName })
 ], ThirdpartyDetection);
 exports.ThirdpartyDetection = ThirdpartyDetection;
 exports.ThirdpartyDetectionSchema = mongoose_1.SchemaFactory.createForClass(ThirdpartyDetection);

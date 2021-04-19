@@ -20,7 +20,7 @@ let CronService = CronService_1 = class CronService {
         this.logger = new common_1.Logger(CronService_1.name);
     }
     onceAfter0Seconds() {
-        this.logger.debug('Called once after 0 seconds');
+        this.logger.debug('Called once after 0 seconds very firsttime');
     }
     getCrons() {
         const jobs = this.schedulerRegistry.getCronJobs();
@@ -78,6 +78,10 @@ let CronService = CronService_1 = class CronService {
     addTimeout(name, milliseconds) {
         const callback = () => {
             this.logger.warn(`Timeout ${name} executing after (${milliseconds})!`);
+            this.testFunc(name)
+                .then(() => {
+                callback();
+            });
         };
         const timeout = setTimeout(callback, milliseconds);
         this.schedulerRegistry.addTimeout(name, timeout);
@@ -85,6 +89,9 @@ let CronService = CronService_1 = class CronService {
     deleteTimeout(name) {
         this.schedulerRegistry.deleteTimeout(name);
         this.logger.warn(`Timeout ${name} deleted!`);
+    }
+    testFunc(name) {
+        return new Promise(res => setTimeout(res, 10000));
     }
 };
 __decorate([

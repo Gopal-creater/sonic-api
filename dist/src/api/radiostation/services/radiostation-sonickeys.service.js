@@ -36,8 +36,17 @@ let RadiostationSonicKeysService = class RadiostationSonicKeysService {
         this.radioStationModel = radioStationModel;
         this.sonicKeyModel = sonicKeyModel;
     }
-    create(createRadiostationSonicKeyDto) {
-        const newRadioStationSonicKey = new this.radioStationSonickeyModel(Object.assign(Object.assign({}, createRadiostationSonicKeyDto), { count: 1 }));
+    async create(createRadiostationSonicKeyDto) {
+        const foundRadioStation = await this.radioStationModel.findById(createRadiostationSonicKeyDto.radioStation);
+        const foundSonicKey = await this.sonicKeyModel.findOne({
+            sonicKey: createRadiostationSonicKeyDto.sonicKey,
+        });
+        const newRadioStationSonicKey = new this.radioStationSonickeyModel({
+            radioStation: foundRadioStation,
+            sonicKey: foundSonicKey,
+            sonicKeyString: createRadiostationSonicKeyDto.sonicKey,
+            count: 1,
+        });
         return newRadioStationSonicKey.save();
     }
     async findOrCreateAndIncrementCount(radioStation, sonicKey, count = 1) {
@@ -46,6 +55,7 @@ let RadiostationSonicKeysService = class RadiostationSonicKeysService {
             const newRadioStationSonicKey = new this.radioStationSonickeyModel({
                 radioStation: radioStationSonicKey.radioStation,
                 sonicKey: radioStationSonicKey.sonicKey,
+                sonicKeyString: sonicKey,
                 count: count,
             });
             return newRadioStationSonicKey.save();

@@ -54,7 +54,7 @@ export class FileOperationService {
     });    
   }
 
-  decodeFileForMultipleKeys(sonicDecodeCmd: string, logFilePath: string) {
+  decodeFileForMultipleKeys(sonicDecodeCmd: string, logFilePath: string):Promise<{sonicKeys:string[]}> {
     return new Promise((resolve, reject) => {
       try {
         // the result of this decoder binary invokation using a shellscript will be
@@ -69,7 +69,7 @@ export class FileOperationService {
         //     message:'Key not found'
         //   });
         // }
-        var sonicKeys = [];
+        var sonicKeys:string[] = [];
         var lineReader = readlineByline.createInterface({
           input: fs.createReadStream(logFilePath)
         });

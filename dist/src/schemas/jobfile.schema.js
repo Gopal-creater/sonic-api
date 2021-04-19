@@ -17,10 +17,6 @@ const job_schema_1 = require("./job.schema");
 const sonickey_schema_1 = require("./sonickey.schema");
 exports.JobFileSchemaName = "JobFile";
 let JobFile = class JobFile extends mongoose_2.Document {
-    constructor(data) {
-        super();
-        Object.assign(this, data);
-    }
 };
 __decorate([
     swagger_1.ApiProperty(),
@@ -48,8 +44,7 @@ __decorate([
     __metadata("design:type", job_schema_1.Job)
 ], JobFile.prototype, "job", void 0);
 JobFile = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.JobFileSchemaName }),
-    __metadata("design:paramtypes", [Object])
+    mongoose_1.Schema({ timestamps: true, collection: exports.JobFileSchemaName })
 ], JobFile);
 exports.JobFile = JobFile;
 exports.JobFileSchema = mongoose_1.SchemaFactory.createForClass(JobFile);

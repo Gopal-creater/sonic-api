@@ -45,7 +45,7 @@ export class RadiostationController {
     return this.radiostationService.findAll(queryDto);
   }
 
-  @Get('/owner/:ownerId')
+  @Get('/owners/:ownerId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Radio Stations of particular user' })

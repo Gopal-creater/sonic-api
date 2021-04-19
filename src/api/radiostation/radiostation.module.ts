@@ -10,6 +10,7 @@ import {
   RadioStation,
   RadioStationSchema,
 } from '../../schemas/radiostation.schema';
+import { SonickeyModule } from '../sonickey/sonickey.module';
 import { RadioStationSonicKey,RadioStationSonicKeySchema } from '../../schemas/radiostation-sonickey.schema';
 import { SonicKey,SonicKeySchema } from '../../schemas/sonickey.schema';
 @Module({
@@ -19,6 +20,7 @@ MongooseModule.forFeature([
       { name: RadioStationSonicKey.name, schema: RadioStationSonicKeySchema },
       { name: SonicKey.name, schema: SonicKeySchema }
     ]),
+    SonickeyModule
   ],
   controllers: [RadiostationController, RadiostationSonicKeysController],
   providers: [

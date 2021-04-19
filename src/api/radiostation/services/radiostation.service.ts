@@ -4,12 +4,15 @@ import { RadioStation } from '../../../schemas/radiostation.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
+import children from 'child_process';
+import { SonickeyService } from '../../sonickey/sonickey.service';
 
 @Injectable()
 export class RadiostationService {
   constructor(
     @InjectModel(RadioStation.name)
     public readonly radioStationModel: Model<RadioStation>,
+    public readonly sonickeyService: SonickeyService,
   ) {}
   create(createRadiostationDto: CreateRadiostationDto) {
     const newRadioStation = new this.radioStationModel(createRadiostationDto);
@@ -157,6 +160,29 @@ export class RadiostationService {
         passedData: passedData,
         failedData: failedData,
       };
+    });
+  }
+
+  startListeningLikeAStream(streamUrl: string, outputPath: string) {
+    var ffm = children.spawn(
+      'ffmpeg',
+      `-i ${streamUrl} -f 16_le -ar 41000 -ac 2 -f wav -t 00:00:10 ${outputPath}`.split(
+        ' ',
+      ),
+    );
+
+    ffm.stdout.on('data', data => {
+      console.log(`stdout: ${data}`);
+    });
+
+    ffm.stderr.on('data', data => {
+      console.error(`stderr: ${data}`);
+    });
+
+    ffm.on('close', code => {
+      // this.startListeningLikeAStream(streamUrl,outputPath)
+      // this.sonickeyService.decodeAllKeys()
+      console.log(`child process exited with code ${code}`);
     });
   }
 }

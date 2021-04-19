@@ -141,11 +141,6 @@ export const SonicKeySchemaName="SonicKey"
 
 @Schema({ timestamps: true,collection:SonicKeySchemaName})
 export class SonicKey extends Document {
-  constructor(data?: Partial<SonicKey>) {
-    super()
-    Object.assign(this, data);
-    
-  }
 
   @ApiProperty()
   @Prop({
@@ -164,7 +159,7 @@ export class SonicKey extends Document {
 
   @ApiProperty()
   @Prop()
-  licenseId: string;
+  license: string;
 
   @ApiProperty()
   @Prop({ default: true })

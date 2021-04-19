@@ -5,7 +5,6 @@ export declare class Credential {
     password: string;
 }
 export declare class RadioStation extends Document {
-    constructor(data?: Partial<RadioStation>);
     name: string;
     streamingUrl: string;
     website: string;

@@ -17,10 +17,6 @@ const radiostation_schema_1 = require("./radiostation.schema");
 const sonickey_schema_1 = require("./sonickey.schema");
 exports.RadioStationSonicKeySchemaName = 'RadioStationSonicKey';
 let RadioStationSonicKey = class RadioStationSonicKey extends mongoose_2.Document {
-    constructor(data) {
-        super();
-        Object.assign(this, data);
-    }
 };
 __decorate([
     swagger_1.ApiProperty(),
@@ -32,6 +28,11 @@ __decorate([
     mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'SonicKey', required: true, autopopulate: true }),
     __metadata("design:type", sonickey_schema_1.SonicKey)
 ], RadioStationSonicKey.prototype, "sonicKey", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ required: true }),
+    __metadata("design:type", String)
+], RadioStationSonicKey.prototype, "sonicKeyString", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ default: 0 }),
@@ -48,8 +49,7 @@ __decorate([
     __metadata("design:type", Map)
 ], RadioStationSonicKey.prototype, "metaData", void 0);
 RadioStationSonicKey = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.RadioStationSonicKeySchemaName }),
-    __metadata("design:paramtypes", [Object])
+    mongoose_1.Schema({ timestamps: true, collection: exports.RadioStationSonicKeySchemaName })
 ], RadioStationSonicKey);
 exports.RadioStationSonicKey = RadioStationSonicKey;
 exports.RadioStationSonicKeySchema = mongoose_1.SchemaFactory.createForClass(RadioStationSonicKey);

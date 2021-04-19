@@ -3,7 +3,6 @@ import { Job } from './job.schema';
 import { SonicKey } from './sonickey.schema';
 export declare const JobFileSchemaName = "JobFile";
 export declare class JobFile extends Document {
-    constructor(data?: Partial<JobFile>);
     sonicKeyToBe: string;
     sonicKey: SonicKey;
     isComplete: boolean;

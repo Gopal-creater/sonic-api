@@ -93,11 +93,6 @@ export class Credential {
 
 @Schema({ timestamps: true,collection:RadioStationSchemaName})
 export class RadioStation extends Document {
-  constructor(data?: Partial<RadioStation>) {
-    super()
-    Object.assign(this, data);
-    
-  }
 
   @ApiProperty()
   @Prop({

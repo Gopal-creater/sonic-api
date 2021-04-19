@@ -16,12 +16,22 @@ exports.AppController = void 0;
 const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
+const cron_service_1 = require("./shared/services/cron.service");
 let AppController = class AppController {
-    constructor(appService) {
+    constructor(appService, cronService) {
         this.appService = appService;
+        this.cronService = cronService;
     }
     getHello(req) {
         return this.appService.getHello();
+    }
+    add(name) {
+        this.cronService.addTimeout(name, 0);
+        return "added";
+    }
+    remove(name) {
+        this.cronService.deleteTimeout(name);
+        return "removed";
     }
 };
 __decorate([
@@ -32,9 +42,25 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", String)
 ], AppController.prototype, "getHello", null);
+__decorate([
+    common_1.Get('/add/:name'),
+    openapi.ApiResponse({ status: 200, type: String }),
+    __param(0, common_1.Param('name')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AppController.prototype, "add", null);
+__decorate([
+    common_1.Get('/remove/:name'),
+    openapi.ApiResponse({ status: 200, type: String }),
+    __param(0, common_1.Param('name')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", String)
+], AppController.prototype, "remove", null);
 AppController = __decorate([
     common_1.Controller(),
-    __metadata("design:paramtypes", [app_service_1.AppService])
+    __metadata("design:paramtypes", [app_service_1.AppService, cron_service_1.CronService])
 ], AppController);
 exports.AppController = AppController;
 //# sourceMappingURL=app.controller.js.map

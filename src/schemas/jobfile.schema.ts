@@ -8,10 +8,7 @@ export const JobFileSchemaName="JobFile"
 
 @Schema({ timestamps: true, collection: JobFileSchemaName })
 export class JobFile extends Document {
-  constructor(data?: Partial<JobFile>) {
-    super();
-    Object.assign(this, data);
-  }
+
 
   @ApiProperty()
   @Prop({required:true  })

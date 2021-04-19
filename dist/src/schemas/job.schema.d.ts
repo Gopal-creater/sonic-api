@@ -5,7 +5,6 @@ export declare type JobDocument = Omit<Job, 'jobFiles'> & {
     jobFiles: string[];
 } & Document;
 export declare class Job extends Document {
-    constructor(data?: Partial<Job>);
     name: string;
     owner: string;
     license: string;

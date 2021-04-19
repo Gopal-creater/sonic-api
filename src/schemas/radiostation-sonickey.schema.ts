@@ -47,10 +47,6 @@ export const RadioStationSonicKeySchemaName = 'RadioStationSonicKey';
 
 @Schema({ timestamps: true, collection: RadioStationSonicKeySchemaName })
 export class RadioStationSonicKey extends Document {
-  constructor(data?: Partial<RadioStationSonicKey>) {
-    super();
-    Object.assign(this, data);
-  }
 
   @ApiProperty()
   @Prop({ type: MogSchema.Types.ObjectId, ref: 'RadioStation', required: true,autopopulate: true })

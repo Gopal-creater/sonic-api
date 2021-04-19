@@ -3,5 +3,5 @@ export declare class CreateSonicKeyFromJobDto extends SonicKeyDto {
     sonicKey: string;
     job: string;
     owner: string;
-    licenseId: string;
+    license: string;
 }

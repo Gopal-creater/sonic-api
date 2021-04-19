@@ -16,6 +16,7 @@ const radiostation_sonickeys_service_1 = require("./services/radiostation-sonick
 const radiostationSonickey_repository_1 = require("../../repositories/radiostationSonickey.repository");
 const mongoose_1 = require("@nestjs/mongoose");
 const radiostation_schema_1 = require("../../schemas/radiostation.schema");
+const sonickey_module_1 = require("../sonickey/sonickey.module");
 const radiostation_sonickey_schema_1 = require("../../schemas/radiostation-sonickey.schema");
 const sonickey_schema_1 = require("../../schemas/sonickey.schema");
 let RadiostationModule = class RadiostationModule {
@@ -28,6 +29,7 @@ RadiostationModule = __decorate([
                 { name: radiostation_sonickey_schema_1.RadioStationSonicKey.name, schema: radiostation_sonickey_schema_1.RadioStationSonicKeySchema },
                 { name: sonickey_schema_1.SonicKey.name, schema: sonickey_schema_1.SonicKeySchema }
             ]),
+            sonickey_module_1.SonickeyModule
         ],
         controllers: [radiostation_controller_1.RadiostationController, radiostation_sonickeys_controller_1.RadiostationSonicKeysController],
         providers: [

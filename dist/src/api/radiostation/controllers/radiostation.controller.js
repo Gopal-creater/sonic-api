@@ -108,7 +108,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], RadiostationController.prototype, "findAll", null);
 __decorate([
-    common_1.Get('/owner/:ownerId'),
+    common_1.Get('/owners/:ownerId'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Radio Stations of particular user' }),

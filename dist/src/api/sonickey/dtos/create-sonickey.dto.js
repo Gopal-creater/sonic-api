@@ -15,7 +15,7 @@ const sonicKey_dto_1 = require("./sonicKey.dto");
 const swagger_1 = require("@nestjs/swagger");
 class CreateSonicKeyFromJobDto extends sonicKey_dto_1.SonicKeyDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { sonicKey: { required: true, type: () => String }, job: { required: true, type: () => String }, owner: { required: true, type: () => String }, licenseId: { required: true, type: () => String } };
+        return { sonicKey: { required: true, type: () => String }, job: { required: true, type: () => String }, owner: { required: true, type: () => String }, license: { required: true, type: () => String } };
     }
 }
 __decorate([
@@ -33,6 +33,6 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
-], CreateSonicKeyFromJobDto.prototype, "licenseId", void 0);
+], CreateSonicKeyFromJobDto.prototype, "license", void 0);
 exports.CreateSonicKeyFromJobDto = CreateSonicKeyFromJobDto;
 //# sourceMappingURL=create-sonickey.dto.js.map

@@ -16,4 +16,5 @@ export declare class CronService {
     getTimeout(name: string): void;
     addTimeout(name: string, milliseconds: number): void;
     deleteTimeout(name: string): void;
+    testFunc(name: string): Promise<unknown>;
 }

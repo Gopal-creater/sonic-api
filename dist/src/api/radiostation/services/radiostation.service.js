@@ -28,9 +28,12 @@ const common_1 = require("@nestjs/common");
 const radiostation_schema_1 = require("../../../schemas/radiostation.schema");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const child_process_1 = require("child_process");
+const sonickey_service_1 = require("../../sonickey/sonickey.service");
 let RadiostationService = class RadiostationService {
-    constructor(radioStationModel) {
+    constructor(radioStationModel, sonickeyService) {
         this.radioStationModel = radioStationModel;
+        this.sonickeyService = sonickeyService;
     }
     create(createRadiostationDto) {
         const newRadioStation = new this.radioStationModel(createRadiostationDto);
@@ -139,11 +142,24 @@ let RadiostationService = class RadiostationService {
             };
         });
     }
+    startListeningLikeAStream(streamUrl, outputPath) {
+        var ffm = child_process_1.default.spawn('ffmpeg', `-i ${streamUrl} -f 16_le -ar 41000 -ac 2 -f wav -t 00:00:10 ${outputPath}`.split(' '));
+        ffm.stdout.on('data', data => {
+            console.log(`stdout: ${data}`);
+        });
+        ffm.stderr.on('data', data => {
+            console.error(`stderr: ${data}`);
+        });
+        ffm.on('close', code => {
+            console.log(`child process exited with code ${code}`);
+        });
+    }
 };
 RadiostationService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(radiostation_schema_1.RadioStation.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        sonickey_service_1.SonickeyService])
 ], RadiostationService);
 exports.RadiostationService = RadiostationService;
 //# sourceMappingURL=radiostation.service.js.map

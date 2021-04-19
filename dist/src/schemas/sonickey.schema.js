@@ -16,10 +16,6 @@ const swagger_1 = require("@nestjs/swagger");
 const job_schema_1 = require("./job.schema");
 exports.SonicKeySchemaName = "SonicKey";
 let SonicKey = class SonicKey extends mongoose_2.Document {
-    constructor(data) {
-        super();
-        Object.assign(this, data);
-    }
 };
 __decorate([
     swagger_1.ApiProperty(),
@@ -43,7 +39,7 @@ __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
-], SonicKey.prototype, "licenseId", void 0);
+], SonicKey.prototype, "license", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ default: true }),
@@ -142,8 +138,7 @@ __decorate([
     __metadata("design:type", Map)
 ], SonicKey.prototype, "additionalMetadata", void 0);
 SonicKey = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.SonicKeySchemaName }),
-    __metadata("design:paramtypes", [Object])
+    mongoose_1.Schema({ timestamps: true, collection: exports.SonicKeySchemaName })
 ], SonicKey);
 exports.SonicKey = SonicKey;
 exports.SonicKeySchema = mongoose_1.SchemaFactory.createForClass(SonicKey);

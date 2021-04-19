@@ -74,11 +74,6 @@ export type JobDocument = Omit<Job,'jobFiles'> & {jobFiles:string[]} & Document;
 
 @Schema({ timestamps: true,collection:JobSchemaName})
 export class Job extends Document {
-  constructor(data?: Partial<Job>) {
-    super()
-    Object.assign(this, data);
-    
-  }
 
   @ApiProperty()
   @Prop({

@@ -29,10 +29,6 @@ Credential = __decorate([
 ], Credential);
 exports.Credential = Credential;
 let RadioStation = class RadioStation extends mongoose_2.Document {
-    constructor(data) {
-        super();
-        Object.assign(this, data);
-    }
 };
 __decorate([
     swagger_1.ApiProperty(),
@@ -92,8 +88,7 @@ __decorate([
     __metadata("design:type", Map)
 ], RadioStation.prototype, "metaData", void 0);
 RadioStation = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.RadioStationSchemaName }),
-    __metadata("design:paramtypes", [Object])
+    mongoose_1.Schema({ timestamps: true, collection: exports.RadioStationSchemaName })
 ], RadioStation);
 exports.RadioStation = RadioStation;
 exports.RadioStationSchema = mongoose_1.SchemaFactory.createForClass(RadioStation);
