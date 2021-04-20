@@ -2827,7 +2827,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.service.ts": {
-        "version": "075a7dc6a6b16ebdb4164b9115dc7fbcc5996bef296833057316bad6364c942e",
+        "version": "d46b1ef1e02d497a62afc09ffb776f6aa9595db1de690e670963165a303d9e71",
         "signature": "2f597df41091e3753e7b63ded88c153149cfdb2c21f3e44cbfe0c707e1beb1ab",
         "affectsGlobalScope": false
       },
@@ -3277,8 +3277,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/external-api/externalsonickey/externalsonickey.controller.ts": {
-        "version": "6ec3a255e9237c2ccfbe5dce3532b7588f787426081f0bf42c081316b0d9eff1",
-        "signature": "e2faa3ee73825e449f37a0bf8368e6945253c643ebc003b30b6c5060f47b4b06",
+        "version": "892dc80e249f684c770320afeaf600c806a41c8f508793241dc172f311f1f3c7",
+        "signature": "92470b9b384bbb362882b695f9f466d0d25030b7e2bc0428eca6aca40d8332c8",
         "affectsGlobalScope": false
       },
       "../src/api/external-api/externalsonickey/externalsonickey.module.ts": {
@@ -5217,7 +5217,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/controllers/job-file.controller.ts": {
-        "version": "427bde2368e8ae5c782abe7fb3c2b2f7f8020630b79768865e8031d626209376",
+        "version": "1d22c040d12f34ca237a38d2f56a26c0cfef69bf9543c108be153b043d125b3f",
         "signature": "3f7cd97b9b55d051a606d719517b2ed652c40641c03b89352753e84c5675e1b8",
         "affectsGlobalScope": false
       },
@@ -5277,8 +5277,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/services/radiostation.service.ts": {
-        "version": "95a66cb744569bbf8aa41611a40cbc3e04d6b76950dd1e7d56e61e899584c9b6",
-        "signature": "ca8222cd9d0f01341ad1956dde48a2fe21b6b7b067d3f73d7d394542af2d2ff2",
+        "version": "87dc424ecb5642a86c02bd9b71a8aea7070e592fead3cef4f3a44f3f1bb1696b",
+        "signature": "278da0818ae38be5c332907d6f082cd2f4630b481497a9bae88a44adc2a8c1b7",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts": {
@@ -5333,7 +5333,7 @@
       },
       "../src/api/radiostation/controllers/radiostation.controller.ts": {
         "version": "cbaa7cfd92ecb5b22939a3f43bfeac7fab99fa32f2ff2df95199efef32445f2f",
-        "signature": "04de7bda48440d73c56c32ab633ab2ef28e0f4b3c8044e894158026e713971d5",
+        "signature": "ca1d9648935ceca5106984d1517062c8ae22c117e31e12d52d946904d2c2867d",
         "affectsGlobalScope": false
       },
       "../src/schemas/radiostation-sonickey.schema.ts": {
@@ -18402,6 +18402,7 @@
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
         "../node_modules/@types/multer/index.d.ts",
+        "../node_modules/@types/node/console.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
@@ -31960,6 +31961,7 @@
       "../src/api/external-api/externalsonickey/externalsonickey.controller.ts": [
         "../src/api/external-api/externalsonickey/externalsonickey.service.ts",
         "../src/api/sonickey/sonickey.service.ts",
+        "../src/schemas/sonickey.schema.ts",
         "../src/shared/interfaces/uploadedfile.interface.ts"
       ],
       "../src/api/external-api/externalsonickey/externalsonickey.service.ts": [

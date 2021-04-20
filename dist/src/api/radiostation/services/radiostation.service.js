@@ -106,7 +106,7 @@ let RadiostationService = class RadiostationService {
                 message: 'Item not found',
             });
         }
-        return this.radioStationModel.remove(id);
+        return this.radioStationModel.findByIdAndRemove(id);
     }
     async bulkRemove(ids) {
         const promises = ids.map(id => this.removeById(id).catch(err => ({ promiseError: err, data: id })));

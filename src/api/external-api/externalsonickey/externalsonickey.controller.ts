@@ -21,6 +21,7 @@ import { diskStorage } from 'multer';
 import {appConfig} from '../../../config';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import * as uniqid from 'uniqid';
+import { log } from 'console';
 
 
 @ApiTags(
@@ -140,9 +141,11 @@ export class ExternalSonickeyController {
     return this.sonickeyService.decodeAllKeys(file).then(async({ sonicKeys }) => {
       console.log("Detected keys from Decode", sonicKeys);
       //iterate all the sonicKeys from decode function in order to get metadata
-      var sonicKeysMetadata = [];
+      var sonicKeysMetadata:SonicKey[] = [];
       for await (const sonicKey of sonicKeys) {
         const metadata = await this.sonickeyService.findBySonicKey(sonicKey);
+       console.log("metadata",metadata);
+       
         if(!metadata){
           continue;
         }

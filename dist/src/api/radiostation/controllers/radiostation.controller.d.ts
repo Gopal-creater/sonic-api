@@ -34,5 +34,5 @@ export declare class RadiostationController {
             data: string;
         }[];
     }>;
-    remove(id: string): Promise<any>;
+    remove(id: string): Promise<import("../../../schemas/radiostation.schema").RadioStation>;
 }

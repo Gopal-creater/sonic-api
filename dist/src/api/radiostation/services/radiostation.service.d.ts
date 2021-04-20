@@ -14,7 +14,7 @@ export declare class RadiostationService {
     startListeningStream(id: string): Promise<RadioStation>;
     findAll(queryDto?: QueryDto): Promise<RadioStation[]>;
     findByIdOrFail(id: string): Promise<RadioStation>;
-    removeById(id: string): Promise<any>;
+    removeById(id: string): Promise<RadioStation>;
     bulkRemove(ids: [string]): Promise<{
         passedData: RadioStation[];
         failedData: {

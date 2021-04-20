@@ -103,7 +103,7 @@ export class RadiostationService {
         message: 'Item not found',
       });
     }
-    return this.radioStationModel.remove(id);
+    return this.radioStationModel.findByIdAndRemove(id);
   }
 
   async bulkRemove(ids: [string]) {

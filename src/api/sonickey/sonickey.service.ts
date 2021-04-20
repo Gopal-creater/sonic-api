@@ -159,6 +159,9 @@ export class SonickeyService {
       .finally(() => {
         this.fileHandlerService.deleteFileAtPath(inFilePath);
       });
+    // return {
+    //   sonicKeys:['2KhHfn0-qo4','2KhHfn0-qo5']
+    // }
   }
 
   async exractMusicMetaFromFile(filePath: string) {
@@ -187,8 +190,8 @@ export class SonickeyService {
     return sonicKeyDto;
   }
 
-  async findBySonicKey(sonicKey: string) {
-    return this.sonicKeyModel.findOne({ sonicKey: sonicKey });
+  async findBySonicKey(sonicKey: string):Promise<SonicKey> {
+    return this.sonicKeyModel.findOne({ sonicKey: sonicKey }).lean();
   }
 
   async findByOwner(owner: string, queryDto: QueryDto = {}) {

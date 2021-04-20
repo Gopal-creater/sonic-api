@@ -136,7 +136,7 @@ let SonickeyService = class SonickeyService {
         return sonicKeyDto;
     }
     async findBySonicKey(sonicKey) {
-        return this.sonicKeyModel.findOne({ sonicKey: sonicKey });
+        return this.sonicKeyModel.findOne({ sonicKey: sonicKey }).lean();
     }
     async findByOwner(owner, queryDto = {}) {
         const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);

@@ -45,6 +45,7 @@ let ExternalSonickeyController = class ExternalSonickeyController {
                 for (var sonicKeys_1 = __asyncValues(sonicKeys), sonicKeys_1_1; sonicKeys_1_1 = await sonicKeys_1.next(), !sonicKeys_1_1.done;) {
                     const sonicKey = sonicKeys_1_1.value;
                     const metadata = await this.sonickeyService.findBySonicKey(sonicKey);
+                    console.log("metadata", metadata);
                     if (!metadata) {
                         continue;
                     }
@@ -94,7 +95,7 @@ __decorate([
     common_1.Post('/decode'),
     common_1.UseInterceptors(common_1.ClassSerializerInterceptor),
     swagger_1.ApiOperation({ summary: 'Decode File' }),
-    openapi.ApiResponse({ status: 201, type: [Object] }),
+    openapi.ApiResponse({ status: 201, type: [require("../../../schemas/sonickey.schema").SonicKey] }),
     __param(0, common_1.UploadedFile()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

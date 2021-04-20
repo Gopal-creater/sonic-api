@@ -54,7 +54,7 @@ let JobFileController = class JobFileController {
         await this.jobService
             .incrementReservedDetailsInLicenceBy(jobData.license, jobData.id, 1)
             .catch(async (err) => {
-            await this.jobService.jobFileModel.remove(savedJobFile.id);
+            await this.jobService.jobFileModel.findByIdAndRemove(savedJobFile.id);
             throw new common_1.UnprocessableEntityException();
         });
         return { savedJobFile, updatedJob };
