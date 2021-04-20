@@ -2962,7 +2962,7 @@
         "affectsGlobalScope": true
       },
       "../src/api/auth/guards/license-validation.guard.ts": {
-        "version": "57c84ce1ba718297e7109d6611cec147c24fd1df7d836a2fadf94437fbb53e5f",
+        "version": "247ec179cc2c41a44f2f7babfc2f9344da003ecbc86e52f55108a7ffa0f6d0da",
         "signature": "f9813c4787db328ba33246b38d3ab33000e2d5f14f1e1ee744681654a3df62e6",
         "affectsGlobalScope": false
       },
