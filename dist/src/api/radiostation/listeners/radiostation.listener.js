@@ -8,13 +8,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var RadioStationListener_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RadioStationListener = void 0;
 const common_1 = require("@nestjs/common");
 const event_emitter_1 = require("@nestjs/event-emitter");
 const constants_1 = require("./constants");
 const radiostation_schema_1 = require("../../../schemas/radiostation.schema");
-let RadioStationListener = class RadioStationListener {
+const schedule_1 = require("@nestjs/schedule");
+let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
+    constructor(schedulerRegistry) {
+        this.schedulerRegistry = schedulerRegistry;
+        this.logger = new common_1.Logger(RadioStationListener_1.name);
+    }
     handleStartListeningEvent(event) {
         console.log(event);
     }
@@ -34,8 +40,9 @@ __decorate([
     __metadata("design:paramtypes", [radiostation_schema_1.RadioStation]),
     __metadata("design:returntype", void 0)
 ], RadioStationListener.prototype, "handleStopListeningEvent", null);
-RadioStationListener = __decorate([
-    common_1.Injectable()
+RadioStationListener = RadioStationListener_1 = __decorate([
+    common_1.Injectable(),
+    __metadata("design:paramtypes", [schedule_1.SchedulerRegistry])
 ], RadioStationListener);
 exports.RadioStationListener = RadioStationListener;
 //# sourceMappingURL=radiostation.listener.js.map

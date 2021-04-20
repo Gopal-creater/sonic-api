@@ -1973,7 +1973,7 @@
       },
       "../src/api/sonickey/dtos/sonickey.dto.ts": {
         "version": "96a068daf4d129e439b0fd2f51ce925163d0c01a5a97ead7e6cbd11479485b8d",
-        "signature": "b08c4dd3bdd4d1fe155d538f432cb0e4374afc8e6d960acd458593f20120c7ad",
+        "signature": "4fc36c337a959f1e8c71aa95ebdab3e7511c7c5c06973cf23f649ed303cf8cba",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/create-sonickey.dto.ts": {
@@ -1983,7 +1983,7 @@
       },
       "../src/api/sonickey/dtos/update-sonickey.dto.ts": {
         "version": "7119ded71c976501ca2152e1b21fa7fc39b54972da65d6e805d13d72ac293a08",
-        "signature": "a9c03870df8f09e2aa9566004d9cb0d189b546a7d2837fa2d04bac53af0870f4",
+        "signature": "4331426208d4b42dafbcbd90163a7021c5aa727666e0e39d54ae72efc2380fc4",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/decode.dto.ts": {
@@ -5158,17 +5158,17 @@
       },
       "../src/api/job/dto/create-job-file.dto.ts": {
         "version": "b4e305ab39bd1b7f93e91b1d15507b12448017e180b2353e8ad7de76d6aae922",
-        "signature": "ed50991134888592ff8a2e02382288a7ece7d02307ff2d4a016b848cd2f05e1d",
+        "signature": "f87507ec57a52357d6d02d2ce6a06e40a43532f4f0b68ed59e3675628bfa8201",
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/create-job.dto.ts": {
         "version": "da8601c31aa17249081605c564d5c1b5560c76914407b486b7d897fbbdc71ca3",
-        "signature": "c9ba940785e66e304512010318aa5e35910954e4ba2436ff7eb705e0d9a0a541",
+        "signature": "48edfcddd2dfa7e4b51ab3e64ce2605c7aa5243128e75a03dff9a6943ac598b6",
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/update-job.dto.ts": {
         "version": "616c20893899dc23d6780b5ecfd426566140821757d4bb590b67714d12eee89c",
-        "signature": "fc21568ca760ab73b7dfb1a2d60d4aeed70141226ee00552b7f86eb405268378",
+        "signature": "048a604bb06ce10c5f4359730ea7b69996de666832de27a2d2e0d011e1d6e322",
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/update-job-file.dto.ts": {
@@ -5233,7 +5233,7 @@
       },
       "../src/api/radiostation/dto/create-radiostation.dto.ts": {
         "version": "8ee536ffffdfb2098b6cf0bfb4cbe24de669953a55183f2abddddb64d507a384",
-        "signature": "224ced50d5bf8bef2b5d41e013e0ebf25acac28a9c97f3c6a3de962a907801db",
+        "signature": "a2a7ef8033e8445bddc270525e8a6727cc8b7db1ad9136ec34fd958db06e97d9",
         "affectsGlobalScope": false
       },
       "../node_modules/eventemitter2/eventemitter2.d.ts": {
@@ -5343,7 +5343,7 @@
       },
       "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts": {
         "version": "059142400ca2ee4eff0d4f2352e540ac8ae42fe68edb295b723673408026eab0",
-        "signature": "dcab0a5f9e33db58ea90cb3cb4fd5f0617b3fe1a9a38cad87479398b130b1dfb",
+        "signature": "a3985db59692b258f4e9707e7dc5a6550e0f780caa898686d918631a95975273",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/services/radiostation-sonickeys.service.ts": {
@@ -5357,8 +5357,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/listeners/radiostation.listener.ts": {
-        "version": "830c28158c51f8e376d4e0c2a8b11ca9398cc0cc4972577c3abcad77ac736b6e",
-        "signature": "4b0ff543e1b1517eec192c2911b04a673159b4e7dd63d2b1cdb6dd9a33a2ea96",
+        "version": "f5ec41617d9cd77885f67d6ec8f7e7e10c5481771c34245a40122c1bd8e04d8a",
+        "signature": "30bb554ed9b6953f2cddcc66f3eb083347ca5bc342ea80c7b59c4351fe73db7e",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/radiostation.module.ts": {
@@ -18701,6 +18701,7 @@
       "../src/api/radiostation/listeners/radiostation.listener.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/event-emitter/dist/index.d.ts",
+        "../node_modules/@nestjs/schedule/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -32049,6 +32050,7 @@
         "../src/api/radiostation/dto/create-radiostation.dto.ts"
       ],
       "../src/api/radiostation/listeners/radiostation.listener.ts": [
+        "../node_modules/@nestjs/schedule/index.d.ts",
         "../src/schemas/radiostation.schema.ts"
       ],
       "../src/api/radiostation/services/radiostation-sonickeys.service.ts": [
