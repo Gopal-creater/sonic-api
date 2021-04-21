@@ -41,6 +41,7 @@ mongoosePaginate.paginate.options = {
         connectionFactory: (connection) => {
           connection?.plugin(mongoosePaginate);
           connection?.plugin(require('mongoose-autopopulate'))
+          connection?.plugin(require('mongoose-lean-virtuals'))
           return connection;
         }
       }),

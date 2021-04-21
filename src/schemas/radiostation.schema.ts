@@ -68,3 +68,4 @@ export class RadioStation extends Document {
 }
 
 export const RadioStationSchema = SchemaFactory.createForClass(RadioStation);
+

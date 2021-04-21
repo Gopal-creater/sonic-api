@@ -108,11 +108,9 @@ let SonickeyService = class SonickeyService {
         const argList = ' ' + inFilePath + ' ' + logFilePath;
         const sonicDecodeCmd = `${config_1.appConfig.DECODER_EXE_PATH}` + argList;
         console.log('sonicDecodeCmd: ', sonicDecodeCmd);
-        return this.fileOperationService
-            .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
-            .finally(() => {
-            this.fileHandlerService.deleteFileAtPath(inFilePath);
-        });
+        return {
+            sonicKeys: ['2KhHfn0-qo4', '2KhHfn0-qo5']
+        };
     }
     async exractMusicMetaFromFile(filePath) {
         return mm.parseFile(filePath);

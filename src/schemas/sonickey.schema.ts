@@ -75,12 +75,15 @@ export class SonicKey extends Document {
   @Prop()
   isrcCode?: string;
 
+  @ApiProperty()
   @Prop()
   iswcCode?: string;
 
+  @ApiProperty()
   @Prop()
   tuneCode?: string;
 
+  @ApiProperty()
   @Prop()
   contentName?: string;
 

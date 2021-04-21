@@ -54,6 +54,7 @@ AppModule = __decorate([
                     connectionFactory: (connection) => {
                         connection === null || connection === void 0 ? void 0 : connection.plugin(mongoosePaginate);
                         connection === null || connection === void 0 ? void 0 : connection.plugin(require('mongoose-autopopulate'));
+                        connection === null || connection === void 0 ? void 0 : connection.plugin(require('mongoose-lean-virtuals'));
                         return connection;
                     }
                 }),

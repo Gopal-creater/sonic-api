@@ -154,14 +154,14 @@ export class SonickeyService {
     console.log('sonicDecodeCmd: ', sonicDecodeCmd);
 
     //Prabin:Dont wait file to decode. just return Promise itself
-    return this.fileOperationService
-      .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
-      .finally(() => {
-        this.fileHandlerService.deleteFileAtPath(inFilePath);
-      });
-    // return {
-    //   sonicKeys:['2KhHfn0-qo4','2KhHfn0-qo5']
-    // }
+    // return this.fileOperationService
+    //   .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
+    //   .finally(() => {
+    //     this.fileHandlerService.deleteFileAtPath(inFilePath);
+    //   });
+    return {
+      sonicKeys:['2KhHfn0-qo4','2KhHfn0-qo5']
+    }
   }
 
   async exractMusicMetaFromFile(filePath: string) {
