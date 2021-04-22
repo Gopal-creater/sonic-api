@@ -5,5 +5,5 @@ export class DownloadDto {
     fileURL: string;
 
     @ApiProperty()
-    contentType: string;
+    contentType?: string;
 }

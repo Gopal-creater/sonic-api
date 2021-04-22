@@ -1,11 +1,11 @@
-import { CreateSonicKeyFromJobDto } from './dtos/create-sonickey.dto';
-import { UpdateSonicKeyDto } from './dtos/update-sonickey.dto';
-import { DecodeDto } from './dtos/decode.dto';
-import { EncodeDto } from './dtos/encode.dto';
-import { SonicKeyDto } from './dtos/sonicKey.dto';
-import { IUploadedFile } from './../../shared/interfaces/UploadedFile.interface';
-import { KeygenService } from './../../shared/modules/keygen/keygen.service';
-import { JsonParsePipe } from './../../shared/pipes/jsonparse.pipe';
+import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
+import { UpdateSonicKeyDto } from '../dtos/update-sonickey.dto';
+import { DecodeDto } from '../dtos/decode.dto';
+import { EncodeDto } from '../dtos/encode.dto';
+import { SonicKeyDto } from '../dtos/sonicKey.dto';
+import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
+import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
+import { JsonParsePipe } from '../../../shared/pipes/jsonparse.pipe';
 import {
   Controller,
   Get,
@@ -23,14 +23,15 @@ import {
   Res,
   NotFoundException,
   Query,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { SonickeyService } from './sonickey.service';
-import { SonicKey } from '../../schemas/sonickey.schema';
+import { SonickeyService } from '../services/sonickey.service';
+import { SonicKey } from '../../../schemas/sonickey.schema';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as makeDir from 'make-dir';
 import { diskStorage } from 'multer';
-import { appConfig } from '../../config';
-import { LicenseValidationGuard } from '../auth/guards/license-validation.guard';
+import { appConfig } from '../../../config';
+import { LicenseValidationGuard } from '../../auth/guards/license-validation.guard';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -41,15 +42,16 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import * as uniqid from 'uniqid';
-import { JwtAuthGuard } from '../auth/guards';
-import { User } from '../auth/decorators';
-import { FileHandlerService } from '../../shared/services/file-handler.service';
-import { DownloadDto } from './dtos/download.dto';
+import { JwtAuthGuard } from '../../auth/guards';
+import { User } from '../../auth/decorators';
+import { FileHandlerService } from '../../../shared/services/file-handler.service';
+import { DownloadDto } from '../dtos/download.dto';
 import * as appRootPath from 'app-root-path';
-import { QueryDto } from '../../shared/dtos/query.dto';
-import { IMongoosePaginate } from '../../shared/interfaces/MongoosePaginate.interface';
-import { MongoosePaginateDto } from '../../shared/dtos/mongoosepaginate.dto';
-import { ConvertIntObj } from '../../shared/pipes/convertIntObj.pipe';
+import { QueryDto } from '../../../shared/dtos/query.dto';
+import { IMongoosePaginate } from '../../../shared/interfaces/MongoosePaginate.interface';
+import { MongoosePaginateDto } from '../../../shared/dtos/mongoosepaginate.dto';
+import { ConvertIntObj } from '../../../shared/pipes/convertIntObj.pipe';
+import { Response } from 'express';
 
 /**
  * Prabin:
@@ -69,7 +71,7 @@ export class SonickeyController {
   ) {}
 
   @Get('/')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys' })
   async getAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
@@ -133,16 +135,16 @@ export class SonickeyController {
   @UseInterceptors(
     FileInterceptor('mediaFile', {
       // Check the mimetypes to allow for upload
-      fileFilter: (req: any, file: any, cb: any) => {
-        const mimetype = file.mimetype as string;
-        if (mimetype.includes('audio')) {
-          // Allow storage of file
-          cb(null, true);
-        } else {
-          // Reject file
-          cb(new BadRequestException('Unsupported file type'), false);
-        }
-      },
+      // fileFilter: (req: any, file: any, cb: any) => {
+      //   const mimetype = file.mimetype as string;
+      //   if (mimetype.includes('audio')) {
+      //     // Allow storage of file
+      //     cb(null, true);
+      //   } else {
+      //     // Reject file
+      //     cb(new BadRequestException('Unsupported file type'), false);
+      //   }
+      // },
       storage: diskStorage({
         destination: async (req, file, cb) => {
           const currentUserId = req['user']['sub'];
@@ -220,16 +222,16 @@ export class SonickeyController {
   @UseInterceptors(
     FileInterceptor('mediaFile', {
       // Check the mimetypes to allow for upload
-      fileFilter: (req: any, file: any, cb: any) => {
-        const mimetype = file.mimetype as string;
-        if (mimetype.includes('audio')) {
-          // Allow storage of file
-          cb(null, true);
-        } else {
-          // Reject file
-          cb(new BadRequestException('Unsupported file type'), false);
-        }
-      },
+      // fileFilter: (req: any, file: any, cb: any) => {
+      //   const mimetype = file.mimetype as string;
+      //   if (mimetype.includes('audio')) {
+      //     // Allow storage of file
+      //     cb(null, true);
+      //   } else {
+      //     // Reject file
+      //     cb(new BadRequestException('Unsupported file type'), false);
+      //   }
+      // },
       storage: diskStorage({
         destination: async (req, file, cb) => {
           const currentUserId = req['user']['sub'];
@@ -309,54 +311,30 @@ export class SonickeyController {
   @Post('/download-file')
   @ApiOperation({ summary: 'Secure Download of a file' })
   async downloadFile(
-    @Body() data: DownloadDto,
+    @Body() downloadDto: DownloadDto,
     @User('sub') userId: string,
-    @Res() response,
-  ): Promise<any> {
-    try {
+    @Res() response:Response,
+  ) {
       /* Checks for authenticated user in order to download the file */
-      var checkForAuth = false;
-      console.log('url', data.fileURL);
-      console.log('uid', userId);
-      if (data.fileURL.includes(userId)) {
-        console.log('Inside if');
-        checkForAuth = true;
-      }
-      if (checkForAuth == false) {
-        throw new BadRequestException(
-          'You are not authenticated to download the file.',
+      if (!downloadDto?.fileURL?.includes(userId)) {
+        throw new UnauthorizedException(
+          'You are not the owner of this file',
         );
       }
 
-      /*TODO : Check to accept only audio and video file content types*/
-      if (
-        !(
-          data.contentType.includes('audio') ||
-          data.contentType.includes('video')
-        )
-      ) {
-        throw new BadRequestException(
-          'Only audio and video files are supported',
-        );
-      }
-
-      /*TODO : Convert into a readable stream by passing the file path. The readable stream will return the file using pipe method*/
-      const filePath = `${appRootPath.toString()}/` + data.fileURL;
+      const filePath = `${appRootPath.toString()}/` + downloadDto.fileURL;
       console.log('file-path:', filePath);
-      const fileStream = await this.fileHandlerService.downloadFileFromPath(
-        filePath,
-      );
-
-      response.set({
-        'Content-Type': data.contentType,
-      });
-
-      /*TODO: Return the file and close the stream*/
-      return fileStream.pipe(response).on('close', function(err) {
-        console.log('Stream has been destroyed and file has been closed');
-      });
-    } catch (e) {
-      throw new BadRequestException(e.message);
-    }
+       const isFileExist = await this.fileHandlerService.fileExistsAtPath(filePath);
+       if(!isFileExist){
+        throw new BadRequestException(
+          'Sorry, file not found',
+        );
+       }
+      return response.sendFile(filePath,(err)=>{
+        if (err){
+          console.log(err);
+          return response.status(400).json({message:'Error sending file.'});
+        }
+      })
   }
 }

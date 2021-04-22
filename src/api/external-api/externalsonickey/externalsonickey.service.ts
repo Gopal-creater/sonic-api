@@ -1,4 +1,4 @@
-import { SonickeyService } from '../../sonickey/sonickey.service';
+import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

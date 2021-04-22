@@ -9,21 +9,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DownloadDto = void 0;
+exports.PublicDecodeDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
-class DownloadDto {
+class PublicDecodeDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { fileURL: { required: true, type: () => String }, contentType: { required: false, type: () => String } };
+        return { mediaFile: { required: true, type: () => Object } };
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], DownloadDto.prototype, "fileURL", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], DownloadDto.prototype, "contentType", void 0);
-exports.DownloadDto = DownloadDto;
-//# sourceMappingURL=download.dto.js.map
+    swagger_1.ApiProperty({ type: 'string', format: 'binary' }),
+    __metadata("design:type", Object)
+], PublicDecodeDto.prototype, "mediaFile", void 0);
+exports.PublicDecodeDto = PublicDecodeDto;
+//# sourceMappingURL=public-decode.dto.js.map

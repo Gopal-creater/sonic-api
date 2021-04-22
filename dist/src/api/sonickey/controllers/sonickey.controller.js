@@ -21,30 +21,30 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonickeyController = void 0;
 const openapi = require("@nestjs/swagger");
-const create_sonickey_dto_1 = require("./dtos/create-sonickey.dto");
-const update_sonickey_dto_1 = require("./dtos/update-sonickey.dto");
-const decode_dto_1 = require("./dtos/decode.dto");
-const encode_dto_1 = require("./dtos/encode.dto");
-const sonicKey_dto_1 = require("./dtos/sonicKey.dto");
-const keygen_service_1 = require("./../../shared/modules/keygen/keygen.service");
-const jsonparse_pipe_1 = require("./../../shared/pipes/jsonparse.pipe");
+const create_sonickey_dto_1 = require("../dtos/create-sonickey.dto");
+const update_sonickey_dto_1 = require("../dtos/update-sonickey.dto");
+const decode_dto_1 = require("../dtos/decode.dto");
+const encode_dto_1 = require("../dtos/encode.dto");
+const sonicKey_dto_1 = require("../dtos/sonicKey.dto");
+const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
+const jsonparse_pipe_1 = require("../../../shared/pipes/jsonparse.pipe");
 const common_1 = require("@nestjs/common");
-const sonickey_service_1 = require("./sonickey.service");
+const sonickey_service_1 = require("../services/sonickey.service");
 const platform_express_1 = require("@nestjs/platform-express");
 const makeDir = require("make-dir");
 const multer_1 = require("multer");
-const config_1 = require("../../config");
-const license_validation_guard_1 = require("../auth/guards/license-validation.guard");
+const config_1 = require("../../../config");
+const license_validation_guard_1 = require("../../auth/guards/license-validation.guard");
 const swagger_1 = require("@nestjs/swagger");
 const uniqid = require("uniqid");
-const guards_1 = require("../auth/guards");
-const decorators_1 = require("../auth/decorators");
-const file_handler_service_1 = require("../../shared/services/file-handler.service");
-const download_dto_1 = require("./dtos/download.dto");
+const guards_1 = require("../../auth/guards");
+const decorators_1 = require("../../auth/decorators");
+const file_handler_service_1 = require("../../../shared/services/file-handler.service");
+const download_dto_1 = require("../dtos/download.dto");
 const appRootPath = require("app-root-path");
-const query_dto_1 = require("../../shared/dtos/query.dto");
-const mongoosepaginate_dto_1 = require("../../shared/dtos/mongoosepaginate.dto");
-const convertIntObj_pipe_1 = require("../../shared/pipes/convertIntObj.pipe");
+const query_dto_1 = require("../../../shared/dtos/query.dto");
+const mongoosepaginate_dto_1 = require("../../../shared/dtos/mongoosepaginate.dto");
+const convertIntObj_pipe_1 = require("../../../shared/pipes/convertIntObj.pipe");
 class TestT extends mongoosepaginate_dto_1.MongoosePaginateDto {
 }
 let SonickeyController = class SonickeyController {
@@ -146,6 +146,10 @@ let SonickeyController = class SonickeyController {
         return deletedSonickey;
     }
     async downloadFile(downloadDto, userId, response) {
+        var _a;
+        if (!((_a = downloadDto === null || downloadDto === void 0 ? void 0 : downloadDto.fileURL) === null || _a === void 0 ? void 0 : _a.includes(userId))) {
+            throw new common_1.UnauthorizedException('You are not the owner of this file');
+        }
         const filePath = `${appRootPath.toString()}/` + downloadDto.fileURL;
         console.log('file-path:', filePath);
         const isFileExist = await this.fileHandlerService.fileExistsAtPath(filePath);
@@ -162,10 +166,9 @@ let SonickeyController = class SonickeyController {
 };
 __decorate([
     common_1.Get('/'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys' }),
-    openapi.ApiResponse({ status: 200, type: [require("../../schemas/sonickey.schema").SonicKey] }),
+    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/sonickey.schema").SonicKey] }),
     __param(0, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
@@ -184,7 +187,7 @@ __decorate([
     common_1.Post('/create-from-job'),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Save to database after local encode from job.' }),
-    openapi.ApiResponse({ status: 201, type: require("../../schemas/sonickey.schema").SonicKey }),
+    openapi.ApiResponse({ status: 201, type: require("../../../schemas/sonickey.schema").SonicKey }),
     __param(0, common_1.Body()),
     __param(1, decorators_1.User('sub')),
     __param(2, common_1.Req()),
@@ -197,7 +200,7 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user' }),
-    openapi.ApiResponse({ status: 200, type: [require("../../schemas/sonickey.schema").SonicKey] }),
+    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/sonickey.schema").SonicKey] }),
     __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
@@ -208,7 +211,7 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular job' }),
-    openapi.ApiResponse({ status: 200, type: [require("../../schemas/sonickey.schema").SonicKey] }),
+    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/sonickey.schema").SonicKey] }),
     __param(0, common_1.Param('jobId')), __param(1, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
@@ -219,7 +222,7 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get Single SonicKey' }),
-    openapi.ApiResponse({ status: 200, type: require("../../schemas/sonickey.schema").SonicKey }),
+    openapi.ApiResponse({ status: 200, type: require("../../../schemas/sonickey.schema").SonicKey }),
     __param(0, common_1.Param('sonickey')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -250,7 +253,7 @@ __decorate([
     common_1.Post('/encode'),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Encode File And save to database' }),
-    openapi.ApiResponse({ status: 201, type: require("../../schemas/sonickey.schema").SonicKey }),
+    openapi.ApiResponse({ status: 201, type: require("../../../schemas/sonickey.schema").SonicKey }),
     __param(0, common_1.Body('data', jsonparse_pipe_1.JsonParsePipe)),
     __param(1, common_1.UploadedFile()),
     __param(2, decorators_1.User('sub')),
@@ -294,7 +297,7 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update Sonic Keys meta data' }),
-    openapi.ApiResponse({ status: 200, type: require("../../schemas/sonickey.schema").SonicKey }),
+    openapi.ApiResponse({ status: 200, type: require("../../../schemas/sonickey.schema").SonicKey }),
     __param(0, common_1.Param('sonickey')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),

@@ -19,33 +19,50 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExternalSonickeyController = void 0;
+exports.SonickeyGuestController = void 0;
 const openapi = require("@nestjs/swagger");
-const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
-const extdecode_dto_1 = require("./dtos/extdecode.dto");
+const sonicKey_dto_1 = require("../dtos/sonicKey.dto");
+const jsonparse_pipe_1 = require("../../../shared/pipes/jsonparse.pipe");
 const common_1 = require("@nestjs/common");
-const externalsonickey_service_1 = require("./externalsonickey.service");
+const sonickey_service_1 = require("../services/sonickey.service");
 const platform_express_1 = require("@nestjs/platform-express");
 const makeDir = require("make-dir");
 const multer_1 = require("multer");
 const config_1 = require("../../../config");
 const swagger_1 = require("@nestjs/swagger");
 const uniqid = require("uniqid");
-let ExternalSonickeyController = class ExternalSonickeyController {
-    constructor(externalSonicKeyService, sonickeyService) {
-        this.externalSonicKeyService = externalSonicKeyService;
-        this.sonickeyService = sonickeyService;
+const file_handler_service_1 = require("../../../shared/services/file-handler.service");
+const public_encode_dto_1 = require("../dtos/public-encode.dto");
+const public_decode_dto_1 = require("../dtos/public-decode.dto");
+let SonickeyGuestController = class SonickeyGuestController {
+    constructor(sonicKeyService, fileHandlerService) {
+        this.sonicKeyService = sonicKeyService;
+        this.fileHandlerService = fileHandlerService;
+    }
+    encode(sonicKeyDto, file, req) {
+        console.log('file', file);
+        const owner = 'guest';
+        const licenseId = "guest_license";
+        return this.sonicKeyService
+            .encode(file, sonicKeyDto.encodingStrength)
+            .then(data => {
+            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDto), { contentFilePath: data.downloadFileUrl, owner: owner, sonicKey: data.sonicKey, licenseId: licenseId }));
+            return newSonicKey.save().finally(() => {
+                this.fileHandlerService.deleteFileAtPath(file.path);
+            });
+        });
     }
     async decode(file) {
-        return this.sonickeyService.decodeAllKeys(file).then(async ({ sonicKeys }) => {
+        return this.sonicKeyService
+            .decodeAllKeys(file)
+            .then(async ({ sonicKeys }) => {
             var e_1, _a;
-            console.log("Detected keys from Decode", sonicKeys);
+            console.log('Detected keys from Decode', sonicKeys);
             var sonicKeysMetadata = [];
             try {
                 for (var sonicKeys_1 = __asyncValues(sonicKeys), sonicKeys_1_1; sonicKeys_1_1 = await sonicKeys_1.next(), !sonicKeys_1_1.done;) {
                     const sonicKey = sonicKeys_1_1.value;
-                    const metadata = await this.sonickeyService.findBySonicKey(sonicKey);
-                    console.log("metadata", metadata);
+                    const metadata = await this.sonicKeyService.findBySonicKey(sonicKey);
                     if (!metadata) {
                         continue;
                     }
@@ -67,36 +84,68 @@ __decorate([
     common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
         storage: multer_1.diskStorage({
             destination: async (req, file, cb) => {
-                const currentUserId = 'fromExternal';
+                const currentUserId = 'guest';
+                const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
+                await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}/encodedFiles`);
+                cb(null, imagePath);
+            },
+            filename: (req, file, cb) => {
+                let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+                const randomName = uniqid();
+                cb(null, `${randomName}-${orgName}`);
+            },
+        }),
+    })),
+    swagger_1.ApiConsumes('multipart/form-data'),
+    swagger_1.ApiBody({
+        description: 'File To Encode',
+        type: public_encode_dto_1.PublicEncodeDto,
+    }),
+    common_1.Post('/encode'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Encode File And save to database' }),
+    openapi.ApiResponse({ status: 201, type: require("../../../schemas/sonickey.schema").SonicKey }),
+    __param(0, common_1.Body('sonickey', jsonparse_pipe_1.JsonParsePipe)),
+    __param(1, common_1.UploadedFile()),
+    __param(2, common_1.Req()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [sonicKey_dto_1.SonicKeyDto, Object, Object]),
+    __metadata("design:returntype", void 0)
+], SonickeyGuestController.prototype, "encode", null);
+__decorate([
+    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
+        storage: multer_1.diskStorage({
+            destination: async (req, file, cb) => {
+                const currentUserId = 'guest';
                 const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
                 cb(null, imagePath);
             },
             filename: (req, file, cb) => {
-                const uniqueId = uniqid();
                 let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-                cb(null, `${uniqueId}-${orgName}`);
+                const randomName = uniqid();
+                cb(null, `${randomName}-${orgName}`);
             },
         }),
     })),
     swagger_1.ApiConsumes('multipart/form-data'),
     swagger_1.ApiBody({
         description: 'File To Decode',
-        type: extdecode_dto_1.ExtDecodeDto,
+        type: public_decode_dto_1.PublicDecodeDto,
     }),
     common_1.Post('/decode'),
     common_1.UseInterceptors(common_1.ClassSerializerInterceptor),
-    swagger_1.ApiOperation({ summary: 'Decode File' }),
+    swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
     openapi.ApiResponse({ status: 201, type: [require("../../../schemas/sonickey.schema").SonicKey] }),
     __param(0, common_1.UploadedFile()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], ExternalSonickeyController.prototype, "decode", null);
-ExternalSonickeyController = __decorate([
-    swagger_1.ApiTags('External SonicKeys Controller (Public for now, But in future will be protected by API KEY)'),
-    common_1.Controller('external/sonickeys'),
-    __metadata("design:paramtypes", [externalsonickey_service_1.ExternalSonickeyService,
-        sonickey_service_1.SonickeyService])
-], ExternalSonickeyController);
-exports.ExternalSonickeyController = ExternalSonickeyController;
-//# sourceMappingURL=externalsonickey.controller.js.map
+], SonickeyGuestController.prototype, "decode", null);
+SonickeyGuestController = __decorate([
+    swagger_1.ApiTags('Public Controller'),
+    common_1.Controller('sonic-keys-guest'),
+    __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
+        file_handler_service_1.FileHandlerService])
+], SonickeyGuestController);
+exports.SonickeyGuestController = SonickeyGuestController;
+//# sourceMappingURL=sonickey.guest.controller.js.map

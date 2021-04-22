@@ -1,18 +1,18 @@
-import { SonicKeyDto } from './dtos/sonicKey.dto';
-import { IUploadedFile } from './../../shared/interfaces/UploadedFile.interface';
-import { FileHandlerService } from './../../shared/services/file-handler.service';
-import { FileOperationService } from './../../shared/services/file-operation.service';
+import { SonicKeyDto } from '../dtos/sonicKey.dto';
+import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
+import { FileHandlerService } from '../../../shared/services/file-handler.service';
+import { FileOperationService } from '../../../shared/services/file-operation.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { SonicKey } from '../../schemas/sonickey.schema';
+import { SonicKey } from '../../../schemas/sonickey.schema';
 import * as mm from 'music-metadata';
 import * as upath from 'upath';
 import { nanoid } from 'nanoid';
-import { appConfig } from '../../config';
-import { CreateSonicKeyFromJobDto } from './dtos/create-sonickey.dto';
+import { appConfig } from '../../../config';
+import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { QueryDto } from '../../shared/dtos/query.dto';
-import { Job } from '../../schemas/job.schema';
+import { QueryDto } from '../../../shared/dtos/query.dto';
+import { Job } from '../../../schemas/job.schema';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -154,14 +154,14 @@ export class SonickeyService {
     console.log('sonicDecodeCmd: ', sonicDecodeCmd);
 
     //Prabin:Dont wait file to decode. just return Promise itself
-    // return this.fileOperationService
-    //   .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
-    //   .finally(() => {
-    //     this.fileHandlerService.deleteFileAtPath(inFilePath);
-    //   });
-    return {
-      sonicKeys:['2KhHfn0-qo4','2KhHfn0-qo5']
-    }
+    return this.fileOperationService
+      .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
+      .finally(() => {
+        this.fileHandlerService.deleteFileAtPath(inFilePath);
+      });
+    // return {
+    //   sonicKeys:['2KhHfn0-qo8','Z_NwqQ-SCJD']
+    // }
   }
 
   async exractMusicMetaFromFile(filePath: string) {

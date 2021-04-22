@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobFileService = void 0;
 const common_1 = require("@nestjs/common");
 const job_service_1 = require("./job.service");
-const sonickey_service_1 = require("../../sonickey/sonickey.service");
+const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
 const jobfile_schema_1 = require("../../../schemas/jobfile.schema");
 const mongoose_1 = require("mongoose");

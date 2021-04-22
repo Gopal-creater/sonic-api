@@ -9,21 +9,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DownloadDto = void 0;
+exports.PublicEncodeDto = void 0;
 const openapi = require("@nestjs/swagger");
+const sonicKey_dto_1 = require("./sonicKey.dto");
 const swagger_1 = require("@nestjs/swagger");
-class DownloadDto {
+class PublicEncodeDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { fileURL: { required: true, type: () => String }, contentType: { required: false, type: () => String } };
+        return { mediaFile: { required: true, type: () => Object }, sonickey: { required: true, type: () => require("./sonicKey.dto").SonicKeyDto } };
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], DownloadDto.prototype, "fileURL", void 0);
+    swagger_1.ApiProperty({ type: 'string', format: 'binary' }),
+    __metadata("design:type", Object)
+], PublicEncodeDto.prototype, "mediaFile", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], DownloadDto.prototype, "contentType", void 0);
-exports.DownloadDto = DownloadDto;
-//# sourceMappingURL=download.dto.js.map
+    __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
+], PublicEncodeDto.prototype, "sonickey", void 0);
+exports.PublicEncodeDto = PublicEncodeDto;
+//# sourceMappingURL=public-encode.dto.js.map

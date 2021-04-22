@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExternalSonickeyService = void 0;
-const sonickey_service_1 = require("../../sonickey/sonickey.service");
+const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const common_1 = require("@nestjs/common");
 let ExternalSonickeyService = class ExternalSonickeyService {
     constructor(sonickeyService) {

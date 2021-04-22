@@ -9,12 +9,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonickeyModule = void 0;
 const file_handler_service_1 = require("./../../shared/services/file-handler.service");
 const common_1 = require("@nestjs/common");
-const sonickey_controller_1 = require("./sonickey.controller");
-const sonickey_service_1 = require("./sonickey.service");
+const sonickey_controller_1 = require("./controllers/sonickey.controller");
+const sonickey_service_1 = require("./services/sonickey.service");
 const keygen_service_1 = require("../../shared/modules/keygen/keygen.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const sonickey_schema_1 = require("../../schemas/sonickey.schema");
 const file_operation_service_1 = require("../../shared/services/file-operation.service");
+const sonickey_guest_controller_1 = require("./controllers/sonickey.guest.controller");
 let SonickeyModule = class SonickeyModule {
 };
 SonickeyModule = __decorate([
@@ -24,7 +25,7 @@ SonickeyModule = __decorate([
                 { name: sonickey_schema_1.SonicKeySchemaName, schema: sonickey_schema_1.SonicKeySchema },
             ]),
         ],
-        controllers: [sonickey_controller_1.SonickeyController],
+        controllers: [sonickey_controller_1.SonickeyController, sonickey_guest_controller_1.SonickeyGuestController],
         providers: [
             sonickey_service_1.SonickeyService,
             keygen_service_1.KeygenService,

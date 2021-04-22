@@ -1967,7 +1967,7 @@
         "affectsGlobalScope": false
       },
       "../src/schemas/sonickey.schema.ts": {
-        "version": "22e2712f1ea2ffd288551b6e27f057b3eef4576ffb630ef70ba4a3c590c1742e",
+        "version": "e0d05d390cef68d44eca77db55afa4c35835c2b21029948f1069f2c4718d0bed",
         "signature": "235efb8fd5ac8dc26e48bff868b4c3ee3984e2e9905476e4f0d2aabe77a3357b",
         "affectsGlobalScope": false
       },
@@ -2826,9 +2826,9 @@
         "signature": "5da6801bf2c3eab6a47e9a0b7f6168c5446263a2544b61688655ba3051a5cb15",
         "affectsGlobalScope": false
       },
-      "../src/api/sonickey/sonickey.service.ts": {
-        "version": "bb5b9f944a6bfa12056f47c7895d44ce557e198eef309b57000b3af9417f7c03",
-        "signature": "2f597df41091e3753e7b63ded88c153149cfdb2c21f3e44cbfe0c707e1beb1ab",
+      "../src/api/sonickey/services/sonickey.service.ts": {
+        "version": "eeee14021961b8a3064c2d0dedc690e5718bb5e63786ae54ae42499afeb55860",
+        "signature": "c31f0529fea0b09ef711ce716194c8396966659c1733e86f722c5fab72431fb3",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/core/adapters/http-adapter.d.ts": {
@@ -3232,8 +3232,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/download.dto.ts": {
-        "version": "920c0f3368a95bc6ea9069a1474ba3fca573d4d04e43bf2d39cb5193063560c4",
-        "signature": "9059e57272a581fd7893c7d4b1b77ec8bfcab92ff57599d3ecabe5d25252168e",
+        "version": "5de461e3de8974eee95a9c7c5e23f44d696482daf30dd53617479c2b320447d3",
+        "signature": "bbb5b8dcb96d922b4c1f5cc5861a473a57071da02210920cff04f3250a7235bf",
         "affectsGlobalScope": false
       },
       "../src/shared/interfaces/mongoosepaginate.interface.ts": {
@@ -3251,13 +3251,28 @@
         "signature": "06383332960989fa00a459d988ee4e13ffaa7528764264afb599082ee1a2f158",
         "affectsGlobalScope": false
       },
-      "../src/api/sonickey/sonickey.controller.ts": {
-        "version": "fb26b1aac08fc3d84d61302c9058e1e252377cf00b5d47b546f0dd41c4a7b4c4",
-        "signature": "4c8894e1d4f8ad285970f7f1b6b292a018254042a8fea807e496690e445c02eb",
+      "../src/api/sonickey/controllers/sonickey.controller.ts": {
+        "version": "1da3ba6ddb726d479955883f6fa9bbe5ffb13dc4d99e70de994c73f46194ccc5",
+        "signature": "ca2b41995d76418181ff3c8ec587ca273008acabb257ac02c106eba0379ec860",
+        "affectsGlobalScope": false
+      },
+      "../src/api/sonickey/dtos/public-encode.dto.ts": {
+        "version": "b197c8b8617ac452cd60f3141207cd386fb1f4880f3e85d3c55aa749169d3b33",
+        "signature": "8151d4eb001753a0179163f44f5dade4c9af5d75e6b9b822bad50af5717e6bb5",
+        "affectsGlobalScope": false
+      },
+      "../src/api/sonickey/dtos/public-decode.dto.ts": {
+        "version": "c997b74e03d503e24ecf5cae408c021b4ce27500e22cfa25fddfdcf3049cb04a",
+        "signature": "05b43328f57abeeafe867d9beb8ec717eeea49df346c73ca8b224038555de86c",
+        "affectsGlobalScope": false
+      },
+      "../src/api/sonickey/controllers/sonickey.guest.controller.ts": {
+        "version": "d4c287c1dd6e56b587f0f5d3a80510fb5f20a3fb9d438ff2cb2c8ee8dd98d621",
+        "signature": "5e25618df6e575b6f7aa699d9d194480ea7488a8d7a5f67b36694e924da2c9ac",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.module.ts": {
-        "version": "4d9392b9af19027f110a7bc709d7d02a153c8661e215f6f40fc88793c03afcf2",
+        "version": "5f50e55f7708515f55b6f61446d4416ff46574b8ded39cb16f5753880758148f",
         "signature": "a464842fb4f06e582b281b89d678d9ea0fbd7075fb9d81cab2561fac1e30c7b7",
         "affectsGlobalScope": false
       },
@@ -3272,13 +3287,13 @@
         "affectsGlobalScope": false
       },
       "../src/api/external-api/externalsonickey/externalsonickey.service.ts": {
-        "version": "ebc49320997d589c5ed93e43534ad2e2868e112c46754b9c6b4a0e27d46edeec",
-        "signature": "fb029d8e5ad73de78eebff8741d4a558c3b882f163d202bb31d02b6aa8deb8a5",
+        "version": "805efd653bddc720ad7e23046691e9c4a8f76f31645df480df127fec139ca048",
+        "signature": "f76a833ff70e40bf646d9c6d4850f4d18914ce88a3e22bf8a5c44a1aa0e9a7ab",
         "affectsGlobalScope": false
       },
       "../src/api/external-api/externalsonickey/externalsonickey.controller.ts": {
-        "version": "892dc80e249f684c770320afeaf600c806a41c8f508793241dc172f311f1f3c7",
-        "signature": "92470b9b384bbb362882b695f9f466d0d25030b7e2bc0428eca6aca40d8332c8",
+        "version": "ea35c3349d5c2cf153e72e2a37dc04ccb7f13ff4bd8ed4075aa60a16e06a5ac0",
+        "signature": "b87cccfe8ea92c589d71f4fb48e420748881274a09c173ef0de2b1827a730bfc",
         "affectsGlobalScope": false
       },
       "../src/api/external-api/externalsonickey/externalsonickey.module.ts": {
@@ -5202,8 +5217,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/controllers/job.controller.ts": {
-        "version": "68ff74ff1df02df92b37212c4996c4cf1b53c1ac0153b3d9da86666e5fcc64f0",
-        "signature": "d2e41020752fc13445677c129a4935ea7a672c3869cc052ae77d81889710176d",
+        "version": "719c35915171ffdbb514aa6d639373cb8f0e1cedf07217dddbe58e1d5ab57f79",
+        "signature": "591ec6e61f3afb3885a79c1957568c8c73c85bc2721bfaa4b7c760e16c785575",
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/add-job-files.dto.ts": {
@@ -5212,8 +5227,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/services/job-file.service.ts": {
-        "version": "d7c42ff15fc75a2835e79b8589661c46e9eaaa38ff1fc97d1773a2ac523eedaf",
-        "signature": "d0250fe8fe2d7a0f6d4c8d6f14913e1454f882b4d76c6e8b1464faf94ae80f4a",
+        "version": "907f512058a39690f1a3c76edef2c31394bb30dbad50979db2a4c800a6a63310",
+        "signature": "8f31c12afe4a3ee41267acb3038ce3d49acf58511e9346d74185c127aac9d7f8",
         "affectsGlobalScope": false
       },
       "../src/api/job/controllers/job-file.controller.ts": {
@@ -5277,8 +5292,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/services/radiostation.service.ts": {
-        "version": "87dc424ecb5642a86c02bd9b71a8aea7070e592fead3cef4f3a44f3f1bb1696b",
-        "signature": "278da0818ae38be5c332907d6f082cd2f4630b481497a9bae88a44adc2a8c1b7",
+        "version": "40140ac39ca32bd9d66812d31959306aff6606ad60008308409751f8bd2e9600",
+        "signature": "f6665b50328b9e08e60732e8c43fd33a5efc8c82ae1853ea3f2e3f061ff94567",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts": {
@@ -5407,7 +5422,7 @@
         "affectsGlobalScope": false
       },
       "../src/main.ts": {
-        "version": "f9be95dee63584fe23c75f294215f719e487a2cb9e92759641ca1baa5288ff59",
+        "version": "715b4c61fe98ca4708f38941b598be67ba1d3c9793f846163f15ecc86cad6eb2",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
@@ -18414,7 +18429,7 @@
         "../src/api/external-api/externalsonickey/dtos/extencode.dto.ts",
         "../src/api/external-api/externalsonickey/externalsonickey.service.ts",
         "../src/api/sonickey/dtos/sonickey.dto.ts",
-        "../src/api/sonickey/sonickey.service.ts",
+        "../src/api/sonickey/services/sonickey.service.ts",
         "../src/config/index.ts",
         "../src/schemas/sonickey.schema.ts",
         "../src/shared/interfaces/uploadedfile.interface.ts",
@@ -18442,7 +18457,7 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
-        "../src/api/sonickey/sonickey.service.ts"
+        "../src/api/sonickey/services/sonickey.service.ts"
       ],
       "../src/api/job/controllers/job-file.controller.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -18481,7 +18496,7 @@
         "../src/api/job/dto/create-job.dto.ts",
         "../src/api/job/dto/update-job.dto.ts",
         "../src/api/job/services/job.service.ts",
-        "../src/api/sonickey/sonickey.service.ts",
+        "../src/api/sonickey/services/sonickey.service.ts",
         "../src/shared/dtos/query.dto.ts",
         "../src/shared/pipes/convertintobj.pipe.ts"
       ],
@@ -18576,7 +18591,7 @@
         "../src/api/job/dto/add-job-files.dto.ts",
         "../src/api/job/dto/update-job-file.dto.ts",
         "../src/api/job/services/job.service.ts",
-        "../src/api/sonickey/sonickey.service.ts",
+        "../src/api/sonickey/services/sonickey.service.ts",
         "../src/schemas/job.schema.ts",
         "../src/schemas/jobfile.schema.ts",
         "../src/schemas/sonickey.schema.ts",
@@ -18763,9 +18778,71 @@
         "../node_modules/mongoose/index.d.ts",
         "../src/api/radiostation/dto/create-radiostation.dto.ts",
         "../src/api/radiostation/listeners/constants.ts",
-        "../src/api/sonickey/sonickey.service.ts",
+        "../src/api/sonickey/services/sonickey.service.ts",
         "../src/schemas/radiostation.schema.ts",
         "../src/shared/dtos/query.dto.ts"
+      ],
+      "../src/api/sonickey/controllers/sonickey.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/platform-express/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/app-root-path/index.d.ts",
+        "../node_modules/@types/express/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/multer/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/uniqid/index.d.ts",
+        "../node_modules/make-dir/index.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/auth/decorators/index.ts",
+        "../src/api/auth/guards/index.ts",
+        "../src/api/auth/guards/license-validation.guard.ts",
+        "../src/api/sonickey/dtos/create-sonickey.dto.ts",
+        "../src/api/sonickey/dtos/decode.dto.ts",
+        "../src/api/sonickey/dtos/download.dto.ts",
+        "../src/api/sonickey/dtos/encode.dto.ts",
+        "../src/api/sonickey/dtos/sonickey.dto.ts",
+        "../src/api/sonickey/dtos/update-sonickey.dto.ts",
+        "../src/api/sonickey/services/sonickey.service.ts",
+        "../src/config/index.ts",
+        "../src/schemas/sonickey.schema.ts",
+        "../src/shared/dtos/mongoosepaginate.dto.ts",
+        "../src/shared/dtos/query.dto.ts",
+        "../src/shared/interfaces/mongoosepaginate.interface.ts",
+        "../src/shared/interfaces/uploadedfile.interface.ts",
+        "../src/shared/modules/keygen/keygen.service.ts",
+        "../src/shared/pipes/convertintobj.pipe.ts",
+        "../src/shared/pipes/jsonparse.pipe.ts",
+        "../src/shared/services/file-handler.service.ts"
+      ],
+      "../src/api/sonickey/controllers/sonickey.guest.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/platform-express/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/multer/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/uniqid/index.d.ts",
+        "../node_modules/make-dir/index.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/sonickey/dtos/public-decode.dto.ts",
+        "../src/api/sonickey/dtos/public-encode.dto.ts",
+        "../src/api/sonickey/dtos/sonickey.dto.ts",
+        "../src/api/sonickey/services/sonickey.service.ts",
+        "../src/config/index.ts",
+        "../src/schemas/sonickey.schema.ts",
+        "../src/shared/interfaces/uploadedfile.interface.ts",
+        "../src/shared/modules/keygen/keygen.service.ts",
+        "../src/shared/pipes/jsonparse.pipe.ts",
+        "../src/shared/services/file-handler.service.ts"
       ],
       "../src/api/sonickey/dtos/create-sonickey.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
@@ -18809,6 +18886,28 @@
         "../node_modules/mongoose/index.d.ts",
         "../src/api/sonickey/dtos/sonickey.dto.ts"
       ],
+      "../src/api/sonickey/dtos/public-decode.dto.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/sonickey/dtos/sonickey.dto.ts"
+      ],
+      "../src/api/sonickey/dtos/public-encode.dto.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/sonickey/dtos/sonickey.dto.ts"
+      ],
       "../src/api/sonickey/dtos/sonickey.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -18831,60 +18930,7 @@
         "../node_modules/mongoose/index.d.ts",
         "../src/api/sonickey/dtos/sonickey.dto.ts"
       ],
-      "../src/api/sonickey/sonickey.controller.ts": [
-        "../node_modules/@nestjs/common/index.d.ts",
-        "../node_modules/@nestjs/platform-express/index.d.ts",
-        "../node_modules/@nestjs/swagger/index.d.ts",
-        "../node_modules/@types/app-root-path/index.d.ts",
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/mongoose/index.d.ts",
-        "../node_modules/@types/multer/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/@types/uniqid/index.d.ts",
-        "../node_modules/make-dir/index.d.ts",
-        "../node_modules/mongoose/index.d.ts",
-        "../src/api/auth/decorators/index.ts",
-        "../src/api/auth/guards/index.ts",
-        "../src/api/auth/guards/license-validation.guard.ts",
-        "../src/api/sonickey/dtos/create-sonickey.dto.ts",
-        "../src/api/sonickey/dtos/decode.dto.ts",
-        "../src/api/sonickey/dtos/download.dto.ts",
-        "../src/api/sonickey/dtos/encode.dto.ts",
-        "../src/api/sonickey/dtos/sonickey.dto.ts",
-        "../src/api/sonickey/dtos/update-sonickey.dto.ts",
-        "../src/api/sonickey/sonickey.service.ts",
-        "../src/config/index.ts",
-        "../src/schemas/sonickey.schema.ts",
-        "../src/shared/dtos/mongoosepaginate.dto.ts",
-        "../src/shared/dtos/query.dto.ts",
-        "../src/shared/interfaces/mongoosepaginate.interface.ts",
-        "../src/shared/interfaces/uploadedfile.interface.ts",
-        "../src/shared/modules/keygen/keygen.service.ts",
-        "../src/shared/pipes/convertintobj.pipe.ts",
-        "../src/shared/pipes/jsonparse.pipe.ts",
-        "../src/shared/services/file-handler.service.ts"
-      ],
-      "../src/api/sonickey/sonickey.module.ts": [
-        "../node_modules/@nestjs/common/index.d.ts",
-        "../node_modules/@nestjs/mongoose/index.d.ts",
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/mongoose/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongoose/index.d.ts",
-        "../src/api/sonickey/sonickey.controller.ts",
-        "../src/api/sonickey/sonickey.service.ts",
-        "../src/schemas/sonickey.schema.ts",
-        "../src/shared/modules/keygen/keygen.service.ts",
-        "../src/shared/services/file-handler.service.ts",
-        "../src/shared/services/file-operation.service.ts"
-      ],
-      "../src/api/sonickey/sonickey.service.ts": [
+      "../src/api/sonickey/services/sonickey.service.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/mongoose/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -18904,6 +18950,24 @@
         "../src/schemas/sonickey.schema.ts",
         "../src/shared/dtos/query.dto.ts",
         "../src/shared/interfaces/uploadedfile.interface.ts",
+        "../src/shared/services/file-handler.service.ts",
+        "../src/shared/services/file-operation.service.ts"
+      ],
+      "../src/api/sonickey/sonickey.module.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/mongoose/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/sonickey/controllers/sonickey.controller.ts",
+        "../src/api/sonickey/controllers/sonickey.guest.controller.ts",
+        "../src/api/sonickey/services/sonickey.service.ts",
+        "../src/schemas/sonickey.schema.ts",
+        "../src/shared/modules/keygen/keygen.service.ts",
         "../src/shared/services/file-handler.service.ts",
         "../src/shared/services/file-operation.service.ts"
       ],
@@ -31960,12 +32024,12 @@
       ],
       "../src/api/external-api/externalsonickey/externalsonickey.controller.ts": [
         "../src/api/external-api/externalsonickey/externalsonickey.service.ts",
-        "../src/api/sonickey/sonickey.service.ts",
+        "../src/api/sonickey/services/sonickey.service.ts",
         "../src/schemas/sonickey.schema.ts",
         "../src/shared/interfaces/uploadedfile.interface.ts"
       ],
       "../src/api/external-api/externalsonickey/externalsonickey.service.ts": [
-        "../src/api/sonickey/sonickey.service.ts"
+        "../src/api/sonickey/services/sonickey.service.ts"
       ],
       "../src/api/job/controllers/job-file.controller.ts": [
         "../node_modules/mongoose/index.d.ts",
@@ -31982,7 +32046,7 @@
         "../src/api/job/dto/create-job.dto.ts",
         "../src/api/job/dto/update-job.dto.ts",
         "../src/api/job/services/job.service.ts",
-        "../src/api/sonickey/sonickey.service.ts",
+        "../src/api/sonickey/services/sonickey.service.ts",
         "../src/schemas/job.schema.ts",
         "../src/shared/dtos/query.dto.ts"
       ],
@@ -32011,7 +32075,7 @@
         "../node_modules/mongoose/index.d.ts",
         "../src/api/job/dto/update-job-file.dto.ts",
         "../src/api/job/services/job.service.ts",
-        "../src/api/sonickey/sonickey.service.ts",
+        "../src/api/sonickey/services/sonickey.service.ts",
         "../src/schemas/jobfile.schema.ts",
         "../src/schemas/sonickey.schema.ts",
         "../src/shared/dtos/query.dto.ts",
@@ -32067,14 +32131,37 @@
         "../node_modules/@nestjs/event-emitter/dist/index.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/radiostation/dto/create-radiostation.dto.ts",
-        "../src/api/sonickey/sonickey.service.ts",
+        "../src/api/sonickey/services/sonickey.service.ts",
         "../src/schemas/radiostation.schema.ts",
         "../src/shared/dtos/query.dto.ts"
+      ],
+      "../src/api/sonickey/controllers/sonickey.controller.ts": [
+        "../node_modules/@types/express/index.d.ts",
+        "../src/api/sonickey/dtos/create-sonickey.dto.ts",
+        "../src/api/sonickey/dtos/download.dto.ts",
+        "../src/api/sonickey/dtos/sonickey.dto.ts",
+        "../src/api/sonickey/dtos/update-sonickey.dto.ts",
+        "../src/api/sonickey/services/sonickey.service.ts",
+        "../src/schemas/sonickey.schema.ts",
+        "../src/shared/dtos/query.dto.ts",
+        "../src/shared/interfaces/uploadedfile.interface.ts",
+        "../src/shared/modules/keygen/keygen.service.ts",
+        "../src/shared/services/file-handler.service.ts"
+      ],
+      "../src/api/sonickey/controllers/sonickey.guest.controller.ts": [
+        "../src/api/sonickey/dtos/sonickey.dto.ts",
+        "../src/api/sonickey/services/sonickey.service.ts",
+        "../src/schemas/sonickey.schema.ts",
+        "../src/shared/interfaces/uploadedfile.interface.ts",
+        "../src/shared/services/file-handler.service.ts"
       ],
       "../src/api/sonickey/dtos/create-sonickey.dto.ts": [
         "../src/api/sonickey/dtos/sonickey.dto.ts"
       ],
       "../src/api/sonickey/dtos/encode.dto.ts": [
+        "../src/api/sonickey/dtos/sonickey.dto.ts"
+      ],
+      "../src/api/sonickey/dtos/public-encode.dto.ts": [
         "../src/api/sonickey/dtos/sonickey.dto.ts"
       ],
       "../src/api/sonickey/dtos/sonickey.dto.ts": [
@@ -32085,19 +32172,7 @@
         "../node_modules/@nestjs/common/index.d.ts",
         "../src/api/sonickey/dtos/sonickey.dto.ts"
       ],
-      "../src/api/sonickey/sonickey.controller.ts": [
-        "../src/api/sonickey/dtos/create-sonickey.dto.ts",
-        "../src/api/sonickey/dtos/download.dto.ts",
-        "../src/api/sonickey/dtos/sonickey.dto.ts",
-        "../src/api/sonickey/dtos/update-sonickey.dto.ts",
-        "../src/api/sonickey/sonickey.service.ts",
-        "../src/schemas/sonickey.schema.ts",
-        "../src/shared/dtos/query.dto.ts",
-        "../src/shared/interfaces/uploadedfile.interface.ts",
-        "../src/shared/modules/keygen/keygen.service.ts",
-        "../src/shared/services/file-handler.service.ts"
-      ],
-      "../src/api/sonickey/sonickey.service.ts": [
+      "../src/api/sonickey/services/sonickey.service.ts": [
         "../node_modules/mongoose/index.d.ts",
         "../node_modules/music-metadata/lib/index.d.ts",
         "../src/api/sonickey/dtos/create-sonickey.dto.ts",
@@ -33280,15 +33355,18 @@
       "../src/api/radiostation/radiostation.module.ts",
       "../src/api/radiostation/services/radiostation-sonickeys.service.ts",
       "../src/api/radiostation/services/radiostation.service.ts",
+      "../src/api/sonickey/controllers/sonickey.controller.ts",
+      "../src/api/sonickey/controllers/sonickey.guest.controller.ts",
       "../src/api/sonickey/dtos/create-sonickey.dto.ts",
       "../src/api/sonickey/dtos/decode.dto.ts",
       "../src/api/sonickey/dtos/download.dto.ts",
       "../src/api/sonickey/dtos/encode.dto.ts",
+      "../src/api/sonickey/dtos/public-decode.dto.ts",
+      "../src/api/sonickey/dtos/public-encode.dto.ts",
       "../src/api/sonickey/dtos/sonickey.dto.ts",
       "../src/api/sonickey/dtos/update-sonickey.dto.ts",
-      "../src/api/sonickey/sonickey.controller.ts",
+      "../src/api/sonickey/services/sonickey.service.ts",
       "../src/api/sonickey/sonickey.module.ts",
-      "../src/api/sonickey/sonickey.service.ts",
       "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
       "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
       "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",

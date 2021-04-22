@@ -1,6 +1,6 @@
 import { SonicKeyDto } from '../../sonickey/dtos/sonicKey.dto';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
-import { SonickeyService } from '../../sonickey/sonickey.service';
+import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { SonicKey } from '../../../schemas/sonickey.schema';
 import { ExtDecodeDto } from './dtos/extdecode.dto';
 import { ExtEncodeDto } from './dtos/extencode.dto';
@@ -37,16 +37,16 @@ export class ExternalSonickeyController {
   // @UseInterceptors(
   //   FileInterceptor('mediaFile', {
   //     // Check the mimetypes to allow for upload
-  //     fileFilter: (req: any, file: any, cb: any) => {
-  //       const mimetype = file.mimetype as string;
-  //       if (mimetype.includes('audio')) {
-  //         // Allow storage of file
-  //         cb(null, true);
-  //       } else {
-  //         // Reject file
-  //         cb(new BadRequestException('Unsupported file type'), false);
-  //       }
-  //     },
+  //     // fileFilter: (req: any, file: any, cb: any) => {
+  //     //   const mimetype = file.mimetype as string;
+  //     //   if (mimetype.includes('audio')) {
+  //     //     // Allow storage of file
+  //     //     cb(null, true);
+  //     //   } else {
+  //     //     // Reject file
+  //     //     cb(new BadRequestException('Unsupported file type'), false);
+  //     //   }
+  //     // },
   //     storage: diskStorage({
   //       destination: async (req, file, cb) => {
   //         const currentUserId = 'fromExternal'; //This is a directory which will be used by external application for encode file
@@ -103,16 +103,16 @@ export class ExternalSonickeyController {
   @UseInterceptors(
     FileInterceptor('mediaFile', {
         // Check the mimetypes to allow for upload
-        fileFilter: (req: any, file: any, cb: any) => {
-          const mimetype = file.mimetype as string;
-          if (mimetype.includes('audio')) {
-            // Allow storage of file
-            cb(null, true);
-          } else {
-            // Reject file
-            cb(new BadRequestException('Unsupported file type'), false);
-          }
-        },
+        // fileFilter: (req: any, file: any, cb: any) => {
+        //   const mimetype = file.mimetype as string;
+        //   if (mimetype.includes('audio')) {
+        //     // Allow storage of file
+        //     cb(null, true);
+        //   } else {
+        //     // Reject file
+        //     cb(new BadRequestException('Unsupported file type'), false);
+        //   }
+        // },
       storage: diskStorage({
         destination: async (req, file, cb) => {
           const currentUserId = 'fromExternal'; //This is a directory which will be used by external application for decode file

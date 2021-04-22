@@ -3,7 +3,7 @@ import { RadioStation } from '../../../schemas/radiostation.schema';
 import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { SonickeyService } from '../../sonickey/sonickey.service';
+import { SonickeyService } from '../../sonickey/services/sonickey.service';
 export declare class RadiostationService {
     readonly radioStationModel: Model<RadioStation>;
     readonly sonickeyService: SonickeyService;

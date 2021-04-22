@@ -6,7 +6,7 @@ import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import children from 'child_process';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { SonickeyService } from '../../sonickey/sonickey.service';
+import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { STOP_LISTENING, START_LISTENING } from '../listeners/constants';
 
 @Injectable()

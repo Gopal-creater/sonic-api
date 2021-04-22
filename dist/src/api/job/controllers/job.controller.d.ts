@@ -1,7 +1,7 @@
 import { JobService } from '../services/job.service';
 import { CreateJobDto } from '../dto/create-job.dto';
 import { UpdateJobDto } from '../dto/update-job.dto';
-import { SonickeyService } from '../../sonickey/sonickey.service';
+import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 export declare class JobController {
     private readonly jobService;

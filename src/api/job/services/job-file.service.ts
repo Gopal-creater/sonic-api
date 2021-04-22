@@ -8,7 +8,7 @@ import {
   AddKeyAndUpdateJobFileDto,
 } from '../dto/update-job-file.dto';
 import { JobService } from './job.service';
-import { SonickeyService } from '../../sonickey/sonickey.service';
+import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { SonicKey } from '../../../schemas/sonickey.schema';
 import { v4 as uuidv4 } from 'uuid';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';

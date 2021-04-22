@@ -30,7 +30,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const child_process_1 = require("child_process");
 const event_emitter_1 = require("@nestjs/event-emitter");
-const sonickey_service_1 = require("../../sonickey/sonickey.service");
+const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const constants_1 = require("../listeners/constants");
 let RadiostationService = class RadiostationService {
     constructor(radioStationModel, sonickeyService, eventEmitter) {

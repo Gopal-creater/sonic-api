@@ -20,7 +20,7 @@ import { User } from '../../auth/decorators/user.decorator';
 import { JobLicenseValidationGuard } from '../../auth/guards/job-license-validation.guard';
 import { v4 as uuidv4 } from 'uuid';
 import { equals, ConditionExpression } from '@aws/dynamodb-expressions';
-import { SonickeyService } from '../../sonickey/sonickey.service';
+import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { BadRequestException } from '@nestjs/common';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { ConvertIntObj } from '../../../shared/pipes/convertIntObj.pipe';
