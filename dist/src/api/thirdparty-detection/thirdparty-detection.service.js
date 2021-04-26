@@ -40,11 +40,22 @@ let ThirdpartyDetectionService = class ThirdpartyDetectionService {
         return newDetection.save();
     }
     async findAll(queryDto = {}) {
-        const { _limit, _start } = queryDto, query = __rest(queryDto, ["_limit", "_start"]);
+        var _a;
+        const { _limit, _start, _sort } = queryDto, query = __rest(queryDto, ["_limit", "_start", "_sort"]);
+        var sort = {};
+        if (_sort) {
+            var sortItems = (_sort === null || _sort === void 0 ? void 0 : _sort.split(',')) || [];
+            for (let index = 0; index < sortItems.length; index++) {
+                const sortItem = sortItems[index];
+                var sortKeyValue = sortItem === null || sortItem === void 0 ? void 0 : sortItem.split(':');
+                sort[sortKeyValue[0]] = ((_a = sortKeyValue[1]) === null || _a === void 0 ? void 0 : _a.toLowerCase()) == 'desc' ? -1 : 1;
+            }
+        }
         return this.thirdpartyDetectionModel
             .find(query || {})
             .skip(_start)
             .limit(_limit)
+            .sort(sort)
             .exec();
     }
     findById(id) {

@@ -23,11 +23,21 @@ export class ThirdpartyDetectionService {
   }
 
   async findAll(queryDto: QueryDto = {}) {
-    const { _limit, _start, ...query } = queryDto;
+    const { _limit, _start,_sort, ...query } = queryDto;
+    var sort={}
+    if(_sort){
+      var sortItems = _sort?.split(',')||[]
+      for (let index = 0; index < sortItems.length; index++) {
+        const sortItem = sortItems[index];
+        var sortKeyValue = sortItem?.split(':')
+        sort[sortKeyValue[0]]=sortKeyValue[1]?.toLowerCase()=='desc' ? -1 : 1
+      }
+    }
     return this.thirdpartyDetectionModel
       .find(query || {})
       .skip(_start)
       .limit(_limit)
+      .sort(sort)
       .exec();
   }
 
