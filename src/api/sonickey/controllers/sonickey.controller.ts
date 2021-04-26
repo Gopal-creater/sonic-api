@@ -59,7 +59,7 @@ import { Response } from 'express';
  * To get all owner's sonickeys we have to create a global secondary index table.
  */
 
-class TestT extends MongoosePaginateDto<SonicKey>{}
+ import fetch from 'node-fetch';
 
 @ApiTags('SonicKeys Controller')
 @Controller('sonic-keys')
@@ -71,7 +71,7 @@ export class SonickeyController {
   ) {}
 
   @Get('/')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys' })
   async getAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
@@ -79,6 +79,26 @@ export class SonickeyController {
     
     return this.sonicKeyService.getAll(queryDto);
   }
+
+  // @Get('/import-from-dynamo')
+  // // @UseGuards(JwtAuthGuard)
+  // // @ApiBearerAuth()
+  // async importKeys() {
+  //   const keys = await fetch('http://[::1]:8001/sonic-keys',{method:'GET'}).then(res=>res.json())
+  //   console.log("Length",keys?.length);
+  //   for (let index = 0; index < keys.length; index++) {
+  //     const oldSonicKey = keys[index];
+  //     oldSonicKey['license']=oldSonicKey?.licenseId
+  //     oldSonicKey['additionalMetadata']={
+  //       message:oldSonicKey?.additionalMetadata
+  //     }
+  //     delete oldSonicKey?.licenseId
+  //     delete oldSonicKey?.additionalMetadata
+  //     const newSonicKey = new this.sonicKeyService.sonicKeyModel(oldSonicKey);
+  //     await newSonicKey.save();
+  //   }
+  //   return "Done"
+  // }
 
   @Get('/generate-unique-sonic-key')
   @ApiOperation({ summary: 'Generate unique sonic key' })

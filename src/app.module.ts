@@ -25,12 +25,14 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 mongoosePaginate.paginate.options = {
   limit: 50,
 };
+console.log("Node_env",process.env.NODE_ENV);
+
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba' }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: process.env.NODE_ENV=="production"?'.env':'.env.arba' }),
     AuthModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

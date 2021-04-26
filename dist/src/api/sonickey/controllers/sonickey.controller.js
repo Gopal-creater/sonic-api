@@ -43,10 +43,7 @@ const file_handler_service_1 = require("../../../shared/services/file-handler.se
 const download_dto_1 = require("../dtos/download.dto");
 const appRootPath = require("app-root-path");
 const query_dto_1 = require("../../../shared/dtos/query.dto");
-const mongoosepaginate_dto_1 = require("../../../shared/dtos/mongoosepaginate.dto");
 const convertIntObj_pipe_1 = require("../../../shared/pipes/convertIntObj.pipe");
-class TestT extends mongoosepaginate_dto_1.MongoosePaginateDto {
-}
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, keygenService, fileHandlerService) {
         this.sonicKeyService = sonicKeyService;
@@ -166,6 +163,7 @@ let SonickeyController = class SonickeyController {
 };
 __decorate([
     common_1.Get('/'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys' }),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/sonickey.schema").SonicKey] }),

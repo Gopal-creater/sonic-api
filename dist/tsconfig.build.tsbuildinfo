@@ -1157,8 +1157,8 @@
         "affectsGlobalScope": false
       },
       "../package.json": {
-        "version": "1b7ebd18e02d4c465540e894e99f1905158e3619f17cd1c9dc19af8acb816460",
-        "signature": "4564846ac24ee8602eae46a6f7f7e314a5944f5ece4ef2b18555168dccb72e4b",
+        "version": "1f80b0b805f14d52c9e68f90bb540ca55cfd7957455ae5ebef2135382be9e00e",
+        "signature": "7bcc7776f610a3d3da744bb895c1b75026d83acfdeb90ef3f8de23bd5abe2c01",
         "affectsGlobalScope": true
       },
       "../src/app.service.ts": {
@@ -3252,7 +3252,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/controllers/sonickey.controller.ts": {
-        "version": "1da3ba6ddb726d479955883f6fa9bbe5ffb13dc4d99e70de994c73f46194ccc5",
+        "version": "f07f41aa9979c93b06bb09c1ddf2a6ea33b0651ece45c0d17c968a6a368d3be6",
         "signature": "ca2b41995d76418181ff3c8ec587ca273008acabb257ac02c106eba0379ec860",
         "affectsGlobalScope": false
       },
@@ -5412,7 +5412,7 @@
         "affectsGlobalScope": false
       },
       "../src/app.module.ts": {
-        "version": "439fcc83a9d01350e37bcbb91381c004a5b80dd34cbfe9ab4588ed5025a926ad",
+        "version": "6f69ad075637a8abaf17867e1d739116b5b3acf8d30944266a45a4422b3d9882",
         "signature": "098267cfef1e0a4afbfa6ce9d4e75d6e915635b0357421ffe5b8b2f3a91cfdee",
         "affectsGlobalScope": false
       },
@@ -18791,6 +18791,7 @@
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
         "../node_modules/@types/multer/index.d.ts",
+        "../node_modules/@types/node-fetch/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
