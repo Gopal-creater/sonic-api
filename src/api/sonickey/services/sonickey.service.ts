@@ -192,7 +192,7 @@ export class SonickeyService {
     sonicKeyDto.contentOwner =
       sonicKeyDto.contentOwner || musicData?.common?.artist || '';
     sonicKeyDto.contentDescription =sonicKeyDto.contentDescription|| musicData?.common?.description
-      ? musicData?.common?.description[0]
+      ? musicData?.common?.description?.[0]
       : '';
     return sonicKeyDto;
   }

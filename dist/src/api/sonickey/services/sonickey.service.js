@@ -124,7 +124,7 @@ let SonickeyService = class SonickeyService {
         return mm.parseFile(filePath);
     }
     async autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
         const musicData = await this.exractMusicMetaFromFile(file.path);
         sonicKeyDto.contentSize = sonicKeyDto.contentSize || (file === null || file === void 0 ? void 0 : file.size);
         sonicKeyDto.contentFileName = sonicKeyDto.contentFileName || (file === null || file === void 0 ? void 0 : file.filename);
@@ -138,7 +138,7 @@ let SonickeyService = class SonickeyService {
         sonicKeyDto.contentOwner =
             sonicKeyDto.contentOwner || ((_h = musicData === null || musicData === void 0 ? void 0 : musicData.common) === null || _h === void 0 ? void 0 : _h.artist) || '';
         sonicKeyDto.contentDescription = sonicKeyDto.contentDescription || ((_j = musicData === null || musicData === void 0 ? void 0 : musicData.common) === null || _j === void 0 ? void 0 : _j.description)
-            ? (_k = musicData === null || musicData === void 0 ? void 0 : musicData.common) === null || _k === void 0 ? void 0 : _k.description[0] : '';
+            ? (_l = (_k = musicData === null || musicData === void 0 ? void 0 : musicData.common) === null || _k === void 0 ? void 0 : _k.description) === null || _l === void 0 ? void 0 : _l[0] : '';
         return sonicKeyDto;
     }
     async findBySonicKey(sonicKey) {
