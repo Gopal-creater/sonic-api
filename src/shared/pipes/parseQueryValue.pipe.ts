@@ -8,7 +8,6 @@ export class ParseQueryValue implements PipeTransform {
   }
   transform(queries: any, metadata: ArgumentMetadata) {
     try {
-      console.log("queries",queries);
       const res = {}
       for (const key in queries) {
         var value = queries[key]

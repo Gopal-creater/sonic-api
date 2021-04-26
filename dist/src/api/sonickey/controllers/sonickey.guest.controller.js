@@ -45,8 +45,9 @@ let SonickeyGuestController = class SonickeyGuestController {
         const licenseId = "guest_license";
         return this.sonicKeyService
             .encode(file, sonicKeyDto.encodingStrength)
-            .then(data => {
-            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDto), { contentFilePath: data.downloadFileUrl, owner: owner, sonicKey: data.sonicKey, license: licenseId }));
+            .then(async (data) => {
+            const sonicKeyDtoWithMeta = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
+            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithMeta), { contentFilePath: data.downloadFileUrl, owner: owner, sonicKey: data.sonicKey, license: licenseId }));
             return newSonicKey.save().finally(() => {
                 this.fileHandlerService.deleteFileAtPath(file.path);
             });

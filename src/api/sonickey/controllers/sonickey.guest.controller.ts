@@ -97,9 +97,10 @@ export class SonickeyGuestController {
     const licenseId = "guest_license"
     return this.sonicKeyService
       .encode(file, sonicKeyDto.encodingStrength)
-      .then(data => {
+      .then(async data => {
+        const sonicKeyDtoWithMeta = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file,sonicKeyDto)
         const newSonicKey = new this.sonicKeyService.sonicKeyModel({
-            ...sonicKeyDto,
+            ...sonicKeyDtoWithMeta,
               contentFilePath: data.downloadFileUrl,
               owner: owner,
               sonicKey: data.sonicKey,

@@ -17,7 +17,6 @@ let ParseQueryValue = class ParseQueryValue {
     }
     transform(queries, metadata) {
         try {
-            console.log("queries", queries);
             const res = {};
             for (const key in queries) {
                 var value = queries[key];
