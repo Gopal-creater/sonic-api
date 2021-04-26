@@ -185,15 +185,15 @@ export class SonickeyService {
     sonicKeyDto.contentType = sonicKeyDto.contentType||file?.mimetype;
     sonicKeyDto.contentFileType = sonicKeyDto.contentFileType||file?.mimetype;
     sonicKeyDto.contentDuration =sonicKeyDto.contentDuration|| musicData?.format?.duration;
-    sonicKeyDto.contentEncoding = sonicKeyDto.contentEncoding||`${musicData?.format?.codec}, ${musicData?.format?.sampleRate} Hz, ${musicData?.format?.codecProfile}, ${musicData?.format?.bitrate} ch`;
+    sonicKeyDto.contentEncoding = sonicKeyDto.contentEncoding||`${musicData?.format?.codec}, ${musicData?.format?.sampleRate} Hz, ${musicData?.format?.codecProfile||'codecProfile'}, ${musicData?.format?.bitrate} ch`;
     sonicKeyDto.contentSamplingFrequency = sonicKeyDto.contentSamplingFrequency||`${musicData?.format?.sampleRate} Hz`;
     sonicKeyDto.contentName =
       sonicKeyDto.contentName || musicData?.common?.title || '';
     sonicKeyDto.contentOwner =
       sonicKeyDto.contentOwner || musicData?.common?.artist || '';
-    sonicKeyDto.contentDescription =sonicKeyDto.contentDescription|| musicData?.common?.description
-      ? musicData?.common?.description?.[0]
-      : '';
+    // sonicKeyDto.contentDescription =sonicKeyDto.contentDescription|| musicData?.common?.description
+    //   ? musicData?.common?.description?.[0]
+    //   : '';
     return sonicKeyDto;
   }
 

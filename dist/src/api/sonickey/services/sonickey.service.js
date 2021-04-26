@@ -124,21 +124,19 @@ let SonickeyService = class SonickeyService {
         return mm.parseFile(filePath);
     }
     async autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         const musicData = await this.exractMusicMetaFromFile(file.path);
         sonicKeyDto.contentSize = sonicKeyDto.contentSize || (file === null || file === void 0 ? void 0 : file.size);
         sonicKeyDto.contentFileName = sonicKeyDto.contentFileName || (file === null || file === void 0 ? void 0 : file.filename);
         sonicKeyDto.contentType = sonicKeyDto.contentType || (file === null || file === void 0 ? void 0 : file.mimetype);
         sonicKeyDto.contentFileType = sonicKeyDto.contentFileType || (file === null || file === void 0 ? void 0 : file.mimetype);
         sonicKeyDto.contentDuration = sonicKeyDto.contentDuration || ((_a = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _a === void 0 ? void 0 : _a.duration);
-        sonicKeyDto.contentEncoding = sonicKeyDto.contentEncoding || `${(_b = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _b === void 0 ? void 0 : _b.codec}, ${(_c = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _c === void 0 ? void 0 : _c.sampleRate} Hz, ${(_d = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _d === void 0 ? void 0 : _d.codecProfile}, ${(_e = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _e === void 0 ? void 0 : _e.bitrate} ch`;
+        sonicKeyDto.contentEncoding = sonicKeyDto.contentEncoding || `${(_b = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _b === void 0 ? void 0 : _b.codec}, ${(_c = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _c === void 0 ? void 0 : _c.sampleRate} Hz, ${((_d = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _d === void 0 ? void 0 : _d.codecProfile) || 'codecProfile'}, ${(_e = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _e === void 0 ? void 0 : _e.bitrate} ch`;
         sonicKeyDto.contentSamplingFrequency = sonicKeyDto.contentSamplingFrequency || `${(_f = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _f === void 0 ? void 0 : _f.sampleRate} Hz`;
         sonicKeyDto.contentName =
             sonicKeyDto.contentName || ((_g = musicData === null || musicData === void 0 ? void 0 : musicData.common) === null || _g === void 0 ? void 0 : _g.title) || '';
         sonicKeyDto.contentOwner =
             sonicKeyDto.contentOwner || ((_h = musicData === null || musicData === void 0 ? void 0 : musicData.common) === null || _h === void 0 ? void 0 : _h.artist) || '';
-        sonicKeyDto.contentDescription = sonicKeyDto.contentDescription || ((_j = musicData === null || musicData === void 0 ? void 0 : musicData.common) === null || _j === void 0 ? void 0 : _j.description)
-            ? (_l = (_k = musicData === null || musicData === void 0 ? void 0 : musicData.common) === null || _k === void 0 ? void 0 : _k.description) === null || _l === void 0 ? void 0 : _l[0] : '';
         return sonicKeyDto;
     }
     async findBySonicKey(sonicKey) {

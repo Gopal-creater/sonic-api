@@ -2827,7 +2827,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/services/sonickey.service.ts": {
-        "version": "883f75cb55f5206865e67e2314c5791625994098ee7ace400f1aa38889e45c39",
+        "version": "f3f77da6bf65c039b0e7d5fda785705c80b72947110c54e3bfd60a83fb7ab1ec",
         "signature": "d9bca8f92dcdd9c446270a9208572bb6dffb415ebd0d93deae09c4d61f2441ed",
         "affectsGlobalScope": false
       },
@@ -3257,7 +3257,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/controllers/sonickey.controller.ts": {
-        "version": "32d21b916936f1c1ba034f5186b578ca1ef887e757c0ad5e34249731babfbaf0",
+        "version": "563dd8d8c4ad0a77c1a0588b022fd1c7b8bf0bd451369b3dcadc675088c62c2a",
         "signature": "ca2b41995d76418181ff3c8ec587ca273008acabb257ac02c106eba0379ec860",
         "affectsGlobalScope": false
       },
