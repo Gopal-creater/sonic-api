@@ -34,7 +34,6 @@ const nanoid_1 = require("nanoid");
 const config_1 = require("../../../config");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const job_schema_1 = require("../../../schemas/job.schema");
 let SonickeyService = class SonickeyService {
     constructor(sonicKeyModel, fileOperationService, fileHandlerService) {
         this.sonicKeyModel = sonicKeyModel;
@@ -49,15 +48,22 @@ let SonickeyService = class SonickeyService {
         return newSonicKey.save();
     }
     async getAll(queryDto = {}) {
-        const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
-        const options = {
-            limit,
-            offset
-        };
+        var _a;
+        const { _limit, _start, _sort } = queryDto, query = __rest(queryDto, ["_limit", "_start", "_sort"]);
+        var sort = {};
+        if (_sort) {
+            var sortItems = (_sort === null || _sort === void 0 ? void 0 : _sort.split(',')) || [];
+            for (let index = 0; index < sortItems.length; index++) {
+                const sortItem = sortItems[index];
+                var sortKeyValue = sortItem === null || sortItem === void 0 ? void 0 : sortItem.split(':');
+                sort[sortKeyValue[0]] = ((_a = sortKeyValue[1]) === null || _a === void 0 ? void 0 : _a.toLowerCase()) == 'desc' ? -1 : 1;
+            }
+        }
         return this.sonicKeyModel
             .find(query || {})
-            .skip(offset)
-            .limit(limit)
+            .skip(_start)
+            .limit(_limit)
+            .sort(sort)
             .exec();
     }
     async encode(file, encodingStrength = 10) {
@@ -137,30 +143,6 @@ let SonickeyService = class SonickeyService {
     }
     async findBySonicKey(sonicKey) {
         return this.sonicKeyModel.findOne({ sonicKey: sonicKey }).lean();
-    }
-    async findByOwner(owner, queryDto = {}) {
-        const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
-        const options = {
-            limit,
-            offset
-        };
-        return this.sonicKeyModel
-            .find(Object.assign({ owner: owner }, query))
-            .skip(offset)
-            .limit(limit)
-            .exec();
-    }
-    async findByJob(job, queryDto = {}) {
-        const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
-        const options = {
-            limit,
-            offset
-        };
-        return this.sonicKeyModel
-            .find(Object.assign({ job: new job_schema_1.Job({ id: job }) }, query))
-            .skip(offset)
-            .limit(limit)
-            .exec();
     }
     async findBySonicKeyOrFail(sonicKey) {
         return this.findBySonicKey(sonicKey).then(data => {

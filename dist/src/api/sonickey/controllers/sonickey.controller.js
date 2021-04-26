@@ -43,7 +43,7 @@ const file_handler_service_1 = require("../../../shared/services/file-handler.se
 const download_dto_1 = require("../dtos/download.dto");
 const appRootPath = require("app-root-path");
 const query_dto_1 = require("../../../shared/dtos/query.dto");
-const convertIntObj_pipe_1 = require("../../../shared/pipes/convertIntObj.pipe");
+const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, keygenService, fileHandlerService) {
         this.sonicKeyService = sonicKeyService;
@@ -163,11 +163,9 @@ let SonickeyController = class SonickeyController {
 };
 __decorate([
     common_1.Get('/'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys' }),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/sonickey.schema").SonicKey] }),
-    __param(0, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
@@ -199,7 +197,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user' }),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/sonickey.schema").SonicKey] }),
-    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
+    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
@@ -210,7 +208,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular job' }),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/sonickey.schema").SonicKey] }),
-    __param(0, common_1.Param('jobId')), __param(1, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
+    __param(0, common_1.Param('jobId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)

@@ -47,16 +47,12 @@ export class RadiostationSonicKeysService {
   }
 
   async findAll(queryDto: QueryDto = {}) {
-    const { limit, offset, ...query } = queryDto;
-    const options = {
-      limit,
-      offset,
-    };
+    const { _limit, _start, ...query } = queryDto;
     // return await this.sonicKeyModel["paginate"](query || {},options) as MongoosePaginateDto<SonicKey>
     return this.radioStationSonickeyModel
       .find(query || {})
-      .skip(offset)
-      .limit(limit)
+      .skip(_start)
+      .limit(_limit)
       .exec();
   }
 

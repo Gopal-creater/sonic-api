@@ -39,13 +39,12 @@ let JobFileService = class JobFileService {
         this.sonickeyService = sonickeyService;
     }
     async findAll(queryDto = {}) {
-        const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
-        const res = await this.jobFileModel
+        const { _limit, _start } = queryDto, query = __rest(queryDto, ["_limit", "_start"]);
+        return this.jobFileModel
             .find(query || {})
-            .skip(offset)
-            .limit(limit)
+            .skip(_start)
+            .limit(_limit)
             .exec();
-        return res;
     }
     async addKeyToDbAndUpdateJobFile(jobId, fileId, addKeyAndUpdateJobFileDto) {
         const job = await this.jobService.jobModel.findById(jobId);

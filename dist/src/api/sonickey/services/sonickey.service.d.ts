@@ -27,7 +27,5 @@ export declare class SonickeyService {
     exractMusicMetaFromFile(filePath: string): Promise<mm.IAudioMetadata>;
     autoPopulateSonicContentWithMusicMetaForFile(file: IUploadedFile, sonicKeyDto?: SonicKeyDto): Promise<SonicKeyDto>;
     findBySonicKey(sonicKey: string): Promise<SonicKey>;
-    findByOwner(owner: string, queryDto?: QueryDto): Promise<SonicKey[]>;
-    findByJob(job: string, queryDto?: QueryDto): Promise<SonicKey[]>;
     findBySonicKeyOrFail(sonicKey: string): Promise<SonicKey>;
 }

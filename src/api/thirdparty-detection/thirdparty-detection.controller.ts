@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Put, Param, Delete, NotFoundException, Que
 import { ThirdpartyDetectionService } from './thirdparty-detection.service';
 import { CreateThirdpartyDetectionDto } from './dto/create-thirdparty-detection.dto';
 import { UpdateThirdpartyDetectionDto } from './dto/update-thirdparty-detection.dto';
-import { ConvertIntObj } from '../../shared/pipes/convertIntObj.pipe';
+import { ParseQueryValue } from '../../shared/pipes/parseQueryValue.pipe';
 import { QueryDto } from '../../shared/dtos/query.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -24,7 +24,7 @@ export class ThirdpartyDetectionController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto) {
+  findAll(@Query(new ParseQueryValue()) queryDto: QueryDto) {
     return this.thirdpartyDetectionService.findAll(queryDto);
   }
 

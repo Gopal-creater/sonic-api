@@ -56,15 +56,11 @@ let RadiostationSonicKeysService = class RadiostationSonicKeysService {
         }
     }
     async findAll(queryDto = {}) {
-        const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
-        const options = {
-            limit,
-            offset,
-        };
+        const { _limit, _start } = queryDto, query = __rest(queryDto, ["_limit", "_start"]);
         return this.radioStationSonickeyModel
             .find(query || {})
-            .skip(offset)
-            .limit(limit)
+            .skip(_start)
+            .limit(_limit)
             .exec();
     }
     async findOne(radioStation, sonicKey) {

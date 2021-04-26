@@ -5,10 +5,10 @@ export class PaginationQueryDto {
   @IsOptional()
 //   @IsPositive()
   @ApiProperty()
-  limit?: number=100;
+  _limit?: number=100;
 
   @IsOptional()
 //   @IsPositive()
   @ApiProperty()
-  offset?: number=0;
+  _start?: number=0;
 }

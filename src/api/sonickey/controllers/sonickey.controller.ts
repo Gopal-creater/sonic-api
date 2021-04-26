@@ -50,7 +50,7 @@ import * as appRootPath from 'app-root-path';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { IMongoosePaginate } from '../../../shared/interfaces/MongoosePaginate.interface';
 import { MongoosePaginateDto } from '../../../shared/dtos/mongoosepaginate.dto';
-import { ConvertIntObj } from '../../../shared/pipes/convertIntObj.pipe';
+import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { Response } from 'express';
 
 /**
@@ -71,10 +71,10 @@ export class SonickeyController {
   ) {}
 
   @Get('/')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys' })
-  async getAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
+  async getAll(@Query(new ParseQueryValue()) queryDto: QueryDto,) {
     console.log("queryDto",queryDto);
     
     return this.sonicKeyService.getAll(queryDto);
@@ -123,7 +123,7 @@ export class SonickeyController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys of particular user' })
-  async getOwnersKeys(@Param('ownerId') ownerId: string,@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
+  async getOwnersKeys(@Param('ownerId') ownerId: string,@Query(new ParseQueryValue()) queryDto: QueryDto,) {
     const query={
       ...queryDto,
       owner:ownerId
@@ -136,7 +136,7 @@ export class SonickeyController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys of particular job' })
-  async getKeysByJob(@Param('jobId') jobId: string,@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
+  async getKeysByJob(@Param('jobId') jobId: string,@Query(new ParseQueryValue()) queryDto: QueryDto,) {
     const query={
       ...queryDto,
       job:jobId

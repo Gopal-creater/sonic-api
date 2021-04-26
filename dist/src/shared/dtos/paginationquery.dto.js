@@ -15,22 +15,22 @@ const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
 class PaginationQueryDto {
     constructor() {
-        this.limit = 100;
-        this.offset = 0;
+        this._limit = 100;
+        this._start = 0;
     }
     static _OPENAPI_METADATA_FACTORY() {
-        return { limit: { required: false, type: () => Number, default: 100 }, offset: { required: false, type: () => Number, default: 0 } };
+        return { _limit: { required: false, type: () => Number, default: 100 }, _start: { required: false, type: () => Number, default: 0 } };
     }
 }
 __decorate([
     class_validator_1.IsOptional(),
     swagger_1.ApiProperty(),
     __metadata("design:type", Number)
-], PaginationQueryDto.prototype, "limit", void 0);
+], PaginationQueryDto.prototype, "_limit", void 0);
 __decorate([
     class_validator_1.IsOptional(),
     swagger_1.ApiProperty(),
     __metadata("design:type", Number)
-], PaginationQueryDto.prototype, "offset", void 0);
+], PaginationQueryDto.prototype, "_start", void 0);
 exports.PaginationQueryDto = PaginationQueryDto;
 //# sourceMappingURL=paginationquery.dto.js.map

@@ -46,7 +46,7 @@ let SonickeyGuestController = class SonickeyGuestController {
         return this.sonicKeyService
             .encode(file, sonicKeyDto.encodingStrength)
             .then(data => {
-            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDto), { contentFilePath: data.downloadFileUrl, owner: owner, sonicKey: data.sonicKey, licenseId: licenseId }));
+            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDto), { contentFilePath: data.downloadFileUrl, owner: owner, sonicKey: data.sonicKey, license: licenseId }));
             return newSonicKey.save().finally(() => {
                 this.fileHandlerService.deleteFileAtPath(file.path);
             });

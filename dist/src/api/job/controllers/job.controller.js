@@ -24,7 +24,7 @@ const user_decorator_1 = require("../../auth/decorators/user.decorator");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const common_2 = require("@nestjs/common");
 const query_dto_1 = require("../../../shared/dtos/query.dto");
-const convertIntObj_pipe_1 = require("../../../shared/pipes/convertIntObj.pipe");
+const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 let JobController = class JobController {
     constructor(jobService, sonickeyService) {
         this.jobService = jobService;
@@ -82,7 +82,7 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get(),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/job.schema").Job] }),
-    __param(0, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
     __metadata("design:returntype", void 0)
@@ -93,7 +93,7 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get('/owners/:ownerId'),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/job.schema").Job] }),
-    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
+    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", void 0)

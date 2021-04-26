@@ -21,7 +21,7 @@ import {
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { BulkRadiostationDto } from '../dto/bulk-radiostation.dto';
 import { QueryDto } from '../../../shared/dtos/query.dto';
-import { ConvertIntObj } from '../../../shared/pipes/convertIntObj.pipe';
+import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 
 
 @ApiTags('Radio Station Controller')
@@ -41,7 +41,7 @@ export class RadiostationController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Radio Stations' })
-  findAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto?: QueryDto,) {
+  findAll(@Query(new ParseQueryValue()) queryDto?: QueryDto,) {
     return this.radiostationService.findAll(queryDto);
   }
 
@@ -49,7 +49,7 @@ export class RadiostationController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Radio Stations of particular user' })
-  async getOwnersRadioStations(@Param('ownerId') ownerId: string,@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
+  async getOwnersRadioStations(@Param('ownerId') ownerId: string,@Query(new ParseQueryValue()) queryDto: QueryDto,) {
     const query={
       ...queryDto,
       owner:ownerId

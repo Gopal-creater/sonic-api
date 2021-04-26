@@ -6,4 +6,8 @@ export class QueryDto extends PaginationQueryDto {
   @IsOptional()
   @ApiProperty()
   filter?: Record<string,any>;
+
+  @IsOptional()
+  @ApiProperty({description:"Eg: createdAt:desc Or createdAt:desc,email:asc"})
+  _sort?: string;
 }

@@ -29,13 +29,12 @@ export class JobFileService {
   ) {}
 
   async findAll(queryDto: QueryDto = {}) {
-    const { limit, offset, ...query } = queryDto;
-        const res = await this.jobFileModel
+    const { _limit, _start, ...query } = queryDto;
+        return this.jobFileModel
         .find(query || {})
-        .skip(offset)
-        .limit(limit)
+        .skip(_start)
+        .limit(_limit)
         .exec();
-        return res
         
     }
 

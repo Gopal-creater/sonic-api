@@ -9,9 +9,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConvertIntObj = void 0;
+exports.ParseQueryValue = void 0;
 const common_1 = require("@nestjs/common");
-let ConvertIntObj = class ConvertIntObj {
+let ParseQueryValue = class ParseQueryValue {
     constructor(values) {
         this.values = values;
     }
@@ -39,22 +39,9 @@ let ConvertIntObj = class ConvertIntObj {
         }
     }
 };
-ConvertIntObj = __decorate([
+ParseQueryValue = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [Array])
-], ConvertIntObj);
-exports.ConvertIntObj = ConvertIntObj;
-function convertIntObj(obj, value) {
-    const res = {};
-    for (const key in obj) {
-        if (value.includes(key)) {
-            const parsed = parseInt(obj[key]);
-            res[key] = isNaN(parsed) ? obj[key] : parsed;
-        }
-        else {
-            res[key] = obj[key];
-        }
-    }
-    return res;
-}
-//# sourceMappingURL=convertIntObj.pipe.js.map
+], ParseQueryValue);
+exports.ParseQueryValue = ParseQueryValue;
+//# sourceMappingURL=parseQueryValue.pipe.js.map

@@ -16,7 +16,7 @@ const class_validator_1 = require("class-validator");
 const paginationquery_dto_1 = require("./paginationquery.dto");
 class QueryDto extends paginationquery_dto_1.PaginationQueryDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { filter: { required: false, type: () => Object } };
+        return { filter: { required: false, type: () => Object }, _sort: { required: false, type: () => String } };
     }
 }
 __decorate([
@@ -24,5 +24,10 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Object)
 ], QueryDto.prototype, "filter", void 0);
+__decorate([
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty({ description: "Eg: createdAt:desc Or createdAt:desc,email:asc" }),
+    __metadata("design:type", String)
+], QueryDto.prototype, "_sort", void 0);
 exports.QueryDto = QueryDto;
 //# sourceMappingURL=query.dto.js.map

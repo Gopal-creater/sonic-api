@@ -23,7 +23,7 @@ import { equals, ConditionExpression } from '@aws/dynamodb-expressions';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { BadRequestException } from '@nestjs/common';
 import { QueryDto } from '../../../shared/dtos/query.dto';
-import { ConvertIntObj } from '../../../shared/pipes/convertIntObj.pipe';
+import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 
 @ApiTags('Jobs Controller')
 @Controller('jobs')
@@ -37,7 +37,7 @@ export class JobController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
+  findAll(@Query(new ParseQueryValue()) queryDto: QueryDto,) {
     return this.jobService.findAll(queryDto);
   }
 
@@ -45,7 +45,7 @@ export class JobController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('/owners/:ownerId')
-  getOwnerJobs(@Param('ownerId') ownerId: string,@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
+  getOwnerJobs(@Param('ownerId') ownerId: string,@Query(new ParseQueryValue()) queryDto: QueryDto,) {
     const query={
       ...queryDto,
       owner:ownerId

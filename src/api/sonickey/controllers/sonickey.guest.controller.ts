@@ -103,7 +103,7 @@ export class SonickeyGuestController {
               contentFilePath: data.downloadFileUrl,
               owner: owner,
               sonicKey: data.sonicKey,
-              licenseId: licenseId
+              license: licenseId
           });
           return newSonicKey.save().finally(() => {
             this.fileHandlerService.deleteFileAtPath(file.path);

@@ -40,11 +40,11 @@ let ThirdpartyDetectionService = class ThirdpartyDetectionService {
         return newDetection.save();
     }
     async findAll(queryDto = {}) {
-        const { limit, offset } = queryDto, query = __rest(queryDto, ["limit", "offset"]);
+        const { _limit, _start } = queryDto, query = __rest(queryDto, ["_limit", "_start"]);
         return this.thirdpartyDetectionModel
             .find(query || {})
-            .skip(offset)
-            .limit(limit)
+            .skip(_start)
+            .limit(_limit)
             .exec();
     }
     findById(id) {

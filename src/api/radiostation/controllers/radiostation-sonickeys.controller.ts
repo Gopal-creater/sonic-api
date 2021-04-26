@@ -4,7 +4,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RadiostationSonicKeysService } from '../services/radiostation-sonickeys.service';
 import { QueryDto } from '../../../shared/dtos/query.dto';
-import { ConvertIntObj } from '../../../shared/pipes/convertIntObj.pipe';
+import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 
 @ApiTags('RadioStation-SonicKeys Controller')
 @Controller('radiostations-sonickeys')
@@ -18,7 +18,7 @@ export class RadiostationSonicKeysController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All radiostations-sonickeys' })
-  findAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto) {
+  findAll(@Query(new ParseQueryValue()) queryDto: QueryDto) {
     return this.radiostationSonicKeysService.findAll(queryDto);
   }
 }

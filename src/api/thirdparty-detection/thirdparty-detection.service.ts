@@ -23,11 +23,11 @@ export class ThirdpartyDetectionService {
   }
 
   async findAll(queryDto: QueryDto = {}) {
-    const { limit, offset, ...query } = queryDto;
+    const { _limit, _start, ...query } = queryDto;
     return this.thirdpartyDetectionModel
       .find(query || {})
-      .skip(offset)
-      .limit(limit)
+      .skip(_start)
+      .limit(_limit)
       .exec();
   }
 

@@ -34,16 +34,23 @@ export class SonickeyService {
   }
 
   async getAll(queryDto: QueryDto = {}) {
-    const { limit, offset, ...query } = queryDto;
-    const options = {
-      limit,
-      offset
-    };
+    const { _limit, _start,_sort, ...query } = queryDto;
+    var sort={}
+    if(_sort){
+      var sortItems = _sort?.split(',')||[]
+      for (let index = 0; index < sortItems.length; index++) {
+        const sortItem = sortItems[index];
+        var sortKeyValue = sortItem?.split(':')
+        sort[sortKeyValue[0]]=sortKeyValue[1]?.toLowerCase()=='desc' ? -1 : 1
+      }
+    }
+    
     // return await this.sonicKeyModel["paginate"](query || {},options) as MongoosePaginateDto<SonicKey>
     return this.sonicKeyModel
       .find(query || {})
-      .skip(offset)
-      .limit(limit)
+      .skip(_start)
+      .limit(_limit)
+      .sort(sort)
       .exec();
   }
 
@@ -192,33 +199,6 @@ export class SonickeyService {
 
   async findBySonicKey(sonicKey: string):Promise<SonicKey> {
     return this.sonicKeyModel.findOne({ sonicKey: sonicKey }).lean();
-  }
-
-  async findByOwner(owner: string, queryDto: QueryDto = {}) {
-    const { limit, offset, ...query } = queryDto;
-    const options = {
-      limit,
-      offset
-    };
-    // return await this.sonicKeyModel["paginate"]({ owner: owner, ...query },options) as MongoosePaginateDto<SonicKey>
-    return this.sonicKeyModel
-      .find({ owner: owner, ...query })
-      .skip(offset)
-      .limit(limit)
-      .exec();
-  }
-
-  async findByJob(job: string, queryDto: QueryDto = {}) {
-    const { limit, offset, ...query } = queryDto;
-    const options = {
-      limit,
-      offset
-    };
-    return this.sonicKeyModel
-      .find({ job: new Job({id:job}), ...query })
-      .skip(offset)
-      .limit(limit)
-      .exec();
   }
 
   async findBySonicKeyOrFail(sonicKey: string) {

@@ -1,4 +1,4 @@
 export declare class PaginationQueryDto {
-    limit?: number;
-    offset?: number;
+    _limit?: number;
+    _start?: number;
 }

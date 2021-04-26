@@ -22,7 +22,7 @@ const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const bulk_radiostation_dto_1 = require("../dto/bulk-radiostation.dto");
 const query_dto_1 = require("../../../shared/dtos/query.dto");
-const convertIntObj_pipe_1 = require("../../../shared/pipes/convertIntObj.pipe");
+const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 let RadiostationController = class RadiostationController {
     constructor(radiostationService) {
         this.radiostationService = radiostationService;
@@ -102,7 +102,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Radio Stations' }),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/radiostation.schema").RadioStation] }),
-    __param(0, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
     __metadata("design:returntype", void 0)
@@ -113,7 +113,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Radio Stations of particular user' }),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/radiostation.schema").RadioStation] }),
-    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new convertIntObj_pipe_1.ConvertIntObj(['limit', 'offset']))),
+    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)

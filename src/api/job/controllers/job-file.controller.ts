@@ -22,7 +22,7 @@ import { JobService } from '../services/job.service';
 import { CreateJobFileDto } from '../dto/create-job-file.dto';
 import { JobFile } from '../../../schemas/jobfile.schema';
 import { QueryDto } from '../../../shared/dtos/query.dto';
-import { ConvertIntObj } from '../../../shared/pipes/convertIntObj.pipe';
+import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 
 @ApiTags('Jobs Files Controller')
 @Controller()
@@ -36,7 +36,7 @@ export class JobFileController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('/job-files')
-  findAll(@Query(new ConvertIntObj(['limit', 'offset'])) queryDto: QueryDto) {
+  findAll(@Query(new ParseQueryValue()) queryDto: QueryDto) {
     return this.jobFileService.findAll(queryDto);
   }
 
