@@ -24,6 +24,7 @@ import {
   NotFoundException,
   Query,
   UnauthorizedException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { SonickeyService } from '../services/sonickey.service';
 import { SonicKey } from '../../../schemas/sonickey.schema';
@@ -236,7 +237,11 @@ export class SonickeyController {
         return newSonicKey.save().finally(() => {
           this.fileHandlerService.deleteFileAtPath(file.path);
         });
-      });
+      })
+      .catch(err=>{
+        this.fileHandlerService.deleteFileAtPath(file.path);
+        throw new InternalServerErrorException(err)
+      })
   }
 
   @UseInterceptors(
@@ -292,7 +297,11 @@ export class SonickeyController {
           sonicKeysMetadata.push(metadata);
         }
         return sonicKeysMetadata;
-      });
+      })
+      .catch(err=>{
+        this.fileHandlerService.deleteFileAtPath(file.path);
+        throw new BadRequestException(err)
+      })
   }
 
   @Patch('/:sonickey')

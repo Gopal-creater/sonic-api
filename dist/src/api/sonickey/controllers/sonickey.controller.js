@@ -99,6 +99,10 @@ let SonickeyController = class SonickeyController {
             return newSonicKey.save().finally(() => {
                 this.fileHandlerService.deleteFileAtPath(file.path);
             });
+        })
+            .catch(err => {
+            this.fileHandlerService.deleteFileAtPath(file.path);
+            throw new common_1.InternalServerErrorException(err);
         });
     }
     async decode(file) {
@@ -126,6 +130,10 @@ let SonickeyController = class SonickeyController {
                 finally { if (e_1) throw e_1.error; }
             }
             return sonicKeysMetadata;
+        })
+            .catch(err => {
+            this.fileHandlerService.deleteFileAtPath(file.path);
+            throw new common_1.BadRequestException(err);
         });
     }
     async updateMeta(sonickey, updateSonicKeyDto) {
