@@ -163,6 +163,8 @@ let SonickeyController = class SonickeyController {
 };
 __decorate([
     common_1.Get('/'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys' }),
     openapi.ApiResponse({ status: 200, type: [require("../../../schemas/sonickey.schema").SonicKey] }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
