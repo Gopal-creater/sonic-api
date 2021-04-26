@@ -34,9 +34,6 @@ console.log("Node_env",process.env.NODE_ENV);
     EventEmitterModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true, envFilePath: process.env.NODE_ENV=="production"?'.env':'.env.arba' }),
     AuthModule,
-<<<<<<< HEAD
-    ConfigModule.forRoot({ isGlobal: true,envFilePath:'.env' }),
-=======
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -52,7 +49,6 @@ console.log("Node_env",process.env.NODE_ENV);
       }),
       inject: [ConfigService],
     }),
->>>>>>> migration_to_mongodb
     MulterModule.register({
       storage: diskStorage({
         destination: appConfig.MULTER_DEST,
