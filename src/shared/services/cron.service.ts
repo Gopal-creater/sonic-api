@@ -20,7 +20,7 @@ export class CronService {
 
   @Timeout(0)
   onceAfter0Seconds() {
-    this.logger.debug('Called once after 0 seconds');
+    this.logger.debug('Called once after 0 seconds very firsttime');
   }
 
   getCrons() {
@@ -92,6 +92,10 @@ export class CronService {
   addTimeout(name: string, milliseconds: number) {
     const callback = () => {
       this.logger.warn(`Timeout ${name} executing after (${milliseconds})!`);
+      this.testFunc(name)
+      .then(()=>{
+        callback()
+      })
     };
 
     const timeout = setTimeout(callback, milliseconds);
@@ -101,5 +105,9 @@ export class CronService {
   deleteTimeout(name: string) {
     this.schedulerRegistry.deleteTimeout(name);
     this.logger.warn(`Timeout ${name} deleted!`);
+  }
+
+  testFunc(name:string){
+    return new Promise(res => setTimeout(res, 10000));
   }
 }

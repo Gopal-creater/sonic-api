@@ -1,134 +1,111 @@
-import {
-  attribute,
-  hashKey,
-  rangeKey,
-  table,
-} from '@aws/dynamodb-data-mapper-annotations';
-import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty,IsArray } from 'class-validator';
+import { Prop, Schema, SchemaFactory, } from '@nestjs/mongoose';
+import { Document,Schema as MogSchema} from 'mongoose';
+import { ApiProperty } from '@nestjs/swagger';
+import { Job,JobSchemaName } from './job.schema';
 
+export const SonicKeySchemaName="SonicKey"
 
-/**
- * Info About Dynamodb data mapper
- * https://github.com/awslabs/dynamodb-data-mapper-js
- * QueryOptions==> https://github.com/awslabs/dynamodb-data-mapper-js/blob/c504011/packages/dynamodb-data-mapper/src/namedParameters/QueryOptions.ts#L19
- * DynamoDb-Expression ==> https://awslabs.github.io/dynamodb-data-mapper-js/packages/dynamodb-expressions/#attribute-paths
- * 
- */
+@Schema({ timestamps: true,collection:SonicKeySchemaName})
+export class SonicKey extends Document {
 
-@table('SonicKey-New-Schema')
-export class SonicKey {
-  constructor(data?: Partial<SonicKey>) {
-    Object.assign(this, data);
-  }
-
-  @IsNotEmpty()
   @ApiProperty()
-  @hashKey()
-  sonicKey?: string;
-
-  @IsNotEmpty()
-  @ApiProperty()
-  @attribute({
-    indexKeyConfigurations: {
-      ownerIndex: 'HASH',
-    },
+  @Prop({
+    required:true,
+    unique:true
   })
+  sonicKey: string;
+
+  @ApiProperty()
+  @Prop()
   owner: string;
 
-  @IsNotEmpty()
   @ApiProperty()
-  @attribute({
-    indexKeyConfigurations: {
-      jobIndex: 'HASH',
-    },
-  })
-  job: string; //Relation
-
-  @IsNotEmpty()
-  @ApiProperty()
-  @attribute()
-  licenseId?: string;
+  @Prop({ type: MogSchema.Types.ObjectId, ref: JobSchemaName })
+  job: any;
 
   @ApiProperty()
-  @rangeKey({ defaultProvider: () => new Date() })
-  createdAt: Date;
+  @Prop()
+  license: string;
 
   @ApiProperty()
-  @attribute({ defaultProvider: () => true })
-  status?: boolean;
+  @Prop({ default: true })
+  status: boolean;
 
-  //Sonic Content Part
   @ApiProperty()
-  @attribute()
+  @Prop()
   encodingStrength: number;
 
   @ApiProperty()
-  @attribute()
+  @Prop()
   contentType?: string;
 
   @ApiProperty()
-  @attribute()
+  @Prop()
   contentDescription: string;
 
   @ApiProperty()
-  @attribute({ defaultProvider: () => new Date() })
+  @Prop({ default: new Date() })
   contentCreatedDate: Date;
 
   @ApiProperty()
-  @attribute()
+  @Prop()
   contentDuration?: number;
 
   @ApiProperty()
-  @attribute()
+  @Prop()
   contentSize: number;
 
   @ApiProperty()
-  @attribute()
+  @Prop()
   contentFilePath: string;
 
   @ApiProperty()
-  @attribute()
+  @Prop()
   contentFileType: string;
 
   @ApiProperty()
-  @attribute()
+  @Prop()
   contentEncoding: string;
 
   @ApiProperty()
-  @attribute()
+  @Prop()
   contentSamplingFrequency: string;
 
   @ApiProperty()
-  @attribute()
+  @Prop()
   isrcCode?: string;
 
-  @attribute()
+  @ApiProperty()
+  @Prop()
   iswcCode?: string;
 
-  @attribute()
+  @ApiProperty()
+  @Prop()
   tuneCode?: string;
 
-  @attribute()
+  @ApiProperty()
+  @Prop()
   contentName?: string;
 
   @ApiProperty()
-  @attribute()
+  @Prop()
   contentOwner?: string;
 
   @ApiProperty()
-  @attribute()
+  @Prop()
   contentValidation?: boolean;
 
   @ApiProperty()
-  @attribute()
+  @Prop()
   contentFileName: string;
 
   @ApiProperty()
-  @attribute()
+  @Prop()
   contentQuality: string;
 
   @ApiProperty()
-  @attribute()
-  additionalMetadata: { [key: string]: any };
+  @Prop()
+  additionalMetadata: Map<string, any>;
 }
+
+export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);

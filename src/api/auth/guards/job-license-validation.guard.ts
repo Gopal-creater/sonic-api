@@ -18,18 +18,18 @@ export class JobLicenseValidationGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const body = request.body as CreateJobDto;
-    if (!body.licenseId || !body.owner || !body.jobDetails) {
+    if (!body.license || !body.owner || !body.jobFiles) {
       throw new BadRequestException({
         message: 'missing parameters',
       });
     }
-    if (body.jobDetails.length < 0) {
+    if (body.jobFiles.length < 0) {
       throw new BadRequestException({
         message: 'Please add some files to create job',
       });
     }
     const { meta, data, errors } = await this.keygenService.validateLicence(
-      body.licenseId,
+      body.license,
     );
     if (errors || !meta['valid']) {
       throw new BadRequestException({
@@ -44,7 +44,7 @@ export class JobLicenseValidationGuard implements CanActivate {
     const uses = data['attributes']['uses'];
     const maxUses = data['attributes']['maxUses'];
     const remaniningUses = maxUses - uses;
-    const usesToBeUsed = body.jobDetails.length;
+    const usesToBeUsed = body.jobFiles.length;
 
     const reserves = JSONUtils.parse(data?.attributes?.metadata?.reserves,[]) as {
       jobId: string;

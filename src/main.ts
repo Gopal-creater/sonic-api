@@ -26,7 +26,7 @@ async function bootstrap() {
     ],
   });
   app.useGlobalFilters(new HttpExceptionFilter());
-  // app.useStaticAssets(appRootPath.path.toString()+'/storage',{prefix:'/storage'})
+  app.useStaticAssets(appRootPath.path.toString()+'/storage/uploads/guest',{prefix:'/storage/uploads/guest'})
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   const PORT = configService.get('PORT', 8000);
 

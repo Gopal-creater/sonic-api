@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { JobService } from '../services/job.service';
 import { CreateJobDto } from '../dto/create-job.dto';
@@ -18,8 +20,10 @@ import { User } from '../../auth/decorators/user.decorator';
 import { JobLicenseValidationGuard } from '../../auth/guards/job-license-validation.guard';
 import { v4 as uuidv4 } from 'uuid';
 import { equals, ConditionExpression } from '@aws/dynamodb-expressions';
-import { SonickeyService } from '../../sonickey/sonickey.service';
+import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { BadRequestException } from '@nestjs/common';
+import { QueryDto } from '../../../shared/dtos/query.dto';
+import { ConvertIntObj } from '../../../shared/pipes/convertIntObj.pipe';
 
 @ApiTags('Jobs Controller')
 @Controller('jobs')
@@ -29,7 +33,27 @@ export class JobController {
     private readonly sonickeyService: SonickeyService,
   ) {}
 
-  @UseGuards(JwtAuthGuard, JobLicenseValidationGuard)
+  @ApiOperation({ summary: 'Get All Jobs' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  findAll(@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
+    return this.jobService.findAll(queryDto);
+  }
+
+  @ApiOperation({ summary: 'Get All Jobs of particular owner' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('/owners/:ownerId')
+  getOwnerJobs(@Param('ownerId') ownerId: string,@Query(new ConvertIntObj(['limit','offset'])) queryDto: QueryDto,) {
+    const query={
+      ...queryDto,
+      owner:ownerId
+    }
+    return this.jobService.findAll(query);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a Job' })
   @Post()
@@ -38,38 +62,20 @@ export class JobController {
     @User('sub') owner: string,
     @Req() req: any,
   ) {
-    /**
-     * check if job with same name exists on db using ConditionExpression
-     * https://awslabs.github.io/dynamodb-data-mapper-js/packages/dynamodb-expressions/#attribute-paths
-     * **/
-    var equalsExpressionPredicate = equals(createJobDto.name);
-    const equalsExpression: ConditionExpression = {
-      ...equalsExpressionPredicate,
-      subject: 'name',
-    };
-    const existingJobs = await this.jobService.findByOwner(owner, {
-      filter: equalsExpression,
-    });
-    if (existingJobs.length > 0) {
+    
+    const existingJob = await this.jobService.jobModel.findOne({name:createJobDto.name,owner:owner});
+    if (existingJob) {
       throw new BadRequestException('Job with same name already exists.');
     }
     createJobDto.owner = owner;
-    createJobDto.jobDetails = createJobDto.jobDetails.map(job => {
-      job['fileId'] = job['fileId'] || uuidv4();
-      job['isComplete'] = job['isComplete'] || false;
-      job['sonicKey'] =
-        job['sonicKey'] || this.sonickeyService.generateUniqueSonicKey();
-      return job;
-    });
+    if(createJobDto.jobFiles){
+      createJobDto.jobFiles = createJobDto.jobFiles.map(job => {
+        job['sonicKeyToBe'] =this.sonickeyService.generateUniqueSonicKey()
+        // job["sonicKeyToBe"]="2KhHfn0-qo6"
+        return job;
+      });
+    }
     return this.jobService.create(createJobDto);
-  }
-
-  @ApiOperation({ summary: 'Get All Jobs' })
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Get()
-  findAll() {
-    return this.jobService.findAll();
   }
 
   @ApiOperation({ summary: 'Make this job completed' })
@@ -80,43 +86,39 @@ export class JobController {
     return this.jobService.makeCompleted(id);
   }
 
-  @ApiOperation({ summary: 'Get One Job' })
+  @ApiOperation({ summary: 'Get One Job By Id' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.jobService.findOne(id);
-  }
-
-  @ApiOperation({ summary: 'Get All Jobs of particular user' })
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Get('/owners/:ownerId')
-  async getOwnersJobs(@Param('ownerId') ownerId: string) {
-    return this.jobService.findByOwner(ownerId);
+  async findOne(@Param('id') id: string) {
+    const job = await this.jobService.jobModel.findById(id)
+    if(!job){
+      throw new NotFoundException()
+    }
+    return job
   }
 
   @ApiOperation({ summary: 'Update one Job' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
-    return this.jobService.update(id, updateJobDto);
+  async update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
+    const updatedJob = await this.jobService.jobModel.findOneAndUpdate({_id:id},updateJobDto,{new:true})
+    if(!updatedJob){
+      throw new NotFoundException()
+    }
+    return updatedJob
   }
 
   @ApiOperation({ summary: 'Delete one Job' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.jobService.remove(id);
-  }
-
-  @Get('/new/create-table')
-  @ApiOperation({ summary: 'Create Job table in Dynamo DB' })
-  async createTable() {
-    return await this.jobService.jobRepository
-      .ensureTableExistsAndCreate()
-      .then(() => 'Created New Table');
+  async remove(@Param('id') id: string) {
+    const deletedJob = await this.jobService.remove(id);
+    if(!deletedJob){
+      throw new NotFoundException()
+    }
+    return deletedJob 
   }
 }

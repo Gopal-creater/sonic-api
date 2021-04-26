@@ -1,15 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType,PartialType } from '@nestjs/swagger';
 import { CreateSonicKeyFromJobDto } from '../../sonickey/dtos/create-sonickey.dto';
+import { CreateJobFileDto } from './create-job-file.dto';
 
-export class UpdateJobFileDto {
+export class UpdateJobFileDto extends PartialType(CreateJobFileDto) {
     @ApiProperty()
-    fileDetail:{ [key: string]: any }
+    isComplete?:boolean
 }
-
 
 export class AddKeyAndUpdateJobFileDto {
     @ApiProperty()
-    fileDetail:{ [key: string]: any }
+    jobFile:UpdateJobFileDto
 
     @ApiProperty()
     sonicKeyDetail:CreateSonicKeyFromJobDto

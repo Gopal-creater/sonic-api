@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { GlobalAwsService } from './../../shared/modules/global-aws/global-aws.service';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
-import { KeygenService } from 'src/shared/modules/keygen/keygen.service';
+import { KeygenService } from './../../shared/modules/keygen/keygen.service';
 import {
   Injectable,
   NotFoundException,

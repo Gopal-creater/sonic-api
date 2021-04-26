@@ -5,118 +5,105 @@ import {
 } from '@nestjs/common';
 import { CreateJobDto } from '../dto/create-job.dto';
 import { UpdateJobDto } from '../dto/update-job.dto';
-import { JobRepository } from '../../../repositories/job.repository';
 import { Job } from '../../../schemas/job.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { UpdateJobFileDto } from '../dto/update-job-file.dto';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { JSONUtils } from '../../../shared/utils';
 import { QueryOptions } from '@aws/dynamodb-data-mapper';
+import { QueryDto } from '../../../shared/dtos/query.dto';
+import { JobFile } from '../../../schemas/jobfile.schema';
+
 
 @Injectable()
 export class JobService {
   constructor(
-    public readonly jobRepository: JobRepository,
+    @InjectModel(Job.name) public readonly jobModel: Model<Job>,
+    @InjectModel(JobFile.name) public  readonly jobFileModel: Model<JobFile>,
     public readonly keygenService: KeygenService,
   ) {}
   async create(createJobDto: CreateJobDto) {
-    const dataToSave = Object.assign(new Job(), createJobDto) as Job;
-
-    const createdJob = await this.jobRepository.put(dataToSave);
-    await this.addReservedDetailsInLicence(createJobDto.licenseId, [
-      { jobId: createdJob.id, count: createJobDto.jobDetails.length },
+    const{jobFiles,...job}=createJobDto
+    const newJob = new this.jobModel(job);
+    var createdJob = await newJob.save();
+    const newJobFiles = jobFiles.map(jobFile => {
+      const newJobFile = new this.jobFileModel({...jobFile,job:createdJob});
+      return newJobFile;
+    });
+    const savedJobFiles = await this.jobFileModel.insertMany(
+      newJobFiles,
+    );
+    
+    createdJob.jobFiles.push(...savedJobFiles)
+    const updatedCreatedJob = await this.jobModel.findByIdAndUpdate(createdJob._id,{jobFiles:createdJob.jobFiles},{new:true});
+    await this.addReservedDetailsInLicence(createJobDto.license, [
+      { jobId: createdJob.id, count: updatedCreatedJob.jobFiles.length },
     ]).catch(async err => {
-      await this.jobRepository.delete(createdJob);
+      await this.jobModel.remove({_id:createdJob._id});
+      await this.jobFileModel.remove({job:createdJob._id})
       throw new BadRequestException('Error adding reserved licence count');
     });
-    return createdJob;
+    return updatedCreatedJob
   }
 
-  async findAll() {
-    const items:Job[] =[];
-    for await (const item of this.jobRepository.scan(Job)) {
-      // individual items will be yielded as the scan is performed
-      items.push(item);
+  async findAll(queryDto: QueryDto = {}) {
+    const { limit, offset, ...query } = queryDto;
+        return this.jobModel
+        .find(query || {})
+        .skip(offset)
+        .limit(limit)
+        .exec();
     }
-    return items;
-  }
-
-  findOne(id: string){
-    return this.jobRepository.get(Object.assign(new Job(), { id: id }) as Job);
-  }
-
-  async update(id: string, updateJobDto: UpdateJobDto) {
-    const job = await this.findOne(id);
-    return this.jobRepository.update(Object.assign(job, updateJobDto) as Job);
-  }
-
-  async updateJobDetailByFileId(
-    id: string,
-    fileId: string,
-    updateJobFileDto: UpdateJobFileDto,
-  ) {
-    const job = await this.findOne(id);
-    const oldFile = job.jobDetails.find(itm => itm.fileId == fileId)
-    if (!oldFile) {
-      return new NotFoundException();
-    }
-    const updatedFile = Object.assign(oldFile, updateJobFileDto, {
-      fileId: fileId,
-    });
-    const index = job.jobDetails.findIndex(itm => itm.fileId == fileId)
-    //Add updated
-    job.jobDetails[index]=updatedFile
-    return this.jobRepository.update(job);
-  }
 
   async remove(id: string) {
-    const job = await this.findOne(id);
+    const job = await this.jobModel.findById(id);
     if(!job){
-      return new NotFoundException();
+      throw new NotFoundException();
     }
-    await this.removeReservedDetailsInLicence(job.licenseId, job.id).catch(
+    await this.removeReservedDetailsInLicence(job.license, job.id).catch(
       err => {
         throw new BadRequestException('Error removing reserved licence count ');
       },
     );
-    return this.jobRepository.delete(job);
+    await this.jobFileModel.remove({job:id})
+    return  this.jobModel.findOneAndDelete({_id:job.id});
   }
 
   async makeCompleted(jobId: string) {
-    const job = await this.findOne(jobId);
+    const job = await this.jobModel.findById(jobId);
     if (job.isComplete) {
       return job;
     }
-    const totalCompletedFiles = job.jobDetails.filter(
+    const totalCompletedFiles = job.jobFiles.filter(
       file => file.isComplete == true,
     );
-    const totalInCompletedFiles = job.jobDetails.filter(
+    const totalInCompletedFiles = job.jobFiles.filter(
       file => file.isComplete == false,
     );
-    await this.removeReservedDetailsInLicence(job.licenseId, job.id).catch(
+    await this.removeReservedDetailsInLicence(job.license, job.id).catch(
       err => {
         throw new BadRequestException('Error removing reserved licence count ');
       },
     );
     await this.keygenService
-      .decrementUsage(job.licenseId, totalCompletedFiles.length)
+      .decrementUsage(job.license, totalCompletedFiles.length)
       .catch(err => {
         throw new BadRequestException('Error decrementing licence usages');
       });
-    const completedJob = await this.jobRepository
-      .update(
-        Object.assign(job, {
-          isComplete: true,
-          completedAt: new Date()
-        }) as Job
-      )
+
+      const completedJob  = await this.jobModel.findOneAndUpdate({_id:job.id},{
+        isComplete:true,
+        completedAt: new Date()
+      },{new:true})
       .catch(async err => {
         await this.keygenService.incrementUsage(
-          job.licenseId,
+          job.license,
           totalCompletedFiles.length,
         );
         throw new BadRequestException('Error making job completed');
       });
-    return completedJob;
+    return completedJob as Job
   }
 
   async addReservedDetailsInLicence(
@@ -207,17 +194,5 @@ export class JobService {
     });
     if (errorsUpdate) return Promise.reject(errorsUpdate);
     return updatedData;
-  }
-
-  async findByOwner(owner: string,queryOptions?:QueryOptions) {
-    var items: Job[] = [];
-    for await (const item of this.jobRepository.query(
-      Job,
-      { owner: owner},
-      { indexName: 'ownerIndex',...queryOptions },
-    )) {
-      items.push(item);
-    }
-    return items;
   }
 }

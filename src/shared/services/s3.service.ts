@@ -1,4 +1,4 @@
-import { GlobalAwsService } from 'src/shared/modules/global-aws/global-aws.service';
+import { GlobalAwsService } from '../../shared/modules/global-aws/global-aws.service';
 import { Injectable, Req, Res } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import * as multer from 'multer';

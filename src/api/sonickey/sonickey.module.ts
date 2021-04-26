@@ -1,15 +1,26 @@
 import { FileHandlerService } from './../../shared/services/file-handler.service';
-import { SonicKeyRepository } from './../../repositories/sonickey.repository';
 import { Module } from '@nestjs/common';
-import { SonickeyController } from './sonickey.controller';
-import { SonickeyService } from './sonickey.service';
+import { SonickeyController } from './controllers/sonickey.controller';
+import { SonickeyService } from './services/sonickey.service';
 import { KeygenService } from '../../shared/modules/keygen/keygen.service';
-import { FileOperationService} from '../../shared/services/file-operation.service'
+import { MongooseModule } from '@nestjs/mongoose';
+import { SonicKeySchema,SonicKeySchemaName } from '../../schemas/sonickey.schema';
+import { FileOperationService } from '../../shared/services/file-operation.service';
+import { SonickeyGuestController } from './controllers/sonickey.guest.controller';
 
 @Module({
-  controllers: [SonickeyController],
-  providers: [SonickeyService,SonicKeyRepository,KeygenService,FileOperationService,FileHandlerService],
-  exports:[SonickeyService]
-
+  imports: [
+  MongooseModule.forFeature([
+      { name: SonicKeySchemaName, schema: SonicKeySchema },
+    ]),
+  ],
+  controllers: [SonickeyController,SonickeyGuestController],
+  providers: [
+    SonickeyService,
+    KeygenService,
+    FileOperationService,
+    FileHandlerService,
+  ],
+  exports: [SonickeyService],
 })
 export class SonickeyModule {}
