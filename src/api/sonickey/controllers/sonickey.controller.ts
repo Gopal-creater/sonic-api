@@ -72,8 +72,8 @@ export class SonickeyController {
   ) {}
 
   @Get('/')
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys' })
   async getAll(@Query(new ParseQueryValue()) queryDto: QueryDto,) {
     console.log("queryDto",queryDto);

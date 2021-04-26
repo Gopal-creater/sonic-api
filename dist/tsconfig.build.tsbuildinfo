@@ -3257,7 +3257,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/controllers/sonickey.controller.ts": {
-        "version": "4d6c66106b5d4d0bd868244d9cd934a5150d0b8d53b1263bbb66c4e5c0cc5b54",
+        "version": "f929ac0d64c92179aff2cc93a0dd49b56f19194a93eeffe35bad95cfd44669e7",
         "signature": "ca2b41995d76418181ff3c8ec587ca273008acabb257ac02c106eba0379ec860",
         "affectsGlobalScope": false
       },
