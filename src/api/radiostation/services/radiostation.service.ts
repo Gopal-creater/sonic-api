@@ -4,10 +4,9 @@ import { RadioStation } from '../../../schemas/radiostation.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
-import children from 'child_process';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
-import { STOP_LISTENING, START_LISTENING } from '../listeners/constants';
+import { STOP_LISTENING_STREAM, START_LISTENING_STREAM } from '../listeners/constants';
 
 @Injectable()
 export class RadiostationService {
@@ -35,7 +34,7 @@ export class RadiostationService {
       return radioStation;
     }
 
-    this.eventEmitter.emit(STOP_LISTENING,radioStation)
+    this.eventEmitter.emit(STOP_LISTENING_STREAM,radioStation)
     //Do Stop Listening Stuff
     return this.radioStationModel.findOneAndUpdate(
       { _id: id },
@@ -61,7 +60,7 @@ export class RadiostationService {
     }
     //https://nodejs.org/api/worker_threads.html
     //Do Start Listening Stuff
-    this.eventEmitter.emit(START_LISTENING,radioStation)
+    this.eventEmitter.emit(START_LISTENING_STREAM,radioStation)
     return this.radioStationModel.findOneAndUpdate(
       { _id: id },
       {
@@ -172,34 +171,6 @@ export class RadiostationService {
         passedData: passedData,
         failedData: failedData,
       };
-    });
-  }
-
-  startListeningLikeAStream(streamUrl: string, outputPath: string) {
-    
-    var ffm = children.spawn(
-      'ffmpeg',
-      `-i ${streamUrl} -f 16_le -ar 41000 -ac 2 -f wav -t 00:00:10 ${outputPath}`.split(
-        ' ',
-      ),
-    );
-
-    ffm.stdout.on('data', data => {
-      console.log(`stdout: ${data}`);
-    });
-
-    ffm.stderr.on('data', data => {
-      console.error(`stderr: ${data}`);
-    });
-
-    ffm.on('error', (err) => {
-      console.error('Failed to start subprocess.',err);
-    });
-
-    ffm.on('close', code => {
-      // this.startListeningLikeAStream(streamUrl,outputPath)
-      // this.sonickeyService.decodeAllKeys()
-      console.log(`child process exited with code ${code}`);
     });
   }
 }

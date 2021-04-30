@@ -11,6 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { RadiostationService } from '../services/radiostation.service';
+import { RadiostationSonicKeysService } from '../services/radiostation-sonickeys.service';
 import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
 import { UpdateRadiostationDto } from '../dto/update-radiostation.dto';
 import {
@@ -23,11 +24,11 @@ import { BulkRadiostationDto } from '../dto/bulk-radiostation.dto';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 
-
 @ApiTags('Radio Station Controller')
 @Controller('radiostations')
 export class RadiostationController {
-  constructor(private readonly radiostationService: RadiostationService) {}
+  constructor(
+    private readonly radiostationService: RadiostationService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)

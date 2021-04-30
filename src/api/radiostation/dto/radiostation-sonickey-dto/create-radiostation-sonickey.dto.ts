@@ -3,7 +3,7 @@ import { RadioStationSonicKey } from '../../../../schemas/radiostation-sonickey.
 
 export class CreateRadiostationSonicKeyDto extends OmitType(
   RadioStationSonicKey,
-  ['count', 'radioStation', 'sonicKey'],
+  ['radioStation', 'sonicKey'],
 ) {
   @ApiProperty()
   sonicKey: string;

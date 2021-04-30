@@ -25,14 +25,9 @@ __decorate([
 ], RadioStationSonicKey.prototype, "radioStation", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String }),
+    mongoose_1.Prop({ type: String, required: true }),
     __metadata("design:type", Object)
 ], RadioStationSonicKey.prototype, "sonicKey", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: 0 }),
-    __metadata("design:type", Number)
-], RadioStationSonicKey.prototype, "count", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),

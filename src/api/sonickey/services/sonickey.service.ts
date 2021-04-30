@@ -34,17 +34,18 @@ export class SonickeyService {
   }
 
   async getAll(queryDto: QueryDto = {}) {
-    const { _limit, _start,_sort, ...query } = queryDto;
-    var sort={}
-    if(_sort){
-      var sortItems = _sort?.split(',')||[]
+    const { _limit, _start, _sort, ...query } = queryDto;
+    var sort = {};
+    if (_sort) {
+      var sortItems = _sort?.split(',') || [];
       for (let index = 0; index < sortItems.length; index++) {
         const sortItem = sortItems[index];
-        var sortKeyValue = sortItem?.split(':')
-        sort[sortKeyValue[0]]=sortKeyValue[1]?.toLowerCase()=='desc' ? -1 : 1
+        var sortKeyValue = sortItem?.split(':');
+        sort[sortKeyValue[0]] =
+          sortKeyValue[1]?.toLowerCase() == 'desc' ? -1 : 1;
       }
     }
-    
+
     // return await this.sonicKeyModel["paginate"](query || {},options) as MongoosePaginateDto<SonicKey>
     return this.sonicKeyModel
       .find(query || {})
@@ -120,7 +121,6 @@ export class SonickeyService {
    * @param ownerId
    */
   async decode(file: IUploadedFile) {
-    console.log('file to decode', file);
 
     file.path = upath.toUnix(file.path); //Convert windows path to unix path
     const inFilePath = file.path;
@@ -150,7 +150,6 @@ export class SonickeyService {
    * @param ownerId
    */
   async decodeAllKeys(file: IUploadedFile) {
-    console.log('file', file);
 
     file.path = upath.toUnix(file.path); //Convert windows path to unix path
     const inFilePath = file.path;
@@ -158,7 +157,6 @@ export class SonickeyService {
     const argList = ' ' + inFilePath + ' ' + logFilePath;
 
     const sonicDecodeCmd = `${appConfig.DECODER_EXE_PATH}` + argList;
-    console.log('sonicDecodeCmd: ', sonicDecodeCmd);
 
     //Prabin:Dont wait file to decode. just return Promise itself
     return this.fileOperationService
@@ -166,9 +164,12 @@ export class SonickeyService {
       .finally(() => {
         this.fileHandlerService.deleteFileAtPath(inFilePath);
       });
-    // return {
-    //   sonicKeys:['2KhHfn0-qo8','Z_NwqQ-SCJD']
-    // }
+
+    // return Promise.resolve({
+    //   sonicKeys: ['2KhHfn0-qo8', 'Z_NwqQ-SCJD'],
+    // }).finally(() => {
+    //   this.fileHandlerService.deleteFileAtPath(inFilePath);
+    // });
   }
 
   async exractMusicMetaFromFile(filePath: string) {
@@ -180,13 +181,22 @@ export class SonickeyService {
     sonicKeyDto?: SonicKeyDto,
   ) {
     const musicData = await this.exractMusicMetaFromFile(file.path);
-    sonicKeyDto.contentSize = sonicKeyDto.contentSize||file?.size;
-    sonicKeyDto.contentFileName =sonicKeyDto.contentFileName|| file?.filename;
-    sonicKeyDto.contentType = sonicKeyDto.contentType||file?.mimetype;
-    sonicKeyDto.contentFileType = sonicKeyDto.contentFileType||file?.mimetype;
-    sonicKeyDto.contentDuration =sonicKeyDto.contentDuration|| musicData?.format?.duration;
-    sonicKeyDto.contentEncoding = sonicKeyDto.contentEncoding||`${musicData?.format?.codec}, ${musicData?.format?.sampleRate} Hz, ${musicData?.format?.codecProfile||'codecProfile'}, ${musicData?.format?.bitrate} ch`;
-    sonicKeyDto.contentSamplingFrequency = sonicKeyDto.contentSamplingFrequency||`${musicData?.format?.sampleRate} Hz`;
+    sonicKeyDto.contentSize = sonicKeyDto.contentSize || file?.size;
+    sonicKeyDto.contentFileName = sonicKeyDto.contentFileName || file?.filename;
+    sonicKeyDto.contentType = sonicKeyDto.contentType || file?.mimetype;
+    sonicKeyDto.contentFileType = sonicKeyDto.contentFileType || file?.mimetype;
+    sonicKeyDto.contentDuration =
+      sonicKeyDto.contentDuration || musicData?.format?.duration;
+    sonicKeyDto.contentEncoding =
+      sonicKeyDto.contentEncoding ||
+      `${musicData?.format?.codec}, ${
+        musicData?.format?.sampleRate
+      } Hz, ${musicData?.format?.codecProfile || 'codecProfile'}, ${
+        musicData?.format?.bitrate
+      } ch`;
+    sonicKeyDto.contentSamplingFrequency =
+      sonicKeyDto.contentSamplingFrequency ||
+      `${musicData?.format?.sampleRate} Hz`;
     sonicKeyDto.contentName =
       sonicKeyDto.contentName || musicData?.common?.title || '';
     sonicKeyDto.contentOwner =
@@ -197,7 +207,7 @@ export class SonickeyService {
     return sonicKeyDto;
   }
 
-  async findBySonicKey(sonicKey: string):Promise<SonicKey> {
+  async findBySonicKey(sonicKey: string): Promise<SonicKey> {
     return this.sonicKeyModel.findOne({ sonicKey: sonicKey }).lean();
   }
 

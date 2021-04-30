@@ -36,5 +36,4 @@ export declare class RadiostationService {
             data: string;
         }[];
     }>;
-    startListeningLikeAStream(streamUrl: string, outputPath: string): void;
 }

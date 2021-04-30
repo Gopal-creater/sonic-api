@@ -8,4 +8,6 @@ export const appConfig = {
 
   ENCODER_EXE_PATH: `${appRootPath.toString()}/bin/encode.sh`,
   DECODER_EXE_PATH: `${appRootPath.toString()}/bin/decode.sh`,
+
+  TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS: 30,
 };

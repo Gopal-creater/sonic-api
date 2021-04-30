@@ -1,4 +1,3 @@
-import { CronService } from './shared/services/cron.service';
 import { ExternalSonickeyModule } from './api/external-api/externalsonickey/externalsonickey.module';
 import { GlobalAwsModule } from './shared/modules/global-aws/global-aws.module';
 import { Module } from '@nestjs/common';
@@ -32,7 +31,7 @@ console.log("Node_env",process.env.NODE_ENV);
   imports: [
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env'}),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba'}),
     AuthModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -40,6 +39,7 @@ console.log("Node_env",process.env.NODE_ENV);
         uri: configService.get<string>('MONGODB_URI'),
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        useFindAndModify:false,
         connectionFactory: (connection) => {
           connection?.plugin(mongoosePaginate);
           connection?.plugin(require('mongoose-autopopulate'))
@@ -67,7 +67,7 @@ console.log("Node_env",process.env.NODE_ENV);
     ThirdpartyDetectionModule
   ],
   controllers: [AppController],
-  providers: [AppService, CronService, AppGateway],
+  providers: [AppService, AppGateway],
 })
 export class AppModule {
   constructor() {}

@@ -14,12 +14,8 @@ export class RadioStationSonicKey extends Document {
   radioStation: any;
 
   @ApiProperty()
-  @Prop({ type:String})
+  @Prop({ type:String,required:true})
   sonicKey: any;
-
-  @ApiProperty()
-  @Prop({default:0})
-  count: number;
 
   @ApiProperty()
   @Prop()
@@ -27,7 +23,7 @@ export class RadioStationSonicKey extends Document {
 
   @ApiProperty()
   @Prop()
-  metaData: Map<string, any>;
+  metaData?: Map<string, any>;
 }
 
 export const RadioStationSonicKeySchema = SchemaFactory.createForClass(

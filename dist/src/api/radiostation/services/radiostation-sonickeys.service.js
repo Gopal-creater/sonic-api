@@ -30,30 +30,18 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const radiostation_schema_1 = require("../../../schemas/radiostation.schema");
 const sonickey_schema_1 = require("../../../schemas/sonickey.schema");
+const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 let RadiostationSonicKeysService = class RadiostationSonicKeysService {
-    constructor(radioStationSonickeyModel, radioStationModel, sonicKeyModel) {
+    constructor(radioStationSonickeyModel, radioStationModel, sonicKeyModel, sonickeyService) {
         this.radioStationSonickeyModel = radioStationSonickeyModel;
         this.radioStationModel = radioStationModel;
         this.sonicKeyModel = sonicKeyModel;
+        this.sonickeyService = sonickeyService;
+        this.streamingLogger = new common_1.Logger('Streaming');
     }
     async create(createRadiostationSonicKeyDto) {
-        const newRadioStationSonicKey = new this.radioStationSonickeyModel(Object.assign(Object.assign({}, createRadiostationSonicKeyDto), { count: 1 }));
+        const newRadioStationSonicKey = new this.radioStationSonickeyModel(Object.assign({}, createRadiostationSonicKeyDto));
         return newRadioStationSonicKey.save();
-    }
-    async findOrCreateAndIncrementCount(radioStation, sonicKey, count = 1) {
-        const radioStationSonicKey = await this.findOne(radioStation, sonicKey);
-        if (!radioStationSonicKey) {
-            const newRadioStationSonicKey = new this.radioStationSonickeyModel({
-                radioStation: radioStation,
-                sonicKey: sonicKey,
-                count: count,
-            });
-            return newRadioStationSonicKey.save();
-        }
-        else {
-            radioStationSonicKey.count = radioStationSonicKey.count + count;
-            return radioStationSonicKey.update();
-        }
     }
     async findAll(queryDto = {}) {
         var _a;
@@ -64,7 +52,8 @@ let RadiostationSonicKeysService = class RadiostationSonicKeysService {
             for (let index = 0; index < sortItems.length; index++) {
                 const sortItem = sortItems[index];
                 var sortKeyValue = sortItem === null || sortItem === void 0 ? void 0 : sortItem.split(':');
-                sort[sortKeyValue[0]] = ((_a = sortKeyValue[1]) === null || _a === void 0 ? void 0 : _a.toLowerCase()) == 'desc' ? -1 : 1;
+                sort[sortKeyValue[0]] =
+                    ((_a = sortKeyValue[1]) === null || _a === void 0 ? void 0 : _a.toLowerCase()) == 'desc' ? -1 : 1;
             }
         }
         return this.radioStationSonickeyModel
@@ -83,18 +72,6 @@ let RadiostationSonicKeysService = class RadiostationSonicKeysService {
     async findById(id) {
         return this.radioStationSonickeyModel.findById(id);
     }
-    async incrementCount(radioStation, sonicKey, count = 1) {
-        const radioStationSonicKey = await this.findOne(radioStation, sonicKey);
-        if (!radioStationSonicKey) {
-            return Promise.reject({
-                notFound: true,
-                status: 404,
-                message: 'Item not found',
-            });
-        }
-        radioStationSonicKey.count = radioStationSonicKey.count + count;
-        return radioStationSonicKey.update();
-    }
 };
 RadiostationSonicKeysService = __decorate([
     common_1.Injectable(),
@@ -103,7 +80,8 @@ RadiostationSonicKeysService = __decorate([
     __param(2, mongoose_1.InjectModel(sonickey_schema_1.SonicKey.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model,
-        mongoose_2.Model])
+        mongoose_2.Model,
+        sonickey_service_1.SonickeyService])
 ], RadiostationSonicKeysService);
 exports.RadiostationSonicKeysService = RadiostationSonicKeysService;
 //# sourceMappingURL=radiostation-sonickeys.service.js.map

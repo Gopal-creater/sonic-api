@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
-const cron_service_1 = require("./shared/services/cron.service");
 const externalsonickey_module_1 = require("./api/external-api/externalsonickey/externalsonickey.module");
 const global_aws_module_1 = require("./shared/modules/global-aws/global-aws.module");
 const common_1 = require("@nestjs/common");
@@ -44,7 +43,7 @@ AppModule = __decorate([
         imports: [
             schedule_1.ScheduleModule.forRoot(),
             event_emitter_1.EventEmitterModule.forRoot(),
-            config_1.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
+            config_1.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba' }),
             auth_module_1.AuthModule,
             mongoose_1.MongooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],
@@ -52,6 +51,7 @@ AppModule = __decorate([
                     uri: configService.get('MONGODB_URI'),
                     useNewUrlParser: true,
                     useUnifiedTopology: true,
+                    useFindAndModify: false,
                     connectionFactory: (connection) => {
                         connection === null || connection === void 0 ? void 0 : connection.plugin(mongoosePaginate);
                         connection === null || connection === void 0 ? void 0 : connection.plugin(require('mongoose-autopopulate'));
@@ -79,7 +79,7 @@ AppModule = __decorate([
             thirdparty_detection_module_1.ThirdpartyDetectionModule
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService, cron_service_1.CronService, app_gateway_1.AppGateway],
+        providers: [app_service_1.AppService, app_gateway_1.AppGateway],
     }),
     __metadata("design:paramtypes", [])
 ], AppModule);

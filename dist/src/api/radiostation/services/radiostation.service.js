@@ -28,7 +28,6 @@ const common_1 = require("@nestjs/common");
 const radiostation_schema_1 = require("../../../schemas/radiostation.schema");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const child_process_1 = require("child_process");
 const event_emitter_1 = require("@nestjs/event-emitter");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const constants_1 = require("../listeners/constants");
@@ -54,7 +53,7 @@ let RadiostationService = class RadiostationService {
         if (!radioStation.isStreamStarted) {
             return radioStation;
         }
-        this.eventEmitter.emit(constants_1.STOP_LISTENING, radioStation);
+        this.eventEmitter.emit(constants_1.STOP_LISTENING_STREAM, radioStation);
         return this.radioStationModel.findOneAndUpdate({ _id: id }, {
             stopAt: new Date(),
             isStreamStarted: false,
@@ -72,7 +71,7 @@ let RadiostationService = class RadiostationService {
         if (radioStation.isStreamStarted) {
             return radioStation;
         }
-        this.eventEmitter.emit(constants_1.START_LISTENING, radioStation);
+        this.eventEmitter.emit(constants_1.START_LISTENING_STREAM, radioStation);
         return this.radioStationModel.findOneAndUpdate({ _id: id }, {
             startedAt: new Date(),
             isStreamStarted: true,
@@ -152,21 +151,6 @@ let RadiostationService = class RadiostationService {
                 passedData: passedData,
                 failedData: failedData,
             };
-        });
-    }
-    startListeningLikeAStream(streamUrl, outputPath) {
-        var ffm = child_process_1.default.spawn('ffmpeg', `-i ${streamUrl} -f 16_le -ar 41000 -ac 2 -f wav -t 00:00:10 ${outputPath}`.split(' '));
-        ffm.stdout.on('data', data => {
-            console.log(`stdout: ${data}`);
-        });
-        ffm.stderr.on('data', data => {
-            console.error(`stderr: ${data}`);
-        });
-        ffm.on('error', (err) => {
-            console.error('Failed to start subprocess.', err);
-        });
-        ffm.on('close', code => {
-            console.log(`child process exited with code ${code}`);
         });
     }
 };
