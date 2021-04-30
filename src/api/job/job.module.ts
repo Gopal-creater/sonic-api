@@ -7,8 +7,8 @@ import { SonickeyModule } from '../sonickey/sonickey.module';
 import { JobFileService } from './services/job-file.service';
 import { KeygenModule } from '../../shared/modules/keygen/keygen.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { JobSchema,JobSchemaName} from '../../schemas/job.schema';
-import { JobFileSchema,JobFileSchemaName } from '../../schemas/jobfile.schema';
+import { JobSchema,JobSchemaName} from './schemas/job.schema';
+import { JobFileSchema,JobFileSchemaName } from './schemas/jobfile.schema';
 
 @Module({
   imports: [

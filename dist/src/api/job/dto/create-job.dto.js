@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateJobDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
-const job_schema_1 = require("../../../schemas/job.schema");
+const job_schema_1 = require("../schemas/job.schema");
 const create_job_file_dto_1 = require("./create-job-file.dto");
 class CreateJobDto extends swagger_1.OmitType(job_schema_1.Job, [
     'isComplete',

@@ -20,7 +20,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { JobFileService } from '../services/job-file.service';
 import { JobService } from '../services/job.service';
 import { CreateJobFileDto } from '../dto/create-job-file.dto';
-import { JobFile } from '../../../schemas/jobfile.schema';
+import { JobFile } from '../schemas/jobfile.schema';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 

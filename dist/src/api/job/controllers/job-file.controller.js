@@ -100,7 +100,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get('/job-files'),
-    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/jobfile.schema").JobFile] }),
+    openapi.ApiResponse({ status: 200, type: [require("../schemas/jobfile.schema").JobFile] }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),

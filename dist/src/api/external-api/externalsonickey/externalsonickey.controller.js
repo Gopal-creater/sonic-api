@@ -86,7 +86,7 @@ __decorate([
     common_1.Post('/decode'),
     common_1.UseInterceptors(common_1.ClassSerializerInterceptor),
     swagger_1.ApiOperation({ summary: 'Decode File' }),
-    openapi.ApiResponse({ status: 201, type: [require("../../../schemas/sonickey.schema").SonicKey] }),
+    openapi.ApiResponse({ status: 201, type: [require("../../sonickey/schemas/sonickey.schema").SonicKey] }),
     __param(0, common_1.UploadedFile()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

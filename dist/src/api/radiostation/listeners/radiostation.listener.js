@@ -21,7 +21,7 @@ exports.RadioStationListener = void 0;
 const common_1 = require("@nestjs/common");
 const event_emitter_1 = require("@nestjs/event-emitter");
 const constants_1 = require("./constants");
-const radiostation_schema_1 = require("../../../schemas/radiostation.schema");
+const radiostation_schema_1 = require("../schemas/radiostation.schema");
 const schedule_1 = require("@nestjs/schedule");
 const radiostation_sonickeys_service_1 = require("../services/radiostation-sonickeys.service");
 const app_config_1 = require("../../../config/app.config");
@@ -43,6 +43,7 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
     }
     async onApplicationBootstrap() {
         this.streamingIntervalLogger.debug('Called once after 0 seconds very firsttime, do restoring of listening of stream');
+        return;
         const radioStations = await this.radiostationService.radioStationModel.find({ isStreamStarted: true });
         this.streamingIntervalLogger.debug(`${radioStations.length} number of streaming need to be restart deuto server reboot`);
         const callback = (radioStationData) => {

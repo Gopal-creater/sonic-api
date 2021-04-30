@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateJobDto } from '../dto/create-job.dto';
 import { UpdateJobDto } from '../dto/update-job.dto';
-import { Job } from '../../../schemas/job.schema';
+import { Job } from '../schemas/job.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UpdateJobFileDto } from '../dto/update-job-file.dto';
@@ -13,7 +13,7 @@ import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { JSONUtils } from '../../../shared/utils';
 import { QueryOptions } from '@aws/dynamodb-data-mapper';
 import { QueryDto } from '../../../shared/dtos/query.dto';
-import { JobFile } from '../../../schemas/jobfile.schema';
+import { JobFile } from '../schemas/jobfile.schema';
 
 
 @Injectable()

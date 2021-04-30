@@ -1,5 +1,5 @@
 import { OnApplicationBootstrap } from '@nestjs/common';
-import { RadioStation } from '../../../schemas/radiostation.schema';
+import { RadioStation } from '../schemas/radiostation.schema';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { RadiostationSonicKeysService } from '../services/radiostation-sonickeys.service';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';

@@ -1,5 +1,5 @@
 import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
-import { RadioStation } from '../../../schemas/radiostation.schema';
+import { RadioStation } from '../schemas/radiostation.schema';
 import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';

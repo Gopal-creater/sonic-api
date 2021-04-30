@@ -16,8 +16,8 @@ const sonickey_module_1 = require("../sonickey/sonickey.module");
 const job_file_service_1 = require("./services/job-file.service");
 const keygen_module_1 = require("../../shared/modules/keygen/keygen.module");
 const mongoose_1 = require("@nestjs/mongoose");
-const job_schema_1 = require("../../schemas/job.schema");
-const jobfile_schema_1 = require("../../schemas/jobfile.schema");
+const job_schema_1 = require("./schemas/job.schema");
+const jobfile_schema_1 = require("./schemas/jobfile.schema");
 let JobModule = class JobModule {
 };
 JobModule = __decorate([

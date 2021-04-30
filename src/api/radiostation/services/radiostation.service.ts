@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
-import { RadioStation } from '../../../schemas/radiostation.schema';
+import { RadioStation } from '../schemas/radiostation.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';

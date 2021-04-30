@@ -4,7 +4,7 @@ import { SonicKeyDto } from '../dtos/sonicKey.dto';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { SonickeyService } from '../services/sonickey.service';
-import { SonicKey } from '../../../schemas/sonickey.schema';
+import { SonicKey } from '../schemas/sonickey.schema';
 import { FileHandlerService } from '../../../shared/services/file-handler.service';
 import { DownloadDto } from '../dtos/download.dto';
 import { QueryDto } from '../../../shared/dtos/query.dto';

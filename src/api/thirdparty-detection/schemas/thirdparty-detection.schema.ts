@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { SonicKey } from '../../../schemas/sonickey.schema';
+import { SonicKey } from '../../sonickey/schemas/sonickey.schema';
 
 export const ThirdpartyDetectionSchemaName = 'ThirdpartyDetection';
 

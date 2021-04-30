@@ -14,7 +14,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { SonickeyService } from '../services/sonickey.service';
-import { SonicKey } from '../../../schemas/sonickey.schema';
+import { SonicKey } from '../schemas/sonickey.schema';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as makeDir from 'make-dir';
 import { diskStorage } from 'multer';

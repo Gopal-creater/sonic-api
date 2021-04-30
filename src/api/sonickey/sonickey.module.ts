@@ -4,7 +4,7 @@ import { SonickeyController } from './controllers/sonickey.controller';
 import { SonickeyService } from './services/sonickey.service';
 import { KeygenService } from '../../shared/modules/keygen/keygen.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SonicKeySchema,SonicKeySchemaName } from '../../schemas/sonickey.schema';
+import { SonicKeySchema,SonicKeySchemaName } from './schemas/sonickey.schema';
 import { FileOperationService } from '../../shared/services/file-operation.service';
 import { SonickeyGuestController } from './controllers/sonickey.guest.controller';
 

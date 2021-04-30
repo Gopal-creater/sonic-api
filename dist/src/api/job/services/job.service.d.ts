@@ -1,9 +1,9 @@
 import { CreateJobDto } from '../dto/create-job.dto';
-import { Job } from '../../../schemas/job.schema';
+import { Job } from '../schemas/job.schema';
 import { Model } from 'mongoose';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { QueryDto } from '../../../shared/dtos/query.dto';
-import { JobFile } from '../../../schemas/jobfile.schema';
+import { JobFile } from '../schemas/jobfile.schema';
 export declare class JobService {
     readonly jobModel: Model<Job>;
     readonly jobFileModel: Model<JobFile>;

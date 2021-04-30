@@ -2,7 +2,7 @@ import { SonicKeyDto } from '../dtos/sonicKey.dto';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { FileHandlerService } from '../../../shared/services/file-handler.service';
 import { FileOperationService } from '../../../shared/services/file-operation.service';
-import { SonicKey } from '../../../schemas/sonickey.schema';
+import { SonicKey } from '../schemas/sonickey.schema';
 import * as mm from 'music-metadata';
 import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
 import { Model } from 'mongoose';

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, } from '@nestjs/mongoose';
 import { Document,Schema as MogSchema} from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Job,JobSchemaName } from './job.schema';
+import { Job,JobSchemaName } from '../../job/schemas/job.schema';
 
 export const SonicKeySchemaName="SonicKey"
 

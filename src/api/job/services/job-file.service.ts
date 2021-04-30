@@ -9,15 +9,15 @@ import {
 } from '../dto/update-job-file.dto';
 import { JobService } from './job.service';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
-import { SonicKey } from '../../../schemas/sonickey.schema';
+import { SonicKey } from '../../sonickey/schemas/sonickey.schema';
 import { v4 as uuidv4 } from 'uuid';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { AddJobFilesDto } from '../dto/add-job-files.dto';
-import { JobFile } from '../../../schemas/jobfile.schema';
+import { JobFile } from '../schemas/jobfile.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
-import { Job } from '../../../schemas/job.schema';
+import { Job } from '../schemas/job.schema';
 
 @Injectable()
 export class JobFileService {

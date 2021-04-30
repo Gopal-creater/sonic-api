@@ -1,23 +1,20 @@
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
-import { RadioStationSonicKey } from '../../../schemas/radiostation-sonickey.schema';
+import { RadioStationSonicKey } from '../schemas/radiostation-sonickey.schema';
 import { CreateRadiostationSonicKeyDto } from '../dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
-import { RadioStation } from '../../../schemas/radiostation.schema';
-import { SonicKey } from '../../../schemas/sonickey.schema';
+import { RadioStation } from '../schemas/radiostation.schema';
+import { SonicKey } from '../../sonickey/schemas/sonickey.schema';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
+import { RadiostationService } from './radiostation.service';
 
 @Injectable()
 export class RadiostationSonicKeysService {
   constructor(
     @InjectModel(RadioStationSonicKey.name)
     public radioStationSonickeyModel: Model<RadioStationSonicKey>,
-    @InjectModel(RadioStation.name)
-    public radioStationModel: Model<RadioStation>,
-    @InjectModel(SonicKey.name)
-    public sonicKeyModel: Model<SonicKey>,
-
+    public radiostationService: RadiostationService,
     private sonickeyService: SonickeyService,
   ) {}
   private readonly streamingLogger = new Logger('Streaming');

@@ -7,16 +7,16 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   RadioStationSchema,
   RadioStationSchemaName,
-} from '../../schemas/radiostation.schema';
+} from './schemas/radiostation.schema';
 import { SonickeyModule } from '../sonickey/sonickey.module';
 import {
   RadioStationSonicKeySchema,
   RadioStationSonicKeySchemaName,
-} from '../../schemas/radiostation-sonickey.schema';
+} from './schemas/radiostation-sonickey.schema';
 import {
   SonicKeySchema,
   SonicKeySchemaName,
-} from '../../schemas/sonickey.schema';
+} from '../sonickey/schemas/sonickey.schema';
 import { RadioStationListener } from './listeners/radiostation.listener';
 @Module({
   imports: [

@@ -35,7 +35,7 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All radiostations-sonickeys' }),
-    openapi.ApiResponse({ status: 200, type: [require("../../../schemas/radiostation-sonickey.schema").RadioStationSonicKey] }),
+    openapi.ApiResponse({ status: 200, type: [require("../schemas/radiostation-sonickey.schema").RadioStationSonicKey] }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),

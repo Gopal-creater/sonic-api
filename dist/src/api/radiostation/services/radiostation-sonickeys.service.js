@@ -25,17 +25,15 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RadiostationSonicKeysService = void 0;
 const common_1 = require("@nestjs/common");
-const radiostation_sonickey_schema_1 = require("../../../schemas/radiostation-sonickey.schema");
+const radiostation_sonickey_schema_1 = require("../schemas/radiostation-sonickey.schema");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const radiostation_schema_1 = require("../../../schemas/radiostation.schema");
-const sonickey_schema_1 = require("../../../schemas/sonickey.schema");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
+const radiostation_service_1 = require("./radiostation.service");
 let RadiostationSonicKeysService = class RadiostationSonicKeysService {
-    constructor(radioStationSonickeyModel, radioStationModel, sonicKeyModel, sonickeyService) {
+    constructor(radioStationSonickeyModel, radiostationService, sonickeyService) {
         this.radioStationSonickeyModel = radioStationSonickeyModel;
-        this.radioStationModel = radioStationModel;
-        this.sonicKeyModel = sonicKeyModel;
+        this.radiostationService = radiostationService;
         this.sonickeyService = sonickeyService;
         this.streamingLogger = new common_1.Logger('Streaming');
     }
@@ -76,11 +74,8 @@ let RadiostationSonicKeysService = class RadiostationSonicKeysService {
 RadiostationSonicKeysService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(radiostation_sonickey_schema_1.RadioStationSonicKey.name)),
-    __param(1, mongoose_1.InjectModel(radiostation_schema_1.RadioStation.name)),
-    __param(2, mongoose_1.InjectModel(sonickey_schema_1.SonicKey.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model,
-        mongoose_2.Model,
+        radiostation_service_1.RadiostationService,
         sonickey_service_1.SonickeyService])
 ], RadiostationSonicKeysService);
 exports.RadiostationSonicKeysService = RadiostationSonicKeysService;

@@ -25,7 +25,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RadiostationService = void 0;
 const common_1 = require("@nestjs/common");
-const radiostation_schema_1 = require("../../../schemas/radiostation.schema");
+const radiostation_schema_1 = require("../schemas/radiostation.schema");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const event_emitter_1 = require("@nestjs/event-emitter");

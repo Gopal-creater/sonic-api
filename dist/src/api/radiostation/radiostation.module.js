@@ -13,10 +13,10 @@ const radiostation_controller_1 = require("./controllers/radiostation.controller
 const radiostation_sonickeys_controller_1 = require("./controllers/radiostation-sonickeys.controller");
 const radiostation_sonickeys_service_1 = require("./services/radiostation-sonickeys.service");
 const mongoose_1 = require("@nestjs/mongoose");
-const radiostation_schema_1 = require("../../schemas/radiostation.schema");
+const radiostation_schema_1 = require("./schemas/radiostation.schema");
 const sonickey_module_1 = require("../sonickey/sonickey.module");
-const radiostation_sonickey_schema_1 = require("../../schemas/radiostation-sonickey.schema");
-const sonickey_schema_1 = require("../../schemas/sonickey.schema");
+const radiostation_sonickey_schema_1 = require("./schemas/radiostation-sonickey.schema");
+const sonickey_schema_1 = require("../sonickey/schemas/sonickey.schema");
 const radiostation_listener_1 = require("./listeners/radiostation.listener");
 let RadiostationModule = class RadiostationModule {
 };

@@ -25,12 +25,12 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobService = void 0;
 const common_1 = require("@nestjs/common");
-const job_schema_1 = require("../../../schemas/job.schema");
+const job_schema_1 = require("../schemas/job.schema");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
 const utils_1 = require("../../../shared/utils");
-const jobfile_schema_1 = require("../../../schemas/jobfile.schema");
+const jobfile_schema_1 = require("../schemas/jobfile.schema");
 let JobService = class JobService {
     constructor(jobModel, jobFileModel, keygenService) {
         this.jobModel = jobModel;

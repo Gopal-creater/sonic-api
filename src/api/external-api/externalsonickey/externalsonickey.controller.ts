@@ -1,7 +1,7 @@
 import { SonicKeyDto } from '../../sonickey/dtos/sonicKey.dto';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
-import { SonicKey } from '../../../schemas/sonickey.schema';
+import { SonicKey } from '../../sonickey/schemas/sonickey.schema';
 import { ExtDecodeDto } from './dtos/extdecode.dto';
 import { ExtEncodeDto } from './dtos/extencode.dto';
 import { JsonParsePipe } from '../../../shared/pipes/jsonparse.pipe';

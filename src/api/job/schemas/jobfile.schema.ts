@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Job,JobSchemaName } from './job.schema';
-import { SonicKey,SonicKeySchemaName } from './sonickey.schema';
+import { SonicKey,SonicKeySchemaName } from '../../sonickey/schemas/sonickey.schema';
 
 export const JobFileSchemaName="JobFile"
 

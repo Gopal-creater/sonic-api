@@ -1,7 +1,7 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { START_LISTENING_STREAM, STOP_LISTENING_STREAM } from './constants';
-import { RadioStation } from '../../../schemas/radiostation.schema';
+import { RadioStation } from '../schemas/radiostation.schema';
 import { SchedulerRegistry, Timeout } from '@nestjs/schedule';
 import { RadiostationSonicKeysService } from '../services/radiostation-sonickeys.service';
 import { appConfig } from '../../../config/app.config';

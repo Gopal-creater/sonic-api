@@ -13,8 +13,8 @@ exports.JobFileSchema = exports.JobFile = exports.JobFileSchemaName = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
-const job_schema_1 = require("./job.schema");
-const sonickey_schema_1 = require("./sonickey.schema");
+const job_schema_1 = require("../api/job/schemas/job.schema");
+const sonickey_schema_1 = require("../api/sonickey/schemas/sonickey.schema");
 exports.JobFileSchemaName = "JobFile";
 let JobFile = class JobFile extends mongoose_2.Document {
 };

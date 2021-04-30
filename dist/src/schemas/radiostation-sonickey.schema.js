@@ -13,8 +13,8 @@ exports.RadioStationSonicKeySchema = exports.RadioStationSonicKey = exports.Radi
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
-const radiostation_schema_1 = require("./radiostation.schema");
-const sonickey_schema_1 = require("./sonickey.schema");
+const radiostation_schema_1 = require("../api/radiostation/schemas/radiostation.schema");
+const sonickey_schema_1 = require("../api/sonickey/schemas/sonickey.schema");
 exports.RadioStationSonicKeySchemaName = 'RadioStationSonicKey';
 let RadioStationSonicKey = class RadioStationSonicKey extends mongoose_2.Document {
 };
