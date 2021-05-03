@@ -5417,8 +5417,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts": {
-        "version": "78d5fcb2b325c6a3664c6d1e93f13abbab4363935e2e1a9908836cc83c19954c",
-        "signature": "79b8e781cdf10e53c66696fe2de69cbeb1cd16ce23adaddd2f34e7f672da4ef6",
+        "version": "a786b366c8ab20a804604802778405bf9a43482066c088fe2a4b13021a74679e",
+        "signature": "9907be07f6dea4fad8fc723c492bcd5c4813db6c7792f49a7b4d28a4480896ac",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts": {
