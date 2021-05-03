@@ -32,14 +32,6 @@ let ThirdpartyDetectionService = class ThirdpartyDetectionService {
     constructor(thirdpartyDetectionModel) {
         this.thirdpartyDetectionModel = thirdpartyDetectionModel;
     }
-    create(createThirdpartyDetectionDto) {
-        console.log("createThirdpartyDetectionDto", createThirdpartyDetectionDto);
-        if (!createThirdpartyDetectionDto.detectionTime) {
-            createThirdpartyDetectionDto.detectionTime = new Date();
-        }
-        const newDetection = new this.thirdpartyDetectionModel(createThirdpartyDetectionDto);
-        return newDetection.save();
-    }
     async findAll(queryDto = {}) {
         var _a;
         const { _limit, _start, _sort } = queryDto, query = __rest(queryDto, ["_limit", "_start", "_sort"]);

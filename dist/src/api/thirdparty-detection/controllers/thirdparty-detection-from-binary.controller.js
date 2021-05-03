@@ -22,13 +22,17 @@ const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pi
 const query_dto_1 = require("../../../shared/dtos/query.dto");
 const swagger_1 = require("@nestjs/swagger");
 const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
+const apikey_decorator_1 = require("../../auth/decorators/apikey.decorator");
 let ThirdpartyDetectionFromBinaryController = class ThirdpartyDetectionFromBinaryController {
     constructor(thirdpartyDetectionService) {
         this.thirdpartyDetectionService = thirdpartyDetectionService;
     }
-    create(createThirdpartyDetectionDto) {
-        console.log("createThirdpartyDetectionDto", createThirdpartyDetectionDto);
-        return this.thirdpartyDetectionService.create(createThirdpartyDetectionDto);
+    create(createThirdpartyDetectionDto, customer) {
+        if (!createThirdpartyDetectionDto.detectionTime) {
+            createThirdpartyDetectionDto.detectionTime = new Date();
+        }
+        const newDetection = new this.thirdpartyDetectionService.thirdpartyDetectionModel(Object.assign(Object.assign({}, createThirdpartyDetectionDto), { customer: customer }));
+        return newDetection.save();
     }
     findAll(queryDto) {
         return this.thirdpartyDetectionService.findAll(queryDto);
@@ -60,9 +64,9 @@ __decorate([
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
     common_1.Post(),
     openapi.ApiResponse({ status: 201, type: require("../schemas/thirdparty-detection.schema").ThirdpartyDetection }),
-    __param(0, common_1.Body()),
+    __param(0, common_1.Body()), __param(1, apikey_decorator_1.ApiKey('customer')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_thirdparty_detection_dto_1.CreateThirdpartyDetectionDto]),
+    __metadata("design:paramtypes", [create_thirdparty_detection_dto_1.CreateThirdpartyDetectionDto, String]),
     __metadata("design:returntype", void 0)
 ], ThirdpartyDetectionFromBinaryController.prototype, "create", null);
 __decorate([

@@ -12,15 +12,6 @@ export class ThirdpartyDetectionService {
     @InjectModel(ThirdpartyDetection.name)
     public readonly thirdpartyDetectionModel: Model<ThirdpartyDetection>,
   ) {}
-  create(createThirdpartyDetectionDto: CreateThirdpartyDetectionDto) {
-    console.log("createThirdpartyDetectionDto",createThirdpartyDetectionDto);
-    
-    if (!createThirdpartyDetectionDto.detectionTime) {
-      createThirdpartyDetectionDto.detectionTime = new Date();
-    }
-    const newDetection = new this.thirdpartyDetectionModel(createThirdpartyDetectionDto);
-    return newDetection.save();
-  }
 
   async findAll(queryDto: QueryDto = {}) {
     const { _limit, _start,_sort, ...query } = queryDto;

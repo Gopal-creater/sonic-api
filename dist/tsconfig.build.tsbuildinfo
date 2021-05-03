@@ -5427,12 +5427,12 @@
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/thirdparty-detection.service.ts": {
-        "version": "79373fc8a0e40373db9051e89ce3579574dacbd0bba2155ab3de6f687ec6413e",
-        "signature": "1162953e07b295477c2ac5f7739f6d6cec01db606432496521602d24ca01d91d",
+        "version": "8ebbd6abb7d9af554942f1a9f47aa8b48b7840babf16ed08bfcd866441b367e0",
+        "signature": "2478f3c08034d346af1823ab6efd37fc975fcde6fa66691d11c0b4af9473d1db",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/controllers/thirdparty-detection.controller.ts": {
-        "version": "cf8ac7398d321ed84e92a109d2619825a3a504f52a25f994a37bfed7a9f76cf4",
+        "version": "b47eb82a4f964b380488e62e65bd7363a244a4f82414272446779b1495248099",
         "signature": "4dced8f8e6bb0d8377b7b774d03ca0275bc942d9181fd811cc5bfe6527af8c60",
         "affectsGlobalScope": false
       },
@@ -5441,9 +5441,14 @@
         "signature": "54936dcb6ff38893c56f454e71e1380eb88e9a7ae7536b258a0d80b410ab1336",
         "affectsGlobalScope": false
       },
+      "../src/api/auth/decorators/apikey.decorator.ts": {
+        "version": "ca70849ab6baaec09964f30d3dc87f25c1429b79cb4e37292e3770368f9b1ffe",
+        "signature": "e7b42c814531aa411b7ef1aced812bbe9b8fab614dd0e85925e931f6a711980c",
+        "affectsGlobalScope": false
+      },
       "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts": {
-        "version": "17206db53d8651819aafab5f324db2896153c6217b4aecde198ae8100ea1d499",
-        "signature": "55f97dd6674dab528fba4f3e1d74f0a4cf93c6b0e53d6aefd2d25561a991c2a8",
+        "version": "315863e08bb6d991594e75f322777ba25072e30f1fdb2b12a0b0fc15bb3f6e4b",
+        "signature": "f10743a232cb3d8c6df32d37d696963a3017035823b876c46c7ff2f871c331a0",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/thirdparty-detection.module.ts": {
@@ -18369,6 +18374,16 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts"
       ],
+      "../src/api/auth/decorators/apikey.decorator.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts"
+      ],
       "../src/api/auth/decorators/index.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
@@ -19204,6 +19219,7 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
+        "../src/api/auth/decorators/apikey.decorator.ts",
         "../src/api/auth/guards/apikey-auth.guard.ts",
         "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
         "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
@@ -32169,6 +32185,9 @@
         "../src/shared/modules/global-aws/global-aws.service.ts",
         "../src/shared/modules/keygen/keygen.service.ts"
       ],
+      "../src/api/auth/decorators/apikey.decorator.ts": [
+        "../node_modules/@nestjs/common/index.d.ts"
+      ],
       "../src/api/auth/decorators/index.ts": [
         "../src/api/auth/decorators/public.decorator.ts",
         "../src/api/auth/decorators/roles.decorator.ts",
@@ -32430,7 +32449,6 @@
       ],
       "../src/api/thirdparty-detection/thirdparty-detection.service.ts": [
         "../node_modules/mongoose/index.d.ts",
-        "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
         "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",
         "../src/shared/dtos/query.dto.ts"
@@ -33530,6 +33548,7 @@
       "../src/api/auth/auth.module.ts",
       "../src/api/auth/auth.service.ts",
       "../src/api/auth/config/auth.config.ts",
+      "../src/api/auth/decorators/apikey.decorator.ts",
       "../src/api/auth/decorators/index.ts",
       "../src/api/auth/decorators/public.decorator.ts",
       "../src/api/auth/decorators/roles.decorator.ts",

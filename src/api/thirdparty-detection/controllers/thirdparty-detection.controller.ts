@@ -12,13 +12,6 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 export class ThirdpartyDetectionController {
   constructor(private readonly thirdpartyDetectionService: ThirdpartyDetectionService) {}
   
-  // @ApiOperation({ summary: 'Create Detection' })
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
-  // @Post()
-  // create(@Body() createThirdpartyDetectionDto: CreateThirdpartyDetectionDto) {
-  //   return this.thirdpartyDetectionService.create(createThirdpartyDetectionDto);
-  // }
 
   @ApiOperation({ summary: 'Get All Detection' })
   @ApiBearerAuth()

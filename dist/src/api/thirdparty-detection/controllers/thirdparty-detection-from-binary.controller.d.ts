@@ -5,7 +5,7 @@ import { QueryDto } from '../../../shared/dtos/query.dto';
 export declare class ThirdpartyDetectionFromBinaryController {
     private readonly thirdpartyDetectionService;
     constructor(thirdpartyDetectionService: ThirdpartyDetectionService);
-    create(createThirdpartyDetectionDto: CreateThirdpartyDetectionDto): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;
+    create(createThirdpartyDetectionDto: CreateThirdpartyDetectionDto, customer: string): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;
     findAll(queryDto: QueryDto): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection[]>;
     findById(id: string): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;
     update(id: string, updateThirdpartyDetectionDto: UpdateThirdpartyDetectionDto): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;

@@ -6,6 +6,7 @@ import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { ApiBearerAuth, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
+import { ApiKey } from '../../auth/decorators/apikey.decorator';
 
 @ApiTags('ThirdParty-Binary Controller (protected by x-api-key)')
 @ApiSecurity('x-api-key')
@@ -16,9 +17,16 @@ export class ThirdpartyDetectionFromBinaryController {
   @ApiOperation({ summary: 'Create Detection' })
   @UseGuards(ApiKeyAuthGuard)
   @Post()
-  create(@Body() createThirdpartyDetectionDto: CreateThirdpartyDetectionDto) {
-    console.log("createThirdpartyDetectionDto",createThirdpartyDetectionDto);
-    return this.thirdpartyDetectionService.create(createThirdpartyDetectionDto);
+  create(@Body() createThirdpartyDetectionDto: CreateThirdpartyDetectionDto,@ApiKey('customer') customer: string) {
+      
+    if (!createThirdpartyDetectionDto.detectionTime) {
+      createThirdpartyDetectionDto.detectionTime = new Date();
+    }
+    const newDetection = new this.thirdpartyDetectionService.thirdpartyDetectionModel({
+      ...createThirdpartyDetectionDto,
+      customer:customer
+    });
+    return newDetection.save();
   }
 
   @ApiOperation({ summary: 'Get All Detection' })
