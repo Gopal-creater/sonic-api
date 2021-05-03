@@ -27,6 +27,7 @@ let ThirdpartyDetectionFromBinaryController = class ThirdpartyDetectionFromBinar
         this.thirdpartyDetectionService = thirdpartyDetectionService;
     }
     create(createThirdpartyDetectionDto) {
+        console.log("createThirdpartyDetectionDto", createThirdpartyDetectionDto);
         return this.thirdpartyDetectionService.create(createThirdpartyDetectionDto);
     }
     findAll(queryDto) {

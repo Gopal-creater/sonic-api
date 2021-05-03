@@ -1908,7 +1908,7 @@
       },
       "../src/api/sonickey/dtos/sonickey.dto.ts": {
         "version": "8dde1e526384068447d9c36e74902ae0ef21e2c1fe742ee2ef76c733dafc2e3e",
-        "signature": "75e22bf32f7ea9616b61ae5df20777d9697b30565690da6c2c6d550aac6403c6",
+        "signature": "1758f3a2c66a94f121ea4d0b502595ae8f901d19708f7b389595583d04e278bb",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/create-sonickey.dto.ts": {
@@ -1918,7 +1918,7 @@
       },
       "../src/api/sonickey/dtos/update-sonickey.dto.ts": {
         "version": "7119ded71c976501ca2152e1b21fa7fc39b54972da65d6e805d13d72ac293a08",
-        "signature": "dd4d1fe170af2bb047bb62a2907cac5778021128585dd6f77e75830c5835da3b",
+        "signature": "130f4315741eaf2d58755706de0fd55ec89b0829f337f308bb44d0fed5206717",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/decode.dto.ts": {
@@ -5088,7 +5088,7 @@
       },
       "../src/api/api-key/dto/create-api-key.dto.ts": {
         "version": "1fa31f3a0c7df898de74636c48e1fd5de8f8494b1c60fde075e72c81fa9a63d9",
-        "signature": "7322fb6780f12c21363a7ddc6da3cdf6fa5fb2840d4456b61ed38a5e977dd34a",
+        "signature": "0fb14d1a58d976c7d97acf4da7b901f0de39a22017815cd839603d533de7631b",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts": {
@@ -5318,7 +5318,7 @@
       },
       "../src/api/radiostation/dto/create-radiostation.dto.ts": {
         "version": "38de5428482887d53db3525e517930d5be0ee9cc3205bd6840fafa7ea4f4b367",
-        "signature": "9d2fa7301f8043cbceed7a477f09151b59cb0d4438e94d3ff09fd8f37b7a0cfd",
+        "signature": "6ea28a8da95abf7ae968027b5d820a24b7abe6f3d8bcdbeb6b27d3122dc44bc1",
         "affectsGlobalScope": false
       },
       "../node_modules/eventemitter2/eventemitter2.d.ts": {
@@ -5373,7 +5373,7 @@
       },
       "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts": {
         "version": "14aac07593fca6d21bd81212b08779b8968223fa1de97fec10854a44163c8659",
-        "signature": "599931e88c210bde4f724cb8eaf0e5e0e8ea5688f6840f4e8f642e30113d7aaf",
+        "signature": "ffe4ca984dbca830eeae270f93716f1a862b4fd05b16e817566ece106a6d24c8",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/services/radiostation-sonickeys.service.ts": {
@@ -5412,13 +5412,13 @@
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts": {
-        "version": "0f941cb60215c18d6887d67b07493e9a1e09964c5198aae591475148ed92bc59",
+        "version": "70e1bb38e38fda46d352c97bf0ab693e493b301d09299cf45db148a2646e78d1",
         "signature": "e216c210c0f3b93b2d88deacee6c5e79f37c858af53d80bca3cdc5af85782959",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts": {
-        "version": "5aee34c879a7b3e64c9e83ee57f4e71b72c75e86ffa911222fc902e3ac27ecd7",
-        "signature": "dadc8d28f902f293b3be019a06e0347ec586fbd75b84b906a2eae8dee0c672d1",
+        "version": "78d5fcb2b325c6a3664c6d1e93f13abbab4363935e2e1a9908836cc83c19954c",
+        "signature": "79b8e781cdf10e53c66696fe2de69cbeb1cd16ce23adaddd2f34e7f672da4ef6",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts": {
@@ -5427,7 +5427,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/thirdparty-detection.service.ts": {
-        "version": "c71507738a2948f0b592b645cf8abba929a594a588864919a80b68e4d4521ad7",
+        "version": "79373fc8a0e40373db9051e89ce3579574dacbd0bba2155ab3de6f687ec6413e",
         "signature": "1162953e07b295477c2ac5f7739f6d6cec01db606432496521602d24ca01d91d",
         "affectsGlobalScope": false
       },
@@ -5437,17 +5437,17 @@
         "affectsGlobalScope": false
       },
       "../src/api/auth/guards/apikey-auth.guard.ts": {
-        "version": "2af1db5abc7d39fd676d0a47574164f58a82770c6be81e176df400db8dcb5e14",
+        "version": "6cc842920a41f5384523ca072cb647503365c81bc17663f74c653d6e8ea7236d",
         "signature": "54936dcb6ff38893c56f454e71e1380eb88e9a7ae7536b258a0d80b410ab1336",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts": {
-        "version": "a2df896b8874c01ed3f555585ab206e997d5227dd44e53e82c161e307c42524c",
+        "version": "17206db53d8651819aafab5f324db2896153c6217b4aecde198ae8100ea1d499",
         "signature": "55f97dd6674dab528fba4f3e1d74f0a4cf93c6b0e53d6aefd2d25561a991c2a8",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/thirdparty-detection.module.ts": {
-        "version": "5ea59d282c698d893f387f0df257a48cb11f24dc5cf52fc9dad4f6fe06b930a7",
+        "version": "2153dcb2866342020fdf5793f8c0b03d670a5f5588c1c926875d9c881833b6f5",
         "signature": "6dbebbdc386763bed992bf46f17507d970ebcccfb94c893b6cdf84099ccd8f07",
         "affectsGlobalScope": false
       },
@@ -19237,7 +19237,6 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
-        "../src/api/job/schemas/jobfile.schema.ts",
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts"
       ],
       "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts": [
@@ -19260,8 +19259,7 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongoose/index.d.ts",
-        "../src/api/sonickey/schemas/sonickey.schema.ts"
+        "../node_modules/mongoose/index.d.ts"
       ],
       "../src/api/thirdparty-detection/thirdparty-detection.module.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -32420,6 +32418,7 @@
         "../src/shared/dtos/query.dto.ts"
       ],
       "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts"
       ],
       "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts": [

@@ -17,6 +17,7 @@ export class ThirdpartyDetectionFromBinaryController {
   @UseGuards(ApiKeyAuthGuard)
   @Post()
   create(@Body() createThirdpartyDetectionDto: CreateThirdpartyDetectionDto) {
+    console.log("createThirdpartyDetectionDto",createThirdpartyDetectionDto);
     return this.thirdpartyDetectionService.create(createThirdpartyDetectionDto);
   }
 
@@ -24,6 +25,7 @@ export class ThirdpartyDetectionFromBinaryController {
   @UseGuards(ApiKeyAuthGuard)
   @Get()
   findAll(@Query(new ParseQueryValue()) queryDto: QueryDto) {
+
     return this.thirdpartyDetectionService.findAll(queryDto);
   }
 

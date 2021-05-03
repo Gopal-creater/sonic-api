@@ -13,12 +13,12 @@ export class ThirdpartyDetectionService {
     public readonly thirdpartyDetectionModel: Model<ThirdpartyDetection>,
   ) {}
   create(createThirdpartyDetectionDto: CreateThirdpartyDetectionDto) {
+    console.log("createThirdpartyDetectionDto",createThirdpartyDetectionDto);
+    
     if (!createThirdpartyDetectionDto.detectionTime) {
       createThirdpartyDetectionDto.detectionTime = new Date();
     }
-    const newDetection = new this.thirdpartyDetectionModel(
-      createThirdpartyDetectionDto,
-    );
+    const newDetection = new this.thirdpartyDetectionModel(createThirdpartyDetectionDto);
     return newDetection.save();
   }
 

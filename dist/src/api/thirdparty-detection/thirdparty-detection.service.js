@@ -33,6 +33,7 @@ let ThirdpartyDetectionService = class ThirdpartyDetectionService {
         this.thirdpartyDetectionModel = thirdpartyDetectionModel;
     }
     create(createThirdpartyDetectionDto) {
+        console.log("createThirdpartyDetectionDto", createThirdpartyDetectionDto);
         if (!createThirdpartyDetectionDto.detectionTime) {
             createThirdpartyDetectionDto.detectionTime = new Date();
         }

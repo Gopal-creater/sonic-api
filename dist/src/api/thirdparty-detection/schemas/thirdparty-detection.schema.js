@@ -22,7 +22,8 @@ __decorate([
     __metadata("design:type", String)
 ], ThirdpartyDetection.prototype, "customer", void 0);
 __decorate([
-    swagger_1.ApiProperty({ required: true }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ required: true }),
     __metadata("design:type", String)
 ], ThirdpartyDetection.prototype, "sonicKey", void 0);
 __decorate([
@@ -36,7 +37,7 @@ __decorate([
     __metadata("design:type", Map)
 ], ThirdpartyDetection.prototype, "metaData", void 0);
 ThirdpartyDetection = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.ThirdpartyDetectionSchemaName })
+    mongoose_1.Schema({ timestamps: true })
 ], ThirdpartyDetection);
 exports.ThirdpartyDetection = ThirdpartyDetection;
 exports.ThirdpartyDetectionSchema = mongoose_1.SchemaFactory.createForClass(ThirdpartyDetection);

@@ -1,18 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { SonicKey } from '../../sonickey/schemas/sonickey.schema';
 
 export const ThirdpartyDetectionSchemaName = 'ThirdpartyDetection';
 
-@Schema({ timestamps: true, collection: ThirdpartyDetectionSchemaName })
+@Schema({ timestamps: true })
 export class ThirdpartyDetection extends Document {
   
   @ApiProperty()
   @Prop({required:true})
   customer: string;
 
-  @ApiProperty({required:true})
+  @ApiProperty()
+  @Prop({required:true})
   sonicKey: string;
 
   @ApiProperty()
@@ -24,6 +24,4 @@ export class ThirdpartyDetection extends Document {
   metaData: Map<string, any>;
 }
 
-export const ThirdpartyDetectionSchema = SchemaFactory.createForClass(
-  ThirdpartyDetection,
-);
+export const ThirdpartyDetectionSchema = SchemaFactory.createForClass(ThirdpartyDetection);

@@ -3,6 +3,7 @@ import { ThirdpartyDetectionService } from './thirdparty-detection.service';
 import { ThirdpartyDetectionController } from './controllers/thirdparty-detection.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
+  ThirdpartyDetection,
   ThirdpartyDetectionSchema,
   ThirdpartyDetectionSchemaName,
 } from './schemas/thirdparty-detection.schema';
@@ -13,7 +14,7 @@ import { ApiKeyModule } from '../api-key/api-key.module';
   imports: [
     MongooseModule.forFeature([
       {
-        name: ThirdpartyDetectionSchemaName,
+        name: ThirdpartyDetection.name,
         schema: ThirdpartyDetectionSchema,
       },
     ]),

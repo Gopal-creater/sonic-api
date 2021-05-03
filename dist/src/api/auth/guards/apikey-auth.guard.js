@@ -29,6 +29,7 @@ let ApiKeyAuthGuard = class ApiKeyAuthGuard {
             throw new common_1.ForbiddenException("Forbidden resource deuto no apikey is disabled");
         if (new Date(apikeyFromDb.validity).getTime() < new Date().getTime())
             throw new common_1.ForbiddenException("Forbidden resource deuto no apikey is expired");
+        request.apikey = apikeyFromDb;
         return true;
     }
 };
