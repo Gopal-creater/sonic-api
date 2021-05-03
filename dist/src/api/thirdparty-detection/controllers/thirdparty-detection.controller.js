@@ -28,6 +28,10 @@ let ThirdpartyDetectionController = class ThirdpartyDetectionController {
     findAll(queryDto) {
         return this.thirdpartyDetectionService.findAll(queryDto);
     }
+    async getOwnersKeys(ownerId, queryDto) {
+        const query = Object.assign(Object.assign({}, queryDto), { customer: ownerId });
+        return this.thirdpartyDetectionService.findAll(query);
+    }
     async findById(id) {
         const detection = await this.thirdpartyDetectionService.findById(id);
         if (!detection) {
@@ -61,6 +65,17 @@ __decorate([
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
     __metadata("design:returntype", void 0)
 ], ThirdpartyDetectionController.prototype, "findAll", null);
+__decorate([
+    common_1.Get('/customers/:targetUser'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get All Detection of particular user' }),
+    openapi.ApiResponse({ status: 200, type: [require("../schemas/thirdparty-detection.schema").ThirdpartyDetection] }),
+    __param(0, common_1.Param('targetUser')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
+    __metadata("design:returntype", Promise)
+], ThirdpartyDetectionController.prototype, "getOwnersKeys", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get One Detection' }),
     swagger_1.ApiBearerAuth(),

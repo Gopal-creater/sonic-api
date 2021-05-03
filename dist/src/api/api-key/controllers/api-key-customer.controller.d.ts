@@ -7,9 +7,9 @@ export declare class ApiKeyCustomerController {
     constructor(apiKeyService: ApiKeyService);
     create(customer: string, createApiKeyDto: CreateApiKeyDto): Promise<import("../schemas/api-key.schema").ApiKey>;
     findAll(customer: string, queryDto: QueryDto): Promise<import("../schemas/api-key.schema").ApiKey[]>;
-    findOne(apikey: string): Promise<import("../schemas/api-key.schema").ApiKey>;
-    update(apikey: string, updateApiKeyDto: UpdateApiKeyDto): Promise<import("../schemas/api-key.schema").ApiKey>;
-    makeDiabled(apikey: string): Promise<import("../schemas/api-key.schema").ApiKey>;
-    makeEnabled(apikey: string): Promise<import("../schemas/api-key.schema").ApiKey>;
-    remove(apikey: string): Promise<import("../schemas/api-key.schema").ApiKey>;
+    findOne(customer: string, apikey: string): Promise<import("../schemas/api-key.schema").ApiKey>;
+    update(customer: string, apikey: string, updateApiKeyDto: UpdateApiKeyDto): Promise<import("../schemas/api-key.schema").ApiKey>;
+    makeDiabled(customer: string, apikey: string): Promise<import("../schemas/api-key.schema").ApiKey>;
+    makeEnabled(customer: string, apikey: string): Promise<import("../schemas/api-key.schema").ApiKey>;
+    remove(customer: string, apikey: string): Promise<import("../schemas/api-key.schema").ApiKey>;
 }

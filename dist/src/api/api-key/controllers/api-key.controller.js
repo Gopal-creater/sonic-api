@@ -22,6 +22,7 @@ const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const swagger_1 = require("@nestjs/swagger");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const query_dto_1 = require("../../../shared/dtos/query.dto");
+const isTargetUserLoggedIn_guard_1 = require("../../auth/guards/isTargetUserLoggedIn.guard");
 let ApiKeyController = class ApiKeyController {
     constructor(apiKeyService) {
         this.apiKeyService = apiKeyService;
@@ -30,6 +31,7 @@ let ApiKeyController = class ApiKeyController {
         return this.apiKeyService.create(createApiKeyDto);
     }
     findAll(queryDto) {
+        console.log("Query", queryDto);
         return this.apiKeyService.findAll(queryDto);
     }
     async findOne(id) {
@@ -68,7 +70,7 @@ __decorate([
 ], ApiKeyController.prototype, "create", null);
 __decorate([
     common_1.Get(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard()),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All ApiKeys' }),
     openapi.ApiResponse({ status: 200, type: [require("../schemas/api-key.schema").ApiKey] }),

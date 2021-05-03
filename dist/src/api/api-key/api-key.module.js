@@ -10,7 +10,6 @@ exports.ApiKeyModule = void 0;
 const common_1 = require("@nestjs/common");
 const api_key_service_1 = require("./api-key.service");
 const mongoose_1 = require("@nestjs/mongoose");
-const api_key_controller_1 = require("./controllers/api-key.controller");
 const api_key_customer_controller_1 = require("./controllers/api-key-customer.controller");
 const api_key_schema_1 = require("./schemas/api-key.schema");
 let ApiKeyModule = class ApiKeyModule {
@@ -25,7 +24,7 @@ ApiKeyModule = __decorate([
                 },
             ]),
         ],
-        controllers: [api_key_controller_1.ApiKeyController, api_key_customer_controller_1.ApiKeyCustomerController],
+        controllers: [api_key_customer_controller_1.ApiKeyCustomerController],
         providers: [api_key_service_1.ApiKeyService],
         exports: [api_key_service_1.ApiKeyService]
     })

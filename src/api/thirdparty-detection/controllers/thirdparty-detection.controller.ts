@@ -21,6 +21,18 @@ export class ThirdpartyDetectionController {
     return this.thirdpartyDetectionService.findAll(queryDto);
   }
 
+  @Get('/customers/:targetUser')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get All Detection of particular user' })
+  async getOwnersKeys(@Param('targetUser') ownerId: string,@Query(new ParseQueryValue()) queryDto: QueryDto,) {
+    const query={
+      ...queryDto,
+      customer:ownerId
+    }
+    return this.thirdpartyDetectionService.findAll(query);
+  }
+
   @ApiOperation({ summary: 'Get One Detection' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)

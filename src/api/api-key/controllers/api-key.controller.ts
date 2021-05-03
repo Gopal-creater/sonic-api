@@ -6,6 +6,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { QueryDto } from '../../../shared/dtos/query.dto';
+import { IsTargetUserLoggedInGuard } from '../../auth/guards/isTargetUserLoggedIn.guard';
 
 /**
  * Accept this key asa x-api-key header from client side
@@ -25,10 +26,12 @@ export class ApiKeyController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard,new IsTargetUserLoggedInGuard())
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All ApiKeys' })
   findAll(@Query(new ParseQueryValue()) queryDto?: QueryDto,) {
+    console.log("Query",queryDto);
+    
     return this.apiKeyService.findAll(queryDto);
   }
 

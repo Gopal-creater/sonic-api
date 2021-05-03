@@ -1,5 +1,7 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
-import { Observable } from 'rxjs';
+export declare type targetValue = 'Query' | 'Param';
 export declare class IsTargetUserLoggedInGuard implements CanActivate {
-    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean>;
+    private target;
+    constructor(target?: targetValue);
+    canActivate(context: ExecutionContext): boolean;
 }

@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards, Query, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { ApiKeyService } from '../api-key.service';
 import { CreateApiKeyDto } from '../dto/create-api-key.dto';
 import { UpdateApiKeyDto } from '../dto/update-api-key.dto';
@@ -6,101 +18,135 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { QueryDto } from '../../../shared/dtos/query.dto';
+import { IsTargetUserLoggedInGuard } from '../../auth/guards/isTargetUserLoggedIn.guard';
 
 @ApiTags('Apikey-Customer Management Controller')
-@Controller('api-keys/customers/:customer')
+@Controller('api-keys/customers/:targetUser')
 export class ApiKeyCustomerController {
   constructor(private readonly apiKeyService: ApiKeyService) {}
-  
+
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Api Key' })
-  create(@Param('customer') customer:string,@Body() createApiKeyDto: CreateApiKeyDto) {
-    createApiKeyDto.customer=customer
-    return this.apiKeyService.create(createApiKeyDto);
+  create(
+    @Param('targetUser') customer: string,
+    @Body() createApiKeyDto: CreateApiKeyDto,
+  ) {
+    const newApiKey = new this.apiKeyService.apiKeyModel({
+      ...createApiKeyDto,
+      customer: customer,
+    });
+    return newApiKey.save();
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All ApiKeys' })
-  async findAll(@Param('customer') customer: string,@Query(new ParseQueryValue()) queryDto: QueryDto,) {
-    const query={
+  async findAll(
+    @Param('targetUser') customer: string,
+    @Query(new ParseQueryValue()) queryDto: QueryDto,
+  ) {
+    const query = {
       ...queryDto,
-      customer:customer
-    }
+      customer: customer,
+    };
     return this.apiKeyService.findAll(query);
   }
 
   @Get(':apikey')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Single Api key' })
-  async findOne(@Param('apikey') apikey: string) {
-    const apiKey = await this.apiKeyService.apiKeyModel.findById(apikey)
-    if(!apiKey){
-      throw new NotFoundException()
+  async findOne(
+    @Param('targetUser') customer: string,
+    @Param('apikey') apikey: string,
+  ) {
+    const apiKey = await this.apiKeyService.apiKeyModel.findById(apikey);
+    if (!apiKey) {
+      throw new NotFoundException();
     }
-    return apiKey
+    if (apiKey.customer !== customer) {
+      throw new BadRequestException('You are not the owner of this api key');
+    }
+    return apiKey;
   }
 
   @Put(':apikey')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Single Api key' })
   async update(
+    @Param('targetUser') customer: string,
     @Param('apikey') apikey: string,
     @Body() updateApiKeyDto: UpdateApiKeyDto,
   ) {
-    const updatedApiKey = await this.apiKeyService.apiKeyModel.findOneAndUpdate({_id:apikey},updateApiKeyDto,{new:true})
-    if(!updatedApiKey){
-      throw new NotFoundException()
+    const apiKey = await this.apiKeyService.apiKeyModel.findById(apikey);
+    if (!apiKey) {
+      throw new NotFoundException();
     }
-    return updatedApiKey
+    if (apiKey.customer !== customer) {
+      throw new BadRequestException('You are not the owner of this api key');
+    }
+    return this.apiKeyService.apiKeyModel.findOneAndUpdate(
+      { _id: apikey },
+      updateApiKeyDto,
+      { new: true },
+    );
   }
 
   @Put(':apikey/make-disabled')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Make this key disabled' })
   async makeDiabled(
-    @Param('apikey') apikey: string
+    @Param('targetUser') customer: string,
+    @Param('apikey') apikey: string,
   ) {
-    return this.apiKeyService.makeEnableDisable(apikey,true).catch(err=>{
-      if(err.status==404){
-        throw new NotFoundException()
-      }
-      throw err
-    })
+    const apiKey = await this.apiKeyService.apiKeyModel.findById(apikey);
+    if (!apiKey) {
+      throw new NotFoundException();
+    }
+    if (apiKey.customer !== customer) {
+      throw new BadRequestException('You are not the owner of this api key');
+    }
+    return this.apiKeyService.makeEnableDisable(apikey, true);
   }
 
   @Put(':apikey/make-enabled')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Make this key enabled' })
   async makeEnabled(
-    @Param('apikey') apikey: string
+    @Param('targetUser') customer: string,
+    @Param('apikey') apikey: string,
   ) {
-    return this.apiKeyService.makeEnableDisable(apikey,false).catch(err=>{
-      if(err.status==404){
-        throw new NotFoundException()
-      }
-      throw err
-    })
+    const apiKey = await this.apiKeyService.apiKeyModel.findById(apikey);
+    if (!apiKey) {
+      throw new NotFoundException();
+    }
+    if (apiKey.customer !== customer) {
+      throw new BadRequestException('You are not the owner of this api key');
+    }
+    return this.apiKeyService.makeEnableDisable(apikey, false);
   }
 
   @Delete(':apikey')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete Api key' })
-  remove(@Param('apikey') apikey: string) {
-    return this.apiKeyService.removeById(apikey).catch(err=>{
-      if(err.status==404){
-        throw new NotFoundException()
-      }
-      throw err
-    })
+  async remove(
+    @Param('targetUser') customer: string,
+    @Param('apikey') apikey: string,
+  ) {
+    const apiKey = await this.apiKeyService.apiKeyModel.findById(apikey);
+    if (!apiKey) {
+      throw new NotFoundException();
+    }
+    if (apiKey.customer !== customer) {
+      throw new BadRequestException('You are not the owner of this api key');
+    }
+    return this.apiKeyService.removeById(apikey);
   }
-  
 }

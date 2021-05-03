@@ -22,138 +22,158 @@ const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const swagger_1 = require("@nestjs/swagger");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const query_dto_1 = require("../../../shared/dtos/query.dto");
+const isTargetUserLoggedIn_guard_1 = require("../../auth/guards/isTargetUserLoggedIn.guard");
 let ApiKeyCustomerController = class ApiKeyCustomerController {
     constructor(apiKeyService) {
         this.apiKeyService = apiKeyService;
     }
     create(customer, createApiKeyDto) {
-        createApiKeyDto.customer = customer;
-        return this.apiKeyService.create(createApiKeyDto);
+        const newApiKey = new this.apiKeyService.apiKeyModel(Object.assign(Object.assign({}, createApiKeyDto), { customer: customer }));
+        return newApiKey.save();
     }
     async findAll(customer, queryDto) {
         const query = Object.assign(Object.assign({}, queryDto), { customer: customer });
         return this.apiKeyService.findAll(query);
     }
-    async findOne(apikey) {
+    async findOne(customer, apikey) {
         const apiKey = await this.apiKeyService.apiKeyModel.findById(apikey);
         if (!apiKey) {
             throw new common_1.NotFoundException();
         }
+        if (apiKey.customer !== customer) {
+            throw new common_1.BadRequestException('You are not the owner of this api key');
+        }
         return apiKey;
     }
-    async update(apikey, updateApiKeyDto) {
-        const updatedApiKey = await this.apiKeyService.apiKeyModel.findOneAndUpdate({ _id: apikey }, updateApiKeyDto, { new: true });
-        if (!updatedApiKey) {
+    async update(customer, apikey, updateApiKeyDto) {
+        const apiKey = await this.apiKeyService.apiKeyModel.findById(apikey);
+        if (!apiKey) {
             throw new common_1.NotFoundException();
         }
-        return updatedApiKey;
+        if (apiKey.customer !== customer) {
+            throw new common_1.BadRequestException('You are not the owner of this api key');
+        }
+        return this.apiKeyService.apiKeyModel.findOneAndUpdate({ _id: apikey }, updateApiKeyDto, { new: true });
     }
-    async makeDiabled(apikey) {
-        return this.apiKeyService.makeEnableDisable(apikey, true).catch(err => {
-            if (err.status == 404) {
-                throw new common_1.NotFoundException();
-            }
-            throw err;
-        });
+    async makeDiabled(customer, apikey) {
+        const apiKey = await this.apiKeyService.apiKeyModel.findById(apikey);
+        if (!apiKey) {
+            throw new common_1.NotFoundException();
+        }
+        if (apiKey.customer !== customer) {
+            throw new common_1.BadRequestException('You are not the owner of this api key');
+        }
+        return this.apiKeyService.makeEnableDisable(apikey, true);
     }
-    async makeEnabled(apikey) {
-        return this.apiKeyService.makeEnableDisable(apikey, false).catch(err => {
-            if (err.status == 404) {
-                throw new common_1.NotFoundException();
-            }
-            throw err;
-        });
+    async makeEnabled(customer, apikey) {
+        const apiKey = await this.apiKeyService.apiKeyModel.findById(apikey);
+        if (!apiKey) {
+            throw new common_1.NotFoundException();
+        }
+        if (apiKey.customer !== customer) {
+            throw new common_1.BadRequestException('You are not the owner of this api key');
+        }
+        return this.apiKeyService.makeEnableDisable(apikey, false);
     }
-    remove(apikey) {
-        return this.apiKeyService.removeById(apikey).catch(err => {
-            if (err.status == 404) {
-                throw new common_1.NotFoundException();
-            }
-            throw err;
-        });
+    async remove(customer, apikey) {
+        const apiKey = await this.apiKeyService.apiKeyModel.findById(apikey);
+        if (!apiKey) {
+            throw new common_1.NotFoundException();
+        }
+        if (apiKey.customer !== customer) {
+            throw new common_1.BadRequestException('You are not the owner of this api key');
+        }
+        return this.apiKeyService.removeById(apikey);
     }
 };
 __decorate([
     common_1.Post(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create Api Key' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/api-key.schema").ApiKey }),
-    __param(0, common_1.Param('customer')), __param(1, common_1.Body()),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, create_api_key_dto_1.CreateApiKeyDto]),
     __metadata("design:returntype", void 0)
 ], ApiKeyCustomerController.prototype, "create", null);
 __decorate([
     common_1.Get(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All ApiKeys' }),
     openapi.ApiResponse({ status: 200, type: [require("../schemas/api-key.schema").ApiKey] }),
-    __param(0, common_1.Param('customer')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
 ], ApiKeyCustomerController.prototype, "findAll", null);
 __decorate([
     common_1.Get(':apikey'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get Single Api key' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/api-key.schema").ApiKey }),
-    __param(0, common_1.Param('apikey')),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Param('apikey')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyCustomerController.prototype, "findOne", null);
 __decorate([
     common_1.Put(':apikey'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update Single Api key' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/api-key.schema").ApiKey }),
-    __param(0, common_1.Param('apikey')),
-    __param(1, common_1.Body()),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Param('apikey')),
+    __param(2, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_api_key_dto_1.UpdateApiKeyDto]),
+    __metadata("design:paramtypes", [String, String, update_api_key_dto_1.UpdateApiKeyDto]),
     __metadata("design:returntype", Promise)
 ], ApiKeyCustomerController.prototype, "update", null);
 __decorate([
     common_1.Put(':apikey/make-disabled'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Make this key disabled' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/api-key.schema").ApiKey }),
-    __param(0, common_1.Param('apikey')),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Param('apikey')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyCustomerController.prototype, "makeDiabled", null);
 __decorate([
     common_1.Put(':apikey/make-enabled'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Make this key enabled' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/api-key.schema").ApiKey }),
-    __param(0, common_1.Param('apikey')),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Param('apikey')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyCustomerController.prototype, "makeEnabled", null);
 __decorate([
     common_1.Delete(':apikey'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Delete Api key' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/api-key.schema").ApiKey }),
-    __param(0, common_1.Param('apikey')),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Param('apikey')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
 ], ApiKeyCustomerController.prototype, "remove", null);
 ApiKeyCustomerController = __decorate([
     swagger_1.ApiTags('Apikey-Customer Management Controller'),
-    common_1.Controller('api-keys/customers/:customer'),
+    common_1.Controller('api-keys/customers/:targetUser'),
     __metadata("design:paramtypes", [api_key_service_1.ApiKeyService])
 ], ApiKeyCustomerController);
 exports.ApiKeyCustomerController = ApiKeyCustomerController;
