@@ -31,6 +31,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const thirdparty_detection_module_1 = require("./api/thirdparty-detection/thirdparty-detection.module");
 const mongoosePaginate = require("mongoose-paginate-v2");
 const event_emitter_1 = require("@nestjs/event-emitter");
+const api_key_module_1 = require("./api/api-key/api-key.module");
 mongoosePaginate.paginate.options = {
     limit: 50,
 };
@@ -76,7 +77,8 @@ AppModule = __decorate([
             externalsonickey_module_1.ExternalSonickeyModule,
             job_module_1.JobModule,
             radiostation_module_1.RadiostationModule,
-            thirdparty_detection_module_1.ThirdpartyDetectionModule
+            thirdparty_detection_module_1.ThirdpartyDetectionModule,
+            api_key_module_1.ApiKeyModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, app_gateway_1.AppGateway],

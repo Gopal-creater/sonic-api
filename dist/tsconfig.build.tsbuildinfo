@@ -5081,8 +5081,83 @@
         "signature": "52b2512a7ee4edf047832ef63e43b1bd1a49ffcbcd808a891e94a787caaacd76",
         "affectsGlobalScope": false
       },
+      "../src/api/api-key/schemas/api-key.schema.ts": {
+        "version": "733dfd95c16d4d83eea87fc716c7139a9040035afc67b08759fe7e6bd45d019e",
+        "signature": "bc86a65140621501e82a582aa522db3f6501bb2abf8379a836a21deaf9dae3aa",
+        "affectsGlobalScope": false
+      },
+      "../src/api/api-key/dto/create-api-key.dto.ts": {
+        "version": "1fa31f3a0c7df898de74636c48e1fd5de8f8494b1c60fde075e72c81fa9a63d9",
+        "signature": "7322fb6780f12c21363a7ddc6da3cdf6fa5fb2840d4456b61ed38a5e977dd34a",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts": {
+        "version": "2bad09c4dc0810666ef5b6150aa910dd711051ce5f2184050c9859c708092a36",
+        "signature": "2bad09c4dc0810666ef5b6150aa910dd711051ce5f2184050c9859c708092a36",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/intersection-type.helper.d.ts": {
+        "version": "f9466e9b33fddf349c95d02835d174b946f1e81d61b72100d91ce5ff2f9abe3b",
+        "signature": "f9466e9b33fddf349c95d02835d174b946f1e81d61b72100d91ce5ff2f9abe3b",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/omit-type.helper.d.ts": {
+        "version": "c938dac97b83703e7bd03862b5bc558425acc9f16ad9e24220771df184d25fcf",
+        "signature": "c938dac97b83703e7bd03862b5bc558425acc9f16ad9e24220771df184d25fcf",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/partial-type.helper.d.ts": {
+        "version": "8941525aa2f1e097f0352e586bb9c755e2d533e9945508b7518346759b26e1b8",
+        "signature": "8941525aa2f1e097f0352e586bb9c755e2d533e9945508b7518346759b26e1b8",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/pick-type.helper.d.ts": {
+        "version": "8acfefd1aec7626a3016ce7e82e3ac1a0e5b57248cffd8255b833503c29954c7",
+        "signature": "8acfefd1aec7626a3016ce7e82e3ac1a0e5b57248cffd8255b833503c29954c7",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/type-helpers.utils.d.ts": {
+        "version": "3cf73a203d499608e5b91d0c8f6ec729a39dd547cc2651a0d4647cdb420cc1fc",
+        "signature": "3cf73a203d499608e5b91d0c8f6ec729a39dd547cc2651a0d4647cdb420cc1fc",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/dist/index.d.ts": {
+        "version": "c729e8cece7aead6e3edecca7ca0dbc1ad79d94a85ba010ec9dec5c0146b4552",
+        "signature": "c729e8cece7aead6e3edecca7ca0dbc1ad79d94a85ba010ec9dec5c0146b4552",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/mapped-types/index.d.ts": {
+        "version": "8f1241f5d9f0d3d72117768b3c974e462840fbd85026fb66685078945404cf2f",
+        "signature": "8f1241f5d9f0d3d72117768b3c974e462840fbd85026fb66685078945404cf2f",
+        "affectsGlobalScope": false
+      },
+      "../src/api/api-key/dto/update-api-key.dto.ts": {
+        "version": "b0e21f7293930e424d9bbf76eea779711de9b6055c83ce5aa2c4d369876a7d12",
+        "signature": "233f79b9472d998ee5e1f821b81e83f6940813c360a735e23a928f2c62fcbe67",
+        "affectsGlobalScope": false
+      },
+      "../src/api/api-key/api-key.service.ts": {
+        "version": "70737fee8c75932e8ab1f92c68b4eed9502aceb4b25a804378d428c7905b5198",
+        "signature": "7d21cd42078c3ed7594e7808989c3bda141931ec6c5aba413b3ef6d34090749c",
+        "affectsGlobalScope": false
+      },
+      "../src/api/api-key/controllers/api-key.controller.ts": {
+        "version": "65dea71ac1e181cbdd74e40902dbbd61089cad204f6195a8d7b2c36592e2d90a",
+        "signature": "bb62a83ac670b9b317c0433781b1077bbe953d4656936810144bb31f64f3ad00",
+        "affectsGlobalScope": false
+      },
+      "../src/api/api-key/controllers/api-key-customer.controller.ts": {
+        "version": "3b69460e24542d0a8c4c0abc28f0e4b0e58035d854fc582e96f28751eb468dbd",
+        "signature": "ff4f2ee2ece92e077cb5b20d9cac34dd00f3bdde2fdbe83ce65144c1304ede76",
+        "affectsGlobalScope": false
+      },
+      "../src/api/api-key/api-key.module.ts": {
+        "version": "199b55c62242f6fa150ea390c8e9379ddf705b18d97fbaa89d117df6745b20ba",
+        "signature": "b2e18ec0c42f4296b64ccee1e487946a5cf05e5d68ce0d9a8c8096f3e90d2a53",
+        "affectsGlobalScope": false
+      },
       "../src/api/auth/auth.module.ts": {
-        "version": "cf1374f3999d8e2d60f9371baf2b5b6fd15f73b732aca9d2cfe6af23dd86338e",
+        "version": "169fc44810146f98ea8a3d2d7ab01d78bb7434bcfca64c4e858607aa21efb3d8",
         "signature": "a28b5c0c372fb375910b3fe3c3ce4331509bc18ccef7cc39c9ee9d8daf8225d1",
         "affectsGlobalScope": false
       },
@@ -5306,46 +5381,6 @@
         "signature": "5f3888452d747cbedb4894cf77f2d79a5e9509342b6fc88d19f030b25612f912",
         "affectsGlobalScope": false
       },
-      "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts": {
-        "version": "2bad09c4dc0810666ef5b6150aa910dd711051ce5f2184050c9859c708092a36",
-        "signature": "2bad09c4dc0810666ef5b6150aa910dd711051ce5f2184050c9859c708092a36",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/mapped-types/dist/intersection-type.helper.d.ts": {
-        "version": "f9466e9b33fddf349c95d02835d174b946f1e81d61b72100d91ce5ff2f9abe3b",
-        "signature": "f9466e9b33fddf349c95d02835d174b946f1e81d61b72100d91ce5ff2f9abe3b",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/mapped-types/dist/omit-type.helper.d.ts": {
-        "version": "c938dac97b83703e7bd03862b5bc558425acc9f16ad9e24220771df184d25fcf",
-        "signature": "c938dac97b83703e7bd03862b5bc558425acc9f16ad9e24220771df184d25fcf",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/mapped-types/dist/partial-type.helper.d.ts": {
-        "version": "8941525aa2f1e097f0352e586bb9c755e2d533e9945508b7518346759b26e1b8",
-        "signature": "8941525aa2f1e097f0352e586bb9c755e2d533e9945508b7518346759b26e1b8",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/mapped-types/dist/pick-type.helper.d.ts": {
-        "version": "8acfefd1aec7626a3016ce7e82e3ac1a0e5b57248cffd8255b833503c29954c7",
-        "signature": "8acfefd1aec7626a3016ce7e82e3ac1a0e5b57248cffd8255b833503c29954c7",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/mapped-types/dist/type-helpers.utils.d.ts": {
-        "version": "3cf73a203d499608e5b91d0c8f6ec729a39dd547cc2651a0d4647cdb420cc1fc",
-        "signature": "3cf73a203d499608e5b91d0c8f6ec729a39dd547cc2651a0d4647cdb420cc1fc",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/mapped-types/dist/index.d.ts": {
-        "version": "c729e8cece7aead6e3edecca7ca0dbc1ad79d94a85ba010ec9dec5c0146b4552",
-        "signature": "c729e8cece7aead6e3edecca7ca0dbc1ad79d94a85ba010ec9dec5c0146b4552",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/mapped-types/index.d.ts": {
-        "version": "8f1241f5d9f0d3d72117768b3c974e462840fbd85026fb66685078945404cf2f",
-        "signature": "8f1241f5d9f0d3d72117768b3c974e462840fbd85026fb66685078945404cf2f",
-        "affectsGlobalScope": false
-      },
       "../src/api/radiostation/dto/update-radiostation.dto.ts": {
         "version": "d8e913747310f5f4ac898eba52db40cdc75f80a8b30c4085778dfb7aae7ae3fa",
         "signature": "a513005bae58cf9f62f2fb3f3f6c73619cd4a5dc4aeaa1ca5b1c51afd683aec2",
@@ -5377,7 +5412,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts": {
-        "version": "4cbface5e1ae2d9a70303ea65c0bcd085815d5e9b54213bfc2a818daeb8552c3",
+        "version": "0f941cb60215c18d6887d67b07493e9a1e09964c5198aae591475148ed92bc59",
         "signature": "e216c210c0f3b93b2d88deacee6c5e79f37c858af53d80bca3cdc5af85782959",
         "affectsGlobalScope": false
       },
@@ -5396,18 +5431,28 @@
         "signature": "1162953e07b295477c2ac5f7739f6d6cec01db606432496521602d24ca01d91d",
         "affectsGlobalScope": false
       },
-      "../src/api/thirdparty-detection/thirdparty-detection.controller.ts": {
-        "version": "4ce418737280beead81d409f8b5d92ba6a925fc5213253c2dbb67fbb178e2e20",
-        "signature": "d28d88b5fc2bd672674ceff12df43b9a7849042eb3d5b1c576245bfa674008df",
+      "../src/api/thirdparty-detection/controllers/thirdparty-detection.controller.ts": {
+        "version": "cf8ac7398d321ed84e92a109d2619825a3a504f52a25f994a37bfed7a9f76cf4",
+        "signature": "4dced8f8e6bb0d8377b7b774d03ca0275bc942d9181fd811cc5bfe6527af8c60",
+        "affectsGlobalScope": false
+      },
+      "../src/api/auth/guards/apikey-auth.guard.ts": {
+        "version": "2af1db5abc7d39fd676d0a47574164f58a82770c6be81e176df400db8dcb5e14",
+        "signature": "54936dcb6ff38893c56f454e71e1380eb88e9a7ae7536b258a0d80b410ab1336",
+        "affectsGlobalScope": false
+      },
+      "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts": {
+        "version": "a2df896b8874c01ed3f555585ab206e997d5227dd44e53e82c161e307c42524c",
+        "signature": "55f97dd6674dab528fba4f3e1d74f0a4cf93c6b0e53d6aefd2d25561a991c2a8",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/thirdparty-detection.module.ts": {
-        "version": "c93e8fbcaa2c143de66d0d29bbad91f6dc7ba0738b5c534ca6c64b383612b5dc",
+        "version": "5ea59d282c698d893f387f0df257a48cb11f24dc5cf52fc9dad4f6fe06b930a7",
         "signature": "6dbebbdc386763bed992bf46f17507d970ebcccfb94c893b6cdf84099ccd8f07",
         "affectsGlobalScope": false
       },
       "../src/app.module.ts": {
-        "version": "fabe7fee53daa6445b60076a57db65da6276f7aeb1ab94fe33a0316bf06f644b",
+        "version": "c1eda8cd187007164990c0f6f881c12d9e632ff476b734a09b4facdea267a7d0",
         "signature": "098267cfef1e0a4afbfa6ce9d4e75d6e915635b0357421ffe5b8b2f3a91cfdee",
         "affectsGlobalScope": false
       },
@@ -5417,7 +5462,7 @@
         "affectsGlobalScope": false
       },
       "../src/main.ts": {
-        "version": "715b4c61fe98ca4708f38941b598be67ba1d3c9793f846163f15ecc86cad6eb2",
+        "version": "7b185dbd5f0991a0ae9ad5d87b19c07cb7e63032a95bcc9aaf0616cbe7bc0987",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
@@ -18168,6 +18213,103 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts"
       ],
+      "../src/api/api-key/api-key.module.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/mongoose/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/api-key/api-key.service.ts",
+        "../src/api/api-key/controllers/api-key-customer.controller.ts",
+        "../src/api/api-key/controllers/api-key.controller.ts",
+        "../src/api/api-key/schemas/api-key.schema.ts"
+      ],
+      "../src/api/api-key/api-key.service.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/mongoose/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/api-key/dto/create-api-key.dto.ts",
+        "../src/api/api-key/dto/update-api-key.dto.ts",
+        "../src/api/api-key/schemas/api-key.schema.ts",
+        "../src/shared/dtos/query.dto.ts"
+      ],
+      "../src/api/api-key/controllers/api-key-customer.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/api-key/api-key.service.ts",
+        "../src/api/api-key/dto/create-api-key.dto.ts",
+        "../src/api/api-key/dto/update-api-key.dto.ts",
+        "../src/api/auth/guards/jwt-auth.guard.ts",
+        "../src/shared/dtos/query.dto.ts",
+        "../src/shared/pipes/parsequeryvalue.pipe.ts"
+      ],
+      "../src/api/api-key/controllers/api-key.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/api-key/api-key.service.ts",
+        "../src/api/api-key/dto/create-api-key.dto.ts",
+        "../src/api/api-key/dto/update-api-key.dto.ts",
+        "../src/api/auth/guards/jwt-auth.guard.ts",
+        "../src/shared/dtos/query.dto.ts",
+        "../src/shared/pipes/parsequeryvalue.pipe.ts"
+      ],
+      "../src/api/api-key/dto/create-api-key.dto.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/api-key/schemas/api-key.schema.ts"
+      ],
+      "../src/api/api-key/dto/update-api-key.dto.ts": [
+        "../node_modules/@nestjs/mapped-types/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/api-key/dto/create-api-key.dto.ts"
+      ],
+      "../src/api/api-key/schemas/api-key.schema.ts": [
+        "../node_modules/@nestjs/mongoose/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts"
+      ],
       "../src/api/auth/auth.controller.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/swagger/index.d.ts",
@@ -18192,6 +18334,7 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
+        "../src/api/api-key/api-key.module.ts",
         "../src/api/auth/auth.controller.ts",
         "../src/api/auth/auth.service.ts",
         "../src/api/auth/config/auth.config.ts",
@@ -18288,6 +18431,18 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts"
+      ],
+      "../src/api/auth/guards/apikey-auth.guard.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../node_modules/rxjs/index.d.ts",
+        "../src/api/api-key/api-key.service.ts"
       ],
       "../src/api/auth/guards/failedalways.guard.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -19039,6 +19194,40 @@
         "../src/shared/services/file-handler.service.ts",
         "../src/shared/services/file-operation.service.ts"
       ],
+      "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/auth/guards/apikey-auth.guard.ts",
+        "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
+        "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
+        "../src/api/thirdparty-detection/thirdparty-detection.service.ts",
+        "../src/shared/dtos/query.dto.ts",
+        "../src/shared/pipes/parsequeryvalue.pipe.ts"
+      ],
+      "../src/api/thirdparty-detection/controllers/thirdparty-detection.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/auth/guards/jwt-auth.guard.ts",
+        "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
+        "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
+        "../src/api/thirdparty-detection/thirdparty-detection.service.ts",
+        "../src/shared/dtos/query.dto.ts",
+        "../src/shared/pipes/parsequeryvalue.pipe.ts"
+      ],
       "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -19074,23 +19263,6 @@
         "../node_modules/mongoose/index.d.ts",
         "../src/api/sonickey/schemas/sonickey.schema.ts"
       ],
-      "../src/api/thirdparty-detection/thirdparty-detection.controller.ts": [
-        "../node_modules/@nestjs/common/index.d.ts",
-        "../node_modules/@nestjs/swagger/index.d.ts",
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/mongoose/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongoose/index.d.ts",
-        "../src/api/auth/guards/jwt-auth.guard.ts",
-        "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
-        "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
-        "../src/api/thirdparty-detection/thirdparty-detection.service.ts",
-        "../src/shared/dtos/query.dto.ts",
-        "../src/shared/pipes/parsequeryvalue.pipe.ts"
-      ],
       "../src/api/thirdparty-detection/thirdparty-detection.module.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/mongoose/index.d.ts",
@@ -19101,8 +19273,10 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
+        "../src/api/api-key/api-key.module.ts",
+        "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts",
+        "../src/api/thirdparty-detection/controllers/thirdparty-detection.controller.ts",
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",
-        "../src/api/thirdparty-detection/thirdparty-detection.controller.ts",
         "../src/api/thirdparty-detection/thirdparty-detection.service.ts"
       ],
       "../src/api/thirdparty-detection/thirdparty-detection.service.ts": [
@@ -19210,6 +19384,7 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/uniqid/index.d.ts",
         "../node_modules/mongoose/index.d.ts",
+        "../src/api/api-key/api-key.module.ts",
         "../src/api/auth/auth.module.ts",
         "../src/api/external-api/externalsonickey/externalsonickey.module.ts",
         "../src/api/job/job.module.ts",
@@ -31953,6 +32128,37 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts"
       ],
+      "../src/api/api-key/api-key.service.ts": [
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/api-key/dto/create-api-key.dto.ts",
+        "../src/api/api-key/schemas/api-key.schema.ts",
+        "../src/shared/dtos/query.dto.ts"
+      ],
+      "../src/api/api-key/controllers/api-key-customer.controller.ts": [
+        "../src/api/api-key/api-key.service.ts",
+        "../src/api/api-key/dto/create-api-key.dto.ts",
+        "../src/api/api-key/dto/update-api-key.dto.ts",
+        "../src/api/api-key/schemas/api-key.schema.ts",
+        "../src/shared/dtos/query.dto.ts"
+      ],
+      "../src/api/api-key/controllers/api-key.controller.ts": [
+        "../src/api/api-key/api-key.service.ts",
+        "../src/api/api-key/dto/create-api-key.dto.ts",
+        "../src/api/api-key/dto/update-api-key.dto.ts",
+        "../src/api/api-key/schemas/api-key.schema.ts",
+        "../src/shared/dtos/query.dto.ts"
+      ],
+      "../src/api/api-key/dto/create-api-key.dto.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../src/api/api-key/schemas/api-key.schema.ts"
+      ],
+      "../src/api/api-key/dto/update-api-key.dto.ts": [
+        "../node_modules/@nestjs/mapped-types/index.d.ts",
+        "../src/api/api-key/dto/create-api-key.dto.ts"
+      ],
+      "../src/api/api-key/schemas/api-key.schema.ts": [
+        "../node_modules/mongoose/index.d.ts"
+      ],
       "../src/api/auth/auth.controller.ts": [
         "../src/api/auth/auth.service.ts",
         "../src/api/auth/dto/login.dto.ts",
@@ -31979,6 +32185,10 @@
       ],
       "../src/api/auth/decorators/user.decorator.ts": [
         "../node_modules/@nestjs/common/index.d.ts"
+      ],
+      "../src/api/auth/guards/apikey-auth.guard.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../src/api/api-key/api-key.service.ts"
       ],
       "../src/api/auth/guards/failedalways.guard.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -32196,6 +32406,19 @@
         "../src/shared/services/file-handler.service.ts",
         "../src/shared/services/file-operation.service.ts"
       ],
+      "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts": [
+        "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
+        "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
+        "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",
+        "../src/api/thirdparty-detection/thirdparty-detection.service.ts",
+        "../src/shared/dtos/query.dto.ts"
+      ],
+      "../src/api/thirdparty-detection/controllers/thirdparty-detection.controller.ts": [
+        "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
+        "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",
+        "../src/api/thirdparty-detection/thirdparty-detection.service.ts",
+        "../src/shared/dtos/query.dto.ts"
+      ],
       "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts": [
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts"
       ],
@@ -32205,13 +32428,6 @@
       ],
       "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts": [
         "../node_modules/mongoose/index.d.ts"
-      ],
-      "../src/api/thirdparty-detection/thirdparty-detection.controller.ts": [
-        "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
-        "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
-        "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",
-        "../src/api/thirdparty-detection/thirdparty-detection.service.ts",
-        "../src/shared/dtos/query.dto.ts"
       ],
       "../src/api/thirdparty-detection/thirdparty-detection.service.ts": [
         "../node_modules/mongoose/index.d.ts",
@@ -33304,6 +33520,13 @@
       "../node_modules/typescript/lib/lib.webworker.importscripts.d.ts",
       "../node_modules/upath/upath.d.ts",
       "../package.json",
+      "../src/api/api-key/api-key.module.ts",
+      "../src/api/api-key/api-key.service.ts",
+      "../src/api/api-key/controllers/api-key-customer.controller.ts",
+      "../src/api/api-key/controllers/api-key.controller.ts",
+      "../src/api/api-key/dto/create-api-key.dto.ts",
+      "../src/api/api-key/dto/update-api-key.dto.ts",
+      "../src/api/api-key/schemas/api-key.schema.ts",
       "../src/api/auth/auth.controller.ts",
       "../src/api/auth/auth.module.ts",
       "../src/api/auth/auth.service.ts",
@@ -33314,6 +33537,7 @@
       "../src/api/auth/decorators/user.decorator.ts",
       "../src/api/auth/dto/login.dto.ts",
       "../src/api/auth/dto/register.dto.ts",
+      "../src/api/auth/guards/apikey-auth.guard.ts",
       "../src/api/auth/guards/failedalways.guard.ts",
       "../src/api/auth/guards/index.ts",
       "../src/api/auth/guards/istargetuserloggedin.guard.ts",
@@ -33366,10 +33590,11 @@
       "../src/api/sonickey/schemas/sonickey.schema.ts",
       "../src/api/sonickey/services/sonickey.service.ts",
       "../src/api/sonickey/sonickey.module.ts",
+      "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts",
+      "../src/api/thirdparty-detection/controllers/thirdparty-detection.controller.ts",
       "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
       "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
       "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",
-      "../src/api/thirdparty-detection/thirdparty-detection.controller.ts",
       "../src/api/thirdparty-detection/thirdparty-detection.module.ts",
       "../src/api/thirdparty-detection/thirdparty-detection.service.ts",
       "../src/api/user/dtos/index.ts",

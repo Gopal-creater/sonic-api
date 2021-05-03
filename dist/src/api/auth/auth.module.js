@@ -14,11 +14,12 @@ const auth_controller_1 = require("./auth.controller");
 const passport_1 = require("@nestjs/passport");
 const jwt_strategy_1 = require("./strategies/jwt.strategy");
 const keygen_service_1 = require("../../shared/modules/keygen/keygen.service");
+const api_key_module_1 = require("../api-key/api-key.module");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
     common_1.Module({
-        imports: [passport_1.PassportModule.register({ defaultStrategy: 'jwt' })],
+        imports: [passport_1.PassportModule.register({ defaultStrategy: 'jwt' }), api_key_module_1.ApiKeyModule],
         providers: [auth_config_1.AuthConfig, auth_service_1.AuthService, jwt_strategy_1.JwtStrategy, keygen_service_1.KeygenService],
         controllers: [auth_controller_1.AuthController],
     })

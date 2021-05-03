@@ -18,11 +18,11 @@ let ThirdpartyDetection = class ThirdpartyDetection extends mongoose_2.Document 
 };
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    mongoose_1.Prop({ required: true }),
     __metadata("design:type", String)
 ], ThirdpartyDetection.prototype, "customer", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    swagger_1.ApiProperty({ required: true }),
     __metadata("design:type", String)
 ], ThirdpartyDetection.prototype, "sonicKey", void 0);
 __decorate([

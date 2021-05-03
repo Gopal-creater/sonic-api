@@ -37,6 +37,11 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('Sonic End Points')
     .addBearerAuth()
+    .addApiKey({
+      type:'apiKey',
+      in:'header',
+      name:'x-api-key'
+    },'x-api-key')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/swagger-api', app, document);

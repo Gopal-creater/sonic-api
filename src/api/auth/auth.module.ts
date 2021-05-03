@@ -5,9 +5,10 @@ import { AuthController } from './auth.controller';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { KeygenService } from '../../shared/modules/keygen/keygen.service';
+import { ApiKeyModule } from '../api-key/api-key.module';
 
 @Module({
-  imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
+  imports: [PassportModule.register({ defaultStrategy: 'jwt' }), ApiKeyModule],
   providers: [AuthConfig, AuthService, JwtStrategy, KeygenService],
   controllers: [AuthController],
 })

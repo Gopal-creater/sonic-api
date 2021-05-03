@@ -1,24 +1,24 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, NotFoundException, Query, UseGuards } from '@nestjs/common';
-import { ThirdpartyDetectionService } from './thirdparty-detection.service';
-import { CreateThirdpartyDetectionDto } from './dto/create-thirdparty-detection.dto';
-import { UpdateThirdpartyDetectionDto } from './dto/update-thirdparty-detection.dto';
-import { ParseQueryValue } from '../../shared/pipes/parseQueryValue.pipe';
-import { QueryDto } from '../../shared/dtos/query.dto';
+import { ThirdpartyDetectionService } from '../thirdparty-detection.service';
+import { CreateThirdpartyDetectionDto } from '../dto/create-thirdparty-detection.dto';
+import { UpdateThirdpartyDetectionDto } from '../dto/update-thirdparty-detection.dto';
+import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
+import { QueryDto } from '../../../shared/dtos/query.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 
 @ApiTags('ThirdParty Controller')
 @Controller('thirdparty-detection')
 export class ThirdpartyDetectionController {
   constructor(private readonly thirdpartyDetectionService: ThirdpartyDetectionService) {}
   
-  @ApiOperation({ summary: 'Create Detection' })
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Post()
-  create(@Body() createThirdpartyDetectionDto: CreateThirdpartyDetectionDto) {
-    return this.thirdpartyDetectionService.create(createThirdpartyDetectionDto);
-  }
+  // @ApiOperation({ summary: 'Create Detection' })
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // @Post()
+  // create(@Body() createThirdpartyDetectionDto: CreateThirdpartyDetectionDto) {
+  //   return this.thirdpartyDetectionService.create(createThirdpartyDetectionDto);
+  // }
 
   @ApiOperation({ summary: 'Get All Detection' })
   @ApiBearerAuth()

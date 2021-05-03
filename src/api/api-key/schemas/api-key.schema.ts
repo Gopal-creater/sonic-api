@@ -5,15 +5,31 @@ import { ApiProperty } from '@nestjs/swagger';
 export const ApiKeySchemaName = 'ApiKey';
 
 @Schema({ timestamps: true, collection: ApiKeySchemaName })
-export class ApiKey extends Document {
-  
+export class ApiKey extends Document { //_id or id will be apikey here, which is always unique
+
   @ApiProperty()
   @Prop({required:true})
-  owner: string;
+  customer: string;
+
+  @ApiProperty()
+  @Prop({type:Date,default:new Date(new Date().setFullYear(new Date().getFullYear() + 1))})
+  validity?: Date;
 
   @ApiProperty()
   @Prop({type:Boolean,default:false})
   disabled?: boolean;
+
+  @ApiProperty()
+  @Prop({type:Boolean,default:false})
+  disabledByAdmin?: boolean;
+
+  @ApiProperty()
+  @Prop({default:0})
+  encodeUsageCount?: number;
+
+  @ApiProperty()
+  @Prop({default:0})
+  decodeUsageCount?: number;
 
   @ApiProperty()
   @Prop()

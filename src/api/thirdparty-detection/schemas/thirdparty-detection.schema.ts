@@ -9,10 +9,10 @@ export const ThirdpartyDetectionSchemaName = 'ThirdpartyDetection';
 export class ThirdpartyDetection extends Document {
   
   @ApiProperty()
-  @Prop()
+  @Prop({required:true})
   customer: string;
 
-  @ApiProperty()
+  @ApiProperty({required:true})
   sonicKey: string;
 
   @ApiProperty()
