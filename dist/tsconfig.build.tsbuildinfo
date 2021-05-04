@@ -5367,7 +5367,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/services/radiostation.service.ts": {
-        "version": "12b6209bf0c0a1c8f75ae9673b14bb262ec93c543d40e5498b37824ce16cab7e",
+        "version": "71547136d4014bbeb79db5742a4f79a926f8239acd80e27531347103ea6f2c09",
         "signature": "081a0beba1d684c0975fc03638582122f07676d30c066bf21b2df5d1289b895b",
         "affectsGlobalScope": false
       },

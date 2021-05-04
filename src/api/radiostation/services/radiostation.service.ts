@@ -66,6 +66,7 @@ export class RadiostationService {
       {
         startedAt: new Date(),
         isStreamStarted: true,
+        error:null
       },
       { new: true },
     );
