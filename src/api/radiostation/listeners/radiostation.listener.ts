@@ -26,7 +26,7 @@ export class RadioStationListener implements OnApplicationBootstrap {
     this.streamingIntervalLogger.debug(
       'Called once after 0 seconds very firsttime, do restoring of listening of stream',
     );
-    return 
+    
     const radioStations = await this.radiostationService.radioStationModel.find(
       { isStreamStarted: true },
     );

@@ -43,7 +43,6 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
     }
     async onApplicationBootstrap() {
         this.streamingIntervalLogger.debug('Called once after 0 seconds very firsttime, do restoring of listening of stream');
-        return;
         const radioStations = await this.radiostationService.radioStationModel.find({ isStreamStarted: true });
         this.streamingIntervalLogger.debug(`${radioStations.length} number of streaming need to be restart deuto server reboot`);
         const callback = (radioStationData) => {
