@@ -32,7 +32,7 @@ console.log("Node_env",process.env.NODE_ENV);
   imports: [
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env'}),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba'}),
     AuthModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
