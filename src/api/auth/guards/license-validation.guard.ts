@@ -15,7 +15,7 @@ export class LicenseValidationGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
     const {data,errors}= await this.keygenService.getAllLicenses(`metadata[owner-${user?.sub}]=${user?.sub}`)
-    if(!data || data.length<0){
+    if(!data || data.length<=0){
       throw new UnprocessableEntityException("No License keys present. Please add a License key.")
     }
     if(errors){

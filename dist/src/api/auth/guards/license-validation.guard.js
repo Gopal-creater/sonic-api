@@ -20,7 +20,7 @@ let LicenseValidationGuard = class LicenseValidationGuard {
         const request = context.switchToHttp().getRequest();
         const user = request.user;
         const { data, errors } = await this.keygenService.getAllLicenses(`metadata[owner-${user === null || user === void 0 ? void 0 : user.sub}]=${user === null || user === void 0 ? void 0 : user.sub}`);
-        if (!data || data.length < 0) {
+        if (!data || data.length <= 0) {
             throw new common_1.UnprocessableEntityException("No License keys present. Please add a License key.");
         }
         if (errors) {
