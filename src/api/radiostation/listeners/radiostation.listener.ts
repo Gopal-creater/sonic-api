@@ -11,6 +11,7 @@ import * as children from 'child_process';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { CreateRadiostationSonicKeyDto } from '../dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto';
 import * as appRootPath from 'app-root-path';
+import * as makeDir from 'make-dir';
 import * as uniqid from 'uniqid';
 import { RadiostationService } from '../services/radiostation.service';
 
@@ -26,15 +27,22 @@ export class RadioStationListener implements OnApplicationBootstrap {
     this.streamingIntervalLogger.debug(
       'Called once after 0 seconds very firsttime, do restoring of listening of stream',
     );
-    
+
+    // return
     const radioStations = await this.radiostationService.radioStationModel.find(
       { isStreamStarted: true },
     );
     this.streamingIntervalLogger.debug(
-      `${radioStations.length} number of streaming need to be restart deuto server reboot`
+      `${radioStations.length} number of streaming need to be restart deuto server reboot`,
     );
-    const callback = (radioStationData: RadioStation) => {
-      const outputPath = `${appRootPath.toString()}/storage/stream/${uniqid()}.wav`;
+    const callback = async (radioStationData: RadioStation) => {
+      //Create folder if not present for streaming
+      await makeDir(
+        `${appRootPath.toString()}/storage/streaming/${radioStationData._id}`,
+      );
+      const outputPath = `${appRootPath.toString()}/storage/streaming/${
+        radioStationData._id
+      }/${uniqid()}.wav`;
       this.startListeningLikeAStreamAndUpdateTable(
         radioStationData,
         outputPath,
@@ -60,13 +68,18 @@ export class RadioStationListener implements OnApplicationBootstrap {
     this.radioStationListenerLogger.log(
       `Start Listening Event on radioStation id ${radioStation._id}`,
     );
-    const callback = (radioStationData: RadioStation) => {
+    const callback = async (radioStationData: RadioStation) => {
       this.streamingIntervalLogger.log(
         'radioStation streamingUrl inside interval',
         radioStationData.streamingUrl,
       );
-
-      const outputPath = `${appRootPath.toString()}/storage/stream/${uniqid()}.wav`;
+//Create folder if not present for streaming
+      await makeDir(
+        `${appRootPath.toString()}/storage/streaming/${radioStation._id}`,
+      );
+      const outputPath = `${appRootPath.toString()}/storage/streaming/${
+        radioStation._id
+      }/${uniqid()}.wav`;
       this.startListeningLikeAStreamAndUpdateTable(
         radioStationData,
         outputPath,

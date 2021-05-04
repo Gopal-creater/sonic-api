@@ -112,9 +112,12 @@ let SonickeyService = class SonickeyService {
         const logFilePath = inFilePath + '.log';
         const argList = ' ' + inFilePath + ' ' + logFilePath;
         const sonicDecodeCmd = `${config_1.appConfig.DECODER_EXE_PATH}` + argList;
-        return this.fileOperationService
-            .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
-            .finally(() => {
+        var validkeys = ['VctJ2KQyBj1', 'nC7c3ZyOJGe', 'xIbt68PcTGF'];
+        var invalidkeys = ['jdjhjdhsjdhsj', 'sdskdjksdjk', 'jdskdksdj'];
+        var dummykeys = [...validkeys, ...invalidkeys];
+        return Promise.resolve({
+            sonicKeys: [dummykeys[Math.floor(Math.random() * dummykeys.length)]],
+        }).finally(() => {
             this.fileHandlerService.deleteFileAtPath(inFilePath);
         });
     }

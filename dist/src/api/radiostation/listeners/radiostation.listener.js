@@ -30,6 +30,7 @@ const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const children = require("child_process");
 const create_radiostation_sonickey_dto_1 = require("../dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto");
 const appRootPath = require("app-root-path");
+const makeDir = require("make-dir");
 const uniqid = require("uniqid");
 const radiostation_service_1 = require("../services/radiostation.service");
 let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
@@ -45,8 +46,9 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
         this.streamingIntervalLogger.debug('Called once after 0 seconds very firsttime, do restoring of listening of stream');
         const radioStations = await this.radiostationService.radioStationModel.find({ isStreamStarted: true });
         this.streamingIntervalLogger.debug(`${radioStations.length} number of streaming need to be restart deuto server reboot`);
-        const callback = (radioStationData) => {
-            const outputPath = `${appRootPath.toString()}/storage/stream/${uniqid()}.wav`;
+        const callback = async (radioStationData) => {
+            await makeDir(`${appRootPath.toString()}/storage/streaming/${radioStationData._id}`);
+            const outputPath = `${appRootPath.toString()}/storage/streaming/${radioStationData._id}/${uniqid()}.wav`;
             this.startListeningLikeAStreamAndUpdateTable(radioStationData, outputPath);
         };
         radioStations.forEach(radioStation => {
@@ -57,9 +59,10 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
     }
     handleStartListeningEvent(radioStation) {
         this.radioStationListenerLogger.log(`Start Listening Event on radioStation id ${radioStation._id}`);
-        const callback = (radioStationData) => {
+        const callback = async (radioStationData) => {
             this.streamingIntervalLogger.log('radioStation streamingUrl inside interval', radioStationData.streamingUrl);
-            const outputPath = `${appRootPath.toString()}/storage/stream/${uniqid()}.wav`;
+            await makeDir(`${appRootPath.toString()}/storage/streaming/${radioStation._id}`);
+            const outputPath = `${appRootPath.toString()}/storage/streaming/${radioStation._id}/${uniqid()}.wav`;
             this.startListeningLikeAStreamAndUpdateTable(radioStationData, outputPath);
         };
         const interval = setInterval(() => callback(radioStation), app_config_1.appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS * 1000);

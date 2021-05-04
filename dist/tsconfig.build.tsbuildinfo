@@ -2762,7 +2762,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/services/sonickey.service.ts": {
-        "version": "7411fa996df8b124563cd8c4b7db0b27396f39989f4101e2c02b96ff37c727c1",
+        "version": "d2c2228a9c9085efa8f726455e5ba20715632c709cc2ac1af96417f10e6c8c4d",
         "signature": "d5d541fc9ee1dc5fdf0c1d3754b3adbabe072a01235754d60223cd2ddb09fa32",
         "affectsGlobalScope": false
       },
@@ -5402,12 +5402,12 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/controllers/radiostation-sonickeys.controller.ts": {
-        "version": "494cc5bdb401f11ee5de613573aeb895570ddcde2834012338c54dd969b6f97f",
-        "signature": "c982a5aa01ec470e2151640d95ca5086d5f160364d1815dcb0a0d4145549b434",
+        "version": "31442b44563001c5b5a2bf71e87655feaae6a9c164efd1c9c960dee12ac5c46b",
+        "signature": "a385dc97ae3cbae048a7c41ee267f44e492aac63680980e942aaa63b8e61be03",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/listeners/radiostation.listener.ts": {
-        "version": "bf17c8a5dbc5f5279a625d7f8ecbb877b3f4d2a0a06951a559e2061a3ed4270a",
+        "version": "5c835d768084c1487e1e421af208df0572b08df002219e4c5b3bf3d39a7de136",
         "signature": "96a3dd3f81c171f03174516d89e4cb0568fb61805395a27cdf46e305c12dec68",
         "affectsGlobalScope": false
       },
@@ -18919,6 +18919,7 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/uniqid/index.d.ts",
+        "../node_modules/make-dir/index.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts",
         "../src/api/radiostation/listeners/constants.ts",

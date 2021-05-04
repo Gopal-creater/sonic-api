@@ -6,4 +6,5 @@ export declare class RadiostationSonicKeysController {
     private readonly radiostationSonicKeysService;
     constructor(radiostationService: RadiostationService, radiostationSonicKeysService: RadiostationSonicKeysService);
     findAll(queryDto: QueryDto): Promise<import("../schemas/radiostation-sonickey.schema").RadioStationSonicKey[]>;
+    getOwnersKeys(radioStationId: string, queryDto: QueryDto): Promise<import("../schemas/radiostation-sonickey.schema").RadioStationSonicKey[]>;
 }
