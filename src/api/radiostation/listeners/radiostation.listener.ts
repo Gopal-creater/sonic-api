@@ -121,6 +121,7 @@ export class RadioStationListener implements OnApplicationBootstrap {
         `-i ${radioStation.streamingUrl} -y -f 16_le -ar 41000 -ac 2 -f wav -t 00:00:${appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS} ${outputPath}`.split(
           ' ',
         ),
+        {shell:true}
       );
 
       ffm.stdout.on('data', data => {
