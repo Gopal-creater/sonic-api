@@ -5322,8 +5322,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/create-radiostation.dto.ts": {
-        "version": "38de5428482887d53db3525e517930d5be0ee9cc3205bd6840fafa7ea4f4b367",
-        "signature": "6ea28a8da95abf7ae968027b5d820a24b7abe6f3d8bcdbeb6b27d3122dc44bc1",
+        "version": "9274567d97f5a36ad9d21170c00cffff321b1f984a5f32cdeb5fbbb65d70fa5c",
+        "signature": "11ffc38c38f116ac6c0358350a2f623885d4a0852b5900475a7bf977f29efe6c",
         "affectsGlobalScope": false
       },
       "../node_modules/eventemitter2/eventemitter2.d.ts": {
@@ -5387,8 +5387,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/update-radiostation.dto.ts": {
-        "version": "d8e913747310f5f4ac898eba52db40cdc75f80a8b30c4085778dfb7aae7ae3fa",
-        "signature": "a513005bae58cf9f62f2fb3f3f6c73619cd4a5dc4aeaa1ca5b1c51afd683aec2",
+        "version": "f64b3f932b18f3398522bba97bb1ce65e90d866add11e90eb12d91753e0ba6ed",
+        "signature": "34503133d24836fd74575b96477f8fc263185234c4b727401a5aa94c257dfddc",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/bulk-radiostation.dto.ts": {
@@ -18887,7 +18887,7 @@
         "../src/api/radiostation/schemas/radiostation-sonickey.schema.ts"
       ],
       "../src/api/radiostation/dto/update-radiostation.dto.ts": [
-        "../node_modules/@nestjs/mapped-types/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -32340,7 +32340,7 @@
         "../src/api/radiostation/schemas/radiostation-sonickey.schema.ts"
       ],
       "../src/api/radiostation/dto/update-radiostation.dto.ts": [
-        "../node_modules/@nestjs/mapped-types/index.d.ts",
+        "../node_modules/@nestjs/common/index.d.ts",
         "../src/api/radiostation/dto/create-radiostation.dto.ts"
       ],
       "../src/api/radiostation/listeners/radiostation.listener.ts": [
