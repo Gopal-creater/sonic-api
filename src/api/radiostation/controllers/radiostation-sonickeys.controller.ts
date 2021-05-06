@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards, Param } from '@nestjs/common';
 import { RadiostationService } from '../services/radiostation.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
@@ -28,5 +28,17 @@ export class RadiostationSonicKeysController {
   @ApiOperation({ summary: 'Get count of all radiostation-sonickeys' })
   async getCount(@Query() query) {
     return this.radiostationSonicKeysService.radioStationSonickeyModel.estimatedDocumentCount({...query})
+  }
+
+  @Get('/radio-stations/:radioStationId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get All Sonic Keys of particular user' })
+  async getOwnersKeys(@Param('radioStationId') radioStationId: string,@Query(new ParseQueryValue()) queryDto: QueryDto,) {
+    const query={
+      ...queryDto,
+      radioStation:radioStationId
+    }
+    return this.radiostationSonicKeysService.findAll(query);
   }
 }

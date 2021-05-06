@@ -2767,7 +2767,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/services/sonickey.service.ts": {
-        "version": "06f57929bd22084e5310c54f86fb288082d83ff141fcc5051e1459927aaaa3ca",
+        "version": "5a90d13860e93fd99354294d31ec19e51b201bf238e8b63eb31641f92f11fb9e",
         "signature": "442885dfe791d3088907e0f414e6bf6f4ec512dec6675c8d1d09a0a80451b67e",
         "affectsGlobalScope": false
       },
@@ -5342,8 +5342,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/create-radiostation.dto.ts": {
-        "version": "38de5428482887d53db3525e517930d5be0ee9cc3205bd6840fafa7ea4f4b367",
-        "signature": "6ea28a8da95abf7ae968027b5d820a24b7abe6f3d8bcdbeb6b27d3122dc44bc1",
+        "version": "9274567d97f5a36ad9d21170c00cffff321b1f984a5f32cdeb5fbbb65d70fa5c",
+        "signature": "18ab3aa15fc00df9b5005f6415d4c80b54bcaba5ce08478b34835061608b9715",
         "affectsGlobalScope": false
       },
       "../node_modules/eventemitter2/eventemitter2.d.ts": {
@@ -5392,7 +5392,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/services/radiostation.service.ts": {
-        "version": "86acbee2d5a3db77f68691757e04fc419941af1841d69f1621b4e0f9373913ba",
+        "version": "e90fc4da9b86aba89f0a21454774d9dace8ffdba4a1d46dc56d795d644a58d0b",
         "signature": "55d7edce46e81c3d2c3aaadb61c90f6db5c5792ee0f7e6b3c935b4625b5c3dab",
         "affectsGlobalScope": false
       },
@@ -5417,8 +5417,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/update-radiostation.dto.ts": {
-        "version": "d8e913747310f5f4ac898eba52db40cdc75f80a8b30c4085778dfb7aae7ae3fa",
-        "signature": "a513005bae58cf9f62f2fb3f3f6c73619cd4a5dc4aeaa1ca5b1c51afd683aec2",
+        "version": "f64b3f932b18f3398522bba97bb1ce65e90d866add11e90eb12d91753e0ba6ed",
+        "signature": "4a073b8cb1cce3e09fb71e298874c581680441c7fa96d2fc110bdc28307f390d",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/bulk-radiostation.dto.ts": {
@@ -5432,12 +5432,12 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/controllers/radiostation-sonickeys.controller.ts": {
-        "version": "cfdc22b276e61fe6751dae1d125dde98d07133d543cceb1433843ec922882a40",
-        "signature": "a5d3fb842979e08d7aa56c068d2284b911fef0c5fb210a66e82842abdd5c7703",
+        "version": "44f8977f7e27aa7b7bea9e19ed6f24bdca70240154681ec3890b032e0922f4ee",
+        "signature": "feffa74ed49a2b8aaa4cc9e8b7ea5aba7810754beed0d0b14239f0178e575cbb",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/listeners/radiostation.listener.ts": {
-        "version": "b0caa955f11a7f389d40f801f82e5c527d7f23a92d9e4a579ec2739b5112ed74",
+        "version": "dfa602fd22f400c2aaa3ebb6d8bafd87d18a3ee3baf8344ef3c8c2407303b916",
         "signature": "96a3dd3f81c171f03174516d89e4cb0568fb61805395a27cdf46e305c12dec68",
         "affectsGlobalScope": false
       },
@@ -18980,7 +18980,7 @@
         "../src/api/radiostation/schemas/radiostation-sonickey.schema.ts"
       ],
       "../src/api/radiostation/dto/update-radiostation.dto.ts": [
-        "../node_modules/@nestjs/mapped-types/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -19012,6 +19012,7 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/uniqid/index.d.ts",
+        "../node_modules/make-dir/index.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts",
         "../src/api/radiostation/listeners/constants.ts",
@@ -32481,7 +32482,7 @@
         "../src/api/radiostation/schemas/radiostation-sonickey.schema.ts"
       ],
       "../src/api/radiostation/dto/update-radiostation.dto.ts": [
-        "../node_modules/@nestjs/mapped-types/index.d.ts",
+        "../node_modules/@nestjs/common/index.d.ts",
         "../src/api/radiostation/dto/create-radiostation.dto.ts"
       ],
       "../src/api/radiostation/listeners/radiostation.listener.ts": [

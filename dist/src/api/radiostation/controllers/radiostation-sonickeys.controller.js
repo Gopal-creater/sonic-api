@@ -32,6 +32,10 @@ let RadiostationSonicKeysController = class RadiostationSonicKeysController {
     async getCount(query) {
         return this.radiostationSonicKeysService.radioStationSonickeyModel.estimatedDocumentCount(Object.assign({}, query));
     }
+    async getOwnersKeys(radioStationId, queryDto) {
+        const query = Object.assign(Object.assign({}, queryDto), { radioStation: radioStationId });
+        return this.radiostationSonicKeysService.findAll(query);
+    }
 };
 __decorate([
     common_1.Get('/'),
@@ -55,6 +59,17 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], RadiostationSonicKeysController.prototype, "getCount", null);
+__decorate([
+    common_1.Get('/radio-stations/:radioStationId'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user' }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateRadioStationSonicKeyDto }),
+    __param(0, common_1.Param('radioStationId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
+    __metadata("design:returntype", Promise)
+], RadiostationSonicKeysController.prototype, "getOwnersKeys", null);
 RadiostationSonicKeysController = __decorate([
     swagger_1.ApiTags('RadioStation-SonicKeys Controller'),
     common_1.Controller('radiostations-sonickeys'),

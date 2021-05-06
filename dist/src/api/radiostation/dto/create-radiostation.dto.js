@@ -7,7 +7,8 @@ const radiostation_schema_1 = require("../schemas/radiostation.schema");
 class CreateRadiostationDto extends swagger_1.OmitType(radiostation_schema_1.RadioStation, [
     'startedAt',
     'stopAt',
-    'isStreamStarted'
+    'isStreamStarted',
+    'error'
 ]) {
     static _OPENAPI_METADATA_FACTORY() {
         return {};

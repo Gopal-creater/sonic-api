@@ -173,8 +173,12 @@ export class SonickeyService {
     //     this.fileHandlerService.deleteFileAtPath(inFilePath);
     //   });
 
+    // Only for testing
+    var validkeys = ['VctJ2KQyBj1','nC7c3ZyOJGe','xIbt68PcTGF'];
+    var invalidkeys = ['jdjhjdhsjdhsj','sdskdjksdjk','jdskdksdj']
+    var dummykeys = [...validkeys,...invalidkeys]
     return Promise.resolve({
-      sonicKeys: ['VctJ2KQyBj1'],
+      sonicKeys: [dummykeys[Math.floor(Math.random() * dummykeys.length)]],
     }).finally(() => {
       this.fileHandlerService.deleteFileAtPath(inFilePath);
     });
