@@ -23,11 +23,17 @@ const query_dto_1 = require("../../../shared/dtos/query.dto");
 const swagger_1 = require("@nestjs/swagger");
 const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 const apikey_decorator_1 = require("../../auth/decorators/apikey.decorator");
+const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 let ThirdpartyDetectionFromBinaryController = class ThirdpartyDetectionFromBinaryController {
-    constructor(thirdpartyDetectionService) {
+    constructor(thirdpartyDetectionService, sonickeyServive) {
         this.thirdpartyDetectionService = thirdpartyDetectionService;
+        this.sonickeyServive = sonickeyServive;
     }
-    create(createThirdpartyDetectionDto, customer) {
+    async create(createThirdpartyDetectionDto, customer) {
+        const isKeyFound = await this.sonickeyServive.findBySonicKey(createThirdpartyDetectionDto.sonicKey);
+        if (!isKeyFound) {
+            throw new common_1.NotFoundException("Provided sonickey is not found on our database.");
+        }
         if (!createThirdpartyDetectionDto.detectionTime) {
             createThirdpartyDetectionDto.detectionTime = new Date();
         }
@@ -67,7 +73,7 @@ __decorate([
     __param(0, common_1.Body()), __param(1, apikey_decorator_1.ApiKey('customer')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_thirdparty_detection_dto_1.CreateThirdpartyDetectionDto, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ThirdpartyDetectionFromBinaryController.prototype, "create", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get All Detection' }),
@@ -113,7 +119,7 @@ ThirdpartyDetectionFromBinaryController = __decorate([
     swagger_1.ApiTags('ThirdParty-Binary Controller (protected by x-api-key)'),
     swagger_1.ApiSecurity('x-api-key'),
     common_1.Controller('thirdparty-detection-from-binary'),
-    __metadata("design:paramtypes", [thirdparty_detection_service_1.ThirdpartyDetectionService])
+    __metadata("design:paramtypes", [thirdparty_detection_service_1.ThirdpartyDetectionService, sonickey_service_1.SonickeyService])
 ], ThirdpartyDetectionFromBinaryController);
 exports.ThirdpartyDetectionFromBinaryController = ThirdpartyDetectionFromBinaryController;
 //# sourceMappingURL=thirdparty-detection-from-binary.controller.js.map

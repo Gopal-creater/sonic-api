@@ -167,21 +167,21 @@ export class SonickeyService {
     const sonicDecodeCmd = `${appConfig.DECODER_EXE_PATH}` + argList;
 
     //Prabin:Dont wait file to decode. just return Promise itself
-    // return this.fileOperationService
-    //   .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
-    //   .finally(() => {
-    //     this.fileHandlerService.deleteFileAtPath(inFilePath);
-    //   });
+    return this.fileOperationService
+      .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
+      .finally(() => {
+        this.fileHandlerService.deleteFileAtPath(inFilePath);
+      });
 
     // Only for testing
-    var validkeys = ['VctJ2KQyBj1','nC7c3ZyOJGe','xIbt68PcTGF'];
-    var invalidkeys = ['jdjhjdhsjdhsj','sdskdjksdjk','jdskdksdj']
-    var dummykeys = [...validkeys,...invalidkeys]
-    return Promise.resolve({
-      sonicKeys: [dummykeys[Math.floor(Math.random() * dummykeys.length)]],
-    }).finally(() => {
-      this.fileHandlerService.deleteFileAtPath(inFilePath);
-    });
+    // var validkeys = ['VctJ2KQyBj1','nC7c3ZyOJGe','xIbt68PcTGF'];
+    // var invalidkeys = ['jdjhjdhsjdhsj','sdskdjksdjk','jdskdksdj']
+    // var dummykeys = [...validkeys,...invalidkeys]
+    // return Promise.resolve({
+    //   sonicKeys: [dummykeys[Math.floor(Math.random() * dummykeys.length)]],
+    // }).finally(() => {
+    //   this.fileHandlerService.deleteFileAtPath(inFilePath);
+    // });
   }
 
   async exractMusicMetaFromFile(filePath: string) {

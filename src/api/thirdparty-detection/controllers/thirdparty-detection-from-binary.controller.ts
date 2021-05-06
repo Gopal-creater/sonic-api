@@ -7,18 +7,22 @@ import { QueryDto } from '../../../shared/dtos/query.dto';
 import { ApiBearerAuth, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../auth/decorators/apikey.decorator';
+import { SonickeyService } from '../../sonickey/services/sonickey.service';
 
 @ApiTags('ThirdParty-Binary Controller (protected by x-api-key)')
 @ApiSecurity('x-api-key')
 @Controller('thirdparty-detection-from-binary')
 export class ThirdpartyDetectionFromBinaryController {
-  constructor(private readonly thirdpartyDetectionService: ThirdpartyDetectionService) {}
+  constructor(private readonly thirdpartyDetectionService: ThirdpartyDetectionService,private readonly sonickeyServive:SonickeyService) {}
   
   @ApiOperation({ summary: 'Create Detection' })
   @UseGuards(ApiKeyAuthGuard)
   @Post()
-  create(@Body() createThirdpartyDetectionDto: CreateThirdpartyDetectionDto,@ApiKey('customer') customer: string) {
-      
+  async create(@Body() createThirdpartyDetectionDto: CreateThirdpartyDetectionDto,@ApiKey('customer') customer: string) {
+      const isKeyFound = await this.sonickeyServive.findBySonicKey(createThirdpartyDetectionDto.sonicKey)
+      if(!isKeyFound){
+        throw new NotFoundException("Provided sonickey is not found on our database.")
+      }
     if (!createThirdpartyDetectionDto.detectionTime) {
       createThirdpartyDetectionDto.detectionTime = new Date();
     }
