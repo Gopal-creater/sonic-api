@@ -54,6 +54,9 @@ let JobController = class JobController {
     makeCompleted(id) {
         return this.jobService.makeCompleted(id);
     }
+    async getCount(query) {
+        return this.jobService.jobModel.estimatedDocumentCount(Object.assign({}, query));
+    }
     async findOne(id) {
         const job = await this.jobService.jobModel.findById(id);
         if (!job) {
@@ -81,7 +84,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get(),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/job.schema").Job] }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate.dto").MongoosePaginateDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
@@ -92,7 +95,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get('/owners/:ownerId'),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/job.schema").Job] }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate.dto").MongoosePaginateDto }),
     __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
@@ -122,6 +125,17 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], JobController.prototype, "makeCompleted", null);
+__decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get count of all job' }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], JobController.prototype, "getCount", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get One Job By Id' }),
     swagger_1.ApiBearerAuth(),

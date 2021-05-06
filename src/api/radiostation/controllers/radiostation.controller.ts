@@ -58,6 +58,14 @@ export class RadiostationController {
     return this.radiostationService.findAll(query);
   }
 
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get count of all radiostations' })
+  async getCount(@Query() query) {
+    return this.radiostationService.radioStationModel.estimatedDocumentCount({...query})
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

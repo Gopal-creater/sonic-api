@@ -32,6 +32,9 @@ let ThirdpartyDetectionController = class ThirdpartyDetectionController {
         const query = Object.assign(Object.assign({}, queryDto), { customer: ownerId });
         return this.thirdpartyDetectionService.findAll(query);
     }
+    async getCount(query) {
+        return this.thirdpartyDetectionService.thirdpartyDetectionModel.estimatedDocumentCount(Object.assign({}, query));
+    }
     async findById(id) {
         const detection = await this.thirdpartyDetectionService.findById(id);
         if (!detection) {
@@ -59,7 +62,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get(),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/thirdparty-detection.schema").ThirdpartyDetection] }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate.dto").MongoosePaginateDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
@@ -70,12 +73,23 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Detection of particular user' }),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/thirdparty-detection.schema").ThirdpartyDetection] }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate.dto").MongoosePaginateDto }),
     __param(0, common_1.Param('targetUser')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
 ], ThirdpartyDetectionController.prototype, "getOwnersKeys", null);
+__decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get count of all thirdparty detections' }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ThirdpartyDetectionController.prototype, "getCount", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get One Detection' }),
     swagger_1.ApiBearerAuth(),

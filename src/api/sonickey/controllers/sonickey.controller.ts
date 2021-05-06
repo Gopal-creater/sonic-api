@@ -41,6 +41,7 @@ import {
   ApiBody,
   ApiAcceptedResponse,
   ApiOkResponse,
+  ApiResponse,
 } from '@nestjs/swagger';
 import * as uniqid from 'uniqid';
 import { JwtAuthGuard } from '../../auth/guards';
@@ -62,6 +63,7 @@ import { Response } from 'express';
 
  import fetch from 'node-fetch';
 
+ type Test = MongoosePaginateDto<SonicKey>
 @ApiTags('SonicKeys Controller')
 @Controller('sonic-keys')
 export class SonickeyController {
@@ -143,6 +145,14 @@ export class SonickeyController {
       job:jobId
     }
     return await this.sonicKeyService.getAll(query);
+  }
+
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get count of all sonickeys' })
+  async getCount(@Query() query) {
+    return this.sonicKeyService.sonicKeyModel.estimatedDocumentCount({...query})
   }
 
   @Get('/:sonickey')

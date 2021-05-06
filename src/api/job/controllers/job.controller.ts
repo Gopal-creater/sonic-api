@@ -86,6 +86,14 @@ export class JobController {
     return this.jobService.makeCompleted(id);
   }
 
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get count of all job' })
+  async getCount(@Query() query) {
+    return this.jobService.jobModel.estimatedDocumentCount({...query})
+  }
+
   @ApiOperation({ summary: 'Get One Job By Id' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)

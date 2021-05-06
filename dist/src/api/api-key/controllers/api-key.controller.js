@@ -34,6 +34,9 @@ let ApiKeyController = class ApiKeyController {
         console.log("Query", queryDto);
         return this.apiKeyService.findAll(queryDto);
     }
+    async getCount(query) {
+        return this.apiKeyService.apiKeyModel.estimatedDocumentCount(Object.assign({}, query));
+    }
     async findOne(id) {
         const apiKey = await this.apiKeyService.apiKeyModel.findById(id);
         if (!apiKey) {
@@ -73,12 +76,23 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard()),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All ApiKeys' }),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/api-key.schema").ApiKey] }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate.dto").MongoosePaginateDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
     __metadata("design:returntype", void 0)
 ], ApiKeyController.prototype, "findAll", null);
+__decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get count of all api-keys' }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ApiKeyController.prototype, "getCount", null);
 __decorate([
     common_1.Get(':id'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),

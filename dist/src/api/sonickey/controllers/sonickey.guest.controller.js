@@ -103,7 +103,6 @@ __decorate([
         type: public_encode_dto_1.PublicEncodeDto,
     }),
     common_1.Post('/encode'),
-    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Encode File And save to database' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/sonickey.schema").SonicKey }),
     __param(0, common_1.Body('sonickey', jsonparse_pipe_1.JsonParsePipe)),

@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
+import { MongoosePaginateDto } from '../dto/mongoosepaginate.dto';
 export declare class RadiostationService {
     readonly radioStationModel: Model<RadioStation>;
     readonly sonickeyService: SonickeyService;
@@ -12,7 +13,7 @@ export declare class RadiostationService {
     create(createRadiostationDto: CreateRadiostationDto): Promise<RadioStation>;
     stopListeningStream(id: string): Promise<RadioStation>;
     startListeningStream(id: string): Promise<RadioStation>;
-    findAll(queryDto?: QueryDto): Promise<RadioStation[]>;
+    findAll(queryDto?: QueryDto): Promise<MongoosePaginateDto>;
     findByIdOrFail(id: string): Promise<RadioStation>;
     removeById(id: string): Promise<RadioStation>;
     bulkRemove(ids: [string]): Promise<{

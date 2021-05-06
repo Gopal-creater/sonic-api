@@ -3,12 +3,19 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class PaginationQueryDto {
   @IsOptional()
-//   @IsPositive()
   @ApiProperty()
   _limit?: number=100;
 
   @IsOptional()
-//   @IsPositive()
   @ApiProperty()
-  _start?: number=0;
+  _offset?: number=0;
+
+  @IsOptional()
+  @ApiProperty({description:"Eg: createdAt:desc Or createdAt:desc,email:asc"})
+  _sort?: string;
+
+  @IsOptional()
+  @ApiProperty()
+  _page?: number=1;
+
 }

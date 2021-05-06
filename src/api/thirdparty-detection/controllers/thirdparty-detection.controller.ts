@@ -33,6 +33,14 @@ export class ThirdpartyDetectionController {
     return this.thirdpartyDetectionService.findAll(query);
   }
 
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get count of all thirdparty detections' })
+  async getCount(@Query() query) {
+    return this.thirdpartyDetectionService.thirdpartyDetectionModel.estimatedDocumentCount({...query})
+  }
+
   @ApiOperation({ summary: 'Get One Detection' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)

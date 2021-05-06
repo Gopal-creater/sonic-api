@@ -37,6 +37,9 @@ let RadiostationController = class RadiostationController {
         const query = Object.assign(Object.assign({}, queryDto), { owner: ownerId });
         return this.radiostationService.findAll(query);
     }
+    async getCount(query) {
+        return this.radiostationService.radioStationModel.estimatedDocumentCount(Object.assign({}, query));
+    }
     async findOne(id) {
         const radioStation = await this.radiostationService.radioStationModel.findById(id);
         if (!radioStation) {
@@ -101,7 +104,7 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Radio Stations' }),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/radiostation.schema").RadioStation] }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate.dto").MongoosePaginateDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
@@ -112,12 +115,23 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Radio Stations of particular user' }),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/radiostation.schema").RadioStation] }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate.dto").MongoosePaginateDto }),
     __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
 ], RadiostationController.prototype, "getOwnersRadioStations", null);
+__decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get count of all radiostations' }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], RadiostationController.prototype, "getCount", null);
 __decorate([
     common_1.Get(':id'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),

@@ -40,6 +40,14 @@ export class JobFileController {
     return this.jobFileService.findAll(queryDto);
   }
 
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get count of all job-file' })
+  async getCount(@Query() query) {
+    return this.jobFileService.jobFileModel.estimatedDocumentCount({...query})
+  }
+
   @ApiOperation({
     summary: 'Add new sonic key and update the file details using fileId',
   })

@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParseQueryValue = void 0;
 const common_1 = require("@nestjs/common");
+const json_utils_1 = require("../utils/json.utils");
 let ParseQueryValue = class ParseQueryValue {
     constructor(values) {
         this.values = values;
@@ -20,9 +21,8 @@ let ParseQueryValue = class ParseQueryValue {
             const res = {};
             for (const key in queries) {
                 var value = queries[key];
-                var parsedInt = parseInt(value);
-                if (!isNaN(parsedInt)) {
-                    res[key] = parsedInt;
+                if (json_utils_1.isNumber(value)) {
+                    res[key] = parseInt(value);
                 }
                 else if (value == 'true' || value == 'false') {
                     res[key] = value == 'true';

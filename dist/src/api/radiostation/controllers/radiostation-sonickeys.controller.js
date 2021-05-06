@@ -29,18 +29,32 @@ let RadiostationSonicKeysController = class RadiostationSonicKeysController {
     findAll(queryDto) {
         return this.radiostationSonicKeysService.findAll(queryDto);
     }
+    async getCount(query) {
+        return this.radiostationSonicKeysService.radioStationSonickeyModel.estimatedDocumentCount(Object.assign({}, query));
+    }
 };
 __decorate([
     common_1.Get('/'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All radiostations-sonickeys' }),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/radiostation-sonickey.schema").RadioStationSonicKey] }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateRadioStationSonicKeyDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
     __metadata("design:returntype", void 0)
 ], RadiostationSonicKeysController.prototype, "findAll", null);
+__decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get count of all radiostation-sonickeys' }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], RadiostationSonicKeysController.prototype, "getCount", null);
 RadiostationSonicKeysController = __decorate([
     swagger_1.ApiTags('RadioStation-SonicKeys Controller'),
     common_1.Controller('radiostations-sonickeys'),

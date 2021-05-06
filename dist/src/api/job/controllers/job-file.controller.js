@@ -31,6 +31,9 @@ let JobFileController = class JobFileController {
     findAll(queryDto) {
         return this.jobFileService.findAll(queryDto);
     }
+    async getCount(query) {
+        return this.jobFileService.jobFileModel.estimatedDocumentCount(Object.assign({}, query));
+    }
     addKeyToDbAndUpdateJobFile(jobId, fileId, addKeyAndUpdateJobFileDto) {
         return this.jobFileService.addKeyToDbAndUpdateJobFile(jobId, fileId, addKeyAndUpdateJobFileDto);
     }
@@ -100,12 +103,23 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Get('/job-files'),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/jobfile.schema").JobFile] }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-jobfile.dto").MongoosePaginateJobFileDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
     __metadata("design:returntype", void 0)
 ], JobFileController.prototype, "findAll", null);
+__decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get count of all job-file' }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], JobFileController.prototype, "getCount", null);
 __decorate([
     swagger_1.ApiOperation({
         summary: 'Add new sonic key and update the file details using fileId',

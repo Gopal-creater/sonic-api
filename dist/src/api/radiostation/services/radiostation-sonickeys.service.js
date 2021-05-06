@@ -43,7 +43,8 @@ let RadiostationSonicKeysService = class RadiostationSonicKeysService {
     }
     async findAll(queryDto = {}) {
         var _a;
-        const { _limit, _start, _sort } = queryDto, query = __rest(queryDto, ["_limit", "_start", "_sort"]);
+        const { _limit, _offset, _sort, _page } = queryDto, query = __rest(queryDto, ["_limit", "_offset", "_sort", "_page"]);
+        var paginateOptions = {};
         var sort = {};
         if (_sort) {
             var sortItems = (_sort === null || _sort === void 0 ? void 0 : _sort.split(',')) || [];
@@ -54,12 +55,11 @@ let RadiostationSonicKeysService = class RadiostationSonicKeysService {
                     ((_a = sortKeyValue[1]) === null || _a === void 0 ? void 0 : _a.toLowerCase()) == 'desc' ? -1 : 1;
             }
         }
-        return this.radioStationSonickeyModel
-            .find(query || {})
-            .skip(_start)
-            .limit(_limit)
-            .sort(sort)
-            .exec();
+        paginateOptions["sort"] = sort;
+        paginateOptions["offset"] = _offset;
+        paginateOptions["page"] = _page;
+        paginateOptions["limit"] = _limit;
+        return await this.radioStationSonickeyModel["paginate"](query, paginateOptions);
     }
     async findOne(radioStation, sonicKey) {
         return this.radioStationSonickeyModel.findOne({

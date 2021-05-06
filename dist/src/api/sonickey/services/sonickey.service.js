@@ -49,7 +49,8 @@ let SonickeyService = class SonickeyService {
     }
     async getAll(queryDto = {}) {
         var _a;
-        const { _limit, _start, _sort } = queryDto, query = __rest(queryDto, ["_limit", "_start", "_sort"]);
+        const { _limit, _offset, _sort, _page } = queryDto, query = __rest(queryDto, ["_limit", "_offset", "_sort", "_page"]);
+        var paginateOptions = {};
         var sort = {};
         if (_sort) {
             var sortItems = (_sort === null || _sort === void 0 ? void 0 : _sort.split(',')) || [];
@@ -60,12 +61,11 @@ let SonickeyService = class SonickeyService {
                     ((_a = sortKeyValue[1]) === null || _a === void 0 ? void 0 : _a.toLowerCase()) == 'desc' ? -1 : 1;
             }
         }
-        return this.sonicKeyModel
-            .find(query || {})
-            .skip(_start)
-            .limit(_limit)
-            .sort(sort)
-            .exec();
+        paginateOptions["sort"] = sort;
+        paginateOptions["offset"] = _offset;
+        paginateOptions["page"] = _page;
+        paginateOptions["limit"] = _limit;
+        return await this.sonicKeyModel["paginate"](query, paginateOptions);
     }
     async encode(file, encodingStrength = 10) {
         const random11CharKey = this.generateUniqueSonicKey();
@@ -112,9 +112,9 @@ let SonickeyService = class SonickeyService {
         const logFilePath = inFilePath + '.log';
         const argList = ' ' + inFilePath + ' ' + logFilePath;
         const sonicDecodeCmd = `${config_1.appConfig.DECODER_EXE_PATH}` + argList;
-        return this.fileOperationService
-            .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
-            .finally(() => {
+        return Promise.resolve({
+            sonicKeys: ['VctJ2KQyBj1'],
+        }).finally(() => {
             this.fileHandlerService.deleteFileAtPath(inFilePath);
         });
     }

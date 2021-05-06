@@ -21,4 +21,12 @@ export class RadiostationSonicKeysController {
   findAll(@Query(new ParseQueryValue()) queryDto: QueryDto) {
     return this.radiostationSonicKeysService.findAll(queryDto);
   }
+
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get count of all radiostation-sonickeys' })
+  async getCount(@Query() query) {
+    return this.radiostationSonicKeysService.radioStationSonickeyModel.estimatedDocumentCount({...query})
+  }
 }

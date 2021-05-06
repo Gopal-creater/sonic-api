@@ -73,7 +73,7 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Get All Detection' }),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
     common_1.Get(),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/thirdparty-detection.schema").ThirdpartyDetection] }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate.dto").MongoosePaginateDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),

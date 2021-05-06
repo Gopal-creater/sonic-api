@@ -6,7 +6,7 @@ export declare class ApiKeyCustomerController {
     private readonly apiKeyService;
     constructor(apiKeyService: ApiKeyService);
     create(customer: string, createApiKeyDto: CreateApiKeyDto): Promise<import("../schemas/api-key.schema").ApiKey>;
-    findAll(customer: string, queryDto: QueryDto): Promise<import("../schemas/api-key.schema").ApiKey[]>;
+    findAll(customer: string, queryDto: QueryDto): Promise<import("../dto/mongoosepaginate.dto").MongoosePaginateDto>;
     findOne(customer: string, apikey: string): Promise<import("../schemas/api-key.schema").ApiKey>;
     update(customer: string, apikey: string, updateApiKeyDto: UpdateApiKeyDto): Promise<import("../schemas/api-key.schema").ApiKey>;
     makeDiabled(customer: string, apikey: string): Promise<import("../schemas/api-key.schema").ApiKey>;

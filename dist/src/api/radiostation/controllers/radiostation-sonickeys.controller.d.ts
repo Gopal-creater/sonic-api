@@ -5,5 +5,6 @@ export declare class RadiostationSonicKeysController {
     private readonly radiostationService;
     private readonly radiostationSonicKeysService;
     constructor(radiostationService: RadiostationService, radiostationSonicKeysService: RadiostationSonicKeysService);
-    findAll(queryDto: QueryDto): Promise<import("../schemas/radiostation-sonickey.schema").RadioStationSonicKey[]>;
+    findAll(queryDto: QueryDto): Promise<import("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateRadioStationSonicKeyDto>;
+    getCount(query: any): Promise<number>;
 }

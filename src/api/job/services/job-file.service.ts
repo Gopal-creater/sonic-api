@@ -18,6 +18,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { Job } from '../schemas/job.schema';
+import { MongoosePaginateJobFileDto } from '../dto/mongoosepaginate-jobfile.dto';
 
 @Injectable()
 export class JobFileService {
@@ -28,23 +29,33 @@ export class JobFileService {
     public readonly sonickeyService: SonickeyService,
   ) {}
 
-  async findAll(queryDto: QueryDto = {}) {
-    const { _limit, _start,_sort, ...query } = queryDto;
-    var sort={}
-    if(_sort){
-      var sortItems = _sort?.split(',')||[]
+  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateJobFileDto> {
+    const { _limit, _offset, _sort,_page, ...query } = queryDto;
+    var paginateOptions={}
+    var sort = {};
+    if (_sort) {
+      var sortItems = _sort?.split(',') || [];
       for (let index = 0; index < sortItems.length; index++) {
         const sortItem = sortItems[index];
-        var sortKeyValue = sortItem?.split(':')
-        sort[sortKeyValue[0]]=sortKeyValue[1]?.toLowerCase()=='desc' ? -1 : 1
+        var sortKeyValue = sortItem?.split(':');
+        sort[sortKeyValue[0]] =
+          sortKeyValue[1]?.toLowerCase() == 'desc' ? -1 : 1;
       }
     }
-        return this.jobFileModel
-        .find(query || {})
-        .skip(_start)
-        .limit(_limit)
-        .sort(sort)
-        .exec();
+
+    paginateOptions["sort"]=sort
+    paginateOptions["offset"]=_offset
+    paginateOptions["page"]=_page
+    paginateOptions["limit"]=_limit
+
+
+    return await this.jobFileModel["paginate"](query,paginateOptions)
+        // return this.jobFileModel
+        // .find(query || {})
+        // .skip(_offset)
+        // .limit(_limit)
+        // .sort(sort)
+        // .exec();
         
     }
 

@@ -8,6 +8,7 @@ import { RadioStation } from '../schemas/radiostation.schema';
 import { SonicKey } from '../../sonickey/schemas/sonickey.schema';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { RadiostationService } from './radiostation.service';
+import { MongoosePaginateRadioStationSonicKeyDto } from '../dto/mongoosepaginate-radiostationsonickey.dto';
 
 @Injectable()
 export class RadiostationSonicKeysService {
@@ -28,8 +29,9 @@ export class RadiostationSonicKeysService {
     return newRadioStationSonicKey.save();
   }
 
-  async findAll(queryDto: QueryDto = {}) {
-    const { _limit, _start, _sort, ...query } = queryDto;
+  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateRadioStationSonicKeyDto> {
+    const { _limit, _offset, _sort,_page, ...query } = queryDto;
+    var paginateOptions={}
     var sort = {};
     if (_sort) {
       var sortItems = _sort?.split(',') || [];
@@ -40,13 +42,20 @@ export class RadiostationSonicKeysService {
           sortKeyValue[1]?.toLowerCase() == 'desc' ? -1 : 1;
       }
     }
-    // return await this.sonicKeyModel["paginate"](query || {},options) as MongoosePaginateDto<SonicKey>
-    return this.radioStationSonickeyModel
-      .find(query || {})
-      .skip(_start)
-      .limit(_limit)
-      .sort(sort)
-      .exec();
+
+    paginateOptions["sort"]=sort
+    paginateOptions["offset"]=_offset
+    paginateOptions["page"]=_page
+    paginateOptions["limit"]=_limit
+
+
+    return await this.radioStationSonickeyModel["paginate"](query,paginateOptions)
+    // return this.radioStationSonickeyModel
+    //   .find(query || {})
+    //   .skip(_offset)
+    //   .limit(_limit)
+    //   .sort(sort)
+    //   .exec();
   }
 
   async findOne(radioStation: string, sonicKey: string) {

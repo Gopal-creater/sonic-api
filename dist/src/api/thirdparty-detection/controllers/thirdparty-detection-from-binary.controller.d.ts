@@ -6,7 +6,7 @@ export declare class ThirdpartyDetectionFromBinaryController {
     private readonly thirdpartyDetectionService;
     constructor(thirdpartyDetectionService: ThirdpartyDetectionService);
     create(createThirdpartyDetectionDto: CreateThirdpartyDetectionDto, customer: string): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;
-    findAll(queryDto: QueryDto): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection[]>;
+    findAll(queryDto: QueryDto): Promise<import("../dto/mongoosepaginate.dto").MongoosePaginateDto>;
     findById(id: string): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;
     update(id: string, updateThirdpartyDetectionDto: UpdateThirdpartyDetectionDto): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;
     remove(id: string): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;

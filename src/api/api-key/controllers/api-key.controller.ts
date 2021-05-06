@@ -35,6 +35,14 @@ export class ApiKeyController {
     return this.apiKeyService.findAll(queryDto);
   }
 
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get count of all api-keys' })
+  async getCount(@Query() query) {
+    return this.apiKeyService.apiKeyModel.estimatedDocumentCount({...query})
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

@@ -85,7 +85,6 @@ export class SonickeyGuestController {
     type: PublicEncodeDto,
   })
   @Post('/encode')
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Encode File And save to database' })
   encode(
     @Body('sonickey', JsonParsePipe) sonicKeyDto: SonicKeyDto,

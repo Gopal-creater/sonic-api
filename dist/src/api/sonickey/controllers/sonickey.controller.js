@@ -70,6 +70,9 @@ let SonickeyController = class SonickeyController {
         const query = Object.assign(Object.assign({}, queryDto), { job: jobId });
         return await this.sonicKeyService.getAll(query);
     }
+    async getCount(query) {
+        return this.sonicKeyService.sonicKeyModel.estimatedDocumentCount(Object.assign({}, query));
+    }
     async getOne(sonickey) {
         return this.sonicKeyService.findBySonicKeyOrFail(sonickey);
     }
@@ -174,7 +177,7 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys' }),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/sonickey.schema").SonicKey] }),
+    openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate.dto").MongoosePaginateDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [query_dto_1.QueryDto]),
@@ -206,7 +209,7 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user' }),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/sonickey.schema").SonicKey] }),
+    openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate.dto").MongoosePaginateDto }),
     __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
@@ -217,12 +220,23 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular job' }),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/sonickey.schema").SonicKey] }),
+    openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate.dto").MongoosePaginateDto }),
     __param(0, common_1.Param('jobId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getKeysByJob", null);
+__decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get count of all sonickeys' }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "getCount", null);
 __decorate([
     common_1.Get('/:sonickey'),
     common_1.UseGuards(guards_1.JwtAuthGuard),

@@ -103,7 +103,7 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All ApiKeys' }),
-    openapi.ApiResponse({ status: 200, type: [require("../schemas/api-key.schema").ApiKey] }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate.dto").MongoosePaginateDto }),
     __param(0, common_1.Param('targetUser')),
     __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),

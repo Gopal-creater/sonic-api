@@ -13,6 +13,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { Job } from '../../job/schemas/job.schema';
+import { MongoosePaginateDto } from '../dtos/mongoosepaginate.dto';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -33,8 +34,9 @@ export class SonickeyService {
     return newSonicKey.save();
   }
 
-  async getAll(queryDto: QueryDto = {}) {
-    const { _limit, _start, _sort, ...query } = queryDto;
+  async getAll(queryDto: QueryDto = {}):Promise<MongoosePaginateDto>{
+    const { _limit, _offset, _sort,_page, ...query } = queryDto;
+    var paginateOptions={}
     var sort = {};
     if (_sort) {
       var sortItems = _sort?.split(',') || [];
@@ -46,13 +48,19 @@ export class SonickeyService {
       }
     }
 
-    // return await this.sonicKeyModel["paginate"](query || {},options) as MongoosePaginateDto<SonicKey>
-    return this.sonicKeyModel
-      .find(query || {})
-      .skip(_start)
-      .limit(_limit)
-      .sort(sort)
-      .exec();
+    paginateOptions["sort"]=sort
+    paginateOptions["offset"]=_offset
+    paginateOptions["page"]=_page
+    paginateOptions["limit"]=_limit
+
+
+    return await this.sonicKeyModel["paginate"](query,paginateOptions)
+    // return this.sonicKeyModel
+    //   .find(query || {})
+    //   .skip(_offset)
+    //   .limit(_limit)
+    //   .sort(sort)
+    //   .exec();
   }
 
   /**
@@ -159,17 +167,17 @@ export class SonickeyService {
     const sonicDecodeCmd = `${appConfig.DECODER_EXE_PATH}` + argList;
 
     //Prabin:Dont wait file to decode. just return Promise itself
-    return this.fileOperationService
-      .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
-      .finally(() => {
-        this.fileHandlerService.deleteFileAtPath(inFilePath);
-      });
+    // return this.fileOperationService
+    //   .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
+    //   .finally(() => {
+    //     this.fileHandlerService.deleteFileAtPath(inFilePath);
+    //   });
 
-    // return Promise.resolve({
-    //   sonicKeys: ['2KhHfn0-qo8', 'Z_NwqQ-SCJD'],
-    // }).finally(() => {
-    //   this.fileHandlerService.deleteFileAtPath(inFilePath);
-    // });
+    return Promise.resolve({
+      sonicKeys: ['VctJ2KQyBj1'],
+    }).finally(() => {
+      this.fileHandlerService.deleteFileAtPath(inFilePath);
+    });
   }
 
   async exractMusicMetaFromFile(filePath: string) {

@@ -1,5 +1,5 @@
 import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
-import { parse } from '../utils/json.utils';
+import { isNumber } from '../utils/json.utils';
 
 @Injectable()
 export class ParseQueryValue implements PipeTransform {
@@ -11,9 +11,8 @@ export class ParseQueryValue implements PipeTransform {
       const res = {}
       for (const key in queries) {
         var value = queries[key]
-        var parsedInt = parseInt(value);
-        if(!isNaN(parsedInt)){
-          res[key] = parsedInt
+        if(isNumber(value)){
+          res[key] = parseInt(value)
         }
         else if(value=='true'||value=='false'){
           res[key] = value=='true'

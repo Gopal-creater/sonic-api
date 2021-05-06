@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { RadiostationService } from './radiostation.service';
+import { MongoosePaginateRadioStationSonicKeyDto } from '../dto/mongoosepaginate-radiostationsonickey.dto';
 export declare class RadiostationSonicKeysService {
     radioStationSonickeyModel: Model<RadioStationSonicKey>;
     radiostationService: RadiostationService;
@@ -11,7 +12,7 @@ export declare class RadiostationSonicKeysService {
     constructor(radioStationSonickeyModel: Model<RadioStationSonicKey>, radiostationService: RadiostationService, sonickeyService: SonickeyService);
     private readonly streamingLogger;
     create(createRadiostationSonicKeyDto: CreateRadiostationSonicKeyDto): Promise<RadioStationSonicKey>;
-    findAll(queryDto?: QueryDto): Promise<RadioStationSonicKey[]>;
+    findAll(queryDto?: QueryDto): Promise<MongoosePaginateRadioStationSonicKeyDto>;
     findOne(radioStation: string, sonicKey: string): Promise<RadioStationSonicKey>;
     findById(id: string): Promise<RadioStationSonicKey>;
 }
