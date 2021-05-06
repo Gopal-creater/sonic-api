@@ -6,4 +6,5 @@ export declare const appConfig: {
     DECODER_EXE_PATH: string;
     TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS: number;
     ENABLE_STREAMING_LISTENER: boolean;
+    DEBUG: boolean;
 };

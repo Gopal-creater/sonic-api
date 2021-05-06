@@ -2127,8 +2127,8 @@
         "affectsGlobalScope": false
       },
       "../src/config/app.config.ts": {
-        "version": "5c301d840ba658fa13d6ed3afd9fb5fc0d3814028a1e0971b26a5eac4dfd356d",
-        "signature": "3967118228366f27cfe52c6b488d65bc358ee21d99f7631593dc013bdaf3a3e7",
+        "version": "1b385e3dbd97bbe041761baeff4c63b4cb10fa02e20636f92adc4a4319ff4971",
+        "signature": "8b542f84567f0b9421178e700d4cf4ee2e202b8f58b9cefe9c77e908a5ad07ef",
         "affectsGlobalScope": false
       },
       "../src/config/index.ts": {
@@ -2767,7 +2767,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/services/sonickey.service.ts": {
-        "version": "de0c60c45d63721ff08d1162abf11759e4deef7be127ffc39cdb91453206cc6c",
+        "version": "1ab9b79d1899c6d065cdabfa0919b2429592cddfc1022251bb1374673cdc24a9",
         "signature": "dc84305c8bb788fd4dfe608e8b74eb83219a9c887181a9fc4567705ce0566e4d",
         "affectsGlobalScope": false
       },
@@ -5492,7 +5492,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/thirdparty-detection.module.ts": {
-        "version": "2153dcb2866342020fdf5793f8c0b03d670a5f5588c1c926875d9c881833b6f5",
+        "version": "3df6dc8cf247132872060fe4ab15eaea3c6905538007fcb73e68d95e4596a072",
         "signature": "6dbebbdc386763bed992bf46f17507d970ebcccfb94c893b6cdf84099ccd8f07",
         "affectsGlobalScope": false
       },
@@ -19409,6 +19409,7 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/api-key/api-key.module.ts",
+        "../src/api/sonickey/sonickey.module.ts",
         "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts",
         "../src/api/thirdparty-detection/controllers/thirdparty-detection.controller.ts",
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",

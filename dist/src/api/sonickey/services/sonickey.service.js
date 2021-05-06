@@ -61,11 +61,11 @@ let SonickeyService = class SonickeyService {
                     ((_a = sortKeyValue[1]) === null || _a === void 0 ? void 0 : _a.toLowerCase()) == 'desc' ? -1 : 1;
             }
         }
-        paginateOptions["sort"] = sort;
-        paginateOptions["offset"] = _offset;
-        paginateOptions["page"] = _page;
-        paginateOptions["limit"] = _limit;
-        return await this.sonicKeyModel["paginate"](query, paginateOptions);
+        paginateOptions['sort'] = sort;
+        paginateOptions['offset'] = _offset;
+        paginateOptions['page'] = _page;
+        paginateOptions['limit'] = _limit;
+        return await this.sonicKeyModel['paginate'](query, paginateOptions);
     }
     async encode(file, encodingStrength = 10) {
         const random11CharKey = this.generateUniqueSonicKey();
@@ -112,6 +112,16 @@ let SonickeyService = class SonickeyService {
         const logFilePath = inFilePath + '.log';
         const argList = ' ' + inFilePath + ' ' + logFilePath;
         const sonicDecodeCmd = `${config_1.appConfig.DECODER_EXE_PATH}` + argList;
+        if (config_1.appConfig.DEBUG) {
+            var validkeys = ['VctJ2KQyBj1', 'nC7c3ZyOJGe', 'xIbt68PcTGF'];
+            var invalidkeys = ['jdjhjdhsjdhsj', 'sdskdjksdjk', 'jdskdksdj'];
+            var dummykeys = [...validkeys, ...invalidkeys];
+            return Promise.resolve({
+                sonicKeys: [dummykeys[Math.floor(Math.random() * dummykeys.length)]],
+            }).finally(() => {
+                this.fileHandlerService.deleteFileAtPath(inFilePath);
+            });
+        }
         return this.fileOperationService
             .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
             .finally(() => {

@@ -14,6 +14,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const thirdparty_detection_schema_1 = require("./schemas/thirdparty-detection.schema");
 const thirdparty_detection_from_binary_controller_1 = require("./controllers/thirdparty-detection-from-binary.controller");
 const api_key_module_1 = require("../api-key/api-key.module");
+const sonickey_module_1 = require("../sonickey/sonickey.module");
 let ThirdpartyDetectionModule = class ThirdpartyDetectionModule {
 };
 ThirdpartyDetectionModule = __decorate([
@@ -26,6 +27,7 @@ ThirdpartyDetectionModule = __decorate([
                 },
             ]),
             api_key_module_1.ApiKeyModule,
+            sonickey_module_1.SonickeyModule
         ],
         controllers: [
             thirdparty_detection_controller_1.ThirdpartyDetectionController,

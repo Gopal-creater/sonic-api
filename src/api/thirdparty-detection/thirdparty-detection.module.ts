@@ -9,16 +9,18 @@ import {
 } from './schemas/thirdparty-detection.schema';
 import { ThirdpartyDetectionFromBinaryController } from './controllers/thirdparty-detection-from-binary.controller';
 import { ApiKeyModule } from '../api-key/api-key.module';
+import { SonickeyModule } from '../sonickey/sonickey.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
+  MongooseModule.forFeature([
       {
         name: ThirdpartyDetection.name,
         schema: ThirdpartyDetectionSchema,
       },
     ]),
     ApiKeyModule,
+    SonickeyModule
   ],
   controllers: [
     ThirdpartyDetectionController,
