@@ -34,9 +34,9 @@ export class SonickeyService {
     return newSonicKey.save();
   }
 
-  async getAll(queryDto: QueryDto = {}):Promise<MongoosePaginateSonicKeyDto>{
-    const { _limit, _offset, _sort,_page, ...query } = queryDto;
-    var paginateOptions={}
+  async getAll(queryDto: QueryDto = {}): Promise<MongoosePaginateSonicKeyDto> {
+    const { _limit, _offset, _sort, _page, ...query } = queryDto;
+    var paginateOptions = {};
     var sort = {};
     if (_sort) {
       var sortItems = _sort?.split(',') || [];
@@ -48,13 +48,12 @@ export class SonickeyService {
       }
     }
 
-    paginateOptions["sort"]=sort
-    paginateOptions["offset"]=_offset
-    paginateOptions["page"]=_page
-    paginateOptions["limit"]=_limit
+    paginateOptions['sort'] = sort;
+    paginateOptions['offset'] = _offset;
+    paginateOptions['page'] = _page;
+    paginateOptions['limit'] = _limit;
 
-
-    return await this.sonicKeyModel["paginate"](query,paginateOptions)
+    return await this.sonicKeyModel['paginate'](query, paginateOptions);
     // return this.sonicKeyModel
     //   .find(query || {})
     //   .skip(_offset)
@@ -129,7 +128,6 @@ export class SonickeyService {
    * @param ownerId
    */
   async decode(file: IUploadedFile) {
-
     file.path = upath.toUnix(file.path); //Convert windows path to unix path
     const inFilePath = file.path;
     const logFilePath = inFilePath + '.log';
@@ -158,13 +156,23 @@ export class SonickeyService {
    * @param ownerId
    */
   async decodeAllKeys(file: IUploadedFile) {
-
     file.path = upath.toUnix(file.path); //Convert windows path to unix path
     const inFilePath = file.path;
     const logFilePath = inFilePath + '.log';
     const argList = ' ' + inFilePath + ' ' + logFilePath;
 
     const sonicDecodeCmd = `${appConfig.DECODER_EXE_PATH}` + argList;
+    if (appConfig.DEBUG) {
+      // Only for testing
+      var validkeys = ['VctJ2KQyBj1', 'nC7c3ZyOJGe', 'xIbt68PcTGF'];
+      var invalidkeys = ['jdjhjdhsjdhsj', 'sdskdjksdjk', 'jdskdksdj'];
+      var dummykeys = [...validkeys, ...invalidkeys];
+      return Promise.resolve({
+        sonicKeys: [dummykeys[Math.floor(Math.random() * dummykeys.length)]],
+      }).finally(() => {
+        this.fileHandlerService.deleteFileAtPath(inFilePath);
+      });
+    }
 
     //Prabin:Dont wait file to decode. just return Promise itself
     return this.fileOperationService
@@ -172,16 +180,6 @@ export class SonickeyService {
       .finally(() => {
         this.fileHandlerService.deleteFileAtPath(inFilePath);
       });
-
-    // Only for testing
-    // var validkeys = ['VctJ2KQyBj1','nC7c3ZyOJGe','xIbt68PcTGF'];
-    // var invalidkeys = ['jdjhjdhsjdhsj','sdskdjksdjk','jdskdksdj']
-    // var dummykeys = [...validkeys,...invalidkeys]
-    // return Promise.resolve({
-    //   sonicKeys: [dummykeys[Math.floor(Math.random() * dummykeys.length)]],
-    // }).finally(() => {
-    //   this.fileHandlerService.deleteFileAtPath(inFilePath);
-    // });
   }
 
   async exractMusicMetaFromFile(filePath: string) {
