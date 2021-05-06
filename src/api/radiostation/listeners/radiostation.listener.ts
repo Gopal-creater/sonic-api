@@ -28,6 +28,9 @@ export class RadioStationListener implements OnApplicationBootstrap {
       'Called once after 0 seconds very firsttime, do restoring of listening of stream',
     );
 
+    if(!appConfig.ENABLE_STREAMING_LISTENER){
+        return
+    }
     // return
     const radioStations = await this.radiostationService.radioStationModel.find(
       { isStreamStarted: true },
