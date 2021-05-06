@@ -14,11 +14,11 @@ export declare class SonickeyController {
     private readonly keygenService;
     private readonly fileHandlerService;
     constructor(sonicKeyService: SonickeyService, keygenService: KeygenService, fileHandlerService: FileHandlerService);
-    getAll(queryDto: QueryDto): Promise<import("../dtos/mongoosepaginate.dto").MongoosePaginateDto>;
+    getAll(queryDto: QueryDto): Promise<import("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto>;
     generateUniqueSonicKey(): Promise<string>;
     createForJob(createSonicKeyDto: CreateSonicKeyFromJobDto, owner: string, req: any): Promise<SonicKey>;
-    getOwnersKeys(ownerId: string, queryDto: QueryDto): Promise<import("../dtos/mongoosepaginate.dto").MongoosePaginateDto>;
-    getKeysByJob(jobId: string, queryDto: QueryDto): Promise<import("../dtos/mongoosepaginate.dto").MongoosePaginateDto>;
+    getOwnersKeys(ownerId: string, queryDto: QueryDto): Promise<import("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto>;
+    getKeysByJob(jobId: string, queryDto: QueryDto): Promise<import("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto>;
     getCount(query: any): Promise<number>;
     getOne(sonickey: string): Promise<SonicKey>;
     encode(sonicKeyDto: SonicKeyDto, file: IUploadedFile, owner: string, req: any): Promise<SonicKey>;

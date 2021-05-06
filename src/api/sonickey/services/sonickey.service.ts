@@ -13,7 +13,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { Job } from '../../job/schemas/job.schema';
-import { MongoosePaginateDto } from '../dtos/mongoosepaginate.dto';
+import { MongoosePaginateSonicKeyDto } from '../dtos/mongoosepaginate-sonickey.dto';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -34,7 +34,7 @@ export class SonickeyService {
     return newSonicKey.save();
   }
 
-  async getAll(queryDto: QueryDto = {}):Promise<MongoosePaginateDto>{
+  async getAll(queryDto: QueryDto = {}):Promise<MongoosePaginateSonicKeyDto>{
     const { _limit, _offset, _sort,_page, ...query } = queryDto;
     var paginateOptions={}
     var sort = {};

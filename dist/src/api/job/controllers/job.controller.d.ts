@@ -7,8 +7,8 @@ export declare class JobController {
     private readonly jobService;
     private readonly sonickeyService;
     constructor(jobService: JobService, sonickeyService: SonickeyService);
-    findAll(queryDto: QueryDto): Promise<import("../dto/mongoosepaginate.dto").MongoosePaginateDto>;
-    getOwnerJobs(ownerId: string, queryDto: QueryDto): Promise<import("../dto/mongoosepaginate.dto").MongoosePaginateDto>;
+    findAll(queryDto: QueryDto): Promise<import("../dto/mongoosepaginate-job.dto").MongoosePaginateJobDto>;
+    getOwnerJobs(ownerId: string, queryDto: QueryDto): Promise<import("../dto/mongoosepaginate-job.dto").MongoosePaginateJobDto>;
     create(createJobDto: CreateJobDto, owner: string, req: any): Promise<import("../schemas/job.schema").Job>;
     makeCompleted(id: string): Promise<import("../schemas/job.schema").Job>;
     getCount(query: any): Promise<number>;

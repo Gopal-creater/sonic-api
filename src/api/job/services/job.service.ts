@@ -14,7 +14,7 @@ import { JSONUtils } from '../../../shared/utils';
 import { QueryOptions } from '@aws/dynamodb-data-mapper';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { JobFile } from '../schemas/jobfile.schema';
-import { MongoosePaginateDto } from '../dto/mongoosepaginate.dto';
+import { MongoosePaginateJobDto } from '../dto/mongoosepaginate-job.dto';
 
 
 @Injectable()
@@ -48,7 +48,7 @@ export class JobService {
     return updatedCreatedJob
   }
 
-  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateDto> {
+  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateJobDto> {
     const { _limit, _offset, _sort,_page, ...query } = queryDto;
     var paginateOptions={}
     var sort = {};

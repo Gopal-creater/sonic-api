@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ThirdpartyDetection } from './schemas/thirdparty-detection.schema';
 import { Model } from 'mongoose';
 import { QueryDto } from '../../shared/dtos/query.dto';
-import { MongoosePaginateDto } from './dto/mongoosepaginate.dto';
+import { MongoosePaginateThirdPartyDetectionDto } from './dto/mongoosepaginate-thirdpartydetection.dto';
 
 @Injectable()
 export class ThirdpartyDetectionService {
@@ -14,7 +14,7 @@ export class ThirdpartyDetectionService {
     public readonly thirdpartyDetectionModel: Model<ThirdpartyDetection>,
   ) {}
 
-  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateDto> {
+  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateThirdPartyDetectionDto> {
     const { _limit, _offset, _sort,_page, ...query } = queryDto;
     var paginateOptions={}
     var sort = {};

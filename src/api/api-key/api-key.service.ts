@@ -5,7 +5,7 @@ import { ApiKey } from './schemas/api-key.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QueryDto } from '../../shared/dtos/query.dto';
-import { MongoosePaginateDto } from './dto/mongoosepaginate.dto';
+import { MongoosePaginateApiKeyDto } from './dto/mongoosepaginate-apikey.dto';
 
 @Injectable()
 export class ApiKeyService {
@@ -36,7 +36,7 @@ export class ApiKeyService {
     },{new:true})
   }
 
-  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateDto> {
+  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateApiKeyDto> {
     const { _limit, _offset, _sort,_page, ...query } = queryDto;
     var paginateOptions={}
     var sort = {};

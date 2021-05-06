@@ -2761,14 +2761,14 @@
         "signature": "5da6801bf2c3eab6a47e9a0b7f6168c5446263a2544b61688655ba3051a5cb15",
         "affectsGlobalScope": false
       },
-      "../src/api/sonickey/dtos/mongoosepaginate.dto.ts": {
-        "version": "65d9f4ec8594d72fe8c7b8a1c7b426a44022e4f787a12c3603fc8a932b04cd30",
-        "signature": "080804f418add369b41fa0ad65573d417ecd324ac43b4d64423a880d43e49242",
+      "../src/api/sonickey/dtos/mongoosepaginate-sonickey.dto.ts": {
+        "version": "cefdd40d535619797214e290e6f2f8dfac6d0ba0bcf9aa239938705602064cbb",
+        "signature": "398c0715184f62e46ed62638a3f3ab14aa1b7a0571d1cd4f96b48d019a7c9787",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/services/sonickey.service.ts": {
-        "version": "5a90d13860e93fd99354294d31ec19e51b201bf238e8b63eb31641f92f11fb9e",
-        "signature": "442885dfe791d3088907e0f414e6bf6f4ec512dec6675c8d1d09a0a80451b67e",
+        "version": "922db269bce5761384b7b912f048c52a8b35ae53f70f52e4820a3c49160996d5",
+        "signature": "dc84305c8bb788fd4dfe608e8b74eb83219a9c887181a9fc4567705ce0566e4d",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/core/adapters/http-adapter.d.ts": {
@@ -3198,7 +3198,7 @@
       },
       "../src/api/sonickey/controllers/sonickey.controller.ts": {
         "version": "c7834849b8fbd7afb77f36ba128dd2d9267bf1b9acde2e16874e4355ebe5421a",
-        "signature": "61355f26f6e8eff2f0cbf7f700b7c61995a0ded805f1971bd1d019f36719993c",
+        "signature": "3e1a2ea8ca46cd306890dd3832e2058d7553e4373ff3e6a611924ebf15fa524b",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/public-encode.dto.ts": {
@@ -5141,14 +5141,14 @@
         "signature": "233f79b9472d998ee5e1f821b81e83f6940813c360a735e23a928f2c62fcbe67",
         "affectsGlobalScope": false
       },
-      "../src/api/api-key/dto/mongoosepaginate.dto.ts": {
-        "version": "8ed387780609be1245dad59a430d628c7410a6de1a2936fe9df106d813dc2a54",
-        "signature": "b1d1c1e6d8254d65e8eca9d4bf394d4a943d5baa489fcbe94441ee391a99bdbf",
+      "../src/api/api-key/dto/mongoosepaginate-apikey.dto.ts": {
+        "version": "b4b79eb7326b279b9aa1080ac30b414587d663c62c30767606bf67aac39210a3",
+        "signature": "bd9ea112487ddd45b7e1e797901092c897f9b93b1af80df7441fb0b705a526e9",
         "affectsGlobalScope": false
       },
       "../src/api/api-key/api-key.service.ts": {
-        "version": "a1914b972a7e9ec2256ed91c886affe396ea414abfddc87db1953fda0f970f35",
-        "signature": "94457bcbf261d1003078d8735b8c2868a1eeeb1be69a07b67da54f158d80d939",
+        "version": "15d59d0a062233192fe4b6d177f40c2ed05415d74fc7ca842a234ccd00f72538",
+        "signature": "2ba5732ef5c6292ce6e9e50b3fc5a63be943bd33d0bbb1dd9b0fbba2af779bba",
         "affectsGlobalScope": false
       },
       "../src/api/auth/guards/istargetuserloggedin.guard.ts": {
@@ -5158,12 +5158,12 @@
       },
       "../src/api/api-key/controllers/api-key.controller.ts": {
         "version": "dd1c4d554fd9f26c0ecf19bd0350a73619126055e8ba651a275c4b1da65b41ed",
-        "signature": "07d3d866f67f94a358bce91ec048486b585772f6ba07ba3e0746885a961a9db6",
+        "signature": "72b8655a33582da61418685aae8ac8de2b53fd189e70be76675c1c42c177fc59",
         "affectsGlobalScope": false
       },
       "../src/api/api-key/controllers/api-key-customer.controller.ts": {
         "version": "ebf60fa72ccf9a62d41d93f33908af7a2dec04faa2b5ddcac2c8c7c148bbf904",
-        "signature": "d2d12473515eb43aa2a640cfea2f5ecd23a05550e65d66b3caaa120057715544",
+        "signature": "6a7b06182e8db0e3927fb33bdd7d4b134e3e95ed733dff162cca1c3346bfbb5f",
         "affectsGlobalScope": false
       },
       "../src/api/api-key/api-key.module.ts": {
@@ -5226,14 +5226,14 @@
         "signature": "d26449490296413d53f03ad20805c2aa969bf5b4beaaae965c3bf3e61df3dabc",
         "affectsGlobalScope": false
       },
-      "../src/api/job/dto/mongoosepaginate.dto.ts": {
-        "version": "f0a0a6de276db43b7e5b00e9beeddfcb86b463fd18f8afe2e97c8f1fac7034d9",
-        "signature": "3507c91fedef5123e9fc23eb22857edd0e88745b04b9bd365ef2e8a8c15fbaed",
+      "../src/api/job/dto/mongoosepaginate-job.dto.ts": {
+        "version": "e1fc81d2fe26b50a43921d1a605c9ed2c9a8cb2cf9b2d77cf20761c77d1867d6",
+        "signature": "e737708a673d94c3d961c16aa4191b053a734ffdd4ce16fd3a33a42decd36396",
         "affectsGlobalScope": false
       },
       "../src/api/job/services/job.service.ts": {
-        "version": "d5bbd6f7d2d33e4d5c9eadd3d1c7c0ac9c34fd31e4d8061a77142757ff780143",
-        "signature": "0343348ec702e09e4f26400f0b8bc8e9f99c5ed0c15e98d4dbd86cb8d5f17ad7",
+        "version": "e873df9d506ae6885131186f074599e0644401fc3ebce10a3e6ee3ab78a75ba7",
+        "signature": "103072c3e375245f76e64a467c479ec2cc070da67ec7d358c6e04c719c5a4aa1",
         "affectsGlobalScope": false
       },
       "../src/api/auth/guards/job-license-validation.guard.ts": {
@@ -5248,7 +5248,7 @@
       },
       "../src/api/job/controllers/job.controller.ts": {
         "version": "15fb9266fcd9dc244ce95bd65df3e72b2baaace81e3cf9fba12e4153521805f2",
-        "signature": "5f0b48b63296195a51def62b380faf7cb08476039fb5e691077b0b54637e1aef",
+        "signature": "5727f4c4954dc653c9729d9486370d3034df00247cad53e1bd292b1a877c6544",
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/add-job-files.dto.ts": {
@@ -5386,14 +5386,14 @@
         "signature": "0b7a5456fb007799ac41f61b3f44c44d5513902d6a8d5491b454bc4132647d56",
         "affectsGlobalScope": false
       },
-      "../src/api/radiostation/dto/mongoosepaginate.dto.ts": {
-        "version": "396f8fccd3eddcf03740c61f0685c171c02d8f63fd5000514e64570d3a85994d",
-        "signature": "0f6d663315d2b0c1c1a425433657b6d12b904f4958cfb47468b6bfcca74a7bdd",
+      "../src/api/radiostation/dto/mongoosepaginate-radiostation.dto.ts": {
+        "version": "d2ed96e0eca142b958fe5e6a000bd0c456af0e2b07ad9332a8e136e18945f0a3",
+        "signature": "75603e7d650c19d38c6d5228f892225f2932c571321284a2ae6930bf086b57e1",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/services/radiostation.service.ts": {
-        "version": "e90fc4da9b86aba89f0a21454774d9dace8ffdba4a1d46dc56d795d644a58d0b",
-        "signature": "55d7edce46e81c3d2c3aaadb61c90f6db5c5792ee0f7e6b3c935b4625b5c3dab",
+        "version": "3f25a22a359fd7b88d4b3e2fa9f2222f65dc29e0cf2436a795b7bc3ee66d7256",
+        "signature": "2215cad5e51d9a730531ec6bc415d205d1ef4cc2da669473518a28a25b0d4adf",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/schemas/radiostation-sonickey.schema.ts": {
@@ -5428,7 +5428,7 @@
       },
       "../src/api/radiostation/controllers/radiostation.controller.ts": {
         "version": "da813e51ab4365490b41de9cdd45c5df271a3e0576ac97d352a12d3b3ca15045",
-        "signature": "baee44bf387b3aadbf025261503cf0412df5258c4c2e75290e992c8d2ea7beca",
+        "signature": "3e35bea3a2e0223efa100baec6dda250c03417e33ab7e0a095eb4638f40c3d54",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/controllers/radiostation-sonickeys.controller.ts": {
@@ -5461,19 +5461,19 @@
         "signature": "378e2a5a3e29cd1ea5f79a06090f40be825213a235e0f7a83e63371732d1b02c",
         "affectsGlobalScope": false
       },
-      "../src/api/thirdparty-detection/dto/mongoosepaginate.dto.ts": {
-        "version": "0ef33f7852b3ff0934f0e6b2be26011835ddaf264f8d00835b90d65bc5e94929",
-        "signature": "da624ca031c70a2ea336e8dea55ee73525032cf938c4a0741ac9f01035aabf21",
+      "../src/api/thirdparty-detection/dto/mongoosepaginate-thirdpartydetection.dto.ts": {
+        "version": "eab9727fc80b75c41738dc145bd48bc038bb2498c16c0b7d28b16f7d31c22de0",
+        "signature": "a67c0435d88ceb9992d59da26a75c76593a9e0398877fd7ac603fbf868aa586b",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/thirdparty-detection.service.ts": {
-        "version": "11ffe805f9d4e3c2c319e49d994da1ba29cb5679a16f30401eda1ef33f67aeb4",
-        "signature": "2b0e994ed1a1dac7545f219ca351c228b498ad6ec2ff09830c72e481d9489cd3",
+        "version": "776312a2794ef83b8497b89e3f17723eaa8b6b0389764fe17be0deeef074eee7",
+        "signature": "2ababe06e12016e3fc953c99c16fb01805b5ff467a46fccab90eff4a3ee99597",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/controllers/thirdparty-detection.controller.ts": {
         "version": "061d8d94bcca54bc02ea866fe2f2894b1a87797a396ec20db0f36c25a0b27256",
-        "signature": "cb1064a860ca255ed6b3499cb5152595b9969b1478ed29feaed95a386430f505",
+        "signature": "232e4f5c91ba5e820cf7c81b6653e1095f9a96719aebae9221e4e9343afcac21",
         "affectsGlobalScope": false
       },
       "../src/api/auth/guards/apikey-auth.guard.ts": {
@@ -5488,7 +5488,7 @@
       },
       "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts": {
         "version": "315863e08bb6d991594e75f322777ba25072e30f1fdb2b12a0b0fc15bb3f6e4b",
-        "signature": "fc9e17f7378b28c4a118c7218689b4e7ff3c8609c46ac6b0b4ecd1df56d73319",
+        "signature": "cc5d9877b14d599097cb33a873090e071b9221adc7a09778b6f4dc2b8d4e5b84",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/thirdparty-detection.module.ts": {
@@ -18279,7 +18279,7 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/api-key/dto/create-api-key.dto.ts",
-        "../src/api/api-key/dto/mongoosepaginate.dto.ts",
+        "../src/api/api-key/dto/mongoosepaginate-apikey.dto.ts",
         "../src/api/api-key/dto/update-api-key.dto.ts",
         "../src/api/api-key/schemas/api-key.schema.ts",
         "../src/shared/dtos/query.dto.ts"
@@ -18331,7 +18331,7 @@
         "../node_modules/mongoose/index.d.ts",
         "../src/api/api-key/schemas/api-key.schema.ts"
       ],
-      "../src/api/api-key/dto/mongoosepaginate.dto.ts": [
+      "../src/api/api-key/dto/mongoosepaginate-apikey.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
@@ -18747,6 +18747,17 @@
         "../src/api/job/dto/create-job-file.dto.ts",
         "../src/api/job/schemas/job.schema.ts"
       ],
+      "../src/api/job/dto/mongoosepaginate-job.dto.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/job/schemas/job.schema.ts"
+      ],
       "../src/api/job/dto/mongoosepaginate-jobfile.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -18757,17 +18768,6 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/job/schemas/jobfile.schema.ts"
-      ],
-      "../src/api/job/dto/mongoosepaginate.dto.ts": [
-        "../node_modules/@nestjs/swagger/index.d.ts",
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/mongoose/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongoose/index.d.ts",
-        "../src/api/job/schemas/job.schema.ts"
       ],
       "../src/api/job/dto/update-job-file.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
@@ -18871,7 +18871,7 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/job/dto/create-job.dto.ts",
-        "../src/api/job/dto/mongoosepaginate.dto.ts",
+        "../src/api/job/dto/mongoosepaginate-job.dto.ts",
         "../src/api/job/dto/update-job-file.dto.ts",
         "../src/api/job/dto/update-job.dto.ts",
         "../src/api/job/schemas/job.schema.ts",
@@ -18946,6 +18946,17 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts"
       ],
+      "../src/api/radiostation/dto/mongoosepaginate-radiostation.dto.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/radiostation/schemas/radiostation.schema.ts"
+      ],
       "../src/api/radiostation/dto/mongoosepaginate-radiostationsonickey.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
@@ -18956,17 +18967,6 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/radiostation/schemas/radiostation-sonickey.schema.ts"
-      ],
-      "../src/api/radiostation/dto/mongoosepaginate.dto.ts": [
-        "../node_modules/@nestjs/swagger/index.d.ts",
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/mongoose/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongoose/index.d.ts",
-        "../src/api/radiostation/schemas/radiostation.schema.ts"
       ],
       "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
@@ -19098,7 +19098,7 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/radiostation/dto/create-radiostation.dto.ts",
-        "../src/api/radiostation/dto/mongoosepaginate.dto.ts",
+        "../src/api/radiostation/dto/mongoosepaginate-radiostation.dto.ts",
         "../src/api/radiostation/listeners/constants.ts",
         "../src/api/radiostation/schemas/radiostation.schema.ts",
         "../src/api/sonickey/services/sonickey.service.ts",
@@ -19209,7 +19209,7 @@
         "../node_modules/mongoose/index.d.ts",
         "../src/api/sonickey/dtos/sonickey.dto.ts"
       ],
-      "../src/api/sonickey/dtos/mongoosepaginate.dto.ts": [
+      "../src/api/sonickey/dtos/mongoosepaginate-sonickey.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
@@ -19291,7 +19291,7 @@
         "../node_modules/upath/upath.d.ts",
         "../src/api/job/schemas/job.schema.ts",
         "../src/api/sonickey/dtos/create-sonickey.dto.ts",
-        "../src/api/sonickey/dtos/mongoosepaginate.dto.ts",
+        "../src/api/sonickey/dtos/mongoosepaginate-sonickey.dto.ts",
         "../src/api/sonickey/dtos/sonickey.dto.ts",
         "../src/api/sonickey/schemas/sonickey.schema.ts",
         "../src/config/index.ts",
@@ -19364,7 +19364,7 @@
         "../node_modules/mongoose/index.d.ts",
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts"
       ],
-      "../src/api/thirdparty-detection/dto/mongoosepaginate.dto.ts": [
+      "../src/api/thirdparty-detection/dto/mongoosepaginate-thirdpartydetection.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
@@ -19424,7 +19424,7 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
-        "../src/api/thirdparty-detection/dto/mongoosepaginate.dto.ts",
+        "../src/api/thirdparty-detection/dto/mongoosepaginate-thirdpartydetection.dto.ts",
         "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",
         "../src/shared/dtos/query.dto.ts"
@@ -32266,14 +32266,14 @@
       "../src/api/api-key/api-key.service.ts": [
         "../node_modules/mongoose/index.d.ts",
         "../src/api/api-key/dto/create-api-key.dto.ts",
-        "../src/api/api-key/dto/mongoosepaginate.dto.ts",
+        "../src/api/api-key/dto/mongoosepaginate-apikey.dto.ts",
         "../src/api/api-key/schemas/api-key.schema.ts",
         "../src/shared/dtos/query.dto.ts"
       ],
       "../src/api/api-key/controllers/api-key-customer.controller.ts": [
         "../src/api/api-key/api-key.service.ts",
         "../src/api/api-key/dto/create-api-key.dto.ts",
-        "../src/api/api-key/dto/mongoosepaginate.dto.ts",
+        "../src/api/api-key/dto/mongoosepaginate-apikey.dto.ts",
         "../src/api/api-key/dto/update-api-key.dto.ts",
         "../src/api/api-key/schemas/api-key.schema.ts",
         "../src/shared/dtos/query.dto.ts"
@@ -32281,7 +32281,7 @@
       "../src/api/api-key/controllers/api-key.controller.ts": [
         "../src/api/api-key/api-key.service.ts",
         "../src/api/api-key/dto/create-api-key.dto.ts",
-        "../src/api/api-key/dto/mongoosepaginate.dto.ts",
+        "../src/api/api-key/dto/mongoosepaginate-apikey.dto.ts",
         "../src/api/api-key/dto/update-api-key.dto.ts",
         "../src/api/api-key/schemas/api-key.schema.ts",
         "../src/shared/dtos/query.dto.ts"
@@ -32290,7 +32290,7 @@
         "../node_modules/@nestjs/common/index.d.ts",
         "../src/api/api-key/schemas/api-key.schema.ts"
       ],
-      "../src/api/api-key/dto/mongoosepaginate.dto.ts": [
+      "../src/api/api-key/dto/mongoosepaginate-apikey.dto.ts": [
         "../src/api/api-key/schemas/api-key.schema.ts"
       ],
       "../src/api/api-key/dto/update-api-key.dto.ts": [
@@ -32392,7 +32392,7 @@
       ],
       "../src/api/job/controllers/job.controller.ts": [
         "../src/api/job/dto/create-job.dto.ts",
-        "../src/api/job/dto/mongoosepaginate.dto.ts",
+        "../src/api/job/dto/mongoosepaginate-job.dto.ts",
         "../src/api/job/dto/update-job.dto.ts",
         "../src/api/job/schemas/job.schema.ts",
         "../src/api/job/services/job.service.ts",
@@ -32411,11 +32411,11 @@
         "../src/api/job/dto/create-job-file.dto.ts",
         "../src/api/job/schemas/job.schema.ts"
       ],
+      "../src/api/job/dto/mongoosepaginate-job.dto.ts": [
+        "../src/api/job/schemas/job.schema.ts"
+      ],
       "../src/api/job/dto/mongoosepaginate-jobfile.dto.ts": [
         "../src/api/job/schemas/jobfile.schema.ts"
-      ],
-      "../src/api/job/dto/mongoosepaginate.dto.ts": [
-        "../src/api/job/schemas/job.schema.ts"
       ],
       "../src/api/job/dto/update-job-file.dto.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -32446,7 +32446,7 @@
       "../src/api/job/services/job.service.ts": [
         "../node_modules/mongoose/index.d.ts",
         "../src/api/job/dto/create-job.dto.ts",
-        "../src/api/job/dto/mongoosepaginate.dto.ts",
+        "../src/api/job/dto/mongoosepaginate-job.dto.ts",
         "../src/api/job/schemas/job.schema.ts",
         "../src/api/job/schemas/jobfile.schema.ts",
         "../src/shared/dtos/query.dto.ts",
@@ -32461,7 +32461,7 @@
       "../src/api/radiostation/controllers/radiostation.controller.ts": [
         "../src/api/radiostation/dto/bulk-radiostation.dto.ts",
         "../src/api/radiostation/dto/create-radiostation.dto.ts",
-        "../src/api/radiostation/dto/mongoosepaginate.dto.ts",
+        "../src/api/radiostation/dto/mongoosepaginate-radiostation.dto.ts",
         "../src/api/radiostation/dto/update-radiostation.dto.ts",
         "../src/api/radiostation/schemas/radiostation.schema.ts",
         "../src/api/radiostation/services/radiostation.service.ts",
@@ -32471,11 +32471,11 @@
         "../node_modules/@nestjs/common/index.d.ts",
         "../src/api/radiostation/schemas/radiostation.schema.ts"
       ],
+      "../src/api/radiostation/dto/mongoosepaginate-radiostation.dto.ts": [
+        "../src/api/radiostation/schemas/radiostation.schema.ts"
+      ],
       "../src/api/radiostation/dto/mongoosepaginate-radiostationsonickey.dto.ts": [
         "../src/api/radiostation/schemas/radiostation-sonickey.schema.ts"
-      ],
-      "../src/api/radiostation/dto/mongoosepaginate.dto.ts": [
-        "../src/api/radiostation/schemas/radiostation.schema.ts"
       ],
       "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -32512,7 +32512,7 @@
         "../node_modules/@nestjs/event-emitter/dist/index.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/radiostation/dto/create-radiostation.dto.ts",
-        "../src/api/radiostation/dto/mongoosepaginate.dto.ts",
+        "../src/api/radiostation/dto/mongoosepaginate-radiostation.dto.ts",
         "../src/api/radiostation/schemas/radiostation.schema.ts",
         "../src/api/sonickey/services/sonickey.service.ts",
         "../src/shared/dtos/query.dto.ts"
@@ -32521,7 +32521,7 @@
         "../node_modules/@types/express/index.d.ts",
         "../src/api/sonickey/dtos/create-sonickey.dto.ts",
         "../src/api/sonickey/dtos/download.dto.ts",
-        "../src/api/sonickey/dtos/mongoosepaginate.dto.ts",
+        "../src/api/sonickey/dtos/mongoosepaginate-sonickey.dto.ts",
         "../src/api/sonickey/dtos/sonickey.dto.ts",
         "../src/api/sonickey/dtos/update-sonickey.dto.ts",
         "../src/api/sonickey/schemas/sonickey.schema.ts",
@@ -32544,7 +32544,7 @@
       "../src/api/sonickey/dtos/encode.dto.ts": [
         "../src/api/sonickey/dtos/sonickey.dto.ts"
       ],
-      "../src/api/sonickey/dtos/mongoosepaginate.dto.ts": [
+      "../src/api/sonickey/dtos/mongoosepaginate-sonickey.dto.ts": [
         "../src/api/sonickey/schemas/sonickey.schema.ts"
       ],
       "../src/api/sonickey/dtos/public-encode.dto.ts": [
@@ -32565,7 +32565,7 @@
         "../node_modules/mongoose/index.d.ts",
         "../node_modules/music-metadata/lib/index.d.ts",
         "../src/api/sonickey/dtos/create-sonickey.dto.ts",
-        "../src/api/sonickey/dtos/mongoosepaginate.dto.ts",
+        "../src/api/sonickey/dtos/mongoosepaginate-sonickey.dto.ts",
         "../src/api/sonickey/dtos/sonickey.dto.ts",
         "../src/api/sonickey/schemas/sonickey.schema.ts",
         "../src/shared/dtos/query.dto.ts",
@@ -32575,14 +32575,14 @@
       ],
       "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts": [
         "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
-        "../src/api/thirdparty-detection/dto/mongoosepaginate.dto.ts",
+        "../src/api/thirdparty-detection/dto/mongoosepaginate-thirdpartydetection.dto.ts",
         "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",
         "../src/api/thirdparty-detection/thirdparty-detection.service.ts",
         "../src/shared/dtos/query.dto.ts"
       ],
       "../src/api/thirdparty-detection/controllers/thirdparty-detection.controller.ts": [
-        "../src/api/thirdparty-detection/dto/mongoosepaginate.dto.ts",
+        "../src/api/thirdparty-detection/dto/mongoosepaginate-thirdpartydetection.dto.ts",
         "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",
         "../src/api/thirdparty-detection/thirdparty-detection.service.ts",
@@ -32592,7 +32592,7 @@
         "../node_modules/@nestjs/common/index.d.ts",
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts"
       ],
-      "../src/api/thirdparty-detection/dto/mongoosepaginate.dto.ts": [
+      "../src/api/thirdparty-detection/dto/mongoosepaginate-thirdpartydetection.dto.ts": [
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts"
       ],
       "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts": [
@@ -32604,7 +32604,7 @@
       ],
       "../src/api/thirdparty-detection/thirdparty-detection.service.ts": [
         "../node_modules/mongoose/index.d.ts",
-        "../src/api/thirdparty-detection/dto/mongoosepaginate.dto.ts",
+        "../src/api/thirdparty-detection/dto/mongoosepaginate-thirdpartydetection.dto.ts",
         "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",
         "../src/shared/dtos/query.dto.ts"
@@ -33698,7 +33698,7 @@
       "../src/api/api-key/controllers/api-key-customer.controller.ts",
       "../src/api/api-key/controllers/api-key.controller.ts",
       "../src/api/api-key/dto/create-api-key.dto.ts",
-      "../src/api/api-key/dto/mongoosepaginate.dto.ts",
+      "../src/api/api-key/dto/mongoosepaginate-apikey.dto.ts",
       "../src/api/api-key/dto/update-api-key.dto.ts",
       "../src/api/api-key/schemas/api-key.schema.ts",
       "../src/api/auth/auth.controller.ts",
@@ -33731,8 +33731,8 @@
       "../src/api/job/dto/add-job-files.dto.ts",
       "../src/api/job/dto/create-job-file.dto.ts",
       "../src/api/job/dto/create-job.dto.ts",
+      "../src/api/job/dto/mongoosepaginate-job.dto.ts",
       "../src/api/job/dto/mongoosepaginate-jobfile.dto.ts",
-      "../src/api/job/dto/mongoosepaginate.dto.ts",
       "../src/api/job/dto/update-job-file.dto.ts",
       "../src/api/job/dto/update-job.dto.ts",
       "../src/api/job/job.module.ts",
@@ -33745,8 +33745,8 @@
       "../src/api/radiostation/dto/bulk-radiostation.dto.ts",
       "../src/api/radiostation/dto/create-radiostation.dto.ts",
       "../src/api/radiostation/dto/deletebulk-radiostation.dto.ts",
+      "../src/api/radiostation/dto/mongoosepaginate-radiostation.dto.ts",
       "../src/api/radiostation/dto/mongoosepaginate-radiostationsonickey.dto.ts",
-      "../src/api/radiostation/dto/mongoosepaginate.dto.ts",
       "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts",
       "../src/api/radiostation/dto/update-radiostation.dto.ts",
       "../src/api/radiostation/listeners/constants.ts",
@@ -33762,7 +33762,7 @@
       "../src/api/sonickey/dtos/decode.dto.ts",
       "../src/api/sonickey/dtos/download.dto.ts",
       "../src/api/sonickey/dtos/encode.dto.ts",
-      "../src/api/sonickey/dtos/mongoosepaginate.dto.ts",
+      "../src/api/sonickey/dtos/mongoosepaginate-sonickey.dto.ts",
       "../src/api/sonickey/dtos/public-decode.dto.ts",
       "../src/api/sonickey/dtos/public-encode.dto.ts",
       "../src/api/sonickey/dtos/sonickey.dto.ts",
@@ -33773,7 +33773,7 @@
       "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts",
       "../src/api/thirdparty-detection/controllers/thirdparty-detection.controller.ts",
       "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
-      "../src/api/thirdparty-detection/dto/mongoosepaginate.dto.ts",
+      "../src/api/thirdparty-detection/dto/mongoosepaginate-thirdpartydetection.dto.ts",
       "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
       "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",
       "../src/api/thirdparty-detection/thirdparty-detection.module.ts",

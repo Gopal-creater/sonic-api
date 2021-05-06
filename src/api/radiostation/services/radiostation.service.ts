@@ -7,7 +7,7 @@ import { QueryDto } from '../../../shared/dtos/query.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { STOP_LISTENING_STREAM, START_LISTENING_STREAM } from '../listeners/constants';
-import { MongoosePaginateDto } from '../dto/mongoosepaginate.dto';
+import { MongoosePaginateRadioStationDto } from '../dto/mongoosepaginate-radiostation.dto';
 
 @Injectable()
 export class RadiostationService {
@@ -73,7 +73,7 @@ export class RadiostationService {
     );
   }
 
-  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateDto> {
+  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateRadioStationDto> {
     const { _limit, _offset, _sort,_page, ...query } = queryDto;
     var paginateOptions={}
     var sort = {};
