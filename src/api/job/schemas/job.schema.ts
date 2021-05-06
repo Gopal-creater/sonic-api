@@ -20,6 +20,10 @@ export class Job extends Document {
   owner: string;
 
   @ApiProperty()
+  @Prop({default:10})
+  encodingStrength: number;
+
+  @ApiProperty()
   @Prop()
   license: string;
 
