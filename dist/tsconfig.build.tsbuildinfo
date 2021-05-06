@@ -2127,7 +2127,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/app.config.ts": {
-        "version": "5c301d840ba658fa13d6ed3afd9fb5fc0d3814028a1e0971b26a5eac4dfd356d",
+        "version": "b7156bbc6118d6f82fce328c7caf480f17a1f5f5b42cacfc4639cca330bec4a5",
         "signature": "3967118228366f27cfe52c6b488d65bc358ee21d99f7631593dc013bdaf3a3e7",
         "affectsGlobalScope": false
       },
