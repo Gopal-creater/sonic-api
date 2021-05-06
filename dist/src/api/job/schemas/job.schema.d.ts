@@ -3,6 +3,7 @@ export declare const JobSchemaName = "Job";
 export declare class Job extends Document {
     name: string;
     owner: string;
+    encodingStrength: number;
     license: string;
     isComplete: boolean;
     jobFiles: any[];

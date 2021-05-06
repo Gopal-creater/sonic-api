@@ -1897,8 +1897,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/schemas/job.schema.ts": {
-        "version": "a4d508987be019bf832e5febde7d19c0b1f51530af7ca472efe1627161d2aa9a",
-        "signature": "12dda374bfe79d82ce8e1507e38a1e79c00f66caa928d13b266eec9b06a6cb2e",
+        "version": "d317f7d390de66d06ad7a2b049a2e1301be85f86bdd17456ee5be5f6908c0631",
+        "signature": "67a908e70e1ebe82b9abfedfb75a8732c0f63473d34c148125e341b0a54d9793",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/schemas/sonickey.schema.ts": {
@@ -5198,11 +5198,11 @@
       },
       "../src/api/job/dto/create-job.dto.ts": {
         "version": "37585da73fc3678b3fa54476e436f62722900fe612d0fbe57c4f215aa4579029",
-        "signature": "5029c5a352a50d449850e23e003d7408361aed8f6e548fbeba88b83466fc25e3",
+        "signature": "570de004d95c22fda8559c7d881fc8477b6d60373797c3291f23512e47dc2ad3",
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/update-job.dto.ts": {
-        "version": "616c20893899dc23d6780b5ecfd426566140821757d4bb590b67714d12eee89c",
+        "version": "98166d3c5920c40bf51d26fb80914159578e0ee42c120310e558a72345da93ae",
         "signature": "fc21568ca760ab73b7dfb1a2d60d4aeed70141226ee00552b7f86eb405268378",
         "affectsGlobalScope": false
       },

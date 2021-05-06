@@ -30,6 +30,11 @@ __decorate([
 ], Job.prototype, "owner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: 10 }),
+    __metadata("design:type", Number)
+], Job.prototype, "encodingStrength", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Job.prototype, "license", void 0);
