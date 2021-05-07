@@ -19,6 +19,7 @@ async function bootstrap() {
     origin: [
       'https://portal.sonicdata.com',
       'https://sonicportal.arba-dev.uk',
+      'https://sonicstreamportal.arba-dev.uk',
       'http://localhost:3000',
       'https://localhost:3000',
       'http://localhost:8001',
