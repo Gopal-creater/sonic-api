@@ -9,11 +9,12 @@ async function func(){
 
 func().then(data=>console.log(data))
 
-
+// http://27.7.118.167:5000/sonic
+// http://streaming.live365.com/a73754
 const children = require('child_process');
 var ffm = children.spawn(
       "ffmpeg",
-      "-i http://streaming.live365.com/a73754 -y -f 16_le -ar 44100 -ac 2 -f wav -t 00:00:10 storage/streaming/OUTPUT.WAV".split(
+      "-i http://27.7.118.167:5000/sonic -y -f 16_le -ar 44100 -ac 2 -f wav -t 00:00:10 storage/streaming/OUTPUT.WAV".split(
         " "
       ),
       {shell:true}
