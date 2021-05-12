@@ -8,6 +8,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { STOP_LISTENING_STREAM, START_LISTENING_STREAM } from '../listeners/constants';
 import { MongoosePaginateRadioStationDto } from '../dto/mongoosepaginate-radiostation.dto';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 
 @Injectable()
 export class RadiostationService {
@@ -73,27 +74,16 @@ export class RadiostationService {
     );
   }
 
-  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateRadioStationDto> {
-    const { _limit, _offset, _sort,_page, ...query } = queryDto;
-    var paginateOptions={}
-    var sort = {};
-    if (_sort) {
-      var sortItems = _sort?.split(',') || [];
-      for (let index = 0; index < sortItems.length; index++) {
-        const sortItem = sortItems[index];
-        var sortKeyValue = sortItem?.split(':');
-        sort[sortKeyValue[0]] =
-          sortKeyValue[1]?.toLowerCase() == 'desc' ? -1 : 1;
-      }
-    }
-
-    paginateOptions["sort"]=sort
-    paginateOptions["offset"]=_offset
-    paginateOptions["page"]=_page
-    paginateOptions["limit"]=_limit
-
-
-    return await this.radioStationModel["paginate"](query,paginateOptions)
+  async findAll(queryDto: ParsedQueryDto):Promise<MongoosePaginateRadioStationDto> {
+    const { limit,skip,sort,page,filter,select, populate} = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    return this.radioStationModel["paginate"](filter,paginateOptions)
 
     // return this.radioStationModel
     //   .find(query || {})

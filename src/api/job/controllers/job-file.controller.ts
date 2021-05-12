@@ -11,7 +11,7 @@ import {
   Query,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiBody, ApiQuery } from '@nestjs/swagger';
 import {
   UpdateJobFileDto,
   AddKeyAndUpdateJobFileDto,
@@ -20,9 +20,9 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { JobFileService } from '../services/job-file.service';
 import { JobService } from '../services/job.service';
 import { CreateJobFileDto } from '../dto/create-job-file.dto';
-import { JobFile } from '../schemas/jobfile.schema';
-import { QueryDto } from '../../../shared/dtos/query.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 
 @ApiTags('Jobs Files Controller')
 @Controller()
@@ -35,8 +35,9 @@ export class JobFileController {
   @ApiOperation({ summary: 'Get All Job Files' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @AnyApiQueryTemplate()
   @Get('/job-files')
-  findAll(@Query(new ParseQueryValue()) queryDto: QueryDto) {
+  findAll(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
     return this.jobFileService.findAll(queryDto);
   }
 

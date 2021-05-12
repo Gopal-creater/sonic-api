@@ -21,8 +21,9 @@ const update_api_key_dto_1 = require("../dto/update-api-key.dto");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const swagger_1 = require("@nestjs/swagger");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
-const query_dto_1 = require("../../../shared/dtos/query.dto");
 const isTargetUserLoggedIn_guard_1 = require("../../auth/guards/isTargetUserLoggedIn.guard");
+const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
+const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 let ApiKeyController = class ApiKeyController {
     constructor(apiKeyService) {
         this.apiKeyService = apiKeyService;
@@ -75,11 +76,12 @@ __decorate([
     common_1.Get(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard()),
     swagger_1.ApiBearerAuth(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All ApiKeys' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-apikey.dto").MongoosePaginateApiKeyDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [query_dto_1.QueryDto]),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], ApiKeyController.prototype, "findAll", null);
 __decorate([

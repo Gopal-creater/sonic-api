@@ -11,27 +11,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParseQueryValue = void 0;
 const common_1 = require("@nestjs/common");
-const json_utils_1 = require("../utils/json.utils");
+const mongoose_query_parser_1 = require("mongoose-query-parser");
 let ParseQueryValue = class ParseQueryValue {
     constructor(values) {
         this.values = values;
     }
     transform(queries, metadata) {
+        var _a, _b, _c;
         try {
-            const res = {};
-            for (const key in queries) {
-                var value = queries[key];
-                if (json_utils_1.isNumber(value)) {
-                    res[key] = parseInt(value);
-                }
-                else if (value == 'true' || value == 'false') {
-                    res[key] = value == 'true';
-                }
-                else {
-                    res[key] = value;
-                }
+            const parser = new mongoose_query_parser_1.MongooseQueryParser();
+            queries = queries || {};
+            const queryToParse = Object.assign({ page: 1 }, queries);
+            var parsed = parser.parse(queryToParse);
+            parsed = Object.assign({ limit: 100, skip: 0 }, parsed);
+            if ((_a = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _a === void 0 ? void 0 : _a.page) {
+                parsed['page'] = (_b = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _b === void 0 ? void 0 : _b.page;
+                (_c = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _c === void 0 ? true : delete _c.page;
             }
-            return res;
+            return parsed;
         }
         catch (error) {
             throw new common_1.BadRequestException(error);

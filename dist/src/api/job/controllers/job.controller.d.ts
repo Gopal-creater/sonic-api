@@ -2,13 +2,13 @@ import { JobService } from '../services/job.service';
 import { CreateJobDto } from '../dto/create-job.dto';
 import { UpdateJobDto } from '../dto/update-job.dto';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
-import { QueryDto } from '../../../shared/dtos/query.dto';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 export declare class JobController {
     private readonly jobService;
     private readonly sonickeyService;
     constructor(jobService: JobService, sonickeyService: SonickeyService);
-    findAll(queryDto: QueryDto): Promise<import("../dto/mongoosepaginate-job.dto").MongoosePaginateJobDto>;
-    getOwnerJobs(ownerId: string, queryDto: QueryDto): Promise<import("../dto/mongoosepaginate-job.dto").MongoosePaginateJobDto>;
+    findAll(queryDto: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-job.dto").MongoosePaginateJobDto>;
+    getOwnerJobs(ownerId: string, queryDto: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-job.dto").MongoosePaginateJobDto>;
     create(createJobDto: CreateJobDto, owner: string, req: any): Promise<import("../schemas/job.schema").Job>;
     makeCompleted(id: string): Promise<import("../schemas/job.schema").Job>;
     getCount(query: any): Promise<number>;

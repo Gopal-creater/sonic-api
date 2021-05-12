@@ -57,25 +57,16 @@ let JobService = class JobService {
         });
         return updatedCreatedJob;
     }
-    async findAll(queryDto = {}) {
-        var _a;
-        const { _limit, _offset, _sort, _page } = queryDto, query = __rest(queryDto, ["_limit", "_offset", "_sort", "_page"]);
+    async findAll(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate } = queryDto;
         var paginateOptions = {};
-        var sort = {};
-        if (_sort) {
-            var sortItems = (_sort === null || _sort === void 0 ? void 0 : _sort.split(',')) || [];
-            for (let index = 0; index < sortItems.length; index++) {
-                const sortItem = sortItems[index];
-                var sortKeyValue = sortItem === null || sortItem === void 0 ? void 0 : sortItem.split(':');
-                sort[sortKeyValue[0]] =
-                    ((_a = sortKeyValue[1]) === null || _a === void 0 ? void 0 : _a.toLowerCase()) == 'desc' ? -1 : 1;
-            }
-        }
-        paginateOptions["sort"] = sort;
-        paginateOptions["offset"] = _offset;
-        paginateOptions["page"] = _page;
-        paginateOptions["limit"] = _limit;
-        return await this.jobModel["paginate"](query, paginateOptions);
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        return await this.jobModel["paginate"](filter, paginateOptions);
     }
     async remove(id) {
         const job = await this.jobModel.findById(id);

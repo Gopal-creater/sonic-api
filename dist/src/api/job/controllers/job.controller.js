@@ -23,8 +23,9 @@ const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const user_decorator_1 = require("../../auth/decorators/user.decorator");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const common_2 = require("@nestjs/common");
-const query_dto_1 = require("../../../shared/dtos/query.dto");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
+const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
+const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 let JobController = class JobController {
     constructor(jobService, sonickeyService) {
         this.jobService = jobService;
@@ -34,8 +35,8 @@ let JobController = class JobController {
         return this.jobService.findAll(queryDto);
     }
     getOwnerJobs(ownerId, queryDto) {
-        const query = Object.assign(Object.assign({}, queryDto), { owner: ownerId });
-        return this.jobService.findAll(query);
+        queryDto.filter["owner"] = ownerId;
+        return this.jobService.findAll(queryDto);
     }
     async create(createJobDto, owner, req) {
         const existingJob = await this.jobService.jobModel.findOne({ name: createJobDto.name, owner: owner });
@@ -83,22 +84,24 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Get All Jobs' }),
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     common_1.Get(),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-job.dto").MongoosePaginateJobDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [query_dto_1.QueryDto]),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], JobController.prototype, "findAll", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get All Jobs of particular owner' }),
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     common_1.Get('/owners/:ownerId'),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-job.dto").MongoosePaginateJobDto }),
     __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
+    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], JobController.prototype, "getOwnerJobs", null);
 __decorate([

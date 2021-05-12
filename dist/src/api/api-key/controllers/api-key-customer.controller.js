@@ -21,8 +21,9 @@ const update_api_key_dto_1 = require("../dto/update-api-key.dto");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const swagger_1 = require("@nestjs/swagger");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
-const query_dto_1 = require("../../../shared/dtos/query.dto");
 const isTargetUserLoggedIn_guard_1 = require("../../auth/guards/isTargetUserLoggedIn.guard");
+const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
+const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 let ApiKeyCustomerController = class ApiKeyCustomerController {
     constructor(apiKeyService) {
         this.apiKeyService = apiKeyService;
@@ -32,8 +33,8 @@ let ApiKeyCustomerController = class ApiKeyCustomerController {
         return newApiKey.save();
     }
     async findAll(customer, queryDto) {
-        const query = Object.assign(Object.assign({}, queryDto), { customer: customer });
-        return this.apiKeyService.findAll(query);
+        queryDto.filter["customer"] = customer;
+        return this.apiKeyService.findAll(queryDto);
     }
     async findOne(customer, apikey) {
         const apiKey = await this.apiKeyService.apiKeyModel.findById(apikey);
@@ -102,12 +103,13 @@ __decorate([
     common_1.Get(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All ApiKeys' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-apikey.dto").MongoosePaginateApiKeyDto }),
     __param(0, common_1.Param('targetUser')),
     __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
+    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], ApiKeyCustomerController.prototype, "findAll", null);
 __decorate([

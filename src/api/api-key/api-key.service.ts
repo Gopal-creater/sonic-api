@@ -4,7 +4,7 @@ import { UpdateApiKeyDto } from './dto/update-api-key.dto';
 import { ApiKey } from './schemas/api-key.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { QueryDto } from '../../shared/dtos/query.dto';
+import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateApiKeyDto } from './dto/mongoosepaginate-apikey.dto';
 
 @Injectable()
@@ -36,27 +36,18 @@ export class ApiKeyService {
     },{new:true})
   }
 
-  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateApiKeyDto> {
-    const { _limit, _offset, _sort,_page, ...query } = queryDto;
-    var paginateOptions={}
-    var sort = {};
-    if (_sort) {
-      var sortItems = _sort?.split(',') || [];
-      for (let index = 0; index < sortItems.length; index++) {
-        const sortItem = sortItems[index];
-        var sortKeyValue = sortItem?.split(':');
-        sort[sortKeyValue[0]] =
-          sortKeyValue[1]?.toLowerCase() == 'desc' ? -1 : 1;
-      }
-    }
-
-    paginateOptions["sort"]=sort
-    paginateOptions["offset"]=_offset
-    paginateOptions["page"]=_page
-    paginateOptions["limit"]=_limit
+  async findAll(queryDto: ParsedQueryDto):Promise<MongoosePaginateApiKeyDto> {
+    const { limit,skip,sort,page,filter,select, populate} = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
 
 
-    return await this.apiKeyModel["paginate"](query,paginateOptions)
+    return await this.apiKeyModel["paginate"](filter,paginateOptions)
     // return this.apiKeyModel
     //   .find(query || {})
     //   .skip(_offset)

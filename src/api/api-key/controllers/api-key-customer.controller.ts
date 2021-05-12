@@ -15,10 +15,11 @@ import { ApiKeyService } from '../api-key.service';
 import { CreateApiKeyDto } from '../dto/create-api-key.dto';
 import { UpdateApiKeyDto } from '../dto/update-api-key.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
-import { QueryDto } from '../../../shared/dtos/query.dto';
 import { IsTargetUserLoggedInGuard } from '../../auth/guards/isTargetUserLoggedIn.guard';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 
 @ApiTags('Apikey-Customer Management Controller')
 @Controller('api-keys/customers/:targetUser')
@@ -43,16 +44,14 @@ export class ApiKeyCustomerController {
   @Get()
   @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
+  @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All ApiKeys' })
   async findAll(
     @Param('targetUser') customer: string,
-    @Query(new ParseQueryValue()) queryDto: QueryDto,
+    @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
   ) {
-    const query = {
-      ...queryDto,
-      customer: customer,
-    };
-    return this.apiKeyService.findAll(query);
+    queryDto.filter["customer"]=customer
+    return this.apiKeyService.findAll(queryDto);
   }
 
   @Get(':apikey')

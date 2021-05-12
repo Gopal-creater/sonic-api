@@ -42,17 +42,18 @@ const decorators_1 = require("../../auth/decorators");
 const file_handler_service_1 = require("../../../shared/services/file-handler.service");
 const download_dto_1 = require("../dtos/download.dto");
 const appRootPath = require("app-root-path");
-const query_dto_1 = require("../../../shared/dtos/query.dto");
+const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
+const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, keygenService, fileHandlerService) {
         this.sonicKeyService = sonicKeyService;
         this.keygenService = keygenService;
         this.fileHandlerService = fileHandlerService;
     }
-    async getAll(queryDto) {
-        console.log("queryDto", queryDto);
-        return this.sonicKeyService.getAll(queryDto);
+    async getAll(parsedQueryDto) {
+        console.log('queryDto', parsedQueryDto);
+        return this.sonicKeyService.getAll(parsedQueryDto);
     }
     async generateUniqueSonicKey() {
         return await this.sonicKeyService.generateUniqueSonicKey();
@@ -61,14 +62,13 @@ let SonickeyController = class SonickeyController {
         createSonicKeyDto.owner = owner;
         return this.sonicKeyService.createFromJob(createSonicKeyDto);
     }
-    async getOwnersKeys(ownerId, queryDto) {
-        const query = Object.assign(Object.assign({}, queryDto), { owner: ownerId });
-        const keys = await this.sonicKeyService.getAll(query);
-        return keys;
+    async getOwnersKeys(ownerId, parsedQueryDto) {
+        parsedQueryDto.filter['owner'] = ownerId;
+        return this.sonicKeyService.getAll(parsedQueryDto);
     }
-    async getKeysByJob(jobId, queryDto) {
-        const query = Object.assign(Object.assign({}, queryDto), { job: jobId });
-        return await this.sonicKeyService.getAll(query);
+    async getKeysByJob(jobId, parsedQueryDto) {
+        parsedQueryDto.filter['job'] = jobId;
+        return this.sonicKeyService.getAll(parsedQueryDto);
     }
     async getCount(query) {
         return this.sonicKeyService.sonicKeyModel.estimatedDocumentCount(Object.assign({}, query));
@@ -147,7 +147,9 @@ let SonickeyController = class SonickeyController {
         return updatedSonickey;
     }
     async delete(sonickey) {
-        const deletedSonickey = await this.sonicKeyService.sonicKeyModel.deleteOne({ sonicKey: sonickey });
+        const deletedSonickey = await this.sonicKeyService.sonicKeyModel.deleteOne({
+            sonicKey: sonickey,
+        });
         if (!deletedSonickey) {
             throw new common_1.NotFoundException();
         }
@@ -164,7 +166,7 @@ let SonickeyController = class SonickeyController {
         if (!isFileExist) {
             throw new common_1.BadRequestException('Sorry, file not found');
         }
-        return response.sendFile(filePath, (err) => {
+        return response.sendFile(filePath, err => {
             if (err) {
                 console.log(err);
                 return response.status(400).json({ message: 'Error sending file.' });
@@ -177,10 +179,11 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys' }),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [query_dto_1.QueryDto]),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getAll", null);
 __decorate([
@@ -208,22 +211,26 @@ __decorate([
     common_1.Get('/owners/:ownerId'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user' }),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
-    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Param('ownerId')),
+    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
+    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getOwnersKeys", null);
 __decorate([
     common_1.Get('/jobs/:jobId'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular job' }),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
-    __param(0, common_1.Param('jobId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Param('jobId')),
+    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
+    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getKeysByJob", null);
 __decorate([

@@ -21,8 +21,9 @@ const update_radiostation_dto_1 = require("../dto/update-radiostation.dto");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const bulk_radiostation_dto_1 = require("../dto/bulk-radiostation.dto");
-const query_dto_1 = require("../../../shared/dtos/query.dto");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
+const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
+const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 let RadiostationController = class RadiostationController {
     constructor(radiostationService) {
         this.radiostationService = radiostationService;
@@ -34,8 +35,8 @@ let RadiostationController = class RadiostationController {
         return this.radiostationService.findAll(queryDto);
     }
     async getOwnersRadioStations(ownerId, queryDto) {
-        const query = Object.assign(Object.assign({}, queryDto), { owner: ownerId });
-        return this.radiostationService.findAll(query);
+        queryDto.filter["owner"] = ownerId;
+        return this.radiostationService.findAll(queryDto);
     }
     async getCount(query) {
         return this.radiostationService.radioStationModel.estimatedDocumentCount(Object.assign({}, query));
@@ -103,22 +104,24 @@ __decorate([
     common_1.Get(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Radio Stations' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [query_dto_1.QueryDto]),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], RadiostationController.prototype, "findAll", null);
 __decorate([
     common_1.Get('/owners/:ownerId'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Radio Stations of particular user' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto }),
     __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, query_dto_1.QueryDto]),
+    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], RadiostationController.prototype, "getOwnersRadioStations", null);
 __decorate([

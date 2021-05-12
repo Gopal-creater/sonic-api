@@ -2,13 +2,13 @@ import { RadiostationService } from '../services/radiostation.service';
 import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
 import { UpdateRadiostationDto } from '../dto/update-radiostation.dto';
 import { BulkRadiostationDto } from '../dto/bulk-radiostation.dto';
-import { QueryDto } from '../../../shared/dtos/query.dto';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 export declare class RadiostationController {
     private readonly radiostationService;
     constructor(radiostationService: RadiostationService);
     create(createRadiostationDto: CreateRadiostationDto): Promise<import("../schemas/radiostation.schema").RadioStation>;
-    findAll(queryDto?: QueryDto): Promise<import("../dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto>;
-    getOwnersRadioStations(ownerId: string, queryDto: QueryDto): Promise<import("../dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto>;
+    findAll(queryDto?: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto>;
+    getOwnersRadioStations(ownerId: string, queryDto: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto>;
     getCount(query: any): Promise<number>;
     findOne(id: string): Promise<import("../schemas/radiostation.schema").RadioStation>;
     stopListeningStream(id: string): Promise<import("../schemas/radiostation.schema").RadioStation>;

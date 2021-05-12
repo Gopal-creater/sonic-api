@@ -6,8 +6,8 @@ import { SonicKey } from '../schemas/sonickey.schema';
 import * as mm from 'music-metadata';
 import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
 import { Model } from 'mongoose';
-import { QueryDto } from '../../../shared/dtos/query.dto';
 import { MongoosePaginateSonicKeyDto } from '../dtos/mongoosepaginate-sonickey.dto';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 export declare class SonickeyService {
     sonicKeyModel: Model<SonicKey>;
     private readonly fileOperationService;
@@ -15,7 +15,7 @@ export declare class SonickeyService {
     constructor(sonicKeyModel: Model<SonicKey>, fileOperationService: FileOperationService, fileHandlerService: FileHandlerService);
     generateUniqueSonicKey(): string;
     createFromJob(createSonicKeyDto: CreateSonicKeyFromJobDto): Promise<SonicKey>;
-    getAll(queryDto?: QueryDto): Promise<MongoosePaginateSonicKeyDto>;
+    getAll(queryDto: ParsedQueryDto): Promise<MongoosePaginateSonicKeyDto>;
     encode(file: IUploadedFile, encodingStrength?: number): Promise<{
         downloadFileUrl: string;
         outFilePath: string;

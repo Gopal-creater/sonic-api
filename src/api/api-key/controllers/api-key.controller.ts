@@ -3,10 +3,11 @@ import { ApiKeyService } from '../api-key.service';
 import { CreateApiKeyDto } from '../dto/create-api-key.dto';
 import { UpdateApiKeyDto } from '../dto/update-api-key.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
-import { QueryDto } from '../../../shared/dtos/query.dto';
 import { IsTargetUserLoggedInGuard } from '../../auth/guards/isTargetUserLoggedIn.guard';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 
 /**
  * Accept this key asa x-api-key header from client side
@@ -28,8 +29,9 @@ export class ApiKeyController {
   @Get()
   @UseGuards(JwtAuthGuard,new IsTargetUserLoggedInGuard())
   @ApiBearerAuth()
+  @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All ApiKeys' })
-  findAll(@Query(new ParseQueryValue()) queryDto?: QueryDto,) {
+  findAll(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,) {
     console.log("Query",queryDto);
     
     return this.apiKeyService.findAll(queryDto);

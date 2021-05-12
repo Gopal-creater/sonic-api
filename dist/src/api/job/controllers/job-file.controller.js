@@ -21,8 +21,9 @@ const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const job_file_service_1 = require("../services/job-file.service");
 const job_service_1 = require("../services/job.service");
 const create_job_file_dto_1 = require("../dto/create-job-file.dto");
-const query_dto_1 = require("../../../shared/dtos/query.dto");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
+const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
+const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 let JobFileController = class JobFileController {
     constructor(jobFileService, jobService) {
         this.jobFileService = jobFileService;
@@ -102,11 +103,12 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Get All Job Files' }),
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     common_1.Get('/job-files'),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-jobfile.dto").MongoosePaginateJobFileDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [query_dto_1.QueryDto]),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], JobFileController.prototype, "findAll", null);
 __decorate([

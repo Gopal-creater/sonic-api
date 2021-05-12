@@ -14,16 +14,14 @@ import {
 import { JobService } from '../services/job.service';
 import { CreateJobDto } from '../dto/create-job.dto';
 import { UpdateJobDto } from '../dto/update-job.dto';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from '../../auth/decorators/user.decorator';
-import { JobLicenseValidationGuard } from '../../auth/guards/job-license-validation.guard';
-import { v4 as uuidv4 } from 'uuid';
-import { equals, ConditionExpression } from '@aws/dynamodb-expressions';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { BadRequestException } from '@nestjs/common';
-import { QueryDto } from '../../../shared/dtos/query.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 
 @ApiTags('Jobs Controller')
 @Controller('jobs')
@@ -36,21 +34,20 @@ export class JobController {
   @ApiOperation({ summary: 'Get All Jobs' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @AnyApiQueryTemplate()
   @Get()
-  findAll(@Query(new ParseQueryValue()) queryDto: QueryDto,) {
+  findAll(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
     return this.jobService.findAll(queryDto);
   }
 
   @ApiOperation({ summary: 'Get All Jobs of particular owner' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @AnyApiQueryTemplate()
   @Get('/owners/:ownerId')
-  getOwnerJobs(@Param('ownerId') ownerId: string,@Query(new ParseQueryValue()) queryDto: QueryDto,) {
-    const query={
-      ...queryDto,
-      owner:ownerId
-    }
-    return this.jobService.findAll(query);
+  getOwnerJobs(@Param('ownerId') ownerId: string,@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
+    queryDto.filter["owner"]=ownerId
+    return this.jobService.findAll(queryDto);
   }
 
   @UseGuards(JwtAuthGuard)

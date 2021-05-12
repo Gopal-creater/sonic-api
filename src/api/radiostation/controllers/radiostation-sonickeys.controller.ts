@@ -1,10 +1,11 @@
 import { Controller, Get, Query, UseGuards, Param } from '@nestjs/common';
 import { RadiostationService } from '../services/radiostation.service';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RadiostationSonicKeysService } from '../services/radiostation-sonickeys.service';
-import { QueryDto } from '../../../shared/dtos/query.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 
 @ApiTags('RadioStation-SonicKeys Controller')
 @Controller('radiostations-sonickeys')
@@ -17,8 +18,9 @@ export class RadiostationSonicKeysController {
   @Get('/')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All radiostations-sonickeys' })
-  findAll(@Query(new ParseQueryValue()) queryDto: QueryDto) {
+  findAll(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
     return this.radiostationSonicKeysService.findAll(queryDto);
   }
 
@@ -33,12 +35,10 @@ export class RadiostationSonicKeysController {
   @Get('/radio-stations/:radioStationId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Sonic Keys of particular user' })
-  async getOwnersKeys(@Param('radioStationId') radioStationId: string,@Query(new ParseQueryValue()) queryDto: QueryDto,) {
-    const query={
-      ...queryDto,
-      radioStation:radioStationId
-    }
-    return this.radiostationSonicKeysService.findAll(query);
+  async getOwnersKeys(@Param('radioStationId') radioStationId: string,@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
+    queryDto.filter["radioStation"]=radioStationId
+    return this.radiostationSonicKeysService.findAll(queryDto);
   }
 }

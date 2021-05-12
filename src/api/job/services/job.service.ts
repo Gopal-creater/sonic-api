@@ -4,17 +4,14 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { CreateJobDto } from '../dto/create-job.dto';
-import { UpdateJobDto } from '../dto/update-job.dto';
 import { Job } from '../schemas/job.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UpdateJobFileDto } from '../dto/update-job-file.dto';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { JSONUtils } from '../../../shared/utils';
-import { QueryOptions } from '@aws/dynamodb-data-mapper';
-import { QueryDto } from '../../../shared/dtos/query.dto';
 import { JobFile } from '../schemas/jobfile.schema';
 import { MongoosePaginateJobDto } from '../dto/mongoosepaginate-job.dto';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 
 
 @Injectable()
@@ -48,27 +45,18 @@ export class JobService {
     return updatedCreatedJob
   }
 
-  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateJobDto> {
-    const { _limit, _offset, _sort,_page, ...query } = queryDto;
-    var paginateOptions={}
-    var sort = {};
-    if (_sort) {
-      var sortItems = _sort?.split(',') || [];
-      for (let index = 0; index < sortItems.length; index++) {
-        const sortItem = sortItems[index];
-        var sortKeyValue = sortItem?.split(':');
-        sort[sortKeyValue[0]] =
-          sortKeyValue[1]?.toLowerCase() == 'desc' ? -1 : 1;
-      }
-    }
-
-    paginateOptions["sort"]=sort
-    paginateOptions["offset"]=_offset
-    paginateOptions["page"]=_page
-    paginateOptions["limit"]=_limit
+  async findAll(queryDto: ParsedQueryDto):Promise<MongoosePaginateJobDto> {
+    const { limit,skip,sort,page,filter,select, populate} = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
 
 
-    return await this.jobModel["paginate"](query,paginateOptions)
+    return await this.jobModel["paginate"](filter,paginateOptions)
         // return this.jobModel
         // .find(query || {})
         // .skip(_offset)

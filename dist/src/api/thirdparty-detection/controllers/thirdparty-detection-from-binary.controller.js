@@ -19,11 +19,12 @@ const thirdparty_detection_service_1 = require("../thirdparty-detection.service"
 const create_thirdparty_detection_dto_1 = require("../dto/create-thirdparty-detection.dto");
 const update_thirdparty_detection_dto_1 = require("../dto/update-thirdparty-detection.dto");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
-const query_dto_1 = require("../../../shared/dtos/query.dto");
 const swagger_1 = require("@nestjs/swagger");
 const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 const apikey_decorator_1 = require("../../auth/decorators/apikey.decorator");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
+const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
+const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 let ThirdpartyDetectionFromBinaryController = class ThirdpartyDetectionFromBinaryController {
     constructor(thirdpartyDetectionService, sonickeyServive) {
         this.thirdpartyDetectionService = thirdpartyDetectionService;
@@ -77,12 +78,13 @@ __decorate([
 ], ThirdpartyDetectionFromBinaryController.prototype, "create", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get All Detection' }),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
     common_1.Get(),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-thirdpartydetection.dto").MongoosePaginateThirdPartyDetectionDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [query_dto_1.QueryDto]),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], ThirdpartyDetectionFromBinaryController.prototype, "findAll", null);
 __decorate([

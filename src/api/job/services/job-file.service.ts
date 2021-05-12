@@ -10,15 +10,12 @@ import {
 import { JobService } from './job.service';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { SonicKey } from '../../sonickey/schemas/sonickey.schema';
-import { v4 as uuidv4 } from 'uuid';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
-import { AddJobFilesDto } from '../dto/add-job-files.dto';
 import { JobFile } from '../schemas/jobfile.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { QueryDto } from '../../../shared/dtos/query.dto';
-import { Job } from '../schemas/job.schema';
 import { MongoosePaginateJobFileDto } from '../dto/mongoosepaginate-jobfile.dto';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 
 @Injectable()
 export class JobFileService {
@@ -29,27 +26,18 @@ export class JobFileService {
     public readonly sonickeyService: SonickeyService,
   ) {}
 
-  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateJobFileDto> {
-    const { _limit, _offset, _sort,_page, ...query } = queryDto;
-    var paginateOptions={}
-    var sort = {};
-    if (_sort) {
-      var sortItems = _sort?.split(',') || [];
-      for (let index = 0; index < sortItems.length; index++) {
-        const sortItem = sortItems[index];
-        var sortKeyValue = sortItem?.split(':');
-        sort[sortKeyValue[0]] =
-          sortKeyValue[1]?.toLowerCase() == 'desc' ? -1 : 1;
-      }
-    }
-
-    paginateOptions["sort"]=sort
-    paginateOptions["offset"]=_offset
-    paginateOptions["page"]=_page
-    paginateOptions["limit"]=_limit
+  async findAll(queryDto: ParsedQueryDto):Promise<MongoosePaginateJobFileDto> {
+    const { limit,skip,sort,page,filter,select, populate} = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
 
 
-    return await this.jobFileModel["paginate"](query,paginateOptions)
+    return await this.jobFileModel["paginate"](filter,paginateOptions)
         // return this.jobFileModel
         // .find(query || {})
         // .skip(_offset)

@@ -1,12 +1,12 @@
 import { ApiKeyService } from '../api-key.service';
 import { CreateApiKeyDto } from '../dto/create-api-key.dto';
 import { UpdateApiKeyDto } from '../dto/update-api-key.dto';
-import { QueryDto } from '../../../shared/dtos/query.dto';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 export declare class ApiKeyCustomerController {
     private readonly apiKeyService;
     constructor(apiKeyService: ApiKeyService);
     create(customer: string, createApiKeyDto: CreateApiKeyDto): Promise<import("../schemas/api-key.schema").ApiKey>;
-    findAll(customer: string, queryDto: QueryDto): Promise<import("../dto/mongoosepaginate-apikey.dto").MongoosePaginateApiKeyDto>;
+    findAll(customer: string, queryDto: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-apikey.dto").MongoosePaginateApiKeyDto>;
     findOne(customer: string, apikey: string): Promise<import("../schemas/api-key.schema").ApiKey>;
     update(customer: string, apikey: string, updateApiKeyDto: UpdateApiKeyDto): Promise<import("../schemas/api-key.schema").ApiKey>;
     makeDiabled(customer: string, apikey: string): Promise<import("../schemas/api-key.schema").ApiKey>;

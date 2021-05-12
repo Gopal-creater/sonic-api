@@ -42,6 +42,7 @@ import {
   ApiAcceptedResponse,
   ApiOkResponse,
   ApiResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
 import * as uniqid from 'uniqid';
 import { JwtAuthGuard } from '../../auth/guards';
@@ -49,11 +50,10 @@ import { User } from '../../auth/decorators';
 import { FileHandlerService } from '../../../shared/services/file-handler.service';
 import { DownloadDto } from '../dtos/download.dto';
 import * as appRootPath from 'app-root-path';
-import { QueryDto } from '../../../shared/dtos/query.dto';
-import { IMongoosePaginate } from '../../../shared/interfaces/MongoosePaginate.interface';
-import { MongoosePaginateDto } from '../../../shared/dtos/mongoosepaginate.dto';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { Response } from 'express';
+import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 
 /**
  * Prabin:
@@ -61,9 +61,6 @@ import { Response } from 'express';
  * To get all owner's sonickeys we have to create a global secondary index table.
  */
 
- import fetch from 'node-fetch';
-
- type Test = MongoosePaginateDto<SonicKey>
 @ApiTags('SonicKeys Controller')
 @Controller('sonic-keys')
 export class SonickeyController {
@@ -77,10 +74,11 @@ export class SonickeyController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys' })
-  async getAll(@Query(new ParseQueryValue()) queryDto: QueryDto,) {
-    console.log("queryDto",queryDto);
-    
-    return this.sonicKeyService.getAll(queryDto);
+  @AnyApiQueryTemplate()
+  async getAll(@Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto) {
+    console.log('queryDto', parsedQueryDto);
+
+    return this.sonicKeyService.getAll(parsedQueryDto);
   }
 
   // @Get('/import-from-dynamo')
@@ -118,33 +116,34 @@ export class SonickeyController {
     @User('sub') owner: string,
     @Req() req: any,
   ) {
-    createSonicKeyDto.owner=owner
+    createSonicKeyDto.owner = owner;
     return this.sonicKeyService.createFromJob(createSonicKeyDto);
   }
 
   @Get('/owners/:ownerId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Sonic Keys of particular user' })
-  async getOwnersKeys(@Param('ownerId') ownerId: string,@Query(new ParseQueryValue()) queryDto: QueryDto,) {
-    const query={
-      ...queryDto,
-      owner:ownerId
-    }
-    const keys = await this.sonicKeyService.getAll(query);
-    return keys;
+  async getOwnersKeys(
+    @Param('ownerId') ownerId: string,
+    @Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto,
+  ) {
+    parsedQueryDto.filter['owner'] = ownerId;
+    return this.sonicKeyService.getAll(parsedQueryDto);
   }
 
   @Get('/jobs/:jobId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Sonic Keys of particular job' })
-  async getKeysByJob(@Param('jobId') jobId: string,@Query(new ParseQueryValue()) queryDto: QueryDto,) {
-    const query={
-      ...queryDto,
-      job:jobId
-    }
-    return await this.sonicKeyService.getAll(query);
+  async getKeysByJob(
+    @Param('jobId') jobId: string,
+    @Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto,
+  ) {
+    parsedQueryDto.filter['job'] = jobId;
+    return this.sonicKeyService.getAll(parsedQueryDto);
   }
 
   @Get('/count')
@@ -152,7 +151,9 @@ export class SonickeyController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get count of all sonickeys' })
   async getCount(@Query() query) {
-    return this.sonicKeyService.sonicKeyModel.estimatedDocumentCount({...query})
+    return this.sonicKeyService.sonicKeyModel.estimatedDocumentCount({
+      ...query,
+    });
   }
 
   @Get('/:sonickey')
@@ -239,19 +240,19 @@ export class SonickeyController {
 
         const newSonicKey = new this.sonicKeyService.sonicKeyModel({
           ...sonicKeyDtoWithAudioData,
-            contentFilePath: downloadFileUrl,
-            owner: owner,
-            sonicKey: sonicKey,
-            licenseId: licenseId
+          contentFilePath: downloadFileUrl,
+          owner: owner,
+          sonicKey: sonicKey,
+          licenseId: licenseId,
         });
         return newSonicKey.save().finally(() => {
           this.fileHandlerService.deleteFileAtPath(file.path);
         });
       })
-      .catch(err=>{
+      .catch(err => {
         this.fileHandlerService.deleteFileAtPath(file.path);
-        throw new InternalServerErrorException(err)
-      })
+        throw new InternalServerErrorException(err);
+      });
   }
 
   @UseInterceptors(
@@ -308,10 +309,10 @@ export class SonickeyController {
         }
         return sonicKeysMetadata;
       })
-      .catch(err=>{
+      .catch(err => {
         this.fileHandlerService.deleteFileAtPath(file.path);
-        throw new BadRequestException(err)
-      })
+        throw new BadRequestException(err);
+      });
   }
 
   @Patch('/:sonickey')
@@ -322,15 +323,15 @@ export class SonickeyController {
     @Param('sonickey') sonickey: string,
     @Body() updateSonicKeyDto: UpdateSonicKeyDto,
   ) {
-    const updatedSonickey =  await this.sonicKeyService.sonicKeyModel.findOneAndUpdate(
+    const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate(
       { sonicKey: sonickey },
       updateSonicKeyDto,
-      {new:true}
+      { new: true },
     );
     if (!updatedSonickey) {
       throw new NotFoundException();
     }
-    return updatedSonickey
+    return updatedSonickey;
   }
 
   @Delete('/:sonickey')
@@ -338,11 +339,13 @@ export class SonickeyController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete Sonic Key data' })
   async delete(@Param('sonickey') sonickey: string) {
-    const deletedSonickey = await this.sonicKeyService.sonicKeyModel.deleteOne({ sonicKey: sonickey });
+    const deletedSonickey = await this.sonicKeyService.sonicKeyModel.deleteOne({
+      sonicKey: sonickey,
+    });
     if (!deletedSonickey) {
       throw new NotFoundException();
     }
-    return deletedSonickey
+    return deletedSonickey;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -352,28 +355,26 @@ export class SonickeyController {
   async downloadFile(
     @Body() downloadDto: DownloadDto,
     @User('sub') userId: string,
-    @Res() response:Response,
+    @Res() response: Response,
   ) {
-      /* Checks for authenticated user in order to download the file */
-      if (!downloadDto?.fileURL?.includes(userId)) {
-        throw new UnauthorizedException(
-          'You are not the owner of this file',
-        );
-      }
+    /* Checks for authenticated user in order to download the file */
+    if (!downloadDto?.fileURL?.includes(userId)) {
+      throw new UnauthorizedException('You are not the owner of this file');
+    }
 
-      const filePath = `${appRootPath.toString()}/` + downloadDto.fileURL;
-      console.log('file-path:', filePath);
-       const isFileExist = await this.fileHandlerService.fileExistsAtPath(filePath);
-       if(!isFileExist){
-        throw new BadRequestException(
-          'Sorry, file not found',
-        );
-       }
-      return response.sendFile(filePath,(err)=>{
-        if (err){
-          console.log(err);
-          return response.status(400).json({message:'Error sending file.'});
-        }
-      })
+    const filePath = `${appRootPath.toString()}/` + downloadDto.fileURL;
+    console.log('file-path:', filePath);
+    const isFileExist = await this.fileHandlerService.fileExistsAtPath(
+      filePath,
+    );
+    if (!isFileExist) {
+      throw new BadRequestException('Sorry, file not found');
+    }
+    return response.sendFile(filePath, err => {
+      if (err) {
+        console.log(err);
+        return response.status(400).json({ message: 'Error sending file.' });
+      }
+    });
   }
 }

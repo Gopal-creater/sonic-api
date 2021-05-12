@@ -4,7 +4,7 @@ import { UpdateThirdpartyDetectionDto } from './dto/update-thirdparty-detection.
 import { InjectModel } from '@nestjs/mongoose';
 import { ThirdpartyDetection } from './schemas/thirdparty-detection.schema';
 import { Model } from 'mongoose';
-import { QueryDto } from '../../shared/dtos/query.dto';
+import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateThirdPartyDetectionDto } from './dto/mongoosepaginate-thirdpartydetection.dto';
 
 @Injectable()
@@ -14,27 +14,18 @@ export class ThirdpartyDetectionService {
     public readonly thirdpartyDetectionModel: Model<ThirdpartyDetection>,
   ) {}
 
-  async findAll(queryDto: QueryDto = {}):Promise<MongoosePaginateThirdPartyDetectionDto> {
-    const { _limit, _offset, _sort,_page, ...query } = queryDto;
-    var paginateOptions={}
-    var sort = {};
-    if (_sort) {
-      var sortItems = _sort?.split(',') || [];
-      for (let index = 0; index < sortItems.length; index++) {
-        const sortItem = sortItems[index];
-        var sortKeyValue = sortItem?.split(':');
-        sort[sortKeyValue[0]] =
-          sortKeyValue[1]?.toLowerCase() == 'desc' ? -1 : 1;
-      }
-    }
-
-    paginateOptions["sort"]=sort
-    paginateOptions["offset"]=_offset
-    paginateOptions["page"]=_page
-    paginateOptions["limit"]=_limit
+  async findAll(queryDto: ParsedQueryDto):Promise<MongoosePaginateThirdPartyDetectionDto> {
+    const { limit,skip,sort,page,filter,select, populate} = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
 
 
-    return await this.thirdpartyDetectionModel["paginate"](query,paginateOptions)
+    return await this.thirdpartyDetectionModel["paginate"](filter,paginateOptions)
     // return this.thirdpartyDetectionModel
     //   .find(query || {})
     //   .skip(_offset)

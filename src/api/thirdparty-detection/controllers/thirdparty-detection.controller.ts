@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, NotFoundException, Query, UseGuards } from '@nestjs/common';
 import { ThirdpartyDetectionService } from '../thirdparty-detection.service';
-import { CreateThirdpartyDetectionDto } from '../dto/create-thirdparty-detection.dto';
 import { UpdateThirdpartyDetectionDto } from '../dto/update-thirdparty-detection.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
-import { QueryDto } from '../../../shared/dtos/query.dto';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 
 @ApiTags('ThirdParty Controller')
 @Controller('thirdparty-detection')
@@ -15,22 +15,21 @@ export class ThirdpartyDetectionController {
 
   @ApiOperation({ summary: 'Get All Detection' })
   @ApiBearerAuth()
+  @AnyApiQueryTemplate()
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Query(new ParseQueryValue()) queryDto: QueryDto) {
+  findAll(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
     return this.thirdpartyDetectionService.findAll(queryDto);
   }
 
   @Get('/customers/:targetUser')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Detection of particular user' })
-  async getOwnersKeys(@Param('targetUser') ownerId: string,@Query(new ParseQueryValue()) queryDto: QueryDto,) {
-    const query={
-      ...queryDto,
-      customer:ownerId
-    }
-    return this.thirdpartyDetectionService.findAll(query);
+  async getOwnersKeys(@Param('targetUser') ownerId: string,@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
+    queryDto.filter["customer"]=ownerId
+    return this.thirdpartyDetectionService.findAll(queryDto);
   }
 
   @Get('/count')

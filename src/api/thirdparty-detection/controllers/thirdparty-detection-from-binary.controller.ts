@@ -3,11 +3,12 @@ import { ThirdpartyDetectionService } from '../thirdparty-detection.service';
 import { CreateThirdpartyDetectionDto } from '../dto/create-thirdparty-detection.dto';
 import { UpdateThirdpartyDetectionDto } from '../dto/update-thirdparty-detection.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
-import { QueryDto } from '../../../shared/dtos/query.dto';
-import { ApiBearerAuth, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiSecurity, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../auth/decorators/apikey.decorator';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 
 @ApiTags('ThirdParty-Binary Controller (protected by x-api-key)')
 @ApiSecurity('x-api-key')
@@ -34,9 +35,10 @@ export class ThirdpartyDetectionFromBinaryController {
   }
 
   @ApiOperation({ summary: 'Get All Detection' })
+  @AnyApiQueryTemplate()
   @UseGuards(ApiKeyAuthGuard)
   @Get()
-  findAll(@Query(new ParseQueryValue()) queryDto: QueryDto) {
+  findAll(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
 
     return this.thirdpartyDetectionService.findAll(queryDto);
   }

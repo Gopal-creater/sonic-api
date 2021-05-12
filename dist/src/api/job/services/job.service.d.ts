@@ -2,16 +2,16 @@ import { CreateJobDto } from '../dto/create-job.dto';
 import { Job } from '../schemas/job.schema';
 import { Model } from 'mongoose';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
-import { QueryDto } from '../../../shared/dtos/query.dto';
 import { JobFile } from '../schemas/jobfile.schema';
 import { MongoosePaginateJobDto } from '../dto/mongoosepaginate-job.dto';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 export declare class JobService {
     readonly jobModel: Model<Job>;
     readonly jobFileModel: Model<JobFile>;
     readonly keygenService: KeygenService;
     constructor(jobModel: Model<Job>, jobFileModel: Model<JobFile>, keygenService: KeygenService);
     create(createJobDto: CreateJobDto): Promise<Job>;
-    findAll(queryDto?: QueryDto): Promise<MongoosePaginateJobDto>;
+    findAll(queryDto: ParsedQueryDto): Promise<MongoosePaginateJobDto>;
     remove(id: string): Promise<Job>;
     makeCompleted(jobId: string): Promise<Job>;
     addReservedDetailsInLicence(licenseId: string, reserves: {

@@ -17,12 +17,14 @@ import { UpdateRadiostationDto } from '../dto/update-radiostation.dto';
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { BulkRadiostationDto } from '../dto/bulk-radiostation.dto';
-import { QueryDto } from '../../../shared/dtos/query.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 
 @ApiTags('Radio Station Controller')
 @Controller('radiostations')
@@ -41,21 +43,20 @@ export class RadiostationController {
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Radio Stations' })
-  findAll(@Query(new ParseQueryValue()) queryDto?: QueryDto,) {
+  findAll(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,) {
     return this.radiostationService.findAll(queryDto);
   }
 
   @Get('/owners/:ownerId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Radio Stations of particular user' })
-  async getOwnersRadioStations(@Param('ownerId') ownerId: string,@Query(new ParseQueryValue()) queryDto: QueryDto,) {
-    const query={
-      ...queryDto,
-      owner:ownerId
-    }
-    return this.radiostationService.findAll(query);
+  async getOwnersRadioStations(@Param('ownerId') ownerId: string,@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
+    queryDto.filter["owner"]=ownerId
+    return this.radiostationService.findAll(queryDto);
   }
 
   @Get('/count')

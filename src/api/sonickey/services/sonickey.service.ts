@@ -11,9 +11,8 @@ import { appConfig } from '../../../config';
 import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { QueryDto } from '../../../shared/dtos/query.dto';
-import { Job } from '../../job/schemas/job.schema';
 import { MongoosePaginateSonicKeyDto } from '../dtos/mongoosepaginate-sonickey.dto';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -34,26 +33,17 @@ export class SonickeyService {
     return newSonicKey.save();
   }
 
-  async getAll(queryDto: QueryDto = {}): Promise<MongoosePaginateSonicKeyDto> {
-    const { _limit, _offset, _sort, _page, ...query } = queryDto;
+  async getAll(queryDto: ParsedQueryDto): Promise<MongoosePaginateSonicKeyDto> {
+    const { limit,skip,sort,page,filter,select, populate} = queryDto;
     var paginateOptions = {};
-    var sort = {};
-    if (_sort) {
-      var sortItems = _sort?.split(',') || [];
-      for (let index = 0; index < sortItems.length; index++) {
-        const sortItem = sortItems[index];
-        var sortKeyValue = sortItem?.split(':');
-        sort[sortKeyValue[0]] =
-          sortKeyValue[1]?.toLowerCase() == 'desc' ? -1 : 1;
-      }
-    }
-
     paginateOptions['sort'] = sort;
-    paginateOptions['offset'] = _offset;
-    paginateOptions['page'] = _page;
-    paginateOptions['limit'] = _limit;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
 
-    return await this.sonicKeyModel['paginate'](query, paginateOptions);
+    return await this.sonicKeyModel['paginate'](filter, paginateOptions);
     // return this.sonicKeyModel
     //   .find(query || {})
     //   .skip(_offset)
