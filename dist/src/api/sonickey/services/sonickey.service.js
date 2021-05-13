@@ -33,7 +33,7 @@ let SonickeyService = class SonickeyService {
         return nanoid_1.nanoid(11);
     }
     async createFromJob(createSonicKeyDto) {
-        const newSonicKey = new this.sonicKeyModel(createSonicKeyDto);
+        const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { _id: createSonicKeyDto.sonicKey }));
         return newSonicKey.save();
     }
     async getAll(queryDto) {

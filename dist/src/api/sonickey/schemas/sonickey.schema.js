@@ -14,14 +14,22 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const job_schema_1 = require("../../job/schemas/job.schema");
-exports.SonicKeySchemaName = "SonicKey";
+exports.SonicKeySchemaName = 'SonicKey';
 let SonicKey = class SonicKey extends mongoose_2.Document {
 };
+__decorate([
+    swagger_1.ApiHideProperty(),
+    mongoose_1.Prop({
+        required: true,
+        unique: true,
+    }),
+    __metadata("design:type", String)
+], SonicKey.prototype, "_id", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
         required: true,
-        unique: true
+        unique: true,
     }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "sonicKey", void 0);
@@ -145,4 +153,8 @@ SonicKey = __decorate([
 ], SonicKey);
 exports.SonicKey = SonicKey;
 exports.SonicKeySchema = mongoose_1.SchemaFactory.createForClass(SonicKey);
+exports.SonicKeySchema.pre('save', function (next) {
+    this._id = this.sonicKey;
+    next();
+});
 //# sourceMappingURL=sonickey.schema.js.map

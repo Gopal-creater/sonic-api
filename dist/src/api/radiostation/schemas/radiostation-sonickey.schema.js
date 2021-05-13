@@ -25,7 +25,7 @@ __decorate([
 ], RadioStationSonicKey.prototype, "radioStation", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, required: true }),
+    mongoose_1.Prop({ type: String, ref: sonickey_schema_1.SonicKeySchemaName, required: true, autopopulate: true }),
     __metadata("design:type", Object)
 ], RadioStationSonicKey.prototype, "sonicKey", void 0);
 __decorate([

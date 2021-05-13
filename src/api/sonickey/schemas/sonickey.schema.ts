@@ -1,17 +1,23 @@
-import { Prop, Schema, SchemaFactory, } from '@nestjs/mongoose';
-import { Document,Schema as MogSchema} from 'mongoose';
-import { ApiProperty } from '@nestjs/swagger';
-import { Job,JobSchemaName } from '../../job/schemas/job.schema';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Schema as MogSchema } from 'mongoose';
+import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
+import { Job, JobSchemaName } from '../../job/schemas/job.schema';
 
-export const SonicKeySchemaName="SonicKey"
+export const SonicKeySchemaName = 'SonicKey';
 
-@Schema({ timestamps: true,collection:SonicKeySchemaName})
+@Schema({ timestamps: true, collection: SonicKeySchemaName })
 export class SonicKey extends Document {
+  @ApiHideProperty()
+  @Prop({
+    required: true,
+    unique: true,
+  })
+  _id: string;
 
   @ApiProperty()
   @Prop({
-    required:true,
-    unique:true
+    required: true,
+    unique: true,
   })
   sonicKey: string;
 
@@ -109,3 +115,14 @@ export class SonicKey extends Document {
 }
 
 export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);
+
+SonicKeySchema.pre('save', function(next) {
+  this._id = this.sonicKey;
+  next();
+});
+
+// SonicKeySchema.pre('insertMany', function (next) {
+//   this.map((doc) =>
+//    console.log(doc)
+//   );
+// });

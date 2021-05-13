@@ -103,6 +103,7 @@ export class SonickeyGuestController {
               contentFilePath: data.downloadFileUrl,
               owner: owner,
               sonicKey: data.sonicKey,
+              _id:data.sonicKey,
               license: licenseId
           });
           return newSonicKey.save().finally(() => {

@@ -29,7 +29,10 @@ export class SonickeyService {
   }
 
   async createFromJob(createSonicKeyDto: CreateSonicKeyFromJobDto) {
-    const newSonicKey = new this.sonicKeyModel(createSonicKeyDto);
+    const newSonicKey = new this.sonicKeyModel({
+      ...createSonicKeyDto,
+      _id:createSonicKeyDto.sonicKey
+    });
     return newSonicKey.save();
   }
 

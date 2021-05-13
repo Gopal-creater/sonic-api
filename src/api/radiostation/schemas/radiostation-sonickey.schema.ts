@@ -14,7 +14,8 @@ export class RadioStationSonicKey extends Document {
   radioStation: any;
 
   @ApiProperty()
-  @Prop({ type:String,required:true})
+  // @Prop({ type:String,required:true})
+  @Prop({ type: String, ref: SonicKeySchemaName,required:true,autopopulate: true})
   sonicKey: any;
 
   @ApiProperty()

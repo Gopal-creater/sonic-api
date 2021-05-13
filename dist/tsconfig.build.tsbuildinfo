@@ -1892,7 +1892,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/schemas/jobfile.schema.ts": {
-        "version": "0e72b7b170d27e75aad7b1e79654ac618b202dcc31474e4e3ca26623d139c44a",
+        "version": "5c32c76c1e9fe9666d01634168213a006996a43f3126026d1094de64fbf7f61c",
         "signature": "9e916091896f06f17eef26272f491fed7eeeb398b5868bcb014cf6db58201620",
         "affectsGlobalScope": false
       },
@@ -1902,8 +1902,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/schemas/sonickey.schema.ts": {
-        "version": "da5d9b01bbf16a92512c55fe5bc41d48efe4a4b7dd0d5976b9b21796db9b4119",
-        "signature": "235efb8fd5ac8dc26e48bff868b4c3ee3984e2e9905476e4f0d2aabe77a3357b",
+        "version": "a87ad37dd6951ff6e80189a953e011a2a0e27d243093c4b68eced01248d2f931",
+        "signature": "d2aefb4d58d7ee960cc454fff146306ebee41ead28f2fe6bc2c3747d7b0c6fff",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/sonickey.dto.ts": {
@@ -2767,7 +2767,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/services/sonickey.service.ts": {
-        "version": "704849b2fc1225e6a805e86b33ef3e21fadf5f4c41032bfeb45addd6ea9ff76d",
+        "version": "731537edf7d469b150970d7f2fa91eee5de3a8714f4f82b55979aff9cb107e63",
         "signature": "4283a8f85606b5c809857668e280acd954479c7050b3c5eee6f0f72e12c3b460",
         "affectsGlobalScope": false
       },
@@ -3187,8 +3187,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/controllers/sonickey.controller.ts": {
-        "version": "9aabf8eb1a1ce710086f2ad86595dc27ce2484c554294c1005e898202d6788a0",
-        "signature": "07a54b1cebdfcac70f1d3bd6f6574d1b77006358705752ee040edae61dd62a0e",
+        "version": "c608bd1c799332239574e4bfd7a7ef64c291132c98cc6b5543b2f2a4484a8b6b",
+        "signature": "943a4dd526a383db93d307b3b297fdeb293f282a49f546cb6547f4edf694c9fa",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/public-encode.dto.ts": {
@@ -3202,7 +3202,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/controllers/sonickey.guest.controller.ts": {
-        "version": "4862ac97de53948016b520df854fcfd27deb82be7a9defe40298e7fbf8911458",
+        "version": "2ceda08f16a86fac0fab1db33951d64aab8365d57577c27af5bf21d1a5c1ca78",
         "signature": "ae2bf283cf6e60f2aefe7101f12b359459277d695f8f759488afbadc83deb421",
         "affectsGlobalScope": false
       },
@@ -5387,7 +5387,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/schemas/radiostation-sonickey.schema.ts": {
-        "version": "0e96a50d550b42a3a937f6800caa6ca17c78f89a19be0880858b0654ba38b145",
+        "version": "8d390d50de3aff2ba9c0146ffbadbbf7e78989b6044903c19799c7a1dbb20214",
         "signature": "e6e61e7ac4b633b690d6c53299f64d7698096d0c53014f2a825ca68b97eb1627",
         "affectsGlobalScope": false
       },
@@ -5422,7 +5422,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/controllers/radiostation-sonickeys.controller.ts": {
-        "version": "edaade9ba7a22ee6bed7e3bc8dab65453e8f0075d46620753ab42708d57d970e",
+        "version": "337238901e4b6a3fb912dfaa739df2d26f7286fa3f09ae71577030917f242293",
         "signature": "18017637d9869fb43fbda7b1f684f1f3f4080ce078d81efbe1efb0ab0be22e0b",
         "affectsGlobalScope": false
       },
@@ -18914,6 +18914,7 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/auth/guards/jwt-auth.guard.ts",
+        "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts",
         "../src/api/radiostation/services/radiostation-sonickeys.service.ts",
         "../src/api/radiostation/services/radiostation.service.ts",
         "../src/shared/decorators/anyapiquerytemplate.decorator.ts",

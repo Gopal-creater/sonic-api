@@ -28,6 +28,7 @@ let RadiostationSonicKeysController = class RadiostationSonicKeysController {
         this.radiostationSonicKeysService = radiostationSonicKeysService;
     }
     findAll(queryDto) {
+        console.log("queryDto", queryDto);
         return this.radiostationSonicKeysService.findAll(queryDto);
     }
     async getCount(query) {
