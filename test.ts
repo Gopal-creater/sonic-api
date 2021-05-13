@@ -10,6 +10,7 @@ async function func(){
 func().then(data=>console.log(data))
 
 // http://27.7.118.167:5000/sonic
+// http://sonicradio.arba-dev.uk:8003/sonic.ogg
 // http://streaming.live365.com/a73754
 const children = require('child_process');
 var ffm = children.spawn(
