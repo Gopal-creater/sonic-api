@@ -9,7 +9,7 @@ exports.appConfig = {
     ENCODER_EXE_PATH: `${appRootPath.toString()}/bin/encode.sh`,
     DECODER_EXE_PATH: `${appRootPath.toString()}/bin/decode.sh`,
     TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS: 30,
-    ENABLE_STREAMING_LISTENER: true,
+    ENABLE_STREAMING_LISTENER: false,
     DEBUG: false
 };
 //# sourceMappingURL=app.config.js.map

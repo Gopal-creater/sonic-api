@@ -28,6 +28,8 @@ let ParseQueryValue = class ParseQueryValue {
                 parsed['page'] = (_b = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _b === void 0 ? void 0 : _b.page;
                 (_c = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _c === void 0 ? true : delete _c.page;
             }
+            console.log('parsed', JSON.stringify(parsed));
+            console.log('parsed filter', parsed.filter);
             return parsed;
         }
         catch (error) {

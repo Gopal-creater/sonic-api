@@ -40,6 +40,10 @@ export class RadiostationController {
     return this.radiostationService.create(createRadiostationDto);
   }
 
+  /**
+   * We can add or query filter as follows
+   * http://[::1]:8000/radiostations/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d?filter={ "$or": [ { "name": { "$regex": "Sonic", "$options": "i" } }, { "streamingUrl": { "$regex": "Sonic", "$options": "i" } } ] } 
+   */
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

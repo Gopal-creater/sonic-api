@@ -31,6 +31,8 @@ export class ParseQueryValue implements PipeTransform {
         parsed['page'] = parsed?.filter?.page;
         delete parsed?.filter?.page;
       }
+      console.log('parsed', JSON.stringify(parsed));
+      console.log('parsed filter', parsed.filter);
       return parsed;
       // const res = {}
       // for (const key in queries) {
