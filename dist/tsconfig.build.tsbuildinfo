@@ -5432,7 +5432,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/listeners/radiostation.listener.ts": {
-        "version": "56a8801be56f765c4a4c440b1faaeb526c55787043e09c42eff46505966f236d",
+        "version": "310ef36e68751973d578e62da9a5a2d0822761c2707f8a90ae5d0657c9b4a1c7",
         "signature": "96a3dd3f81c171f03174516d89e4cb0568fb61805395a27cdf46e305c12dec68",
         "affectsGlobalScope": false
       },

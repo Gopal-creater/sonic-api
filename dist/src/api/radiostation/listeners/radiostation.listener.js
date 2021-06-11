@@ -120,7 +120,7 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
                                 const createRadiostationSonicKeyDto = new create_radiostation_sonickey_dto_1.CreateRadiostationSonicKeyDto();
                                 createRadiostationSonicKeyDto.radioStation = radioStation._id;
                                 createRadiostationSonicKeyDto.sonicKey = sonicKey;
-                                createRadiostationSonicKeyDto.owner = isKeyPresent.owner;
+                                createRadiostationSonicKeyDto.owner = radioStation.owner;
                                 createRadiostationSonicKeyDto.sonicKeyOwner = isKeyPresent.owner;
                                 await this.radiostationSonicKeysService
                                     .createOrUpdate(createRadiostationSonicKeyDto)

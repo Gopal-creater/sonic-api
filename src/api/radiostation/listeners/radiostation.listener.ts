@@ -178,7 +178,7 @@ export class RadioStationListener implements OnApplicationBootstrap {
               const createRadiostationSonicKeyDto = new CreateRadiostationSonicKeyDto();
               createRadiostationSonicKeyDto.radioStation = radioStation._id;
               createRadiostationSonicKeyDto.sonicKey = sonicKey;
-              createRadiostationSonicKeyDto.owner = isKeyPresent.owner;
+              createRadiostationSonicKeyDto.owner = radioStation.owner;
               createRadiostationSonicKeyDto.sonicKeyOwner = isKeyPresent.owner;
               await this.radiostationSonicKeysService
                 .createOrUpdate(createRadiostationSonicKeyDto)
