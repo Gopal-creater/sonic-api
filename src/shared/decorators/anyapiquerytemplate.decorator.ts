@@ -1,7 +1,11 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiQuery, ApiQueryOptions } from '@nestjs/swagger';
 
-export function AnyApiQueryTemplate(options?: ApiQueryOptions) {
+export function AnyApiQueryTemplate(options?: {
+  apiQuery?: ApiQueryOptions,
+  additionalHtmlDescription?: string,
+  removeOldDescription?: boolean
+}) {
   return applyDecorators(
     ApiQuery({
       name: 'query',
@@ -37,8 +41,13 @@ export function AnyApiQueryTemplate(options?: ApiQueryOptions) {
         <b>You can't test this king of query from swagger,Please use Postman Or Thunder Client</b>
         </li>
       </ul>
+      ${
+        options?.additionalHtmlDescription
+          ? options.additionalHtmlDescription
+          : ''
+      }
       `,
-      ...options,
+      ...options?.apiQuery,
     }),
   );
 }

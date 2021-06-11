@@ -45,5 +45,9 @@ __decorate([
     swagger_1.ApiHideProperty(),
     __metadata("design:type", Number)
 ], ParsedQueryDto.prototype, "page", void 0);
+__decorate([
+    swagger_1.ApiHideProperty(),
+    __metadata("design:type", Number)
+], ParsedQueryDto.prototype, "topLimit", void 0);
 exports.ParsedQueryDto = ParsedQueryDto;
 //# sourceMappingURL=parsedquery.dto.js.map

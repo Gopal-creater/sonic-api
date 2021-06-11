@@ -19,7 +19,8 @@ import { AppGateway } from './app.gateway';
 import { RadiostationModule } from './api/radiostation/radiostation.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThirdpartyDetectionModule } from './api/thirdparty-detection/thirdparty-detection.module';
-import mongoosePaginate = require('mongoose-paginate-v2');
+const mongoosePaginate = require('mongoose-paginate-v2');
+const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ApiKeyModule } from './api/api-key/api-key.module';
 mongoosePaginate.paginate.options = {
@@ -32,7 +33,7 @@ console.log("Node_env",process.env.NODE_ENV);
   imports: [
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env'}),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba'}),
     AuthModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -43,6 +44,7 @@ console.log("Node_env",process.env.NODE_ENV);
         useFindAndModify:false,
         connectionFactory: (connection) => {
           connection?.plugin(mongoosePaginate);
+          connection?.plugin(aggregatePaginate);
           connection?.plugin(require('mongoose-autopopulate'))
           connection?.plugin(require('mongoose-lean-virtuals'))
           return connection;

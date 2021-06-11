@@ -5,6 +5,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { MongooseQueryParser } from 'mongoose-query-parser';
+import { isObjectId, toObjectId } from '../utils/mongoose.utils';
 /**
  * This pipe is responsible for parsing api query into mongoose query
  * https://www.npmjs.com/package/mongoose-query-parser
@@ -22,7 +23,7 @@ export class ParseQueryValue implements PipeTransform {
       };
       var parsed = parser.parse(queryToParse);
       parsed = {
-        limit: 100,
+        limit: 50,
         skip: 0,
         ...parsed,
       };
@@ -31,25 +32,34 @@ export class ParseQueryValue implements PipeTransform {
         parsed['page'] = parsed?.filter?.page;
         delete parsed?.filter?.page;
       }
+      if (parsed?.filter?.topLimit) {
+        parsed['topLimit'] = parsed?.filter?.topLimit;
+        delete parsed?.filter?.topLimit;
+      }
+      // Cast to ObjectId
+      if(parsed?.filter){
+        parsed.filter=this.castToObjectId(parsed?.filter)
+      }
       console.log('parsed', JSON.stringify(parsed));
       console.log('parsed filter', parsed.filter);
       return parsed;
-      // const res = {}
-      // for (const key in queries) {
-      //   var value = queries[key]
-      //   if(isNumber(value)){
-      //     res[key] = parseInt(value)
-      //   }
-      //   else if(value=='true'||value=='false'){
-      //     res[key] = value=='true'
-      //   }
-      //   else{
-      //     res[key] = value
-      //   }
-      // }
-      // return res
     } catch (error) {
       throw new BadRequestException(error);
     }
+  }
+
+
+  castToObjectId(filter:Object){
+    const res = {}
+      for (const key in filter) {
+        var value = filter[key]
+        if(isObjectId(value)){
+          res[key] = toObjectId(value)
+        }
+        else{
+          res[key] = value
+        }
+      }
+      return res
   }
 }

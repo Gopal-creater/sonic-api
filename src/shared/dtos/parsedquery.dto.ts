@@ -23,4 +23,7 @@ export class ParsedQueryDto implements QueryOptions {
 
   @ApiHideProperty()
   page?:number;
+
+  @ApiHideProperty()
+  topLimit?:number;
 }

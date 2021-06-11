@@ -6,6 +6,16 @@ import { SonicKey,SonicKeySchemaName } from '../../sonickey/schemas/sonickey.sch
 
 export const RadioStationSonicKeySchemaName = 'RadioStationSonicKey';
 
+@Schema()
+export class DetectedDetail {
+  @ApiProperty()
+  @Prop({default:Date.now()})
+  detectedAt: Date;
+}
+
+export const DetectedDetailSchema = SchemaFactory.createForClass(DetectedDetail);
+
+
 @Schema({ timestamps: true, collection: RadioStationSonicKeySchemaName,toJSON:{virtuals:true} })
 export class RadioStationSonicKey extends Document {
 
@@ -14,13 +24,24 @@ export class RadioStationSonicKey extends Document {
   radioStation: any;
 
   @ApiProperty()
-  // @Prop({ type:String,required:true})
   @Prop({ type: String, ref: SonicKeySchemaName,required:true,autopopulate: true})
   sonicKey: any;
 
   @ApiProperty()
   @Prop()
   owner: string;
+
+  @ApiProperty()
+  @Prop()
+  sonicKeyOwner: string;
+
+  @ApiProperty()
+  @Prop({default:1})
+  count: number;
+
+  @ApiProperty()
+  @Prop({type: [{ type: DetectedDetailSchema}]})
+  detectedDetails: [DetectedDetail];
 
   @ApiProperty()
   @Prop()

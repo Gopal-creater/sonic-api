@@ -29,7 +29,8 @@ const app_gateway_1 = require("./app.gateway");
 const radiostation_module_1 = require("./api/radiostation/radiostation.module");
 const mongoose_1 = require("@nestjs/mongoose");
 const thirdparty_detection_module_1 = require("./api/thirdparty-detection/thirdparty-detection.module");
-const mongoosePaginate = require("mongoose-paginate-v2");
+const mongoosePaginate = require('mongoose-paginate-v2');
+const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 const event_emitter_1 = require("@nestjs/event-emitter");
 const api_key_module_1 = require("./api/api-key/api-key.module");
 mongoosePaginate.paginate.options = {
@@ -44,7 +45,7 @@ AppModule = __decorate([
         imports: [
             schedule_1.ScheduleModule.forRoot(),
             event_emitter_1.EventEmitterModule.forRoot(),
-            config_1.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
+            config_1.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba' }),
             auth_module_1.AuthModule,
             mongoose_1.MongooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],
@@ -55,6 +56,7 @@ AppModule = __decorate([
                     useFindAndModify: false,
                     connectionFactory: (connection) => {
                         connection === null || connection === void 0 ? void 0 : connection.plugin(mongoosePaginate);
+                        connection === null || connection === void 0 ? void 0 : connection.plugin(aggregatePaginate);
                         connection === null || connection === void 0 ? void 0 : connection.plugin(require('mongoose-autopopulate'));
                         connection === null || connection === void 0 ? void 0 : connection.plugin(require('mongoose-lean-virtuals'));
                         return connection;

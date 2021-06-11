@@ -9,13 +9,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RadioStationSonicKeySchema = exports.RadioStationSonicKey = exports.RadioStationSonicKeySchemaName = void 0;
+exports.RadioStationSonicKeySchema = exports.RadioStationSonicKey = exports.DetectedDetailSchema = exports.DetectedDetail = exports.RadioStationSonicKeySchemaName = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const radiostation_schema_1 = require("./radiostation.schema");
 const sonickey_schema_1 = require("../../sonickey/schemas/sonickey.schema");
 exports.RadioStationSonicKeySchemaName = 'RadioStationSonicKey';
+let DetectedDetail = class DetectedDetail {
+};
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: Date.now() }),
+    __metadata("design:type", Date)
+], DetectedDetail.prototype, "detectedAt", void 0);
+DetectedDetail = __decorate([
+    mongoose_1.Schema()
+], DetectedDetail);
+exports.DetectedDetail = DetectedDetail;
+exports.DetectedDetailSchema = mongoose_1.SchemaFactory.createForClass(DetectedDetail);
 let RadioStationSonicKey = class RadioStationSonicKey extends mongoose_2.Document {
 };
 __decorate([
@@ -33,6 +45,21 @@ __decorate([
     mongoose_1.Prop(),
     __metadata("design:type", String)
 ], RadioStationSonicKey.prototype, "owner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], RadioStationSonicKey.prototype, "sonicKeyOwner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: 1 }),
+    __metadata("design:type", Number)
+], RadioStationSonicKey.prototype, "count", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: [{ type: exports.DetectedDetailSchema }] }),
+    __metadata("design:type", Array)
+], RadioStationSonicKey.prototype, "detectedDetails", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),

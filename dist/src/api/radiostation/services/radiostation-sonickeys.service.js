@@ -30,6 +30,20 @@ let RadiostationSonicKeysService = class RadiostationSonicKeysService {
         const newRadioStationSonicKey = new this.radioStationSonickeyModel(Object.assign({}, createRadiostationSonicKeyDto));
         return newRadioStationSonicKey.save();
     }
+    async createOrUpdate(createRadiostationSonicKeyDto) {
+        const presentData = await this.findOne(createRadiostationSonicKeyDto.radioStation, createRadiostationSonicKeyDto.sonicKey);
+        if (!presentData) {
+            var newRadioStationSonicKey = new this.radioStationSonickeyModel(Object.assign({}, createRadiostationSonicKeyDto));
+            newRadioStationSonicKey.count = 1;
+            newRadioStationSonicKey.detectedDetails.push({ detectedAt: new Date() });
+            return newRadioStationSonicKey.save();
+        }
+        else {
+            presentData.count = presentData.count + 1;
+            presentData.detectedDetails.unshift({ detectedAt: new Date() });
+            return presentData.save();
+        }
+    }
     async findAll(queryDto) {
         const { limit, skip, sort, page, filter, select, populate } = queryDto;
         var paginateOptions = {};
@@ -40,6 +54,23 @@ let RadiostationSonicKeysService = class RadiostationSonicKeysService {
         paginateOptions['page'] = page;
         paginateOptions['limit'] = limit;
         return await this.radioStationSonickeyModel["paginate"](filter, paginateOptions);
+    }
+    async findTopRadioStations(filter, topLimit) {
+        const top3RadioStations = await this.radioStationSonickeyModel.aggregate([
+            { $match: filter },
+            { $group: { _id: '$radioStation', totalKeysDetected: { $sum: '$count' } } },
+            {
+                $lookup: {
+                    from: "RadioStation",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "radioStation"
+                }
+            },
+            { $sort: { totalKeysDetected: -1 } },
+            { $limit: topLimit },
+        ]);
+        return top3RadioStations;
     }
     async findOne(radioStation, sonicKey) {
         return this.radioStationSonickeyModel.findOne({

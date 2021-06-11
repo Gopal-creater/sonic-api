@@ -7,4 +7,5 @@ export declare class ParsedQueryDto implements QueryOptions {
     select?: any;
     populate?: any;
     page?: number;
+    topLimit?: number;
 }

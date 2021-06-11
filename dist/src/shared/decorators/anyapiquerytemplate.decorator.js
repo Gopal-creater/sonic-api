@@ -34,7 +34,9 @@ function AnyApiQueryTemplate(options) {
         <b>You can't test this king of query from swagger,Please use Postman Or Thunder Client</b>
         </li>
       </ul>
-      ` }, options)));
+      ${(options === null || options === void 0 ? void 0 : options.additionalHtmlDescription) ? options.additionalHtmlDescription
+            : ''}
+      ` }, options === null || options === void 0 ? void 0 : options.apiQuery)));
 }
 exports.AnyApiQueryTemplate = AnyApiQueryTemplate;
 //# sourceMappingURL=anyapiquerytemplate.decorator.js.map

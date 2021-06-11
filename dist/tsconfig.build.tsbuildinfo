@@ -1157,8 +1157,8 @@
         "affectsGlobalScope": false
       },
       "../package.json": {
-        "version": "2990edd735fd066570a9614a01800bf49730abded7d76e04fc33e6ec4811dfd3",
-        "signature": "b8cfb5e55e2fbc55d66411e8483d1ea37c6c1891cc58791b527122ac22efd3ab",
+        "version": "3b3d82fd5bea9b8834a3096c7bdf8ece9820658704d6e5363727984604725e1c",
+        "signature": "3e9311a52db35f694b8b21a1494138bbd4d67583e81c3fcc2ae1efbebc381a29",
         "affectsGlobalScope": true
       },
       "../src/app.service.ts": {
@@ -2127,7 +2127,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/app.config.ts": {
-        "version": "4be95a883910da346ccc1dac6a376d26f3ec0116aa71a5698ad037014b92ea3d",
+        "version": "1b385e3dbd97bbe041761baeff4c63b4cb10fa02e20636f92adc4a4319ff4971",
         "signature": "8b542f84567f0b9421178e700d4cf4ee2e202b8f58b9cefe9c77e908a5ad07ef",
         "affectsGlobalScope": false
       },
@@ -2762,8 +2762,8 @@
         "affectsGlobalScope": false
       },
       "../src/shared/dtos/parsedquery.dto.ts": {
-        "version": "effbb349cb025290e08c03839b11b2c5cc0960a02874c0778dc32f7205450af9",
-        "signature": "d1c155ce99b65de164b2e2d57d2c7d1bfa0618a52587a75dad5727de362a09e7",
+        "version": "fd142ca04f2a864f81de48fd5c99035b2070616b1e6690899ce686f9d661fe92",
+        "signature": "071cd12bbe1bf0ccef6cd473bbf4e044d3683957f0f0666a5e9114b718f2d04f",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/services/sonickey.service.ts": {
@@ -3176,14 +3176,19 @@
         "signature": "bbb5b8dcb96d922b4c1f5cc5861a473a57071da02210920cff04f3250a7235bf",
         "affectsGlobalScope": false
       },
+      "../src/shared/utils/mongoose.utils.ts": {
+        "version": "09c2d75b8a018c4ae3e631947775c8985457479d645d8d11066dd1fa1849ee32",
+        "signature": "29f676492c2b2d0bfaa18b39b9f3843d8158f49c671b5249f0c78cefc0a8d264",
+        "affectsGlobalScope": false
+      },
       "../src/shared/pipes/parsequeryvalue.pipe.ts": {
-        "version": "9d7d41f1a906f0b0ac503de41de5df40d1f008f233e327271f3047ad27c5df94",
-        "signature": "74cd1cc4a839d7b4bb49f95570909741d2abe5ca57305d99b846d58be49fca4a",
+        "version": "9ffce63054ed64e453db3c47a22ed00cc68abf0fc81a9f7b078ec7c73f41c448",
+        "signature": "b05499c77a29b3b0a73552cae4afcc8f30cc081a74794f0f17db3721a2fdb92e",
         "affectsGlobalScope": false
       },
       "../src/shared/decorators/anyapiquerytemplate.decorator.ts": {
-        "version": "b9c9b3fca07a572c5f3d268ebcfeafc705fc7fe765a90199ddd39b4e3716e736",
-        "signature": "8b32163284862e5c52672dda5054f4552c49e89ab021fed835b5e5e8ae4d61ab",
+        "version": "49bb1c74ec81a86eaef6f634db945fae77da850fdfa013f45825a11d2feeebf6",
+        "signature": "ca3966b5538fd5b1209915afbea6258eba98e627e725edb1ec9fa94cc305ea04",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/controllers/sonickey.controller.ts": {
@@ -5387,13 +5392,13 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/schemas/radiostation-sonickey.schema.ts": {
-        "version": "8d390d50de3aff2ba9c0146ffbadbbf7e78989b6044903c19799c7a1dbb20214",
-        "signature": "e6e61e7ac4b633b690d6c53299f64d7698096d0c53014f2a825ca68b97eb1627",
+        "version": "9f8ec871f3da715af842a121e17bcc9da7e6dd85b1fc2c72ec34e93a5a2593d2",
+        "signature": "b5eab322da402181ee749f9dcf6c4619213cffad9d435a76890fd05678cf7fcc",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts": {
-        "version": "14aac07593fca6d21bd81212b08779b8968223fa1de97fec10854a44163c8659",
-        "signature": "ffe4ca984dbca830eeae270f93716f1a862b4fd05b16e817566ece106a6d24c8",
+        "version": "b2855582922b2c4b0bcab261b7d034a19f7ba93c49cb002f4f671dea7d68d135",
+        "signature": "afcebfc4b0268c60e17d71d5c6f4fd451a86de262684ff16dde9b07bd633efc4",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/mongoosepaginate-radiostationsonickey.dto.ts": {
@@ -5402,8 +5407,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/services/radiostation-sonickeys.service.ts": {
-        "version": "c125cff1a9bf60117ec5fe2821bf5bbc67cb02fd924b3c55e306fd934ac4a70f",
-        "signature": "3669a58861d9bb69286904f2e77d2f1c00e9d71616584440856f2a8ba9090d3e",
+        "version": "83e903ceb7a7d351abf281b06c871dec50aca3a9dc6a4689ebc36b134c4529c9",
+        "signature": "97363c14d19b95b27bc42ec6101e70b9d5cf19eea359ce956d8d8b1a9aba65a4",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/update-radiostation.dto.ts": {
@@ -5422,12 +5427,12 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/controllers/radiostation-sonickeys.controller.ts": {
-        "version": "337238901e4b6a3fb912dfaa739df2d26f7286fa3f09ae71577030917f242293",
-        "signature": "18017637d9869fb43fbda7b1f684f1f3f4080ce078d81efbe1efb0ab0be22e0b",
+        "version": "c5d92f890a058bc2f5acf30a3ca54e032f5e6cb1dca093463c4892f62648f7d2",
+        "signature": "4547199479334b9c11d53393540f5b880f424b61df26cd8c78d88414ccd16ebd",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/listeners/radiostation.listener.ts": {
-        "version": "381dc2c760b76a5e3e503654927895f6031d8c2c32dbfdb7319297610ccfa78d",
+        "version": "56a8801be56f765c4a4c440b1faaeb526c55787043e09c42eff46505966f236d",
         "signature": "96a3dd3f81c171f03174516d89e4cb0568fb61805395a27cdf46e305c12dec68",
         "affectsGlobalScope": false
       },
@@ -5487,7 +5492,7 @@
         "affectsGlobalScope": false
       },
       "../src/app.module.ts": {
-        "version": "9e92a505af21816e39eea449974f455006f1bb80db35cbd1ed4c64d363d5d81c",
+        "version": "057f0e5b8c2ffa351b818b22268542ef245d35df8ddbb646b9d42a94e5b1c4ac",
         "signature": "098267cfef1e0a4afbfa6ce9d4e75d6e915635b0357421ffe5b8b2f3a91cfdee",
         "affectsGlobalScope": false
       },
@@ -18915,6 +18920,7 @@
         "../node_modules/mongoose/index.d.ts",
         "../src/api/auth/guards/jwt-auth.guard.ts",
         "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts",
+        "../src/api/radiostation/schemas/radiostation-sonickey.schema.ts",
         "../src/api/radiostation/services/radiostation-sonickeys.service.ts",
         "../src/api/radiostation/services/radiostation.service.ts",
         "../src/shared/decorators/anyapiquerytemplate.decorator.ts",
@@ -19800,7 +19806,8 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose-query-parser/lib/index.d.ts",
-        "../node_modules/mongoose/index.d.ts"
+        "../node_modules/mongoose/index.d.ts",
+        "../src/shared/utils/mongoose.utils.ts"
       ],
       "../src/shared/services/file-handler.service.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -19850,6 +19857,15 @@
         "../src/shared/utils/json.utils.ts"
       ],
       "../src/shared/utils/json.utils.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts"
+      ],
+      "../src/shared/utils/mongoose.utils.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -32524,7 +32540,8 @@
         "../src/shared/modules/keygen/keygen.service.ts"
       ],
       "../src/api/radiostation/controllers/radiostation-sonickeys.controller.ts": [
-        "../src/api/radiostation/dto/mongoosepaginate-radiostationsonickey.dto.ts",
+        "../src/api/radiostation/schemas/radiostation-sonickey.schema.ts",
+        "../src/api/radiostation/schemas/radiostation.schema.ts",
         "../src/api/radiostation/services/radiostation-sonickeys.service.ts",
         "../src/api/radiostation/services/radiostation.service.ts",
         "../src/shared/dtos/parsedquery.dto.ts"
@@ -32572,9 +32589,9 @@
       ],
       "../src/api/radiostation/services/radiostation-sonickeys.service.ts": [
         "../node_modules/mongoose/index.d.ts",
-        "../src/api/radiostation/dto/mongoosepaginate-radiostationsonickey.dto.ts",
         "../src/api/radiostation/dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto.ts",
         "../src/api/radiostation/schemas/radiostation-sonickey.schema.ts",
+        "../src/api/radiostation/schemas/radiostation.schema.ts",
         "../src/api/radiostation/services/radiostation.service.ts",
         "../src/api/sonickey/services/sonickey.service.ts",
         "../src/shared/dtos/parsedquery.dto.ts"
@@ -32733,6 +32750,9 @@
       ],
       "../src/shared/utils/index.ts": [
         "../src/shared/utils/json.utils.ts"
+      ],
+      "../src/shared/utils/mongoose.utils.ts": [
+        "../node_modules/mongoose/index.d.ts"
       ]
     },
     "semanticDiagnosticsPerFile": []

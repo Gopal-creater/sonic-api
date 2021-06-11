@@ -121,8 +121,9 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
                                 createRadiostationSonicKeyDto.radioStation = radioStation._id;
                                 createRadiostationSonicKeyDto.sonicKey = sonicKey;
                                 createRadiostationSonicKeyDto.owner = isKeyPresent.owner;
+                                createRadiostationSonicKeyDto.sonicKeyOwner = isKeyPresent.owner;
                                 await this.radiostationSonicKeysService
-                                    .create(createRadiostationSonicKeyDto)
+                                    .createOrUpdate(createRadiostationSonicKeyDto)
                                     .then(() => {
                                     savedKeys.push(sonicKey);
                                 })
