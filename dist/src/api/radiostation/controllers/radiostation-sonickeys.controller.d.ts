@@ -8,6 +8,7 @@ export declare class RadiostationSonicKeysController {
     constructor(radiostationService: RadiostationService, radiostationSonicKeysService: RadiostationSonicKeysService);
     getOwnersRadioStationsSonicKeys(targetUser: string, queryDto: ParsedQueryDto): Promise<any>;
     retriveDashboardCountData(targetUser: string, queryDto: ParsedQueryDto): Promise<number>;
+    retriveDashboardChartData(targetUser: string, radioStation: string, queryDto: ParsedQueryDto): Promise<any[]>;
     retriveDashboardTopStationsData(targetUser: string, queryDto: ParsedQueryDto): Promise<{
         _id: string;
         totalKeysDetected: number;

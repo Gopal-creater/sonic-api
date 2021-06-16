@@ -14,6 +14,7 @@ import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytempl
 import { CreateRadiostationSonicKeyDto } from '../dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto';
 import { Schema, Types } from 'mongoose';
 import { RadioStationSonicKey } from '../schemas/radiostation-sonickey.schema';
+import { ToObjectIdPipe } from '../../../shared/pipes/toObjectId.pipe';
 
 @ApiTags('RadioStation-SonicKeys Controller')
 @Controller('radiostations-sonickeys')
@@ -85,6 +86,36 @@ export class RadiostationSonicKeysController {
       ],
     );
     return detectedKeys?.[0]?.totalKeys || 0
+  }
+
+  @Get('/owners/:targetUser/radio-stations/:radioStation/dashboard/chart')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @AnyApiQueryTemplate({additionalHtmlDescription:`
+  <fieldset>
+  <legend><h1>Example For This Endpoint:</h1></legend>
+  <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/count/?detectedDetails.detectedAt<2021-06-30&detectedDetails.detectedAt>2021-06-01</small></code>
+ <br/>
+ <h4>OR For Specific RadioStation</h4>
+ <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/count/?detectedDetails.detectedAt<2021-06-30&detectedDetails.detectedAt>2021-06-01&radioStation=609cd75081fe3a15732162ef</small></code>
+  </fieldset>
+ `})
+  @ApiOperation({ summary: 'Get All chart data from particulat radioStation' })
+  async retriveDashboardChartData(
+    @Param('targetUser') targetUser: string,
+    @Param('radioStation',ToObjectIdPipe) radioStation: string,
+    @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
+  ) {
+    const { filter } = queryDto;
+    const detectedKeys = await this.radiostationSonicKeysService.radioStationSonickeyModel.aggregate(
+      [
+        { $match: { ...filter, owner: targetUser,radioStation:radioStation } },
+        // { $unwind: "$detectedDetails" }
+        // { $group: { _id: null, totalKeys: { $sum: '$count' } } },
+      ],
+    );
+    // return detectedKeys?.[0]?.totalKeys || 0
+    return detectedKeys
   }
 
   @Get('/owners/:targetUser/dashboard/top-stations')

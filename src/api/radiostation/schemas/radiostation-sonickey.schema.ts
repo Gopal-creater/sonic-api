@@ -40,7 +40,7 @@ export class RadioStationSonicKey extends Document {
   count: number;
 
   @ApiProperty()
-  @Prop({type: [{ type: DetectedDetailSchema}]})
+  @Prop({type: [{ type: DetectedDetailSchema}],autopopulate: false,select:false})
   detectedDetails: [DetectedDetail];
 
   @ApiProperty()

@@ -57,7 +57,7 @@ __decorate([
 ], RadioStationSonicKey.prototype, "count", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: [{ type: exports.DetectedDetailSchema }] }),
+    mongoose_1.Prop({ type: [{ type: exports.DetectedDetailSchema }], autopopulate: false, select: false }),
     __metadata("design:type", Array)
 ], RadioStationSonicKey.prototype, "detectedDetails", void 0);
 __decorate([

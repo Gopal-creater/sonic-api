@@ -29,6 +29,7 @@ const radiostation_sonickeys_service_1 = require("../services/radiostation-sonic
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
+const toObjectId_pipe_1 = require("../../../shared/pipes/toObjectId.pipe");
 let RadiostationSonicKeysController = class RadiostationSonicKeysController {
     constructor(radiostationService, radiostationSonicKeysService) {
         this.radiostationService = radiostationService;
@@ -46,6 +47,13 @@ let RadiostationSonicKeysController = class RadiostationSonicKeysController {
             { $group: { _id: null, totalKeys: { $sum: '$count' } } },
         ]);
         return ((_a = detectedKeys === null || detectedKeys === void 0 ? void 0 : detectedKeys[0]) === null || _a === void 0 ? void 0 : _a.totalKeys) || 0;
+    }
+    async retriveDashboardChartData(targetUser, radioStation, queryDto) {
+        const { filter } = queryDto;
+        const detectedKeys = await this.radiostationSonicKeysService.radioStationSonickeyModel.aggregate([
+            { $match: Object.assign(Object.assign({}, filter), { owner: targetUser, radioStation: radioStation }) },
+        ]);
+        return detectedKeys;
     }
     async retriveDashboardTopStationsData(targetUser, queryDto) {
         const { topLimit, filter } = queryDto;
@@ -117,6 +125,28 @@ __decorate([
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], RadiostationSonicKeysController.prototype, "retriveDashboardCountData", null);
+__decorate([
+    common_1.Get('/owners/:targetUser/radio-stations/:radioStation/dashboard/chart'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({ additionalHtmlDescription: `
+  <fieldset>
+  <legend><h1>Example For This Endpoint:</h1></legend>
+  <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/count/?detectedDetails.detectedAt<2021-06-30&detectedDetails.detectedAt>2021-06-01</small></code>
+ <br/>
+ <h4>OR For Specific RadioStation</h4>
+ <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/count/?detectedDetails.detectedAt<2021-06-30&detectedDetails.detectedAt>2021-06-01&radioStation=609cd75081fe3a15732162ef</small></code>
+  </fieldset>
+ ` }),
+    swagger_1.ApiOperation({ summary: 'Get All chart data from particulat radioStation' }),
+    openapi.ApiResponse({ status: 200, type: [Object] }),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Param('radioStation', toObjectId_pipe_1.ToObjectIdPipe)),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], RadiostationSonicKeysController.prototype, "retriveDashboardChartData", null);
 __decorate([
     common_1.Get('/owners/:targetUser/dashboard/top-stations'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
