@@ -113,7 +113,7 @@ let SonickeyController = class SonickeyController {
             }
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
-            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: downloadFileUrl, owner: owner, sonicKey: sonicKey, _id: sonicKey, licenseId: licenseId }));
+            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: downloadFileUrl, owner: owner, sonicKey: sonicKey, _id: sonicKey, license: licenseId }));
             return newSonicKey.save().finally(() => {
                 this.fileHandlerService.deleteFileAtPath(file.path);
             });

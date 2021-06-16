@@ -269,7 +269,7 @@ export class SonickeyController {
           owner: owner,
           sonicKey: sonicKey,
           _id: sonicKey,
-          licenseId: licenseId,
+          license: licenseId,
         });
         return newSonicKey.save().finally(() => {
           this.fileHandlerService.deleteFileAtPath(file.path);
