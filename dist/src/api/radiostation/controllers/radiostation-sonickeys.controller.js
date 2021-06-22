@@ -51,7 +51,9 @@ let RadiostationSonicKeysController = class RadiostationSonicKeysController {
     async retriveDashboardChartData(targetUser, radioStation, queryDto) {
         const { filter } = queryDto;
         const detectedKeys = await this.radiostationSonicKeysService.radioStationSonickeyModel.aggregate([
-            { $match: Object.assign(Object.assign({}, filter), { owner: targetUser, radioStation: radioStation }) },
+            {
+                $match: Object.assign(Object.assign({}, filter), { owner: targetUser, radioStation: radioStation }),
+            },
         ]);
         return detectedKeys;
     }
@@ -96,7 +98,9 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({ summary: 'Get All RadioStations Sonic Keys of particular user' }),
+    swagger_1.ApiOperation({
+        summary: 'Get All RadioStations Sonic Keys of particular user',
+    }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('targetUser')),
     __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
@@ -108,7 +112,8 @@ __decorate([
     common_1.Get('/owners/:targetUser/dashboard/count'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({ additionalHtmlDescription: `
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+        additionalHtmlDescription: `
   <fieldset>
   <legend><h1>Example For This Endpoint:</h1></legend>
   <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/count/?detectedDetails.detectedAt<2021-06-30&detectedDetails.detectedAt>2021-06-01</small></code>
@@ -116,8 +121,11 @@ __decorate([
  <h4>OR For Specific RadioStation</h4>
  <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/count/?detectedDetails.detectedAt<2021-06-30&detectedDetails.detectedAt>2021-06-01&radioStation=609cd75081fe3a15732162ef</small></code>
   </fieldset>
- ` }),
-    swagger_1.ApiOperation({ summary: 'Get All sonickeys detected count within month or radioStation' }),
+ `,
+    }),
+    swagger_1.ApiOperation({
+        summary: 'Get All sonickeys detected count within month or radioStation',
+    }),
     openapi.ApiResponse({ status: 200, type: Number }),
     __param(0, common_1.Param('targetUser')),
     __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
@@ -129,7 +137,8 @@ __decorate([
     common_1.Get('/owners/:targetUser/radio-stations/:radioStation/dashboard/chart'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({ additionalHtmlDescription: `
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+        additionalHtmlDescription: `
   <fieldset>
   <legend><h1>Example For This Endpoint:</h1></legend>
   <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/count/?detectedDetails.detectedAt<2021-06-30&detectedDetails.detectedAt>2021-06-01</small></code>
@@ -137,7 +146,8 @@ __decorate([
  <h4>OR For Specific RadioStation</h4>
  <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/count/?detectedDetails.detectedAt<2021-06-30&detectedDetails.detectedAt>2021-06-01&radioStation=609cd75081fe3a15732162ef</small></code>
   </fieldset>
- ` }),
+ `,
+    }),
     swagger_1.ApiOperation({ summary: 'Get All chart data from particulat radioStation' }),
     openapi.ApiResponse({ status: 200, type: [Object] }),
     __param(0, common_1.Param('targetUser')),
@@ -151,12 +161,14 @@ __decorate([
     common_1.Get('/owners/:targetUser/dashboard/top-stations'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({ additionalHtmlDescription: `
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+        additionalHtmlDescription: `
   <fieldset>
   <legend><h1>Example For This Endpoint:</h1></legend>
   <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/top-stations?createdAt<2021-06-30&createdAt>2021-06-01</small></code>
   </fieldset>
- ` }),
+ `,
+    }),
     swagger_1.ApiOperation({ summary: 'Get All dashboard top stations data' }),
     openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Param('targetUser')),
@@ -169,12 +181,14 @@ __decorate([
     common_1.Get('/owners/:targetUser/dashboard/top-stations-with-top-sonickey'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({ additionalHtmlDescription: `
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+        additionalHtmlDescription: `
   <fieldset>
   <legend><h1>Example For This Endpoint:</h1></legend>
   <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/top-stations-with-top-sonickey?createdAt<2021-06-30&createdAt>2021-06-01<small></code>
   </fieldset>
- ` }),
+ `,
+    }),
     swagger_1.ApiOperation({
         summary: 'Get All dashboard top stations with top sonickeys data',
     }),

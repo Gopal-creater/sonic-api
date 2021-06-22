@@ -19,7 +19,7 @@ export class ThirdpartyDetectionFromBinaryController {
   @ApiOperation({ summary: 'Create Detection' })
   @UseGuards(ApiKeyAuthGuard)
   @Post()
-  async create(@Body() createThirdpartyDetectionDto: CreateThirdpartyDetectionDto,@ApiKey('customer') customer: string) {
+  async create(@Body() createThirdpartyDetectionDto: CreateThirdpartyDetectionDto,@ApiKey('customer') customer: string,@ApiKey('_id') apiKey: string) {
       const isKeyFound = await this.sonickeyServive.findBySonicKey(createThirdpartyDetectionDto.sonicKey)
       if(!isKeyFound){
         throw new NotFoundException("Provided sonickey is not found on our database.")
@@ -29,6 +29,7 @@ export class ThirdpartyDetectionFromBinaryController {
     }
     const newDetection = new this.thirdpartyDetectionService.thirdpartyDetectionModel({
       ...createThirdpartyDetectionDto,
+      apiKey:apiKey,
       customer:customer
     });
     return newDetection.save();

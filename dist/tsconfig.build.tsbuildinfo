@@ -5432,7 +5432,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/controllers/radiostation-sonickeys.controller.ts": {
-        "version": "4adc260f46601b900138bbddb96aa02fbcfe4de163bb299ef1965f5d3acda3e0",
+        "version": "29f0d8bdfd808ea08ccedec36c1997e00d90d4c530828aaed6bcaa6e981ae15a",
         "signature": "9f5820e77fd6229620d82b7016dc8ef4824e3fb1bc1366373a035d137d64a8f2",
         "affectsGlobalScope": false
       },
@@ -5447,13 +5447,13 @@
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts": {
-        "version": "70e1bb38e38fda46d352c97bf0ab693e493b301d09299cf45db148a2646e78d1",
-        "signature": "e216c210c0f3b93b2d88deacee6c5e79f37c858af53d80bca3cdc5af85782959",
+        "version": "17042fcf08405a611dca43cb0277a7675e1797b701166d66055c4f9ed448eec0",
+        "signature": "88849b22426bafcf8dc3628a6d375003a494770b7ced8513ff28bd0d6cf27928",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts": {
         "version": "a786b366c8ab20a804604802778405bf9a43482066c088fe2a4b13021a74679e",
-        "signature": "31babe746f61c19d292b21dbe2d5cc30b9c39f39104cde635ccfddf1f518772b",
+        "signature": "3ba40a71d47c1aa6a3b52bb8caa621cdfd050c1e67e5b91f05911e6558982c46",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts": {
@@ -5487,8 +5487,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts": {
-        "version": "654fd2d2c187bf2b30bc9db1a6334d76e332a2e7db1b5b020004c832fdd8de6f",
-        "signature": "145cb9712fee7fafc597b37763e5feac63c4d0e16906adb90d262d7e986336af",
+        "version": "b86c39ebd21681b4e66cb3c74f652ca7aa36c19ef8df0eef5ac845f16daec166",
+        "signature": "8bc4ba1c6e7b41fea290a2345e8cbd595048e5fa2c400c115ec09b2c89a7fbbb",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/thirdparty-detection.module.ts": {
@@ -19434,7 +19434,8 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongoose/index.d.ts"
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/sonickey/schemas/sonickey.schema.ts"
       ],
       "../src/api/thirdparty-detection/thirdparty-detection.module.ts": [
         "../node_modules/@nestjs/common/index.d.ts",

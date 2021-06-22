@@ -30,7 +30,7 @@ let ThirdpartyDetectionFromBinaryController = class ThirdpartyDetectionFromBinar
         this.thirdpartyDetectionService = thirdpartyDetectionService;
         this.sonickeyServive = sonickeyServive;
     }
-    async create(createThirdpartyDetectionDto, customer) {
+    async create(createThirdpartyDetectionDto, customer, apiKey) {
         const isKeyFound = await this.sonickeyServive.findBySonicKey(createThirdpartyDetectionDto.sonicKey);
         if (!isKeyFound) {
             throw new common_1.NotFoundException("Provided sonickey is not found on our database.");
@@ -38,7 +38,7 @@ let ThirdpartyDetectionFromBinaryController = class ThirdpartyDetectionFromBinar
         if (!createThirdpartyDetectionDto.detectionTime) {
             createThirdpartyDetectionDto.detectionTime = new Date();
         }
-        const newDetection = new this.thirdpartyDetectionService.thirdpartyDetectionModel(Object.assign(Object.assign({}, createThirdpartyDetectionDto), { customer: customer }));
+        const newDetection = new this.thirdpartyDetectionService.thirdpartyDetectionModel(Object.assign(Object.assign({}, createThirdpartyDetectionDto), { apiKey: apiKey, customer: customer }));
         return newDetection.save();
     }
     findAll(queryDto) {
@@ -71,9 +71,9 @@ __decorate([
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
     common_1.Post(),
     openapi.ApiResponse({ status: 201, type: require("../schemas/thirdparty-detection.schema").ThirdpartyDetection }),
-    __param(0, common_1.Body()), __param(1, apikey_decorator_1.ApiKey('customer')),
+    __param(0, common_1.Body()), __param(1, apikey_decorator_1.ApiKey('customer')), __param(2, apikey_decorator_1.ApiKey('_id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_thirdparty_detection_dto_1.CreateThirdpartyDetectionDto, String]),
+    __metadata("design:paramtypes", [create_thirdparty_detection_dto_1.CreateThirdpartyDetectionDto, String, String]),
     __metadata("design:returntype", Promise)
 ], ThirdpartyDetectionFromBinaryController.prototype, "create", null);
 __decorate([

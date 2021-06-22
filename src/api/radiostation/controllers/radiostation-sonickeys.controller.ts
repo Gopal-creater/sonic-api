@@ -52,7 +52,9 @@ export class RadiostationSonicKeysController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @AnyApiQueryTemplate()
-  @ApiOperation({ summary: 'Get All RadioStations Sonic Keys of particular user' })
+  @ApiOperation({
+    summary: 'Get All RadioStations Sonic Keys of particular user',
+  })
   async getOwnersRadioStationsSonicKeys(
     @Param('targetUser') targetUser: string,
     @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
@@ -64,7 +66,8 @@ export class RadiostationSonicKeysController {
   @Get('/owners/:targetUser/dashboard/count')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @AnyApiQueryTemplate({additionalHtmlDescription:`
+  @AnyApiQueryTemplate({
+    additionalHtmlDescription: `
   <fieldset>
   <legend><h1>Example For This Endpoint:</h1></legend>
   <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/count/?detectedDetails.detectedAt<2021-06-30&detectedDetails.detectedAt>2021-06-01</small></code>
@@ -72,12 +75,15 @@ export class RadiostationSonicKeysController {
  <h4>OR For Specific RadioStation</h4>
  <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/count/?detectedDetails.detectedAt<2021-06-30&detectedDetails.detectedAt>2021-06-01&radioStation=609cd75081fe3a15732162ef</small></code>
   </fieldset>
- `})
-  @ApiOperation({ summary: 'Get All sonickeys detected count within month or radioStation' })
+ `,
+  })
+  @ApiOperation({
+    summary: 'Get All sonickeys detected count within month or radioStation',
+  })
   async retriveDashboardCountData(
     @Param('targetUser') targetUser: string,
     @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
-  ):Promise<number> {
+  ): Promise<number> {
     const { filter } = queryDto;
     const detectedKeys = await this.radiostationSonicKeysService.radioStationSonickeyModel.aggregate(
       [
@@ -85,13 +91,14 @@ export class RadiostationSonicKeysController {
         { $group: { _id: null, totalKeys: { $sum: '$count' } } },
       ],
     );
-    return detectedKeys?.[0]?.totalKeys || 0
+    return detectedKeys?.[0]?.totalKeys || 0;
   }
 
   @Get('/owners/:targetUser/radio-stations/:radioStation/dashboard/chart')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @AnyApiQueryTemplate({additionalHtmlDescription:`
+  @AnyApiQueryTemplate({
+    additionalHtmlDescription: `
   <fieldset>
   <legend><h1>Example For This Endpoint:</h1></legend>
   <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/count/?detectedDetails.detectedAt<2021-06-30&detectedDetails.detectedAt>2021-06-01</small></code>
@@ -99,34 +106,48 @@ export class RadiostationSonicKeysController {
  <h4>OR For Specific RadioStation</h4>
  <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/count/?detectedDetails.detectedAt<2021-06-30&detectedDetails.detectedAt>2021-06-01&radioStation=609cd75081fe3a15732162ef</small></code>
   </fieldset>
- `})
+ `,
+  })
   @ApiOperation({ summary: 'Get All chart data from particulat radioStation' })
   async retriveDashboardChartData(
     @Param('targetUser') targetUser: string,
-    @Param('radioStation',ToObjectIdPipe) radioStation: string,
+    @Param('radioStation', ToObjectIdPipe) radioStation: string,
     @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
   ) {
     const { filter } = queryDto;
     const detectedKeys = await this.radiostationSonicKeysService.radioStationSonickeyModel.aggregate(
       [
-        { $match: { ...filter, owner: targetUser,radioStation:radioStation } },
-        // { $unwind: "$detectedDetails" }
-        // { $group: { _id: null, totalKeys: { $sum: '$count' } } },
+        {
+          $match: { ...filter, owner: targetUser, radioStation: radioStation },
+        },
+        // { $unwind: '$detectedDetails' },
+        // {
+        //   $group: {
+        //     _id: {
+        //       year: { $year: '$detectedDetails.detectedAt' },
+        //       month: { $month: '$detectedDetails.detectedAt' },
+        //       day: { $dayOfMonth: '$detectedDetails.detectedAt' },
+        //     },
+        //     totalKeys: { $sum: '$count' },
+        //   },
+        // },
       ],
     );
     // return detectedKeys?.[0]?.totalKeys || 0
-    return detectedKeys
+    return detectedKeys;
   }
 
   @Get('/owners/:targetUser/dashboard/top-stations')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @AnyApiQueryTemplate({additionalHtmlDescription:`
+  @AnyApiQueryTemplate({
+    additionalHtmlDescription: `
   <fieldset>
   <legend><h1>Example For This Endpoint:</h1></legend>
   <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/top-stations?createdAt<2021-06-30&createdAt>2021-06-01</small></code>
   </fieldset>
- `})
+ `,
+  })
   @ApiOperation({ summary: 'Get All dashboard top stations data' })
   async retriveDashboardTopStationsData(
     @Param('targetUser') targetUser: string,
@@ -142,12 +163,14 @@ export class RadiostationSonicKeysController {
   @Get('/owners/:targetUser/dashboard/top-stations-with-top-sonickey')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @AnyApiQueryTemplate({additionalHtmlDescription:`
+  @AnyApiQueryTemplate({
+    additionalHtmlDescription: `
   <fieldset>
   <legend><h1>Example For This Endpoint:</h1></legend>
   <code><small>BASE_URL?radiostations-sonickeys/owners/5728f50d-146b-47d2-aa7b-a50bc37d641d/dashboard/top-stations-with-top-sonickey?createdAt<2021-06-30&createdAt>2021-06-01<small></code>
   </fieldset>
- `})
+ `,
+  })
   @ApiOperation({
     summary: 'Get All dashboard top stations with top sonickeys data',
   })
@@ -160,7 +183,7 @@ export class RadiostationSonicKeysController {
       { ...filter, owner: targetUser },
       topLimit,
     );
-    var responseDataWithStationAndKeys:RadioStationSonicKey[][] = [];
+    var responseDataWithStationAndKeys: RadioStationSonicKey[][] = [];
     for await (const radioStation of top3RadioStations) {
       const data = await this.radiostationSonicKeysService.radioStationSonickeyModel
         .find({ radioStation: radioStation._id })
@@ -193,6 +216,4 @@ export class RadiostationSonicKeysController {
     queryDto.filter['radioStation'] = radioStationId;
     return this.radiostationSonicKeysService.findAll(queryDto);
   }
-
-
 }

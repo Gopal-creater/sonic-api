@@ -7,7 +7,7 @@ export declare class ThirdpartyDetectionFromBinaryController {
     private readonly thirdpartyDetectionService;
     private readonly sonickeyServive;
     constructor(thirdpartyDetectionService: ThirdpartyDetectionService, sonickeyServive: SonickeyService);
-    create(createThirdpartyDetectionDto: CreateThirdpartyDetectionDto, customer: string): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;
+    create(createThirdpartyDetectionDto: CreateThirdpartyDetectionDto, customer: string, apiKey: string): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;
     findAll(queryDto: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-thirdpartydetection.dto").MongoosePaginateThirdPartyDetectionDto>;
     findById(id: string): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;
     update(id: string, updateThirdpartyDetectionDto: UpdateThirdpartyDetectionDto): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;
