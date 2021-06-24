@@ -45,7 +45,7 @@ AppModule = __decorate([
         imports: [
             schedule_1.ScheduleModule.forRoot(),
             event_emitter_1.EventEmitterModule.forRoot(),
-            config_1.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba' }),
+            config_1.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
             auth_module_1.AuthModule,
             mongoose_1.MongooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],
