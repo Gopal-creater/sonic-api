@@ -15,7 +15,6 @@ export declare class SonickeyController {
     private readonly fileHandlerService;
     constructor(sonicKeyService: SonickeyService, keygenService: KeygenService, fileHandlerService: FileHandlerService);
     getAll(parsedQueryDto: ParsedQueryDto): Promise<import("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto>;
-    importKeys(): Promise<string>;
     generateUniqueSonicKey(): Promise<string>;
     createForJob(createSonicKeyDto: CreateSonicKeyFromJobDto, owner: string, req: any): Promise<SonicKey>;
     getOwnersKeys(ownerId: string, parsedQueryDto: ParsedQueryDto): Promise<import("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto>;

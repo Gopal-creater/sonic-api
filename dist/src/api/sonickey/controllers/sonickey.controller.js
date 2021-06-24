@@ -55,21 +55,6 @@ let SonickeyController = class SonickeyController {
         console.log('queryDto', parsedQueryDto);
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
-    async importKeys() {
-        const keys = await this.sonicKeyService.sonicKeyModel.find({});
-        console.log('Length', keys === null || keys === void 0 ? void 0 : keys.length);
-        for (let index = 0; index < keys.length; index++) {
-            const oldSonicKey = keys[index].toObject();
-            if (oldSonicKey.sonicKey == 'Z_NwqQ-SCJD') {
-                await this.sonicKeyService.sonicKeyModel.deleteOne({
-                    sonicKey: oldSonicKey.sonicKey,
-                });
-                const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, oldSonicKey), { owner: '5728f50d-146b-47d2-aa7b-a50bc37d641d', license: '159bb263-b265-451a-ae3d-0d789d586de7', status: true, encodingStrength: 15, contentType: 'Tested', contentDescription: 'string', contentCreatedDate: '2021-05-13T06:49:28.021Z', contentDuration: 30, contentSize: 5000, contentFilePath: 'string', contentFileType: 'string', contentEncoding: 'string', contentSamplingFrequency: 'string', isrcCode: 'string', iswcCode: 'string', tuneCode: 'string', contentName: 'string', contentOwner: 'string', contentValidation: true, contentFileName: 'string', contentQuality: 'string', additionalMetadata: {}, _id: oldSonicKey.sonicKey }));
-                await newSonicKey.save();
-            }
-        }
-        return 'Done';
-    }
     async generateUniqueSonicKey() {
         return await this.sonicKeyService.generateUniqueSonicKey();
     }
@@ -201,13 +186,6 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getAll", null);
-__decorate([
-    common_1.Get('/change_id'),
-    openapi.ApiResponse({ status: 200, type: String }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], SonickeyController.prototype, "importKeys", null);
 __decorate([
     common_1.Get('/generate-unique-sonic-key'),
     swagger_1.ApiOperation({ summary: 'Generate unique sonic key' }),

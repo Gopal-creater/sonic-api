@@ -6,6 +6,7 @@ import { SonicKeyDto } from '../dtos/sonicKey.dto';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { JsonParsePipe } from '../../../shared/pipes/jsonparse.pipe';
+import { isObjectId } from '../../../shared/utils/mongoose.utils';
 import {
   Controller,
   Get,
@@ -79,51 +80,6 @@ export class SonickeyController {
     console.log('queryDto', parsedQueryDto);
 
     return this.sonicKeyService.getAll(parsedQueryDto);
-  }
-
-  @Get('/change_id')
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
-  async importKeys() {
-    const keys = await this.sonicKeyService.sonicKeyModel.find({});
-    console.log('Length', keys?.length);
-    for (let index = 0; index < keys.length; index++) {
-      const oldSonicKey = keys[index].toObject();
-      if (oldSonicKey.sonicKey == 'Z_NwqQ-SCJD') {
-        await this.sonicKeyService.sonicKeyModel.deleteOne({
-          sonicKey: oldSonicKey.sonicKey,
-        });
-
-        const newSonicKey = new this.sonicKeyService.sonicKeyModel({
-          ...oldSonicKey,
-          owner: '5728f50d-146b-47d2-aa7b-a50bc37d641d',
-          license: '159bb263-b265-451a-ae3d-0d789d586de7',
-          status: true,
-          encodingStrength: 15,
-          contentType: 'Tested',
-          contentDescription: 'string',
-          contentCreatedDate: '2021-05-13T06:49:28.021Z',
-          contentDuration: 30,
-          contentSize: 5000,
-          contentFilePath: 'string',
-          contentFileType: 'string',
-          contentEncoding: 'string',
-          contentSamplingFrequency: 'string',
-          isrcCode: 'string',
-          iswcCode: 'string',
-          tuneCode: 'string',
-          contentName: 'string',
-          contentOwner: 'string',
-          contentValidation: true,
-          contentFileName: 'string',
-          contentQuality: 'string',
-          additionalMetadata: {},
-          _id: oldSonicKey.sonicKey,
-        });
-        await newSonicKey.save();
-      }
-    }
-    return 'Done';
   }
 
   @Get('/generate-unique-sonic-key')
