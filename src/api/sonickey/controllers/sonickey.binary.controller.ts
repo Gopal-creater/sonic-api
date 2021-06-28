@@ -39,7 +39,7 @@ export class SonickeyBinaryController {
   @Post('/create-from-binary')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Save to database after local encode from binary.' })
-  async createForJob(
+  async createFormBinary(
     @Body() createSonicKeyDto: CreateSonicKeyFromBinaryDto,
     @ApiKey('customer') customer: string,
     @ApiKey('_id') apiKey: string,
