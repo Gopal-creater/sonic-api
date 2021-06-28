@@ -156,6 +156,7 @@ export class RadioStationListener implements OnApplicationBootstrap {
               stopAt: new Date(),
               isStreamStarted: false,
               error: error,
+              isError:true
             },
             { new: true },
           );
@@ -206,6 +207,7 @@ export class RadioStationListener implements OnApplicationBootstrap {
           stopAt: new Date(),
           isStreamStarted: false,
           error: error,
+          isError:true
         },
         { new: true },
       );

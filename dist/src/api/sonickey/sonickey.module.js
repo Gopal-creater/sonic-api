@@ -16,16 +16,23 @@ const mongoose_1 = require("@nestjs/mongoose");
 const sonickey_schema_1 = require("./schemas/sonickey.schema");
 const file_operation_service_1 = require("../../shared/services/file-operation.service");
 const sonickey_guest_controller_1 = require("./controllers/sonickey.guest.controller");
+const sonickey_binary_controller_1 = require("./controllers/sonickey.binary.controller");
+const api_key_module_1 = require("../api-key/api-key.module");
 let SonickeyModule = class SonickeyModule {
 };
 SonickeyModule = __decorate([
     common_1.Module({
         imports: [
+            api_key_module_1.ApiKeyModule,
             mongoose_1.MongooseModule.forFeature([
                 { name: sonickey_schema_1.SonicKeySchemaName, schema: sonickey_schema_1.SonicKeySchema },
             ]),
         ],
-        controllers: [sonickey_controller_1.SonickeyController, sonickey_guest_controller_1.SonickeyGuestController],
+        controllers: [
+            sonickey_controller_1.SonickeyController,
+            sonickey_guest_controller_1.SonickeyGuestController,
+            sonickey_binary_controller_1.SonickeyBinaryController,
+        ],
         providers: [
             sonickey_service_1.SonickeyService,
             keygen_service_1.KeygenService,

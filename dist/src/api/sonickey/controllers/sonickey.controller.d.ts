@@ -19,7 +19,7 @@ export declare class SonickeyController {
     createForJob(createSonicKeyDto: CreateSonicKeyFromJobDto, owner: string, req: any): Promise<SonicKey>;
     getOwnersKeys(ownerId: string, parsedQueryDto: ParsedQueryDto): Promise<import("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto>;
     getKeysByJob(jobId: string, parsedQueryDto: ParsedQueryDto): Promise<import("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto>;
-    getCount(query: any): Promise<number>;
+    getCount(queryDto: ParsedQueryDto): Promise<number>;
     getOne(sonickey: string): Promise<SonicKey>;
     encode(sonicKeyDto: SonicKeyDto, file: IUploadedFile, owner: string, req: any): Promise<SonicKey>;
     decode(file: IUploadedFile): Promise<any[]>;

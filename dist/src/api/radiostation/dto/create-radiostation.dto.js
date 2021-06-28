@@ -8,7 +8,8 @@ class CreateRadiostationDto extends swagger_1.OmitType(radiostation_schema_1.Rad
     'startedAt',
     'stopAt',
     'isStreamStarted',
-    'error'
+    'error',
+    'isError'
 ]) {
     static _OPENAPI_METADATA_FACTORY() {
         return {};

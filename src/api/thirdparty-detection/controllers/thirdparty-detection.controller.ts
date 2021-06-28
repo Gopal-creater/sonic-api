@@ -35,10 +35,11 @@ export class ThirdpartyDetectionController {
   @Get('/count')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get count of all thirdparty detections' })
-  async getCount(@Query() query) {
-    return this.thirdpartyDetectionService.thirdpartyDetectionModel.estimatedDocumentCount({...query})
-  }
+  @ApiOperation({ summary: 'Get count of all thirdparty detections also accept filter as query params' })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
+    const filter = queryDto.filter || {}
+    return this.thirdpartyDetectionService.thirdpartyDetectionModel.where(filter).countDocuments();
+}
 
   @ApiOperation({ summary: 'Get One Detection' })
   @ApiBearerAuth()

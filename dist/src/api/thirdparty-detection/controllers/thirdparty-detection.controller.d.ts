@@ -6,7 +6,7 @@ export declare class ThirdpartyDetectionController {
     constructor(thirdpartyDetectionService: ThirdpartyDetectionService);
     findAll(queryDto: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-thirdpartydetection.dto").MongoosePaginateThirdPartyDetectionDto>;
     getOwnersKeys(ownerId: string, queryDto: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-thirdpartydetection.dto").MongoosePaginateThirdPartyDetectionDto>;
-    getCount(query: any): Promise<number>;
+    getCount(queryDto: ParsedQueryDto): Promise<number>;
     findById(id: string): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;
     update(id: string, updateThirdpartyDetectionDto: UpdateThirdpartyDetectionDto): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;
     remove(id: string): Promise<import("../schemas/thirdparty-detection.schema").ThirdpartyDetection>;

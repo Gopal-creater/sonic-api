@@ -11,7 +11,7 @@ export declare class JobController {
     getOwnerJobs(ownerId: string, queryDto: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-job.dto").MongoosePaginateJobDto>;
     create(createJobDto: CreateJobDto, owner: string, req: any): Promise<import("../schemas/job.schema").Job>;
     makeCompleted(id: string): Promise<import("../schemas/job.schema").Job>;
-    getCount(query: any): Promise<number>;
+    getCount(queryDto: ParsedQueryDto): Promise<number>;
     findOne(id: string): Promise<import("../schemas/job.schema").Job>;
     update(id: string, updateJobDto: UpdateJobDto): Promise<import("../schemas/job.schema").Job>;
     remove(id: string): Promise<import("../schemas/job.schema").Job>;

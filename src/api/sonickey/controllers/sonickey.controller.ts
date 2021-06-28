@@ -130,12 +130,11 @@ export class SonickeyController {
   @Get('/count')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get count of all sonickeys' })
-  async getCount(@Query() query) {
-    return this.sonicKeyService.sonicKeyModel.estimatedDocumentCount({
-      ...query,
-    });
-  }
+  @ApiOperation({ summary: 'Get count of all sonickeys also accept filter as query params' })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
+    const filter = queryDto.filter || {}
+    return this.sonicKeyService.sonicKeyModel.where(filter).countDocuments();
+}
 
   @Get('/:sonickey')
   @UseGuards(JwtAuthGuard)

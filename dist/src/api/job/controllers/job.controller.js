@@ -55,8 +55,9 @@ let JobController = class JobController {
     makeCompleted(id) {
         return this.jobService.makeCompleted(id);
     }
-    async getCount(query) {
-        return this.jobService.jobModel.estimatedDocumentCount(Object.assign({}, query));
+    async getCount(queryDto) {
+        const filter = queryDto.filter || {};
+        return this.jobService.jobFileModel.where(filter).countDocuments();
     }
     async findOne(id) {
         const job = await this.jobService.jobModel.findById(id);
@@ -132,11 +133,11 @@ __decorate([
     common_1.Get('/count'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get count of all job' }),
+    swagger_1.ApiOperation({ summary: 'Get count of all job also accept filter as query params' }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, common_1.Query()),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], JobController.prototype, "getCount", null);
 __decorate([

@@ -9,7 +9,7 @@ export declare class RadiostationController {
     create(createRadiostationDto: CreateRadiostationDto): Promise<import("../schemas/radiostation.schema").RadioStation>;
     findAll(queryDto?: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto>;
     getOwnersRadioStations(ownerId: string, queryDto: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto>;
-    getCount(query: any): Promise<number>;
+    getCount(queryDto: ParsedQueryDto): Promise<number>;
     findOne(id: string): Promise<import("../schemas/radiostation.schema").RadioStation>;
     stopListeningStream(id: string): Promise<import("../schemas/radiostation.schema").RadioStation>;
     startListeningStream(id: string): Promise<import("../schemas/radiostation.schema").RadioStation>;

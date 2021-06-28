@@ -197,11 +197,10 @@ export class RadiostationSonicKeysController {
   @Get('/count')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get count of all radiostation-sonickeys' })
-  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
-    return this.radiostationSonicKeysService.radioStationSonickeyModel.estimatedDocumentCount(
-      { ...queryDto.filter },
-    );
+  @ApiOperation({ summary: 'Get count of all radiostation-sonickeys also accept filter as query params' })
+    async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
+      const filter = queryDto.filter || {}
+      return this.radiostationSonicKeysService.radioStationSonickeyModel.where(filter).countDocuments();
   }
 
   @Get('/radio-stations/:radioStationId')

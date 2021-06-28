@@ -5,6 +5,8 @@ export declare class SonicKey extends Document {
     sonicKey: string;
     owner: string;
     job: any;
+    apiKey: any;
+    channel: string;
     license: string;
     status: boolean;
     encodingStrength: number;

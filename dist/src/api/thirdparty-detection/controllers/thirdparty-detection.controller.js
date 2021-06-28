@@ -33,8 +33,9 @@ let ThirdpartyDetectionController = class ThirdpartyDetectionController {
         queryDto.filter["customer"] = ownerId;
         return this.thirdpartyDetectionService.findAll(queryDto);
     }
-    async getCount(query) {
-        return this.thirdpartyDetectionService.thirdpartyDetectionModel.estimatedDocumentCount(Object.assign({}, query));
+    async getCount(queryDto) {
+        const filter = queryDto.filter || {};
+        return this.thirdpartyDetectionService.thirdpartyDetectionModel.where(filter).countDocuments();
     }
     async findById(id) {
         const detection = await this.thirdpartyDetectionService.findById(id);
@@ -86,11 +87,11 @@ __decorate([
     common_1.Get('/count'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get count of all thirdparty detections' }),
+    swagger_1.ApiOperation({ summary: 'Get count of all thirdparty detections also accept filter as query params' }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, common_1.Query()),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], ThirdpartyDetectionController.prototype, "getCount", null);
 __decorate([

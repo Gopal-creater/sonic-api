@@ -44,10 +44,11 @@ export class JobFileController {
   @Get('/count')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get count of all job-file' })
-  async getCount(@Query() query) {
-    return this.jobFileService.jobFileModel.estimatedDocumentCount({...query})
-  }
+  @ApiOperation({ summary: 'Get count of all job-file also accept filter as query params' })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
+    const filter = queryDto.filter || {}
+    return this.jobFileService.jobFileModel.where(filter).countDocuments();
+}
 
   @ApiOperation({
     summary: 'Add new sonic key and update the file details using fileId',

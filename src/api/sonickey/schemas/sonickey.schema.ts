@@ -2,6 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { Job, JobSchemaName } from '../../job/schemas/job.schema';
+import { ApiKeySchemaName } from '../../api-key/schemas/api-key.schema';
+import { ChannelEnums } from '../../../constants/Channels.enum';
 
 export const SonicKeySchemaName = 'SonicKey';
 
@@ -22,7 +24,9 @@ export class SonicKey extends Document {
   sonicKey: string;
 
   @ApiProperty()
-  @Prop()
+  @Prop({
+    required: true
+  })
   owner: string;
 
   @ApiProperty()
@@ -30,7 +34,17 @@ export class SonicKey extends Document {
   job: any;
 
   @ApiProperty()
-  @Prop()
+  @Prop({ type: MogSchema.Types.ObjectId, ref: ApiKeySchemaName})
+  apiKey: any;
+
+  @ApiProperty()
+  @Prop({ type: String, enum: ChannelEnums})
+  channel: string;
+
+  @ApiProperty()
+  @Prop({
+    required: true
+  })
   license: string;
 
   @ApiProperty()

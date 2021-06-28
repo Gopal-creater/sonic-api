@@ -86,7 +86,8 @@ let RadiostationSonicKeysController = class RadiostationSonicKeysController {
         return responseDataWithStationAndKeys;
     }
     async getCount(queryDto) {
-        return this.radiostationSonicKeysService.radioStationSonickeyModel.estimatedDocumentCount(Object.assign({}, queryDto.filter));
+        const filter = queryDto.filter || {};
+        return this.radiostationSonicKeysService.radioStationSonickeyModel.where(filter).countDocuments();
     }
     async getOwnersKeys(radioStationId, queryDto) {
         queryDto.filter['radioStation'] = radioStationId;
@@ -203,7 +204,7 @@ __decorate([
     common_1.Get('/count'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get count of all radiostation-sonickeys' }),
+    swagger_1.ApiOperation({ summary: 'Get count of all radiostation-sonickeys also accept filter as query params' }),
     openapi.ApiResponse({ status: 200, type: Number }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),

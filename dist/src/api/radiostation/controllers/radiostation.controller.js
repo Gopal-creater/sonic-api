@@ -35,11 +35,12 @@ let RadiostationController = class RadiostationController {
         return this.radiostationService.findAll(queryDto);
     }
     async getOwnersRadioStations(ownerId, queryDto) {
-        queryDto.filter["owner"] = ownerId;
+        queryDto.filter['owner'] = ownerId;
         return this.radiostationService.findAll(queryDto);
     }
-    async getCount(query) {
-        return this.radiostationService.radioStationModel.estimatedDocumentCount(Object.assign({}, query));
+    async getCount(queryDto) {
+        const filter = queryDto.filter || {};
+        return this.radiostationService.radioStationModel.where(filter).countDocuments();
     }
     async findOne(id) {
         const radioStation = await this.radiostationService.radioStationModel.findById(id);
@@ -119,7 +120,8 @@ __decorate([
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Radio Stations of particular user' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto }),
-    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Param('ownerId')),
+    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
@@ -128,11 +130,11 @@ __decorate([
     common_1.Get('/count'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get count of all radiostations' }),
+    swagger_1.ApiOperation({ summary: 'Get count of all radiostations also accept filter as query params' }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, common_1.Query()),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], RadiostationController.prototype, "getCount", null);
 __decorate([

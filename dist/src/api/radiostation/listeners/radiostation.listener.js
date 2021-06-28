@@ -101,6 +101,7 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
                         stopAt: new Date(),
                         isStreamStarted: false,
                         error: error,
+                        isError: true
                     }, { new: true });
                 }
                 else {
@@ -151,6 +152,7 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
                 stopAt: new Date(),
                 isStreamStarted: false,
                 error: error,
+                isError: true
             }, { new: true });
         }
     }

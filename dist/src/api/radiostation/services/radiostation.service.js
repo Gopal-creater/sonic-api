@@ -64,7 +64,8 @@ let RadiostationService = class RadiostationService {
         return this.radioStationModel.findOneAndUpdate({ _id: id }, {
             startedAt: new Date(),
             isStreamStarted: true,
-            error: null
+            error: null,
+            isError: false
         }, { new: true });
     }
     async findAll(queryDto) {

@@ -1,5 +1,6 @@
 import { SonicKeyDto } from './sonicKey.dto';
 import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 
 
 export class CreateSonicKeyFromJobDto extends SonicKeyDto {
@@ -12,6 +13,18 @@ export class CreateSonicKeyFromJobDto extends SonicKeyDto {
     @ApiProperty()
     owner:string
 
+    @ApiProperty()
+    license:string
+}
+
+
+export class CreateSonicKeyFromBinaryDto extends SonicKeyDto {
+
+    @IsNotEmpty()
+    @ApiProperty()
+    sonicKey:string
+
+    @IsNotEmpty()
     @ApiProperty()
     license:string
 }

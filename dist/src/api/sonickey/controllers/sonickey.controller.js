@@ -70,8 +70,9 @@ let SonickeyController = class SonickeyController {
         parsedQueryDto.filter['job'] = jobId;
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
-    async getCount(query) {
-        return this.sonicKeyService.sonicKeyModel.estimatedDocumentCount(Object.assign({}, query));
+    async getCount(queryDto) {
+        const filter = queryDto.filter || {};
+        return this.sonicKeyService.sonicKeyModel.where(filter).countDocuments();
     }
     async getOne(sonickey) {
         return this.sonicKeyService.findBySonicKeyOrFail(sonickey);
@@ -237,11 +238,11 @@ __decorate([
     common_1.Get('/count'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get count of all sonickeys' }),
+    swagger_1.ApiOperation({ summary: 'Get count of all sonickeys also accept filter as query params' }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, common_1.Query()),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getCount", null);
 __decorate([

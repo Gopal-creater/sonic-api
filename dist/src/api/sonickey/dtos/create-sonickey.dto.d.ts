@@ -5,3 +5,7 @@ export declare class CreateSonicKeyFromJobDto extends SonicKeyDto {
     owner: string;
     license: string;
 }
+export declare class CreateSonicKeyFromBinaryDto extends SonicKeyDto {
+    sonicKey: string;
+    license: string;
+}

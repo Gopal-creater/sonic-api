@@ -7,7 +7,7 @@ export declare class ApiKeyController {
     constructor(apiKeyService: ApiKeyService);
     create(createApiKeyDto: CreateApiKeyDto): Promise<import("../schemas/api-key.schema").ApiKey>;
     findAll(queryDto?: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-apikey.dto").MongoosePaginateApiKeyDto>;
-    getCount(query: any): Promise<number>;
+    getCount(queryDto: ParsedQueryDto): Promise<number>;
     findOne(id: string): Promise<import("../schemas/api-key.schema").ApiKey>;
     update(id: string, updateApiKeyDto: UpdateApiKeyDto): Promise<import("../schemas/api-key.schema").ApiKey>;
     remove(id: string): Promise<import("../schemas/api-key.schema").ApiKey>;

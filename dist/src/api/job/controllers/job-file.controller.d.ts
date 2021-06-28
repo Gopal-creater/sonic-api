@@ -9,7 +9,7 @@ export declare class JobFileController {
     private readonly jobService;
     constructor(jobFileService: JobFileService, jobService: JobService);
     findAll(queryDto: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-jobfile.dto").MongoosePaginateJobFileDto>;
-    getCount(query: any): Promise<number>;
+    getCount(queryDto: ParsedQueryDto): Promise<number>;
     addKeyToDbAndUpdateJobFile(jobId: string, fileId: string, addKeyAndUpdateJobFileDto: AddKeyAndUpdateJobFileDto): Promise<{
         createdSonicKey: import("../../sonickey/schemas/sonickey.schema").SonicKey;
         updatedJobFile: import("../schemas/jobfile.schema").JobFile;

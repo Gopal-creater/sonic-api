@@ -86,10 +86,11 @@ export class JobController {
   @Get('/count')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get count of all job' })
-  async getCount(@Query() query) {
-    return this.jobService.jobModel.estimatedDocumentCount({...query})
-  }
+  @ApiOperation({ summary: 'Get count of all job also accept filter as query params' })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
+    const filter = queryDto.filter || {}
+    return this.jobService.jobFileModel.where(filter).countDocuments();
+}
 
   @ApiOperation({ summary: 'Get One Job By Id' })
   @ApiBearerAuth()

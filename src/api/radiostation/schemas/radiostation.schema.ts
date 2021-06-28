@@ -55,6 +55,10 @@ export class RadioStation extends Document {
   isStreamStarted: boolean;
 
   @ApiProperty()
+  @Prop({ default: false })
+  isError: boolean;
+
+  @ApiProperty()
   @Prop({default: null })
   error: Map<string, any>;
 

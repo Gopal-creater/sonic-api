@@ -14,6 +14,8 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const job_schema_1 = require("../../job/schemas/job.schema");
+const api_key_schema_1 = require("../../api-key/schemas/api-key.schema");
+const Channels_enum_1 = require("../../../constants/Channels.enum");
 exports.SonicKeySchemaName = 'SonicKey';
 let SonicKey = class SonicKey extends mongoose_2.Document {
 };
@@ -35,7 +37,9 @@ __decorate([
 ], SonicKey.prototype, "sonicKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    mongoose_1.Prop({
+        required: true
+    }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "owner", void 0);
 __decorate([
@@ -45,7 +49,19 @@ __decorate([
 ], SonicKey.prototype, "job", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: api_key_schema_1.ApiKeySchemaName }),
+    __metadata("design:type", Object)
+], SonicKey.prototype, "apiKey", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: String, enum: Channels_enum_1.ChannelEnums }),
+    __metadata("design:type", String)
+], SonicKey.prototype, "channel", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        required: true
+    }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "license", void 0);
 __decorate([

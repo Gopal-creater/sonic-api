@@ -79,6 +79,11 @@ __decorate([
 ], RadioStation.prototype, "isStreamStarted", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: false }),
+    __metadata("design:type", Boolean)
+], RadioStation.prototype, "isError", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop({ default: null }),
     __metadata("design:type", Map)
 ], RadioStation.prototype, "error", void 0);
