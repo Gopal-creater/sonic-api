@@ -29,7 +29,7 @@ let SonickeyBinaryController = class SonickeyBinaryController {
         this.sonicKeyService = sonicKeyService;
         this.keygenService = keygenService;
     }
-    async createForJob(createSonicKeyDto, customer, apiKey, licenseKey) {
+    async createFormBinary(createSonicKeyDto, customer, apiKey, licenseKey) {
         const channel = Channels_enum_1.ChannelEnums.BINARY;
         const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { owner: customer, apiKey: apiKey, channel: channel, license: licenseKey, _id: createSonicKeyDto.sonicKey }));
         const savedSonicKey = await newSonicKey.save();
@@ -54,7 +54,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromBinaryDto, String, String, String]),
     __metadata("design:returntype", Promise)
-], SonickeyBinaryController.prototype, "createForJob", null);
+], SonickeyBinaryController.prototype, "createFormBinary", null);
 SonickeyBinaryController = __decorate([
     swagger_1.ApiTags('SonicKeys ThirdParty-Binary Controller (protected by x-api-key)'),
     swagger_1.ApiSecurity('x-api-key'),

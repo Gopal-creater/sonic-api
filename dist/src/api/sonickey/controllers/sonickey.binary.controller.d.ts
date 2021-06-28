@@ -5,5 +5,5 @@ export declare class SonickeyBinaryController {
     private readonly sonicKeyService;
     private readonly keygenService;
     constructor(sonicKeyService: SonickeyService, keygenService: KeygenService);
-    createForJob(createSonicKeyDto: CreateSonicKeyFromBinaryDto, customer: string, apiKey: string, licenseKey: string): Promise<import("../schemas/sonickey.schema").SonicKey>;
+    createFormBinary(createSonicKeyDto: CreateSonicKeyFromBinaryDto, customer: string, apiKey: string, licenseKey: string): Promise<import("../schemas/sonickey.schema").SonicKey>;
 }

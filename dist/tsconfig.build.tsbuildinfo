@@ -3312,8 +3312,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/controllers/sonickey.binary.controller.ts": {
-        "version": "f106afc74bf49cbf217cc1b745ca97f287bbfd4158ef53867ddc0e2581a87eb1",
-        "signature": "baff30a903cc85c557c68bb9b95dfb54e43833d092ae021cdd6301d4889699c4",
+        "version": "9f17f11f79086c3f29d167e9c60d88041dc6ba9c08c9ffe5ab84d5a97212fdfa",
+        "signature": "e813f272f07e4c5d01225ba7ee5cbf176f3c81b42ceed7385e76489d77d56bcf",
         "affectsGlobalScope": false
       },
       "../src/api/auth/guards/istargetuserloggedin.guard.ts": {
