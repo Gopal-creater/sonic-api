@@ -5222,12 +5222,12 @@
         "affectsGlobalScope": false
       },
       "../src/api/user/user.service.ts": {
-        "version": "8c871628cd6df208e9c152ca8074cc0f9decb49cff5199403a9eadcd67310116",
+        "version": "589159ba2aa3d05977faceee34a70897cd875aeebdc234fa5d213da186ad71c6",
         "signature": "b6dd1d389e302ced1c17c635c2f5072bfde48bbcc9d9d99a8b78ab58b02979b5",
         "affectsGlobalScope": false
       },
       "../src/api/user/user.controller.ts": {
-        "version": "20b85f7179700f05de2ade22006a89d4a9924af1ff57b81fc95123df918eefb0",
+        "version": "b8ba378a5a303fb48853df32843a79fb499e3facb4f7d2f860e8912fcb231534",
         "signature": "8b577a355103b49260ebb0b36ac5d244452506a8fd62f5293271970ab5342cfa",
         "affectsGlobalScope": false
       },

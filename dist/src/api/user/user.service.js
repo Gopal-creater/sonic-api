@@ -23,7 +23,8 @@ let UserService = class UserService {
         this.cognitoUserPoolId = this.configService.get('COGNITO_USER_POOL_ID');
     }
     async listAllLicensesOfOwner(ownerId) {
-        const { data, errors } = await this.keygenService.getAllLicenses(`metadata[owner-${ownerId}]=${ownerId}`);
+        const ownerKey = `owner${ownerId}`.replace(/-/g, '');
+        const { data, errors } = await this.keygenService.getAllLicenses(`metadata[${ownerKey}]=${ownerId}`);
         if (errors)
             return Promise.reject(errors);
         return data;
@@ -39,7 +40,8 @@ let UserService = class UserService {
             });
         }
         const oldMetaData = ((_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) || {};
-        oldMetaData[`owner-${ownerId}`] = ownerId;
+        const ownerKey = `owner${ownerId}`.replace(/-/g, '');
+        oldMetaData[ownerKey] = ownerId;
         const { data: updatedData, errors: errorsUpdate, } = await this.keygenService.updateLicense(licenseId, {
             metadata: Object.assign({}, oldMetaData),
         });

@@ -22,8 +22,9 @@ export class UserService {
   }
 
   async listAllLicensesOfOwner(ownerId: string) {
+    const ownerKey =`owner${ownerId}`.replace(/-/g,'')
     const { data, errors } = await this.keygenService.getAllLicenses(
-      `metadata[owner-${ownerId}]=${ownerId}`,
+      `metadata[${ownerKey}]=${ownerId}`,
     );
     if (errors) return Promise.reject(errors);
     return data;
@@ -40,7 +41,8 @@ export class UserService {
       });
     }
     const oldMetaData = data?.attributes?.metadata || {};
-    oldMetaData[`owner-${ownerId}`] = ownerId;
+    const ownerKey =`owner${ownerId}`.replace(/-/g,'')
+    oldMetaData[ownerKey] = ownerId;
     const {
       data: updatedData,
       errors: errorsUpdate,

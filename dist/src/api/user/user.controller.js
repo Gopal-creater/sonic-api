@@ -46,8 +46,6 @@ let UserController = class UserController {
     }
 };
 __decorate([
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get all licenses of particular user' }),
     common_1.Get('/:userId/licenses'),
     openapi.ApiResponse({ status: 200, type: Object }),
