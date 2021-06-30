@@ -18,7 +18,7 @@ let JobLicenseValidationGuard = class JobLicenseValidationGuard {
         this.keygenService = keygenService;
     }
     async canActivate(context) {
-        var _a, _b, _c, _d;
+        var _a, _b;
         const request = context.switchToHttp().getRequest();
         const body = request.body;
         if (!body.license || !body.owner || !body.jobFiles) {
@@ -37,16 +37,11 @@ let JobLicenseValidationGuard = class JobLicenseValidationGuard {
                 message: 'Invalid license.',
             });
         }
-        if (((_b = (_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) === null || _b === void 0 ? void 0 : _b.ownerId) !== body.owner) {
-            throw new common_1.BadRequestException({
-                message: 'Looks like the provided licence id is not belongs to you.',
-            });
-        }
         const uses = data['attributes']['uses'];
         const maxUses = data['attributes']['maxUses'];
         const remaniningUses = maxUses - uses;
         const usesToBeUsed = body.jobFiles.length;
-        const reserves = utils_1.JSONUtils.parse((_d = (_c = data === null || data === void 0 ? void 0 : data.attributes) === null || _c === void 0 ? void 0 : _c.metadata) === null || _d === void 0 ? void 0 : _d.reserves, []);
+        const reserves = utils_1.JSONUtils.parse((_b = (_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) === null || _b === void 0 ? void 0 : _b.reserves, []);
         if (await this.isAllowedForJobCreation(remaniningUses, usesToBeUsed, reserves)) {
             request.validLicense = data;
             return true;

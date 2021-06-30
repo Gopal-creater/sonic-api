@@ -36,11 +36,11 @@ export class JobLicenseValidationGuard implements CanActivate {
         message: 'Invalid license.',
       });
     }
-    if (data?.attributes?.metadata?.ownerId !== body.owner) {
-      throw new BadRequestException({
-        message: 'Looks like the provided licence id is not belongs to you.',
-      });
-    }
+    // if (data?.attributes?.metadata?.ownerId !== body.owner) {
+    //   throw new BadRequestException({
+    //     message: 'Looks like the provided licence id is not belongs to you.',
+    //   });
+    // }
     const uses = data['attributes']['uses'];
     const maxUses = data['attributes']['maxUses'];
     const remaniningUses = maxUses - uses;

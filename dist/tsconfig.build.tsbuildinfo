@@ -2537,8 +2537,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/create-sonickey.dto.ts": {
-        "version": "ffdf2416754be2f1f04bc40ae717902bdb5c39c874ae03baa0cba9bf73a2fb29",
-        "signature": "e5af426969e72534358d2e64020862efd34246f30a287600fce36a918218281c",
+        "version": "4b74b28d651b5c6e5cdd6429c3fe611e4ceb578029bbda05a44841508ddb2599",
+        "signature": "e46c7a42ff4b0cfd15bc602a7dd6fc34de30521d1ada4bf5febaca8fe8dcbec3",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/update-sonickey.dto.ts": {
@@ -2782,7 +2782,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/services/sonickey.service.ts": {
-        "version": "32f31525e49acef585792195c42d9b372a13d1fe64f26941d1939c4091965e77",
+        "version": "932429a45055db51fe6580f4fe4e01d52586e53c6d8b1619f773d6878c226aa9",
         "signature": "4283a8f85606b5c809857668e280acd954479c7050b3c5eee6f0f72e12c3b460",
         "affectsGlobalScope": false
       },
@@ -5537,7 +5537,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/auth/guards/job-license-validation.guard.ts": {
-        "version": "f4f1b55a3b5620d3233942569f5c0ebe12bea2e72d073d021d731662186639c3",
+        "version": "679641b5a9aca77a287a5abe6894f77552fc42e09849494020d73631834469d2",
         "signature": "5be873b025c0ed009af338081255fe4de3d02c7b19733d53acfa9be54d384ab4",
         "affectsGlobalScope": false
       },

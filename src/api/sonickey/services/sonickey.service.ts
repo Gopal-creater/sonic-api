@@ -33,6 +33,7 @@ export class SonickeyService {
     const channel = ChannelEnums.JOB
     const newSonicKey = new this.sonicKeyModel({
       ...createSonicKeyDto,
+      license:createSonicKeyDto.licenseId || createSonicKeyDto.license,
       channel:channel,
       _id:createSonicKeyDto.sonicKey
     });

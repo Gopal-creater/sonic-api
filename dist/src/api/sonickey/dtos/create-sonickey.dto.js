@@ -16,7 +16,7 @@ const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateSonicKeyFromJobDto extends sonicKey_dto_1.SonicKeyDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { sonicKey: { required: true, type: () => String }, job: { required: true, type: () => String }, owner: { required: true, type: () => String }, license: { required: true, type: () => String } };
+        return { sonicKey: { required: true, type: () => String }, job: { required: true, type: () => String }, owner: { required: true, type: () => String }, license: { required: true, type: () => String }, licenseId: { required: true, type: () => String } };
     }
 }
 __decorate([
@@ -35,6 +35,10 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateSonicKeyFromJobDto.prototype, "license", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateSonicKeyFromJobDto.prototype, "licenseId", void 0);
 exports.CreateSonicKeyFromJobDto = CreateSonicKeyFromJobDto;
 class CreateSonicKeyFromBinaryDto extends sonicKey_dto_1.SonicKeyDto {
     static _OPENAPI_METADATA_FACTORY() {

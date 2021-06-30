@@ -35,7 +35,7 @@ let SonickeyService = class SonickeyService {
     }
     async createFromJob(createSonicKeyDto) {
         const channel = Channels_enum_1.ChannelEnums.JOB;
-        const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { channel: channel, _id: createSonicKeyDto.sonicKey }));
+        const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { license: createSonicKeyDto.licenseId || createSonicKeyDto.license, channel: channel, _id: createSonicKeyDto.sonicKey }));
         return newSonicKey.save();
     }
     async getAll(queryDto) {
