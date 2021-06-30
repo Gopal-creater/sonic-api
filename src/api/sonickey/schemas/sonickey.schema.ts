@@ -38,14 +38,22 @@ export class SonicKey extends Document {
   apiKey: any;
 
   @ApiProperty()
-  @Prop({ type: String, enum: ChannelEnums})
+  @Prop({ type: String, enum: ChannelEnums,required:true})
   channel: string;
+
+  @ApiProperty()
+  @Prop({ type: String})
+  channelUuid: string;
 
   @ApiProperty()
   @Prop({
     required: true
   })
   license: string;
+
+  @ApiProperty()
+  @Prop({ default: false,required:true })
+  downloadable: boolean;
 
   @ApiProperty()
   @Prop({ default: true })

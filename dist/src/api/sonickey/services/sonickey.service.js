@@ -23,6 +23,7 @@ const nanoid_1 = require("nanoid");
 const config_1 = require("../../../config");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const Channels_enum_1 = require("../../../constants/Channels.enum");
 let SonickeyService = class SonickeyService {
     constructor(sonicKeyModel, fileOperationService, fileHandlerService) {
         this.sonicKeyModel = sonicKeyModel;
@@ -33,7 +34,8 @@ let SonickeyService = class SonickeyService {
         return nanoid_1.nanoid(11);
     }
     async createFromJob(createSonicKeyDto) {
-        const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { _id: createSonicKeyDto.sonicKey }));
+        const channel = Channels_enum_1.ChannelEnums.JOB;
+        const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { channel: channel, _id: createSonicKeyDto.sonicKey }));
         return newSonicKey.save();
     }
     async getAll(queryDto) {

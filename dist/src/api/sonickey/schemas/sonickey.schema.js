@@ -54,9 +54,14 @@ __decorate([
 ], SonicKey.prototype, "apiKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, enum: Channels_enum_1.ChannelEnums }),
+    mongoose_1.Prop({ type: String, enum: Channels_enum_1.ChannelEnums, required: true }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "channel", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: String }),
+    __metadata("design:type", String)
+], SonicKey.prototype, "channelUuid", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
@@ -64,6 +69,11 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "license", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: false, required: true }),
+    __metadata("design:type", Boolean)
+], SonicKey.prototype, "downloadable", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ default: true }),

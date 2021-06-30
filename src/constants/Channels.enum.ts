@@ -3,4 +3,6 @@ export enum ChannelEnums {
   BINARY = 'BINARY',
   PORTAL = 'PORTAL',
   MOBILE = 'MOBILE',
+  HARDWARE = 'HARDWARE',
+  RADIOSTATION = 'RADIOSTATION'
 }

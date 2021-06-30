@@ -7,7 +7,9 @@ export declare class SonicKey extends Document {
     job: any;
     apiKey: any;
     channel: string;
+    channelUuid: string;
     license: string;
+    downloadable: boolean;
     status: boolean;
     encodingStrength: number;
     contentType?: string;

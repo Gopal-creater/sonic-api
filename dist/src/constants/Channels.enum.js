@@ -7,5 +7,7 @@ var ChannelEnums;
     ChannelEnums["BINARY"] = "BINARY";
     ChannelEnums["PORTAL"] = "PORTAL";
     ChannelEnums["MOBILE"] = "MOBILE";
+    ChannelEnums["HARDWARE"] = "HARDWARE";
+    ChannelEnums["RADIOSTATION"] = "RADIOSTATION";
 })(ChannelEnums = exports.ChannelEnums || (exports.ChannelEnums = {}));
 //# sourceMappingURL=Channels.enum.js.map

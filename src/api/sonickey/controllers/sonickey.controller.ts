@@ -55,6 +55,7 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { Response } from 'express';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
+import { ChannelEnums } from '../../../constants/Channels.enum';
 
 /**
  * Prabin:
@@ -71,14 +72,35 @@ export class SonickeyController {
     private readonly fileHandlerService: FileHandlerService,
   ) {}
 
+  // @Get('/update-channel')
+  // async updateChannel() {
+  //  await  this.sonicKeyService.sonicKeyModel.updateMany(
+  //     { owner: 'guest' },
+  //     { channel: ChannelEnums.MOBILE },
+  //   );
+
+  //   await  this.sonicKeyService.sonicKeyModel.updateMany(
+  //     { job: {$exists:true} },
+  //     { channel: ChannelEnums.JOB },
+  //   );
+
+  //   await  this.sonicKeyService.sonicKeyModel.updateMany(
+  //     { channel: {$exists:false} },
+  //     { channel: ChannelEnums.PORTAL },
+  //   );
+
+  //   await  this.sonicKeyService.sonicKeyModel.updateMany(
+  //     { channel: ChannelEnums.PORTAL },
+  //     { downloadable: true },
+  //   );
+  // }
+
   @Get('/')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys' })
   @AnyApiQueryTemplate()
   async getAll(@Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto) {
-    console.log('queryDto', parsedQueryDto);
-
     return this.sonicKeyService.getAll(parsedQueryDto);
   }
 
@@ -130,11 +152,13 @@ export class SonickeyController {
   @Get('/count')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get count of all sonickeys also accept filter as query params' })
-  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
-    const filter = queryDto.filter || {}
+  @ApiOperation({
+    summary: 'Get count of all sonickeys also accept filter as query params',
+  })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
+    const filter = queryDto.filter || {};
     return this.sonicKeyService.sonicKeyModel.where(filter).countDocuments();
-}
+  }
 
   @Get('/:sonickey')
   @UseGuards(JwtAuthGuard)
@@ -218,11 +242,14 @@ export class SonickeyController {
           sonicKeyDto,
         );
 
+        const channel = ChannelEnums.PORTAL;
         const newSonicKey = new this.sonicKeyService.sonicKeyModel({
           ...sonicKeyDtoWithAudioData,
           contentFilePath: downloadFileUrl,
           owner: owner,
           sonicKey: sonicKey,
+          channel: channel,
+          downloadable:true,
           _id: sonicKey,
           license: licenseId,
         });

@@ -45,6 +45,7 @@ const appRootPath = require("app-root-path");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
+const Channels_enum_1 = require("../../../constants/Channels.enum");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, keygenService, fileHandlerService) {
         this.sonicKeyService = sonicKeyService;
@@ -52,7 +53,6 @@ let SonickeyController = class SonickeyController {
         this.fileHandlerService = fileHandlerService;
     }
     async getAll(parsedQueryDto) {
-        console.log('queryDto', parsedQueryDto);
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
     async generateUniqueSonicKey() {
@@ -99,7 +99,8 @@ let SonickeyController = class SonickeyController {
             }
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
-            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: downloadFileUrl, owner: owner, sonicKey: sonicKey, _id: sonicKey, license: licenseId }));
+            const channel = Channels_enum_1.ChannelEnums.PORTAL;
+            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: downloadFileUrl, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, _id: sonicKey, license: licenseId }));
             return newSonicKey.save().finally(() => {
                 this.fileHandlerService.deleteFileAtPath(file.path);
             });
@@ -238,7 +239,9 @@ __decorate([
     common_1.Get('/count'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get count of all sonickeys also accept filter as query params' }),
+    swagger_1.ApiOperation({
+        summary: 'Get count of all sonickeys also accept filter as query params',
+    }),
     openapi.ApiResponse({ status: 200, type: Number }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),

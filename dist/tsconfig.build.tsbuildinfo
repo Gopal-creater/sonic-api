@@ -1907,18 +1907,18 @@
         "affectsGlobalScope": false
       },
       "../src/constants/channels.enum.ts": {
-        "version": "9e05176247fd6757c0962e5152f6490f82b8e17a49edaaf9b00490be0ed0bb63",
-        "signature": "7e2218c1ae89ca2c902a5ce46fd00388c29d82329a6552ceaa7b955d4256e1ab",
+        "version": "b2f33ce934efe386b2b6ab1f5555a02d7d91c91bf6dd1b1968dc67b66170b778",
+        "signature": "59b9bd59c880864bb8e9a0fec513930a59914ca52ed0fe69d4cf278f20616311",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/schemas/sonickey.schema.ts": {
-        "version": "cb730c2c72ea03520b9337a6853278295954fcd20c6d005bd47070d3be2a158f",
-        "signature": "6d3e3049bc1c78356ab459aa33fbefdeb20bf9759c50b607f5fe04b535793297",
+        "version": "9fdda89bace1a9250309f6df8c228a7aa58094c1c29f207a28140e5dc94b3cc5",
+        "signature": "8fb71acf5308bdbe93dcb370aec39bbab8d3f4d43301907492980e56b77a385c",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/sonickey.dto.ts": {
         "version": "4e31abc31014258112b59cb4977910e157e509fd895267059501228396893083",
-        "signature": "1758f3a2c66a94f121ea4d0b502595ae8f901d19708f7b389595583d04e278bb",
+        "signature": "d5a66b81f6e516e16676b20875417ab7826bd43eb250b8714265c91115a72ca5",
         "affectsGlobalScope": false
       },
       "../node_modules/class-validator/types/validation/validationerror.d.ts": {
@@ -2543,7 +2543,7 @@
       },
       "../src/api/sonickey/dtos/update-sonickey.dto.ts": {
         "version": "7119ded71c976501ca2152e1b21fa7fc39b54972da65d6e805d13d72ac293a08",
-        "signature": "130f4315741eaf2d58755706de0fd55ec89b0829f337f308bb44d0fed5206717",
+        "signature": "50eeaaec3942967320a3f86bc31e77e265d39495d576d0fcf678a44524a307d6",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/decode.dto.ts": {
@@ -2782,7 +2782,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/services/sonickey.service.ts": {
-        "version": "731537edf7d469b150970d7f2fa91eee5de3a8714f4f82b55979aff9cb107e63",
+        "version": "32f31525e49acef585792195c42d9b372a13d1fe64f26941d1939c4091965e77",
         "signature": "4283a8f85606b5c809857668e280acd954479c7050b3c5eee6f0f72e12c3b460",
         "affectsGlobalScope": false
       },
@@ -3202,7 +3202,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/controllers/sonickey.controller.ts": {
-        "version": "3bea8407dfdb503a267bfb9c940bb364b723f93a800868a62c6b4668a7e40ca4",
+        "version": "02a744f28e1e24f1dda95c590a698a65d1b4c8d357ad4bb3cd523d616167b878",
         "signature": "74cbe352cdfe5bf446d1540f1f48dbb751fdf3611218d33acdfce61068b4c903",
         "affectsGlobalScope": false
       },
@@ -3217,7 +3217,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/controllers/sonickey.guest.controller.ts": {
-        "version": "2ceda08f16a86fac0fab1db33951d64aab8365d57577c27af5bf21d1a5c1ca78",
+        "version": "858bb478b32de1b7fb560a4f001fc68df510796d8e984626f8ea9158036bfc0a",
         "signature": "ae2bf283cf6e60f2aefe7101f12b359459277d695f8f759488afbadc83deb421",
         "affectsGlobalScope": false
       },
@@ -19233,6 +19233,7 @@
         "../src/api/sonickey/schemas/sonickey.schema.ts",
         "../src/api/sonickey/services/sonickey.service.ts",
         "../src/config/index.ts",
+        "../src/constants/channels.enum.ts",
         "../src/shared/decorators/anyapiquerytemplate.decorator.ts",
         "../src/shared/dtos/parsedquery.dto.ts",
         "../src/shared/interfaces/uploadedfile.interface.ts",
@@ -19262,6 +19263,7 @@
         "../src/api/sonickey/schemas/sonickey.schema.ts",
         "../src/api/sonickey/services/sonickey.service.ts",
         "../src/config/index.ts",
+        "../src/constants/channels.enum.ts",
         "../src/shared/interfaces/uploadedfile.interface.ts",
         "../src/shared/modules/keygen/keygen.service.ts",
         "../src/shared/pipes/jsonparse.pipe.ts",
@@ -19397,6 +19399,7 @@
         "../src/api/sonickey/dtos/sonickey.dto.ts",
         "../src/api/sonickey/schemas/sonickey.schema.ts",
         "../src/config/index.ts",
+        "../src/constants/channels.enum.ts",
         "../src/shared/dtos/parsedquery.dto.ts",
         "../src/shared/interfaces/uploadedfile.interface.ts",
         "../src/shared/services/file-handler.service.ts",

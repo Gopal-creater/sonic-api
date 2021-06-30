@@ -34,12 +34,14 @@ const uniqid = require("uniqid");
 const file_handler_service_1 = require("../../../shared/services/file-handler.service");
 const public_encode_dto_1 = require("../dtos/public-encode.dto");
 const public_decode_dto_1 = require("../dtos/public-decode.dto");
+const Channels_enum_1 = require("../../../constants/Channels.enum");
 let SonickeyGuestController = class SonickeyGuestController {
     constructor(sonicKeyService, fileHandlerService) {
         this.sonicKeyService = sonicKeyService;
         this.fileHandlerService = fileHandlerService;
     }
     encode(sonicKeyDto, file, req) {
+        const channel = Channels_enum_1.ChannelEnums.MOBILE;
         console.log('file', file);
         const owner = 'guest';
         const licenseId = "guest_license";
@@ -47,7 +49,7 @@ let SonickeyGuestController = class SonickeyGuestController {
             .encode(file, sonicKeyDto.encodingStrength)
             .then(async (data) => {
             const sonicKeyDtoWithMeta = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
-            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithMeta), { contentFilePath: data.downloadFileUrl, owner: owner, sonicKey: data.sonicKey, _id: data.sonicKey, license: licenseId }));
+            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithMeta), { contentFilePath: data.downloadFileUrl, owner: owner, channel: channel, sonicKey: data.sonicKey, _id: data.sonicKey, license: licenseId }));
             return newSonicKey.save().finally(() => {
                 this.fileHandlerService.deleteFileAtPath(file.path);
             });
