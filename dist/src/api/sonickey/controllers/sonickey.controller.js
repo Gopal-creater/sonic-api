@@ -52,6 +52,12 @@ let SonickeyController = class SonickeyController {
         this.keygenService = keygenService;
         this.fileHandlerService = fileHandlerService;
     }
+    async updateChannel() {
+        await this.sonicKeyService.sonicKeyModel.updateMany({ owner: 'guest' }, { channel: Channels_enum_1.ChannelEnums.MOBILEAPP });
+        await this.sonicKeyService.sonicKeyModel.updateMany({ job: { $exists: true } }, { channel: Channels_enum_1.ChannelEnums.PCAPP });
+        await this.sonicKeyService.sonicKeyModel.updateMany({ channel: { $exists: false } }, { channel: Channels_enum_1.ChannelEnums.PORTAL });
+        await this.sonicKeyService.sonicKeyModel.updateMany({ channel: Channels_enum_1.ChannelEnums.PORTAL }, { downloadable: true });
+    }
     async getAll(parsedQueryDto) {
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
@@ -176,6 +182,13 @@ let SonickeyController = class SonickeyController {
         });
     }
 };
+__decorate([
+    common_1.Get('/update-channel'),
+    openapi.ApiResponse({ status: 200 }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "updateChannel", null);
 __decorate([
     common_1.Get('/'),
     common_1.UseGuards(guards_1.JwtAuthGuard),

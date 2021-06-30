@@ -30,7 +30,7 @@ export class SonickeyService {
   }
 
   async createFromJob(createSonicKeyDto: CreateSonicKeyFromJobDto) {
-    const channel = ChannelEnums.JOB
+    const channel = ChannelEnums.PCAPP
     const newSonicKey = new this.sonicKeyModel({
       ...createSonicKeyDto,
       license:createSonicKeyDto.licenseId || createSonicKeyDto.license,

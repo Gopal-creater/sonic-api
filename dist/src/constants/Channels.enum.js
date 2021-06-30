@@ -4,9 +4,10 @@ exports.ChannelEnums = void 0;
 var ChannelEnums;
 (function (ChannelEnums) {
     ChannelEnums["JOB"] = "JOB";
+    ChannelEnums["PCAPP"] = "PCAPP";
     ChannelEnums["BINARY"] = "BINARY";
     ChannelEnums["PORTAL"] = "PORTAL";
-    ChannelEnums["MOBILE"] = "MOBILE";
+    ChannelEnums["MOBILEAPP"] = "MOBILEAPP";
     ChannelEnums["HARDWARE"] = "HARDWARE";
     ChannelEnums["RADIOSTATION"] = "RADIOSTATION";
 })(ChannelEnums = exports.ChannelEnums || (exports.ChannelEnums = {}));

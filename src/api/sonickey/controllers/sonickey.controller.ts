@@ -72,28 +72,28 @@ export class SonickeyController {
     private readonly fileHandlerService: FileHandlerService,
   ) {}
 
-  // @Get('/update-channel')
-  // async updateChannel() {
-  //  await  this.sonicKeyService.sonicKeyModel.updateMany(
-  //     { owner: 'guest' },
-  //     { channel: ChannelEnums.MOBILE },
-  //   );
+  @Get('/update-channel')
+  async updateChannel() {
+   await  this.sonicKeyService.sonicKeyModel.updateMany(
+      { owner: 'guest' },
+      { channel: ChannelEnums.MOBILEAPP },
+    );
 
-  //   await  this.sonicKeyService.sonicKeyModel.updateMany(
-  //     { job: {$exists:true} },
-  //     { channel: ChannelEnums.JOB },
-  //   );
+    await  this.sonicKeyService.sonicKeyModel.updateMany(
+      { job: {$exists:true} },
+      { channel: ChannelEnums.PCAPP},
+    );
 
-  //   await  this.sonicKeyService.sonicKeyModel.updateMany(
-  //     { channel: {$exists:false} },
-  //     { channel: ChannelEnums.PORTAL },
-  //   );
+    await  this.sonicKeyService.sonicKeyModel.updateMany(
+      { channel: {$exists:false} },
+      { channel: ChannelEnums.PORTAL },
+    );
 
-  //   await  this.sonicKeyService.sonicKeyModel.updateMany(
-  //     { channel: ChannelEnums.PORTAL },
-  //     { downloadable: true },
-  //   );
-  // }
+    await  this.sonicKeyService.sonicKeyModel.updateMany(
+      { channel: ChannelEnums.PORTAL },
+      { downloadable: true },
+    );
+  }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)

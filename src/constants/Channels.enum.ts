@@ -1,8 +1,9 @@
 export enum ChannelEnums {
   JOB = 'JOB',
+  PCAPP = 'PCAPP',
   BINARY = 'BINARY',
   PORTAL = 'PORTAL',
-  MOBILE = 'MOBILE',
+  MOBILEAPP = 'MOBILEAPP',
   HARDWARE = 'HARDWARE',
   RADIOSTATION = 'RADIOSTATION'
 }

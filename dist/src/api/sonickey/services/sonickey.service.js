@@ -34,7 +34,7 @@ let SonickeyService = class SonickeyService {
         return nanoid_1.nanoid(11);
     }
     async createFromJob(createSonicKeyDto) {
-        const channel = Channels_enum_1.ChannelEnums.JOB;
+        const channel = Channels_enum_1.ChannelEnums.PCAPP;
         const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { license: createSonicKeyDto.licenseId || createSonicKeyDto.license, channel: channel, _id: createSonicKeyDto.sonicKey }));
         return newSonicKey.save();
     }

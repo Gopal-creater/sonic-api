@@ -41,7 +41,7 @@ let SonickeyGuestController = class SonickeyGuestController {
         this.fileHandlerService = fileHandlerService;
     }
     encode(sonicKeyDto, file, req) {
-        const channel = Channels_enum_1.ChannelEnums.MOBILE;
+        const channel = Channels_enum_1.ChannelEnums.MOBILEAPP;
         console.log('file', file);
         const owner = 'guest';
         const licenseId = "guest_license";

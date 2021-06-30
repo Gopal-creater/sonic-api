@@ -30,7 +30,7 @@ import * as uniqid from 'uniqid';
 import { FileHandlerService } from '../../../shared/services/file-handler.service';
 import { PublicEncodeDto } from '../dtos/public-encode.dto';
 import { PublicDecodeDto } from '../dtos/public-decode.dto';
-import { ChannelEnums } from '../../../constants/Channels.enum';
+import { ChannelEnums} from '../../../constants/Channels.enum';
 
 /**
  * Prabin:
@@ -92,7 +92,7 @@ export class SonickeyGuestController {
     @UploadedFile() file: IUploadedFile,
     @Req() req: any,
   ) {
-    const channel = ChannelEnums.MOBILE
+    const channel = ChannelEnums.MOBILEAPP
     console.log('file', file);
     const owner = 'guest'
     const licenseId = "guest_license"

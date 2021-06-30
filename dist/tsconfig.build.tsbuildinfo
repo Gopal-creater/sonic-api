@@ -1907,8 +1907,8 @@
         "affectsGlobalScope": false
       },
       "../src/constants/channels.enum.ts": {
-        "version": "b2f33ce934efe386b2b6ab1f5555a02d7d91c91bf6dd1b1968dc67b66170b778",
-        "signature": "59b9bd59c880864bb8e9a0fec513930a59914ca52ed0fe69d4cf278f20616311",
+        "version": "6183b19e5e3782c4a7855ba19931bc302179ba67ae8c5f2f09fb32f5bc667287",
+        "signature": "764d119e0b654981045f0f19ca9fa98570bad183681c2c7f57dd20c6be183803",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/schemas/sonickey.schema.ts": {
@@ -2782,7 +2782,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/services/sonickey.service.ts": {
-        "version": "932429a45055db51fe6580f4fe4e01d52586e53c6d8b1619f773d6878c226aa9",
+        "version": "46f68d0af0f4541ac76f53001aaf485cafe1f74ab50e83ebac4cf31f3c64df40",
         "signature": "4283a8f85606b5c809857668e280acd954479c7050b3c5eee6f0f72e12c3b460",
         "affectsGlobalScope": false
       },
@@ -3202,8 +3202,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/controllers/sonickey.controller.ts": {
-        "version": "02a744f28e1e24f1dda95c590a698a65d1b4c8d357ad4bb3cd523d616167b878",
-        "signature": "74cbe352cdfe5bf446d1540f1f48dbb751fdf3611218d33acdfce61068b4c903",
+        "version": "ab993ef065d3d1d781d4e1ad661ebe6202f9f85f1e053bd4c5ea1dcc28891739",
+        "signature": "729bc96d344920d8b2499eb900b8674f402c3305ca81453a0aeb9d76f1f59aa4",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/dtos/public-encode.dto.ts": {
@@ -3217,7 +3217,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/controllers/sonickey.guest.controller.ts": {
-        "version": "858bb478b32de1b7fb560a4f001fc68df510796d8e984626f8ea9158036bfc0a",
+        "version": "d9b0001944f30b1dfd5b032d2036be391be144531d5f00cabf4890d0521151d6",
         "signature": "ae2bf283cf6e60f2aefe7101f12b359459277d695f8f759488afbadc83deb421",
         "affectsGlobalScope": false
       },
