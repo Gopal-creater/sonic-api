@@ -26,14 +26,16 @@ import { ApiKeyModule } from './api/api-key/api-key.module';
 mongoosePaginate.paginate.options = {
   limit: 50,
 };
-console.log("Node_env",process.env.NODE_ENV);
-
+console.log('Node_env', process.env.NODE_ENV);
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba'}),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: process.env.NODE_ENV == 'production' ? '.env' : '.env.arba',
+    }),
     AuthModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -41,14 +43,14 @@ console.log("Node_env",process.env.NODE_ENV);
         uri: configService.get<string>('MONGODB_URI'),
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        useFindAndModify:false,
-        connectionFactory: (connection) => {
+        useFindAndModify: false,
+        connectionFactory: connection => {
           connection?.plugin(mongoosePaginate);
           connection?.plugin(aggregatePaginate);
-          connection?.plugin(require('mongoose-autopopulate'))
-          connection?.plugin(require('mongoose-lean-virtuals'))
+          connection?.plugin(require('mongoose-autopopulate'));
+          connection?.plugin(require('mongoose-lean-virtuals'));
           return connection;
-        }
+        },
       }),
       inject: [ConfigService],
     }),
@@ -68,7 +70,7 @@ console.log("Node_env",process.env.NODE_ENV);
     JobModule,
     RadiostationModule,
     ThirdpartyDetectionModule,
-    ApiKeyModule
+    ApiKeyModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],
