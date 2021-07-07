@@ -28,15 +28,15 @@ const schedule_1 = require("@nestjs/schedule");
 const app_gateway_1 = require("./app.gateway");
 const radiostation_module_1 = require("./api/radiostation/radiostation.module");
 const mongoose_1 = require("@nestjs/mongoose");
-const thirdparty_detection_module_1 = require("./api/thirdparty-detection/thirdparty-detection.module");
 const mongoosePaginate = require('mongoose-paginate-v2');
 const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 const event_emitter_1 = require("@nestjs/event-emitter");
 const api_key_module_1 = require("./api/api-key/api-key.module");
+const detection_module_1 = require("./api/detection/detection.module");
 mongoosePaginate.paginate.options = {
     limit: 50,
 };
-console.log("Node_env", process.env.NODE_ENV);
+console.log('Node_env', process.env.NODE_ENV);
 let AppModule = class AppModule {
     constructor() { }
 };
@@ -45,7 +45,10 @@ AppModule = __decorate([
         imports: [
             schedule_1.ScheduleModule.forRoot(),
             event_emitter_1.EventEmitterModule.forRoot(),
-            config_1.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.arba' }),
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+                envFilePath: process.env.NODE_ENV == 'production' ? '.env' : '.env.arba',
+            }),
             auth_module_1.AuthModule,
             mongoose_1.MongooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],
@@ -54,13 +57,13 @@ AppModule = __decorate([
                     useNewUrlParser: true,
                     useUnifiedTopology: true,
                     useFindAndModify: false,
-                    connectionFactory: (connection) => {
+                    connectionFactory: connection => {
                         connection === null || connection === void 0 ? void 0 : connection.plugin(mongoosePaginate);
                         connection === null || connection === void 0 ? void 0 : connection.plugin(aggregatePaginate);
                         connection === null || connection === void 0 ? void 0 : connection.plugin(require('mongoose-autopopulate'));
                         connection === null || connection === void 0 ? void 0 : connection.plugin(require('mongoose-lean-virtuals'));
                         return connection;
-                    }
+                    },
                 }),
                 inject: [config_1.ConfigService],
             }),
@@ -79,8 +82,8 @@ AppModule = __decorate([
             externalsonickey_module_1.ExternalSonickeyModule,
             job_module_1.JobModule,
             radiostation_module_1.RadiostationModule,
-            thirdparty_detection_module_1.ThirdpartyDetectionModule,
-            api_key_module_1.ApiKeyModule
+            api_key_module_1.ApiKeyModule,
+            detection_module_1.DetectionModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, app_gateway_1.AppGateway],

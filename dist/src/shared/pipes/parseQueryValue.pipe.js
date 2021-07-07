@@ -18,7 +18,7 @@ let ParseQueryValue = class ParseQueryValue {
         this.values = values;
     }
     transform(queries, metadata) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
         try {
             const parser = new mongoose_query_parser_1.MongooseQueryParser();
             queries = queries || {};
@@ -32,6 +32,14 @@ let ParseQueryValue = class ParseQueryValue {
             if ((_d = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _d === void 0 ? void 0 : _d.topLimit) {
                 parsed['topLimit'] = (_e = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _e === void 0 ? void 0 : _e.topLimit;
                 (_f = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _f === void 0 ? true : delete _f.topLimit;
+            }
+            if (((_g = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _g === void 0 ? void 0 : _g.includeGraph) !== null || ((_h = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _h === void 0 ? void 0 : _h.includeGraph) !== undefined) {
+                parsed['includeGraph'] = (_j = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _j === void 0 ? void 0 : _j.includeGraph;
+                (_k = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _k === void 0 ? true : delete _k.includeGraph;
+            }
+            if ((_l = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _l === void 0 ? void 0 : _l.groupByTime) {
+                parsed['groupByTime'] = (_m = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _m === void 0 ? void 0 : _m.groupByTime;
+                (_o = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _o === void 0 ? true : delete _o.groupByTime;
             }
             if (parsed === null || parsed === void 0 ? void 0 : parsed.filter) {
                 parsed.filter = this.castToObjectId(parsed === null || parsed === void 0 ? void 0 : parsed.filter);

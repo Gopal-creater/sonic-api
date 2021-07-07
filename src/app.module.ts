@@ -23,6 +23,7 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ApiKeyModule } from './api/api-key/api-key.module';
+import { DetectionModule } from './api/detection/detection.module';
 mongoosePaginate.paginate.options = {
   limit: 50,
 };
@@ -69,8 +70,9 @@ console.log('Node_env', process.env.NODE_ENV);
     ExternalSonickeyModule,
     JobModule,
     RadiostationModule,
-    ThirdpartyDetectionModule,
+    // ThirdpartyDetectionModule,
     ApiKeyModule,
+    DetectionModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],

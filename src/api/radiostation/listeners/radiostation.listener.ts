@@ -3,17 +3,17 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { START_LISTENING_STREAM, STOP_LISTENING_STREAM } from './constants';
 import { RadioStation } from '../schemas/radiostation.schema';
 import { SchedulerRegistry, Timeout } from '@nestjs/schedule';
-import { RadiostationSonicKeysService } from '../services/radiostation-sonickeys.service';
 import { appConfig } from '../../../config/app.config';
 import * as fs from 'fs';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import * as children from 'child_process';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
-import { CreateRadiostationSonicKeyDto } from '../dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto';
 import * as appRootPath from 'app-root-path';
 import * as makeDir from 'make-dir';
 import * as uniqid from 'uniqid';
 import { RadiostationService } from '../services/radiostation.service';
+import { DetectionService } from '../../detection/detection.service';
+import { ChannelEnums } from 'src/constants/Channels.enum';
 
 @Injectable()
 export class RadioStationListener implements OnApplicationBootstrap {
@@ -21,7 +21,7 @@ export class RadioStationListener implements OnApplicationBootstrap {
     private schedulerRegistry: SchedulerRegistry,
     private sonickeyService: SonickeyService,
     private radiostationService: RadiostationService,
-    private radiostationSonicKeysService: RadiostationSonicKeysService,
+    private detectionService: DetectionService,
   ) {}
   async onApplicationBootstrap() {
     this.streamingIntervalLogger.debug(
@@ -176,17 +176,20 @@ export class RadioStationListener implements OnApplicationBootstrap {
               sonicKey,
             );
             if (isKeyPresent) {
-              const createRadiostationSonicKeyDto = new CreateRadiostationSonicKeyDto();
-              createRadiostationSonicKeyDto.radioStation = radioStation._id;
-              createRadiostationSonicKeyDto.sonicKey = sonicKey;
-              createRadiostationSonicKeyDto.owner = radioStation.owner;
-              createRadiostationSonicKeyDto.sonicKeyOwner = isKeyPresent.owner;
-              await this.radiostationSonicKeysService
-                .createOrUpdate(createRadiostationSonicKeyDto)
-                .then(() => {
-                  savedKeys.push(sonicKey);
-                })
-                .catch(err => {});
+              const newDetection = await this.detectionService.detectionModel.create({
+                radioStation:radioStation._id,
+                sonicKey:sonicKey,
+                owner:radioStation.owner,
+                sonicKeyOwnerId:isKeyPresent.owner,
+                sonicKeyOwnerName:isKeyPresent.contentOwner,
+                channel:ChannelEnums.RADIOSTATION,
+                detectedAt:new Date()
+              })
+              await newDetection.save()
+              .then(() => {
+                savedKeys.push(sonicKey);
+              })
+              .catch(err => {});
             }
           }
           if (savedKeys.length > 0) {

@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { RadioStationSonicKey } from '../schemas/radiostation-sonickey.schema';
+import { Detection } from '../schemas/detection.schema';
 
-export class MongoosePaginateRadioStationSonicKeyDto {
-  @ApiProperty({isArray:true,type:RadioStationSonicKey})
-  docs: [RadioStationSonicKey];
+export class MongoosePaginateDeectionDto {
+  @ApiProperty({isArray:true,type:Detection})
+  docs: [Detection];
 
   @ApiProperty()
   totalDocs: number;

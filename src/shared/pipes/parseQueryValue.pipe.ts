@@ -36,6 +36,16 @@ export class ParseQueryValue implements PipeTransform {
         parsed['topLimit'] = parsed?.filter?.topLimit;
         delete parsed?.filter?.topLimit;
       }
+
+      if (parsed?.filter?.includeGraph!==null || parsed?.filter?.includeGraph!==undefined) {
+        parsed['includeGraph'] = parsed?.filter?.includeGraph;
+        delete parsed?.filter?.includeGraph;
+      }
+
+      if (parsed?.filter?.groupByTime) {
+        parsed['groupByTime'] = parsed?.filter?.groupByTime;
+        delete parsed?.filter?.groupByTime;
+      }
       // Cast to ObjectId
       if(parsed?.filter){
         parsed.filter=this.castToObjectId(parsed?.filter)

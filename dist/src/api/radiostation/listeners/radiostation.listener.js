@@ -23,22 +23,22 @@ const event_emitter_1 = require("@nestjs/event-emitter");
 const constants_1 = require("./constants");
 const radiostation_schema_1 = require("../schemas/radiostation.schema");
 const schedule_1 = require("@nestjs/schedule");
-const radiostation_sonickeys_service_1 = require("../services/radiostation-sonickeys.service");
 const app_config_1 = require("../../../config/app.config");
 const fs = require("fs");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const children = require("child_process");
-const create_radiostation_sonickey_dto_1 = require("../dto/radiostation-sonickey-dto/create-radiostation-sonickey.dto");
 const appRootPath = require("app-root-path");
 const makeDir = require("make-dir");
 const uniqid = require("uniqid");
 const radiostation_service_1 = require("../services/radiostation.service");
+const detection_service_1 = require("../../detection/detection.service");
+const Channels_enum_1 = require("../../../constants/Channels.enum");
 let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
-    constructor(schedulerRegistry, sonickeyService, radiostationService, radiostationSonicKeysService) {
+    constructor(schedulerRegistry, sonickeyService, radiostationService, detectionService) {
         this.schedulerRegistry = schedulerRegistry;
         this.sonickeyService = sonickeyService;
         this.radiostationService = radiostationService;
-        this.radiostationSonicKeysService = radiostationSonicKeysService;
+        this.detectionService = detectionService;
         this.radioStationListenerLogger = new common_1.Logger(RadioStationListener_1.name);
         this.streamingIntervalLogger = new common_1.Logger('StreamingInterval');
     }
@@ -118,13 +118,16 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
                             const sonicKey = sonicKeys_1_1.value;
                             const isKeyPresent = await this.sonickeyService.findBySonicKey(sonicKey);
                             if (isKeyPresent) {
-                                const createRadiostationSonicKeyDto = new create_radiostation_sonickey_dto_1.CreateRadiostationSonicKeyDto();
-                                createRadiostationSonicKeyDto.radioStation = radioStation._id;
-                                createRadiostationSonicKeyDto.sonicKey = sonicKey;
-                                createRadiostationSonicKeyDto.owner = radioStation.owner;
-                                createRadiostationSonicKeyDto.sonicKeyOwner = isKeyPresent.owner;
-                                await this.radiostationSonicKeysService
-                                    .createOrUpdate(createRadiostationSonicKeyDto)
+                                const newDetection = await this.detectionService.detectionModel.create({
+                                    radioStation: radioStation._id,
+                                    sonicKey: sonicKey,
+                                    owner: radioStation.owner,
+                                    sonicKeyOwnerId: isKeyPresent.owner,
+                                    sonicKeyOwnerName: isKeyPresent.contentOwner,
+                                    channel: Channels_enum_1.ChannelEnums.RADIOSTATION,
+                                    detectedAt: new Date()
+                                });
+                                await newDetection.save()
                                     .then(() => {
                                     savedKeys.push(sonicKey);
                                 })
@@ -174,7 +177,7 @@ RadioStationListener = RadioStationListener_1 = __decorate([
     __metadata("design:paramtypes", [schedule_1.SchedulerRegistry,
         sonickey_service_1.SonickeyService,
         radiostation_service_1.RadiostationService,
-        radiostation_sonickeys_service_1.RadiostationSonicKeysService])
+        detection_service_1.DetectionService])
 ], RadioStationListener);
 exports.RadioStationListener = RadioStationListener;
 //# sourceMappingURL=radiostation.listener.js.map

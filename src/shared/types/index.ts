@@ -1,0 +1,1 @@
+export type groupByTime = 'year' | 'month' | 'dayOfMonth';

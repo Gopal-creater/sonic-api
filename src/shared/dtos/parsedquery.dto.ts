@@ -1,6 +1,7 @@
 import { ApiProperty,ApiHideProperty } from '@nestjs/swagger';
 import { IsOptional, IsPositive } from 'class-validator';
 import { QueryOptions } from 'mongoose-query-parser';
+import { groupByTime } from 'src/shared/types';
 
 export class ParsedQueryDto implements QueryOptions {
   @ApiHideProperty()
@@ -26,4 +27,10 @@ export class ParsedQueryDto implements QueryOptions {
 
   @ApiHideProperty()
   topLimit?:number;
+
+  @ApiHideProperty()
+  includeGraph?:boolean;
+
+  @ApiHideProperty()
+  groupByTime?:groupByTime;
 }

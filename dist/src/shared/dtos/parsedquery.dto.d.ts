@@ -1,4 +1,5 @@
 import { QueryOptions } from 'mongoose-query-parser';
+import { groupByTime } from 'src/shared/types';
 export declare class ParsedQueryDto implements QueryOptions {
     filter: any;
     sort?: any;
@@ -8,4 +9,6 @@ export declare class ParsedQueryDto implements QueryOptions {
     populate?: any;
     page?: number;
     topLimit?: number;
+    includeGraph?: boolean;
+    groupByTime?: groupByTime;
 }

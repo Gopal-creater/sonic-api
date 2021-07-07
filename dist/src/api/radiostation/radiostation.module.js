@@ -10,13 +10,10 @@ exports.RadiostationModule = void 0;
 const common_1 = require("@nestjs/common");
 const radiostation_service_1 = require("./services/radiostation.service");
 const radiostation_controller_1 = require("./controllers/radiostation.controller");
-const radiostation_sonickeys_controller_1 = require("./controllers/radiostation-sonickeys.controller");
-const radiostation_sonickeys_service_1 = require("./services/radiostation-sonickeys.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const radiostation_schema_1 = require("./schemas/radiostation.schema");
 const sonickey_module_1 = require("../sonickey/sonickey.module");
-const radiostation_sonickey_schema_1 = require("./schemas/radiostation-sonickey.schema");
-const sonickey_schema_1 = require("../sonickey/schemas/sonickey.schema");
+const detection_module_1 = require("../detection/detection.module");
 const radiostation_listener_1 = require("./listeners/radiostation.listener");
 let RadiostationModule = class RadiostationModule {
 };
@@ -24,19 +21,14 @@ RadiostationModule = __decorate([
     common_1.Module({
         imports: [
             mongoose_1.MongooseModule.forFeature([
-                { name: radiostation_schema_1.RadioStationSchemaName, schema: radiostation_schema_1.RadioStationSchema },
-                {
-                    name: radiostation_sonickey_schema_1.RadioStationSonicKeySchemaName,
-                    schema: radiostation_sonickey_schema_1.RadioStationSonicKeySchema,
-                },
-                { name: sonickey_schema_1.SonicKeySchemaName, schema: sonickey_schema_1.SonicKeySchema },
+                { name: radiostation_schema_1.RadioStationSchemaName, schema: radiostation_schema_1.RadioStationSchema }
             ]),
             sonickey_module_1.SonickeyModule,
+            detection_module_1.DetectionModule
         ],
-        controllers: [radiostation_controller_1.RadiostationController, radiostation_sonickeys_controller_1.RadiostationSonicKeysController],
+        controllers: [radiostation_controller_1.RadiostationController],
         providers: [
             radiostation_service_1.RadiostationService,
-            radiostation_sonickeys_service_1.RadiostationSonicKeysService,
             radiostation_listener_1.RadioStationListener,
         ],
     })
