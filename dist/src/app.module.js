@@ -28,6 +28,7 @@ const schedule_1 = require("@nestjs/schedule");
 const app_gateway_1 = require("./app.gateway");
 const radiostation_module_1 = require("./api/radiostation/radiostation.module");
 const mongoose_1 = require("@nestjs/mongoose");
+const thirdparty_detection_module_1 = require("./api/thirdparty-detection/thirdparty-detection.module");
 const mongoosePaginate = require('mongoose-paginate-v2');
 const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 const event_emitter_1 = require("@nestjs/event-emitter");
@@ -82,6 +83,7 @@ AppModule = __decorate([
             externalsonickey_module_1.ExternalSonickeyModule,
             job_module_1.JobModule,
             radiostation_module_1.RadiostationModule,
+            thirdparty_detection_module_1.ThirdpartyDetectionModule,
             api_key_module_1.ApiKeyModule,
             detection_module_1.DetectionModule,
         ],

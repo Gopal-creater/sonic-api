@@ -47,5 +47,5 @@ export class TopRadioStation{
     sonicKeys:TopSonicKey[]
   
     @ApiProperty()
-    graphs?:GraphData[]
+    graphsData?:GraphData[]
   } 

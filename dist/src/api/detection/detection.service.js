@@ -31,7 +31,7 @@ let DetectionService = class DetectionService {
     constructor(detectionModel) {
         this.detectionModel = detectionModel;
     }
-    async findAll(queryDto) {
+    async findAll(queryDto, aggregateQuery) {
         const { limit, skip, sort, page, filter, select, populate } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
@@ -40,7 +40,35 @@ let DetectionService = class DetectionService {
         paginateOptions['offset'] = skip;
         paginateOptions['page'] = page;
         paginateOptions['limit'] = limit;
-        return await this.detectionModel['paginate'](filter, paginateOptions);
+        console.log("paginateOptions", paginateOptions);
+        const aggregate = this.detectionModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            { $group: { _id: '$sonicKey', totalHits: { $sum: 1 } } },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            {
+                $project: {
+                    sonicKey: { $first: '$sonicKey' },
+                    totalHits: 1,
+                    otherField: 1,
+                },
+            },
+            { $sort: { totalHits: -1 } },
+        ]);
+        if (aggregateQuery) {
+            return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+        }
+        else {
+            return this.detectionModel['paginate'](filter, paginateOptions);
+        }
     }
     async findTopRadioStationsWithSonicKeysForOwner(ownerId, topLimit, filter = {}) {
         var e_1, _a;
@@ -127,6 +155,9 @@ let DetectionService = class DetectionService {
             group_id['month'] = { $month: '$detectedAt' };
         }
         else if (groupByTime == 'dayOfMonth') {
+            group_id['dayOfMonth'] = { $dayOfMonth: '$detectedAt' };
+        }
+        else {
             group_id['dayOfMonth'] = { $dayOfMonth: '$detectedAt' };
         }
         const graphData = await this.detectionModel.aggregate([

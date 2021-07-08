@@ -24,27 +24,29 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { IsTargetUserLoggedInGuard } from 'src/api/auth/guards/isTargetUserLoggedIn.guard';
 import { groupByTime } from 'src/shared/types';
-import { IsOptional } from 'class-validator';
 
 @ApiTags('Detection Controller')
-@Controller('detections')
+@Controller('detections/owners/:targetUser')
 export class DetectionOwnerController {
   constructor(
     private readonly detectionService: DetectionService,
     private readonly sonickeyServive: SonickeyService,
   ) {}
 
-  @Get('/:targetUser/top-radiostations-with-top-sonickeys')
+  @Get(`/radioStations/top-radiostations-with-top-sonickeys`)
   @AnyApiQueryTemplate({
-    additionalHtmlDescription:`
-    <fieldset>
-        <legend><h3>Example with graph inclusion:</h3></legend>
-    <code><small>BASE_URL/:targetUser/top-radiostations-with-top-sonickeys?detectedAt<2021-06-30&detectedAt>2021-06-01&includeGraph=true&groupByTime=month</small></code>
-    </fieldset>
-    `
+    additionalHtmlDescription: `
+  <fieldset>
+  <legend><h1>Example:</h1></legend>
+  <code><small>BASE_URL/detections/owners/:targetUser/top-radiostations-with-top-sonickeys?detectedAt<2021-06-30&detectedAt>2021-06-01</small></code>
+ <br/>
+ <h4>Example including Graph</h4>
+ <code><small>BASE_URL/detections/owners/:targetUser/top-radiostations-with-top-sonickeys?detectedAt<2021-06-30&detectedAt>2021-06-01&includeGraph=true&groupByTime=month</small></code>
+  </fieldset>
+ `,
   })
   // @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
-  // @ApiBearerAuth()
+  @ApiBearerAuth()
   @ApiQuery({name:"includeGraph",type:Boolean,required:false})
   @ApiQuery({name:"groupByTime",enum:['month','year','dayOfMonth'],required:false})
   @ApiOperation({ summary: 'Get Top radiostations with top sonickeys' })
@@ -53,6 +55,9 @@ export class DetectionOwnerController {
     @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
   ):Promise<TopRadioStationWithTopSonicKey[]> {
     const { topLimit = 3, includeGraph, groupByTime, filter } = queryDto;
+    const graph_detectedAt = filter.graph_detectedAt //support for different detectedAt time for graph query
+
+    delete filter.graph_detectedAt
     const topStationsWithSonicKeys = await this.detectionService.findTopRadioStationsWithSonicKeysForOwner(
       targetUser,
       topLimit,
@@ -61,13 +66,17 @@ export class DetectionOwnerController {
     if(includeGraph){
       if(!groupByTime) throw new BadRequestException("groupByTime query params required for includeGraph type")
       var topStationsWithTopKeysAndGraphs = [];
+      if(graph_detectedAt){ //add graph_detectedAt date if it is preset
+        filter["detectedAt"]=graph_detectedAt
+      }
+      console.log("filter in graph",filter)
       for await (const station of topStationsWithSonicKeys) {
         const graphs = await this.detectionService.findGraphOfSonicKeysForRadioStationInSpecificTime(
           station._id,
           groupByTime,
           filter,
         );
-        station['graphs'] = graphs;
+        station['graphsData'] = graphs;
         topStationsWithTopKeysAndGraphs.push(station);
       }
       return topStationsWithTopKeysAndGraphs;
@@ -75,27 +84,16 @@ export class DetectionOwnerController {
     return topStationsWithSonicKeys
   }
 
-  @Get('/:targetUser/:channel')
-  @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
-  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
-  @ApiBearerAuth()
-  @AnyApiQueryTemplate()
-  @ApiOperation({ summary: 'Get All Detections' })
-  findAll(
-    @Param('targetUser') targetUser: string,
-    @Param('channel') channel: string,
-    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
-  ) {
-    if (channel !== 'ALL') {
-      queryDto.filter['channel'] = channel;
-    }
-    queryDto.filter['owner'] = targetUser;
-    return this.detectionService.findAll(queryDto);
-  }
-
-  @Get('/:targetUser/:radioStation/sonickey-graph/:groupByTime')
+  @Get('/radioStations/:radioStation/sonickey-graph/:groupByTime')
   @ApiParam({ name: 'groupByTime', enum: ['month', 'year', 'dayOfMonth'] })
-  @AnyApiQueryTemplate()
+  @AnyApiQueryTemplate({
+    additionalHtmlDescription: `
+  <fieldset>
+  <legend><h1>Example:</h1></legend>
+  <code><small>BASE_URL/detections/owners/:targetUser/radioStations/:radioStation/sonickey-graph/:groupByTime?detectedAt<2021-06-30&detectedAt>2021-06-01</small></code>
+  </fieldset>
+ `,
+  })
   @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Top radiostations with top sonickeys' })
@@ -113,19 +111,61 @@ export class DetectionOwnerController {
     );
   }
 
-  @Get('/:targetUser/:channel/count')
+  @Get('/:channel/data')
+  @ApiQuery({name:"radioStation",type:String,required:false})
+  @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
+  // @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @ApiBearerAuth()
+  @AnyApiQueryTemplate()
+  @ApiOperation({ summary: 'Get All Detections for specific channel and specific user' })
+  findAll(
+    @Param('targetUser') targetUser: string,
+    @Param('channel') channel: string,
+    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+  ) {
+    if (channel !== 'ALL') {
+      queryDto.filter['channel'] = channel;
+    }
+    queryDto.filter['owner'] = targetUser;
+    return this.detectionService.findAll(queryDto,true);
+  }
+
+  @Get('/:channel/sonicKeys/:sonicKey/detected-details')
+  @ApiQuery({name:"radioStation",type:String,required:false})
+  // @ApiQuery({name:"select",type:String,required:false})
+  @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @ApiBearerAuth()
+  @AnyApiQueryTemplate()
+  @ApiOperation({ summary: 'Get Detected Details for specific channel and specific sonickey' })
+  getDetectedDetailsOfSingleSonicKey(
+    @Param('targetUser') targetUser: string,
+    @Param('channel') channel: string,
+    @Param('sonicKey') sonicKey: string,
+    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+  ) {
+    if (channel !== 'ALL') {
+      queryDto.filter['channel'] = channel;
+    }
+    queryDto.filter['owner'] = targetUser;
+    queryDto.filter['sonicKey'] = sonicKey;
+    return this.detectionService.findAll(queryDto);
+  }
+
+  @Get('/:channel/count')
+  @ApiQuery({name:"radioStation",type:String,required:false})
   @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
   @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @AnyApiQueryTemplate({
     additionalHtmlDescription: `
-        <fieldset>
-        <legend><h1>Example with detectedDate:</h1></legend>
-        <code><small>BASE_URL/:targetUser/:channel/count/?detectedAt<2021-06-30&detectedAt>2021-06-01</small></code>
-          <br/>
-      <h4>OR For Specific RadioStation</h4>
-      <code><small>BASE_URL/:targetUser/:channel/count/?detectedAt<2021-06-30&detectedAt>2021-06-01&radioStation=609cd75081fe3a15732162ef</small></code>
-        </fieldset>
+  <fieldset>
+  <legend><h1>Example:</h1></legend>
+  <code><small>BASE_URL/detections/owners/:targetUser/:channel/count/?detectedAt<2021-06-30&detectedAt>2021-06-01</small></code>
+ <br/>
+ <h4>OR For Specific RadioStation</h4>
+ <code><small>BASE_URL/detections/owners/:targetUser/:channel/count/?detectedAt<2021-06-30&detectedAt>2021-06-01&radioStation=609cd75081fe3a15732162ef</small></code>
+  </fieldset>
  `,
   })
   @ApiOperation({ summary: 'Get Count' })

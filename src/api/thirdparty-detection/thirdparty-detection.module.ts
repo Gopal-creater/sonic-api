@@ -10,20 +10,22 @@ import {
 import { ThirdpartyDetectionFromBinaryController } from './controllers/thirdparty-detection-from-binary.controller';
 import { ApiKeyModule } from '../api-key/api-key.module';
 import { SonickeyModule } from '../sonickey/sonickey.module';
+import { DetectionModule } from '../detection/detection.module';
 
 @Module({
   imports: [
-  MongooseModule.forFeature([
+    MongooseModule.forFeature([
       {
         name: ThirdpartyDetection.name,
         schema: ThirdpartyDetectionSchema,
       },
     ]),
     ApiKeyModule,
-    SonickeyModule
+    SonickeyModule,
+    DetectionModule,
   ],
   controllers: [
-    ThirdpartyDetectionController,
+    // ThirdpartyDetectionController,
     ThirdpartyDetectionFromBinaryController,
   ],
   providers: [ThirdpartyDetectionService],

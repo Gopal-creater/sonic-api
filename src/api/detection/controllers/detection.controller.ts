@@ -39,56 +39,56 @@ export class DetectionController {
     private readonly sonickeyServive: SonickeyService,
   ) {}
 
-  @Get('/test-add')
-  async addDummy() {
-    return this.detectionService.findGraphOfSonicKeysForRadioStationInSpecificTime(
-      '609d86cc81fe3a1573217507',
-      'month',
-      {
-        detectedAt: { $gte: new Date('2021/1/1'), $lt: new Date('2022/1/1') },
-        owner:"5728f50d-146b-47d2-aa7b-a50bc37d641d"
-      },
-    );
-  }
+  // @Get('/test-add')
+  // async addDummy() {
+  //   return this.detectionService.findGraphOfSonicKeysForRadioStationInSpecificTime(
+  //     '609d86cc81fe3a1573217507',
+  //     'month',
+  //     {
+  //       detectedAt: { $gte: new Date('2021/1/1'), $lt: new Date('2022/1/1') },
+  //       owner:"5728f50d-146b-47d2-aa7b-a50bc37d641d"
+  //     },
+  //   );
+  // }
 
-  @Get('/test-add-data')
-  async addDum() {
-    const sonicKey = {
-      key: 'SctBt6A7eMZ',
-      owner: '5728f50d-146b-47d2-aa7b-a50bc37d641d',
-      contentOwner: 'ArBa owner details with spaces',
-    };
-    const radio = {
-      id: '609d86cc81fe3a1573217507',
-      owner: '5728f50d-146b-47d2-aa7b-a50bc37d641d',
-    };
-    const newDetection = await this.detectionService.detectionModel.create({
-      radioStation: radio.id,
-      sonicKey: sonicKey.key,
-      owner: radio.owner,
-      sonicKeyOwnerId: sonicKey.owner,
-      sonicKeyOwnerName: sonicKey.contentOwner,
-      channel: ChannelEnums.RADIOSTATION,
-      detectedAt: new Date('2021/8/1'),
-    });
-    await newDetection.save();
-  }
+  // @Get('/test-add-data')
+  // async addDum() {
+  //   const sonicKey = {
+  //     key: 'SctBt6A7eMZ',
+  //     owner: '5728f50d-146b-47d2-aa7b-a50bc37d641d',
+  //     contentOwner: 'ArBa owner details with spaces',
+  //   };
+  //   const radio = {
+  //     id: '609d86cc81fe3a1573217507',
+  //     owner: '5728f50d-146b-47d2-aa7b-a50bc37d641d',
+  //   };
+  //   const newDetection = await this.detectionService.detectionModel.create({
+  //     radioStation: radio.id,
+  //     sonicKey: sonicKey.key,
+  //     owner: radio.owner,
+  //     sonicKeyOwnerId: sonicKey.owner,
+  //     sonicKeyOwnerName: sonicKey.contentOwner,
+  //     channel: ChannelEnums.RADIOSTATION,
+  //     detectedAt: new Date('2021/8/1'),
+  //   });
+  //   await newDetection.save();
+  // }
 
-  @Get()
+  // @Get()
   // @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @AnyApiQueryTemplate()
-  @ApiOperation({ summary: 'Get All Detections' })
-  findAll(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto) {
-    return this.detectionService.findAll(queryDto);
-  }
+  // @ApiBearerAuth()
+  // @AnyApiQueryTemplate()
+  // @ApiOperation({ summary: 'Get All Detections' })
+  // findAll(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto) {
+  //   return this.detectionService.findAll(queryDto);
+  // }
 
   @ApiSecurity('x-api-key')
   @ApiOperation({
     summary: 'Create Detection From Binary [protected by x-api-key]',
   })
   @UseGuards(ApiKeyAuthGuard)
-  @Post(`/${ChannelEnums.BINARY}`)
+  @Post(`/channels/${ChannelEnums.BINARY}`)
   async createFromBinary(
     @Body() createDetectionFromBinaryDto: CreateDetectionFromBinaryDto,
     @ApiKey('customer') customer: string,
@@ -121,7 +121,7 @@ export class DetectionController {
     summary: 'Create Detection From Hardware [protected by x-api-key]',
   })
   @UseGuards(ApiKeyAuthGuard)
-  @Post(`/${ChannelEnums.HARDWARE}`)
+  @Post(`/channels/${ChannelEnums.HARDWARE}`)
   async createFromHardware(
     @Body() createDetectionFromHardwareDto: CreateDetectionFromHardwareDto,
     @ApiKey('customer') customer: string,

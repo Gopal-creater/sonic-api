@@ -19,5 +19,5 @@ export declare class GraphData {
 }
 export declare class TopRadioStationWithTopSonicKey extends TopRadioStation {
     sonicKeys: TopSonicKey[];
-    graphs?: GraphData[];
+    graphsData?: GraphData[];
 }

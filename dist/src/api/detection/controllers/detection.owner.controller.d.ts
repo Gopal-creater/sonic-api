@@ -9,7 +9,6 @@ export declare class DetectionOwnerController {
     private readonly sonickeyServive;
     constructor(detectionService: DetectionService, sonickeyServive: SonickeyService);
     getTopRadiostations(targetUser: string, queryDto: ParsedQueryDto): Promise<TopRadioStationWithTopSonicKey[]>;
-    findAll(targetUser: string, channel: string, queryDto?: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDeectionDto>;
     getSonicKeyGraphs(targetUser: string, radioStation: string, time: groupByTime, queryDto: ParsedQueryDto): Promise<{
         _id: any;
         year: number;
@@ -17,5 +16,7 @@ export declare class DetectionOwnerController {
         day: number;
         hits: number;
     }[]>;
+    findAll(targetUser: string, channel: string, queryDto?: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDeectionDto>;
+    getDetectedDetailsOfSingleSonicKey(targetUser: string, channel: string, sonicKey: string, queryDto?: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDeectionDto>;
     getCount(targetUser: string, channel: string, queryDto?: ParsedQueryDto): import("mongoose").Query<number, import("../schemas/detection.schema").Detection, {}>;
 }

@@ -7,7 +7,12 @@ import { MongoosePaginateDeectionDto } from './dto/mongoosepaginate-radiostation
 import { ChannelEnums } from 'src/constants/Channels.enum';
 import { toObjectId } from 'src/shared/utils/mongoose.utils';
 import { groupByTime } from 'src/shared/types';
-import { TopRadioStation,TopRadioStationWithTopSonicKey,GraphData,TopSonicKey } from './dto/general.dto';
+import {
+  TopRadioStation,
+  TopRadioStationWithTopSonicKey,
+  GraphData,
+  TopSonicKey,
+} from './dto/general.dto';
 
 @Injectable()
 export class DetectionService {
@@ -18,6 +23,7 @@ export class DetectionService {
 
   async findAll(
     queryDto: ParsedQueryDto,
+    aggregateQuery?: boolean,
   ): Promise<MongoosePaginateDeectionDto> {
     const { limit, skip, sort, page, filter, select, populate } = queryDto;
     var paginateOptions = {};
@@ -28,8 +34,44 @@ export class DetectionService {
     paginateOptions['page'] = page;
     paginateOptions['limit'] = limit;
 
-    return await this.detectionModel['paginate'](filter, paginateOptions);
+    console.log("paginateOptions",paginateOptions);
+    
+    const aggregate = this.detectionModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      { $group: { _id: '$sonicKey', totalHits: { $sum: 1 } } }, //group by radioStation to get duplicates counts
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'SonicKey',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'sonicKey',
+        },
+      },
+      {
+        $project: {
+          sonicKey: { $first: '$sonicKey' },
+          totalHits: 1,
+          otherField: 1,
+        }, //lookup will return array so always tale first index elememt
+      },
+      { $sort: { totalHits: -1 } }, //sort in decending order
+    ]);
+
+    if (aggregateQuery) {
+      return this.detectionModel['aggregatePaginate'](
+        aggregate,
+        paginateOptions,
+      );
+    } else {
+      return this.detectionModel['paginate'](filter, paginateOptions);
+    }
   }
+
 
   // perfect example==> https://stackoverflow.com/questions/22932364/mongodb-group-values-by-multiple-fields
   async findTopRadioStationsWithSonicKeysForOwner(
@@ -56,30 +98,32 @@ export class DetectionService {
 
   async findTopRadioStations(filter: object, topLimit: number) {
     filter['channel'] = ChannelEnums.RADIOSTATION;
-    const topRadioStations: TopRadioStation[] = await this.detectionModel.aggregate([
-      {
-        $match: filter,
-      },
-      { $group: { _id: '$radioStation', totalKeysDetected: { $sum: 1 } } }, //group by radioStation to get duplicates counts
-      {
-        $lookup: {
-          //populate radioStation from its relational table
-          from: 'RadioStation',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'radioStation',
+    const topRadioStations: TopRadioStation[] = await this.detectionModel.aggregate(
+      [
+        {
+          $match: filter,
         },
-      },
-      {
-        $project: {
-          radioStation: { $first: '$radioStation' },
-          totalKeysDetected: 1,
-          otherField: 1,
-        }, //lookup will return array so always tale first index elememt
-      },
-      { $sort: { totalKeysDetected: -1 } }, //sort in decending order
-      { $limit: topLimit }, //get the top number of results only
-    ]);
+        { $group: { _id: '$radioStation', totalKeysDetected: { $sum: 1 } } }, //group by radioStation to get duplicates counts
+        {
+          $lookup: {
+            //populate radioStation from its relational table
+            from: 'RadioStation',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'radioStation',
+          },
+        },
+        {
+          $project: {
+            radioStation: { $first: '$radioStation' },
+            totalKeysDetected: 1,
+            otherField: 1,
+          }, //lookup will return array so always tale first index elememt
+        },
+        { $sort: { totalKeysDetected: -1 } }, //sort in decending order
+        { $limit: topLimit }, //get the top number of results only
+      ],
+    );
     return topRadioStations;
   }
 
@@ -89,7 +133,7 @@ export class DetectionService {
     filter: object = {},
   ) {
     const stationId = toObjectId(radioStationId);
-    const topSonicKeys:TopSonicKey[] = await this.detectionModel.aggregate([
+    const topSonicKeys: TopSonicKey[] = await this.detectionModel.aggregate([
       {
         $match: {
           ...filter,
@@ -131,6 +175,8 @@ export class DetectionService {
     } else if (groupByTime == 'month') {
       group_id['month'] = { $month: '$detectedAt' };
     } else if (groupByTime == 'dayOfMonth') {
+      group_id['dayOfMonth'] = { $dayOfMonth: '$detectedAt' };
+    }else{
       group_id['dayOfMonth'] = { $dayOfMonth: '$detectedAt' };
     }
     const graphData: {

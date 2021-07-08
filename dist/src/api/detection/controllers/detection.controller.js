@@ -25,41 +25,10 @@ const Channels_enum_1 = require("../../../constants/Channels.enum");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
-const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 let DetectionController = class DetectionController {
     constructor(detectionService, sonickeyServive) {
         this.detectionService = detectionService;
         this.sonickeyServive = sonickeyServive;
-    }
-    async addDummy() {
-        return this.detectionService.findGraphOfSonicKeysForRadioStationInSpecificTime('609d86cc81fe3a1573217507', 'month', {
-            detectedAt: { $gte: new Date('2021/1/1'), $lt: new Date('2022/1/1') },
-            owner: "5728f50d-146b-47d2-aa7b-a50bc37d641d"
-        });
-    }
-    async addDum() {
-        const sonicKey = {
-            key: 'SctBt6A7eMZ',
-            owner: '5728f50d-146b-47d2-aa7b-a50bc37d641d',
-            contentOwner: 'ArBa owner details with spaces',
-        };
-        const radio = {
-            id: '609d86cc81fe3a1573217507',
-            owner: '5728f50d-146b-47d2-aa7b-a50bc37d641d',
-        };
-        const newDetection = await this.detectionService.detectionModel.create({
-            radioStation: radio.id,
-            sonicKey: sonicKey.key,
-            owner: radio.owner,
-            sonicKeyOwnerId: sonicKey.owner,
-            sonicKeyOwnerName: sonicKey.contentOwner,
-            channel: Channels_enum_1.ChannelEnums.RADIOSTATION,
-            detectedAt: new Date('2021/8/1'),
-        });
-        await newDetection.save();
-    }
-    findAll(queryDto) {
-        return this.detectionService.findAll(queryDto);
     }
     async createFromBinary(createDetectionFromBinaryDto, customer, apiKey) {
         const keyFound = await this.sonickeyServive.findBySonicKey(createDetectionFromBinaryDto.sonicKey);
@@ -89,37 +58,12 @@ let DetectionController = class DetectionController {
     }
 };
 __decorate([
-    common_1.Get('/test-add'),
-    openapi.ApiResponse({ status: 200 }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], DetectionController.prototype, "addDummy", null);
-__decorate([
-    common_1.Get('/test-add-data'),
-    openapi.ApiResponse({ status: 200 }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], DetectionController.prototype, "addDum", null);
-__decorate([
-    common_1.Get(),
-    swagger_1.ApiBearerAuth(),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({ summary: 'Get All Detections' }),
-    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDeectionDto }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
-    __metadata("design:returntype", void 0)
-], DetectionController.prototype, "findAll", null);
-__decorate([
     swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiOperation({
         summary: 'Create Detection From Binary [protected by x-api-key]',
     }),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
-    common_1.Post(`/${Channels_enum_1.ChannelEnums.BINARY}`),
+    common_1.Post(`/channels/${Channels_enum_1.ChannelEnums.BINARY}`),
     openapi.ApiResponse({ status: 201, type: require("../schemas/detection.schema").Detection }),
     __param(0, common_1.Body()),
     __param(1, apikey_decorator_1.ApiKey('customer')),
@@ -134,7 +78,7 @@ __decorate([
         summary: 'Create Detection From Hardware [protected by x-api-key]',
     }),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
-    common_1.Post(`/${Channels_enum_1.ChannelEnums.HARDWARE}`),
+    common_1.Post(`/channels/${Channels_enum_1.ChannelEnums.HARDWARE}`),
     openapi.ApiResponse({ status: 201, type: require("../schemas/detection.schema").Detection }),
     __param(0, common_1.Body()),
     __param(1, apikey_decorator_1.ApiKey('customer')),

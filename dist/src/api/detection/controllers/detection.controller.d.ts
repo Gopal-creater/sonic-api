@@ -6,15 +6,6 @@ export declare class DetectionController {
     private readonly detectionService;
     private readonly sonickeyServive;
     constructor(detectionService: DetectionService, sonickeyServive: SonickeyService);
-    addDummy(): Promise<{
-        _id: any;
-        year: number;
-        month: number;
-        day: number;
-        hits: number;
-    }[]>;
-    addDum(): Promise<void>;
-    findAll(queryDto?: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDeectionDto>;
     createFromBinary(createDetectionFromBinaryDto: CreateDetectionFromBinaryDto, customer: string, apiKey: string): Promise<import("../schemas/detection.schema").Detection>;
     createFromHardware(createDetectionFromHardwareDto: CreateDetectionFromHardwareDto, customer: string, apiKey: string): Promise<import("../schemas/detection.schema").Detection>;
     getCount(queryDto: ParsedQueryDto): Promise<number>;

@@ -1157,12 +1157,12 @@
         "affectsGlobalScope": false
       },
       "../package.json": {
-        "version": "3b3d82fd5bea9b8834a3096c7bdf8ece9820658704d6e5363727984604725e1c",
+        "version": "7da7246dcfb2a45aa85e70c6782b3f0b7a8f24ba8b68d092186aff099367e77a",
         "signature": "3e9311a52db35f694b8b21a1494138bbd4d67583e81c3fcc2ae1efbebc381a29",
         "affectsGlobalScope": true
       },
       "../src/app.service.ts": {
-        "version": "5897e882a7fe9beb67a8acf71df40c4ba567646ed53c62002a82b94b7a1db16a",
+        "version": "c0e4b075d0f0ec70893994f808800c10f6c9074f8034382b3a1f8b88c658bc11",
         "signature": "653711fba8904aa27fd8911b63cf526e7b334e13a292da4cefdbbe179ac3f3f2",
         "affectsGlobalScope": false
       },
@@ -5452,13 +5452,13 @@
         "affectsGlobalScope": false
       },
       "../src/api/detection/dto/general.dto.ts": {
-        "version": "4f56d717caaf983d14d2cc7ac3803e6910e48ff45e09aedb268604e1e03d94a9",
-        "signature": "812118edaf6f94c6c6ef43c944a7fa152418a7d0cd2b3695d49db34c0b6ce01d",
+        "version": "4084fa34589d3d35a0cb8af834c8be1b0f2a7920a518ef2346b9b3bb8e6930b3",
+        "signature": "59ecf22a84e096bbc1908f005cf78a5a4957c34a6634d4745493f6e0a6b10bf9",
         "affectsGlobalScope": false
       },
       "../src/api/detection/detection.service.ts": {
-        "version": "592fdf1ce056bd6e0a7ae68346d1a871532da63faff2621dbfd4c6cba6ba8896",
-        "signature": "49c8ddc694af200c0fdbefc9c25bbab3f272691201b0c0dcd1947080db428a7f",
+        "version": "aabf846643e7720e8b7de29e13f147a6a400ca02fb6a035d7f6951a26bfcf0c9",
+        "signature": "aa9a8d96a401d75e53a0b83714a207af8223c2d840444953c38f481401b364a4",
         "affectsGlobalScope": false
       },
       "../src/api/detection/dto/create-detection.dto.ts": {
@@ -5467,13 +5467,13 @@
         "affectsGlobalScope": false
       },
       "../src/api/detection/controllers/detection.controller.ts": {
-        "version": "1eedbfeb209b2af0a519df761e135797e80062602aa493c78936cb7b7eba8565",
-        "signature": "e32e173ce6516088829be86b125e83bf609aa87f33548b1ee00c5ec1e15dfdeb",
+        "version": "2a94699f439e8e3e2a026239776802b58f0df007382b94fbb24901c2c03673dd",
+        "signature": "ad7b6b47257208ab6669ceb83348dab9cca8ea2d0c30caeb5663820ba74388b7",
         "affectsGlobalScope": false
       },
       "../src/api/detection/controllers/detection.owner.controller.ts": {
-        "version": "5cfd239686fbdf282faed2bec1fe3349373ba9f1e30a3a0a5053b3d06367a1e8",
-        "signature": "46c884531648e9f2f1993f67a186c79099e175a62c5acec861100a47daf88993",
+        "version": "3d540f144b1ba209297cab02a2126dacdc267a1daa5e8feba0e9c307aab94c8a",
+        "signature": "e92c1a0f02771295723b0a08f1d51a778e7136b8bf8a4368a1869030a3443075",
         "affectsGlobalScope": false
       },
       "../src/api/detection/detection.module.ts": {
@@ -5491,19 +5491,19 @@
         "signature": "af84e5d7ebe9c9274cc60d5ae88ab11c8ba296e3ec602f698d99ee431e5fc9f1",
         "affectsGlobalScope": false
       },
-      "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts": {
-        "version": "17042fcf08405a611dca43cb0277a7675e1797b701166d66055c4f9ed448eec0",
-        "signature": "88849b22426bafcf8dc3628a6d375003a494770b7ced8513ff28bd0d6cf27928",
-        "affectsGlobalScope": false
-      },
       "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts": {
-        "version": "52eba8b03736de96612861b67a95a7ea85259a749bd50f655c7e6071f67a8014",
-        "signature": "31babe746f61c19d292b21dbe2d5cc30b9c39f39104cde635ccfddf1f518772b",
+        "version": "1bf07bd41bf9b74b318fdf93ee003d3041255fd7930a66569d7070765c33f057",
+        "signature": "4ff63181a455e2604a8fc659c51dbed74097246fc4af9f1149d453588e349010",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts": {
         "version": "07a4cd9163acfe81a99bdc75fde528b6c6c6878b03a6a228a59fc53e9219ac9c",
         "signature": "378e2a5a3e29cd1ea5f79a06090f40be825213a235e0f7a83e63371732d1b02c",
+        "affectsGlobalScope": false
+      },
+      "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts": {
+        "version": "17042fcf08405a611dca43cb0277a7675e1797b701166d66055c4f9ed448eec0",
+        "signature": "88849b22426bafcf8dc3628a6d375003a494770b7ced8513ff28bd0d6cf27928",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/dto/mongoosepaginate-thirdpartydetection.dto.ts": {
@@ -5522,17 +5522,17 @@
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts": {
-        "version": "b86c39ebd21681b4e66cb3c74f652ca7aa36c19ef8df0eef5ac845f16daec166",
-        "signature": "8bc4ba1c6e7b41fea290a2345e8cbd595048e5fa2c400c115ec09b2c89a7fbbb",
+        "version": "6794e9eb6590ef457c08f4c0539b8c40a5a57257af1d2b485dfd228647eeffe7",
+        "signature": "2ae0893eca9fdd68575a27fafa2ec38e47ed86ad6e6def9d8d186681633fa334",
         "affectsGlobalScope": false
       },
       "../src/api/thirdparty-detection/thirdparty-detection.module.ts": {
-        "version": "3df6dc8cf247132872060fe4ab15eaea3c6905538007fcb73e68d95e4596a072",
+        "version": "17cc6ec829d5fea918386748a702ac539419b9fb990f31b2584669e4c7ec588d",
         "signature": "6dbebbdc386763bed992bf46f17507d970ebcccfb94c893b6cdf84099ccd8f07",
         "affectsGlobalScope": false
       },
       "../src/app.module.ts": {
-        "version": "c7596f14f227b0d87f005356d8c9d0e131004fad2b0c0bd204015f521152fe56",
+        "version": "d05ea81651e4a23cedd1f0678bed440dc8a4c393e4326c3bf1a116ba8a8dde7c",
         "signature": "098267cfef1e0a4afbfa6ce9d4e75d6e915635b0357421ffe5b8b2f3a91cfdee",
         "affectsGlobalScope": false
       },
@@ -18741,7 +18741,6 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
-        "../node_modules/class-validator/types/index.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/auth/guards/istargetuserloggedin.guard.ts",
         "../src/api/auth/guards/jwt-auth.guard.ts",
@@ -19521,10 +19520,12 @@
         "../node_modules/mongoose/index.d.ts",
         "../src/api/auth/decorators/apikey.decorator.ts",
         "../src/api/auth/guards/apikey-auth.guard.ts",
+        "../src/api/detection/detection.service.ts",
         "../src/api/sonickey/services/sonickey.service.ts",
         "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
         "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
         "../src/api/thirdparty-detection/thirdparty-detection.service.ts",
+        "../src/constants/channels.enum.ts",
         "../src/shared/decorators/anyapiquerytemplate.decorator.ts",
         "../src/shared/dtos/parsedquery.dto.ts",
         "../src/shared/pipes/parsequeryvalue.pipe.ts"
@@ -19554,8 +19555,7 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongoose/index.d.ts",
-        "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts"
+        "../node_modules/mongoose/index.d.ts"
       ],
       "../src/api/thirdparty-detection/dto/mongoosepaginate-thirdpartydetection.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
@@ -19602,6 +19602,7 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/api-key/api-key.module.ts",
+        "../src/api/detection/detection.module.ts",
         "../src/api/sonickey/sonickey.module.ts",
         "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts",
         "../src/api/thirdparty-detection/controllers/thirdparty-detection.controller.ts",
@@ -32655,7 +32656,6 @@
       "../src/api/detection/controllers/detection.controller.ts": [
         "../src/api/detection/detection.service.ts",
         "../src/api/detection/dto/create-detection.dto.ts",
-        "../src/api/detection/dto/mongoosepaginate-radiostationsonickey.dto.ts",
         "../src/api/detection/schemas/detection.schema.ts",
         "../src/api/sonickey/services/sonickey.service.ts",
         "../src/shared/dtos/parsedquery.dto.ts"
@@ -32881,13 +32881,11 @@
         "../src/shared/services/file-operation.service.ts"
       ],
       "../src/api/thirdparty-detection/controllers/thirdparty-detection-from-binary.controller.ts": [
+        "../src/api/detection/detection.service.ts",
+        "../src/api/detection/schemas/detection.schema.ts",
         "../src/api/sonickey/services/sonickey.service.ts",
         "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts",
-        "../src/api/thirdparty-detection/dto/mongoosepaginate-thirdpartydetection.dto.ts",
-        "../src/api/thirdparty-detection/dto/update-thirdparty-detection.dto.ts",
-        "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",
-        "../src/api/thirdparty-detection/thirdparty-detection.service.ts",
-        "../src/shared/dtos/parsedquery.dto.ts"
+        "../src/api/thirdparty-detection/thirdparty-detection.service.ts"
       ],
       "../src/api/thirdparty-detection/controllers/thirdparty-detection.controller.ts": [
         "../src/api/thirdparty-detection/dto/mongoosepaginate-thirdpartydetection.dto.ts",
@@ -32895,10 +32893,6 @@
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts",
         "../src/api/thirdparty-detection/thirdparty-detection.service.ts",
         "../src/shared/dtos/parsedquery.dto.ts"
-      ],
-      "../src/api/thirdparty-detection/dto/create-thirdparty-detection.dto.ts": [
-        "../node_modules/@nestjs/common/index.d.ts",
-        "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts"
       ],
       "../src/api/thirdparty-detection/dto/mongoosepaginate-thirdpartydetection.dto.ts": [
         "../src/api/thirdparty-detection/schemas/thirdparty-detection.schema.ts"

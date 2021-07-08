@@ -40,16 +40,22 @@ let DetectionOwnerController = class DetectionOwnerController {
     async getTopRadiostations(targetUser, queryDto) {
         var e_1, _a;
         const { topLimit = 3, includeGraph, groupByTime, filter } = queryDto;
+        const graph_detectedAt = filter.graph_detectedAt;
+        delete filter.graph_detectedAt;
         const topStationsWithSonicKeys = await this.detectionService.findTopRadioStationsWithSonicKeysForOwner(targetUser, topLimit, filter);
         if (includeGraph) {
             if (!groupByTime)
                 throw new common_1.BadRequestException("groupByTime query params required for includeGraph type");
             var topStationsWithTopKeysAndGraphs = [];
+            if (graph_detectedAt) {
+                filter["detectedAt"] = graph_detectedAt;
+            }
+            console.log("filter in graph", filter);
             try {
                 for (var topStationsWithSonicKeys_1 = __asyncValues(topStationsWithSonicKeys), topStationsWithSonicKeys_1_1; topStationsWithSonicKeys_1_1 = await topStationsWithSonicKeys_1.next(), !topStationsWithSonicKeys_1_1.done;) {
                     const station = topStationsWithSonicKeys_1_1.value;
                     const graphs = await this.detectionService.findGraphOfSonicKeysForRadioStationInSpecificTime(station._id, groupByTime, filter);
-                    station['graphs'] = graphs;
+                    station['graphsData'] = graphs;
                     topStationsWithTopKeysAndGraphs.push(station);
                 }
             }
@@ -64,16 +70,24 @@ let DetectionOwnerController = class DetectionOwnerController {
         }
         return topStationsWithSonicKeys;
     }
+    async getSonicKeyGraphs(targetUser, radioStation, time, queryDto) {
+        const { filter } = queryDto;
+        return this.detectionService.findGraphOfSonicKeysForRadioStationInSpecificTime(radioStation, time, Object.assign(Object.assign({}, filter), { owner: targetUser }));
+    }
     findAll(targetUser, channel, queryDto) {
         if (channel !== 'ALL') {
             queryDto.filter['channel'] = channel;
         }
         queryDto.filter['owner'] = targetUser;
-        return this.detectionService.findAll(queryDto);
+        return this.detectionService.findAll(queryDto, true);
     }
-    async getSonicKeyGraphs(targetUser, radioStation, time, queryDto) {
-        const { filter } = queryDto;
-        return this.detectionService.findGraphOfSonicKeysForRadioStationInSpecificTime(radioStation, time, Object.assign(Object.assign({}, filter), { owner: targetUser }));
+    getDetectedDetailsOfSingleSonicKey(targetUser, channel, sonicKey, queryDto) {
+        if (channel !== 'ALL') {
+            queryDto.filter['channel'] = channel;
+        }
+        queryDto.filter['owner'] = targetUser;
+        queryDto.filter['sonicKey'] = sonicKey;
+        return this.detectionService.findAll(queryDto);
     }
     getCount(targetUser, channel, queryDto) {
         if (channel !== 'ALL') {
@@ -85,15 +99,19 @@ let DetectionOwnerController = class DetectionOwnerController {
     }
 };
 __decorate([
-    common_1.Get('/:targetUser/top-radiostations-with-top-sonickeys'),
+    common_1.Get(`/radioStations/top-radiostations-with-top-sonickeys`),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
         additionalHtmlDescription: `
-    <fieldset>
-        <legend><h3>Example with graph inclusion:</h3></legend>
-    <code><small>BASE_URL/:targetUser/top-radiostations-with-top-sonickeys?detectedAt<2021-06-30&detectedAt>2021-06-01&includeGraph=true&groupByTime=month</small></code>
-    </fieldset>
-    `
+  <fieldset>
+  <legend><h1>Example:</h1></legend>
+  <code><small>BASE_URL/detections/owners/:targetUser/top-radiostations-with-top-sonickeys?detectedAt<2021-06-30&detectedAt>2021-06-01</small></code>
+ <br/>
+ <h4>Example including Graph</h4>
+ <code><small>BASE_URL/detections/owners/:targetUser/top-radiostations-with-top-sonickeys?detectedAt<2021-06-30&detectedAt>2021-06-01&includeGraph=true&groupByTime=month</small></code>
+  </fieldset>
+ `,
     }),
+    swagger_1.ApiBearerAuth(),
     swagger_1.ApiQuery({ name: "includeGraph", type: Boolean, required: false }),
     swagger_1.ApiQuery({ name: "groupByTime", enum: ['month', 'year', 'dayOfMonth'], required: false }),
     swagger_1.ApiOperation({ summary: 'Get Top radiostations with top sonickeys' }),
@@ -105,24 +123,16 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "getTopRadiostations", null);
 __decorate([
-    common_1.Get('/:targetUser/:channel'),
-    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Channels_enum_1.ChannelEnums), 'ALL'] }),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({ summary: 'Get All Detections' }),
-    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDeectionDto }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Param('channel')),
-    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
-    __metadata("design:returntype", void 0)
-], DetectionOwnerController.prototype, "findAll", null);
-__decorate([
-    common_1.Get('/:targetUser/:radioStation/sonickey-graph/:groupByTime'),
+    common_1.Get('/radioStations/:radioStation/sonickey-graph/:groupByTime'),
     swagger_1.ApiParam({ name: 'groupByTime', enum: ['month', 'year', 'dayOfMonth'] }),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+        additionalHtmlDescription: `
+  <fieldset>
+  <legend><h1>Example:</h1></legend>
+  <code><small>BASE_URL/detections/owners/:targetUser/radioStations/:radioStation/sonickey-graph/:groupByTime?detectedAt<2021-06-30&detectedAt>2021-06-01</small></code>
+  </fieldset>
+ `,
+    }),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get Top radiostations with top sonickeys' }),
@@ -136,19 +146,52 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "getSonicKeyGraphs", null);
 __decorate([
-    common_1.Get('/:targetUser/:channel/count'),
+    common_1.Get('/:channel/data'),
+    swagger_1.ApiQuery({ name: "radioStation", type: String, required: false }),
+    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Channels_enum_1.ChannelEnums), 'ALL'] }),
+    swagger_1.ApiBearerAuth(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({ summary: 'Get All Detections for specific channel and specific user' }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDeectionDto }),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Param('channel')),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", void 0)
+], DetectionOwnerController.prototype, "findAll", null);
+__decorate([
+    common_1.Get('/:channel/sonicKeys/:sonicKey/detected-details'),
+    swagger_1.ApiQuery({ name: "radioStation", type: String, required: false }),
+    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Channels_enum_1.ChannelEnums), 'ALL'] }),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    swagger_1.ApiBearerAuth(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({ summary: 'Get Detected Details for specific channel and specific sonickey' }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDeectionDto }),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Param('channel')),
+    __param(2, common_1.Param('sonicKey')),
+    __param(3, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", void 0)
+], DetectionOwnerController.prototype, "getDetectedDetailsOfSingleSonicKey", null);
+__decorate([
+    common_1.Get('/:channel/count'),
+    swagger_1.ApiQuery({ name: "radioStation", type: String, required: false }),
     swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Channels_enum_1.ChannelEnums), 'ALL'] }),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
         additionalHtmlDescription: `
-        <fieldset>
-        <legend><h1>Example with detectedDate:</h1></legend>
-        <code><small>BASE_URL/:targetUser/:channel/count/?detectedAt<2021-06-30&detectedAt>2021-06-01</small></code>
-          <br/>
-      <h4>OR For Specific RadioStation</h4>
-      <code><small>BASE_URL/:targetUser/:channel/count/?detectedAt<2021-06-30&detectedAt>2021-06-01&radioStation=609cd75081fe3a15732162ef</small></code>
-        </fieldset>
+  <fieldset>
+  <legend><h1>Example:</h1></legend>
+  <code><small>BASE_URL/detections/owners/:targetUser/:channel/count/?detectedAt<2021-06-30&detectedAt>2021-06-01</small></code>
+ <br/>
+ <h4>OR For Specific RadioStation</h4>
+ <code><small>BASE_URL/detections/owners/:targetUser/:channel/count/?detectedAt<2021-06-30&detectedAt>2021-06-01&radioStation=609cd75081fe3a15732162ef</small></code>
+  </fieldset>
  `,
     }),
     swagger_1.ApiOperation({ summary: 'Get Count' }),
@@ -162,7 +205,7 @@ __decorate([
 ], DetectionOwnerController.prototype, "getCount", null);
 DetectionOwnerController = __decorate([
     swagger_1.ApiTags('Detection Controller'),
-    common_1.Controller('detections'),
+    common_1.Controller('detections/owners/:targetUser'),
     __metadata("design:paramtypes", [detection_service_1.DetectionService,
         sonickey_service_1.SonickeyService])
 ], DetectionOwnerController);

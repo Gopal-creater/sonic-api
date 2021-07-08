@@ -70,7 +70,7 @@ console.log('Node_env', process.env.NODE_ENV);
     ExternalSonickeyModule,
     JobModule,
     RadiostationModule,
-    // ThirdpartyDetectionModule,
+    ThirdpartyDetectionModule,
     ApiKeyModule,
     DetectionModule,
   ],

@@ -80,7 +80,7 @@ __decorate([
 exports.GraphData = GraphData;
 class TopRadioStationWithTopSonicKey extends TopRadioStation {
     static _OPENAPI_METADATA_FACTORY() {
-        return { sonicKeys: { required: true, type: () => [require("./general.dto").TopSonicKey] }, graphs: { required: false, type: () => [require("./general.dto").GraphData] } };
+        return { sonicKeys: { required: true, type: () => [require("./general.dto").TopSonicKey] }, graphsData: { required: false, type: () => [require("./general.dto").GraphData] } };
     }
 }
 __decorate([
@@ -90,6 +90,6 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Array)
-], TopRadioStationWithTopSonicKey.prototype, "graphs", void 0);
+], TopRadioStationWithTopSonicKey.prototype, "graphsData", void 0);
 exports.TopRadioStationWithTopSonicKey = TopRadioStationWithTopSonicKey;
 //# sourceMappingURL=general.dto.js.map

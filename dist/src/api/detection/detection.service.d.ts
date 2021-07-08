@@ -7,7 +7,7 @@ import { TopRadioStation, TopRadioStationWithTopSonicKey, TopSonicKey } from './
 export declare class DetectionService {
     readonly detectionModel: Model<Detection>;
     constructor(detectionModel: Model<Detection>);
-    findAll(queryDto: ParsedQueryDto): Promise<MongoosePaginateDeectionDto>;
+    findAll(queryDto: ParsedQueryDto, aggregateQuery?: boolean): Promise<MongoosePaginateDeectionDto>;
     findTopRadioStationsWithSonicKeysForOwner(ownerId: string, topLimit: number, filter?: object): Promise<TopRadioStationWithTopSonicKey[]>;
     findTopRadioStations(filter: object, topLimit: number): Promise<TopRadioStation[]>;
     findTopSonicKeysForRadioStation(radioStationId: string, topLimit: number, filter?: object): Promise<TopSonicKey[]>;

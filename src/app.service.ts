@@ -30,7 +30,7 @@ export class AppService {
     </head>
     <div>
       <h3 style="text-decoration:underline;">Server Info</h3>
-      <p>Hello Sonic Server Version: <span class="fancy">${appPackage.version}</span></p>
+      <p>Hello Sonic Server Version: <span class="fancy">${appPackage.version} ( ${process?.env?.NODE_ENV||"development"} )</span></p>
       <h3 style="text-decoration:underline;">Api Spec Info</h3>
       <a href="/swagger-api" class="button">GO TO API SPEC</a>
     </div>

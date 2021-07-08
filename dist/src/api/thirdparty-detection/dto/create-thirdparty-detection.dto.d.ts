@@ -1,5 +1,5 @@
-import { ThirdpartyDetection } from '../schemas/thirdparty-detection.schema';
-declare const CreateThirdpartyDetectionDto_base: import("@nestjs/common").Type<Pick<ThirdpartyDetection, "set" | "get" | "remove" | "validate" | "_id" | "sonicKey" | "metaData" | "populate" | "__v" | "$getAllSubdocs" | "$ignore" | "$isDefault" | "$isDeleted" | "$getPopulatedDocs" | "$isEmpty" | "$isValid" | "$locals" | "$markValid" | "$op" | "$session" | "$set" | "$where" | "baseModelName" | "collection" | "db" | "delete" | "deleteOne" | "depopulate" | "directModifiedPaths" | "equals" | "errors" | "execPopulate" | "getChanges" | "increment" | "init" | "invalidate" | "isDirectModified" | "isDirectSelected" | "isInit" | "isModified" | "isNew" | "isSelected" | "markModified" | "modifiedPaths" | "model" | "modelName" | "overwrite" | "populated" | "replaceOne" | "save" | "schema" | "toJSON" | "toObject" | "unmarkModified" | "update" | "updateOne" | "validateSync" | "detectionTime">>;
-export declare class CreateThirdpartyDetectionDto extends CreateThirdpartyDetectionDto_base {
+export declare class CreateThirdpartyDetectionDto {
+    sonicKey: string;
+    detectionTime?: Date;
+    metaData?: Map<string, any>;
 }
-export {};

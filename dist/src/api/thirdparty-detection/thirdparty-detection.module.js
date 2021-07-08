@@ -9,12 +9,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ThirdpartyDetectionModule = void 0;
 const common_1 = require("@nestjs/common");
 const thirdparty_detection_service_1 = require("./thirdparty-detection.service");
-const thirdparty_detection_controller_1 = require("./controllers/thirdparty-detection.controller");
 const mongoose_1 = require("@nestjs/mongoose");
 const thirdparty_detection_schema_1 = require("./schemas/thirdparty-detection.schema");
 const thirdparty_detection_from_binary_controller_1 = require("./controllers/thirdparty-detection-from-binary.controller");
 const api_key_module_1 = require("../api-key/api-key.module");
 const sonickey_module_1 = require("../sonickey/sonickey.module");
+const detection_module_1 = require("../detection/detection.module");
 let ThirdpartyDetectionModule = class ThirdpartyDetectionModule {
 };
 ThirdpartyDetectionModule = __decorate([
@@ -27,10 +27,10 @@ ThirdpartyDetectionModule = __decorate([
                 },
             ]),
             api_key_module_1.ApiKeyModule,
-            sonickey_module_1.SonickeyModule
+            sonickey_module_1.SonickeyModule,
+            detection_module_1.DetectionModule,
         ],
         controllers: [
-            thirdparty_detection_controller_1.ThirdpartyDetectionController,
             thirdparty_detection_from_binary_controller_1.ThirdpartyDetectionFromBinaryController,
         ],
         providers: [thirdparty_detection_service_1.ThirdpartyDetectionService],
