@@ -37,6 +37,7 @@ let JwtStrategy = class JwtStrategy extends passport_1.PassportStrategy(passport
     async validate(request, payload) {
         var _a;
         var token = (_a = request.headers['authorization']) === null || _a === void 0 ? void 0 : _a.split(" ")[1];
+        console.log("payload", payload);
         payload.token = token;
         return payload;
     }

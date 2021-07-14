@@ -31,6 +31,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   // method, and attach it as a property on the Request object. So we can add more business logic here.
   public async validate(request: Request, payload:any) {
     var token = request.headers['authorization']?.split(" ")[1] as string
+    console.log("payload",payload)
     payload.token = token
     return payload;
   }

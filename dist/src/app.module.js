@@ -34,6 +34,7 @@ const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 const event_emitter_1 = require("@nestjs/event-emitter");
 const api_key_module_1 = require("./api/api-key/api-key.module");
 const detection_module_1 = require("./api/detection/detection.module");
+const licensekey_module_1 = require("./api/licensekey/licensekey.module");
 mongoosePaginate.paginate.options = {
     limit: 50,
 };
@@ -86,6 +87,7 @@ AppModule = __decorate([
             thirdparty_detection_module_1.ThirdpartyDetectionModule,
             api_key_module_1.ApiKeyModule,
             detection_module_1.DetectionModule,
+            licensekey_module_1.LicensekeyModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, app_gateway_1.AppGateway],
