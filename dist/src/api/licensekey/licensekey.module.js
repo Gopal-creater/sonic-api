@@ -9,13 +9,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LicensekeyModule = void 0;
 const common_1 = require("@nestjs/common");
 const licensekey_service_1 = require("./licensekey.service");
-const licensekey_controller_1 = require("./licensekey.controller");
+const licensekey_controller_1 = require("./controllers/licensekey.controller");
+const mongoose_1 = require("@nestjs/mongoose");
+const licensekey_schema_1 = require("./schemas/licensekey.schema");
 let LicensekeyModule = class LicensekeyModule {
 };
 LicensekeyModule = __decorate([
     common_1.Module({
+        imports: [
+            mongoose_1.MongooseModule.forFeature([
+                {
+                    name: licensekey_schema_1.LicenseKeySchemaName,
+                    schema: licensekey_schema_1.LicenseKeySchema,
+                },
+            ]),
+        ],
         controllers: [licensekey_controller_1.LicensekeyController],
-        providers: [licensekey_service_1.LicensekeyService]
+        providers: [licensekey_service_1.LicensekeyService],
+        exports: [licensekey_service_1.LicensekeyService],
     })
 ], LicensekeyModule);
 exports.LicensekeyModule = LicensekeyModule;

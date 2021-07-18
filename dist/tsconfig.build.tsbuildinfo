@@ -5532,8 +5532,28 @@
         "affectsGlobalScope": false
       },
       "../src/api/licensekey/dto/create-licensekey.dto.ts": {
-        "version": "aeb4f473a189ca22c36c1fc9e2ec222b7968b4219cc0f056e9923300a5a7a571",
-        "signature": "51eaf751749a2f876ddd7f73ade05c36b3339cbc3822010810db40205420884f",
+        "version": "860b16f1b27403faf8c60af4d3d02039291c15e44d3bc8b121b3bd1736bdb167",
+        "signature": "ead2c4bfd595cf5ab8f4c5283acb961c4db0f440973ccdea258426bdca06447d",
+        "affectsGlobalScope": false
+      },
+      "../src/api/licensekey/schemas/licensekey.schema.ts": {
+        "version": "c245c16718f6bf17964a8c774e5ab72e9129687a1c1ac71d30ae6b5474242dc5",
+        "signature": "b16e991f5dc263252ddbff853f21fa975d91fdf37d4e3426a5ca558a887ed7db",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/uuid/index.d.ts": {
+        "version": "96b49a9de749afcf92b5bce1d8cc42cfae6816cdf5ea36584fd9256b8b2e5292",
+        "signature": "96b49a9de749afcf92b5bce1d8cc42cfae6816cdf5ea36584fd9256b8b2e5292",
+        "affectsGlobalScope": false
+      },
+      "../src/api/licensekey/dto/mongoosepaginate-licensekey.dto.ts": {
+        "version": "2224d629db40c9bdb1985ce63a8a9b1070143a709cdce73d5f5f00f5ef510e27",
+        "signature": "23445b76d84449cac24e13b2abd6f631ad9620e42bfc32ab9cae44edbd700653",
+        "affectsGlobalScope": false
+      },
+      "../src/api/licensekey/licensekey.service.ts": {
+        "version": "e17418975a77a772af4d91688418ae04832360bade0912248a299f403de4e50b",
+        "signature": "4536570f711abb7ad6eff9f2f9aba91ab9e899b1abdc0ec7f9397b9a86bb2d0d",
         "affectsGlobalScope": false
       },
       "../src/api/licensekey/dto/update-licensekey.dto.ts": {
@@ -5541,18 +5561,13 @@
         "signature": "5aca76d2560b5fd88517184197f3b94c09ce7ebeb513337f9877b644b556376f",
         "affectsGlobalScope": false
       },
-      "../src/api/licensekey/licensekey.service.ts": {
-        "version": "31a937445d029c52c28754ac6dd0ad8a85de5adba3c9f5d9d4b847c13967dc49",
-        "signature": "e844d602168f663111c2b2be7c14ecbdbcee9974d971895f119b354c5393ed49",
-        "affectsGlobalScope": false
-      },
-      "../src/api/licensekey/licensekey.controller.ts": {
-        "version": "931f7f2c331ccb0d608316f1a4c6b4e310f9b5560fb104a1aac1381549a97704",
-        "signature": "7bce33b08d6b2fca0293b7dcfdab66c13939dd1b06df53d5759b00d20d052b43",
+      "../src/api/licensekey/controllers/licensekey.controller.ts": {
+        "version": "5042d58e5eeccd975b6975396ed7a2144d071cfd641f56f25f29f67a2fe1f3a9",
+        "signature": "a2b2caa27668ffb41583df87b2023bb34ef31eac55fb252fff0c9bec37fff9ba",
         "affectsGlobalScope": false
       },
       "../src/api/licensekey/licensekey.module.ts": {
-        "version": "7676cba4fa74031370394b9a52285a6db10ca3f0a20bac4c7abc41005ec9a73e",
+        "version": "8c8d92a4b76293258a00e75b11fe1fdf7a17867ce603d8aa0e02eb03eb1acaaf",
         "signature": "c0e441a5cbd1e9dbdf29393aa15a97631bba67037e938b8e9ad2d13bdce1b82d",
         "affectsGlobalScope": false
       },
@@ -5589,11 +5604,6 @@
       "../src/api/job/dto/add-job-files.dto.ts": {
         "version": "0510cd134cbc89ec095f003e3a508b618efef42805d672163f809305b87f4f9c",
         "signature": "38bcaecafef71112e3b40116e9214e60eb70b42e4e345629490e574e33ddb658",
-        "affectsGlobalScope": false
-      },
-      "../src/api/licensekey/schemas/licensekey.schema.ts": {
-        "version": "35c198b1505fa1c92a52182f6cd85ced3616802fd44185e1c1b868fcb1d7ac6e",
-        "signature": "35555abc01ea977577a373f2265cfd704b2213168972cfc7af64c4f2cd8c8905",
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/dto/deletebulk-radiostation.dto.ts": {
@@ -5824,11 +5834,6 @@
       "../node_modules/@types/uglify-js/index.d.ts": {
         "version": "dbef1822091af2c0ee24d2be8222502dc1160473ea0b4709ba5f3856cec93537",
         "signature": "dbef1822091af2c0ee24d2be8222502dc1160473ea0b4709ba5f3856cec93537",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@types/uuid/index.d.ts": {
-        "version": "96b49a9de749afcf92b5bce1d8cc42cfae6816cdf5ea36584fd9256b8b2e5292",
-        "signature": "96b49a9de749afcf92b5bce1d8cc42cfae6816cdf5ea36584fd9256b8b2e5292",
         "affectsGlobalScope": false
       },
       "../node_modules/anymatch/index.d.ts": {
@@ -19147,7 +19152,26 @@
         "../src/shared/modules/keygen/keygen.service.ts",
         "../src/shared/utils/index.ts"
       ],
+      "../src/api/licensekey/controllers/licensekey.controller.ts": [
+        "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/auth/guards/jwt-auth.guard.ts",
+        "../src/api/licensekey/dto/create-licensekey.dto.ts",
+        "../src/api/licensekey/dto/update-licensekey.dto.ts",
+        "../src/api/licensekey/licensekey.service.ts",
+        "../src/shared/decorators/anyapiquerytemplate.decorator.ts",
+        "../src/shared/dtos/parsedquery.dto.ts",
+        "../src/shared/pipes/parsequeryvalue.pipe.ts"
+      ],
       "../src/api/licensekey/dto/create-licensekey.dto.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -19155,6 +19179,17 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts"
+      ],
+      "../src/api/licensekey/dto/mongoosepaginate-licensekey.dto.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/licensekey/schemas/licensekey.schema.ts"
       ],
       "../src/api/licensekey/dto/update-licensekey.dto.ts": [
         "../node_modules/@nestjs/mapped-types/index.d.ts",
@@ -19167,22 +19202,9 @@
         "../node_modules/mongoose/index.d.ts",
         "../src/api/licensekey/dto/create-licensekey.dto.ts"
       ],
-      "../src/api/licensekey/licensekey.controller.ts": [
-        "../node_modules/@nestjs/common/index.d.ts",
-        "../node_modules/@nestjs/swagger/index.d.ts",
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/mongoose/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongoose/index.d.ts",
-        "../src/api/licensekey/dto/create-licensekey.dto.ts",
-        "../src/api/licensekey/dto/update-licensekey.dto.ts",
-        "../src/api/licensekey/licensekey.service.ts"
-      ],
       "../src/api/licensekey/licensekey.module.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/mongoose/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -19190,22 +19212,30 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
-        "../src/api/licensekey/licensekey.controller.ts",
-        "../src/api/licensekey/licensekey.service.ts"
+        "../src/api/licensekey/controllers/licensekey.controller.ts",
+        "../src/api/licensekey/licensekey.service.ts",
+        "../src/api/licensekey/schemas/licensekey.schema.ts"
       ],
       "../src/api/licensekey/licensekey.service.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
+        "../node_modules/@nestjs/mongoose/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/lodash/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/uuid/index.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/licensekey/dto/create-licensekey.dto.ts",
-        "../src/api/licensekey/dto/update-licensekey.dto.ts"
+        "../src/api/licensekey/dto/mongoosepaginate-licensekey.dto.ts",
+        "../src/api/licensekey/schemas/licensekey.schema.ts",
+        "../src/shared/dtos/parsedquery.dto.ts"
       ],
       "../src/api/licensekey/schemas/licensekey.schema.ts": [
+        "../node_modules/@nestjs/mongoose/index.d.ts",
+        "../node_modules/@nestjs/swagger/index.d.ts",
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -32876,18 +32906,31 @@
         "../src/shared/dtos/parsedquery.dto.ts",
         "../src/shared/modules/keygen/keygen.service.ts"
       ],
+      "../src/api/licensekey/controllers/licensekey.controller.ts": [
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/licensekey/dto/create-licensekey.dto.ts",
+        "../src/api/licensekey/dto/mongoosepaginate-licensekey.dto.ts",
+        "../src/api/licensekey/dto/update-licensekey.dto.ts",
+        "../src/api/licensekey/licensekey.service.ts",
+        "../src/api/licensekey/schemas/licensekey.schema.ts",
+        "../src/shared/dtos/parsedquery.dto.ts"
+      ],
+      "../src/api/licensekey/dto/mongoosepaginate-licensekey.dto.ts": [
+        "../src/api/licensekey/schemas/licensekey.schema.ts"
+      ],
       "../src/api/licensekey/dto/update-licensekey.dto.ts": [
         "../node_modules/@nestjs/mapped-types/index.d.ts",
         "../src/api/licensekey/dto/create-licensekey.dto.ts"
       ],
-      "../src/api/licensekey/licensekey.controller.ts": [
-        "../src/api/licensekey/dto/create-licensekey.dto.ts",
-        "../src/api/licensekey/dto/update-licensekey.dto.ts",
-        "../src/api/licensekey/licensekey.service.ts"
-      ],
       "../src/api/licensekey/licensekey.service.ts": [
+        "../node_modules/mongoose/index.d.ts",
         "../src/api/licensekey/dto/create-licensekey.dto.ts",
-        "../src/api/licensekey/dto/update-licensekey.dto.ts"
+        "../src/api/licensekey/dto/mongoosepaginate-licensekey.dto.ts",
+        "../src/api/licensekey/schemas/licensekey.schema.ts",
+        "../src/shared/dtos/parsedquery.dto.ts"
+      ],
+      "../src/api/licensekey/schemas/licensekey.schema.ts": [
+        "../node_modules/mongoose/index.d.ts"
       ],
       "../src/api/radiostation/controllers/radiostation.controller.ts": [
         "../src/api/radiostation/dto/bulk-radiostation.dto.ts",
@@ -34180,9 +34223,10 @@
       "../src/api/job/schemas/jobfile.schema.ts",
       "../src/api/job/services/job-file.service.ts",
       "../src/api/job/services/job.service.ts",
+      "../src/api/licensekey/controllers/licensekey.controller.ts",
       "../src/api/licensekey/dto/create-licensekey.dto.ts",
+      "../src/api/licensekey/dto/mongoosepaginate-licensekey.dto.ts",
       "../src/api/licensekey/dto/update-licensekey.dto.ts",
-      "../src/api/licensekey/licensekey.controller.ts",
       "../src/api/licensekey/licensekey.module.ts",
       "../src/api/licensekey/licensekey.service.ts",
       "../src/api/licensekey/schemas/licensekey.schema.ts",

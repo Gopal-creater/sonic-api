@@ -1,9 +1,23 @@
 import { Module } from '@nestjs/common';
 import { LicensekeyService } from './licensekey.service';
-import { LicensekeyController } from './licensekey.controller';
+import { LicensekeyController } from './controllers/licensekey.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+import {
+  LicenseKeySchemaName,
+  LicenseKeySchema,
+} from './schemas/licensekey.schema';
 
 @Module({
+  imports: [
+    MongooseModule.forFeature([
+      {
+        name: LicenseKeySchemaName,
+        schema: LicenseKeySchema,
+      },
+    ]),
+  ],
   controllers: [LicensekeyController],
-  providers: [LicensekeyService]
+  providers: [LicensekeyService],
+  exports: [LicensekeyService],
 })
 export class LicensekeyModule {}

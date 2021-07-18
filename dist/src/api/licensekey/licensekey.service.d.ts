@@ -1,9 +1,25 @@
 import { CreateLicensekeyDto } from './dto/create-licensekey.dto';
-import { UpdateLicensekeyDto } from './dto/update-licensekey.dto';
+import { LicenseKey, LKOwner } from './schemas/licensekey.schema';
+import { Model } from 'mongoose';
+import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
+import { MongoosePaginateLicensekeyDto } from './dto/mongoosepaginate-licensekey.dto';
+declare type usesFor = 'encode' | 'decode';
 export declare class LicensekeyService {
-    create(createLicensekeyDto: CreateLicensekeyDto): string;
-    findAll(): string;
-    findOne(id: number): string;
-    update(id: number, updateLicensekeyDto: UpdateLicensekeyDto): string;
-    remove(id: number): string;
+    readonly licenseKeyModel: Model<LicenseKey>;
+    constructor(licenseKeyModel: Model<LicenseKey>);
+    create(createLicensekeyDto: CreateLicensekeyDto): Promise<LicenseKey>;
+    findAll(queryDto: ParsedQueryDto): Promise<MongoosePaginateLicensekeyDto>;
+    validateLicence(id: string): Promise<{
+        validationResult: {
+            valid: boolean;
+            message: string;
+        };
+        licenseKey: LicenseKey;
+    }>;
+    addOwnersToLicense(id: string, owners: LKOwner[]): Promise<void>;
+    removeOwnersToLicense(id: string, ownerIds: string[]): Promise<void>;
+    incrementUses(id: string, usesFor: usesFor, incrementBy?: number): Promise<LicenseKey>;
+    decrementUses(id: string, usesFor: usesFor, decrementBy?: number): Promise<LicenseKey>;
+    resetUses(id: string, usesFor: usesFor | 'both'): Promise<LicenseKey>;
 }
+export {};

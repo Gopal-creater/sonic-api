@@ -7,6 +7,8 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
+import { LicensekeyService } from '../licensekey/licensekey.service';
+import { LKOwner } from '../licensekey/schemas/licensekey.schema';
 
 @Injectable()
 export class UserService {
@@ -14,6 +16,7 @@ export class UserService {
   private cognitoUserPoolId: string;
   constructor(
     private readonly keygenService: KeygenService,
+    private readonly licensekeyService: LicensekeyService,
     private readonly globalAwsService: GlobalAwsService,
     private readonly configService: ConfigService,
   ) {
@@ -22,7 +25,7 @@ export class UserService {
   }
 
   async listAllLicensesOfOwner(ownerId: string) {
-    const ownerKey =`owner${ownerId}`.replace(/-/g,'')
+    const ownerKey = `owner${ownerId}`.replace(/-/g, '');
     const { data, errors } = await this.keygenService.getAllLicenses(
       `metadata[${ownerKey}]=${ownerId}`,
     );
@@ -32,36 +35,32 @@ export class UserService {
 
   //Add new existing license: Meaning just update the metadata field with ownerId
   async addNewLicense(licenseId: string, ownerId: string) {
-    const { data, errors } = await this.keygenService.getLicenseById(licenseId);
-    if (!data) {
+    const key = await this.licensekeyService.licenseKeyModel.findById(
+      licenseId,
+    );
+    if (!key) {
       return Promise.reject({
         notFound: true,
         status: 404,
         message: 'Invalid license key',
       });
     }
-    const oldMetaData = data?.attributes?.metadata || {};
-    const ownerKey =`owner${ownerId}`.replace(/-/g,'')
-    oldMetaData[ownerKey] = ownerId;
-    const {
-      data: updatedData,
-      errors: errorsUpdate,
-    } = await this.keygenService.updateLicense(licenseId, {
-      metadata: {
-        ...oldMetaData,
-      },
-    });
-    if (errorsUpdate) return Promise.reject(errorsUpdate);
-    return updatedData;
+    const newLKOwner = new LKOwner();
+    newLKOwner.ownerId = ownerId;
+    return this.licensekeyService.addOwnerToLicense(licenseId, newLKOwner);
   }
 
   async addBulkNewLicenses(licenseIds: [string], ownerId: string) {
-    const promises = licenseIds.map(licenseId =>
-      this.addNewLicense(licenseId, ownerId).catch(err => ({
-        promiseError: err,
-        data: licenseId,
-      })),
-    );
+    const promises = licenseIds.map(licenseId => {
+      const newLKOwner = new LKOwner();
+      newLKOwner.ownerId = ownerId;
+      return this.licensekeyService
+        .addOwnerToLicense(licenseId, newLKOwner)
+        .catch(err => ({
+          promiseError: err,
+          data: licenseId,
+        }));
+    });
     return Promise.all(promises).then(values => {
       const failedData = values.filter(item => item['promiseError']) as {
         promiseError: any;
@@ -103,7 +102,7 @@ export class UserService {
     const params = {
       UserPoolId: this.cognitoUserPoolId,
     };
-    this.cognitoIdentityServiceProvider.listUsers(params,(err, data)=> {
+    this.cognitoIdentityServiceProvider.listUsers(params, (err, data) => {
       console.log('users', data);
       console.log('users count', data.Users.length);
       for (let index = 0; index < data.Users.length; index++) {
