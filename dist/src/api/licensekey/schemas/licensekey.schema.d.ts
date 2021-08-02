@@ -15,6 +15,8 @@ export declare class LicenseKey extends Document {
     decodeUses: number;
     validity?: Date;
     metaData?: Map<string, any>;
+    createdBy?: string;
+    updatedBy?: string;
     owners?: LKOwner[];
 }
 export declare const LicenseKeySchema: MogSchema<LicenseKey, import("mongoose").Model<any, any>, undefined>;

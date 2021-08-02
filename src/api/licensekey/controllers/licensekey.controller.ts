@@ -23,6 +23,7 @@ import {
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
+import { User } from 'src/api/auth/decorators';
 
 @ApiTags('License Keys Management Controller')
 @Controller('license-keys')
@@ -30,11 +31,14 @@ export class LicensekeyController {
   constructor(private readonly licensekeyService: LicensekeyService) {}
 
   @Post()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create License Key' })
-  create(@Body() createLicensekeyDto: CreateLicensekeyDto) {
-    return this.licensekeyService.create(createLicensekeyDto);
+  create(
+    @Body() createLicensekeyDto: CreateLicensekeyDto,
+    @User('sub') createdBy: string,
+  ) {
+    return this.licensekeyService.create(createLicensekeyDto, createdBy);
   }
 
   @Get()
@@ -80,10 +84,11 @@ export class LicensekeyController {
   async update(
     @Param('id') id: string,
     @Body() updateLicensekeyDto: UpdateLicensekeyDto,
+    @User('sub') updatedBy: string,
   ) {
     const updatedKey = await this.licensekeyService.licenseKeyModel.findOneAndUpdate(
       { _id: id },
-      updateLicensekeyDto,
+      { ...updateLicensekeyDto, updatedBy: updatedBy },
       { new: true },
     );
     if (!updatedKey) {
@@ -92,9 +97,8 @@ export class LicensekeyController {
     return updatedKey;
   }
 
-
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete License key' })
   remove(@Param('id') id: string) {

@@ -14,9 +14,12 @@ const config_1 = require("@nestjs/config");
 const global_aws_service_1 = require("./../../shared/modules/global-aws/global-aws.service");
 const keygen_service_1 = require("./../../shared/modules/keygen/keygen.service");
 const common_1 = require("@nestjs/common");
+const licensekey_service_1 = require("../licensekey/licensekey.service");
+const licensekey_schema_1 = require("../licensekey/schemas/licensekey.schema");
 let UserService = class UserService {
-    constructor(keygenService, globalAwsService, configService) {
+    constructor(keygenService, licensekeyService, globalAwsService, configService) {
         this.keygenService = keygenService;
+        this.licensekeyService = licensekeyService;
         this.globalAwsService = globalAwsService;
         this.configService = configService;
         this.cognitoIdentityServiceProvider = globalAwsService.getCognitoIdentityServiceProvider();
@@ -30,30 +33,29 @@ let UserService = class UserService {
         return data;
     }
     async addNewLicense(licenseId, ownerId) {
-        var _a;
-        const { data, errors } = await this.keygenService.getLicenseById(licenseId);
-        if (!data) {
+        const key = await this.licensekeyService.licenseKeyModel.findById(licenseId);
+        if (!key) {
             return Promise.reject({
                 notFound: true,
                 status: 404,
                 message: 'Invalid license key',
             });
         }
-        const oldMetaData = ((_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) || {};
-        const ownerKey = `owner${ownerId}`.replace(/-/g, '');
-        oldMetaData[ownerKey] = ownerId;
-        const { data: updatedData, errors: errorsUpdate, } = await this.keygenService.updateLicense(licenseId, {
-            metadata: Object.assign({}, oldMetaData),
-        });
-        if (errorsUpdate)
-            return Promise.reject(errorsUpdate);
-        return updatedData;
+        const newLKOwner = new licensekey_schema_1.LKOwner();
+        newLKOwner.ownerId = ownerId;
+        return this.licensekeyService.addOwnerToLicense(licenseId, newLKOwner);
     }
     async addBulkNewLicenses(licenseIds, ownerId) {
-        const promises = licenseIds.map(licenseId => this.addNewLicense(licenseId, ownerId).catch(err => ({
-            promiseError: err,
-            data: licenseId,
-        })));
+        const promises = licenseIds.map(licenseId => {
+            const newLKOwner = new licensekey_schema_1.LKOwner();
+            newLKOwner.ownerId = ownerId;
+            return this.licensekeyService
+                .addOwnerToLicense(licenseId, newLKOwner)
+                .catch(err => ({
+                promiseError: err,
+                data: licenseId,
+            }));
+        });
         return Promise.all(promises).then(values => {
             const failedData = values.filter(item => item['promiseError']);
             const passedData = values.filter(item => !item['promiseError']);
@@ -120,6 +122,7 @@ let UserService = class UserService {
 UserService = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [keygen_service_1.KeygenService,
+        licensekey_service_1.LicensekeyService,
         global_aws_service_1.GlobalAwsService,
         config_1.ConfigService])
 ], UserService);

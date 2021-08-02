@@ -11,13 +11,14 @@ const keygen_module_1 = require("./../../shared/modules/keygen/keygen.module");
 const common_1 = require("@nestjs/common");
 const user_controller_1 = require("./user.controller");
 const user_service_1 = require("./user.service");
+const licensekey_module_1 = require("../licensekey/licensekey.module");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
     common_1.Module({
-        imports: [keygen_module_1.KeygenModule],
+        imports: [keygen_module_1.KeygenModule, licensekey_module_1.LicensekeyModule],
         controllers: [user_controller_1.UserController],
-        providers: [user_service_1.UserService]
+        providers: [user_service_1.UserService],
     })
 ], UserModule);
 exports.UserModule = UserModule;

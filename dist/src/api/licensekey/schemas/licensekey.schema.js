@@ -90,6 +90,16 @@ __decorate([
 ], LicenseKey.prototype, "metaData", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ required: true }),
+    __metadata("design:type", String)
+], LicenseKey.prototype, "createdBy", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], LicenseKey.prototype, "updatedBy", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop([LKOwner]),
     __metadata("design:type", Array)
 ], LicenseKey.prototype, "owners", void 0);

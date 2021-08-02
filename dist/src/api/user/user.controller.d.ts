@@ -4,9 +4,12 @@ export declare class UserController {
     private readonly userServices;
     constructor(userServices: UserService);
     getUserLicenses(userId: string): Promise<any>;
-    addNewLicense(userId: string, addNewLicenseDto: AddNewLicenseDto): Promise<any>;
+    addNewLicense(userId: string, addNewLicenseDto: AddNewLicenseDto): Promise<import("../licensekey/schemas/licensekey.schema").LicenseKey>;
     addBulkNewLicense(userId: string, addBulkNewLicensesDto: AddBulkNewLicensesDto): Promise<{
-        passedData: any[];
+        passedData: (import("../licensekey/schemas/licensekey.schema").LicenseKey | {
+            promiseError: any;
+            data: string;
+        })[];
         failedData: {
             promiseError: any;
             data: string;

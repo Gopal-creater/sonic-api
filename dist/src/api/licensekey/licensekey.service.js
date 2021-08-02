@@ -23,9 +23,9 @@ let LicensekeyService = class LicensekeyService {
     constructor(licenseKeyModel) {
         this.licenseKeyModel = licenseKeyModel;
     }
-    create(createLicensekeyDto) {
+    create(createLicensekeyDto, createdBy) {
         const key = uuid_1.v4();
-        const newLicenseKey = new this.licenseKeyModel(Object.assign(Object.assign({}, createLicensekeyDto), { _id: key, key: key }));
+        const newLicenseKey = new this.licenseKeyModel(Object.assign(Object.assign({}, createLicensekeyDto), { _id: key, key: key, createdBy: createdBy }));
         return newLicenseKey.save();
     }
     async findAll(queryDto) {
@@ -64,9 +64,22 @@ let LicensekeyService = class LicensekeyService {
         const licenseKey = await this.licenseKeyModel.findById(id).select('owners');
         licenseKey.owners.push(...owners);
         licenseKey.owners = lodash_1.default.uniqBy(licenseKey.owners, 'ownerId');
-        licenseKey.save();
+        return licenseKey.save();
     }
-    async removeOwnersToLicense(id, ownerIds) {
+    async addOwnerToLicense(id, lKOwner) {
+        const licenseKey = await this.licenseKeyModel.findById(id).select('owners');
+        licenseKey.owners.push(lKOwner);
+        licenseKey.owners = lodash_1.default.uniqBy(licenseKey.owners, 'ownerId');
+        return licenseKey.save();
+    }
+    async removeOwnerFromLicense(id, ownerId) {
+        const licenseKey = await this.licenseKeyModel.findById(id).select('owners');
+        var oldOwners = licenseKey.owners;
+        lodash_1.default.remove(oldOwners, (ow) => ow.ownerId == ownerId);
+        licenseKey.owners = oldOwners;
+        return licenseKey.save();
+    }
+    async removeOwnersFromLicense(id, ownerIds) {
         const licenseKey = await this.licenseKeyModel.findById(id).select('owners');
         var oldOwners = licenseKey.owners;
         for (let index = 0; index < ownerIds.length; index++) {
@@ -74,7 +87,7 @@ let LicensekeyService = class LicensekeyService {
             lodash_1.default.remove(oldOwners, (ow) => ow.ownerId == owner);
         }
         licenseKey.owners = oldOwners;
-        licenseKey.save();
+        return licenseKey.save();
     }
     async incrementUses(id, usesFor, incrementBy = 1) {
         const licenseKey = await this.licenseKeyModel.findById(id);

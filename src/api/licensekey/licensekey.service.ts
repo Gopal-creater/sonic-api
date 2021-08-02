@@ -21,12 +21,13 @@ export class LicensekeyService {
     public readonly licenseKeyModel: Model<LicenseKey>,
   ) {}
 
-  create(createLicensekeyDto: CreateLicensekeyDto) {
+  create(createLicensekeyDto: CreateLicensekeyDto,createdBy:string) {
     const key = uuidv4();
     const newLicenseKey = new this.licenseKeyModel({
       ...createLicensekeyDto,
       _id: key,
       key: key,
+      createdBy:createdBy
     });
     return newLicenseKey.save();
   }
