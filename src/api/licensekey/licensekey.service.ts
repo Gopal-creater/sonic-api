@@ -8,7 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { LicenseKey, LKOwner } from './schemas/licensekey.schema';
 import { Model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateLicensekeyDto } from './dto/mongoosepaginate-licensekey.dto';
 
@@ -69,21 +69,21 @@ export class LicensekeyService {
   }
 
   async addOwnersToLicense(id:string,owners:LKOwner[]){
-    const licenseKey = await this.licenseKeyModel.findById(id).select('owners')
+    const licenseKey = await this.licenseKeyModel.findById(id)
     licenseKey.owners.push(...owners)
     licenseKey.owners = _.uniqBy(licenseKey.owners,'ownerId')
     return licenseKey.save()
   }
 
   async addOwnerToLicense(id:string,lKOwner:LKOwner){
-    const licenseKey = await this.licenseKeyModel.findById(id).select('owners')
+    const licenseKey = await this.licenseKeyModel.findById(id)
     licenseKey.owners.push(lKOwner)
     licenseKey.owners = _.uniqBy(licenseKey.owners,'ownerId')
     return licenseKey.save()
   }
 
   async removeOwnerFromLicense(id:string,ownerId:string){
-    const licenseKey = await this.licenseKeyModel.findById(id).select('owners')
+    const licenseKey = await this.licenseKeyModel.findById(id)
     var oldOwners = licenseKey.owners;
     _.remove(oldOwners,(ow)=>ow.ownerId==ownerId);
     licenseKey.owners = oldOwners
@@ -91,7 +91,7 @@ export class LicensekeyService {
   }
 
   async removeOwnersFromLicense(id:string,ownerIds:string[]){
-    const licenseKey = await this.licenseKeyModel.findById(id).select('owners')
+    const licenseKey = await this.licenseKeyModel.findById(id)
     var oldOwners = licenseKey.owners
     for (let index = 0; index < ownerIds.length; index++) {
       const owner = ownerIds[index];

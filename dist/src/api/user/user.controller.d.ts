@@ -1,9 +1,12 @@
 import { AddNewLicenseDto, AddBulkNewLicensesDto, UpdateProfileDto } from './dtos/index';
 import { UserService } from './user.service';
+import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
+import { LicensekeyService } from '../licensekey/licensekey.service';
 export declare class UserController {
     private readonly userServices;
-    constructor(userServices: UserService);
-    getUserLicenses(userId: string): Promise<any>;
+    private readonly licensekeyService;
+    constructor(userServices: UserService, licensekeyService: LicensekeyService);
+    getUserLicenses(userId: string, queryDto?: ParsedQueryDto): Promise<import("../licensekey/dto/mongoosepaginate-licensekey.dto").MongoosePaginateLicensekeyDto>;
     addNewLicense(userId: string, addNewLicenseDto: AddNewLicenseDto): Promise<import("../licensekey/schemas/licensekey.schema").LicenseKey>;
     addBulkNewLicense(userId: string, addBulkNewLicensesDto: AddBulkNewLicensesDto): Promise<{
         passedData: (import("../licensekey/schemas/licensekey.schema").LicenseKey | {

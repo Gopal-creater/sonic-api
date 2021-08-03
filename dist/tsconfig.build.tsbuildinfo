@@ -1902,8 +1902,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/api-key/schemas/api-key.schema.ts": {
-        "version": "733dfd95c16d4d83eea87fc716c7139a9040035afc67b08759fe7e6bd45d019e",
-        "signature": "bc86a65140621501e82a582aa522db3f6501bb2abf8379a836a21deaf9dae3aa",
+        "version": "f6c71f8480ca7d22c2fab530a7f29173541af9bfe138e2cab23ce28d5fabeb78",
+        "signature": "aab2ed9a341e51247276284951214add911935383f3e506713efc73e92af7fc6",
         "affectsGlobalScope": false
       },
       "../src/constants/channels.enum.ts": {
@@ -3227,8 +3227,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/api-key/dto/create-api-key.dto.ts": {
-        "version": "0fdb86ba476a9eee0ad1eebbc8b955a55832c34b5cb776142f05a0d1607deef8",
-        "signature": "684b28c3af6c1eec6d57a40cdc0cf80c10ea298222bbca98a84a6779a40fe5f1",
+        "version": "93633b8a717f2967a3a452a7c4083e04ba50d399a28b8442ec7ae0ad8459298e",
+        "signature": "8acba8845f1c3a987235a34289cdc00f2e662c28cf3126ce4199bae14e741a2a",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts": {
@@ -3282,12 +3282,12 @@
         "affectsGlobalScope": false
       },
       "../src/api/api-key/api-key.service.ts": {
-        "version": "2ba528caaf22467bae9f0a47a9b9852e55ebe101fc81b8697e00e40403d4c222",
+        "version": "1d9600dd98287f961ec8f7e3832183086d186006f0d7c0a679e02b88327a001c",
         "signature": "7d59f17dc6f811a0175127a63c5755f5a0fc4270f78d546317378a022db5b932",
         "affectsGlobalScope": false
       },
       "../src/api/auth/guards/apikey-auth.guard.ts": {
-        "version": "6cc842920a41f5384523ca072cb647503365c81bc17663f74c653d6e8ea7236d",
+        "version": "9d9d716554fa7933a6f1c06e9eff1f789456870fa1bb6fe640c36ca9f1f735c0",
         "signature": "54936dcb6ff38893c56f454e71e1380eb88e9a7ae7536b258a0d80b410ab1336",
         "affectsGlobalScope": false
       },
@@ -3327,7 +3327,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/api-key/controllers/api-key.controller.ts": {
-        "version": "b4c75a0c378fee6485caf243f3321c98e74b28d2c2e714ab96888386ceab502b",
+        "version": "9dd3e038f3e772257ddea0a3a7d0e05454192399425da9ad893ba743e48d1069",
         "signature": "de0fbdc721b71d616c5929a5a65c52411cb691cf56da74445b8ad44abd948f04",
         "affectsGlobalScope": false
       },
@@ -3337,7 +3337,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/api-key/api-key.module.ts": {
-        "version": "7847ec368e1a16faee51691b37fab6e545c14bcf0f50897ef5d0161ef0771550",
+        "version": "199b55c62242f6fa150ea390c8e9379ddf705b18d97fbaa89d117df6745b20ba",
         "signature": "b2e18ec0c42f4296b64ccee1e487946a5cf05e5d68ce0d9a8c8096f3e90d2a53",
         "affectsGlobalScope": false
       },
@@ -5247,18 +5247,18 @@
         "affectsGlobalScope": false
       },
       "../src/api/licensekey/licensekey.service.ts": {
-        "version": "ca919c32cdf43c1f47bd41c23f4014def92c8732bcb2645d1a6231c92700a17c",
+        "version": "acc782d5e6aa5ac7c5fd120d81c3bb2d32c246007fba70fb6e2a80eb95d17b30",
         "signature": "a6e4b84d44b44aab54851608bb32dcd3f6652bb4037a931fddb10f801c3deaa0",
         "affectsGlobalScope": false
       },
       "../src/api/user/user.service.ts": {
-        "version": "6484aa7e4c15a77acaf8f84cd48d67d051e57f3f5141baa97382316cbbab7d0b",
-        "signature": "7ecfeaaa968e301f67e9292c8dfaab97acd6c6e554727b609574c719b1a6c222",
+        "version": "3c6f568bbd88fcfe23adc7cd6150fccf81560a6df57b0fe5e3d23a22a261a0b3",
+        "signature": "a980f9363785889bce1b37a49ddf3ad0c27139fb3e4fc9ed091fc0fef4bc7f0c",
         "affectsGlobalScope": false
       },
       "../src/api/user/user.controller.ts": {
-        "version": "b8ba378a5a303fb48853df32843a79fb499e3facb4f7d2f860e8912fcb231534",
-        "signature": "4d411e7f6b400cd387fb699eead7349de76e7635a064f24435ef6434a889b0a6",
+        "version": "b2ab202cd4121fb56c0ddefe55ad31c268e8383c0ed895f1de4ce26e2f8a4766",
+        "signature": "b294022cf65e6dbafd1c1a1c1b00d2c57df51732f63fc975943ac59ad990e804",
         "affectsGlobalScope": false
       },
       "../src/api/licensekey/dto/update-licensekey.dto.ts": {
@@ -19774,8 +19774,11 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/auth/guards/jwt-auth.guard.ts",
+        "../src/api/licensekey/licensekey.service.ts",
         "../src/api/user/dtos/index.ts",
-        "../src/api/user/user.service.ts"
+        "../src/api/user/user.service.ts",
+        "../src/shared/dtos/parsedquery.dto.ts",
+        "../src/shared/pipes/parsequeryvalue.pipe.ts"
       ],
       "../src/api/user/user.module.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -33070,9 +33073,12 @@
         "../src/shared/dtos/parsedquery.dto.ts"
       ],
       "../src/api/user/user.controller.ts": [
+        "../src/api/licensekey/dto/mongoosepaginate-licensekey.dto.ts",
+        "../src/api/licensekey/licensekey.service.ts",
         "../src/api/licensekey/schemas/licensekey.schema.ts",
         "../src/api/user/dtos/index.ts",
-        "../src/api/user/user.service.ts"
+        "../src/api/user/user.service.ts",
+        "../src/shared/dtos/parsedquery.dto.ts"
       ],
       "../src/api/user/user.service.ts": [
         "../node_modules/@nestjs/config/index.d.ts",

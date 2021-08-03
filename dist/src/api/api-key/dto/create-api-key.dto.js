@@ -7,7 +7,7 @@ const api_key_schema_1 = require("../schemas/api-key.schema");
 class CreateApiKeyDto extends swagger_1.OmitType(api_key_schema_1.ApiKey, [
     'disabled',
     'customer',
-    'disabledByAdmin',
+    'suspended',
     'validity',
     'encodeUsageCount',
     'decodeUsageCount'

@@ -26,11 +26,6 @@ let UserService = class UserService {
         this.cognitoUserPoolId = this.configService.get('COGNITO_USER_POOL_ID');
     }
     async listAllLicensesOfOwner(ownerId) {
-        const ownerKey = `owner${ownerId}`.replace(/-/g, '');
-        const { data, errors } = await this.keygenService.getAllLicenses(`metadata[${ownerKey}]=${ownerId}`);
-        if (errors)
-            return Promise.reject(errors);
-        return data;
     }
     async addNewLicense(licenseId, ownerId) {
         const key = await this.licensekeyService.licenseKeyModel.findById(licenseId);

@@ -18,7 +18,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const licensekey_schema_1 = require("./schemas/licensekey.schema");
 const mongoose_2 = require("mongoose");
 const uuid_1 = require("uuid");
-const lodash_1 = require("lodash");
+const _ = require("lodash");
 let LicensekeyService = class LicensekeyService {
     constructor(licenseKeyModel) {
         this.licenseKeyModel = licenseKeyModel;
@@ -61,30 +61,30 @@ let LicensekeyService = class LicensekeyService {
         return { validationResult, licenseKey };
     }
     async addOwnersToLicense(id, owners) {
-        const licenseKey = await this.licenseKeyModel.findById(id).select('owners');
+        const licenseKey = await this.licenseKeyModel.findById(id);
         licenseKey.owners.push(...owners);
-        licenseKey.owners = lodash_1.default.uniqBy(licenseKey.owners, 'ownerId');
+        licenseKey.owners = _.uniqBy(licenseKey.owners, 'ownerId');
         return licenseKey.save();
     }
     async addOwnerToLicense(id, lKOwner) {
-        const licenseKey = await this.licenseKeyModel.findById(id).select('owners');
+        const licenseKey = await this.licenseKeyModel.findById(id);
         licenseKey.owners.push(lKOwner);
-        licenseKey.owners = lodash_1.default.uniqBy(licenseKey.owners, 'ownerId');
+        licenseKey.owners = _.uniqBy(licenseKey.owners, 'ownerId');
         return licenseKey.save();
     }
     async removeOwnerFromLicense(id, ownerId) {
-        const licenseKey = await this.licenseKeyModel.findById(id).select('owners');
+        const licenseKey = await this.licenseKeyModel.findById(id);
         var oldOwners = licenseKey.owners;
-        lodash_1.default.remove(oldOwners, (ow) => ow.ownerId == ownerId);
+        _.remove(oldOwners, (ow) => ow.ownerId == ownerId);
         licenseKey.owners = oldOwners;
         return licenseKey.save();
     }
     async removeOwnersFromLicense(id, ownerIds) {
-        const licenseKey = await this.licenseKeyModel.findById(id).select('owners');
+        const licenseKey = await this.licenseKeyModel.findById(id);
         var oldOwners = licenseKey.owners;
         for (let index = 0; index < ownerIds.length; index++) {
             const owner = ownerIds[index];
-            lodash_1.default.remove(oldOwners, (ow) => ow.ownerId == owner);
+            _.remove(oldOwners, (ow) => ow.ownerId == owner);
         }
         licenseKey.owners = oldOwners;
         return licenseKey.save();

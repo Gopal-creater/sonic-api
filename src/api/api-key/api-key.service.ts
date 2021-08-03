@@ -28,8 +28,8 @@ export class ApiKeyService {
         message: 'Item not found',
       });
     }
-    if(oldApiKey.disabledByAdmin){
-      throw new UnprocessableEntityException("Your key is disabled by admin, please contact your admin.")
+    if(oldApiKey.suspended){
+      throw new UnprocessableEntityException("Your key is suspended, please contact your admin.")
     }
     return this.apiKeyModel.findOneAndUpdate({_id:id},{
       disabled:disabled

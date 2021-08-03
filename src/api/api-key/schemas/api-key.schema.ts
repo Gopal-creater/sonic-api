@@ -21,7 +21,7 @@ export class ApiKey extends Document { //_id or id will be apikey here, which is
 
   @ApiProperty()
   @Prop({type:Boolean,default:false})
-  disabledByAdmin?: boolean;
+  suspended?: boolean;
 
   @ApiProperty()
   @Prop({default:0})

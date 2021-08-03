@@ -17,7 +17,7 @@ import {
       },
     ]),
   ],
-  controllers: [ApiKeyCustomerController],
+  controllers: [ApiKeyController,ApiKeyCustomerController],
   providers: [ApiKeyService],
   exports:[ApiKeyService]
 })

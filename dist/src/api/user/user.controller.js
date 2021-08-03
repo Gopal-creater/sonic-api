@@ -19,15 +19,22 @@ const swagger_1 = require("@nestjs/swagger");
 const index_1 = require("./dtos/index");
 const user_service_1 = require("./user.service");
 const common_1 = require("@nestjs/common");
+const parseQueryValue_pipe_1 = require("../../shared/pipes/parseQueryValue.pipe");
+const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
+const licensekey_service_1 = require("../licensekey/licensekey.service");
 let UserController = class UserController {
-    constructor(userServices) {
+    constructor(userServices, licensekeyService) {
         this.userServices = userServices;
+        this.licensekeyService = licensekeyService;
     }
-    async getUserLicenses(userId) {
-        return this.userServices.listAllLicensesOfOwner(userId);
+    async getUserLicenses(userId, queryDto) {
+        queryDto.filter["owners.ownerId"] = userId;
+        return this.licensekeyService.findAll(queryDto);
     }
     async addNewLicense(userId, addNewLicenseDto) {
-        return this.userServices.addNewLicense(addNewLicenseDto.licenseKey, userId).catch(err => {
+        return this.userServices
+            .addNewLicense(addNewLicenseDto.licenseKey, userId)
+            .catch(err => {
             if (err.status == 404) {
                 throw new common_1.NotFoundException(err.message);
             }
@@ -48,10 +55,11 @@ let UserController = class UserController {
 __decorate([
     swagger_1.ApiOperation({ summary: 'Get all licenses of particular user' }),
     common_1.Get('/:userId/licenses'),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../licensekey/dto/mongoosepaginate-licensekey.dto").MongoosePaginateLicensekeyDto }),
     __param(0, common_1.Param('userId')),
+    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserLicenses", null);
 __decorate([
@@ -104,7 +112,7 @@ __decorate([
 UserController = __decorate([
     swagger_1.ApiTags('User Controller'),
     common_1.Controller('users'),
-    __metadata("design:paramtypes", [user_service_1.UserService])
+    __metadata("design:paramtypes", [user_service_1.UserService, licensekey_service_1.LicensekeyService])
 ], UserController);
 exports.UserController = UserController;
 //# sourceMappingURL=user.controller.js.map

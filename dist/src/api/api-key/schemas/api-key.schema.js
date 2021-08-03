@@ -35,7 +35,7 @@ __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ type: Boolean, default: false }),
     __metadata("design:type", Boolean)
-], ApiKey.prototype, "disabledByAdmin", void 0);
+], ApiKey.prototype, "suspended", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ default: 0 }),

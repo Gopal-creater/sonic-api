@@ -25,12 +25,13 @@ export class UserService {
   }
 
   async listAllLicensesOfOwner(ownerId: string) {
-    const ownerKey = `owner${ownerId}`.replace(/-/g, '');
-    const { data, errors } = await this.keygenService.getAllLicenses(
-      `metadata[${ownerKey}]=${ownerId}`,
-    );
-    if (errors) return Promise.reject(errors);
-    return data;
+    // const ownerKey = `owner${ownerId}`.replace(/-/g, '');
+    // const { data, errors } = await this.keygenService.getAllLicenses(
+    //   `metadata[${ownerKey}]=${ownerId}`,
+    // );
+    // if (errors) return Promise.reject(errors);
+    // return data;
+    // this
   }
 
   //Add new existing license: Meaning just update the metadata field with ownerId

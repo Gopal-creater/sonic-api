@@ -10,7 +10,7 @@ export declare class UserService {
     private cognitoIdentityServiceProvider;
     private cognitoUserPoolId;
     constructor(keygenService: KeygenService, licensekeyService: LicensekeyService, globalAwsService: GlobalAwsService, configService: ConfigService);
-    listAllLicensesOfOwner(ownerId: string): Promise<any>;
+    listAllLicensesOfOwner(ownerId: string): Promise<void>;
     addNewLicense(licenseId: string, ownerId: string): Promise<import("../licensekey/schemas/licensekey.schema").LicenseKey>;
     addBulkNewLicenses(licenseIds: [string], ownerId: string): Promise<{
         passedData: (import("../licensekey/schemas/licensekey.schema").LicenseKey | {

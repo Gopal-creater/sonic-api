@@ -27,7 +27,7 @@ export class ApiKeyController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard,new IsTargetUserLoggedInGuard())
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All ApiKeys' })

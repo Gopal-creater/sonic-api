@@ -19,7 +19,7 @@ export class ApiKeyAuthGuard implements CanActivate {
 
     if(!apikeyFromDb) throw new ForbiddenException("Forbidden resource deuto invalid apikey");
 
-    if(apikeyFromDb.disabled || apikeyFromDb.disabledByAdmin)  throw new ForbiddenException("Forbidden resource deuto no apikey is disabled")
+    if(apikeyFromDb.disabled || apikeyFromDb.suspended)  throw new ForbiddenException("Forbidden resource deuto apikey is disabled or suspended")
    
     if (new Date(apikeyFromDb.validity).getTime() < new Date().getTime()) throw new ForbiddenException("Forbidden resource deuto no apikey is expired")
    

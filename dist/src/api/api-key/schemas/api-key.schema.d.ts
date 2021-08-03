@@ -4,7 +4,7 @@ export declare class ApiKey extends Document {
     customer: string;
     validity?: Date;
     disabled?: boolean;
-    disabledByAdmin?: boolean;
+    suspended?: boolean;
     encodeUsageCount?: number;
     decodeUsageCount?: number;
     metaData?: Map<string, any>;
