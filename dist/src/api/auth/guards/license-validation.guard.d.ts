@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
-import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
+import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 export declare class LicenseValidationGuard implements CanActivate {
-    private readonly keygenService;
-    constructor(keygenService: KeygenService);
+    private readonly licensekeyService;
+    constructor(licensekeyService: LicensekeyService);
     canActivate(context: ExecutionContext): Promise<boolean>;
     isValidLicense(id: string): Promise<boolean>;
 }

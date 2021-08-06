@@ -7,7 +7,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModule = void 0;
-const keygen_module_1 = require("./../../shared/modules/keygen/keygen.module");
 const common_1 = require("@nestjs/common");
 const user_controller_1 = require("./user.controller");
 const user_service_1 = require("./user.service");
@@ -16,7 +15,7 @@ let UserModule = class UserModule {
 };
 UserModule = __decorate([
     common_1.Module({
-        imports: [keygen_module_1.KeygenModule, licensekey_module_1.LicensekeyModule],
+        imports: [licensekey_module_1.LicensekeyModule],
         controllers: [user_controller_1.UserController],
         providers: [user_service_1.UserService],
     })

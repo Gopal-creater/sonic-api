@@ -10,7 +10,6 @@ import {
   CognitoUserAttribute,
 } from 'amazon-cognito-identity-js';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
-import { KeygenService } from '../../shared/modules/keygen/keygen.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
 
@@ -22,7 +21,6 @@ export class AuthService {
     @Inject('AuthConfig')
     private readonly authConfig: AuthConfig,
     private readonly globalAwsService: GlobalAwsService,
-    private readonly keygenService: KeygenService,
   ) {
     this.userPool = new CognitoUserPool({
       UserPoolId: this.authConfig.userPoolId,

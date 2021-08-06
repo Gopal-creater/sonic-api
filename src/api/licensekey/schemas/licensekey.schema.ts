@@ -10,6 +10,15 @@ export class LKOwner{
   ownerId: string;
 }
 
+@Schema()
+export class LKReserve{
+  @ApiProperty()
+  jobId: string;
+
+  @ApiProperty()
+  count: number;
+}
+
 @Schema({ timestamps: true, collection: LicenseKeySchemaName })
 export class LicenseKey extends Document {
   //_id or id will be apikey here, which is always unique
@@ -76,6 +85,10 @@ export class LicenseKey extends Document {
   @ApiProperty()
   @Prop([LKOwner])
   owners?:LKOwner[]
+
+  @ApiProperty()
+  @Prop([LKReserve])
+  reserves?:LKReserve[]
 }
 
 export const LicenseKeySchema = SchemaFactory.createForClass(LicenseKey);

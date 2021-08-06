@@ -11,14 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BinaryLicenseValidationGuard = void 0;
 const common_1 = require("@nestjs/common");
-const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
-const utils_1 = require("../../../shared/utils");
+const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 let BinaryLicenseValidationGuard = class BinaryLicenseValidationGuard {
-    constructor(keygenService) {
-        this.keygenService = keygenService;
+    constructor(licensekeyService) {
+        this.licensekeyService = licensekeyService;
     }
     async canActivate(context) {
-        var _a, _b;
         const request = context.switchToHttp().getRequest();
         const body = request.body;
         if (!body.license || !body.sonicKey) {
@@ -26,18 +24,18 @@ let BinaryLicenseValidationGuard = class BinaryLicenseValidationGuard {
                 message: 'missing parameters',
             });
         }
-        const { meta, data, errors } = await this.keygenService.validateLicence(body.license);
-        if (errors || !meta['valid']) {
+        const { validationResult, licenseKey } = await this.licensekeyService.validateLicence(body.license);
+        if (!validationResult.valid) {
             throw new common_1.BadRequestException({
                 message: 'Invalid license.',
             });
         }
-        const uses = data['attributes']['uses'];
-        const maxUses = data['attributes']['maxUses'];
+        const uses = licenseKey.encodeUses;
+        const maxUses = licenseKey.maxEncodeUses;
         const remaniningUses = maxUses - uses;
-        const reserves = utils_1.JSONUtils.parse((_b = (_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) === null || _b === void 0 ? void 0 : _b.reserves, []);
+        const reserves = licenseKey.reserves || [];
         if (await this.isAllowedForJobCreation(remaniningUses, reserves)) {
-            request.validLicense = data;
+            request.validLicense = licenseKey;
             return true;
         }
         else {
@@ -55,7 +53,7 @@ let BinaryLicenseValidationGuard = class BinaryLicenseValidationGuard {
                 message: 'Maximum license usage count exceeded.',
                 remainingUsages: remaniningUses,
                 reservedLicenceCount: reservedLicenceCount,
-                remaniningUsesAfterReservedCount: remaniningUsesAfterReservedCount
+                remaniningUsesAfterReservedCount: remaniningUsesAfterReservedCount,
             });
         }
         return true;
@@ -63,7 +61,7 @@ let BinaryLicenseValidationGuard = class BinaryLicenseValidationGuard {
 };
 BinaryLicenseValidationGuard = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [keygen_service_1.KeygenService])
+    __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], BinaryLicenseValidationGuard);
 exports.BinaryLicenseValidationGuard = BinaryLicenseValidationGuard;
 //# sourceMappingURL=binary-license-validation.guard.js.map

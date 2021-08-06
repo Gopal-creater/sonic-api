@@ -1,7 +1,7 @@
 import { AddNewLicenseDto, AddBulkNewLicensesDto, UpdateProfileDto } from './dtos/index';
 import { UserService } from './user.service';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
-import { LicensekeyService } from '../licensekey/licensekey.service';
+import { LicensekeyService } from '../licensekey/services/licensekey.service';
 export declare class UserController {
     private readonly userServices;
     private readonly licensekeyService;

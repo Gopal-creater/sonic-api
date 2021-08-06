@@ -1,13 +1,12 @@
 import { ConfigService } from '@nestjs/config';
 import { GlobalAwsService } from './../../shared/modules/global-aws/global-aws.service';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
-import { KeygenService } from './../../shared/modules/keygen/keygen.service';
 import {
   Injectable,
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { LicensekeyService } from '../licensekey/licensekey.service';
+import { LicensekeyService } from '../licensekey/services/licensekey.service';
 import { LKOwner } from '../licensekey/schemas/licensekey.schema';
 
 @Injectable()
@@ -15,23 +14,12 @@ export class UserService {
   private cognitoIdentityServiceProvider: CognitoIdentityServiceProvider;
   private cognitoUserPoolId: string;
   constructor(
-    private readonly keygenService: KeygenService,
     private readonly licensekeyService: LicensekeyService,
     private readonly globalAwsService: GlobalAwsService,
     private readonly configService: ConfigService,
   ) {
     this.cognitoIdentityServiceProvider = globalAwsService.getCognitoIdentityServiceProvider();
     this.cognitoUserPoolId = this.configService.get('COGNITO_USER_POOL_ID');
-  }
-
-  async listAllLicensesOfOwner(ownerId: string) {
-    // const ownerKey = `owner${ownerId}`.replace(/-/g, '');
-    // const { data, errors } = await this.keygenService.getAllLicenses(
-    //   `metadata[${ownerKey}]=${ownerId}`,
-    // );
-    // if (errors) return Promise.reject(errors);
-    // return data;
-    // this
   }
 
   //Add new existing license: Meaning just update the metadata field with ownerId

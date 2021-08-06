@@ -21,7 +21,7 @@ const user_service_1 = require("./user.service");
 const common_1 = require("@nestjs/common");
 const parseQueryValue_pipe_1 = require("../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
-const licensekey_service_1 = require("../licensekey/licensekey.service");
+const licensekey_service_1 = require("../licensekey/services/licensekey.service");
 let UserController = class UserController {
     constructor(userServices, licensekeyService) {
         this.userServices = userServices;
@@ -53,6 +53,8 @@ let UserController = class UserController {
     }
 };
 __decorate([
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get all licenses of particular user' }),
     common_1.Get('/:userId/licenses'),
     openapi.ApiResponse({ status: 200, type: require("../licensekey/dto/mongoosepaginate-licensekey.dto").MongoosePaginateLicensekeyDto }),

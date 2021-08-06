@@ -23,21 +23,21 @@ const binary_license_validation_guard_1 = require("../../auth/guards/binary-lice
 const apikey_decorator_1 = require("../../auth/decorators/apikey.decorator");
 const Channels_enum_1 = require("../../../constants/Channels.enum");
 const licensekey_decorator_1 = require("../../auth/decorators/licensekey.decorator");
-const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
+const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 let SonickeyBinaryController = class SonickeyBinaryController {
-    constructor(sonicKeyService, keygenService) {
+    constructor(sonicKeyService, licensekeyService) {
         this.sonicKeyService = sonicKeyService;
-        this.keygenService = keygenService;
+        this.licensekeyService = licensekeyService;
     }
     async createFormBinary(createSonicKeyDto, customer, apiKey, licenseKey) {
         const channel = Channels_enum_1.ChannelEnums.BINARY;
         const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { owner: customer, apiKey: apiKey, channel: channel, license: licenseKey, _id: createSonicKeyDto.sonicKey }));
         const savedSonicKey = await newSonicKey.save();
-        const keygenResult = await this.keygenService.incrementUsage(licenseKey, 1);
-        if (keygenResult['errors']) {
+        await this.licensekeyService.incrementUses(licenseKey, "encode", 1)
+            .catch(async (err) => {
             await this.sonicKeyService.sonicKeyModel.deleteOne({ _id: savedSonicKey.id });
             throw new common_1.BadRequestException('Unable to increment the license usage!');
-        }
+        });
         return savedSonicKey;
     }
 };
@@ -50,7 +50,7 @@ __decorate([
     __param(0, common_1.Body()),
     __param(1, apikey_decorator_1.ApiKey('customer')),
     __param(2, apikey_decorator_1.ApiKey('_id')),
-    __param(3, licensekey_decorator_1.LicenseKey('id')),
+    __param(3, licensekey_decorator_1.LicenseKey('key')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromBinaryDto, String, String, String]),
     __metadata("design:returntype", Promise)
@@ -60,7 +60,7 @@ SonickeyBinaryController = __decorate([
     swagger_1.ApiSecurity('x-api-key'),
     common_1.Controller('sonic-keys/binary'),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
-        keygen_service_1.KeygenService])
+        licensekey_service_1.LicensekeyService])
 ], SonickeyBinaryController);
 exports.SonickeyBinaryController = SonickeyBinaryController;
 //# sourceMappingURL=sonickey.binary.controller.js.map

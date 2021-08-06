@@ -1,6 +1,5 @@
 import { SonicKeyDto } from '../dtos/sonicKey.dto';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
-import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { JsonParsePipe } from '../../../shared/pipes/jsonparse.pipe';
 import {
   Controller,

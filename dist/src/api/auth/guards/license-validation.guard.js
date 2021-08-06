@@ -11,26 +11,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LicenseValidationGuard = void 0;
 const common_1 = require("@nestjs/common");
-const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
+const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 let LicenseValidationGuard = class LicenseValidationGuard {
-    constructor(keygenService) {
-        this.keygenService = keygenService;
+    constructor(licensekeyService) {
+        this.licensekeyService = licensekeyService;
     }
     async canActivate(context) {
         const request = context.switchToHttp().getRequest();
         const user = request.user;
         const ownerKey = `owner${user === null || user === void 0 ? void 0 : user.sub}`.replace(/-/g, '');
-        const { data, errors } = await this.keygenService.getAllLicenses(`metadata[${ownerKey}]=${user === null || user === void 0 ? void 0 : user.sub}`);
+        const data = await this.licensekeyService.licenseKeyModel.find({ "owners.ownerId": user.sub });
         if (!data || data.length <= 0) {
             throw new common_1.UnprocessableEntityException("No License keys present. Please add a License key.");
-        }
-        if (errors) {
-            throw new common_1.BadRequestException("Keygen server error");
         }
         let currentValidLicense;
         for (let index = 0; index < data.length; index++) {
             const license = data[index];
-            if (await this.isValidLicense(license.id)) {
+            if (await this.isValidLicense(license.key)) {
                 currentValidLicense = license;
                 break;
             }
@@ -39,12 +36,12 @@ let LicenseValidationGuard = class LicenseValidationGuard {
         return Boolean(currentValidLicense);
     }
     async isValidLicense(id) {
-        const { meta, data, errors } = await this.keygenService.validateLicence(id);
-        if (errors || !meta['valid']) {
+        const { validationResult, licenseKey } = await this.licensekeyService.validateLicence(id);
+        if (!validationResult.valid) {
             return false;
         }
-        const uses = data['attributes']['uses'];
-        const maxUses = data['attributes']['maxUses'];
+        const uses = licenseKey.encodeUses;
+        const maxUses = licenseKey.maxEncodeUses;
         if (uses > maxUses) {
             return false;
         }
@@ -53,7 +50,7 @@ let LicenseValidationGuard = class LicenseValidationGuard {
 };
 LicenseValidationGuard = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [keygen_service_1.KeygenService])
+    __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], LicenseValidationGuard);
 exports.LicenseValidationGuard = LicenseValidationGuard;
 //# sourceMappingURL=license-validation.guard.js.map

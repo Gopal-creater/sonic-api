@@ -12,20 +12,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const config_1 = require("@nestjs/config");
 const global_aws_service_1 = require("./../../shared/modules/global-aws/global-aws.service");
-const keygen_service_1 = require("./../../shared/modules/keygen/keygen.service");
 const common_1 = require("@nestjs/common");
-const licensekey_service_1 = require("../licensekey/licensekey.service");
+const licensekey_service_1 = require("../licensekey/services/licensekey.service");
 const licensekey_schema_1 = require("../licensekey/schemas/licensekey.schema");
 let UserService = class UserService {
-    constructor(keygenService, licensekeyService, globalAwsService, configService) {
-        this.keygenService = keygenService;
+    constructor(licensekeyService, globalAwsService, configService) {
         this.licensekeyService = licensekeyService;
         this.globalAwsService = globalAwsService;
         this.configService = configService;
         this.cognitoIdentityServiceProvider = globalAwsService.getCognitoIdentityServiceProvider();
         this.cognitoUserPoolId = this.configService.get('COGNITO_USER_POOL_ID');
-    }
-    async listAllLicensesOfOwner(ownerId) {
     }
     async addNewLicense(licenseId, ownerId) {
         const key = await this.licensekeyService.licenseKeyModel.findById(licenseId);
@@ -116,8 +112,7 @@ let UserService = class UserService {
 };
 UserService = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [keygen_service_1.KeygenService,
-        licensekey_service_1.LicensekeyService,
+    __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService,
         global_aws_service_1.GlobalAwsService,
         config_1.ConfigService])
 ], UserService);

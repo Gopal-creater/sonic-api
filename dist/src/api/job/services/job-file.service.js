@@ -16,15 +16,13 @@ exports.JobFileService = void 0;
 const common_1 = require("@nestjs/common");
 const job_service_1 = require("./job.service");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
-const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
 const jobfile_schema_1 = require("../schemas/jobfile.schema");
 const mongoose_1 = require("mongoose");
 const mongoose_2 = require("@nestjs/mongoose");
 let JobFileService = class JobFileService {
-    constructor(jobFileModel, jobService, keygenService, sonickeyService) {
+    constructor(jobFileModel, jobService, sonickeyService) {
         this.jobFileModel = jobFileModel;
         this.jobService = jobService;
-        this.keygenService = keygenService;
         this.sonickeyService = sonickeyService;
     }
     async findAll(queryDto) {
@@ -61,7 +59,6 @@ JobFileService = __decorate([
     __param(0, mongoose_2.InjectModel(jobfile_schema_1.JobFile.name)),
     __metadata("design:paramtypes", [mongoose_1.Model,
         job_service_1.JobService,
-        keygen_service_1.KeygenService,
         sonickey_service_1.SonickeyService])
 ], JobFileService);
 exports.JobFileService = JobFileService;

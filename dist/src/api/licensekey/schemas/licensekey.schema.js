@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LicenseKeySchema = exports.LicenseKey = exports.LKOwner = exports.LicenseKeySchemaName = void 0;
+exports.LicenseKeySchema = exports.LicenseKey = exports.LKReserve = exports.LKOwner = exports.LicenseKeySchemaName = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
@@ -24,6 +24,20 @@ LKOwner = __decorate([
     mongoose_1.Schema()
 ], LKOwner);
 exports.LKOwner = LKOwner;
+let LKReserve = class LKReserve {
+};
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], LKReserve.prototype, "jobId", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], LKReserve.prototype, "count", void 0);
+LKReserve = __decorate([
+    mongoose_1.Schema()
+], LKReserve);
+exports.LKReserve = LKReserve;
 let LicenseKey = class LicenseKey extends mongoose_2.Document {
 };
 __decorate([
@@ -103,6 +117,11 @@ __decorate([
     mongoose_1.Prop([LKOwner]),
     __metadata("design:type", Array)
 ], LicenseKey.prototype, "owners", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop([LKReserve]),
+    __metadata("design:type", Array)
+], LicenseKey.prototype, "reserves", void 0);
 LicenseKey = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.LicenseKeySchemaName })
 ], LicenseKey);

@@ -17,12 +17,10 @@ const global_aws_service_1 = require("../../shared/modules/global-aws/global-aws
 const auth_config_1 = require("./config/auth.config");
 const common_1 = require("@nestjs/common");
 const amazon_cognito_identity_js_1 = require("amazon-cognito-identity-js");
-const keygen_service_1 = require("../../shared/modules/keygen/keygen.service");
 let AuthService = class AuthService {
-    constructor(authConfig, globalAwsService, keygenService) {
+    constructor(authConfig, globalAwsService) {
         this.authConfig = authConfig;
         this.globalAwsService = globalAwsService;
-        this.keygenService = keygenService;
         this.userPool = new amazon_cognito_identity_js_1.CognitoUserPool({
             UserPoolId: this.authConfig.userPoolId,
             ClientId: this.authConfig.clientId,
@@ -69,8 +67,7 @@ AuthService = __decorate([
     common_1.Injectable(),
     __param(0, common_1.Inject('AuthConfig')),
     __metadata("design:paramtypes", [auth_config_1.AuthConfig,
-        global_aws_service_1.GlobalAwsService,
-        keygen_service_1.KeygenService])
+        global_aws_service_1.GlobalAwsService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

@@ -1,8 +1,8 @@
-import { CreateLicensekeyDto } from './dto/create-licensekey.dto';
-import { LicenseKey, LKOwner } from './schemas/licensekey.schema';
+import { CreateLicensekeyDto } from '../dto/create-licensekey.dto';
+import { LicenseKey, LKOwner } from '../schemas/licensekey.schema';
 import { Model } from 'mongoose';
-import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
-import { MongoosePaginateLicensekeyDto } from './dto/mongoosepaginate-licensekey.dto';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import { MongoosePaginateLicensekeyDto } from '../dto/mongoosepaginate-licensekey.dto';
 declare type usesFor = 'encode' | 'decode';
 export declare class LicensekeyService {
     readonly licenseKeyModel: Model<LicenseKey>;

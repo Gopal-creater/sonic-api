@@ -20,7 +20,7 @@ import {
 } from '@nestjs/common';
 import { ParseQueryValue } from '../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
-import { LicensekeyService } from '../licensekey/licensekey.service';
+import { LicensekeyService } from '../licensekey/services/licensekey.service';
 
 
 @ApiTags('User Controller')
@@ -28,8 +28,8 @@ import { LicensekeyService } from '../licensekey/licensekey.service';
 export class UserController {
   constructor(private readonly userServices: UserService,private readonly licensekeyService: LicensekeyService,) {}
 
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all licenses of particular user' })
   @Get('/:userId/licenses')
   async getUserLicenses(

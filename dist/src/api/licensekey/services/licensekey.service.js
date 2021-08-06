@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LicensekeyService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const licensekey_schema_1 = require("./schemas/licensekey.schema");
+const licensekey_schema_1 = require("../schemas/licensekey.schema");
 const mongoose_2 = require("mongoose");
 const uuid_1 = require("uuid");
 const _ = require("lodash");

@@ -11,14 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobLicenseValidationGuard = void 0;
 const common_1 = require("@nestjs/common");
-const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
-const utils_1 = require("../../../shared/utils");
+const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 let JobLicenseValidationGuard = class JobLicenseValidationGuard {
-    constructor(keygenService) {
-        this.keygenService = keygenService;
+    constructor(licensekeyService) {
+        this.licensekeyService = licensekeyService;
     }
     async canActivate(context) {
-        var _a, _b;
         const request = context.switchToHttp().getRequest();
         const body = request.body;
         if (!body.license || !body.owner || !body.jobFiles) {
@@ -31,19 +29,19 @@ let JobLicenseValidationGuard = class JobLicenseValidationGuard {
                 message: 'Please add some files to create job',
             });
         }
-        const { meta, data, errors } = await this.keygenService.validateLicence(body.license);
-        if (errors || !meta['valid']) {
+        const { validationResult, licenseKey } = await this.licensekeyService.validateLicence(body.license);
+        if (!validationResult.valid) {
             throw new common_1.BadRequestException({
                 message: 'Invalid license.',
             });
         }
-        const uses = data['attributes']['uses'];
-        const maxUses = data['attributes']['maxUses'];
+        const uses = licenseKey.encodeUses;
+        const maxUses = licenseKey.maxEncodeUses;
         const remaniningUses = maxUses - uses;
         const usesToBeUsed = body.jobFiles.length;
-        const reserves = utils_1.JSONUtils.parse((_b = (_a = data === null || data === void 0 ? void 0 : data.attributes) === null || _a === void 0 ? void 0 : _a.metadata) === null || _b === void 0 ? void 0 : _b.reserves, []);
+        const reserves = licenseKey.reserves || [];
         if (await this.isAllowedForJobCreation(remaniningUses, usesToBeUsed, reserves)) {
-            request.validLicense = data;
+            request.validLicense = licenseKey;
             return true;
         }
         else {
@@ -70,7 +68,7 @@ let JobLicenseValidationGuard = class JobLicenseValidationGuard {
 };
 JobLicenseValidationGuard = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [keygen_service_1.KeygenService])
+    __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], JobLicenseValidationGuard);
 exports.JobLicenseValidationGuard = JobLicenseValidationGuard;
 //# sourceMappingURL=job-license-validation.guard.js.map

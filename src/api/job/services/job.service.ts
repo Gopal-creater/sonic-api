@@ -7,11 +7,11 @@ import { CreateJobDto } from '../dto/create-job.dto';
 import { Job } from '../schemas/job.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
-import { JSONUtils } from '../../../shared/utils';
 import { JobFile } from '../schemas/jobfile.schema';
 import { MongoosePaginateJobDto } from '../dto/mongoosepaginate-job.dto';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import { LicensekeyService } from '../../licensekey/services/licensekey.service';
+import { LKReserve } from '../../licensekey/schemas/licensekey.schema';
 
 
 @Injectable()
@@ -19,7 +19,7 @@ export class JobService {
   constructor(
     @InjectModel(Job.name) public readonly jobModel: Model<Job>,
     @InjectModel(JobFile.name) public  readonly jobFileModel: Model<JobFile>,
-    public readonly keygenService: KeygenService,
+    public readonly licensekeyService: LicensekeyService,
   ) {}
   async create(createJobDto: CreateJobDto) {
     const{jobFiles,...job}=createJobDto
@@ -35,6 +35,7 @@ export class JobService {
     
     createdJob.jobFiles.push(...savedJobFiles)
     const updatedCreatedJob = await this.jobModel.findByIdAndUpdate(createdJob._id,{jobFiles:createdJob.jobFiles},{new:true});
+  
     await this.addReservedDetailsInLicence(createJobDto.license, [
       { jobId: createdJob.id, count: updatedCreatedJob.jobFiles.length },
     ]).catch(async err => {
@@ -57,12 +58,6 @@ export class JobService {
 
 
     return await this.jobModel["paginate"](filter,paginateOptions)
-        // return this.jobModel
-        // .find(query || {})
-        // .skip(_offset)
-        // .limit(_limit)
-        // .sort(sort)
-        // .exec();
     }
 
   async remove(id: string) {
@@ -95,8 +90,8 @@ export class JobService {
         throw new BadRequestException('Error removing reserved licence count ');
       },
     );
-    await this.keygenService
-      .decrementUsage(job.license, totalCompletedFiles.length)
+    await this.licensekeyService
+      .decrementUses(job.license,'encode' , totalCompletedFiles.length)
       .catch(err => {
         throw new BadRequestException('Error decrementing licence usages');
       });
@@ -106,8 +101,9 @@ export class JobService {
         completedAt: new Date()
       },{new:true})
       .catch(async err => {
-        await this.keygenService.incrementUsage(
+        await this.licensekeyService.incrementUses(
           job.license,
+          'encode',
           totalCompletedFiles.length,
         );
         throw new BadRequestException('Error making job completed');
@@ -117,91 +113,39 @@ export class JobService {
 
   async addReservedDetailsInLicence(
     licenseId: string,
-    reserves: { jobId: string; count: number }[],
+    reserves: LKReserve[],
   ) {
-    const { data, errors } = await this.keygenService.getLicenseById(licenseId);
-    const oldReserves = JSONUtils.parse(data?.attributes?.metadata?.reserves,[])as {
-      jobId: string;
-      count: number;
-    }[];
-    const {
-      data: updatedData,
-      errors: errorsUpdate,
-    } = await this.keygenService.updateLicense(licenseId, {
-      metadata: {
-        ...data?.attributes?.metadata,
-        reserves: JSON.stringify([...oldReserves, ...reserves]),
-      },
-    });
-    if (errorsUpdate) return Promise.reject(errorsUpdate);
-    return updatedData;
+    const license = await this.licensekeyService.licenseKeyModel.findById(licenseId);
+    license.reserves.push(...reserves)
+    return license.save()
   }
   async removeReservedDetailsInLicence(licenseId: string, jobId: string) {
-    const { data, errors } = await this.keygenService.getLicenseById(licenseId);
-    const oldReserves = JSONUtils.parse(data?.attributes?.metadata?.reserves,[])as {
-      jobId: string;
-      count: number;
-    }[];
-    const {
-      data: updatedData,
-      errors: errorsUpdate,
-    } = await this.keygenService.updateLicense(licenseId, {
-      metadata: {
-        ...data?.attributes?.metadata,
-        reserves: JSON.stringify(oldReserves?.filter(reser => reser.jobId !== jobId)),
-      },
-    });
-    if (errorsUpdate) return Promise.reject(errorsUpdate);
-    return updatedData;
+    const license = await this.licensekeyService.licenseKeyModel.findById(licenseId);
+    license.reserves=license.reserves.filter(reser => reser.jobId !== jobId)
+    return license.save()
   }
 
   async incrementReservedDetailsInLicenceBy(licenseId: string, jobId: string,count:number) {
-    const { data, errors } = await this.keygenService.getLicenseById(licenseId);
-    const oldReserves = JSONUtils.parse(data?.attributes?.metadata?.reserves,[])as {
-      jobId: string;
-      count: number;
-    }[];
-    const updatedReserves = oldReserves.map(reserve=>{
+    const license = await this.licensekeyService.licenseKeyModel.findById(licenseId);
+    const updatedReserves = license.reserves.map(reserve=>{
       if(reserve.jobId==jobId){
         reserve.count=reserve.count+count
       }
       return reserve
     })
-    const {
-      data: updatedData,
-      errors: errorsUpdate,
-    } = await this.keygenService.updateLicense(licenseId, {
-      metadata: {
-        ...data?.attributes?.metadata,
-        reserves: JSON.stringify(updatedReserves),
-      },
-    });
-    if (errorsUpdate) return Promise.reject(errorsUpdate);
-    return updatedData;
+    license.reserves=updatedReserves
+    return license.save()
   }
 
   async decrementReservedDetailsInLicenceBy(licenseId: string, jobId: string,count:number) {
-    const { data, errors } = await this.keygenService.getLicenseById(licenseId);
-    const oldReserves = JSONUtils.parse(data?.attributes?.metadata?.reserves,[])as {
-      jobId: string;
-      count: number;
-    }[];
-    const updatedReserves = oldReserves.map(reserve=>{
+    const license = await this.licensekeyService.licenseKeyModel.findById(licenseId);
+    const updatedReserves = license.reserves.map(reserve=>{
       if(reserve.jobId==jobId){
         reserve.count=reserve.count-count
       }
       return reserve
     })
-    const {
-      data: updatedData,
-      errors: errorsUpdate,
-    } = await this.keygenService.updateLicense(licenseId, {
-      metadata: {
-        ...data?.attributes?.metadata,
-        reserves: JSON.stringify(updatedReserves),
-      },
-    });
-    if (errorsUpdate) return Promise.reject(errorsUpdate);
-    return updatedData;
+    license.reserves=updatedReserves
+    return license.save()
   }
 }

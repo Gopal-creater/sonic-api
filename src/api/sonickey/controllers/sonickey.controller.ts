@@ -4,9 +4,7 @@ import { DecodeDto } from '../dtos/decode.dto';
 import { EncodeDto } from '../dtos/encode.dto';
 import { SonicKeyDto } from '../dtos/sonicKey.dto';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
-import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { JsonParsePipe } from '../../../shared/pipes/jsonparse.pipe';
-import { isObjectId } from '../../../shared/utils/mongoose.utils';
 import {
   Controller,
   Get,
@@ -56,6 +54,7 @@ import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { Response } from 'express';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { ChannelEnums } from '../../../constants/Channels.enum';
+import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 
 /**
  * Prabin:
@@ -68,32 +67,32 @@ import { ChannelEnums } from '../../../constants/Channels.enum';
 export class SonickeyController {
   constructor(
     private readonly sonicKeyService: SonickeyService,
-    private readonly keygenService: KeygenService,
+    private readonly licensekeyService: LicensekeyService,
     private readonly fileHandlerService: FileHandlerService,
   ) {}
 
-  @Get('/update-channel')
-  async updateChannel() {
-   await  this.sonicKeyService.sonicKeyModel.updateMany(
-      { owner: 'guest' },
-      { channel: ChannelEnums.MOBILEAPP },
-    );
+  // @Get('/update-channel')
+  // async updateChannel() {
+  //  await  this.sonicKeyService.sonicKeyModel.updateMany(
+  //     { owner: 'guest' },
+  //     { channel: ChannelEnums.MOBILEAPP },
+  //   );
 
-    await  this.sonicKeyService.sonicKeyModel.updateMany(
-      { job: {$exists:true} },
-      { channel: ChannelEnums.PCAPP},
-    );
+  //   await  this.sonicKeyService.sonicKeyModel.updateMany(
+  //     { job: {$exists:true} },
+  //     { channel: ChannelEnums.PCAPP},
+  //   );
 
-    await  this.sonicKeyService.sonicKeyModel.updateMany(
-      { channel: {$exists:false} },
-      { channel: ChannelEnums.PORTAL },
-    );
+  //   await  this.sonicKeyService.sonicKeyModel.updateMany(
+  //     { channel: {$exists:false} },
+  //     { channel: ChannelEnums.PORTAL },
+  //   );
 
-    await  this.sonicKeyService.sonicKeyModel.updateMany(
-      { channel: ChannelEnums.PORTAL },
-      { downloadable: true },
-    );
-  }
+  //   await  this.sonicKeyService.sonicKeyModel.updateMany(
+  //     { channel: ChannelEnums.PORTAL },
+  //     { downloadable: true },
+  //   );
+  // }
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
@@ -217,7 +216,7 @@ export class SonickeyController {
   ) {
     console.log('file', file);
 
-    const licenseId = req?.validLicense?.id as string;
+    const licenseId = req?.validLicense?.key as string;
     var downloadFileUrl: string;
     var outFilePath: string;
     var sonicKey: string;
@@ -228,14 +227,9 @@ export class SonickeyController {
         outFilePath = data.outFilePath;
         sonicKey = data.sonicKey;
         console.log('Increment Usages upon successfull encode');
-        return this.keygenService.incrementUsage(licenseId, 1);
+        return this.licensekeyService.incrementUses(licenseId,'encode', 1);
       })
-      .then(async keygenResult => {
-        if (keygenResult['errors']) {
-          throw new BadRequestException(
-            'Unable to increment the license usage!',
-          );
-        }
+      .then(async result => {
         console.log('Going to save key in db.');
         const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(
           file,

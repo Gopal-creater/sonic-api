@@ -5,16 +5,18 @@ import {
   UnprocessableEntityException,
   BadRequestException,
 } from '@nestjs/common';
-import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
-import { JSONUtils } from '../../../shared/utils';
 import { CreateSonicKeyFromBinaryDto } from '../../sonickey/dtos/create-sonickey.dto';
+import { LicensekeyService } from '../../licensekey/services/licensekey.service';
+
 /**
  * This Guard is responsible for checking valid license with max usages for creating job.
  */
 
 @Injectable()
 export class BinaryLicenseValidationGuard implements CanActivate {
-  constructor(private readonly keygenService: KeygenService) {}
+  constructor(
+    private readonly licensekeyService: LicensekeyService,
+  ) {}
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const body = request.body as CreateSonicKeyFromBinaryDto;
@@ -23,26 +25,21 @@ export class BinaryLicenseValidationGuard implements CanActivate {
         message: 'missing parameters',
       });
     }
-    const { meta, data, errors } = await this.keygenService.validateLicence(
+    const { validationResult,licenseKey } = await this.licensekeyService.validateLicence(
       body.license,
     );
-    if (errors || !meta['valid']) {
+    if (!validationResult.valid) {
       throw new BadRequestException({
         message: 'Invalid license.',
       });
     }
-    const uses = data['attributes']['uses'];
-    const maxUses = data['attributes']['maxUses'];
+    const uses = licenseKey.encodeUses;
+    const maxUses = licenseKey.maxEncodeUses;
     const remaniningUses = maxUses - uses;
 
-    const reserves = JSONUtils.parse(data?.attributes?.metadata?.reserves,[]) as {
-      jobId: string;
-      count: number;
-    }[]
-    if (
-      await this.isAllowedForJobCreation(remaniningUses, reserves)
-    ) {
-      request.validLicense = data;
+    const reserves = licenseKey.reserves || [];
+    if (await this.isAllowedForJobCreation(remaniningUses, reserves)) {
+      request.validLicense = licenseKey;
       return true;
     } else {
       return false;
@@ -64,11 +61,10 @@ export class BinaryLicenseValidationGuard implements CanActivate {
       remaniningUses - reservedLicenceCount;
     if (remaniningUsesAfterReservedCount <= 0) {
       throw new UnprocessableEntityException({
-        message:
-          'Maximum license usage count exceeded.',
+        message: 'Maximum license usage count exceeded.',
         remainingUsages: remaniningUses,
         reservedLicenceCount: reservedLicenceCount,
-        remaniningUsesAfterReservedCount: remaniningUsesAfterReservedCount
+        remaniningUsesAfterReservedCount: remaniningUsesAfterReservedCount,
       });
     }
     return true;

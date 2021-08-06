@@ -26,7 +26,6 @@ const update_sonickey_dto_1 = require("../dtos/update-sonickey.dto");
 const decode_dto_1 = require("../dtos/decode.dto");
 const encode_dto_1 = require("../dtos/encode.dto");
 const sonicKey_dto_1 = require("../dtos/sonicKey.dto");
-const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
 const jsonparse_pipe_1 = require("../../../shared/pipes/jsonparse.pipe");
 const common_1 = require("@nestjs/common");
 const sonickey_service_1 = require("../services/sonickey.service");
@@ -46,17 +45,12 @@ const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 const Channels_enum_1 = require("../../../constants/Channels.enum");
+const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 let SonickeyController = class SonickeyController {
-    constructor(sonicKeyService, keygenService, fileHandlerService) {
+    constructor(sonicKeyService, licensekeyService, fileHandlerService) {
         this.sonicKeyService = sonicKeyService;
-        this.keygenService = keygenService;
+        this.licensekeyService = licensekeyService;
         this.fileHandlerService = fileHandlerService;
-    }
-    async updateChannel() {
-        await this.sonicKeyService.sonicKeyModel.updateMany({ owner: 'guest' }, { channel: Channels_enum_1.ChannelEnums.MOBILEAPP });
-        await this.sonicKeyService.sonicKeyModel.updateMany({ job: { $exists: true } }, { channel: Channels_enum_1.ChannelEnums.PCAPP });
-        await this.sonicKeyService.sonicKeyModel.updateMany({ channel: { $exists: false } }, { channel: Channels_enum_1.ChannelEnums.PORTAL });
-        await this.sonicKeyService.sonicKeyModel.updateMany({ channel: Channels_enum_1.ChannelEnums.PORTAL }, { downloadable: true });
     }
     async getAll(parsedQueryDto) {
         return this.sonicKeyService.getAll(parsedQueryDto);
@@ -86,7 +80,7 @@ let SonickeyController = class SonickeyController {
     encode(sonicKeyDto, file, owner, req) {
         var _a;
         console.log('file', file);
-        const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.id;
+        const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.key;
         var downloadFileUrl;
         var outFilePath;
         var sonicKey;
@@ -97,12 +91,9 @@ let SonickeyController = class SonickeyController {
             outFilePath = data.outFilePath;
             sonicKey = data.sonicKey;
             console.log('Increment Usages upon successfull encode');
-            return this.keygenService.incrementUsage(licenseId, 1);
+            return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
         })
-            .then(async (keygenResult) => {
-            if (keygenResult['errors']) {
-                throw new common_1.BadRequestException('Unable to increment the license usage!');
-            }
+            .then(async (result) => {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Channels_enum_1.ChannelEnums.PORTAL;
@@ -182,13 +173,6 @@ let SonickeyController = class SonickeyController {
         });
     }
 };
-__decorate([
-    common_1.Get('/update-channel'),
-    openapi.ApiResponse({ status: 200 }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], SonickeyController.prototype, "updateChannel", null);
 __decorate([
     common_1.Get('/'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
@@ -376,7 +360,7 @@ SonickeyController = __decorate([
     swagger_1.ApiTags('SonicKeys Controller'),
     common_1.Controller('sonic-keys'),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
-        keygen_service_1.KeygenService,
+        licensekey_service_1.LicensekeyService,
         file_handler_service_1.FileHandlerService])
 ], SonickeyController);
 exports.SonickeyController = SonickeyController;

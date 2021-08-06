@@ -3,6 +3,10 @@ export declare const LicenseKeySchemaName = "LicenseKey";
 export declare class LKOwner {
     ownerId: string;
 }
+export declare class LKReserve {
+    jobId: string;
+    count: number;
+}
 export declare class LicenseKey extends Document {
     _id: string;
     name: string;
@@ -18,5 +22,6 @@ export declare class LicenseKey extends Document {
     createdBy?: string;
     updatedBy?: string;
     owners?: LKOwner[];
+    reserves?: LKReserve[];
 }
 export declare const LicenseKeySchema: MogSchema<LicenseKey, import("mongoose").Model<any, any>, undefined>;

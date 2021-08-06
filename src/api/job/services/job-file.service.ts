@@ -10,7 +10,6 @@ import {
 import { JobService } from './job.service';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { SonicKey } from '../../sonickey/schemas/sonickey.schema';
-import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { JobFile } from '../schemas/jobfile.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -22,7 +21,6 @@ export class JobFileService {
   constructor(
     @InjectModel(JobFile.name) public jobFileModel: Model<JobFile>,
     public readonly jobService: JobService,
-    public readonly keygenService: KeygenService,
     public readonly sonickeyService: SonickeyService,
   ) {}
 

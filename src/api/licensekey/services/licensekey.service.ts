@@ -3,14 +3,14 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { CreateLicensekeyDto } from './dto/create-licensekey.dto';
+import { CreateLicensekeyDto } from '../dto/create-licensekey.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { LicenseKey, LKOwner } from './schemas/licensekey.schema';
+import { LicenseKey, LKOwner } from '../schemas/licensekey.schema';
 import { Model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import * as _ from 'lodash'
-import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
-import { MongoosePaginateLicensekeyDto } from './dto/mongoosepaginate-licensekey.dto';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import { MongoosePaginateLicensekeyDto } from '../dto/mongoosepaginate-licensekey.dto';
 
 type usesFor = 'encode' | 'decode';
 

@@ -16,7 +16,7 @@ exports.LicensekeyController = void 0;
 const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
-const licensekey_service_1 = require("../licensekey.service");
+const licensekey_service_1 = require("../services/licensekey.service");
 const create_licensekey_dto_1 = require("../dto/create-licensekey.dto");
 const update_licensekey_dto_1 = require("../dto/update-licensekey.dto");
 const swagger_1 = require("@nestjs/swagger");
@@ -120,6 +120,7 @@ __decorate([
 ], LicensekeyController.prototype, "update", null);
 __decorate([
     common_1.Delete(':id'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Delete License key' }),
     openapi.ApiResponse({ status: 200 }),

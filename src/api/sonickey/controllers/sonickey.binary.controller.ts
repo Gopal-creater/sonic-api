@@ -18,7 +18,7 @@ import { BinaryLicenseValidationGuard } from '../../auth/guards/binary-license-v
 import { ApiKey } from '../../auth/decorators/apikey.decorator';
 import { ChannelEnums } from '../../../constants/Channels.enum';
 import { LicenseKey } from '../../auth/decorators/licensekey.decorator';
-import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
+import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 
 /**
  * Prabin:
@@ -32,7 +32,7 @@ import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 export class SonickeyBinaryController {
   constructor(
     private readonly sonicKeyService: SonickeyService,
-    private readonly keygenService: KeygenService,
+    private readonly licensekeyService: LicensekeyService,
   ) {}
 
   @UseGuards(ApiKeyAuthGuard, BinaryLicenseValidationGuard)
@@ -43,7 +43,7 @@ export class SonickeyBinaryController {
     @Body() createSonicKeyDto: CreateSonicKeyFromBinaryDto,
     @ApiKey('customer') customer: string,
     @ApiKey('_id') apiKey: string,
-    @LicenseKey('id') licenseKey: string
+    @LicenseKey('key') licenseKey: string
   ) {
     const channel = ChannelEnums.BINARY
     const newSonicKey = new this.sonicKeyService.sonicKeyModel({
@@ -55,13 +55,13 @@ export class SonickeyBinaryController {
       _id:createSonicKeyDto.sonicKey
     });
     const savedSonicKey = await newSonicKey.save();
-    const keygenResult =  await this.keygenService.incrementUsage(licenseKey, 1);
-    if (keygenResult['errors']) {
+     await this.licensekeyService.incrementUses(licenseKey,"encode", 1)
+     .catch(async err=>{
       await this.sonicKeyService.sonicKeyModel.deleteOne({_id:savedSonicKey.id})
       throw new BadRequestException(
         'Unable to increment the license usage!',
       );
-    }
+     })
     return savedSonicKey
   }
 }

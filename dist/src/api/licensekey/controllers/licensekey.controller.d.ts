@@ -1,5 +1,5 @@
 /// <reference types="mongoose" />
-import { LicensekeyService } from '../licensekey.service';
+import { LicensekeyService } from '../services/licensekey.service';
 import { CreateLicensekeyDto } from '../dto/create-licensekey.dto';
 import { UpdateLicensekeyDto } from '../dto/update-licensekey.dto';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';

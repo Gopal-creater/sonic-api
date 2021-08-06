@@ -5,16 +5,17 @@ import {
   UnprocessableEntityException,
   BadRequestException,
 } from '@nestjs/common';
-import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { CreateJobDto } from '../../job/dto/create-job.dto';
-import { JSONUtils } from '../../../shared/utils';
+import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 /**
  * This Guard is responsible for checking valid license with max usages for creating job.
  */
 
 @Injectable()
 export class JobLicenseValidationGuard implements CanActivate {
-  constructor(private readonly keygenService: KeygenService) {}
+  constructor(
+    private readonly licensekeyService: LicensekeyService,
+  ) {}
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const body = request.body as CreateJobDto;
@@ -28,10 +29,10 @@ export class JobLicenseValidationGuard implements CanActivate {
         message: 'Please add some files to create job',
       });
     }
-    const { meta, data, errors } = await this.keygenService.validateLicence(
+    const { validationResult,licenseKey } = await this.licensekeyService.validateLicence(
       body.license,
     );
-    if (errors || !meta['valid']) {
+    if (!validationResult.valid) {
       throw new BadRequestException({
         message: 'Invalid license.',
       });
@@ -41,19 +42,16 @@ export class JobLicenseValidationGuard implements CanActivate {
     //     message: 'Looks like the provided licence id is not belongs to you.',
     //   });
     // }
-    const uses = data['attributes']['uses'];
-    const maxUses = data['attributes']['maxUses'];
+    const uses = licenseKey.encodeUses;
+    const maxUses = licenseKey.maxEncodeUses;
     const remaniningUses = maxUses - uses;
     const usesToBeUsed = body.jobFiles.length;
 
-    const reserves = JSONUtils.parse(data?.attributes?.metadata?.reserves,[]) as {
-      jobId: string;
-      count: number;
-    }[]
+    const reserves = licenseKey.reserves || [];
     if (
       await this.isAllowedForJobCreation(remaniningUses, usesToBeUsed, reserves)
     ) {
-      request.validLicense = data;
+      request.validLicense = licenseKey;
       return true;
     } else {
       return false;

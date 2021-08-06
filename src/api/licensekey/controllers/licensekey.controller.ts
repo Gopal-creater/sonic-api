@@ -11,7 +11,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { LicensekeyService } from '../licensekey.service';
+import { LicensekeyService } from '../services/licensekey.service';
 import { CreateLicensekeyDto } from '../dto/create-licensekey.dto';
 import { UpdateLicensekeyDto } from '../dto/update-licensekey.dto';
 import {
@@ -98,7 +98,7 @@ export class LicensekeyController {
   }
 
   @Delete(':id')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete License key' })
   remove(@Param('id') id: string) {

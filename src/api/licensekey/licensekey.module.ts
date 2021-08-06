@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { LicensekeyService } from './licensekey.service';
+import { LicensekeyService } from './services/licensekey.service';
 import { LicensekeyController } from './controllers/licensekey.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
