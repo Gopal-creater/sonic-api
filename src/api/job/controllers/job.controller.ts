@@ -22,6 +22,7 @@ import { BadRequestException } from '@nestjs/common';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
+import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 
 @ApiTags('Jobs Controller')
 @Controller('jobs')
@@ -29,6 +30,7 @@ export class JobController {
   constructor(
     private readonly jobService: JobService,
     private readonly sonickeyService: SonickeyService,
+    private readonly licensekeyService: LicensekeyService,
   ) {}
 
   @ApiOperation({ summary: 'Get All Jobs' })

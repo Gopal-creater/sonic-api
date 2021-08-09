@@ -12,18 +12,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoleBasedGuard = void 0;
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
+const Roles_1 = require("../../../constants/Roles");
+const common_2 = require("@nestjs/common");
 let RoleBasedGuard = class RoleBasedGuard {
     constructor(reflector) {
         this.reflector = reflector;
     }
     canActivate(context) {
-        const roles = this.reflector.get('roles', context.getHandler());
-        if (!roles || roles.length <= 0) {
+        const roles = this.reflector.getAllAndMerge('roles', [
+            context.getClass(),
+            context.getHandler(),
+        ]) || [];
+        const isPublic = this.reflector.getAllAndOverride('public', [
+            context.getHandler(),
+            context.getClass(),
+        ]);
+        if (!roles || isPublic) {
             return true;
         }
         const request = context.switchToHttp().getRequest();
-        const user = request.user;
-        return this.matchRoles(roles, user.roles);
+        const userRoles = (request === null || request === void 0 ? void 0 : request.user['cognito:groups']) || [];
+        const isAllowed = this.matchRoles(roles, userRoles);
+        if (!isAllowed) {
+            throw new common_2.ForbiddenException("You dont have permission to do this.");
+        }
+        return true;
     }
     matchRoles(definedRoles, userRoles) {
         return userRoles.some((role) => definedRoles.includes(role));

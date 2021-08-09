@@ -12,8 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.IsTargetUserLoggedInGuard = void 0;
 const common_1 = require("@nestjs/common");
 let IsTargetUserLoggedInGuard = class IsTargetUserLoggedInGuard {
-    constructor(target = 'Query') {
+    constructor(target = 'Query', name = "targetUser") {
         this.target = target;
+        this.name = name;
     }
     canActivate(context) {
         const request = context.switchToHttp().getRequest();
@@ -21,11 +22,11 @@ let IsTargetUserLoggedInGuard = class IsTargetUserLoggedInGuard {
             case 'Query':
                 const query = request.query;
                 if (request.user) {
-                    if (!query.targetUser) {
-                        throw new common_1.UnauthorizedException('Specify target user equal to your own id. eg: ?targetUser=yourId');
+                    if (!query[this.name]) {
+                        throw new common_1.UnauthorizedException(`Specify target user equal to your own id. eg: ?${this.name}=yourId`);
                     }
                     const loggedInUser = request.user;
-                    const targetUser = query.targetUser;
+                    const targetUser = query[this.name];
                     if (targetUser == loggedInUser['sub']) {
                         delete query.targetUser;
                         request.query = query;
@@ -39,11 +40,11 @@ let IsTargetUserLoggedInGuard = class IsTargetUserLoggedInGuard {
             case 'Param':
                 const param = request.params;
                 if (request.user) {
-                    if (!param.targetUser) {
-                        throw new common_1.UnauthorizedException('Specify target user equal to your own id. eg: {targetUser}=yourId');
+                    if (!param[this.name]) {
+                        throw new common_1.UnauthorizedException(`Specify target user equal to your own id. eg: {${this.name}}=yourId`);
                     }
                     const loggedInUser = request.user;
-                    const targetUser = param.targetUser;
+                    const targetUser = param[this.name];
                     if (targetUser == loggedInUser['sub']) {
                         return true;
                     }
@@ -57,7 +58,7 @@ let IsTargetUserLoggedInGuard = class IsTargetUserLoggedInGuard {
 };
 IsTargetUserLoggedInGuard = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [String])
+    __metadata("design:paramtypes", [String, String])
 ], IsTargetUserLoggedInGuard);
 exports.IsTargetUserLoggedInGuard = IsTargetUserLoggedInGuard;
 //# sourceMappingURL=isTargetUserLoggedIn.guard.js.map

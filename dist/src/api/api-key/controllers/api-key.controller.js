@@ -23,6 +23,9 @@ const swagger_1 = require("@nestjs/swagger");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
+const roles_decorator_1 = require("../../auth/decorators/roles.decorator");
+const Roles_1 = require("../../../constants/Roles");
+const role_based_guard_1 = require("../../auth/guards/role-based.guard");
 let ApiKeyController = class ApiKeyController {
     constructor(apiKeyService) {
         this.apiKeyService = apiKeyService;
@@ -52,7 +55,7 @@ let ApiKeyController = class ApiKeyController {
         }
         return updatedApiKey;
     }
-    remove(id) {
+    async remove(id) {
         return this.apiKeyService.removeById(id).catch(err => {
             if (err.status == 404) {
                 throw new common_1.NotFoundException();
@@ -63,7 +66,8 @@ let ApiKeyController = class ApiKeyController {
 };
 __decorate([
     common_1.Post(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create Api Key' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/api-key.schema").ApiKey }),
@@ -74,7 +78,8 @@ __decorate([
 ], ApiKeyController.prototype, "create", null);
 __decorate([
     common_1.Get(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All ApiKeys' }),
@@ -86,7 +91,8 @@ __decorate([
 ], ApiKeyController.prototype, "findAll", null);
 __decorate([
     common_1.Get('/count'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get count of all api-keys also accept filter as query params' }),
     openapi.ApiResponse({ status: 200, type: Number }),
@@ -97,7 +103,8 @@ __decorate([
 ], ApiKeyController.prototype, "getCount", null);
 __decorate([
     common_1.Get(':id'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get Single Api key' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/api-key.schema").ApiKey }),
@@ -108,7 +115,8 @@ __decorate([
 ], ApiKeyController.prototype, "findOne", null);
 __decorate([
     common_1.Put(':id'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update Single Api key' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/api-key.schema").ApiKey }),
@@ -120,14 +128,15 @@ __decorate([
 ], ApiKeyController.prototype, "update", null);
 __decorate([
     common_1.Delete(':id'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Delete Api key' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/api-key.schema").ApiKey }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "remove", null);
 ApiKeyController = __decorate([
     swagger_1.ApiTags('Apikey Management Controller'),

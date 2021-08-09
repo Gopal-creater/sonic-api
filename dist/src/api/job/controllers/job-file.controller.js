@@ -24,10 +24,12 @@ const create_job_file_dto_1 = require("../dto/create-job-file.dto");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
+const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 let JobFileController = class JobFileController {
-    constructor(jobFileService, jobService) {
+    constructor(jobFileService, jobService, licensekeyService) {
         this.jobFileService = jobFileService;
         this.jobService = jobService;
+        this.licensekeyService = licensekeyService;
     }
     findAll(queryDto) {
         return this.jobFileService.findAll(queryDto);
@@ -40,10 +42,7 @@ let JobFileController = class JobFileController {
         return this.jobFileService.addKeyToDbAndUpdateJobFile(jobId, fileId, addKeyAndUpdateJobFileDto);
     }
     async updateJobFile(id, updateJobFileDto) {
-        const updatedJobFile = await this.jobFileService.jobFileModel.updateOne({ _id: id }, updateJobFileDto, { new: true });
-        if (!updatedJobFile) {
-            throw new common_1.NotFoundException();
-        }
+        const updatedJobFile = await this.jobFileService.updateJobFile(id, updateJobFileDto);
         return updatedJobFile;
     }
     async createJobFile(jobId, createJobFileDto) {
@@ -56,7 +55,7 @@ let JobFileController = class JobFileController {
         const savedJobFile = await newJobFile.save();
         jobData.jobFiles.push(savedJobFile);
         const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId, { jobFiles: jobData.jobFiles }, { new: true });
-        await this.jobService
+        await this.licensekeyService
             .incrementReservedDetailsInLicenceBy(jobData.license, jobData.id, 1)
             .catch(async (err) => {
             await this.jobService.jobFileModel.findByIdAndRemove(savedJobFile.id);
@@ -77,7 +76,7 @@ let JobFileController = class JobFileController {
         const savedJobFiles = await this.jobFileService.jobFileModel.insertMany(newJobFiles);
         jobData.jobFiles.push(...savedJobFiles);
         const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId, { jobFiles: jobData.jobFiles }, { new: true });
-        await this.jobService
+        await this.licensekeyService
             .incrementReservedDetailsInLicenceBy(jobData.license, jobData.id, savedJobFiles.length)
             .catch(async (err) => {
             await this.jobService.jobFileModel.deleteMany(savedJobFiles);
@@ -96,7 +95,7 @@ let JobFileController = class JobFileController {
         }
         jobData.jobFiles = jobData.jobFiles.filter(file => file._id !== fileId);
         const updatedJob = await this.jobService.jobModel.findByIdAndUpdate(jobId, { jobFiles: jobData.jobFiles }, { new: true });
-        await this.jobService.decrementReservedDetailsInLicenceBy(jobData.license, jobData.id, 1);
+        await this.licensekeyService.decrementReservedDetailsInLicenceBy(jobData.license, jobData.id, 1);
         return { deletedJobFile, updatedJob };
     }
 };
@@ -116,7 +115,9 @@ __decorate([
     common_1.Get('/count'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get count of all job-file also accept filter as query params' }),
+    swagger_1.ApiOperation({
+        summary: 'Get count of all job-file also accept filter as query params',
+    }),
     openapi.ApiResponse({ status: 200, type: Number }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
@@ -125,7 +126,7 @@ __decorate([
 ], JobFileController.prototype, "getCount", null);
 __decorate([
     swagger_1.ApiOperation({
-        summary: 'Add new sonic key and update the file details using fileId',
+        summary: 'Add new sonic key and update the file details using fileId upon successfull encode locally',
     }),
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
@@ -143,7 +144,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Put('/job-files/:id'),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../schemas/jobfile.schema").JobFile }),
     __param(0, common_1.Param('id')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
@@ -191,7 +192,8 @@ JobFileController = __decorate([
     swagger_1.ApiTags('Jobs Files Controller'),
     common_1.Controller(),
     __metadata("design:paramtypes", [job_file_service_1.JobFileService,
-        job_service_1.JobService])
+        job_service_1.JobService,
+        licensekey_service_1.LicensekeyService])
 ], JobFileController);
 exports.JobFileController = JobFileController;
 //# sourceMappingURL=job-file.controller.js.map

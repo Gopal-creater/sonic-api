@@ -1,6 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
+import { Roles } from 'src/constants/Roles';
+import { ForbiddenException } from '@nestjs/common';
 
 @Injectable()
 export class RoleBasedGuard implements CanActivate {
@@ -8,20 +10,29 @@ export class RoleBasedGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const roles = this.reflector.get<string[]>('roles', context.getHandler());
-    
-    if (!roles || roles.length<=0) {
+    const roles =
+      this.reflector.getAllAndMerge<Roles[]>('roles', [
+        context.getClass(),
+        context.getHandler(),
+      ]) || [];
+
+    const isPublic = this.reflector.getAllAndOverride<boolean>('public', [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (!roles || isPublic) {
       return true;
     }
     const request = context.switchToHttp().getRequest();
-    const user = request.user;
-    return this.matchRoles(roles,user.roles)
+    const userRoles = request?.user['cognito:groups'] || [];
+    const isAllowed = this.matchRoles(roles, userRoles);
+    if(!isAllowed){
+      throw new ForbiddenException("You dont have permission to do this.")
+    }
+    return true
   }
 
-  matchRoles(definedRoles:string[],userRoles: string[]):boolean{
-   return userRoles.some((role: string) => definedRoles.includes(role))
-  //  return intersection(userRoles,definedRoles).length===userRoles.length
+  matchRoles(definedRoles: string[], userRoles: string[]): boolean {
+    return userRoles.some((role: string) => definedRoles.includes(role));
   }
 }
-
-

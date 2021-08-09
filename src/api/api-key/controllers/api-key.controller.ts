@@ -8,6 +8,9 @@ import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { IsTargetUserLoggedInGuard } from '../../auth/guards/isTargetUserLoggedIn.guard';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
+import { RolesAllowed } from '../../auth/decorators/roles.decorator';
+import { Roles } from 'src/constants/Roles';
+import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
 
 /**
  * Accept this key asa x-api-key header from client side
@@ -19,7 +22,8 @@ export class ApiKeyController {
   constructor(private readonly apiKeyService: ApiKeyService) {}
   
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Api Key' })
   create(@Body() createApiKeyDto: CreateApiKeyDto) {
@@ -27,7 +31,8 @@ export class ApiKeyController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All ApiKeys' })
@@ -38,7 +43,8 @@ export class ApiKeyController {
   }
 
   @Get('/count')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get count of all api-keys also accept filter as query params' })
   async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
@@ -47,7 +53,8 @@ export class ApiKeyController {
 }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Single Api key' })
   async findOne(@Param('id') id: string) {
@@ -59,7 +66,8 @@ export class ApiKeyController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Single Api key' })
   async update(
@@ -74,10 +82,11 @@ export class ApiKeyController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete Api key' })
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.apiKeyService.removeById(id).catch(err=>{
       if(err.status==404){
         throw new NotFoundException()

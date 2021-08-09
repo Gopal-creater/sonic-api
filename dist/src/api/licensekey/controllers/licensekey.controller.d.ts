@@ -6,6 +6,7 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 export declare class LicensekeyController {
     private readonly licensekeyService;
     constructor(licensekeyService: LicensekeyService);
+    migrate(): Promise<any>;
     create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string): Promise<import("../schemas/licensekey.schema").LicenseKey>;
     findAll(queryDto?: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-licensekey.dto").MongoosePaginateLicensekeyDto>;
     getCount(queryDto: ParsedQueryDto): Promise<number>;

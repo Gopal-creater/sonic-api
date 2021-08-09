@@ -5,12 +5,13 @@ import {
 } from '@nestjs/common';
 import { CreateLicensekeyDto } from '../dto/create-licensekey.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { LicenseKey, LKOwner } from '../schemas/licensekey.schema';
+import { LicenseKey, LKOwner, LKReserve } from '../schemas/licensekey.schema';
 import { Model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
-import * as _ from 'lodash'
+import * as _ from 'lodash';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateLicensekeyDto } from '../dto/mongoosepaginate-licensekey.dto';
+import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 
 type usesFor = 'encode' | 'decode';
 
@@ -19,15 +20,16 @@ export class LicensekeyService {
   constructor(
     @InjectModel(LicenseKey.name)
     public readonly licenseKeyModel: Model<LicenseKey>,
+    public readonly keygenService: KeygenService,
   ) {}
 
-  create(createLicensekeyDto: CreateLicensekeyDto,createdBy:string) {
+  create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
     const key = uuidv4();
     const newLicenseKey = new this.licenseKeyModel({
       ...createLicensekeyDto,
       _id: key,
       key: key,
-      createdBy:createdBy
+      createdBy: createdBy,
     });
     return newLicenseKey.save();
   }
@@ -68,37 +70,37 @@ export class LicensekeyService {
     return { validationResult, licenseKey };
   }
 
-  async addOwnersToLicense(id:string,owners:LKOwner[]){
-    const licenseKey = await this.licenseKeyModel.findById(id)
-    licenseKey.owners.push(...owners)
-    licenseKey.owners = _.uniqBy(licenseKey.owners,'ownerId')
-    return licenseKey.save()
+  async addOwnersToLicense(id: string, owners: LKOwner[]) {
+    const licenseKey = await this.licenseKeyModel.findById(id);
+    licenseKey.owners.push(...owners);
+    licenseKey.owners = _.uniqBy(licenseKey.owners, 'ownerId');
+    return licenseKey.save();
   }
 
-  async addOwnerToLicense(id:string,lKOwner:LKOwner){
-    const licenseKey = await this.licenseKeyModel.findById(id)
-    licenseKey.owners.push(lKOwner)
-    licenseKey.owners = _.uniqBy(licenseKey.owners,'ownerId')
-    return licenseKey.save()
+  async addOwnerToLicense(id: string, lKOwner: LKOwner) {
+    const licenseKey = await this.licenseKeyModel.findById(id);
+    licenseKey.owners.push(lKOwner);
+    licenseKey.owners = _.uniqBy(licenseKey.owners, 'ownerId');
+    return licenseKey.save();
   }
 
-  async removeOwnerFromLicense(id:string,ownerId:string){
-    const licenseKey = await this.licenseKeyModel.findById(id)
+  async removeOwnerFromLicense(id: string, ownerId: string) {
+    const licenseKey = await this.licenseKeyModel.findById(id);
     var oldOwners = licenseKey.owners;
-    _.remove(oldOwners,(ow)=>ow.ownerId==ownerId);
-    licenseKey.owners = oldOwners
-    return licenseKey.save()
+    _.remove(oldOwners, ow => ow.ownerId == ownerId);
+    licenseKey.owners = oldOwners;
+    return licenseKey.save();
   }
 
-  async removeOwnersFromLicense(id:string,ownerIds:string[]){
-    const licenseKey = await this.licenseKeyModel.findById(id)
-    var oldOwners = licenseKey.owners
+  async removeOwnersFromLicense(id: string, ownerIds: string[]) {
+    const licenseKey = await this.licenseKeyModel.findById(id);
+    var oldOwners = licenseKey.owners;
     for (let index = 0; index < ownerIds.length; index++) {
       const owner = ownerIds[index];
-      _.remove(oldOwners,(ow)=>ow.ownerId==owner)
+      _.remove(oldOwners, ow => ow.ownerId == owner);
     }
-    licenseKey.owners = oldOwners
-    return licenseKey.save()
+    licenseKey.owners = oldOwners;
+    return licenseKey.save();
   }
 
   async incrementUses(id: string, usesFor: usesFor, incrementBy: number = 1) {
@@ -155,5 +157,87 @@ export class LicensekeyService {
       licenseKey.encodeUses = 0;
     }
     return licenseKey.save();
+  }
+
+  async addReservedDetailsInLicence(licenseId: string, reserves: LKReserve[]) {
+    const license = await this.licenseKeyModel.findById(licenseId);
+    license.reserves.push(...reserves);
+    return license.save();
+  }
+  async removeReservedDetailsInLicence(licenseId: string, jobId: string) {
+    const license = await this.licenseKeyModel.findById(licenseId);
+    license.reserves = license.reserves.filter(reser => reser.jobId !== jobId);
+    return license.save();
+  }
+
+  async incrementReservedDetailsInLicenceBy(
+    licenseId: string,
+    jobId: string,
+    count: number,
+  ) {
+    const license = await this.licenseKeyModel.findById(licenseId);
+    const updatedReserves = license.reserves.map(reserve => {
+      if (reserve.jobId == jobId) {
+        reserve.count = reserve.count + count;
+      }
+      return reserve;
+    });
+    license.reserves = updatedReserves;
+    return license.save();
+  }
+
+  async decrementReservedDetailsInLicenceBy(
+    licenseId: string,
+    jobId: string,
+    count: number,
+  ) {
+    const license = await this.licenseKeyModel.findById(licenseId);
+    const updatedReserves = license.reserves.map(reserve => {
+      if (reserve.jobId == jobId) {
+        reserve.count = reserve.count - count;
+      }
+      return reserve;
+    });
+    license.reserves = updatedReserves;
+    return license.save();
+  }
+
+  async migrateKeyFromKeygenToDB() {
+    const { data, error } = await this.keygenService.getAllLicenses();
+    console.log('allLicenses', data);
+
+    for await (const license of data) {
+      const oldLicense = license?.attributes;
+      const {reserves,...oldOwners} = oldLicense?.metadata ||{}
+      console.log('Name', oldLicense?.name);
+      const oldOwnersArr = Object.values(oldOwners||{}) as string[]
+      console.log('oldOwners', oldOwnersArr);
+      const newOwners = oldOwnersArr.map((ownerId,index)=>{
+        const lkOwner = new LKOwner()
+        lkOwner.ownerId=ownerId
+        return lkOwner
+      })
+      console.log('newOwners', newOwners);
+      const newLicense = await this.licenseKeyModel.create({
+        _id: oldLicense.key,
+        key: oldLicense.key,
+        name: oldLicense.name,
+        disabled: false,
+        suspended: oldLicense.suspended,
+        maxEncodeUses: oldLicense.maxUses,
+        encodeUses: oldLicense.uses,
+        maxDecodeUses: 0,
+        decodeUses: 0,
+        validity: oldLicense.expiry,
+        createdBy:
+          process.env.NODE_ENV== 'production'
+            ? '9ab5a58b-09e0-46ce-bb50-1321d927c382'
+            : '5728f50d-146b-47d2-aa7b-a50bc37d641d',
+        owners: newOwners,
+      });
+
+      await newLicense.save()
+    }
+    return data.length || 0;
   }
 }

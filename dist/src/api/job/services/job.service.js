@@ -47,7 +47,7 @@ let JobService = class JobService {
         const savedJobFiles = await this.jobFileModel.insertMany(newJobFiles);
         createdJob.jobFiles.push(...savedJobFiles);
         const updatedCreatedJob = await this.jobModel.findByIdAndUpdate(createdJob._id, { jobFiles: createdJob.jobFiles }, { new: true });
-        await this.addReservedDetailsInLicence(createJobDto.license, [
+        await this.licensekeyService.addReservedDetailsInLicence(createJobDto.license, [
             { jobId: createdJob.id, count: updatedCreatedJob.jobFiles.length },
         ]).catch(async (err) => {
             await this.jobModel.remove({ _id: createdJob._id });
@@ -72,68 +72,27 @@ let JobService = class JobService {
         if (!job) {
             throw new common_1.NotFoundException();
         }
-        await this.removeReservedDetailsInLicence(job.license, job.id).catch(err => {
+        await this.licensekeyService.removeReservedDetailsInLicence(job.license, job.id).catch(err => {
             throw new common_1.BadRequestException('Error removing reserved licence count ');
         });
-        await this.jobFileModel.remove({ job: id });
         return this.jobModel.findOneAndDelete({ _id: job.id });
     }
     async makeCompleted(jobId) {
         const job = await this.jobModel.findById(jobId);
+        if (!job) {
+            throw new common_1.NotFoundException();
+        }
         if (job.isComplete) {
             return job;
         }
-        const totalCompletedFiles = job.jobFiles.filter(file => file.isComplete == true);
-        const totalInCompletedFiles = job.jobFiles.filter(file => file.isComplete == false);
-        await this.removeReservedDetailsInLicence(job.license, job.id).catch(err => {
+        await this.licensekeyService.removeReservedDetailsInLicence(job.license, job.id).catch(err => {
             throw new common_1.BadRequestException('Error removing reserved licence count ');
-        });
-        await this.licensekeyService
-            .incrementUses(job.license, 'encode', totalCompletedFiles.length)
-            .catch(err => {
-            throw new common_1.BadRequestException('Error incrementing licence usages');
         });
         const completedJob = await this.jobModel.findOneAndUpdate({ _id: job.id }, {
             isComplete: true,
             completedAt: new Date()
-        }, { new: true })
-            .catch(async (err) => {
-            await this.licensekeyService.decrementUses(job.license, 'encode', totalCompletedFiles.length);
-            throw new common_1.BadRequestException('Error making job completed');
-        });
+        }, { new: true });
         return completedJob;
-    }
-    async addReservedDetailsInLicence(licenseId, reserves) {
-        const license = await this.licensekeyService.licenseKeyModel.findById(licenseId);
-        license.reserves.push(...reserves);
-        return license.save();
-    }
-    async removeReservedDetailsInLicence(licenseId, jobId) {
-        const license = await this.licensekeyService.licenseKeyModel.findById(licenseId);
-        license.reserves = license.reserves.filter(reser => reser.jobId !== jobId);
-        return license.save();
-    }
-    async incrementReservedDetailsInLicenceBy(licenseId, jobId, count) {
-        const license = await this.licensekeyService.licenseKeyModel.findById(licenseId);
-        const updatedReserves = license.reserves.map(reserve => {
-            if (reserve.jobId == jobId) {
-                reserve.count = reserve.count + count;
-            }
-            return reserve;
-        });
-        license.reserves = updatedReserves;
-        return license.save();
-    }
-    async decrementReservedDetailsInLicenceBy(licenseId, jobId, count) {
-        const license = await this.licensekeyService.licenseKeyModel.findById(licenseId);
-        const updatedReserves = license.reserves.map(reserve => {
-            if (reserve.jobId == jobId) {
-                reserve.count = reserve.count - count;
-            }
-            return reserve;
-        });
-        license.reserves = updatedReserves;
-        return license.save();
     }
 };
 JobService = __decorate([

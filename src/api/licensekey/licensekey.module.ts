@@ -6,9 +6,11 @@ import {
   LicenseKeySchemaName,
   LicenseKeySchema,
 } from './schemas/licensekey.schema';
+import { KeygenModule } from '../../shared/modules/keygen/keygen.module';
 
 @Module({
   imports: [
+  KeygenModule,
     MongooseModule.forFeature([
       {
         name: LicenseKeySchemaName,

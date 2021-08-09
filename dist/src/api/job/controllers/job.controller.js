@@ -26,10 +26,12 @@ const common_2 = require("@nestjs/common");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
+const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 let JobController = class JobController {
-    constructor(jobService, sonickeyService) {
+    constructor(jobService, sonickeyService, licensekeyService) {
         this.jobService = jobService;
         this.sonickeyService = sonickeyService;
+        this.licensekeyService = licensekeyService;
     }
     findAll(queryDto) {
         return this.jobService.findAll(queryDto);
@@ -177,7 +179,8 @@ JobController = __decorate([
     swagger_1.ApiTags('Jobs Controller'),
     common_1.Controller('jobs'),
     __metadata("design:paramtypes", [job_service_1.JobService,
-        sonickey_service_1.SonickeyService])
+        sonickey_service_1.SonickeyService,
+        licensekey_service_1.LicensekeyService])
 ], JobController);
 exports.JobController = JobController;
 //# sourceMappingURL=job.controller.js.map

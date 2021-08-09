@@ -1897,7 +1897,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/schemas/job.schema.ts": {
-        "version": "d317f7d390de66d06ad7a2b049a2e1301be85f86bdd17456ee5be5f6908c0631",
+        "version": "8a9ff6a7ca832a8170c84ce7827b27c922c842847d45ec68ae1d96dbaa055586",
         "signature": "67a908e70e1ebe82b9abfedfb75a8732c0f63473d34c148125e341b0a54d9793",
         "affectsGlobalScope": false
       },
@@ -2837,7 +2837,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/licensekey/schemas/licensekey.schema.ts": {
-        "version": "461b470a3cd24c6e82b5afd83c23f24174ea519aecff3ba9e23d41b2d71d7f3d",
+        "version": "10923a35176fe7df2b2d2e328788a61eaadef2b7c4635bbda59380df79b50bfb",
         "signature": "2adef5e1798f2ebd64c17ecb6ce66d122c0ed14f412adf6124208ff51f7b2e18",
         "affectsGlobalScope": false
       },
@@ -2916,9 +2916,94 @@
         "signature": "23445b76d84449cac24e13b2abd6f631ad9620e42bfc32ab9cae44edbd700653",
         "affectsGlobalScope": false
       },
+      "../src/shared/modules/keygen/interfaces/index.ts": {
+        "version": "aeb43df6b56d09f3ebb90b1e325e41788cdce93ab643e2e454dc41852fd34688",
+        "signature": "a8eacd148d8bb03d81c974e15d8bde4f176d265aad373d2f445741898b1fd857",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/config/dist/types/config.type.d.ts": {
+        "version": "839d15098cc51d756b67acda281788779645cbf8e95571897951afb52ea6535a",
+        "signature": "839d15098cc51d756b67acda281788779645cbf8e95571897951afb52ea6535a",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/config/dist/types/no-infer.type.d.ts": {
+        "version": "443e3123c41da4e34ba5bd439b892f01c8af842692bb943a1c5f5dccd4d3c764",
+        "signature": "443e3123c41da4e34ba5bd439b892f01c8af842692bb943a1c5f5dccd4d3c764",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/config/dist/types/index.d.ts": {
+        "version": "d83ad6de2cfa93597d4dcf9877b77864d8dfefe141b0a733b1549051b8ca4455",
+        "signature": "d83ad6de2cfa93597d4dcf9877b77864d8dfefe141b0a733b1549051b8ca4455",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/config/dist/config.service.d.ts": {
+        "version": "06efa4e009c1053d39207cdbcc3c1a284871336e4801752e18fe3fce1ca2b025",
+        "signature": "06efa4e009c1053d39207cdbcc3c1a284871336e4801752e18fe3fce1ca2b025",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/config/dist/interfaces/config-factory.interface.d.ts": {
+        "version": "c216ce81e0306d4d666bf06375f5c2693e7c6b2bc920d1939d956ab01656f744",
+        "signature": "c216ce81e0306d4d666bf06375f5c2693e7c6b2bc920d1939d956ab01656f744",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/config/dist/interfaces/config-module-options.interface.d.ts": {
+        "version": "a7184b8922290d1917d520ecc9418f65b06673cacbbddd96192f4e9bca3c3fcb",
+        "signature": "a7184b8922290d1917d520ecc9418f65b06673cacbbddd96192f4e9bca3c3fcb",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/config/dist/interfaces/index.d.ts": {
+        "version": "ced3404358800496232fbeb884d609b9ba7e2a4d7aca3dfe33beea0e59f1785a",
+        "signature": "ced3404358800496232fbeb884d609b9ba7e2a4d7aca3dfe33beea0e59f1785a",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/config/dist/config.module.d.ts": {
+        "version": "a2b4d9eaa8904e1b094a53b940b8973aefecab92b9cd3d494caad2c13e79339d",
+        "signature": "a2b4d9eaa8904e1b094a53b940b8973aefecab92b9cd3d494caad2c13e79339d",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/config/dist/utils/register-as.util.d.ts": {
+        "version": "1d2254ab5fdfd1f346a6e8d03ec698954dd330fdafc2942b77366a052571eab7",
+        "signature": "1d2254ab5fdfd1f346a6e8d03ec698954dd330fdafc2942b77366a052571eab7",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/config/dist/utils/index.d.ts": {
+        "version": "3ced8d48c62c5f6ecdba0e8e745156fc991a81d042a7639b713d615e5b2fe4a6",
+        "signature": "3ced8d48c62c5f6ecdba0e8e745156fc991a81d042a7639b713d615e5b2fe4a6",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/config/dist/index.d.ts": {
+        "version": "e3e43b2ee33a384c872f243e52aa8faa1ccd69a7c0bb44eb878d4ff662cd1991",
+        "signature": "e3e43b2ee33a384c872f243e52aa8faa1ccd69a7c0bb44eb878d4ff662cd1991",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@nestjs/config/index.d.ts": {
+        "version": "8f1241f5d9f0d3d72117768b3c974e462840fbd85026fb66685078945404cf2f",
+        "signature": "8f1241f5d9f0d3d72117768b3c974e462840fbd85026fb66685078945404cf2f",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/node-fetch/node_modules/form-data/index.d.ts": {
+        "version": "cbb7029e32a6a72178cda8baa9129b1ee6d1d779a35e46c780e38b4909d42a89",
+        "signature": "cbb7029e32a6a72178cda8baa9129b1ee6d1d779a35e46c780e38b4909d42a89",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/node-fetch/externals.d.ts": {
+        "version": "972f1e91dab93b182624a17eeed02f683b8cb3fefbda7b689cc84570029d5f73",
+        "signature": "972f1e91dab93b182624a17eeed02f683b8cb3fefbda7b689cc84570029d5f73",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/@types/node-fetch/index.d.ts": {
+        "version": "f51382950fa81e3a54e9fd9f343fe583cfbb221f15a51936e12411699347effe",
+        "signature": "f51382950fa81e3a54e9fd9f343fe583cfbb221f15a51936e12411699347effe",
+        "affectsGlobalScope": false
+      },
+      "../src/shared/modules/keygen/keygen.service.ts": {
+        "version": "c641d52a45e76cd483244bd13dc6a391327da04b51785c73400bfc0c2ac91c06",
+        "signature": "d8b957a82b179c27e0e4d631fdf6dda03450f6560137d95bd7f81b86ab3b0913",
+        "affectsGlobalScope": false
+      },
       "../src/api/licensekey/services/licensekey.service.ts": {
-        "version": "fa1d8ed0050f0ec93b25e71351b0e130c78fa2aea36d8a42d1a4cfaee35a3d9a",
-        "signature": "4e67c20899abf685b94e0fc85c32c8c62c131c15c775fd009395a43d59bcfe61",
+        "version": "0d5f573dc8a023067f4bbc164fd9dc8ad003979d6e02f5e3ed1bc8273e162a64",
+        "signature": "0947b43d7caed5083cddb59c1bab52afc62ac1ac8a931bd7de3d4e98f88e58c7",
         "affectsGlobalScope": false
       },
       "../src/api/auth/guards/license-validation.guard.ts": {
@@ -3156,8 +3241,13 @@
         "signature": "7b5ed961a0e03965299591d73de8b8c41e8a68105ff4fc07a240b0dfb94a5a3d",
         "affectsGlobalScope": false
       },
+      "../src/constants/roles.ts": {
+        "version": "30adf159baf210235c986ab3c7cd1b1bf71a54f0d8020bcf6f0207bd87b6ccc2",
+        "signature": "17042c4e55d6faee1f5eb6e4539af470c014f8a30be388359aaf36b8ffefdbef",
+        "affectsGlobalScope": false
+      },
       "../src/api/auth/guards/role-based.guard.ts": {
-        "version": "7654567726623b63ac1659813fd607343c8bb6a0a39e008fefd5526513471f0a",
+        "version": "3d45efa28a49b1f8252227c4e304ec415e23b566c3f2b9a060807cdd5db00173",
         "signature": "3318bd1cd48f67f229d28d5e2b0fcfe16be3a3c7f0326a8bb3cb94f3005f6c39",
         "affectsGlobalScope": false
       },
@@ -3169,11 +3259,6 @@
       "../src/api/auth/decorators/public.decorator.ts": {
         "version": "9e9e5cc5ee195aa6d16b6b86e5caa7aebc2c31e10061fd673194a5bfbbe2477c",
         "signature": "b946fcfbac869fdd0533e9802a22eb47d47041ecd552a77a83ceb0cca79aad37",
-        "affectsGlobalScope": false
-      },
-      "../src/constants/roles.ts": {
-        "version": "bee3544e48a28ca36479785dc4abb73bca2e7417afc8d0c0b04fefc32c19065d",
-        "signature": "78c226eb549ec95ad4b73b78a9fe02e811e127f045c0479d788a670d60594832",
         "affectsGlobalScope": false
       },
       "../src/api/auth/decorators/roles.decorator.ts": {
@@ -3317,12 +3402,12 @@
         "affectsGlobalScope": false
       },
       "../src/api/auth/guards/istargetuserloggedin.guard.ts": {
-        "version": "3b3d0b4ad35d0579843ab293c4d273a643665b2968d2a46fe2fdffe6b05c7822",
-        "signature": "62593d49fe81bc9781b62c39c0472a6781f1fd7e35b92ad56ae504d8ddce8ecc",
+        "version": "967aed817cd139aa90d4f2248bd2f0fb8d4b371c180180d7968709b6640f59f9",
+        "signature": "e9ecc6a6bd253e88bf29c46fb7cfc2bce5d8fbacee9eafde292cbe47aad33c46",
         "affectsGlobalScope": false
       },
       "../src/api/api-key/controllers/api-key.controller.ts": {
-        "version": "9dd3e038f3e772257ddea0a3a7d0e05454192399425da9ad893ba743e48d1069",
+        "version": "c7ef93d457cee94d28a988c9157396ca568659be4520b2b77429c212e97486cb",
         "signature": "de0fbdc721b71d616c5929a5a65c52411cb691cf56da74445b8ad44abd948f04",
         "affectsGlobalScope": false
       },
@@ -3342,12 +3427,17 @@
         "affectsGlobalScope": false
       },
       "../src/api/licensekey/controllers/licensekey.controller.ts": {
-        "version": "b08bcff5a3fe0c1047283f9605aa83d6e02a87fb22b22348a2f6df627efc56e9",
-        "signature": "d803dfc0fe898c24da28f3b28a42be17dd9f254eec9d8e33a3a37dc9091f8d76",
+        "version": "c6f0c9edeb8f40cb28720767e3b3761178c9d618ba6b9ca66ab343ba636afad6",
+        "signature": "27b78a212e86d4e3d34960a9639687b49495381af89de72ee12dfb66dd94865d",
+        "affectsGlobalScope": false
+      },
+      "../src/shared/modules/keygen/keygen.module.ts": {
+        "version": "69b7b0ef710e04ea6c1aa7ae718e9790c610ed9d52676981b8963c4b2ff6688a",
+        "signature": "2e819878a08ab518d302d165cfdf72e6d27a63f690aadb95d2ca2e4576974010",
         "affectsGlobalScope": false
       },
       "../src/api/licensekey/licensekey.module.ts": {
-        "version": "fe450724d2172fe574a00a8725af1a44857885f0520c015cba50bbcc70d120b1",
+        "version": "29024b462507d33b1ddca50e28d537554303e3a3c27d814f51869d14798525ca",
         "signature": "c0e441a5cbd1e9dbdf29393aa15a97631bba67037e938b8e9ad2d13bdce1b82d",
         "affectsGlobalScope": false
       },
@@ -5096,66 +5186,6 @@
         "signature": "a97e2a65b94b2274a9f0c57aad7c5bf4379beb70a1deff10420af2e8c6787d76",
         "affectsGlobalScope": false
       },
-      "../node_modules/@nestjs/config/dist/types/config.type.d.ts": {
-        "version": "839d15098cc51d756b67acda281788779645cbf8e95571897951afb52ea6535a",
-        "signature": "839d15098cc51d756b67acda281788779645cbf8e95571897951afb52ea6535a",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/config/dist/types/no-infer.type.d.ts": {
-        "version": "443e3123c41da4e34ba5bd439b892f01c8af842692bb943a1c5f5dccd4d3c764",
-        "signature": "443e3123c41da4e34ba5bd439b892f01c8af842692bb943a1c5f5dccd4d3c764",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/config/dist/types/index.d.ts": {
-        "version": "d83ad6de2cfa93597d4dcf9877b77864d8dfefe141b0a733b1549051b8ca4455",
-        "signature": "d83ad6de2cfa93597d4dcf9877b77864d8dfefe141b0a733b1549051b8ca4455",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/config/dist/config.service.d.ts": {
-        "version": "06efa4e009c1053d39207cdbcc3c1a284871336e4801752e18fe3fce1ca2b025",
-        "signature": "06efa4e009c1053d39207cdbcc3c1a284871336e4801752e18fe3fce1ca2b025",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/config/dist/interfaces/config-factory.interface.d.ts": {
-        "version": "c216ce81e0306d4d666bf06375f5c2693e7c6b2bc920d1939d956ab01656f744",
-        "signature": "c216ce81e0306d4d666bf06375f5c2693e7c6b2bc920d1939d956ab01656f744",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/config/dist/interfaces/config-module-options.interface.d.ts": {
-        "version": "a7184b8922290d1917d520ecc9418f65b06673cacbbddd96192f4e9bca3c3fcb",
-        "signature": "a7184b8922290d1917d520ecc9418f65b06673cacbbddd96192f4e9bca3c3fcb",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/config/dist/interfaces/index.d.ts": {
-        "version": "ced3404358800496232fbeb884d609b9ba7e2a4d7aca3dfe33beea0e59f1785a",
-        "signature": "ced3404358800496232fbeb884d609b9ba7e2a4d7aca3dfe33beea0e59f1785a",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/config/dist/config.module.d.ts": {
-        "version": "a2b4d9eaa8904e1b094a53b940b8973aefecab92b9cd3d494caad2c13e79339d",
-        "signature": "a2b4d9eaa8904e1b094a53b940b8973aefecab92b9cd3d494caad2c13e79339d",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/config/dist/utils/register-as.util.d.ts": {
-        "version": "1d2254ab5fdfd1f346a6e8d03ec698954dd330fdafc2942b77366a052571eab7",
-        "signature": "1d2254ab5fdfd1f346a6e8d03ec698954dd330fdafc2942b77366a052571eab7",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/config/dist/utils/index.d.ts": {
-        "version": "3ced8d48c62c5f6ecdba0e8e745156fc991a81d042a7639b713d615e5b2fe4a6",
-        "signature": "3ced8d48c62c5f6ecdba0e8e745156fc991a81d042a7639b713d615e5b2fe4a6",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/config/dist/index.d.ts": {
-        "version": "e3e43b2ee33a384c872f243e52aa8faa1ccd69a7c0bb44eb878d4ff662cd1991",
-        "signature": "e3e43b2ee33a384c872f243e52aa8faa1ccd69a7c0bb44eb878d4ff662cd1991",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@nestjs/config/index.d.ts": {
-        "version": "8f1241f5d9f0d3d72117768b3c974e462840fbd85026fb66685078945404cf2f",
-        "signature": "8f1241f5d9f0d3d72117768b3c974e462840fbd85026fb66685078945404cf2f",
-        "affectsGlobalScope": false
-      },
       "../src/shared/modules/global-aws/global-aws.service.ts": {
         "version": "11c7f2c9e127a44e9b22ed84698ab5f3ab8e3846fa9ba42a8320ae2f4b9f5a8c",
         "signature": "96611b4aa903bf99319da7f5c3a5edf557e8cba6c7796d6a2380518d0c6ac84f",
@@ -5257,8 +5287,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/services/job.service.ts": {
-        "version": "498469018bb31919b95306a1fd4fa82c81ccbb9144c797d200eeee6991eaa4d6",
-        "signature": "9efe80ee91082e2823bec1474e3be992c48519bcdc65be211e4a4d0aaa752bc2",
+        "version": "5086657674d512282b477cca971b97950ecc7bbeb73069e515b44526ae2de46e",
+        "signature": "efccbb120ff506603c9b140ab0fe43dc3989898de86aea9685f468788cbc4a19",
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/update-job.dto.ts": {
@@ -5267,8 +5297,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/controllers/job.controller.ts": {
-        "version": "6cb50c5e4bd5f9bc9bef29a0590a17f3362feed1fe444256ff639fe7f04acdb8",
-        "signature": "b8cbd1c91e8b58be7f0850b8b395490e5511dd7873ba1586040377b693536c3e",
+        "version": "ddc3723a930e7195504abb4bf1f63f55b43b5a54ee3390c1ae19c2b04b1870ff",
+        "signature": "3c06f9074dc46517e417b361c682296b1024662df8d0a171e69e505b06b4aed4",
         "affectsGlobalScope": false
       },
       "../src/api/job/dto/update-job-file.dto.ts": {
@@ -5282,13 +5312,13 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/services/job-file.service.ts": {
-        "version": "f7e1f4726ea82421f23c69c2783e9fd45d2fc0ae9e1c75817c1e6b8a85a78325",
-        "signature": "292c90d9214cfc282e2e5601765c5edf55c74352dce4333d0464408abe8b453b",
+        "version": "815fe2ff226ac0ee0263e650f4bfcb5206c745bed5027c35c4ce0c24eac353af",
+        "signature": "e4dd80293eb69176a91787f917ddcbff011fc2723ef8360450e6d8bfe692f501",
         "affectsGlobalScope": false
       },
       "../src/api/job/controllers/job-file.controller.ts": {
-        "version": "0297ccee1dd0a993874302828a3a7f93974114dcb213910a9f297ea67e4e87bb",
-        "signature": "75caa37cf103df46403aec7772cac494068830d6bb0c96ce688639a349b48c3c",
+        "version": "c305eba500571cbcd048f40cf399b2a2ed11789187f479bf9d93de3ff7966b88",
+        "signature": "32936c05f10bb8fb0a929759befa2c37aa2695534c5e8aa41914fe9167de2f5b",
         "affectsGlobalScope": false
       },
       "../src/api/job/job.module.ts": {
@@ -5566,11 +5596,6 @@
         "signature": "38bcaecafef71112e3b40116e9214e60eb70b42e4e345629490e574e33ddb658",
         "affectsGlobalScope": false
       },
-      "../src/api/licensekey/services/licensekey-reserve.service.ts": {
-        "version": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "signature": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "affectsGlobalScope": false
-      },
       "../src/api/radiostation/dto/deletebulk-radiostation.dto.ts": {
         "version": "535eefb75499f267741915e0faaa86aa44b88dfcdaee96a5e03c7111af708391",
         "signature": "f9d359d2558bcf6cb3f78634312cb6783afdae101937e146a96ca3704d8c2cc8",
@@ -5594,36 +5619,6 @@
       "../src/shared/interfaces/mongoosepaginate.interface.ts": {
         "version": "9eab459e498ac444f621cf9fbf599b97f8db2c74f83313d17b9d41428d3b27da",
         "signature": "34b82d4f53b696cb5d2a3e2fd026bc68957d73ac8e5d29ac1829f207b4853581",
-        "affectsGlobalScope": false
-      },
-      "../src/shared/modules/keygen/interfaces/index.ts": {
-        "version": "aeb43df6b56d09f3ebb90b1e325e41788cdce93ab643e2e454dc41852fd34688",
-        "signature": "a8eacd148d8bb03d81c974e15d8bde4f176d265aad373d2f445741898b1fd857",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@types/node-fetch/node_modules/form-data/index.d.ts": {
-        "version": "cbb7029e32a6a72178cda8baa9129b1ee6d1d779a35e46c780e38b4909d42a89",
-        "signature": "cbb7029e32a6a72178cda8baa9129b1ee6d1d779a35e46c780e38b4909d42a89",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@types/node-fetch/externals.d.ts": {
-        "version": "972f1e91dab93b182624a17eeed02f683b8cb3fefbda7b689cc84570029d5f73",
-        "signature": "972f1e91dab93b182624a17eeed02f683b8cb3fefbda7b689cc84570029d5f73",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/@types/node-fetch/index.d.ts": {
-        "version": "f51382950fa81e3a54e9fd9f343fe583cfbb221f15a51936e12411699347effe",
-        "signature": "f51382950fa81e3a54e9fd9f343fe583cfbb221f15a51936e12411699347effe",
-        "affectsGlobalScope": false
-      },
-      "../src/shared/modules/keygen/keygen.service.ts": {
-        "version": "c641d52a45e76cd483244bd13dc6a391327da04b51785c73400bfc0c2ac91c06",
-        "signature": "d8b957a82b179c27e0e4d631fdf6dda03450f6560137d95bd7f81b86ab3b0913",
-        "affectsGlobalScope": false
-      },
-      "../src/shared/modules/keygen/keygen.module.ts": {
-        "version": "69b7b0ef710e04ea6c1aa7ae718e9790c610ed9d52676981b8963c4b2ff6688a",
-        "signature": "2e819878a08ab518d302d165cfdf72e6d27a63f690aadb95d2ca2e4576974010",
         "affectsGlobalScope": false
       },
       "../src/shared/pipes/toobjectid.pipe.ts": {
@@ -18440,8 +18435,11 @@
         "../src/api/api-key/api-key.service.ts",
         "../src/api/api-key/dto/create-api-key.dto.ts",
         "../src/api/api-key/dto/update-api-key.dto.ts",
+        "../src/api/auth/decorators/roles.decorator.ts",
         "../src/api/auth/guards/istargetuserloggedin.guard.ts",
         "../src/api/auth/guards/jwt-auth.guard.ts",
+        "../src/api/auth/guards/role-based.guard.ts",
+        "../src/constants/roles.ts",
         "../src/shared/decorators/anyapiquerytemplate.decorator.ts",
         "../src/shared/dtos/parsedquery.dto.ts",
         "../src/shared/pipes/parsequeryvalue.pipe.ts"
@@ -18732,7 +18730,8 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
-        "../node_modules/rxjs/index.d.ts"
+        "../node_modules/rxjs/index.d.ts",
+        "../src/constants/roles.ts"
       ],
       "../src/api/auth/strategies/jwt.strategy.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -18969,6 +18968,7 @@
         "../src/api/job/dto/update-job-file.dto.ts",
         "../src/api/job/services/job-file.service.ts",
         "../src/api/job/services/job.service.ts",
+        "../src/api/licensekey/services/licensekey.service.ts",
         "../src/shared/decorators/anyapiquerytemplate.decorator.ts",
         "../src/shared/dtos/parsedquery.dto.ts",
         "../src/shared/pipes/parsequeryvalue.pipe.ts"
@@ -18988,6 +18988,7 @@
         "../src/api/job/dto/create-job.dto.ts",
         "../src/api/job/dto/update-job.dto.ts",
         "../src/api/job/services/job.service.ts",
+        "../src/api/licensekey/services/licensekey.service.ts",
         "../src/api/sonickey/services/sonickey.service.ts",
         "../src/shared/decorators/anyapiquerytemplate.decorator.ts",
         "../src/shared/dtos/parsedquery.dto.ts",
@@ -19130,6 +19131,7 @@
         "../src/api/job/dto/update-job-file.dto.ts",
         "../src/api/job/schemas/jobfile.schema.ts",
         "../src/api/job/services/job.service.ts",
+        "../src/api/licensekey/services/licensekey.service.ts",
         "../src/api/sonickey/schemas/sonickey.schema.ts",
         "../src/api/sonickey/services/sonickey.service.ts",
         "../src/shared/dtos/parsedquery.dto.ts"
@@ -19163,10 +19165,13 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/auth/decorators/index.ts",
+        "../src/api/auth/decorators/roles.decorator.ts",
         "../src/api/auth/guards/jwt-auth.guard.ts",
+        "../src/api/auth/guards/role-based.guard.ts",
         "../src/api/licensekey/dto/create-licensekey.dto.ts",
         "../src/api/licensekey/dto/update-licensekey.dto.ts",
         "../src/api/licensekey/services/licensekey.service.ts",
+        "../src/constants/roles.ts",
         "../src/shared/decorators/anyapiquerytemplate.decorator.ts",
         "../src/shared/dtos/parsedquery.dto.ts",
         "../src/shared/pipes/parsequeryvalue.pipe.ts"
@@ -19215,20 +19220,12 @@
         "../node_modules/mongoose/index.d.ts",
         "../src/api/licensekey/controllers/licensekey.controller.ts",
         "../src/api/licensekey/schemas/licensekey.schema.ts",
-        "../src/api/licensekey/services/licensekey.service.ts"
+        "../src/api/licensekey/services/licensekey.service.ts",
+        "../src/shared/modules/keygen/keygen.module.ts"
       ],
       "../src/api/licensekey/schemas/licensekey.schema.ts": [
         "../node_modules/@nestjs/mongoose/index.d.ts",
         "../node_modules/@nestjs/swagger/index.d.ts",
-        "../node_modules/@types/graceful-fs/index.d.ts",
-        "../node_modules/@types/mongoose/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongoose/index.d.ts"
-      ],
-      "../src/api/licensekey/services/licensekey-reserve.service.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/mongoose/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -19252,7 +19249,8 @@
         "../src/api/licensekey/dto/create-licensekey.dto.ts",
         "../src/api/licensekey/dto/mongoosepaginate-licensekey.dto.ts",
         "../src/api/licensekey/schemas/licensekey.schema.ts",
-        "../src/shared/dtos/parsedquery.dto.ts"
+        "../src/shared/dtos/parsedquery.dto.ts",
+        "../src/shared/modules/keygen/keygen.service.ts"
       ],
       "../src/api/radiostation/controllers/radiostation.controller.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -32844,7 +32842,6 @@
         "../src/api/sonickey/services/sonickey.service.ts"
       ],
       "../src/api/job/controllers/job-file.controller.ts": [
-        "../node_modules/mongoose/index.d.ts",
         "../src/api/job/dto/create-job-file.dto.ts",
         "../src/api/job/dto/mongoosepaginate-jobfile.dto.ts",
         "../src/api/job/dto/update-job-file.dto.ts",
@@ -32852,6 +32849,7 @@
         "../src/api/job/schemas/jobfile.schema.ts",
         "../src/api/job/services/job-file.service.ts",
         "../src/api/job/services/job.service.ts",
+        "../src/api/licensekey/services/licensekey.service.ts",
         "../src/api/sonickey/schemas/sonickey.schema.ts",
         "../src/shared/dtos/parsedquery.dto.ts"
       ],
@@ -32861,6 +32859,7 @@
         "../src/api/job/dto/update-job.dto.ts",
         "../src/api/job/schemas/job.schema.ts",
         "../src/api/job/services/job.service.ts",
+        "../src/api/licensekey/services/licensekey.service.ts",
         "../src/api/sonickey/services/sonickey.service.ts",
         "../src/shared/dtos/parsedquery.dto.ts"
       ],
@@ -32903,6 +32902,7 @@
         "../src/api/job/dto/update-job-file.dto.ts",
         "../src/api/job/schemas/jobfile.schema.ts",
         "../src/api/job/services/job.service.ts",
+        "../src/api/licensekey/services/licensekey.service.ts",
         "../src/api/sonickey/schemas/sonickey.schema.ts",
         "../src/api/sonickey/services/sonickey.service.ts",
         "../src/shared/dtos/parsedquery.dto.ts"
@@ -32913,7 +32913,6 @@
         "../src/api/job/dto/mongoosepaginate-job.dto.ts",
         "../src/api/job/schemas/job.schema.ts",
         "../src/api/job/schemas/jobfile.schema.ts",
-        "../src/api/licensekey/schemas/licensekey.schema.ts",
         "../src/api/licensekey/services/licensekey.service.ts",
         "../src/shared/dtos/parsedquery.dto.ts"
       ],
@@ -32941,7 +32940,8 @@
         "../src/api/licensekey/dto/create-licensekey.dto.ts",
         "../src/api/licensekey/dto/mongoosepaginate-licensekey.dto.ts",
         "../src/api/licensekey/schemas/licensekey.schema.ts",
-        "../src/shared/dtos/parsedquery.dto.ts"
+        "../src/shared/dtos/parsedquery.dto.ts",
+        "../src/shared/modules/keygen/keygen.service.ts"
       ],
       "../src/api/radiostation/controllers/radiostation.controller.ts": [
         "../src/api/radiostation/dto/bulk-radiostation.dto.ts",

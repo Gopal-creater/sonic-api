@@ -8,20 +8,20 @@ import {
 export type targetValue = 'Query' | 'Param';
 @Injectable()
 export class IsTargetUserLoggedInGuard implements CanActivate {
-  constructor(private target: targetValue = 'Query') {}
+  constructor(private target: targetValue = 'Query',private name:string="targetUser") {}
   canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     switch (this.target) {
       case 'Query':
         const query = request.query;
         if (request.user) {
-          if (!query.targetUser) {
+          if (!query[this.name]) {
             throw new UnauthorizedException(
-              'Specify target user equal to your own id. eg: ?targetUser=yourId',
+              `Specify target user equal to your own id. eg: ?${this.name}=yourId`,
             );
           }
           const loggedInUser = request.user;
-          const targetUser = query.targetUser;
+          const targetUser = query[this.name];
           // delete req
           if (targetUser == loggedInUser['sub']) {
             delete query.targetUser;
@@ -38,13 +38,13 @@ export class IsTargetUserLoggedInGuard implements CanActivate {
       case 'Param':
         const param = request.params;
         if (request.user) {
-          if (!param.targetUser) {
+          if (!param[this.name]) {
             throw new UnauthorizedException(
-              'Specify target user equal to your own id. eg: {targetUser}=yourId',
+              `Specify target user equal to your own id. eg: {${this.name}}=yourId`,
             );
           }
           const loggedInUser = request.user;
-          const targetUser = param.targetUser;
+          const targetUser = param[this.name];
           // delete req
           if (targetUser == loggedInUser['sub']) {
             return true;

@@ -1,20 +1,21 @@
-/// <reference types="mongoose" />
 import { UpdateJobFileDto, AddKeyAndUpdateJobFileDto } from '../dto/update-job-file.dto';
 import { JobFileService } from '../services/job-file.service';
 import { JobService } from '../services/job.service';
 import { CreateJobFileDto } from '../dto/create-job-file.dto';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 export declare class JobFileController {
     private readonly jobFileService;
     private readonly jobService;
-    constructor(jobFileService: JobFileService, jobService: JobService);
+    private readonly licensekeyService;
+    constructor(jobFileService: JobFileService, jobService: JobService, licensekeyService: LicensekeyService);
     findAll(queryDto: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-jobfile.dto").MongoosePaginateJobFileDto>;
     getCount(queryDto: ParsedQueryDto): Promise<number>;
     addKeyToDbAndUpdateJobFile(jobId: string, fileId: string, addKeyAndUpdateJobFileDto: AddKeyAndUpdateJobFileDto): Promise<{
         createdSonicKey: import("../../sonickey/schemas/sonickey.schema").SonicKey;
         updatedJobFile: import("../schemas/jobfile.schema").JobFile;
     }>;
-    updateJobFile(id: string, updateJobFileDto: UpdateJobFileDto): Promise<import("mongoose").UpdateWriteOpResult>;
+    updateJobFile(id: string, updateJobFileDto: UpdateJobFileDto): Promise<import("../schemas/jobfile.schema").JobFile>;
     createJobFile(jobId: string, createJobFileDto: CreateJobFileDto): Promise<{
         savedJobFile: import("../schemas/jobfile.schema").JobFile;
         updatedJob: import("../schemas/job.schema").Job;

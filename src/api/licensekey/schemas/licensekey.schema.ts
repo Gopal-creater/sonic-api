@@ -56,7 +56,7 @@ export class LicenseKey extends Document {
   encodeUses: number;
 
   @ApiProperty()
-  @Prop({ required: true })
+  @Prop({ required: true,default: 0 })
   maxDecodeUses: number;
 
   @ApiProperty()

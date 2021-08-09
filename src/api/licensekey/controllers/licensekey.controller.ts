@@ -24,14 +24,26 @@ import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { User } from 'src/api/auth/decorators';
+import { RolesAllowed } from '../../auth/decorators/roles.decorator';
+import { Roles } from 'src/constants/Roles';
+import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
 
 @ApiTags('License Keys Management Controller')
 @Controller('license-keys')
 export class LicensekeyController {
   constructor(private readonly licensekeyService: LicensekeyService) {}
 
+  @Get('/migrate-from-keygen')
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @ApiBearerAuth()
+  migrate() {
+    return this.licensekeyService.migrateKeyFromKeygenToDB();
+  }
+
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create License Key' })
   create(
@@ -42,7 +54,8 @@ export class LicensekeyController {
   }
 
   @Get()
-  // @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All LicenseJKeys' })
@@ -51,7 +64,8 @@ export class LicensekeyController {
   }
 
   @Get('/count')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get count of all license-keys also accept filter as query params',
@@ -64,7 +78,8 @@ export class LicensekeyController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Single License key' })
   async findOne(@Param('id') id: string) {
@@ -78,7 +93,8 @@ export class LicensekeyController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Single License key' })
   async update(
@@ -98,7 +114,8 @@ export class LicensekeyController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete License key' })
   remove(@Param('id') id: string) {

@@ -81,7 +81,7 @@ __decorate([
 ], LicenseKey.prototype, "encodeUses", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ required: true }),
+    mongoose_1.Prop({ required: true, default: 0 }),
     __metadata("design:type", Number)
 ], LicenseKey.prototype, "maxDecodeUses", void 0);
 __decorate([

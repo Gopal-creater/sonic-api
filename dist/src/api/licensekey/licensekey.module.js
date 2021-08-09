@@ -12,11 +12,13 @@ const licensekey_service_1 = require("./services/licensekey.service");
 const licensekey_controller_1 = require("./controllers/licensekey.controller");
 const mongoose_1 = require("@nestjs/mongoose");
 const licensekey_schema_1 = require("./schemas/licensekey.schema");
+const keygen_module_1 = require("../../shared/modules/keygen/keygen.module");
 let LicensekeyModule = class LicensekeyModule {
 };
 LicensekeyModule = __decorate([
     common_1.Module({
         imports: [
+            keygen_module_1.KeygenModule,
             mongoose_1.MongooseModule.forFeature([
                 {
                     name: licensekey_schema_1.LicenseKeySchemaName,
