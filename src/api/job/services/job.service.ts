@@ -91,9 +91,9 @@ export class JobService {
       },
     );
     await this.licensekeyService
-      .decrementUses(job.license,'encode' , totalCompletedFiles.length)
+      .incrementUses(job.license,'encode' , totalCompletedFiles.length)
       .catch(err => {
-        throw new BadRequestException('Error decrementing licence usages');
+        throw new BadRequestException('Error incrementing licence usages');
       });
 
       const completedJob  = await this.jobModel.findOneAndUpdate({_id:job.id},{
@@ -101,7 +101,7 @@ export class JobService {
         completedAt: new Date()
       },{new:true})
       .catch(async err => {
-        await this.licensekeyService.incrementUses(
+        await this.licensekeyService.decrementUses(
           job.license,
           'encode',
           totalCompletedFiles.length,

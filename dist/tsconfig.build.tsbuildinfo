@@ -5257,7 +5257,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/job/services/job.service.ts": {
-        "version": "9dc4961a57f9f24413f13aa18cb5f989bc71689e9b1f9ac5ffc383cc76cbc470",
+        "version": "498469018bb31919b95306a1fd4fa82c81ccbb9144c797d200eeee6991eaa4d6",
         "signature": "9efe80ee91082e2823bec1474e3be992c48519bcdc65be211e4a4d0aaa752bc2",
         "affectsGlobalScope": false
       },

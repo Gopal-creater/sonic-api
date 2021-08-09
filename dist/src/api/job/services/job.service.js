@@ -89,16 +89,16 @@ let JobService = class JobService {
             throw new common_1.BadRequestException('Error removing reserved licence count ');
         });
         await this.licensekeyService
-            .decrementUses(job.license, 'encode', totalCompletedFiles.length)
+            .incrementUses(job.license, 'encode', totalCompletedFiles.length)
             .catch(err => {
-            throw new common_1.BadRequestException('Error decrementing licence usages');
+            throw new common_1.BadRequestException('Error incrementing licence usages');
         });
         const completedJob = await this.jobModel.findOneAndUpdate({ _id: job.id }, {
             isComplete: true,
             completedAt: new Date()
         }, { new: true })
             .catch(async (err) => {
-            await this.licensekeyService.incrementUses(job.license, 'encode', totalCompletedFiles.length);
+            await this.licensekeyService.decrementUses(job.license, 'encode', totalCompletedFiles.length);
             throw new common_1.BadRequestException('Error making job completed');
         });
         return completedJob;
