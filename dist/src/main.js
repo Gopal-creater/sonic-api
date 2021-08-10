@@ -17,11 +17,13 @@ async function bootstrap() {
         origin: [
             'https://portal.sonicdata.com',
             'https://sonicportal.arba-dev.uk',
-            'https://sonicstreamportal.arba-dev.uk',
+            'https://sonicadminportal.arba-dev.uk',
             'http://localhost:3000',
             'https://localhost:3000',
             'http://localhost:8001',
             'https://localhost:8001',
+            'http://localhost:8002',
+            'https://localhost:8002',
         ],
     });
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());
