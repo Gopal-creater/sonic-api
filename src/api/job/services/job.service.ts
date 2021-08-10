@@ -67,7 +67,7 @@ export class JobService {
     }
     await this.licensekeyService.removeReservedDetailsInLicence(job.license, job.id).catch(
       err => {
-        throw new BadRequestException('Error removing reserved licence count ');
+        throw new BadRequestException(err.message || 'Error removing reserved licence count ');
       },
     );
     return  this.jobModel.findOneAndDelete({_id:job.id});

@@ -212,8 +212,8 @@ let LicensekeyService = class LicensekeyService {
                 });
                 console.log('newOwners', newOwners);
                 const newLicense = await this.licenseKeyModel.create({
-                    _id: oldLicense.key,
-                    key: oldLicense.key,
+                    _id: license.id,
+                    key: license.id,
                     name: oldLicense.name,
                     disabled: false,
                     suspended: oldLicense.suspended,
