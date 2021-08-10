@@ -73,7 +73,7 @@ let JobService = class JobService {
             throw new common_1.NotFoundException();
         }
         await this.licensekeyService.removeReservedDetailsInLicence(job.license, job.id).catch(err => {
-            throw new common_1.BadRequestException(err.message || 'Error removing reserved licence count ');
+            throw new common_1.BadRequestException('Error removing reserved licence count ', err.message || "");
         });
         return this.jobModel.findOneAndDelete({ _id: job.id });
     }

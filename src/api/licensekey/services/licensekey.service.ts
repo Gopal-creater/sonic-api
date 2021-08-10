@@ -203,8 +203,8 @@ export class LicensekeyService {
   }
 
   async migrateKeyFromKeygenToDB() {
-    const { data, error } = await this.keygenService.getAllLicenses();
-    console.log('allLicenses', data);
+    const { data, error } = await this.keygenService.getAllLicenses('limit=90');
+    // console.log('allLicenses', data);
 
     for await (const license of data) {
       const oldLicense = license?.attributes;
@@ -218,7 +218,7 @@ export class LicensekeyService {
         return lkOwner
       })
       console.log('newOwners', newOwners);
-      const newLicense = await this.licenseKeyModel.create({
+      const newLicense = new this.licenseKeyModel({
         _id: license.id,
         key: license.id,
         name: oldLicense.name,
@@ -234,9 +234,12 @@ export class LicensekeyService {
             ? '9ab5a58b-09e0-46ce-bb50-1321d927c382'
             : '5728f50d-146b-47d2-aa7b-a50bc37d641d',
         owners: newOwners,
-      });
+      })
 
       await newLicense.save()
+      .catch(err=>{
+        console.log(`Error saving license ${oldLicense.name}`,err)
+      })
     }
     return data.length || 0;
   }
