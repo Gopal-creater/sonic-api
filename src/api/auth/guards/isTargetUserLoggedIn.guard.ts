@@ -4,6 +4,7 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
+import { UserSession } from '../../user/schemas/user.schema';
 
 export type targetValue = 'Query' | 'Param';
 @Injectable()
@@ -20,7 +21,7 @@ export class IsTargetUserLoggedInGuard implements CanActivate {
               `Specify target user equal to your own id. eg: ?${this.name}=yourId`,
             );
           }
-          const loggedInUser = request.user;
+          const loggedInUser = request.user as UserSession;
           const targetUser = query[this.name];
           // delete req
           if (targetUser == loggedInUser['sub']) {
@@ -43,7 +44,7 @@ export class IsTargetUserLoggedInGuard implements CanActivate {
               `Specify target user equal to your own id. eg: {${this.name}}=yourId`,
             );
           }
-          const loggedInUser = request.user;
+          const loggedInUser = request.user as UserSession;
           const targetUser = param[this.name];
           // delete req
           if (targetUser == loggedInUser['sub']) {

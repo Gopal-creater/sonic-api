@@ -1,6 +1,8 @@
 import { ConfigService } from '@nestjs/config';
 import { GlobalAwsService } from './../../shared/modules/global-aws/global-aws.service';
+import { CognitoIdentityServiceProvider } from 'aws-sdk';
 import { LicensekeyService } from '../licensekey/services/licensekey.service';
+import { AdminGetUserResponse } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 export declare class UserService {
     private readonly licensekeyService;
     private readonly globalAwsService;
@@ -19,8 +21,14 @@ export declare class UserService {
             data: string;
         }[];
     }>;
-    getUserProfile(username: string): Promise<unknown>;
+    getUserProfile(usernameOrSub: string): Promise<CognitoIdentityServiceProvider.AdminGetUserResponse>;
+    getGroupsForUser(usernameOrSub: string): Promise<import("aws-sdk/lib/request").PromiseResult<CognitoIdentityServiceProvider.AdminListGroupsForUserResponse, import("aws-sdk").AWSError>>;
+    addAttributesObjToProfile(profile: AdminGetUserResponse): CognitoIdentityServiceProvider.AdminGetUserResponse;
     exportFromLic(): Promise<void>;
+    getUserFromSub(sub: string): Promise<{
+        username: string;
+        user: CognitoIdentityServiceProvider.UserType;
+    }>;
     updateUserWithCustomField(username: string, updateUserAttributes: [{
         Name: string;
         Value: any;

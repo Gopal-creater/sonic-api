@@ -1,5 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnprocessableEntityException, BadRequestException } from '@nestjs/common';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
+import { UserSession } from '../../user/schemas/user.schema';
 
 /**
  * This Guard is responsible for checking valid license from user and add the validLicense field to the request object
@@ -14,7 +15,7 @@ export class LicenseValidationGuard implements CanActivate {
     context: ExecutionContext,
   ){
     const request = context.switchToHttp().getRequest();
-    const user = request.user;
+    const user = request.user as UserSession;
     const ownerKey =`owner${user?.sub}`.replace(/-/g,'')
     const data= await this.licensekeyService.licenseKeyModel.find({"owners.ownerId":user.sub})
     if(!data || data.length<=0){

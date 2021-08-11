@@ -1,13 +1,11 @@
 import { ConfigService } from '@nestjs/config';
 import { GlobalAwsService } from './../../shared/modules/global-aws/global-aws.service';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { LicensekeyService } from '../licensekey/services/licensekey.service';
 import { LKOwner } from '../licensekey/schemas/licensekey.schema';
+import { isValidUUID } from '../../shared/utils/index';
+import { AdminGetUserResponse,UserType } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 
 @Injectable()
 export class UserService {
@@ -63,28 +61,52 @@ export class UserService {
     });
   }
 
-  async getUserProfile(username: string) {
+  /**
+   * Get User profile by username or sub
+   * @param usernameOrSub this can be username or sub
+   */
+  async getUserProfile(usernameOrSub: string) {
     const params = {
       UserPoolId: this.cognitoUserPoolId,
-      Username: username,
+      Username: usernameOrSub,
     };
-    return new Promise((resolve, reject) => {
-      this.cognitoIdentityServiceProvider.adminGetUser(params, function(
-        err,
-        data,
-      ) {
-        if (err) {
-          reject(err);
-        }
+    if (isValidUUID(usernameOrSub)) {
+      const { username } = await this.getUserFromSub(usernameOrSub);
+      params.Username = username;
+    }
+    const profile = await this.cognitoIdentityServiceProvider
+      .adminGetUser(params)
+      .promise();
+    return this.addAttributesObjToProfile(profile);
+  }
 
-        var result = {};
-        for (let index = 0; index < data.UserAttributes.length; index++) {
-          const element = data.UserAttributes[index];
-          result[element.Name] = element.Value;
-        }
-        resolve(result);
-      });
-    });
+  /**
+   * Get User profile by username or sub
+   * @param usernameOrSub this can be username or sub
+   */
+   async getGroupsForUser(usernameOrSub: string) {
+    const params = {
+      UserPoolId: this.cognitoUserPoolId,
+      Username: usernameOrSub,
+    };
+    if (isValidUUID(usernameOrSub)) {
+      const { username } = await this.getUserFromSub(usernameOrSub);
+      params.Username = username;
+    }
+    return this.cognitoIdentityServiceProvider
+      .adminListGroupsForUser(params)
+      .promise();
+  }
+
+  addAttributesObjToProfile(profile: AdminGetUserResponse) {
+    var attributesObj={}
+    for (let index = 0; index < profile.UserAttributes.length; index++) {
+      const element = profile.UserAttributes[index];
+      attributesObj[element.Name] = element.Value;
+    }
+    profile['UserAttributesObj'] = attributesObj;
+
+    return profile;
   }
 
   async exportFromLic() {
@@ -110,6 +132,24 @@ export class UserService {
         }
       }
     });
+  }
+
+  async getUserFromSub(sub: string) {
+    const users = await this.cognitoIdentityServiceProvider
+      .listUsers({
+        UserPoolId: this.cognitoUserPoolId,
+        Filter: `sub=\"${sub}\"`,
+      })
+      .promise();
+
+    const targetUser = users?.Users?.[0];
+    if (!targetUser) {
+      throw new NotFoundException();
+    }
+    return {
+      username: targetUser.Username,
+      user: targetUser,
+    };
   }
 
   async updateUserWithCustomField(

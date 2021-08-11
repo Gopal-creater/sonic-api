@@ -31,7 +31,8 @@ let RoleBasedGuard = class RoleBasedGuard {
             return true;
         }
         const request = context.switchToHttp().getRequest();
-        const userRoles = (request === null || request === void 0 ? void 0 : request.user['cognito:groups']) || [];
+        const currentUser = request === null || request === void 0 ? void 0 : request.user;
+        const userRoles = currentUser['cognito:groups'] || [];
         const isAllowed = this.matchRoles(roles, userRoles);
         if (!isAllowed) {
             throw new common_2.ForbiddenException("You dont have permission to do this.");

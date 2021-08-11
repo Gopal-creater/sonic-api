@@ -1,5 +1,10 @@
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
-import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import {
   AddNewLicenseDto,
   AddBulkNewLicensesDto,
@@ -22,11 +27,13 @@ import { ParseQueryValue } from '../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { LicensekeyService } from '../licensekey/services/licensekey.service';
 
-
 @ApiTags('User Controller')
 @Controller('users')
 export class UserController {
-  constructor(private readonly userServices: UserService,private readonly licensekeyService: LicensekeyService,) {}
+  constructor(
+    private readonly userServices: UserService,
+    private readonly licensekeyService: LicensekeyService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -36,8 +43,8 @@ export class UserController {
     @Param('userId') userId: string,
     @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
   ) {
-    queryDto.filter["owners.ownerId"]=userId
-    return this.licensekeyService.findAll(queryDto)
+    queryDto.filter['owners.ownerId'] = userId;
+    return this.licensekeyService.findAll(queryDto);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -74,24 +81,92 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get User profile by username' })
+  @ApiOkResponse({
+    description: `
+  <b>Response Example from <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminGetUser.html" target="_blank">Cognito GetUser</a> </b>
+  <pre>
+  {
+    "Enabled": boolean,
+    "MFAOptions": [ 
+       { 
+          "AttributeName": "string",
+          "DeliveryMedium": "string"
+       }
+    ],
+    "PreferredMfaSetting": "string",
+    "UserAttributes": [ 
+       { 
+          "Name": "string",
+          "Value": "string"
+       }
+    ],
+    "UserCreateDate": number,
+    "UserLastModifiedDate": number,
+    "UserMFASettingList": [ "string" ],
+    "Username": "string",
+    "UserStatus": "string"
+ }
+ </pre>
+ <b>UserAttributes Will Contains</b>
+ <pre>
+ {
+  sub: string,
+  'cognito:groups'?: string[],
+  email_verified?: boolean,
+  phone_number_verified?: boolean,
+  phone_number?: string,
+  email: string
+ }
+ </pre>
+  `,
+  })
+  @ApiOperation({ summary: 'Get User profile by username or sub id' })
   @Get('/:username/profile')
   async getUserProfile(@Param('username') username: string) {
     return this.userServices.getUserProfile(username);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update user profile by username' })
-  @Post('/:username/update-profile')
-  async updateProfile(
-    @Param('username') username: string,
-    @Body() updateProfileDto: UpdateProfileDto,
-  ) {
-    const updatedAttributes = updateProfileDto.attributes;
-    return this.userServices.updateUserWithCustomField(
-      username,
-      updatedAttributes,
-    );
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
+  @ApiOkResponse({
+    description: `
+  <b>Response Example from <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminListGroupsForUser.html" target="_blank">Cognito AdminListGroupsForUser</a> </b>
+  <pre>
+  {
+    "Groups": [ 
+       { 
+          "CreationDate": number,
+          "Description": "string",
+          "GroupName": "string",
+          "LastModifiedDate": number,
+          "Precedence": number,
+          "RoleArn": "string",
+          "UserPoolId": "string"
+       }
+    ],
+    "NextToken": "string"
+ }
+ </pre>
+  `,
+  })
+  @ApiOperation({ summary: 'Get User groups by username or sub id' })
+  @Get('/:username/groups')
+  async getGroupsOfUser(@Param('username') username: string) {
+    return this.userServices.getGroupsForUser(username);
   }
+
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
+  // @ApiOperation({ summary: 'Update user profile by username' })
+  // @Post('/:username/update-profile')
+  // async updateProfile(
+  //   @Param('username') username: string,
+  //   @Body() updateProfileDto: UpdateProfileDto,
+  // ) {
+  //   const updatedAttributes = updateProfileDto.attributes;
+  //   return this.userServices.updateUserWithCustomField(
+  //     username,
+  //     updatedAttributes,
+  //   );
+  // }
 }

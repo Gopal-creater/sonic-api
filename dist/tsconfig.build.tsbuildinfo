@@ -3006,8 +3006,68 @@
         "signature": "0947b43d7caed5083cddb59c1bab52afc62ac1ac8a931bd7de3d4e98f88e58c7",
         "affectsGlobalScope": false
       },
+      "../node_modules/aws-sdk/lib/error.d.ts": {
+        "version": "7f342dd49c8f5d894018ca14c1ec820991bbb3a25daa78c924961e2a61775c85",
+        "signature": "7f342dd49c8f5d894018ca14c1ec820991bbb3a25daa78c924961e2a61775c85",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/aws-sdk/lib/credentials.d.ts": {
+        "version": "4bf4d1cb715dc206b7779038b4f6d5c3c1ad17a79009d5bacc0f8004402872a4",
+        "signature": "4bf4d1cb715dc206b7779038b4f6d5c3c1ad17a79009d5bacc0f8004402872a4",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/aws-sdk/lib/credentials/credential_provider_chain.d.ts": {
+        "version": "05ea9f7f46875dd5378c6cfa3d03f22c9d1e8a83fa8b45b4e07fa5eb8a393d19",
+        "signature": "05ea9f7f46875dd5378c6cfa3d03f22c9d1e8a83fa8b45b4e07fa5eb8a393d19",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/aws-sdk/lib/config-base.d.ts": {
+        "version": "02390e067ec5bcf45456d3993ce4486e405876e6035f53db1ec95b443be294a0",
+        "signature": "02390e067ec5bcf45456d3993ce4486e405876e6035f53db1ec95b443be294a0",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/aws-sdk/lib/endpoint.d.ts": {
+        "version": "319d2d6122ea3112618f324e9cf3ac2f3e9a3eac4ef3a3eaaf60c6863783aa41",
+        "signature": "319d2d6122ea3112618f324e9cf3ac2f3e9a3eac4ef3a3eaaf60c6863783aa41",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/aws-sdk/lib/service.d.ts": {
+        "version": "9e25b5fa2f82b55a166c5cee3421288802665c306387bcf848cad9465693237f",
+        "signature": "9e25b5fa2f82b55a166c5cee3421288802665c306387bcf848cad9465693237f",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/aws-sdk/lib/http_response.d.ts": {
+        "version": "3ef72bda86404981d8145dfdfa2924e367a2aaeb883e7f50abe34c665ae7e5c0",
+        "signature": "3ef72bda86404981d8145dfdfa2924e367a2aaeb883e7f50abe34c665ae7e5c0",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/aws-sdk/lib/response.d.ts": {
+        "version": "df0f4d23c236280d5e28397e6ac7b09130ad2c729b09c604865f3f61effd1c92",
+        "signature": "df0f4d23c236280d5e28397e6ac7b09130ad2c729b09c604865f3f61effd1c92",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/aws-sdk/lib/http_request.d.ts": {
+        "version": "3620bd96018b6c081228c60ea129312de9e14c007b9a8521c7c97f7fd27e176e",
+        "signature": "3620bd96018b6c081228c60ea129312de9e14c007b9a8521c7c97f7fd27e176e",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/aws-sdk/lib/request.d.ts": {
+        "version": "c6efe7c64b9a2e654aa38cf233712b50153019723d0a0b424f620b9cf6d50b02",
+        "signature": "c6efe7c64b9a2e654aa38cf233712b50153019723d0a0b424f620b9cf6d50b02",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/aws-sdk/clients/cognitoidentityserviceprovider.d.ts": {
+        "version": "a51f5f08d10e9b1e52f18c4fa9d45b667bd63a3e18b466c2100be3cc5357d708",
+        "signature": "a51f5f08d10e9b1e52f18c4fa9d45b667bd63a3e18b466c2100be3cc5357d708",
+        "affectsGlobalScope": false
+      },
+      "../src/api/user/schemas/user.schema.ts": {
+        "version": "b4933e7c521e1d17259e125984de64b5e924fd2523e11379129f5845e8788ead",
+        "signature": "1caf5661aba761732b12448366c52d4c0bcd230868d65af2ab414e861e7642d5",
+        "affectsGlobalScope": false
+      },
       "../src/api/auth/guards/license-validation.guard.ts": {
-        "version": "d389ce36b6df1fa4782aaad2e39a6b79816a47610d3affa1d7c0e89463aa5ce7",
+        "version": "9eec0552434161a51873769bf0d756a6c223ebd5319f422ffd07c91bedc7fa8f",
         "signature": "014f7832e5e0515d246c9a4e6232c6f1b2ef9a056ec6aeb87bd1520128f84f49",
         "affectsGlobalScope": false
       },
@@ -3247,7 +3307,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/auth/guards/role-based.guard.ts": {
-        "version": "3d45efa28a49b1f8252227c4e304ec415e23b566c3f2b9a060807cdd5db00173",
+        "version": "ff2fe08892cc8ed27e07d2592835284306d395ca176061acf656644263d2ce38",
         "signature": "3318bd1cd48f67f229d28d5e2b0fcfe16be3a3c7f0326a8bb3cb94f3005f6c39",
         "affectsGlobalScope": false
       },
@@ -3402,7 +3462,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/auth/guards/istargetuserloggedin.guard.ts": {
-        "version": "967aed817cd139aa90d4f2248bd2f0fb8d4b371c180180d7968709b6640f59f9",
+        "version": "4be8001ca81876c032a64c4e6a9f8349401c743d1068a8154712f74cf9ecf675",
         "signature": "e9ecc6a6bd253e88bf29c46fb7cfc2bce5d8fbacee9eafde292cbe47aad33c46",
         "affectsGlobalScope": false
       },
@@ -3469,56 +3529,6 @@
       "../src/api/external-api/externalsonickey/externalsonickey.module.ts": {
         "version": "87f617199093dd01bfb39e805a4fc51bbc9fddc75c62d093132ef8f5af13f113",
         "signature": "ad378425f8c763d28414b31a2898c0c68e204defbf083bc0ae61346fd6864a3a",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/aws-sdk/lib/error.d.ts": {
-        "version": "7f342dd49c8f5d894018ca14c1ec820991bbb3a25daa78c924961e2a61775c85",
-        "signature": "7f342dd49c8f5d894018ca14c1ec820991bbb3a25daa78c924961e2a61775c85",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/aws-sdk/lib/credentials.d.ts": {
-        "version": "4bf4d1cb715dc206b7779038b4f6d5c3c1ad17a79009d5bacc0f8004402872a4",
-        "signature": "4bf4d1cb715dc206b7779038b4f6d5c3c1ad17a79009d5bacc0f8004402872a4",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/aws-sdk/lib/credentials/credential_provider_chain.d.ts": {
-        "version": "05ea9f7f46875dd5378c6cfa3d03f22c9d1e8a83fa8b45b4e07fa5eb8a393d19",
-        "signature": "05ea9f7f46875dd5378c6cfa3d03f22c9d1e8a83fa8b45b4e07fa5eb8a393d19",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/aws-sdk/lib/config-base.d.ts": {
-        "version": "02390e067ec5bcf45456d3993ce4486e405876e6035f53db1ec95b443be294a0",
-        "signature": "02390e067ec5bcf45456d3993ce4486e405876e6035f53db1ec95b443be294a0",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/aws-sdk/lib/endpoint.d.ts": {
-        "version": "319d2d6122ea3112618f324e9cf3ac2f3e9a3eac4ef3a3eaaf60c6863783aa41",
-        "signature": "319d2d6122ea3112618f324e9cf3ac2f3e9a3eac4ef3a3eaaf60c6863783aa41",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/aws-sdk/lib/service.d.ts": {
-        "version": "9e25b5fa2f82b55a166c5cee3421288802665c306387bcf848cad9465693237f",
-        "signature": "9e25b5fa2f82b55a166c5cee3421288802665c306387bcf848cad9465693237f",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/aws-sdk/lib/http_response.d.ts": {
-        "version": "3ef72bda86404981d8145dfdfa2924e367a2aaeb883e7f50abe34c665ae7e5c0",
-        "signature": "3ef72bda86404981d8145dfdfa2924e367a2aaeb883e7f50abe34c665ae7e5c0",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/aws-sdk/lib/response.d.ts": {
-        "version": "df0f4d23c236280d5e28397e6ac7b09130ad2c729b09c604865f3f61effd1c92",
-        "signature": "df0f4d23c236280d5e28397e6ac7b09130ad2c729b09c604865f3f61effd1c92",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/aws-sdk/lib/http_request.d.ts": {
-        "version": "3620bd96018b6c081228c60ea129312de9e14c007b9a8521c7c97f7fd27e176e",
-        "signature": "3620bd96018b6c081228c60ea129312de9e14c007b9a8521c7c97f7fd27e176e",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/aws-sdk/lib/request.d.ts": {
-        "version": "c6efe7c64b9a2e654aa38cf233712b50153019723d0a0b424f620b9cf6d50b02",
-        "signature": "c6efe7c64b9a2e654aa38cf233712b50153019723d0a0b424f620b9cf6d50b02",
         "affectsGlobalScope": false
       },
       "../node_modules/aws-sdk/clients/acm.d.ts": {
@@ -3639,11 +3649,6 @@
       "../node_modules/aws-sdk/clients/cognitoidentity.d.ts": {
         "version": "978dd90ed50fe53041c49fb7a684f123b3220c8e81b9fbe663cba21242ad1a9f",
         "signature": "978dd90ed50fe53041c49fb7a684f123b3220c8e81b9fbe663cba21242ad1a9f",
-        "affectsGlobalScope": false
-      },
-      "../node_modules/aws-sdk/clients/cognitoidentityserviceprovider.d.ts": {
-        "version": "a51f5f08d10e9b1e52f18c4fa9d45b667bd63a3e18b466c2100be3cc5357d708",
-        "signature": "a51f5f08d10e9b1e52f18c4fa9d45b667bd63a3e18b466c2100be3cc5357d708",
         "affectsGlobalScope": false
       },
       "../node_modules/aws-sdk/clients/cognitosync.d.ts": {
@@ -5256,14 +5261,24 @@
         "signature": "b27c103bb912b632fbc5b0be6e067a17519395ccedaef207eb9c78439fd6f220",
         "affectsGlobalScope": false
       },
+      "../src/shared/utils/json.utils.ts": {
+        "version": "d8ed2cb23047a83cac5f4ec93aa9b7bbf641c98d9f91c5273610aeb78bde0d41",
+        "signature": "940329eb9c1051a435524c665dd8cc3727077a2911bd753a7687986723600bb2",
+        "affectsGlobalScope": false
+      },
+      "../src/shared/utils/index.ts": {
+        "version": "5c29abb9772455d7d983714b3df030b867d48924286af5a813fff5a7426d8410",
+        "signature": "8ee2ea5816a2e2f7a5153f9b06608b64e1014c5c98ce92627b05a6b15aea5656",
+        "affectsGlobalScope": false
+      },
       "../src/api/user/user.service.ts": {
-        "version": "130f2ceb54a6ae9ecc010ecc5a6d9cfadb2f8614a813609ec6a76b8035e26a2a",
-        "signature": "7398aa4ccba8b755ee795bdd0baf66e059a300a67577f07a79bda5f3d5e586d9",
+        "version": "b7bd57e1daaf20a35cb249d6b22eeee4559d457f916725f29dd95edb043f23a9",
+        "signature": "3255b0012e18d9f68f613c3f7476116b223e49ddcea46e19946b067b85a16bad",
         "affectsGlobalScope": false
       },
       "../src/api/user/user.controller.ts": {
-        "version": "49c2b04a35bb465d81fbb52cd7ac263dfb57e610872080d70e18b1b9c4ce8556",
-        "signature": "cdc7e9e1de1fe28496baad4e078f39b53cad84c6673752430e9219593ddddacb",
+        "version": "395c7f26ec3e0ed84d70ea36d7198214b981b48ef835c5bedaadfde7d7e7da44",
+        "signature": "2845b72f6104712b9d5f5dab9ee219cb033afdfc8f4a1a5ed36db14feef0dcb1",
         "affectsGlobalScope": false
       },
       "../src/api/user/user.module.ts": {
@@ -5629,16 +5644,6 @@
       "../src/shared/services/s3.service.ts": {
         "version": "033915609366d0257051d20633f04297801909d7fd070cc85bd181254919f0f8",
         "signature": "600367362d8e8e421800ef7198819bfd3698ace8641f5395b4d37aa0241eb719",
-        "affectsGlobalScope": false
-      },
-      "../src/shared/utils/json.utils.ts": {
-        "version": "d8ed2cb23047a83cac5f4ec93aa9b7bbf641c98d9f91c5273610aeb78bde0d41",
-        "signature": "940329eb9c1051a435524c665dd8cc3727077a2911bd753a7687986723600bb2",
-        "affectsGlobalScope": false
-      },
-      "../src/shared/utils/index.ts": {
-        "version": "790bfac30ac88ec7c3d1ad16f6de296a28951b1492a0442044dcb45656364ab2",
-        "signature": "d26449490296413d53f03ad20805c2aa969bf5b4beaaae965c3bf3e61df3dabc",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/anymatch/index.d.ts": {
@@ -18684,7 +18689,8 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
-        "../node_modules/mongoose/index.d.ts"
+        "../node_modules/mongoose/index.d.ts",
+        "../src/api/user/schemas/user.schema.ts"
       ],
       "../src/api/auth/guards/job-license-validation.guard.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -18718,7 +18724,8 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
-        "../src/api/licensekey/services/licensekey.service.ts"
+        "../src/api/licensekey/services/licensekey.service.ts",
+        "../src/api/user/schemas/user.schema.ts"
       ],
       "../src/api/auth/guards/role-based.guard.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -18731,6 +18738,7 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../node_modules/rxjs/index.d.ts",
+        "../src/api/user/schemas/user.schema.ts",
         "../src/constants/roles.ts"
       ],
       "../src/api/auth/strategies/jwt.strategy.ts": [
@@ -19768,6 +19776,17 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts"
       ],
+      "../src/api/user/schemas/user.schema.ts": [
+        "../node_modules/@nestjs/swagger/index.d.ts",
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/mongoose/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/aws-sdk/clients/cognitoidentityserviceprovider.d.ts",
+        "../node_modules/mongoose/index.d.ts"
+      ],
       "../src/api/user/user.controller.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@nestjs/swagger/index.d.ts",
@@ -19807,11 +19826,13 @@
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
+        "../node_modules/aws-sdk/clients/cognitoidentityserviceprovider.d.ts",
         "../node_modules/aws-sdk/index.d.ts",
         "../node_modules/mongoose/index.d.ts",
         "../src/api/licensekey/schemas/licensekey.schema.ts",
         "../src/api/licensekey/services/licensekey.service.ts",
-        "../src/shared/modules/global-aws/global-aws.service.ts"
+        "../src/shared/modules/global-aws/global-aws.service.ts",
+        "../src/shared/utils/index.ts"
       ],
       "../src/app.controller.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -33077,6 +33098,9 @@
         "../src/shared/dtos/parsedquery.dto.ts"
       ],
       "../src/api/user/user.controller.ts": [
+        "../node_modules/aws-sdk/clients/cognitoidentityserviceprovider.d.ts",
+        "../node_modules/aws-sdk/index.d.ts",
+        "../node_modules/aws-sdk/lib/request.d.ts",
         "../src/api/licensekey/dto/mongoosepaginate-licensekey.dto.ts",
         "../src/api/licensekey/schemas/licensekey.schema.ts",
         "../src/api/licensekey/services/licensekey.service.ts",
@@ -33086,6 +33110,9 @@
       ],
       "../src/api/user/user.service.ts": [
         "../node_modules/@nestjs/config/index.d.ts",
+        "../node_modules/aws-sdk/clients/cognitoidentityserviceprovider.d.ts",
+        "../node_modules/aws-sdk/index.d.ts",
+        "../node_modules/aws-sdk/lib/request.d.ts",
         "../src/api/licensekey/schemas/licensekey.schema.ts",
         "../src/api/licensekey/services/licensekey.service.ts",
         "../src/shared/modules/global-aws/global-aws.service.ts"
