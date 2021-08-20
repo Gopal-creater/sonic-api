@@ -7,6 +7,7 @@ export declare class ApiKey extends Document {
     disabled?: boolean;
     type?: string;
     suspended?: boolean;
+    revoked?: boolean;
     metaData?: Map<string, any>;
 }
 export declare const ApiKeySchema: MogSchema<ApiKey, import("mongoose").Model<any, any>, undefined>;

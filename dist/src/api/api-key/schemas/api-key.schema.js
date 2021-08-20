@@ -49,6 +49,11 @@ __decorate([
 ], ApiKey.prototype, "suspended", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: Boolean, default: false }),
+    __metadata("design:type", Boolean)
+], ApiKey.prototype, "revoked", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", Map)
 ], ApiKey.prototype, "metaData", void 0);

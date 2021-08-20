@@ -25,6 +25,8 @@ let ApiKeyAuthGuard = class ApiKeyAuthGuard {
             .catch(err => { throw new common_1.ForbiddenException("Forbidden resource deuto invalid apikey"); });
         if (!apikeyFromDb)
             throw new common_1.ForbiddenException("Forbidden resource deuto invalid apikey");
+        if (apikeyFromDb.revoked)
+            throw new common_1.ForbiddenException("This api key is revoked");
         if (apikeyFromDb.disabled || apikeyFromDb.suspended)
             throw new common_1.ForbiddenException("Forbidden resource deuto apikey is disabled or suspended");
         if (new Date(apikeyFromDb.validity).getTime() < new Date().getTime())

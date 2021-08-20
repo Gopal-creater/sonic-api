@@ -34,6 +34,10 @@ export class ApiKey extends Document { //_id or id will be apikey here, which is
   suspended?: boolean;
 
   @ApiProperty()
+  @Prop({type:Boolean,default:false})
+  revoked?: boolean;
+
+  @ApiProperty()
   @Prop()
   metaData?: Map<string, any>;
 }
