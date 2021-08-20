@@ -21,7 +21,7 @@ const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 const apikey_decorator_1 = require("../../auth/decorators/apikey.decorator");
 const swagger_1 = require("@nestjs/swagger");
-const Channels_enum_1 = require("../../../constants/Channels.enum");
+const Enums_1 = require("../../../constants/Enums");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
@@ -38,7 +38,7 @@ let DetectionController = class DetectionController {
         if (!createDetectionFromBinaryDto.detectedAt) {
             createDetectionFromBinaryDto.detectedAt = new Date();
         }
-        const newDetection = new this.detectionService.detectionModel(Object.assign(Object.assign({}, createDetectionFromBinaryDto), { apiKey: apiKey, owner: customer, sonicKeyOwnerId: keyFound.owner, sonicKeyOwnerName: keyFound.contentOwner, channel: Channels_enum_1.ChannelEnums.BINARY }));
+        const newDetection = new this.detectionService.detectionModel(Object.assign(Object.assign({}, createDetectionFromBinaryDto), { apiKey: apiKey, owner: customer, sonicKeyOwnerId: keyFound.owner, sonicKeyOwnerName: keyFound.contentOwner, channel: Enums_1.ChannelEnums.BINARY }));
         return newDetection.save();
     }
     async createFromHardware(createDetectionFromHardwareDto, customer, apiKey) {
@@ -49,7 +49,7 @@ let DetectionController = class DetectionController {
         if (!createDetectionFromHardwareDto.detectedAt) {
             createDetectionFromHardwareDto.detectedAt = new Date();
         }
-        const newDetection = new this.detectionService.detectionModel(Object.assign(Object.assign({}, createDetectionFromHardwareDto), { apiKey: apiKey, owner: customer, sonicKeyOwnerId: keyFound.owner, sonicKeyOwnerName: keyFound.contentOwner, channel: Channels_enum_1.ChannelEnums.HARDWARE }));
+        const newDetection = new this.detectionService.detectionModel(Object.assign(Object.assign({}, createDetectionFromHardwareDto), { apiKey: apiKey, owner: customer, sonicKeyOwnerId: keyFound.owner, sonicKeyOwnerName: keyFound.contentOwner, channel: Enums_1.ChannelEnums.HARDWARE }));
         return newDetection.save();
     }
     async getCount(queryDto) {
@@ -63,7 +63,7 @@ __decorate([
         summary: 'Create Detection From Binary [protected by x-api-key]',
     }),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
-    common_1.Post(`/channels/${Channels_enum_1.ChannelEnums.BINARY}`),
+    common_1.Post(`/channels/${Enums_1.ChannelEnums.BINARY}`),
     openapi.ApiResponse({ status: 201, type: require("../schemas/detection.schema").Detection }),
     __param(0, common_1.Body()),
     __param(1, apikey_decorator_1.ApiKey('customer')),
@@ -78,7 +78,7 @@ __decorate([
         summary: 'Create Detection From Hardware [protected by x-api-key]',
     }),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
-    common_1.Post(`/channels/${Channels_enum_1.ChannelEnums.HARDWARE}`),
+    common_1.Post(`/channels/${Enums_1.ChannelEnums.HARDWARE}`),
     openapi.ApiResponse({ status: 201, type: require("../schemas/detection.schema").Detection }),
     __param(0, common_1.Body()),
     __param(1, apikey_decorator_1.ApiKey('customer')),

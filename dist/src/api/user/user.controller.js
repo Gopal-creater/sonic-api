@@ -22,6 +22,7 @@ const common_1 = require("@nestjs/common");
 const parseQueryValue_pipe_1 = require("../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 const licensekey_service_1 = require("../licensekey/services/licensekey.service");
+const Enums_1 = require("../../constants/Enums");
 let UserController = class UserController {
     constructor(userServices, licensekeyService) {
         this.userServices = userServices;
@@ -31,9 +32,9 @@ let UserController = class UserController {
         queryDto.filter['owners.ownerId'] = userId;
         return this.licensekeyService.findAll(queryDto);
     }
-    async addNewLicense(userId, addNewLicenseDto) {
+    async addNewLicense(userIdOrUsername, addNewLicenseDto) {
         return this.userServices
-            .addNewLicense(addNewLicenseDto.licenseKey, userId)
+            .addNewLicense(addNewLicenseDto.licenseKey, userIdOrUsername)
             .catch(err => {
             if (err.status == 404) {
                 throw new common_1.NotFoundException(err.message);
@@ -41,11 +42,14 @@ let UserController = class UserController {
             throw err;
         });
     }
-    async addBulkNewLicense(userId, addBulkNewLicensesDto) {
-        return this.userServices.addBulkNewLicenses(addBulkNewLicensesDto.licenseKeys, userId);
+    async addBulkNewLicense(userIdOrUsername, addBulkNewLicensesDto) {
+        return this.userServices.addBulkNewLicenses(addBulkNewLicensesDto.licenseKeys, userIdOrUsername);
     }
     async getUserProfile(username) {
-        return this.userServices.getUserProfile(username);
+        const profile = await this.userServices.getUserProfile(username);
+        if (!profile) {
+            throw new common_1.NotFoundException("User not found");
+        }
     }
     async getGroupsOfUser(username) {
         return this.userServices.getGroupsForUser(username);
@@ -67,9 +71,9 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Add Single License Key' }),
-    common_1.Post('/:userId/add-new-license'),
+    common_1.Post('/:userIdOrUsername/add-new-license'),
     openapi.ApiResponse({ status: 201, type: require("../licensekey/schemas/licensekey.schema").LicenseKey }),
-    __param(0, common_1.Param('userId')),
+    __param(0, common_1.Param('userIdOrUsername')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, index_1.AddNewLicenseDto]),
@@ -79,9 +83,9 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Add Bulk License Keys' }),
-    common_1.Post('/:userId/add-new-licenses'),
+    common_1.Post('/:userIdOrUsername/add-new-licenses'),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, common_1.Param('userId')),
+    __param(0, common_1.Param('userIdOrUsername')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, index_1.AddBulkNewLicensesDto]),
@@ -131,7 +135,7 @@ __decorate([
     }),
     swagger_1.ApiOperation({ summary: 'Get User profile by username or sub id' }),
     common_1.Get('/:username/profile'),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Param('username')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

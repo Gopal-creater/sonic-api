@@ -24,7 +24,7 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const detection_schema_1 = require("./schemas/detection.schema");
 const mongoose_2 = require("mongoose");
-const Channels_enum_1 = require("../../constants/Channels.enum");
+const Enums_1 = require("../../constants/Enums");
 const mongoose_utils_1 = require("../../shared/utils/mongoose.utils");
 const types_1 = require("../../shared/types");
 let DetectionService = class DetectionService {
@@ -92,7 +92,7 @@ let DetectionService = class DetectionService {
         return topStationsWithTopKeys;
     }
     async findTopRadioStations(filter, topLimit) {
-        filter['channel'] = Channels_enum_1.ChannelEnums.RADIOSTATION;
+        filter['channel'] = Enums_1.ChannelEnums.RADIOSTATION;
         const topRadioStations = await this.detectionModel.aggregate([
             {
                 $match: filter,

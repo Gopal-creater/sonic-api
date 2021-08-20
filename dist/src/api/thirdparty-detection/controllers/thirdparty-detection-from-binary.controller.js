@@ -22,7 +22,7 @@ const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 const apikey_decorator_1 = require("../../auth/decorators/apikey.decorator");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const detection_service_1 = require("../../detection/detection.service");
-const Channels_enum_1 = require("../../../constants/Channels.enum");
+const Enums_1 = require("../../../constants/Enums");
 let ThirdpartyDetectionFromBinaryController = class ThirdpartyDetectionFromBinaryController {
     constructor(thirdpartyDetectionService, sonickeyServive, detectionService) {
         this.thirdpartyDetectionService = thirdpartyDetectionService;
@@ -45,7 +45,7 @@ let ThirdpartyDetectionFromBinaryController = class ThirdpartyDetectionFromBinar
             owner: customer,
             sonicKeyOwnerId: isKeyFound.owner,
             sonicKeyOwnerName: isKeyFound.contentOwner,
-            channel: Channels_enum_1.ChannelEnums.BINARY,
+            channel: Enums_1.ChannelEnums.BINARY,
         });
         return newDetection.save();
     }

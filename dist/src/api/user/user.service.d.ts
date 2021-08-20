@@ -10,8 +10,8 @@ export declare class UserService {
     private cognitoIdentityServiceProvider;
     private cognitoUserPoolId;
     constructor(licensekeyService: LicensekeyService, globalAwsService: GlobalAwsService, configService: ConfigService);
-    addNewLicense(licenseId: string, ownerId: string): Promise<import("../licensekey/schemas/licensekey.schema").LicenseKey>;
-    addBulkNewLicenses(licenseIds: [string], ownerId: string): Promise<{
+    addNewLicense(licenseId: string, ownerIdOrUsername: string): Promise<import("../licensekey/schemas/licensekey.schema").LicenseKey>;
+    addBulkNewLicenses(licenseIds: [string], ownerIdOrUsername: string): Promise<{
         passedData: (import("../licensekey/schemas/licensekey.schema").LicenseKey | {
             promiseError: any;
             data: string;
@@ -21,7 +21,7 @@ export declare class UserService {
             data: string;
         }[];
     }>;
-    getUserProfile(usernameOrSub: string): Promise<CognitoIdentityServiceProvider.AdminGetUserResponse>;
+    getUserProfile(usernameOrSub: string): Promise<AdminGetUserResponse>;
     getGroupsForUser(usernameOrSub: string): Promise<import("aws-sdk/lib/request").PromiseResult<CognitoIdentityServiceProvider.AdminListGroupsForUserResponse, import("aws-sdk").AWSError>>;
     addAttributesObjToProfile(profile: AdminGetUserResponse): CognitoIdentityServiceProvider.AdminGetUserResponse;
     exportFromLic(): Promise<void>;

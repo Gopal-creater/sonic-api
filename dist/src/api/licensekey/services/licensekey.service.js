@@ -38,10 +38,12 @@ const mongoose_2 = require("mongoose");
 const uuid_1 = require("uuid");
 const _ = require("lodash");
 const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
+const user_service_1 = require("../../user/user.service");
 let LicensekeyService = class LicensekeyService {
-    constructor(licenseKeyModel, keygenService) {
+    constructor(licenseKeyModel, keygenService, userService) {
         this.licenseKeyModel = licenseKeyModel;
         this.keygenService = keygenService;
+        this.userService = userService;
     }
     create(createLicensekeyDto, createdBy) {
         const key = uuid_1.v4();
@@ -94,9 +96,7 @@ let LicensekeyService = class LicensekeyService {
     }
     async removeOwnerFromLicense(id, ownerId) {
         const licenseKey = await this.licenseKeyModel.findById(id);
-        var oldOwners = licenseKey.owners;
-        _.remove(oldOwners, ow => ow.ownerId == ownerId);
-        licenseKey.owners = oldOwners;
+        licenseKey.owners = licenseKey.owners.filter(ow => ow.ownerId !== ownerId);
         return licenseKey.save();
     }
     async removeOwnersFromLicense(id, ownerIds) {
@@ -194,21 +194,39 @@ let LicensekeyService = class LicensekeyService {
         return license.save();
     }
     async migrateKeyFromKeygenToDB() {
-        var e_1, _a;
+        var e_1, _a, e_2, _b;
         const { data, error } = await this.keygenService.getAllLicenses('limit=90');
         try {
             for (var data_1 = __asyncValues(data), data_1_1; data_1_1 = await data_1.next(), !data_1_1.done;) {
                 const license = data_1_1.value;
                 const oldLicense = license === null || license === void 0 ? void 0 : license.attributes;
-                const _b = (oldLicense === null || oldLicense === void 0 ? void 0 : oldLicense.metadata) || {}, { reserves } = _b, oldOwners = __rest(_b, ["reserves"]);
+                const _c = (oldLicense === null || oldLicense === void 0 ? void 0 : oldLicense.metadata) || {}, { reserves } = _c, oldOwners = __rest(_c, ["reserves"]);
                 console.log('Name', oldLicense === null || oldLicense === void 0 ? void 0 : oldLicense.name);
                 const oldOwnersArr = Object.values(oldOwners || {});
                 console.log('oldOwners', oldOwnersArr);
-                const newOwners = oldOwnersArr.map((ownerId, index) => {
-                    const lkOwner = new licensekey_schema_1.LKOwner();
-                    lkOwner.ownerId = ownerId;
-                    return lkOwner;
-                });
+                var newOwners = [];
+                try {
+                    for (var oldOwnersArr_1 = (e_2 = void 0, __asyncValues(oldOwnersArr)), oldOwnersArr_1_1; oldOwnersArr_1_1 = await oldOwnersArr_1.next(), !oldOwnersArr_1_1.done;) {
+                        const ownerId = oldOwnersArr_1_1.value;
+                        const user = await this.userService.getUserProfile(ownerId);
+                        if (user) {
+                            const lkOwner = new licensekey_schema_1.LKOwner();
+                            lkOwner.ownerId = ownerId;
+                            lkOwner.username = user.Username;
+                            lkOwner.email = user.UserAttributes.find(attr => attr.Name == 'email').Value;
+                            lkOwner.name = user.Username;
+                            newOwners.push(lkOwner);
+                        }
+                    }
+                }
+                catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                finally {
+                    try {
+                        if (oldOwnersArr_1_1 && !oldOwnersArr_1_1.done && (_b = oldOwnersArr_1.return)) await _b.call(oldOwnersArr_1);
+                    }
+                    finally { if (e_2) throw e_2.error; }
+                }
+                newOwners = _.uniqBy(newOwners, 'ownerId');
                 console.log('newOwners', newOwners);
                 const newLicense = new this.licenseKeyModel({
                     _id: license.id,
@@ -245,8 +263,10 @@ let LicensekeyService = class LicensekeyService {
 LicensekeyService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(licensekey_schema_1.LicenseKey.name)),
+    __param(2, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        keygen_service_1.KeygenService])
+        keygen_service_1.KeygenService,
+        user_service_1.UserService])
 ], LicensekeyService);
 exports.LicensekeyService = LicensekeyService;
 //# sourceMappingURL=licensekey.service.js.map

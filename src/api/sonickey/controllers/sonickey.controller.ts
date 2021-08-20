@@ -53,7 +53,7 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { Response } from 'express';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
-import { ChannelEnums } from '../../../constants/Channels.enum';
+import { ChannelEnums } from '../../../constants/Enums';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 
 /**

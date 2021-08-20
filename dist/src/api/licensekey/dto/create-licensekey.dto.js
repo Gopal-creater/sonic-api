@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateLicensekeyDto = void 0;
+exports.AdminUpdateLicensekeyDto = exports.CreateLicensekeyDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 class CreateLicensekeyDto {
@@ -54,4 +54,18 @@ __decorate([
     __metadata("design:type", Map)
 ], CreateLicensekeyDto.prototype, "metaData", void 0);
 exports.CreateLicensekeyDto = CreateLicensekeyDto;
+class AdminUpdateLicensekeyDto extends CreateLicensekeyDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { owners: { required: false, type: () => [require("../schemas/licensekey.schema").LKOwner] }, reserves: { required: false, type: () => [require("../schemas/licensekey.schema").LKReserve] } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Array)
+], AdminUpdateLicensekeyDto.prototype, "owners", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Array)
+], AdminUpdateLicensekeyDto.prototype, "reserves", void 0);
+exports.AdminUpdateLicensekeyDto = AdminUpdateLicensekeyDto;
 //# sourceMappingURL=create-licensekey.dto.js.map

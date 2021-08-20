@@ -18,14 +18,13 @@ const common_1 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const licensekey_service_1 = require("../services/licensekey.service");
 const create_licensekey_dto_1 = require("../dto/create-licensekey.dto");
-const update_licensekey_dto_1 = require("../dto/update-licensekey.dto");
 const swagger_1 = require("@nestjs/swagger");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 const decorators_1 = require("../../auth/decorators");
 const roles_decorator_1 = require("../../auth/decorators/roles.decorator");
-const Roles_1 = require("../../../constants/Roles");
+const Enums_1 = require("../../../constants/Enums");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
 let LicensekeyController = class LicensekeyController {
     constructor(licensekeyService) {
@@ -66,9 +65,6 @@ let LicensekeyController = class LicensekeyController {
 };
 __decorate([
     common_1.Get('/migrate-from-keygen'),
-    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
     openapi.ApiResponse({ status: 200, type: Object }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -76,7 +72,7 @@ __decorate([
 ], LicensekeyController.prototype, "migrate", null);
 __decorate([
     common_1.Post(),
-    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create License Key' }),
@@ -89,7 +85,7 @@ __decorate([
 ], LicensekeyController.prototype, "create", null);
 __decorate([
     common_1.Get(),
-    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
@@ -102,7 +98,7 @@ __decorate([
 ], LicensekeyController.prototype, "findAll", null);
 __decorate([
     common_1.Get('/count'),
-    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({
@@ -116,7 +112,7 @@ __decorate([
 ], LicensekeyController.prototype, "getCount", null);
 __decorate([
     common_1.Get(':id'),
-    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get Single License key' }),
@@ -128,7 +124,7 @@ __decorate([
 ], LicensekeyController.prototype, "findOne", null);
 __decorate([
     common_1.Put(':id'),
-    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update Single License key' }),
@@ -137,12 +133,12 @@ __decorate([
     __param(1, common_1.Body()),
     __param(2, decorators_1.User('sub')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_licensekey_dto_1.UpdateLicensekeyDto, String]),
+    __metadata("design:paramtypes", [String, create_licensekey_dto_1.AdminUpdateLicensekeyDto, String]),
     __metadata("design:returntype", Promise)
 ], LicensekeyController.prototype, "update", null);
 __decorate([
     common_1.Delete(':id'),
-    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Delete License key' }),

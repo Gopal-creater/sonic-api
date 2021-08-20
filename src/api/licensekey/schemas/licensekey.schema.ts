@@ -8,6 +8,15 @@ export const LicenseKeySchemaName = 'LicenseKey';
 export class LKOwner{
   @ApiProperty()
   ownerId: string;
+
+  @ApiProperty()
+  username: string;
+
+  @ApiProperty()
+  email?: string;
+
+  @ApiProperty()
+  name: string;
 }
 
 @Schema()

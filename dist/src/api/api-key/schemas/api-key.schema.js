@@ -13,14 +13,20 @@ exports.ApiKeySchema = exports.ApiKey = exports.ApiKeySchemaName = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
+const Enums_1 = require("../../../constants/Enums");
 exports.ApiKeySchemaName = 'ApiKey';
 let ApiKey = class ApiKey extends mongoose_2.Document {
 };
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ required: true }),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], ApiKey.prototype, "customer", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop([String]),
+    __metadata("design:type", Array)
+], ApiKey.prototype, "groups", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ type: Date, default: new Date(new Date().setFullYear(new Date().getFullYear() + 1)) }),
@@ -33,19 +39,14 @@ __decorate([
 ], ApiKey.prototype, "disabled", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: String, enum: Enums_1.ApiKeyType, default: "Individual" }),
+    __metadata("design:type", String)
+], ApiKey.prototype, "type", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop({ type: Boolean, default: false }),
     __metadata("design:type", Boolean)
 ], ApiKey.prototype, "suspended", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: 0 }),
-    __metadata("design:type", Number)
-], ApiKey.prototype, "encodeUsageCount", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: 0 }),
-    __metadata("design:type", Number)
-], ApiKey.prototype, "decodeUsageCount", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),

@@ -25,7 +25,7 @@ import {
   ApiTags,
   ApiQuery,
 } from '@nestjs/swagger';
-import { ChannelEnums } from 'src/constants/Channels.enum';
+import { ChannelEnums } from 'src/constants/Enums';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';

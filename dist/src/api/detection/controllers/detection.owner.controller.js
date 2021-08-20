@@ -25,7 +25,7 @@ const common_1 = require("@nestjs/common");
 const detection_service_1 = require("../detection.service");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const swagger_1 = require("@nestjs/swagger");
-const Channels_enum_1 = require("../../../constants/Channels.enum");
+const Enums_1 = require("../../../constants/Enums");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
@@ -148,7 +148,7 @@ __decorate([
 __decorate([
     common_1.Get('/:channel/data'),
     swagger_1.ApiQuery({ name: "radioStation", type: String, required: false }),
-    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Channels_enum_1.ChannelEnums), 'ALL'] }),
+    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
     swagger_1.ApiBearerAuth(),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Detections for specific channel and specific user' }),
@@ -163,7 +163,7 @@ __decorate([
 __decorate([
     common_1.Get('/:channel/sonicKeys/:sonicKey/detected-details'),
     swagger_1.ApiQuery({ name: "radioStation", type: String, required: false }),
-    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Channels_enum_1.ChannelEnums), 'ALL'] }),
+    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
@@ -180,7 +180,7 @@ __decorate([
 __decorate([
     common_1.Get('/:channel/count'),
     swagger_1.ApiQuery({ name: "radioStation", type: String, required: false }),
-    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Channels_enum_1.ChannelEnums), 'ALL'] }),
+    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({

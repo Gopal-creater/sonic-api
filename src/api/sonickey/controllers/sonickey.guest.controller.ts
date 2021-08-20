@@ -29,7 +29,7 @@ import * as uniqid from 'uniqid';
 import { FileHandlerService } from '../../../shared/services/file-handler.service';
 import { PublicEncodeDto } from '../dtos/public-encode.dto';
 import { PublicDecodeDto } from '../dtos/public-decode.dto';
-import { ChannelEnums} from '../../../constants/Channels.enum';
+import { ChannelEnums} from '../../../constants/Enums';
 
 /**
  * Prabin:

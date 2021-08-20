@@ -5,6 +5,8 @@ export class CreateApiKeyDto extends OmitType(ApiKey, [
     'customer',
     'suspended',
     'validity',
-    'encodeUsageCount',
-    'decodeUsageCount'
+    'groups',
+    'type'
   ]) {}
+
+  export class AdminCreateApiKeyDto extends OmitType(ApiKey, []) {}

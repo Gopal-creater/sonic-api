@@ -24,7 +24,7 @@ const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pi
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 const roles_decorator_1 = require("../../auth/decorators/roles.decorator");
-const Roles_1 = require("../../../constants/Roles");
+const Enums_1 = require("../../../constants/Enums");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
 let ApiKeyController = class ApiKeyController {
     constructor(apiKeyService) {
@@ -66,7 +66,7 @@ let ApiKeyController = class ApiKeyController {
 };
 __decorate([
     common_1.Post(),
-    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create Api Key' }),
@@ -78,7 +78,7 @@ __decorate([
 ], ApiKeyController.prototype, "create", null);
 __decorate([
     common_1.Get(),
-    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
@@ -91,7 +91,7 @@ __decorate([
 ], ApiKeyController.prototype, "findAll", null);
 __decorate([
     common_1.Get('/count'),
-    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get count of all api-keys also accept filter as query params' }),
@@ -103,7 +103,7 @@ __decorate([
 ], ApiKeyController.prototype, "getCount", null);
 __decorate([
     common_1.Get(':id'),
-    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get Single Api key' }),
@@ -115,7 +115,7 @@ __decorate([
 ], ApiKeyController.prototype, "findOne", null);
 __decorate([
     common_1.Put(':id'),
-    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update Single Api key' }),
@@ -128,7 +128,7 @@ __decorate([
 ], ApiKeyController.prototype, "update", null);
 __decorate([
     common_1.Delete(':id'),
-    roles_decorator_1.RolesAllowed(Roles_1.Roles.ADMIN),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Delete Api key' }),

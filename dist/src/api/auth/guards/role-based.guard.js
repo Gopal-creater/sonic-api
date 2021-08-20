@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoleBasedGuard = void 0;
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
-const Roles_1 = require("../../../constants/Roles");
+const Enums_1 = require("../../../constants/Enums");
 const common_2 = require("@nestjs/common");
 let RoleBasedGuard = class RoleBasedGuard {
     constructor(reflector) {

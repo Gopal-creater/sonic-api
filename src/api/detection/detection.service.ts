@@ -4,7 +4,7 @@ import { Detection } from './schemas/detection.schema';
 import { Model } from 'mongoose';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateDeectionDto } from './dto/mongoosepaginate-radiostationsonickey.dto';
-import { ChannelEnums } from 'src/constants/Channels.enum';
+import { ChannelEnums } from 'src/constants/Enums';
 import { toObjectId } from 'src/shared/utils/mongoose.utils';
 import { groupByTime } from 'src/shared/types';
 import {

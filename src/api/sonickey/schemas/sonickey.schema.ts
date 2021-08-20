@@ -3,7 +3,7 @@ import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { Job, JobSchemaName } from '../../job/schemas/job.schema';
 import { ApiKeySchemaName } from '../../api-key/schemas/api-key.schema';
-import { ChannelEnums } from '../../../constants/Channels.enum';
+import { ChannelEnums } from '../../../constants/Enums';
 
 export const SonicKeySchemaName = 'SonicKey';
 

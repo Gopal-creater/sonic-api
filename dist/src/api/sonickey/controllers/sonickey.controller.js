@@ -44,7 +44,7 @@ const appRootPath = require("app-root-path");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
-const Channels_enum_1 = require("../../../constants/Channels.enum");
+const Enums_1 = require("../../../constants/Enums");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, licensekeyService, fileHandlerService) {
@@ -96,7 +96,7 @@ let SonickeyController = class SonickeyController {
             .then(async (result) => {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
-            const channel = Channels_enum_1.ChannelEnums.PORTAL;
+            const channel = Enums_1.ChannelEnums.PORTAL;
             const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: downloadFileUrl, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, _id: sonicKey, license: licenseId }));
             return newSonicKey.save().finally(() => {
                 this.fileHandlerService.deleteFileAtPath(file.path);

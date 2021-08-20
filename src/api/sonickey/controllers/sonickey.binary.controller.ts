@@ -16,15 +16,9 @@ import {
 import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { BinaryLicenseValidationGuard } from '../../auth/guards/binary-license-validation.guard';
 import { ApiKey } from '../../auth/decorators/apikey.decorator';
-import { ChannelEnums } from '../../../constants/Channels.enum';
+import { ChannelEnums } from '../../../constants/Enums';
 import { LicenseKey } from '../../auth/decorators/licensekey.decorator';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
-
-/**
- * Prabin:
- * Our DynamoDb table has a sonickey as a hash key. So we can perform all CURD using sonickey.
- * To get all owner's sonickeys we have to create a global secondary index table.
- */
 
 @ApiTags('SonicKeys ThirdParty-Binary Controller (protected by x-api-key)')
 @ApiSecurity('x-api-key')

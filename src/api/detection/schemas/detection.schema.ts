@@ -3,7 +3,7 @@ import { Document,Schema as MogSchema} from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { RadioStationSchemaName } from '../../radiostation/schemas/radiostation.schema';
 import { SonicKeySchemaName } from '../../sonickey/schemas/sonickey.schema';
-import { ChannelEnums } from 'src/constants/Channels.enum';
+import { ChannelEnums } from 'src/constants/Enums';
 
 
 export const DetectionSchemaName="Detection"

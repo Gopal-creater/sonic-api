@@ -11,6 +11,6 @@ export const appConfig = {
 
   TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS: 30,
 
-  ENABLE_STREAMING_LISTENER:true,
+  ENABLE_STREAMING_LISTENER:false,
   DEBUG:false
 };

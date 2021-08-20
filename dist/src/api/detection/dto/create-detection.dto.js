@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateDetectionFromHardwareDto = exports.CreateDetectionFromBinaryDto = exports.CreateDetectionDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
-const Channels_enum_1 = require("../../../constants/Channels.enum");
+const Enums_1 = require("../../../constants/Enums");
 class CreateDetectionDto {
     static _OPENAPI_METADATA_FACTORY() {
         return { radioStation: { required: true, type: () => String }, sonicKey: { required: true, type: () => String }, apiKey: { required: true, type: () => String }, licenseKey: { required: true, type: () => String }, owner: { required: true, type: () => String }, channel: { required: true, type: () => String }, channelUuid: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date }, metaData: { required: false } };

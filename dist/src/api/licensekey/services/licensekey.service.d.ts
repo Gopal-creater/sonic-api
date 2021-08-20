@@ -4,11 +4,13 @@ import { Model } from 'mongoose';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateLicensekeyDto } from '../dto/mongoosepaginate-licensekey.dto';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
+import { UserService } from '../../user/user.service';
 declare type usesFor = 'encode' | 'decode';
 export declare class LicensekeyService {
     readonly licenseKeyModel: Model<LicenseKey>;
     readonly keygenService: KeygenService;
-    constructor(licenseKeyModel: Model<LicenseKey>, keygenService: KeygenService);
+    readonly userService: UserService;
+    constructor(licenseKeyModel: Model<LicenseKey>, keygenService: KeygenService, userService: UserService);
     create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string): Promise<LicenseKey>;
     findAll(queryDto: ParsedQueryDto): Promise<MongoosePaginateLicensekeyDto>;
     validateLicence(id: string): Promise<{

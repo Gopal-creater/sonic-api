@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const config_1 = require("@nestjs/config");
@@ -24,7 +27,7 @@ let UserService = class UserService {
         this.cognitoIdentityServiceProvider = globalAwsService.getCognitoIdentityServiceProvider();
         this.cognitoUserPoolId = this.configService.get('COGNITO_USER_POOL_ID');
     }
-    async addNewLicense(licenseId, ownerId) {
+    async addNewLicense(licenseId, ownerIdOrUsername) {
         const key = await this.licensekeyService.licenseKeyModel.findById(licenseId);
         if (!key) {
             return Promise.reject({
@@ -33,14 +36,34 @@ let UserService = class UserService {
                 message: 'Invalid license key',
             });
         }
+        const user = await this.getUserProfile(ownerIdOrUsername);
+        if (!user) {
+            return Promise.reject({
+                notFound: true,
+                status: 404,
+                message: 'User not found',
+            });
+        }
         const newLKOwner = new licensekey_schema_1.LKOwner();
-        newLKOwner.ownerId = ownerId;
+        newLKOwner.ownerId = user.UserAttributes.find(attr => attr.Name == 'sub').Value;
+        newLKOwner.username = user.Username;
+        newLKOwner.email = user.UserAttributes.find(attr => attr.Name == 'email').Value;
+        newLKOwner.name = user.Username;
         return this.licensekeyService.addOwnerToLicense(licenseId, newLKOwner);
     }
-    async addBulkNewLicenses(licenseIds, ownerId) {
-        const promises = licenseIds.map(licenseId => {
+    async addBulkNewLicenses(licenseIds, ownerIdOrUsername) {
+        const user = await this.getUserProfile(ownerIdOrUsername).catch(err => {
+            if (err.status == 404) {
+                throw new common_1.NotFoundException(err.message);
+            }
+            throw err;
+        });
+        const promises = licenseIds.map(async (licenseId) => {
             const newLKOwner = new licensekey_schema_1.LKOwner();
-            newLKOwner.ownerId = ownerId;
+            newLKOwner.ownerId = user.UserAttributes.find(attr => attr.Name == 'sub').Value;
+            newLKOwner.username = user.Username;
+            newLKOwner.email = user.UserAttributes.find(attr => attr.Name == 'email').Value;
+            newLKOwner.name = user.Username;
             return this.licensekeyService
                 .addOwnerToLicense(licenseId, newLKOwner)
                 .catch(err => ({
@@ -63,12 +86,21 @@ let UserService = class UserService {
             Username: usernameOrSub,
         };
         if (index_1.isValidUUID(usernameOrSub)) {
-            const { username } = await this.getUserFromSub(usernameOrSub);
-            params.Username = username;
+            const userDetails = await this.getUserFromSub(usernameOrSub);
+            if (!userDetails) {
+                return Promise.resolve(null);
+            }
+            params.Username = userDetails.username;
         }
         const profile = await this.cognitoIdentityServiceProvider
             .adminGetUser(params)
-            .promise();
+            .promise()
+            .catch(err => {
+            return Promise.resolve(null);
+        });
+        if (!profile) {
+            return Promise.resolve(null);
+        }
         return this.addAttributesObjToProfile(profile);
     }
     async getGroupsForUser(usernameOrSub) {
@@ -122,7 +154,7 @@ let UserService = class UserService {
             .promise();
         const targetUser = (_a = users === null || users === void 0 ? void 0 : users.Users) === null || _a === void 0 ? void 0 : _a[0];
         if (!targetUser) {
-            throw new common_1.NotFoundException();
+            return null;
         }
         return {
             username: targetUser.Username,
@@ -147,6 +179,7 @@ let UserService = class UserService {
 };
 UserService = __decorate([
     common_1.Injectable(),
+    __param(0, common_1.Inject(common_1.forwardRef(() => licensekey_service_1.LicensekeyService))),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService,
         global_aws_service_1.GlobalAwsService,
         config_1.ConfigService])

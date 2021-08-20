@@ -15,7 +15,7 @@ const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const radiostation_schema_1 = require("../../radiostation/schemas/radiostation.schema");
 const sonickey_schema_1 = require("../../sonickey/schemas/sonickey.schema");
-const Channels_enum_1 = require("../../../constants/Channels.enum");
+const Enums_1 = require("../../../constants/Enums");
 exports.DetectionSchemaName = "Detection";
 let Detection = class Detection extends mongoose_2.Document {
 };
@@ -56,7 +56,7 @@ __decorate([
 ], Detection.prototype, "sonicKeyOwnerName", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, enum: Channels_enum_1.ChannelEnums, required: true }),
+    mongoose_1.Prop({ type: String, enum: Enums_1.ChannelEnums, required: true }),
     __metadata("design:type", String)
 ], Detection.prototype, "channel", void 0);
 __decorate([

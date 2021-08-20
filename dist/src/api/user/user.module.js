@@ -15,9 +15,10 @@ let UserModule = class UserModule {
 };
 UserModule = __decorate([
     common_1.Module({
-        imports: [licensekey_module_1.LicensekeyModule],
+        imports: [common_1.forwardRef(() => licensekey_module_1.LicensekeyModule)],
         controllers: [user_controller_1.UserController],
         providers: [user_service_1.UserService],
+        exports: [user_service_1.UserService]
     })
 ], UserModule);
 exports.UserModule = UserModule;

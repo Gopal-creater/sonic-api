@@ -2,6 +2,9 @@ import { Document, Schema as MogSchema } from 'mongoose';
 export declare const LicenseKeySchemaName = "LicenseKey";
 export declare class LKOwner {
     ownerId: string;
+    username: string;
+    email?: string;
+    name: string;
 }
 export declare class LKReserve {
     jobId: string;

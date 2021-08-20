@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { LicensekeyService } from '../services/licensekey.service';
-import { CreateLicensekeyDto } from '../dto/create-licensekey.dto';
+import { AdminUpdateLicensekeyDto, CreateLicensekeyDto } from '../dto/create-licensekey.dto';
 import { UpdateLicensekeyDto } from '../dto/update-licensekey.dto';
 import {
   ApiBearerAuth,
@@ -25,7 +25,7 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { User } from 'src/api/auth/decorators';
 import { RolesAllowed } from '../../auth/decorators/roles.decorator';
-import { Roles } from 'src/constants/Roles';
+import { Roles } from 'src/constants/Enums';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
 
 @ApiTags('License Keys Management Controller')
@@ -34,9 +34,9 @@ export class LicensekeyController {
   constructor(private readonly licensekeyService: LicensekeyService) {}
 
   @Get('/migrate-from-keygen')
-  @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
-  @ApiBearerAuth()
+  // @RolesAllowed(Roles.ADMIN)
+  // @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  // @ApiBearerAuth()
   migrate() {
     return this.licensekeyService.migrateKeyFromKeygenToDB();
   }
@@ -99,7 +99,7 @@ export class LicensekeyController {
   @ApiOperation({ summary: 'Update Single License key' })
   async update(
     @Param('id') id: string,
-    @Body() updateLicensekeyDto: UpdateLicensekeyDto,
+    @Body() updateLicensekeyDto: AdminUpdateLicensekeyDto,
     @User('sub') updatedBy: string,
   ) {
     const updatedKey = await this.licensekeyService.licenseKeyModel.findOneAndUpdate(

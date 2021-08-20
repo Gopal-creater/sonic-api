@@ -1,5 +1,5 @@
 import { ApiProperty, OmitType,PickType } from '@nestjs/swagger';
-import { ChannelEnums } from 'src/constants/Channels.enum';
+import { ChannelEnums } from 'src/constants/Enums';
 
 export class CreateDetectionDto {
     @ApiProperty()

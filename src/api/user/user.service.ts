@@ -1,17 +1,21 @@
 import { ConfigService } from '@nestjs/config';
 import { GlobalAwsService } from './../../shared/modules/global-aws/global-aws.service';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException,forwardRef,Inject } from '@nestjs/common';
 import { LicensekeyService } from '../licensekey/services/licensekey.service';
 import { LKOwner } from '../licensekey/schemas/licensekey.schema';
 import { isValidUUID } from '../../shared/utils/index';
-import { AdminGetUserResponse,UserType } from 'aws-sdk/clients/cognitoidentityserviceprovider';
+import {
+  AdminGetUserResponse,
+  UserType,
+} from 'aws-sdk/clients/cognitoidentityserviceprovider';
 
 @Injectable()
 export class UserService {
   private cognitoIdentityServiceProvider: CognitoIdentityServiceProvider;
   private cognitoUserPoolId: string;
   constructor(
+    @Inject(forwardRef(() => LicensekeyService))
     private readonly licensekeyService: LicensekeyService,
     private readonly globalAwsService: GlobalAwsService,
     private readonly configService: ConfigService,
@@ -21,7 +25,7 @@ export class UserService {
   }
 
   //Add new existing license: Meaning just update the metadata field with ownerId
-  async addNewLicense(licenseId: string, ownerId: string) {
+  async addNewLicense(licenseId: string, ownerIdOrUsername: string) {
     const key = await this.licensekeyService.licenseKeyModel.findById(
       licenseId,
     );
@@ -32,15 +36,45 @@ export class UserService {
         message: 'Invalid license key',
       });
     }
+
+    const user = await this.getUserProfile(ownerIdOrUsername)
+    if (!user) {
+      return Promise.reject({
+        notFound: true,
+        status: 404,
+        message: 'User not found',
+      });
+    }
     const newLKOwner = new LKOwner();
-    newLKOwner.ownerId = ownerId;
+    newLKOwner.ownerId = user.UserAttributes.find(
+      attr => attr.Name == 'sub',
+    ).Value;
+    newLKOwner.username = user.Username;
+    newLKOwner.email = user.UserAttributes.find(
+      attr => attr.Name == 'email',
+    ).Value;
+    newLKOwner.name = user.Username;
     return this.licensekeyService.addOwnerToLicense(licenseId, newLKOwner);
   }
 
-  async addBulkNewLicenses(licenseIds: [string], ownerId: string) {
-    const promises = licenseIds.map(licenseId => {
+  async addBulkNewLicenses(licenseIds: [string], ownerIdOrUsername: string) {
+    const user = await this.getUserProfile(ownerIdOrUsername).catch(err => {
+      if (err.status == 404) {
+        throw new NotFoundException(err.message);
+      }
+      throw err;
+    });
+
+    const promises = licenseIds.map(async licenseId => {
       const newLKOwner = new LKOwner();
-      newLKOwner.ownerId = ownerId;
+      newLKOwner.ownerId = user.UserAttributes.find(
+        attr => attr.Name == 'sub',
+      ).Value;
+      newLKOwner.username = user.Username;
+      newLKOwner.email = user.UserAttributes.find(
+        attr => attr.Name == 'email',
+      ).Value;
+      newLKOwner.name = user.Username;
       return this.licensekeyService
         .addOwnerToLicense(licenseId, newLKOwner)
         .catch(err => ({
@@ -65,18 +99,28 @@ export class UserService {
    * Get User profile by username or sub
    * @param usernameOrSub this can be username or sub
    */
-  async getUserProfile(usernameOrSub: string) {
+  async getUserProfile(usernameOrSub: string): Promise<AdminGetUserResponse> {
     const params = {
       UserPoolId: this.cognitoUserPoolId,
       Username: usernameOrSub,
     };
     if (isValidUUID(usernameOrSub)) {
-      const { username } = await this.getUserFromSub(usernameOrSub);
-      params.Username = username;
+      const userDetails = await this.getUserFromSub(usernameOrSub);
+      if (!userDetails) {
+        return Promise.resolve(null);
+      }
+      params.Username = userDetails.username;
     }
     const profile = await this.cognitoIdentityServiceProvider
       .adminGetUser(params)
-      .promise();
+      .promise()
+      .catch(err => {
+        return Promise.resolve(null);
+      });
+      if (!profile) {
+        return Promise.resolve(null);
+      }
+
     return this.addAttributesObjToProfile(profile);
   }
 
@@ -84,7 +128,7 @@ export class UserService {
    * Get User profile by username or sub
    * @param usernameOrSub this can be username or sub
    */
-   async getGroupsForUser(usernameOrSub: string) {
+  async getGroupsForUser(usernameOrSub: string) {
     const params = {
       UserPoolId: this.cognitoUserPoolId,
       Username: usernameOrSub,
@@ -99,7 +143,7 @@ export class UserService {
   }
 
   addAttributesObjToProfile(profile: AdminGetUserResponse) {
-    var attributesObj={}
+    var attributesObj = {};
     for (let index = 0; index < profile.UserAttributes.length; index++) {
       const element = profile.UserAttributes[index];
       attributesObj[element.Name] = element.Value;
@@ -144,7 +188,7 @@ export class UserService {
 
     const targetUser = users?.Users?.[0];
     if (!targetUser) {
-      throw new NotFoundException();
+      return null;
     }
     return {
       username: targetUser.Username,

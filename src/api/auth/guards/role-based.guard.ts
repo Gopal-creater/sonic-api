@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
-import { Roles } from 'src/constants/Roles';
+import { Roles } from 'src/constants/Enums';
 import { ForbiddenException } from '@nestjs/common';
 import { UserSession } from '../../user/schemas/user.schema';
 

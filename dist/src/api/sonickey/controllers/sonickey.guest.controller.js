@@ -34,14 +34,14 @@ const uniqid = require("uniqid");
 const file_handler_service_1 = require("../../../shared/services/file-handler.service");
 const public_encode_dto_1 = require("../dtos/public-encode.dto");
 const public_decode_dto_1 = require("../dtos/public-decode.dto");
-const Channels_enum_1 = require("../../../constants/Channels.enum");
+const Enums_1 = require("../../../constants/Enums");
 let SonickeyGuestController = class SonickeyGuestController {
     constructor(sonicKeyService, fileHandlerService) {
         this.sonicKeyService = sonicKeyService;
         this.fileHandlerService = fileHandlerService;
     }
     encode(sonicKeyDto, file, req) {
-        const channel = Channels_enum_1.ChannelEnums.MOBILEAPP;
+        const channel = Enums_1.ChannelEnums.MOBILEAPP;
         console.log('file', file);
         const owner = 'guest';
         const licenseId = "guest_license";

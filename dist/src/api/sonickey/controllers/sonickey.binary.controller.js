@@ -21,7 +21,7 @@ const swagger_1 = require("@nestjs/swagger");
 const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 const binary_license_validation_guard_1 = require("../../auth/guards/binary-license-validation.guard");
 const apikey_decorator_1 = require("../../auth/decorators/apikey.decorator");
-const Channels_enum_1 = require("../../../constants/Channels.enum");
+const Enums_1 = require("../../../constants/Enums");
 const licensekey_decorator_1 = require("../../auth/decorators/licensekey.decorator");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 let SonickeyBinaryController = class SonickeyBinaryController {
@@ -30,7 +30,7 @@ let SonickeyBinaryController = class SonickeyBinaryController {
         this.licensekeyService = licensekeyService;
     }
     async createFormBinary(createSonicKeyDto, customer, apiKey, licenseKey) {
-        const channel = Channels_enum_1.ChannelEnums.BINARY;
+        const channel = Enums_1.ChannelEnums.BINARY;
         const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { owner: customer, apiKey: apiKey, channel: channel, license: licenseKey, _id: createSonicKeyDto.sonicKey }));
         const savedSonicKey = await newSonicKey.save();
         await this.licensekeyService.incrementUses(licenseKey, "encode", 1)

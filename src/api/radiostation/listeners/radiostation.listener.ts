@@ -13,7 +13,7 @@ import * as makeDir from 'make-dir';
 import * as uniqid from 'uniqid';
 import { RadiostationService } from '../services/radiostation.service';
 import { DetectionService } from '../../detection/detection.service';
-import { ChannelEnums } from 'src/constants/Channels.enum';
+import { ChannelEnums } from 'src/constants/Enums';
 
 @Injectable()
 export class RadioStationListener implements OnApplicationBootstrap {

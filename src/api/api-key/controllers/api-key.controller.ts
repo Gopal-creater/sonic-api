@@ -9,7 +9,7 @@ import { IsTargetUserLoggedInGuard } from '../../auth/guards/isTargetUserLoggedI
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { RolesAllowed } from '../../auth/decorators/roles.decorator';
-import { Roles } from 'src/constants/Roles';
+import { Roles } from 'src/constants/Enums';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
 
 /**

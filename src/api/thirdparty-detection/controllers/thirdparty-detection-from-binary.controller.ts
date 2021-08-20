@@ -27,7 +27,7 @@ import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { DetectionService } from '../../detection/detection.service';
-import { ChannelEnums } from 'src/constants/Channels.enum';
+import { ChannelEnums } from 'src/constants/Enums';
 
 @ApiTags('ThirdParty-Binary Controller (protected by x-api-key)')
 @ApiSecurity('x-api-key')

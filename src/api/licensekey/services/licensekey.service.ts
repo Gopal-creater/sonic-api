@@ -2,6 +2,8 @@ import {
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
+  forwardRef,
+  Inject
 } from '@nestjs/common';
 import { CreateLicensekeyDto } from '../dto/create-licensekey.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,6 +14,7 @@ import * as _ from 'lodash';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateLicensekeyDto } from '../dto/mongoosepaginate-licensekey.dto';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
+import { UserService } from '../../user/user.service';
 
 type usesFor = 'encode' | 'decode';
 
@@ -21,6 +24,9 @@ export class LicensekeyService {
     @InjectModel(LicenseKey.name)
     public readonly licenseKeyModel: Model<LicenseKey>,
     public readonly keygenService: KeygenService,
+
+    @Inject(forwardRef(() => UserService))
+    public readonly userService: UserService,
   ) {}
 
   create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
@@ -86,9 +92,7 @@ export class LicensekeyService {
 
   async removeOwnerFromLicense(id: string, ownerId: string) {
     const licenseKey = await this.licenseKeyModel.findById(id);
-    var oldOwners = licenseKey.owners;
-    _.remove(oldOwners, ow => ow.ownerId == ownerId);
-    licenseKey.owners = oldOwners;
+    licenseKey.owners = licenseKey.owners.filter(ow => ow.ownerId !== ownerId);
     return licenseKey.save();
   }
 
@@ -204,19 +208,28 @@ export class LicensekeyService {
 
   async migrateKeyFromKeygenToDB() {
     const { data, error } = await this.keygenService.getAllLicenses('limit=90');
-    // console.log('allLicenses', data);
-
     for await (const license of data) {
       const oldLicense = license?.attributes;
       const {reserves,...oldOwners} = oldLicense?.metadata ||{}
       console.log('Name', oldLicense?.name);
       const oldOwnersArr = Object.values(oldOwners||{}) as string[]
       console.log('oldOwners', oldOwnersArr);
-      const newOwners = oldOwnersArr.map((ownerId,index)=>{
-        const lkOwner = new LKOwner()
-        lkOwner.ownerId=ownerId
-        return lkOwner
-      })
+      var newOwners:LKOwner[]=[]
+      for await (const ownerId of oldOwnersArr) {
+        const user = await this.userService.getUserProfile(ownerId)
+        if(user){
+          const lkOwner = new LKOwner()
+          lkOwner.ownerId = ownerId;
+          lkOwner.username = user.Username;
+          lkOwner.email = user.UserAttributes.find(
+            attr => attr.Name == 'email',
+          ).Value;
+          lkOwner.name = user.Username;
+          newOwners.push(lkOwner)
+        }
+      }
+      newOwners = _.uniqBy(newOwners, 'ownerId');
+
       console.log('newOwners', newOwners);
       const newLicense = new this.licenseKeyModel({
         _id: license.id,

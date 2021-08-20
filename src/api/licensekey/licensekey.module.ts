@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { LicensekeyService } from './services/licensekey.service';
 import { LicensekeyController } from './controllers/licensekey.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -7,10 +7,13 @@ import {
   LicenseKeySchema,
 } from './schemas/licensekey.schema';
 import { KeygenModule } from '../../shared/modules/keygen/keygen.module';
+import { UserModule } from '../user/user.module';
+import { LicensekeyOwnerController } from './controllers/licensekey-owner.controller';
 
 @Module({
   imports: [
-  KeygenModule,
+  forwardRef(() => UserModule),
+    KeygenModule,
     MongooseModule.forFeature([
       {
         name: LicenseKeySchemaName,
@@ -18,7 +21,7 @@ import { KeygenModule } from '../../shared/modules/keygen/keygen.module';
       },
     ]),
   ],
-  controllers: [LicensekeyController],
+  controllers: [LicensekeyController,LicensekeyOwnerController],
   providers: [LicensekeyService],
   exports: [LicensekeyService],
 })

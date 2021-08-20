@@ -20,6 +20,18 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], LKOwner.prototype, "ownerId", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], LKOwner.prototype, "username", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], LKOwner.prototype, "email", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], LKOwner.prototype, "name", void 0);
 LKOwner = __decorate([
     mongoose_1.Schema()
 ], LKOwner);

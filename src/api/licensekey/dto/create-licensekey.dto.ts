@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { LKOwner, LKReserve } from '../schemas/licensekey.schema';
 
 export class CreateLicensekeyDto {
   
@@ -28,4 +29,12 @@ export class CreateLicensekeyDto {
   
     @ApiProperty()
     metaData?: Map<string, any>;
+}
+
+export class AdminUpdateLicensekeyDto extends CreateLicensekeyDto {
+    @ApiProperty()
+    owners?:LKOwner[]
+  
+    @ApiProperty()
+    reserves?:LKReserve[]
 }

@@ -26,6 +26,9 @@ import {
 import { ParseQueryValue } from '../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { LicensekeyService } from '../licensekey/services/licensekey.service';
+import { RolesAllowed } from '../auth/decorators/roles.decorator';
+import { Roles } from 'src/constants/Enums';
+import { RoleBasedGuard } from '../auth/guards/role-based.guard';
 
 @ApiTags('User Controller')
 @Controller('users')
@@ -50,13 +53,13 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Add Single License Key' })
-  @Post('/:userId/add-new-license')
+  @Post('/:userIdOrUsername/add-new-license')
   async addNewLicense(
-    @Param('userId') userId: string,
+    @Param('userIdOrUsername') userIdOrUsername: string,
     @Body() addNewLicenseDto: AddNewLicenseDto,
   ) {
     return this.userServices
-      .addNewLicense(addNewLicenseDto.licenseKey, userId)
+      .addNewLicense(addNewLicenseDto.licenseKey, userIdOrUsername)
       .catch(err => {
         if (err.status == 404) {
           throw new NotFoundException(err.message);
@@ -68,14 +71,14 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Add Bulk License Keys' })
-  @Post('/:userId/add-new-licenses')
+  @Post('/:userIdOrUsername/add-new-licenses')
   async addBulkNewLicense(
-    @Param('userId') userId: string,
+    @Param('userIdOrUsername') userIdOrUsername: string,
     @Body() addBulkNewLicensesDto: AddBulkNewLicensesDto,
   ) {
     return this.userServices.addBulkNewLicenses(
       addBulkNewLicensesDto.licenseKeys,
-      userId,
+      userIdOrUsername,
     );
   }
 
@@ -123,7 +126,10 @@ export class UserController {
   @ApiOperation({ summary: 'Get User profile by username or sub id' })
   @Get('/:username/profile')
   async getUserProfile(@Param('username') username: string) {
-    return this.userServices.getUserProfile(username);
+    const profile = await this.userServices.getUserProfile(username)
+    if(!profile){
+      throw new NotFoundException("User not found");
+    }
   }
 
   // @UseGuards(JwtAuthGuard)

@@ -32,7 +32,7 @@ const makeDir = require("make-dir");
 const uniqid = require("uniqid");
 const radiostation_service_1 = require("../services/radiostation.service");
 const detection_service_1 = require("../../detection/detection.service");
-const Channels_enum_1 = require("../../../constants/Channels.enum");
+const Enums_1 = require("../../../constants/Enums");
 let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
     constructor(schedulerRegistry, sonickeyService, radiostationService, detectionService) {
         this.schedulerRegistry = schedulerRegistry;
@@ -124,7 +124,7 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
                                     owner: radioStation.owner,
                                     sonicKeyOwnerId: isKeyPresent.owner,
                                     sonicKeyOwnerName: isKeyPresent.contentOwner,
-                                    channel: Channels_enum_1.ChannelEnums.RADIOSTATION,
+                                    channel: Enums_1.ChannelEnums.RADIOSTATION,
                                     detectedAt: new Date()
                                 });
                                 await newDetection.save()

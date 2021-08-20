@@ -13,11 +13,14 @@ const licensekey_controller_1 = require("./controllers/licensekey.controller");
 const mongoose_1 = require("@nestjs/mongoose");
 const licensekey_schema_1 = require("./schemas/licensekey.schema");
 const keygen_module_1 = require("../../shared/modules/keygen/keygen.module");
+const user_module_1 = require("../user/user.module");
+const licensekey_owner_controller_1 = require("./controllers/licensekey-owner.controller");
 let LicensekeyModule = class LicensekeyModule {
 };
 LicensekeyModule = __decorate([
     common_1.Module({
         imports: [
+            common_1.forwardRef(() => user_module_1.UserModule),
             keygen_module_1.KeygenModule,
             mongoose_1.MongooseModule.forFeature([
                 {
@@ -26,7 +29,7 @@ LicensekeyModule = __decorate([
                 },
             ]),
         ],
-        controllers: [licensekey_controller_1.LicensekeyController],
+        controllers: [licensekey_controller_1.LicensekeyController, licensekey_owner_controller_1.LicensekeyOwnerController],
         providers: [licensekey_service_1.LicensekeyService],
         exports: [licensekey_service_1.LicensekeyService],
     })
