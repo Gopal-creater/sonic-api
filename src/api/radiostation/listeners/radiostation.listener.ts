@@ -28,8 +28,8 @@ export class RadioStationListener implements OnApplicationBootstrap {
       'Called once after 0 seconds very firsttime, do restoring of listening of stream',
     );
 
-    if(!appConfig.ENABLE_STREAMING_LISTENER){
-        return
+    if (!appConfig.ENABLE_STREAMING_LISTENER) {
+      return;
     }
     // return
     const radioStations = await this.radiostationService.radioStationModel.find(
@@ -73,10 +73,9 @@ export class RadioStationListener implements OnApplicationBootstrap {
     );
     const callback = async (radioStationData: RadioStation) => {
       this.streamingIntervalLogger.log(
-        'radioStation streamingUrl inside interval',
-        radioStationData.streamingUrl,
+        `${appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS}sec Interval STARTED For radio station: ${radioStationData.name} with id ${radioStationData._id} having streamingURL :${radioStationData.streamingUrl} `,
       );
-//Create folder if not present for streaming
+      //Create folder if not present for streaming
       await makeDir(
         `${appRootPath.toString()}/storage/streaming/${radioStation._id}`,
       );
@@ -124,7 +123,7 @@ export class RadioStationListener implements OnApplicationBootstrap {
         `-i ${radioStation.streamingUrl} -y -f 16_le -ar 41000 -ac 2 -f wav -t 00:00:${appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS} ${outputPath}`.split(
           ' ',
         ),
-        {shell:true}
+        { shell: true },
       );
 
       ffm.stdout.on('data', data => {
@@ -156,7 +155,7 @@ export class RadioStationListener implements OnApplicationBootstrap {
               stopAt: new Date(),
               isStreamStarted: false,
               error: error,
-              isError:true
+              isError: true,
             },
             { new: true },
           );
@@ -168,7 +167,10 @@ export class RadioStationListener implements OnApplicationBootstrap {
           };
           const { sonicKeys } = await this.sonickeyService.decodeAllKeys(file);
           this.streamingIntervalLogger.log(
-            `found # of sonicKeys ${sonicKeys.length} for radioStationId-${radioStation.name} id-${radioStation._id}`,
+            `found ${sonicKeys.length} sonicKeys for radioStationName-${radioStation.name} id-${radioStation._id}`,
+          );
+          this.streamingIntervalLogger.log(
+            `${appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS}sec Interval STOPPED For radio station: ${radioStation.name} with id ${radioStation._id} having streamingURL :${radioStation.streamingUrl} `,
           );
           var savedKeys: string[] = [];
           for await (const sonicKey of sonicKeys) {
@@ -176,20 +178,23 @@ export class RadioStationListener implements OnApplicationBootstrap {
               sonicKey,
             );
             if (isKeyPresent) {
-              const newDetection = await this.detectionService.detectionModel.create({
-                radioStation:radioStation._id,
-                sonicKey:sonicKey,
-                owner:radioStation.owner,
-                sonicKeyOwnerId:isKeyPresent.owner,
-                sonicKeyOwnerName:isKeyPresent.contentOwner,
-                channel:ChannelEnums.RADIOSTATION,
-                detectedAt:new Date()
-              })
-              await newDetection.save()
-              .then(() => {
-                savedKeys.push(sonicKey);
-              })
-              .catch(err => {});
+              const newDetection = await this.detectionService.detectionModel.create(
+                {
+                  radioStation: radioStation._id,
+                  sonicKey: sonicKey,
+                  owner: radioStation.owner,
+                  sonicKeyOwnerId: isKeyPresent.owner,
+                  sonicKeyOwnerName: isKeyPresent.contentOwner,
+                  channel: ChannelEnums.RADIOSTATION,
+                  detectedAt: new Date(),
+                },
+              );
+              await newDetection
+                .save()
+                .then(() => {
+                  savedKeys.push(sonicKey);
+                })
+                .catch(err => {});
             }
           }
           if (savedKeys.length > 0) {
@@ -210,7 +215,7 @@ export class RadioStationListener implements OnApplicationBootstrap {
           stopAt: new Date(),
           isStreamStarted: false,
           error: error,
-          isError:true
+          isError: true,
         },
         { new: true },
       );

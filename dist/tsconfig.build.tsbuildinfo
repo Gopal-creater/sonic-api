@@ -2667,7 +2667,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/app.config.ts": {
-        "version": "4be95a883910da346ccc1dac6a376d26f3ec0116aa71a5698ad037014b92ea3d",
+        "version": "1b385e3dbd97bbe041761baeff4c63b4cb10fa02e20636f92adc4a4319ff4971",
         "signature": "8b542f84567f0b9421178e700d4cf4ee2e202b8f58b9cefe9c77e908a5ad07ef",
         "affectsGlobalScope": false
       },
@@ -5532,7 +5532,7 @@
         "affectsGlobalScope": false
       },
       "../src/api/radiostation/listeners/radiostation.listener.ts": {
-        "version": "c898ae80dd84c8f89e31154be87ce45d5cdb1e739e48e96020d9162cf760cdae",
+        "version": "682e96b3367dc547e0702a06950a111759a8f23218db808765b2de1baf2a3350",
         "signature": "189ae1585fc9d239a299496d004e666c3bf916f63123f354902bdf43f0346039",
         "affectsGlobalScope": false
       },

@@ -63,7 +63,7 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
     handleStartListeningEvent(radioStation) {
         this.radioStationListenerLogger.log(`Start Listening Event on radioStation id ${radioStation._id}`);
         const callback = async (radioStationData) => {
-            this.streamingIntervalLogger.log('radioStation streamingUrl inside interval', radioStationData.streamingUrl);
+            this.streamingIntervalLogger.log(`${app_config_1.appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS}sec Interval STARTED For radio station: ${radioStationData.name} with id ${radioStationData._id} having streamingURL :${radioStationData.streamingUrl} `);
             await makeDir(`${appRootPath.toString()}/storage/streaming/${radioStation._id}`);
             const outputPath = `${appRootPath.toString()}/storage/streaming/${radioStation._id}/${uniqid()}.wav`;
             this.startListeningLikeAStreamAndUpdateTable(radioStationData, outputPath);
@@ -101,7 +101,7 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
                         stopAt: new Date(),
                         isStreamStarted: false,
                         error: error,
-                        isError: true
+                        isError: true,
                     }, { new: true });
                 }
                 else {
@@ -111,7 +111,8 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
                         size: stats.size,
                     };
                     const { sonicKeys } = await this.sonickeyService.decodeAllKeys(file);
-                    this.streamingIntervalLogger.log(`found # of sonicKeys ${sonicKeys.length} for radioStationId-${radioStation.name} id-${radioStation._id}`);
+                    this.streamingIntervalLogger.log(`found ${sonicKeys.length} sonicKeys for radioStationName-${radioStation.name} id-${radioStation._id}`);
+                    this.streamingIntervalLogger.log(`${app_config_1.appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS}sec Interval STOPPED For radio station: ${radioStation.name} with id ${radioStation._id} having streamingURL :${radioStation.streamingUrl} `);
                     var savedKeys = [];
                     try {
                         for (var sonicKeys_1 = __asyncValues(sonicKeys), sonicKeys_1_1; sonicKeys_1_1 = await sonicKeys_1.next(), !sonicKeys_1_1.done;) {
@@ -125,9 +126,10 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
                                     sonicKeyOwnerId: isKeyPresent.owner,
                                     sonicKeyOwnerName: isKeyPresent.contentOwner,
                                     channel: Enums_1.ChannelEnums.RADIOSTATION,
-                                    detectedAt: new Date()
+                                    detectedAt: new Date(),
                                 });
-                                await newDetection.save()
+                                await newDetection
+                                    .save()
                                     .then(() => {
                                     savedKeys.push(sonicKey);
                                 })
@@ -155,7 +157,7 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
                 stopAt: new Date(),
                 isStreamStarted: false,
                 error: error,
-                isError: true
+                isError: true,
             }, { new: true });
         }
     }
