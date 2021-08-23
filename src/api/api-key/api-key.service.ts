@@ -6,12 +6,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateApiKeyDto } from './dto/mongoosepaginate-apikey.dto';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ApiKeyService {
   constructor(
     @InjectModel(ApiKey.name)
-    public readonly apiKeyModel: Model<ApiKey>
+    public readonly apiKeyModel: Model<ApiKey>,
+
+    public readonly userService: UserService
   ) {}
 
   create(createApiKeyDto: CreateApiKeyDto) {

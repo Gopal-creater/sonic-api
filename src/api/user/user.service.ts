@@ -1,7 +1,12 @@
 import { ConfigService } from '@nestjs/config';
 import { GlobalAwsService } from './../../shared/modules/global-aws/global-aws.service';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
-import { Injectable, NotFoundException,forwardRef,Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  forwardRef,
+  Inject,
+} from '@nestjs/common';
 import { LicensekeyService } from '../licensekey/services/licensekey.service';
 import { LKOwner } from '../licensekey/schemas/licensekey.schema';
 import { isValidUUID } from '../../shared/utils/index';
@@ -37,7 +42,7 @@ export class UserService {
       });
     }
 
-    const user = await this.getUserProfile(ownerIdOrUsername)
+    const user = await this.getUserProfile(ownerIdOrUsername);
     if (!user) {
       return Promise.reject({
         notFound: true,
@@ -117,9 +122,9 @@ export class UserService {
       .catch(err => {
         return Promise.resolve(null);
       });
-      if (!profile) {
-        return Promise.resolve(null);
-      }
+    if (!profile) {
+      return Promise.resolve(null);
+    }
 
     return this.addAttributesObjToProfile(profile);
   }
@@ -140,6 +145,24 @@ export class UserService {
     return this.cognitoIdentityServiceProvider
       .adminListGroupsForUser(params)
       .promise();
+  }
+
+  /**
+   * @param groupName
+   */
+  async getGroup(groupName: string) {
+    const params = {
+      UserPoolId: this.cognitoUserPoolId,
+      GroupName: groupName,
+    };
+    const group = await this.cognitoIdentityServiceProvider
+      .getGroup(params)
+      .promise()
+      .catch(err => {
+        return Promise.resolve(null);
+      });
+      console.log("group",group)
+    return group
   }
 
   addAttributesObjToProfile(profile: AdminGetUserResponse) {

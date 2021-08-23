@@ -30,7 +30,20 @@ let ApiKeyController = class ApiKeyController {
     constructor(apiKeyService) {
         this.apiKeyService = apiKeyService;
     }
-    create(createApiKeyDto) {
+    async create(createApiKeyDto) {
+        var _a, _b;
+        console.log("createApiKeyDto", createApiKeyDto);
+        if (createApiKeyDto.type == Enums_1.ApiKeyType.INDIVIDUAL) {
+            const user = await this.apiKeyService.userService.getUserProfile(createApiKeyDto.customer);
+            if (!user)
+                throw new common_1.NotFoundException("Unknown user");
+            createApiKeyDto.customer = (_a = user === null || user === void 0 ? void 0 : user["UserAttributesObj"]) === null || _a === void 0 ? void 0 : _a.sub;
+        }
+        else if (createApiKeyDto.type == Enums_1.ApiKeyType.GROUP) {
+            const group = await this.apiKeyService.userService.getGroup((_b = createApiKeyDto.groups) === null || _b === void 0 ? void 0 : _b[0]);
+            if (!group)
+                throw new common_1.NotFoundException("Unknown group");
+        }
         return this.apiKeyService.create(createApiKeyDto);
     }
     findAll(queryDto) {
@@ -73,8 +86,8 @@ __decorate([
     openapi.ApiResponse({ status: 201, type: require("../schemas/api-key.schema").ApiKey }),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_api_key_dto_1.CreateApiKeyDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [create_api_key_dto_1.AdminCreateApiKeyDto]),
+    __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "create", null);
 __decorate([
     common_1.Get(),

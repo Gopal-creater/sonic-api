@@ -116,6 +116,20 @@ let UserService = class UserService {
             .adminListGroupsForUser(params)
             .promise();
     }
+    async getGroup(groupName) {
+        const params = {
+            UserPoolId: this.cognitoUserPoolId,
+            GroupName: groupName,
+        };
+        const group = await this.cognitoIdentityServiceProvider
+            .getGroup(params)
+            .promise()
+            .catch(err => {
+            return Promise.resolve(null);
+        });
+        console.log("group", group);
+        return group;
+    }
     addAttributesObjToProfile(profile) {
         var attributesObj = {};
         for (let index = 0; index < profile.UserAttributes.length; index++) {

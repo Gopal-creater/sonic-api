@@ -4732,8 +4732,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/user/user.service.ts": {
-        "version": "69e969cfc3f84e6788ca6541e8c76fd609590810437962b681f766ffb60a61a8",
-        "signature": "7721d15dbfba3dda93142af8a7c344e33c8e59e06e719446605d7ff5d2b610c2",
+        "version": "f5caa2e4d31b1dce0df436e739a834776abafbba107bac7bb4f413aacdab00c1",
+        "signature": "a7839cf5f273a18186b084beecb07e5d0f1852c1c216a868be7efa2db16c8790",
         "affectsGlobalScope": false
       },
       "../src/api/licensekey/services/licensekey.service.ts": {
@@ -5052,8 +5052,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/api-key/dto/create-api-key.dto.ts": {
-        "version": "898fa79c96caea8ff0424d844ec6a742329a5da1f3d31ca2c03486355db5ff31",
-        "signature": "0101cde7cb3cd7414bd72b43768efe65aae9ad6999def8d635806212304a95d9",
+        "version": "8394b7bd3efc295f988963a2f8fc1479537580494d6ada780a8fbf13cb77999f",
+        "signature": "6970de2fddd1a4a55f4189c140836b1b1221f798ef7a366df8602653c39819c4",
         "affectsGlobalScope": false
       },
       "../node_modules/@nestjs/mapped-types/dist/mapped-type.interface.d.ts": {
@@ -5107,8 +5107,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/api-key/api-key.service.ts": {
-        "version": "1d9600dd98287f961ec8f7e3832183086d186006f0d7c0a679e02b88327a001c",
-        "signature": "7d59f17dc6f811a0175127a63c5755f5a0fc4270f78d546317378a022db5b932",
+        "version": "9381a77118d559d2783023ba283dc37ea40439f28a098be00b9e968641ff5c46",
+        "signature": "46fd5db9b5585511de66ffcb4b22f4773b3d86a0d1f660790cfc28da38a764cd",
         "affectsGlobalScope": false
       },
       "../src/api/auth/guards/apikey-auth.guard.ts": {
@@ -5142,8 +5142,8 @@
         "affectsGlobalScope": false
       },
       "../src/api/api-key/controllers/api-key.controller.ts": {
-        "version": "a5c6ea8d550b9073228feccb3c0d07667624feaac91e6b7ce316d2aea4f2da4d",
-        "signature": "de0fbdc721b71d616c5929a5a65c52411cb691cf56da74445b8ad44abd948f04",
+        "version": "7a38200e3b9766a408b84f8deb038dc8b9e0ad2bded27d8644ce8c86c6151297",
+        "signature": "5eccd31b82ac3ee7ac8115491b3b662d9e09e9f2db8f084659022d4986c5047b",
         "affectsGlobalScope": false
       },
       "../src/api/api-key/controllers/api-key-customer.controller.ts": {
@@ -5151,9 +5151,14 @@
         "signature": "6ea92c12fd0a52468362b2ba320428c6a90ce94c24fcedb1f0f309f1fbf9247e",
         "affectsGlobalScope": false
       },
-      "../src/api/api-key/api-key.module.ts": {
-        "version": "199b55c62242f6fa150ea390c8e9379ddf705b18d97fbaa89d117df6745b20ba",
-        "signature": "b2e18ec0c42f4296b64ccee1e487946a5cf05e5d68ce0d9a8c8096f3e90d2a53",
+      "../src/api/user/dtos/index.ts": {
+        "version": "9808972b75fcf3bf9ae19011fa509f3c4bc152b174c2d6e25bfe6d834741e9df",
+        "signature": "b27c103bb912b632fbc5b0be6e067a17519395ccedaef207eb9c78439fd6f220",
+        "affectsGlobalScope": false
+      },
+      "../src/api/user/user.controller.ts": {
+        "version": "cc37df6f20e464ee7508af3adae0bf986e03b721d770200060b59330430e7684",
+        "signature": "03c19f422d7f017f12f9f0800c9bcd04fb728791615261d38d96519536a16a81",
         "affectsGlobalScope": false
       },
       "../src/api/licensekey/dto/update-licensekey.dto.ts": {
@@ -5171,21 +5176,6 @@
         "signature": "2e819878a08ab518d302d165cfdf72e6d27a63f690aadb95d2ca2e4576974010",
         "affectsGlobalScope": false
       },
-      "../src/api/user/dtos/index.ts": {
-        "version": "9808972b75fcf3bf9ae19011fa509f3c4bc152b174c2d6e25bfe6d834741e9df",
-        "signature": "b27c103bb912b632fbc5b0be6e067a17519395ccedaef207eb9c78439fd6f220",
-        "affectsGlobalScope": false
-      },
-      "../src/api/user/user.controller.ts": {
-        "version": "cc37df6f20e464ee7508af3adae0bf986e03b721d770200060b59330430e7684",
-        "signature": "03c19f422d7f017f12f9f0800c9bcd04fb728791615261d38d96519536a16a81",
-        "affectsGlobalScope": false
-      },
-      "../src/api/user/user.module.ts": {
-        "version": "03bbf0f7f20ecc095a4804bf4a08a1aa56637576ed56aac984f6a8300c575098",
-        "signature": "482b8f0d35a3d453500a15b6c6057c1e4c40baa4329b39da9e1026d8e1de4329",
-        "affectsGlobalScope": false
-      },
       "../src/api/licensekey/dto/owner/owner.dto.ts": {
         "version": "2043c75cc9bd98e4e7e6d1e0a6f5caae0d0a0e6b3921eaadacb898e03a26eb01",
         "signature": "17ca3b55be0c0c423e17a3cffb8cf2019a081cd939310782f3790912d5bda1c0",
@@ -5199,6 +5189,16 @@
       "../src/api/licensekey/licensekey.module.ts": {
         "version": "61a829bbb293e7afd744ea3f78377e30baa861387304a507d3b40951b4343f03",
         "signature": "c0e441a5cbd1e9dbdf29393aa15a97631bba67037e938b8e9ad2d13bdce1b82d",
+        "affectsGlobalScope": false
+      },
+      "../src/api/user/user.module.ts": {
+        "version": "03bbf0f7f20ecc095a4804bf4a08a1aa56637576ed56aac984f6a8300c575098",
+        "signature": "482b8f0d35a3d453500a15b6c6057c1e4c40baa4329b39da9e1026d8e1de4329",
+        "affectsGlobalScope": false
+      },
+      "../src/api/api-key/api-key.module.ts": {
+        "version": "a3180a4d8bb0b2037e88a6fa5037d52fdf827d5f5232d5aadfc6d67af17939c0",
+        "signature": "b2e18ec0c42f4296b64ccee1e487946a5cf05e5d68ce0d9a8c8096f3e90d2a53",
         "affectsGlobalScope": false
       },
       "../src/api/sonickey/sonickey.module.ts": {
@@ -18390,7 +18390,8 @@
         "../src/api/api-key/api-key.service.ts",
         "../src/api/api-key/controllers/api-key-customer.controller.ts",
         "../src/api/api-key/controllers/api-key.controller.ts",
-        "../src/api/api-key/schemas/api-key.schema.ts"
+        "../src/api/api-key/schemas/api-key.schema.ts",
+        "../src/api/user/user.module.ts"
       ],
       "../src/api/api-key/api-key.service.ts": [
         "../node_modules/@nestjs/common/index.d.ts",
@@ -18406,6 +18407,7 @@
         "../src/api/api-key/dto/mongoosepaginate-apikey.dto.ts",
         "../src/api/api-key/dto/update-api-key.dto.ts",
         "../src/api/api-key/schemas/api-key.schema.ts",
+        "../src/api/user/user.service.ts",
         "../src/shared/dtos/parsedquery.dto.ts"
       ],
       "../src/api/api-key/controllers/api-key-customer.controller.ts": [
@@ -18458,7 +18460,8 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/mongoose/index.d.ts",
-        "../src/api/api-key/schemas/api-key.schema.ts"
+        "../src/api/api-key/schemas/api-key.schema.ts",
+        "../src/constants/enums.ts"
       ],
       "../src/api/api-key/dto/mongoosepaginate-apikey.dto.ts": [
         "../node_modules/@nestjs/swagger/index.d.ts",
@@ -32726,6 +32729,7 @@
         "../src/api/api-key/dto/create-api-key.dto.ts",
         "../src/api/api-key/dto/mongoosepaginate-apikey.dto.ts",
         "../src/api/api-key/schemas/api-key.schema.ts",
+        "../src/api/user/user.service.ts",
         "../src/shared/dtos/parsedquery.dto.ts"
       ],
       "../src/api/api-key/controllers/api-key-customer.controller.ts": [
@@ -32743,10 +32747,6 @@
         "../src/api/api-key/dto/update-api-key.dto.ts",
         "../src/api/api-key/schemas/api-key.schema.ts",
         "../src/shared/dtos/parsedquery.dto.ts"
-      ],
-      "../src/api/api-key/dto/create-api-key.dto.ts": [
-        "../node_modules/@nestjs/common/index.d.ts",
-        "../src/api/api-key/schemas/api-key.schema.ts"
       ],
       "../src/api/api-key/dto/mongoosepaginate-apikey.dto.ts": [
         "../src/api/api-key/schemas/api-key.schema.ts"

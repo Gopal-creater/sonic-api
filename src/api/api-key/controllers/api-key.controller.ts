@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards, Query, NotFoundException } from '@nestjs/common';
 import { ApiKeyService } from '../api-key.service';
-import { CreateApiKeyDto } from '../dto/create-api-key.dto';
+import { AdminCreateApiKeyDto, CreateApiKeyDto } from '../dto/create-api-key.dto';
 import { UpdateApiKeyDto } from '../dto/update-api-key.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -9,7 +9,7 @@ import { IsTargetUserLoggedInGuard } from '../../auth/guards/isTargetUserLoggedI
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { RolesAllowed } from '../../auth/decorators/roles.decorator';
-import { Roles } from 'src/constants/Enums';
+import { Roles, ApiKeyType } from 'src/constants/Enums';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
 
 /**
@@ -26,7 +26,16 @@ export class ApiKeyController {
   @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Api Key' })
-  create(@Body() createApiKeyDto: CreateApiKeyDto) {
+  async create(@Body() createApiKeyDto: AdminCreateApiKeyDto) {
+    console.log("createApiKeyDto",createApiKeyDto)
+    if(createApiKeyDto.type==ApiKeyType.INDIVIDUAL){
+      const user = await this.apiKeyService.userService.getUserProfile(createApiKeyDto.customer)
+      if(!user) throw new NotFoundException("Unknown user")
+      createApiKeyDto.customer=user?.["UserAttributesObj"]?.sub
+    }else if(createApiKeyDto.type==ApiKeyType.GROUP){
+      const group = await this.apiKeyService.userService.getGroup(createApiKeyDto.groups?.[0])
+      if(!group) throw new NotFoundException("Unknown group")
+    }
     return this.apiKeyService.create(createApiKeyDto);
   }
 

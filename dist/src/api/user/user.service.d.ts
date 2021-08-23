@@ -23,6 +23,7 @@ export declare class UserService {
     }>;
     getUserProfile(usernameOrSub: string): Promise<AdminGetUserResponse>;
     getGroupsForUser(usernameOrSub: string): Promise<import("aws-sdk/lib/request").PromiseResult<CognitoIdentityServiceProvider.AdminListGroupsForUserResponse, import("aws-sdk").AWSError>>;
+    getGroup(groupName: string): Promise<any>;
     addAttributesObjToProfile(profile: AdminGetUserResponse): CognitoIdentityServiceProvider.AdminGetUserResponse;
     exportFromLic(): Promise<void>;
     getUserFromSub(sub: string): Promise<{

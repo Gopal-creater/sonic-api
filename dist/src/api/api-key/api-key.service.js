@@ -17,9 +17,11 @@ const common_1 = require("@nestjs/common");
 const api_key_schema_1 = require("./schemas/api-key.schema");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const user_service_1 = require("../user/user.service");
 let ApiKeyService = class ApiKeyService {
-    constructor(apiKeyModel) {
+    constructor(apiKeyModel, userService) {
         this.apiKeyModel = apiKeyModel;
+        this.userService = userService;
     }
     create(createApiKeyDto) {
         const newApiKey = new this.apiKeyModel(createApiKeyDto);
@@ -67,7 +69,8 @@ let ApiKeyService = class ApiKeyService {
 ApiKeyService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(api_key_schema_1.ApiKey.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        user_service_1.UserService])
 ], ApiKeyService);
 exports.ApiKeyService = ApiKeyService;
 //# sourceMappingURL=api-key.service.js.map

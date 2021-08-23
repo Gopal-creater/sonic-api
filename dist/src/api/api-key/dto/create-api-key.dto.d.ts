@@ -1,8 +1,20 @@
-import { ApiKey } from '../schemas/api-key.schema';
-declare const CreateApiKeyDto_base: import("@nestjs/common").Type<Pick<ApiKey, "set" | "get" | "remove" | "validate" | "_id" | "metaData" | "populate" | "__v" | "$getAllSubdocs" | "$ignore" | "$isDefault" | "$isDeleted" | "$getPopulatedDocs" | "$isEmpty" | "$isValid" | "$locals" | "$markValid" | "$op" | "$session" | "$set" | "$where" | "baseModelName" | "collection" | "db" | "delete" | "deleteOne" | "depopulate" | "directModifiedPaths" | "equals" | "errors" | "execPopulate" | "getChanges" | "id" | "increment" | "init" | "invalidate" | "isDirectModified" | "isDirectSelected" | "isInit" | "isModified" | "isNew" | "isSelected" | "markModified" | "modifiedPaths" | "model" | "modelName" | "overwrite" | "populated" | "replaceOne" | "save" | "schema" | "toJSON" | "toObject" | "unmarkModified" | "update" | "updateOne" | "validateSync" | "revoked">>;
-export declare class CreateApiKeyDto extends CreateApiKeyDto_base {
+export declare class CreateApiKeyDto {
+    customer: string;
+    groups: [string];
+    validity?: Date;
+    disabled?: boolean;
+    type?: string;
+    suspended?: boolean;
+    revoked?: boolean;
+    metaData?: Map<string, any>;
 }
-declare const AdminCreateApiKeyDto_base: import("@nestjs/common").Type<Pick<ApiKey, never>>;
-export declare class AdminCreateApiKeyDto extends AdminCreateApiKeyDto_base {
+export declare class AdminCreateApiKeyDto {
+    customer: string;
+    groups: [string];
+    validity?: Date;
+    disabled?: boolean;
+    type?: string;
+    suspended?: boolean;
+    revoked?: boolean;
+    metaData?: Map<string, any>;
 }
-export {};
