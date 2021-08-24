@@ -13,6 +13,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bodyParser: true,
   });
+  // app.enableVersioning()
   const configService = app.get(ConfigService);
   // app.enableCors()
   app.enableCors({
@@ -31,7 +32,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useStaticAssets(appRootPath.path.toString()+'/storage/uploads/guest',{prefix:'/storage/uploads/guest'})
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
-  const PORT = configService.get('PORT', 8000);
+  const PORT = configService.get('PORT')||8000;
 
   //Swagger Integration
   const options = new DocumentBuilder()

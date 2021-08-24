@@ -17,7 +17,9 @@ import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
  * https://stackoverflow.com/questions/26552149/how-to-set-x-api-key-in-the-header-of-http-get-request
  */
 @ApiTags('Apikey Management Controller')
-@Controller('api-keys')
+@Controller({
+  path:'api-keys'
+})
 export class ApiKeyController {
   constructor(private readonly apiKeyService: ApiKeyService) {}
   

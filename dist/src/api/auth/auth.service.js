@@ -8,9 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const global_aws_service_1 = require("../../shared/modules/global-aws/global-aws.service");
@@ -65,7 +62,6 @@ let AuthService = class AuthService {
 };
 AuthService = __decorate([
     common_1.Injectable(),
-    __param(0, common_1.Inject('AuthConfig')),
     __metadata("design:paramtypes", [auth_config_1.AuthConfig,
         global_aws_service_1.GlobalAwsService])
 ], AuthService);

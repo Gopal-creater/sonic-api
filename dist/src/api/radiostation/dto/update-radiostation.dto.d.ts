@@ -1,5 +1,5 @@
 import { CreateRadiostationDto } from './create-radiostation.dto';
-declare const UpdateRadiostationDto_base: import("@nestjs/common").Type<Pick<Partial<CreateRadiostationDto>, "name" | "set" | "get" | "remove" | "validate" | "_id" | "metaData" | "populate" | "__v" | "$getAllSubdocs" | "$ignore" | "$isDefault" | "$isDeleted" | "$getPopulatedDocs" | "$isEmpty" | "$isValid" | "$locals" | "$markValid" | "$op" | "$session" | "$set" | "$where" | "baseModelName" | "collection" | "db" | "delete" | "deleteOne" | "depopulate" | "directModifiedPaths" | "equals" | "errors" | "execPopulate" | "getChanges" | "id" | "increment" | "init" | "invalidate" | "isDirectModified" | "isDirectSelected" | "isInit" | "isModified" | "isNew" | "isSelected" | "markModified" | "modifiedPaths" | "model" | "modelName" | "overwrite" | "populated" | "replaceOne" | "save" | "schema" | "toJSON" | "toObject" | "unmarkModified" | "update" | "updateOne" | "validateSync" | "website" | "logo" | "notes">>;
+declare const UpdateRadiostationDto_base: import("@nestjs/common").Type<Omit<Partial<CreateRadiostationDto>, "owner" | "streamingUrl" | "credential">>;
 export declare class UpdateRadiostationDto extends UpdateRadiostationDto_base {
 }
 export {};

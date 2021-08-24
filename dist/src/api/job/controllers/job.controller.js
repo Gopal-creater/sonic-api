@@ -102,7 +102,8 @@ __decorate([
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     common_1.Get('/owners/:ownerId'),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-job.dto").MongoosePaginateJobDto }),
-    __param(0, common_1.Param('ownerId')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Param('ownerId')),
+    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
@@ -159,7 +160,8 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Put(':id'),
     openapi.ApiResponse({ status: 200, type: require("../schemas/job.schema").Job }),
-    __param(0, common_1.Param('id')), __param(1, common_1.Body()),
+    __param(0, common_1.Param('id')),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_job_dto_1.UpdateJobDto]),
     __metadata("design:returntype", Promise)

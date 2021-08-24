@@ -78,7 +78,8 @@ __decorate([
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Detection of particular user' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-thirdpartydetection.dto").MongoosePaginateThirdPartyDetectionDto }),
-    __param(0, common_1.Param('targetUser')), __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
@@ -111,7 +112,8 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Put(':id'),
     openapi.ApiResponse({ status: 200, type: require("../schemas/thirdparty-detection.schema").ThirdpartyDetection }),
-    __param(0, common_1.Param('id')), __param(1, common_1.Body()),
+    __param(0, common_1.Param('id')),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_thirdparty_detection_dto_1.UpdateThirdpartyDetectionDto]),
     __metadata("design:returntype", Promise)

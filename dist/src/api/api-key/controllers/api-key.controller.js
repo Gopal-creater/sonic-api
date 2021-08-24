@@ -153,7 +153,9 @@ __decorate([
 ], ApiKeyController.prototype, "remove", null);
 ApiKeyController = __decorate([
     swagger_1.ApiTags('Apikey Management Controller'),
-    common_1.Controller('api-keys'),
+    common_1.Controller({
+        path: 'api-keys'
+    }),
     __metadata("design:paramtypes", [api_key_service_1.ApiKeyService])
 ], ApiKeyController);
 exports.ApiKeyController = ApiKeyController;

@@ -29,7 +29,7 @@ async function bootstrap() {
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());
     app.useStaticAssets(appRootPath.path.toString() + '/storage/uploads/guest', { prefix: '/storage/uploads/guest' });
     app.useGlobalPipes(new common_1.ValidationPipe({ transform: true }));
-    const PORT = configService.get('PORT', 8000);
+    const PORT = configService.get('PORT') || 8000;
     const options = new swagger_1.DocumentBuilder()
         .setTitle('Sonic API Development')
         .setDescription('The Sonic API description')

@@ -32,13 +32,13 @@ console.log('Node_env', process.env.NODE_ENV);
 
 @Module({
   imports: [
+    AuthModule,
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: process.env.NODE_ENV == 'production' ? '.env' : '.env.arba',
     }),
-    AuthModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

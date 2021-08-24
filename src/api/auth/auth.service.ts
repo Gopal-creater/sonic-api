@@ -18,7 +18,6 @@ export class AuthService {
   private userPool: CognitoUserPool;
   private cognitoIdentityServiceProvider: CognitoIdentityServiceProvider;
   constructor(
-    @Inject('AuthConfig')
     private readonly authConfig: AuthConfig,
     private readonly globalAwsService: GlobalAwsService,
   ) {

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppGateway = void 0;
 const websockets_1 = require("@nestjs/websockets");
 const common_1 = require("@nestjs/common");
+const socket_io_1 = require("socket.io");
 let AppGateway = class AppGateway {
     constructor() {
         this.logger = new common_1.Logger('AppGateway');
@@ -31,12 +32,12 @@ let AppGateway = class AppGateway {
 };
 __decorate([
     websockets_1.WebSocketServer(),
-    __metadata("design:type", Object)
+    __metadata("design:type", socket_io_1.Server)
 ], AppGateway.prototype, "server", void 0);
 __decorate([
     websockets_1.SubscribeMessage('msgToServer'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [socket_io_1.Socket, String]),
     __metadata("design:returntype", void 0)
 ], AppGateway.prototype, "handleMessage", null);
 AppGateway = __decorate([
