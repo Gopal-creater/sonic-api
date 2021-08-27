@@ -19,16 +19,9 @@
 # !!! IMPORANT: Change BIN_PATH according to the installation folder.
 # -----------------------------------------------------------------------------------------
 
-if [ "$NODE_ENV" == "production" ]; then
-  echo "Production enironment"
-  BIN_PATH=/home/ubuntu/code/Sonic-API/bin/
-else
-  echo "Staging enironment"
 # BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/web/linux/build/
-  BIN_PATH=/home/ubuntu/sonic-staging/Sonic-API/bin/
-fi
-
-BIN_WATERMARK=encode
+BIN_PATH="$BINARY_PATH"
+BIN_WATERMARK="$BINARY_WATERMARK"
 
 WATERMARK=$BIN_PATH/$BIN_WATERMARK
 if [[ -f "$WATERMARK" && -x "$WATERMARK" ]]

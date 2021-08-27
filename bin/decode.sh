@@ -15,16 +15,9 @@
 # !!! IMPORANT: Change BIN_PATH according to the installation folder. 
 # -----------------------------------------------------------------------------------------
 
-if [ "$NODE_ENV" == "production" ]; then
-  echo "Production enironment"
-  BIN_PATH=/home/ubuntu/code/Sonic-API/bin/
-else
-  echo "Staging enironment"
 # BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/web/linux/build/
-  BIN_PATH=/home/ubuntu/sonic-staging/Sonic-API/bin/
-fi
-
-BIN_DETECT=decode
+BIN_PATH="$BINARY_PATH"
+BIN_DETECT="$BINARY_DETECT"
 
 DETECT=$BIN_PATH/$BIN_DETECT
 if [[ -f "$DETECT" && -x "$DETECT" ]]
