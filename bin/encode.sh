@@ -19,7 +19,6 @@
 # !!! IMPORANT: Change BIN_PATH according to the installation folder.
 # -----------------------------------------------------------------------------------------
 
-echo "Node enironment $NODE_ENV" > /home/ubuntu/sonic-staging/Sonic-API/app.log
 if [ "$NODE_ENV" == "production" ]; then
   echo "Production enironment"
   BIN_PATH=/home/ubuntu/code/Sonic-API/bin/
