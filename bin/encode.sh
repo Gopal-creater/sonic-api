@@ -19,14 +19,14 @@
 # !!! IMPORANT: Change BIN_PATH according to the installation folder.
 # -----------------------------------------------------------------------------------------
 
-if [ "$NODE_ENV" == "development" ]; then
-  echo "Development enironment"
-  BIN_PATH=/home/ubuntu/sonic-staging/Sonic-API/bin/
-else
+echo "Node enironment $NODE_ENV" > /home/ubuntu/sonic-staging/Sonic-API/app.log
+if [ "$NODE_ENV" == "production" ]; then
   echo "Production enironment"
-# BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/web/linux/build/
-  # BIN_PATH=/home/ubuntu/sonic-staging/Sonic-API/bin/
   BIN_PATH=/home/ubuntu/code/Sonic-API/bin/
+else
+  echo "Staging enironment"
+# BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/web/linux/build/
+  BIN_PATH=/home/ubuntu/sonic-staging/Sonic-API/bin/
 fi
 
 BIN_WATERMARK=encode
