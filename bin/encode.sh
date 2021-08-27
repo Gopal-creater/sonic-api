@@ -19,10 +19,16 @@
 # !!! IMPORANT: Change BIN_PATH according to the installation folder.
 # -----------------------------------------------------------------------------------------
 
-# BIN_PATH=/home/ubuntu/code/Sonic-API/bin/
-BIN_PATH=/home/ubuntu/sonic-staging/Sonic-API/bin/
-# BIN_PATH=/home/arun/Work/Sonic/Phase-2/src/github/sonic-core/
-BIN_WATERMARK=watermark
+if [ $NODE_ENV == "production" ]; then
+  echo "Production enironment"
+  BIN_PATH=/home/ubuntu/code/Sonic-API/bin/
+else
+  echo "Staging enironment"
+# BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/web/linux/build/
+  BIN_PATH=/home/ubuntu/sonic-staging/Sonic-API/bin/
+fi
+
+BIN_WATERMARK=encode
 
 WATERMARK=$BIN_PATH/$BIN_WATERMARK
 if [[ -f "$WATERMARK" && -x "$WATERMARK" ]]
@@ -49,11 +55,13 @@ echo "Input: filename: $infilename. Extension: $inext"
 echo "Input temp file path: $in_tmpfile_path"
 echo "Otput temp file path: $out_tmpfile_path"
 
-if [[ $inext == "wavx" || $inext == "WAVX" ]]; then
+# The wavx stuff is a hack added for the mobile app to send WAV files for direct processing.
+# This hack can be removed now by modifying app code. 
+if [[ $inext == "wavx" || $inext == "WAVX" || $inext == "wav" || $inext == "WAV" ]]; then
     echo "Wave file processing"
     echo "Watermarking..."
 
-    $WATERMARK $1 $2 $3 $4 $5 /dev/null
+    $WATERMARK $1 $2 $3 $4 $5
     RESULT=$?
     if [ $RESULT -eq 0 ]; then
       echo "Watermark binary succeeded"
