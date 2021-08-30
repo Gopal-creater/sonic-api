@@ -24,11 +24,18 @@ const bulk_radiostation_dto_1 = require("../dto/bulk-radiostation.dto");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
+const user_decorator_1 = require("../../auth/decorators/user.decorator");
 let RadiostationController = class RadiostationController {
     constructor(radiostationService) {
         this.radiostationService = radiostationService;
     }
-    create(createRadiostationDto) {
+    async create(owner, createRadiostationDto) {
+        const isPresent = await this.radiostationService.radioStationModel.findOne({
+            streamingUrl: createRadiostationDto.streamingUrl,
+        });
+        if (isPresent) {
+            throw new common_1.BadRequestException('Duplicate stramingURL');
+        }
         return this.radiostationService.create(createRadiostationDto);
     }
     findAll(queryDto) {
@@ -40,7 +47,9 @@ let RadiostationController = class RadiostationController {
     }
     async getCount(queryDto) {
         const filter = queryDto.filter || {};
-        return this.radiostationService.radioStationModel.where(filter).countDocuments();
+        return this.radiostationService.radioStationModel
+            .where(filter)
+            .countDocuments();
     }
     async findOne(id) {
         const radioStation = await this.radiostationService.radioStationModel.findById(id);
@@ -96,10 +105,11 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create Radio Station' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/radiostation.schema").RadioStation }),
-    __param(0, common_1.Body()),
+    __param(0, user_decorator_1.User('sub')),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_radiostation_dto_1.CreateRadiostationDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [String, create_radiostation_dto_1.CreateRadiostationDto]),
+    __metadata("design:returntype", Promise)
 ], RadiostationController.prototype, "create", null);
 __decorate([
     common_1.Get(),
@@ -130,7 +140,9 @@ __decorate([
     common_1.Get('/count'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get count of all radiostations also accept filter as query params' }),
+    swagger_1.ApiOperation({
+        summary: 'Get count of all radiostations also accept filter as query params',
+    }),
     openapi.ApiResponse({ status: 200, type: Number }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),

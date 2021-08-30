@@ -8,21 +8,20 @@ import {
   Delete,
   UseGuards,
   NotFoundException,
+  BadRequestException,
   Query,
 } from '@nestjs/common';
 import { RadiostationService } from '../services/radiostation.service';
 import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
 import { UpdateRadiostationDto } from '../dto/update-radiostation.dto';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { BulkRadiostationDto } from '../dto/bulk-radiostation.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
+import { User } from '../../auth/decorators/user.decorator';
+import { subtract } from 'lodash';
 
 @ApiTags('Radio Station Controller')
 @Controller('radiostations')
@@ -33,7 +32,16 @@ export class RadiostationController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Radio Station' })
-  create(@Body() createRadiostationDto: CreateRadiostationDto) {
+  async create(
+    @User('sub') owner: string,
+    @Body() createRadiostationDto: CreateRadiostationDto,
+  ) {
+    const isPresent = await this.radiostationService.radioStationModel.findOne({
+      streamingUrl: createRadiostationDto.streamingUrl,
+    });
+    if (isPresent) {
+      throw new BadRequestException('Duplicate stramingURL');
+    }
     return this.radiostationService.create(createRadiostationDto);
   }
 
@@ -67,10 +75,15 @@ export class RadiostationController {
   @Get('/count')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get count of all radiostations also accept filter as query params' })
-  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
-    const filter = queryDto.filter || {}
-    return this.radiostationService.radioStationModel.where(filter).countDocuments();
+  @ApiOperation({
+    summary:
+      'Get count of all radiostations also accept filter as query params',
+  })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
+    const filter = queryDto.filter || {};
+    return this.radiostationService.radioStationModel
+      .where(filter)
+      .countDocuments();
   }
 
   @Get(':id')

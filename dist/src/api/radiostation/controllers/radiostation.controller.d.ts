@@ -6,7 +6,7 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 export declare class RadiostationController {
     private readonly radiostationService;
     constructor(radiostationService: RadiostationService);
-    create(createRadiostationDto: CreateRadiostationDto): Promise<import("../schemas/radiostation.schema").RadioStation>;
+    create(owner: string, createRadiostationDto: CreateRadiostationDto): Promise<import("../schemas/radiostation.schema").RadioStation>;
     findAll(queryDto?: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto>;
     getOwnersRadioStations(ownerId: string, queryDto: ParsedQueryDto): Promise<import("../dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto>;
     getCount(queryDto: ParsedQueryDto): Promise<number>;
