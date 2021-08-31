@@ -27,6 +27,7 @@ import { User } from 'src/api/auth/decorators';
 import { RolesAllowed } from '../../auth/decorators/roles.decorator';
 import { Roles } from 'src/constants/Enums';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
+import { FailedAlwaysGuard } from '../../auth/guards/failedAlways.guard';
 
 @ApiTags('License Keys Management Controller')
 @Controller('license-keys')
@@ -34,9 +35,9 @@ export class LicensekeyController {
   constructor(private readonly licensekeyService: LicensekeyService) {}
 
   @Get('/migrate-from-keygen')
-  // @RolesAllowed(Roles.ADMIN)
-  // @UseGuards(JwtAuthGuard,RoleBasedGuard)
-  // @ApiBearerAuth()
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard,FailedAlwaysGuard)
+  @ApiBearerAuth()
   migrate() {
     return this.licensekeyService.migrateKeyFromKeygenToDB();
   }
