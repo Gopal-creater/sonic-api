@@ -35,8 +35,7 @@ export class LicensekeyController {
   constructor(private readonly licensekeyService: LicensekeyService) {}
 
   @Get('/migrate-from-keygen')
-  @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard,FailedAlwaysGuard)
+  @UseGuards(FailedAlwaysGuard)
   @ApiBearerAuth()
   migrate() {
     return this.licensekeyService.migrateKeyFromKeygenToDB();

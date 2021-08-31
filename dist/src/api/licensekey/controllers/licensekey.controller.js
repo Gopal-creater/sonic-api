@@ -66,8 +66,7 @@ let LicensekeyController = class LicensekeyController {
 };
 __decorate([
     common_1.Get('/migrate-from-keygen'),
-    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, failedAlways_guard_1.FailedAlwaysGuard),
+    common_1.UseGuards(failedAlways_guard_1.FailedAlwaysGuard),
     swagger_1.ApiBearerAuth(),
     openapi.ApiResponse({ status: 200, type: Object }),
     __metadata("design:type", Function),
