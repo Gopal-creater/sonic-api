@@ -7,6 +7,26 @@ import { ChannelEnums } from '../../../constants/Enums';
 
 export const SonicKeySchemaName = 'SonicKey';
 
+@Schema()
+export class FileMeta {
+
+  @ApiProperty()
+  ETag: string;
+
+  @ApiProperty()
+  Location: string;
+
+  @ApiProperty()
+  key: string;
+
+  @ApiProperty()
+  Key: string;
+
+  @ApiProperty()
+  Bucket: string;
+}
+
+
 @Schema({ timestamps: true, collection: SonicKeySchemaName })
 export class SonicKey extends Document {
   @ApiHideProperty()
@@ -86,6 +106,10 @@ export class SonicKey extends Document {
   @ApiProperty()
   @Prop()
   contentFilePath: string;
+
+  @ApiProperty()
+  @Prop({type:FileMeta,required:true})
+  fileMeta: FileMeta;
 
   @ApiProperty()
   @Prop()

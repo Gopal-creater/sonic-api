@@ -65,6 +65,7 @@ export class SonickeyService {
    * passed to the encoding executable binary (encoder binary name is: watermark). Encoded files are saved
    * with the same name, in a folder named "encodedFiles" in the user's home directory. The parameter ownerId
    * which is the Cognito User ID of the logged in user is used as his home directory name.
+   * https://dev.to/vjnvisakh/uploading-to-s3-using-nestjs-4037
    * @param file
    * @param encodingStrength
    */
