@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SonicKeySchema = exports.SonicKey = exports.SonicKeySchemaName = void 0;
+exports.SonicKeySchema = exports.SonicKey = exports.S3FileMeta = exports.SonicKeySchemaName = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
@@ -17,6 +17,32 @@ const job_schema_1 = require("../../job/schemas/job.schema");
 const api_key_schema_1 = require("../../api-key/schemas/api-key.schema");
 const Enums_1 = require("../../../constants/Enums");
 exports.SonicKeySchemaName = 'SonicKey';
+let S3FileMeta = class S3FileMeta {
+};
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], S3FileMeta.prototype, "ETag", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], S3FileMeta.prototype, "Location", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], S3FileMeta.prototype, "key", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], S3FileMeta.prototype, "Key", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], S3FileMeta.prototype, "Bucket", void 0);
+S3FileMeta = __decorate([
+    mongoose_1.Schema()
+], S3FileMeta);
+exports.S3FileMeta = S3FileMeta;
 let SonicKey = class SonicKey extends mongoose_2.Document {
 };
 __decorate([
@@ -114,6 +140,11 @@ __decorate([
     mongoose_1.Prop(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentFilePath", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: S3FileMeta, required: true }),
+    __metadata("design:type", S3FileMeta)
+], SonicKey.prototype, "s3FileMeta", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),

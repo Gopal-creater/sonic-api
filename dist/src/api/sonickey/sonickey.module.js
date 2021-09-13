@@ -18,6 +18,7 @@ const sonickey_guest_controller_1 = require("./controllers/sonickey.guest.contro
 const sonickey_binary_controller_1 = require("./controllers/sonickey.binary.controller");
 const api_key_module_1 = require("../api-key/api-key.module");
 const licensekey_module_1 = require("../licensekey/licensekey.module");
+const s3fileupload_module_1 = require("../s3fileupload/s3fileupload.module");
 let SonickeyModule = class SonickeyModule {
 };
 SonickeyModule = __decorate([
@@ -25,6 +26,7 @@ SonickeyModule = __decorate([
         imports: [
             api_key_module_1.ApiKeyModule,
             licensekey_module_1.LicensekeyModule,
+            s3fileupload_module_1.S3FileUploadModule,
             mongoose_1.MongooseModule.forFeature([
                 { name: sonickey_schema_1.SonicKeySchemaName, schema: sonickey_schema_1.SonicKeySchema },
             ]),
@@ -37,7 +39,7 @@ SonickeyModule = __decorate([
         providers: [
             sonickey_service_1.SonickeyService,
             file_operation_service_1.FileOperationService,
-            file_handler_service_1.FileHandlerService,
+            file_handler_service_1.FileHandlerService
         ],
         exports: [sonickey_service_1.SonickeyService],
     })

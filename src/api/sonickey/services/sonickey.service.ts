@@ -13,7 +13,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MongoosePaginateSonicKeyDto } from '../dtos/mongoosepaginate-sonickey.dto';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
-import { ChannelEnums } from '../../../constants/Enums'
+import { ChannelEnums, S3ACL } from '../../../constants/Enums'
+import { S3FileUploadService } from '../../s3fileupload/s3fileupload.service';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -22,11 +23,31 @@ export class SonickeyService {
     @InjectModel(SonicKey.name) public sonicKeyModel: Model<SonicKey>,
     private readonly fileOperationService: FileOperationService,
     private readonly fileHandlerService: FileHandlerService,
+    private readonly s3FileUploadService: S3FileUploadService,
   ) {}
 
   generateUniqueSonicKey() {
     // TODO: Must verify for uniqueness of generated key
     return nanoid(11);
+  }
+
+  async testUploadFromPath() {
+    const filePath = `${appConfig.MULTER_DEST}/guest/4fqq9xz8ckosgjzea-SonicTest_Detect.wav`
+    const result = await this.s3FileUploadService.uploadFromPath(filePath,'userId1234345/encodedFiles',S3ACL.PRIVATE)
+    return {
+      msg:"uploaded",
+      result:result
+    }
+  }
+
+  async testDownloadFile() {
+    // const key = `userId1234345/encodedFiles/aa1y7g154cktiatome-4fqq9xz8ckosgjzea-SonicTest_Detect.wav` //public
+    const key = 'userId1234345/encodedFiles/4fqq9xz8ckosgjzea-SonicTest_Detect.wav' //private
+    //  const fileResult = await this.s3FileUploadService.getFile(key)
+    //  console.log("fileResult",fileResult);
+    //  return fileResult.Body.toString("utf-8")
+    return this.s3FileUploadService.getSignedUrl(key)
+     
   }
 
   async createFromJob(createSonicKeyDto: CreateSonicKeyFromJobDto) {
@@ -107,10 +128,48 @@ export class SonickeyService {
         };
       })
       .finally(() => {
-        // this.fileHandlerService.deleteFileAtPath(inFilePath);
+        this.fileHandlerService.deleteFileAtPath(inFilePath); //delete in callig side
       });
   }
 
+  async encodeAndUploadToS3(file: IUploadedFile,user:string, encodingStrength: number = 10) {
+    // The sonic key generation - done randomely.
+    const random11CharKey = this.generateUniqueSonicKey();
+    // TODO: Must verify for uniqueness of generated key
+
+    file.path = upath.toUnix(file.path); //Convert windows path to unix path
+    file.destination = upath.toUnix(file.destination);
+    const inFilePath = file.path;
+    const outFilePath =
+      file.destination + '/' + 'encodedFiles' + '/' + file.filename;
+    const argList =
+      ' -h ' +
+      encodingStrength +
+      ' ' +
+      inFilePath +
+      ' ' +
+      outFilePath +
+      ' ' +
+      random11CharKey;
+    const sonicEncodeCmd = `${appConfig.ENCODER_EXE_PATH}` + argList;
+
+    return this.fileOperationService
+      .encodeFile(sonicEncodeCmd, outFilePath)
+      .then(() => {
+        return this.s3FileUploadService.uploadFromPath(outFilePath,`${user}/encodedFiles`)
+      })
+      .then(s3UploadResult=>{
+        return {
+          downloadFileUrl: s3UploadResult.Location,
+          s3UploadResult:s3UploadResult,
+          sonicKey: random11CharKey,
+        }
+      })
+      .finally(() => {
+        // this.fileHandlerService.deleteFileAtPath(inFilePath); //delete in callig side
+        this.fileHandlerService.deleteFileAtPath(outFilePath); //Delete outFilePath too since we are storing to S3
+      });
+  }
   /**
    * Decodes the uploaded file and finds out the Sonic Key used. The detected Key will be printed to stdout/stderr
    * by the decoder binary (note that decoder binary name is "detect").

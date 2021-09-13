@@ -24,14 +24,28 @@ const config_1 = require("../../../config");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const Enums_1 = require("../../../constants/Enums");
+const s3fileupload_service_1 = require("../../s3fileupload/s3fileupload.service");
 let SonickeyService = class SonickeyService {
-    constructor(sonicKeyModel, fileOperationService, fileHandlerService) {
+    constructor(sonicKeyModel, fileOperationService, fileHandlerService, s3FileUploadService) {
         this.sonicKeyModel = sonicKeyModel;
         this.fileOperationService = fileOperationService;
         this.fileHandlerService = fileHandlerService;
+        this.s3FileUploadService = s3FileUploadService;
     }
     generateUniqueSonicKey() {
         return nanoid_1.nanoid(11);
+    }
+    async testUploadFromPath() {
+        const filePath = `${config_1.appConfig.MULTER_DEST}/guest/4fqq9xz8ckosgjzea-SonicTest_Detect.wav`;
+        const result = await this.s3FileUploadService.uploadFromPath(filePath, 'userId1234345/encodedFiles', Enums_1.S3ACL.PRIVATE);
+        return {
+            msg: "uploaded",
+            result: result
+        };
+    }
+    async testDownloadFile() {
+        const key = 'userId1234345/encodedFiles/4fqq9xz8ckosgjzea-SonicTest_Detect.wav';
+        return this.s3FileUploadService.getSignedUrl(key);
     }
     async createFromJob(createSonicKeyDto) {
         const channel = Enums_1.ChannelEnums.PCAPP;
@@ -74,6 +88,38 @@ let SonickeyService = class SonickeyService {
             };
         })
             .finally(() => {
+            this.fileHandlerService.deleteFileAtPath(inFilePath);
+        });
+    }
+    async encodeAndUploadToS3(file, user, encodingStrength = 10) {
+        const random11CharKey = this.generateUniqueSonicKey();
+        file.path = upath.toUnix(file.path);
+        file.destination = upath.toUnix(file.destination);
+        const inFilePath = file.path;
+        const outFilePath = file.destination + '/' + 'encodedFiles' + '/' + file.filename;
+        const argList = ' -h ' +
+            encodingStrength +
+            ' ' +
+            inFilePath +
+            ' ' +
+            outFilePath +
+            ' ' +
+            random11CharKey;
+        const sonicEncodeCmd = `${config_1.appConfig.ENCODER_EXE_PATH}` + argList;
+        return this.fileOperationService
+            .encodeFile(sonicEncodeCmd, outFilePath)
+            .then(() => {
+            return this.s3FileUploadService.uploadFromPath(outFilePath, `${user}/encodedFiles`);
+        })
+            .then(s3UploadResult => {
+            return {
+                downloadFileUrl: s3UploadResult.Location,
+                s3UploadResult: s3UploadResult,
+                sonicKey: random11CharKey,
+            };
+        })
+            .finally(() => {
+            this.fileHandlerService.deleteFileAtPath(outFilePath);
         });
     }
     async decode(file) {
@@ -150,7 +196,8 @@ SonickeyService = __decorate([
     __param(0, mongoose_1.InjectModel(sonickey_schema_1.SonicKey.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         file_operation_service_1.FileOperationService,
-        file_handler_service_1.FileHandlerService])
+        file_handler_service_1.FileHandlerService,
+        s3fileupload_service_1.S3FileUploadService])
 ], SonickeyService);
 exports.SonickeyService = SonickeyService;
 //# sourceMappingURL=sonickey.service.js.map

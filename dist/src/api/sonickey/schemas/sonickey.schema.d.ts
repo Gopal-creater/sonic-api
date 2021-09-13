@@ -1,5 +1,13 @@
 import { Document, Schema as MogSchema } from 'mongoose';
+import { S3FileUploadI } from '../../s3fileupload/interfaces';
 export declare const SonicKeySchemaName = "SonicKey";
+export declare class S3FileMeta implements S3FileUploadI {
+    ETag: string;
+    Location: string;
+    key: string;
+    Key: string;
+    Bucket: string;
+}
 export declare class SonicKey extends Document {
     _id: string;
     sonicKey: string;
@@ -18,6 +26,7 @@ export declare class SonicKey extends Document {
     contentDuration?: number;
     contentSize: number;
     contentFilePath: string;
+    s3FileMeta: S3FileMeta;
     contentFileType: string;
     contentEncoding: string;
     contentSamplingFrequency: string;

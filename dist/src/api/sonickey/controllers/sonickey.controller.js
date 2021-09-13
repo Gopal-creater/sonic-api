@@ -56,7 +56,10 @@ let SonickeyController = class SonickeyController {
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
     async generateUniqueSonicKey() {
-        return await this.sonicKeyService.generateUniqueSonicKey();
+        return this.sonicKeyService.testUploadFromPath();
+    }
+    async fileDownloadTest() {
+        return this.sonicKeyService.testDownloadFile();
     }
     async createForJob(createSonicKeyDto, owner, req) {
         createSonicKeyDto.owner = owner;
@@ -81,14 +84,12 @@ let SonickeyController = class SonickeyController {
         var _a;
         console.log('file', file);
         const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.key;
-        var downloadFileUrl;
-        var outFilePath;
+        var s3UploadResult;
         var sonicKey;
         return this.sonicKeyService
-            .encode(file, sonicKeyDto.encodingStrength)
+            .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
             .then(data => {
-            downloadFileUrl = data.downloadFileUrl;
-            outFilePath = data.outFilePath;
+            s3UploadResult = data.s3UploadResult;
             sonicKey = data.sonicKey;
             console.log('Increment Usages upon successfull encode');
             return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
@@ -97,14 +98,14 @@ let SonickeyController = class SonickeyController {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Enums_1.ChannelEnums.PORTAL;
-            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: downloadFileUrl, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, _id: sonicKey, license: licenseId }));
-            return newSonicKey.save().finally(() => {
-                this.fileHandlerService.deleteFileAtPath(file.path);
-            });
+            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId }));
+            return newSonicKey.save();
         })
             .catch(err => {
-            this.fileHandlerService.deleteFileAtPath(file.path);
             throw new common_1.InternalServerErrorException(err);
+        })
+            .finally(() => {
+            this.fileHandlerService.deleteFileAtPath(file.path);
         });
     }
     async decode(file) {
@@ -188,11 +189,19 @@ __decorate([
 __decorate([
     common_1.Get('/generate-unique-sonic-key'),
     swagger_1.ApiOperation({ summary: 'Generate unique sonic key' }),
-    openapi.ApiResponse({ status: 200, type: String }),
+    openapi.ApiResponse({ status: 200 }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "generateUniqueSonicKey", null);
+__decorate([
+    common_1.Get('/file-download-test'),
+    swagger_1.ApiOperation({ summary: 'Generate unique sonic key' }),
+    openapi.ApiResponse({ status: 200, type: String }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "fileDownloadTest", null);
 __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
     common_1.Post('/create-from-job'),

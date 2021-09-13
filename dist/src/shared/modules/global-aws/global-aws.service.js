@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GlobalDynamoDbDataMapper = exports.GlobalAwsService = void 0;
 const common_1 = require("@nestjs/common");
 const AWS = require("aws-sdk");
+const client_s3_1 = require("@aws-sdk/client-s3");
 const dynamodb_data_mapper_1 = require("@aws/dynamodb-data-mapper");
 const config_1 = require("@nestjs/config");
 const aws_sdk_1 = require("aws-sdk");
@@ -44,6 +45,14 @@ let GlobalAwsService = class GlobalAwsService {
         });
         return s3;
     }
+    getS3ClientV2() {
+        return new client_s3_1.S3Client({
+            credentials: {
+                accessKeyId: this.configService.get('AWS_ACCESS_KEY_ID'),
+                secretAccessKey: this.configService.get('AWS_SECRET_ACCESS_KEY'),
+            },
+        });
+    }
     getCognitoIdentityServiceProvider() {
         const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
             region: this.configService.get('COGNITO_REGION'),
@@ -59,7 +68,7 @@ exports.GlobalAwsService = GlobalAwsService;
 class GlobalDynamoDbDataMapper extends dynamodb_data_mapper_1.DataMapper {
     constructor() {
         super({
-            client: new aws_sdk_1.DynamoDB({})
+            client: new aws_sdk_1.DynamoDB({}),
         });
     }
 }

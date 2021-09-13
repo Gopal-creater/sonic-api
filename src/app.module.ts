@@ -25,6 +25,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ApiKeyModule } from './api/api-key/api-key.module';
 import { DetectionModule } from './api/detection/detection.module';
 import { LicensekeyModule } from './api/licensekey/licensekey.module';
+import { S3FileUploadModule } from './api/s3fileupload/s3fileupload.module';
 mongoosePaginate.paginate.options = {
   limit: 50,
 };
@@ -75,6 +76,7 @@ console.log('Node_env', process.env.NODE_ENV);
     ApiKeyModule,
     DetectionModule,
     LicensekeyModule,
+    S3FileUploadModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],

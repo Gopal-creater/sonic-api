@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ApiKeyType = exports.Roles = exports.Permissions = exports.ChannelEnums = void 0;
+exports.S3ACL = exports.ApiKeyType = exports.Roles = exports.Permissions = exports.ChannelEnums = void 0;
 var ChannelEnums;
 (function (ChannelEnums) {
     ChannelEnums["JOB"] = "JOB";
@@ -24,4 +24,13 @@ var ApiKeyType;
     ApiKeyType["INDIVIDUAL"] = "Individual";
     ApiKeyType["GROUP"] = "Group";
 })(ApiKeyType = exports.ApiKeyType || (exports.ApiKeyType = {}));
+var S3ACL;
+(function (S3ACL) {
+    S3ACL["PRIVATE"] = "private";
+    S3ACL["PUBLIC_READ"] = "public-read";
+    S3ACL["PUBLIC_READ_WRITE"] = "public-read-write";
+    S3ACL["AUTHENTICATED_READ"] = "authenticated-read";
+    S3ACL["BUCKET_OWNER_READ"] = "bucket-owner-read";
+    S3ACL["BUCKET_OWNER_FULL_CONTROL"] = "bucket-owner-full-control";
+})(S3ACL = exports.S3ACL || (exports.S3ACL = {}));
 //# sourceMappingURL=Enums.js.map

@@ -9,11 +9,13 @@ import { SonickeyGuestController } from './controllers/sonickey.guest.controller
 import { SonickeyBinaryController } from './controllers/sonickey.binary.controller';
 import { ApiKeyModule } from '../api-key/api-key.module';
 import { LicensekeyModule } from '../licensekey/licensekey.module';
+import { S3FileUploadModule } from '../s3fileupload/s3fileupload.module';
 
 @Module({
   imports: [
   ApiKeyModule,
-  LicensekeyModule,
+    LicensekeyModule,
+    S3FileUploadModule,
     MongooseModule.forFeature([
       { name: SonicKeySchemaName, schema: SonicKeySchema },
     ]),
@@ -26,7 +28,7 @@ import { LicensekeyModule } from '../licensekey/licensekey.module';
   providers: [
     SonickeyService,
     FileOperationService,
-    FileHandlerService,
+    FileHandlerService
   ],
   exports: [SonickeyService],
 })

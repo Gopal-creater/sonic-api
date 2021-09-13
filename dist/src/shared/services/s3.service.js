@@ -8,102 +8,72 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FileUpload = exports.S3Service = void 0;
+exports.S3Service = void 0;
 const global_aws_service_1 = require("../../shared/modules/global-aws/global-aws.service");
 const common_1 = require("@nestjs/common");
-const AWS = require("aws-sdk");
-const multer = require("multer");
-const multerS3 = require("multer-s3");
-const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-});
+const fs = require("fs");
+const uniqid = require("uniqid");
+const utils_1 = require("../utils");
+const Enums_1 = require("../../constants/Enums");
 let S3Service = class S3Service {
     constructor(globalAwsService) {
         this.globalAwsService = globalAwsService;
-        this.BUCKET = process.env.AWS_S3_BUCKET_NAME;
         this.s3 = this.globalAwsService.getS3();
-        this.upload = multer({
-            storage: multerS3({
-                s3: this.s3,
-                bucket: this.BUCKET,
-                acl: 'public-read',
-                key: function (request, file, cb) {
-                    cb(null, `${Date.now().toString()} - ${file.originalname}`);
-                },
-            }),
-        }).array('upload', 100);
+        this.bucketName = process.env.AWS_S3_BUCKET_NAME;
     }
-    async fileupload(req, res) {
-        try {
-            this.upload(req, res, function (error) {
-                if (error) {
-                    console.log(error);
-                    return res.status(404).json(`Failed to upload image file: ${error}`);
-                }
-                return res.status(201).json(req.files[0].location);
-            });
-        }
-        catch (error) {
-            console.log(error);
-            return res.status(500).json(`Failed to upload image file: ${error}`);
-        }
+    async upload(file, destinationFolder, acl = Enums_1.S3ACL.PUBLIC_READ) {
+        const { originalname } = file;
+        const bucketS3Destination = destinationFolder ? `${this.bucketName}/${destinationFolder}` : this.bucketName;
+        return this.uploadS3(file.buffer, bucketS3Destination, originalname, acl);
+    }
+    async uploadFromPath(filePath, destinationFolder, acl = Enums_1.S3ACL.PUBLIC_READ) {
+        const fileContect = fs.createReadStream(filePath);
+        const fileName = utils_1.extractFileName(filePath);
+        const bucketS3Destination = destinationFolder ? `${this.bucketName}/${destinationFolder}` : this.bucketName;
+        return this.uploadS3(fileContect, bucketS3Destination, fileName, acl);
+    }
+    async uploadS3(file, bucket, name, acl) {
+        const params = {
+            Bucket: bucket,
+            Key: `${uniqid()}-${name}`,
+            Body: file,
+            ACL: acl
+        };
+        return this.s3.upload(params).promise();
+    }
+    getFile(key) {
+        const params = {
+            Bucket: this.bucketName,
+            Key: key
+        };
+        return this.s3.getObject(params).promise();
     }
     getFiles() {
         const params = {
-            Bucket: this.BUCKET,
+            Bucket: this.bucketName,
         };
-        return new Promise((resolve, reject) => {
-            s3.listObjectsV2(params, function (err, data) {
-                if (err) {
-                    console.log('There was an error getting your files: ' + err);
-                    reject('There was an error getting your files');
-                }
-                console.log('Successfully get files.', data);
-                const fileDetails = data.Contents;
-                const files = fileDetails.map((file, index) => {
-                    return new FileUpload(file.Key, 'https://s3.amazonaws.com/' + params.Bucket + '/' + file.Key);
-                });
-                resolve(files);
-            });
-        });
+        return this.s3.listObjectsV2(params).promise();
     }
-    async deleteFile(file) {
+    getSignedUrl(key, expiry = 60 * 1) {
         const params = {
-            Bucket: this.BUCKET,
-            Key: file.name,
+            Bucket: this.bucketName,
+            Key: key,
+            Expires: expiry
         };
-        return new Promise((resolve, reject) => {
-            s3.deleteObject(params, function (err, data) {
-                if (err) {
-                    reject(err);
-                }
-                resolve(data);
-            });
-        });
+        return this.s3.getSignedUrlPromise('getObject', params);
+    }
+    async deleteFile(key) {
+        const params = {
+            Bucket: this.bucketName,
+            Key: key,
+        };
+        return this.s3.deleteObject(params).promise();
     }
 };
-__decorate([
-    __param(0, common_1.Req()),
-    __param(1, common_1.Res()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], S3Service.prototype, "fileupload", null);
 S3Service = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [global_aws_service_1.GlobalAwsService])
 ], S3Service);
 exports.S3Service = S3Service;
-class FileUpload {
-    constructor(name, url) {
-        this.name = name;
-        this.url = url;
-    }
-}
-exports.FileUpload = FileUpload;
 //# sourceMappingURL=s3.service.js.map

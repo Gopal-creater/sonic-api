@@ -1,17 +1,16 @@
 import { GlobalAwsService } from '../../shared/modules/global-aws/global-aws.service';
+import * as AWS from 'aws-sdk';
+import { S3ACL } from 'src/constants/Enums';
 export declare class S3Service {
     private readonly globalAwsService;
     private s3;
-    private BUCKET;
-    private upload;
+    private bucketName;
     constructor(globalAwsService: GlobalAwsService);
-    fileupload(req: any, res: any): Promise<any>;
-    getFiles(): Promise<FileUpload[] | string>;
-    deleteFile(file: FileUpload): Promise<unknown>;
-}
-export declare class FileUpload {
-    name: string;
-    url?: string;
-    constructor(name: string, url?: string);
-    result: any[];
+    upload(file: any, destinationFolder?: string, acl?: S3ACL): Promise<AWS.S3.ManagedUpload.SendData>;
+    uploadFromPath(filePath: string, destinationFolder?: string, acl?: S3ACL): Promise<AWS.S3.ManagedUpload.SendData>;
+    uploadS3(file: any, bucket: string, name: string, acl: S3ACL): Promise<AWS.S3.ManagedUpload.SendData>;
+    getFile(key: string): Promise<import("aws-sdk/lib/request").PromiseResult<AWS.S3.GetObjectOutput, AWS.AWSError>>;
+    getFiles(): Promise<import("aws-sdk/lib/request").PromiseResult<AWS.S3.ListObjectsV2Output, AWS.AWSError>>;
+    getSignedUrl(key: string, expiry?: number): Promise<string>;
+    deleteFile(key: string): Promise<import("aws-sdk/lib/request").PromiseResult<AWS.S3.DeleteObjectOutput, AWS.AWSError>>;
 }

@@ -26,7 +26,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { SonickeyService } from '../services/sonickey.service';
-import { SonicKey } from '../schemas/sonickey.schema';
+import { S3FileMeta, SonicKey } from '../schemas/sonickey.schema';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as makeDir from 'make-dir';
 import { diskStorage } from 'multer';
@@ -106,7 +106,13 @@ export class SonickeyController {
   @Get('/generate-unique-sonic-key')
   @ApiOperation({ summary: 'Generate unique sonic key' })
   async generateUniqueSonicKey() {
-    return await this.sonicKeyService.generateUniqueSonicKey();
+    return this.sonicKeyService.testUploadFromPath();
+  }
+
+  @Get('/file-download-test')
+  @ApiOperation({ summary: 'Generate unique sonic key' })
+  async fileDownloadTest() {
+    return this.sonicKeyService.testDownloadFile();
   }
 
   @UseGuards(JwtAuthGuard, LicenseValidationGuard)
@@ -217,17 +223,15 @@ export class SonickeyController {
     console.log('file', file);
 
     const licenseId = req?.validLicense?.key as string;
-    var downloadFileUrl: string;
-    var outFilePath: string;
+    var s3UploadResult: S3FileMeta;
     var sonicKey: string;
     return this.sonicKeyService
-      .encode(file, sonicKeyDto.encodingStrength)
+      .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
       .then(data => {
-        downloadFileUrl = data.downloadFileUrl;
-        outFilePath = data.outFilePath;
+        s3UploadResult = data.s3UploadResult as S3FileMeta;
         sonicKey = data.sonicKey;
         console.log('Increment Usages upon successfull encode');
-        return this.licensekeyService.incrementUses(licenseId,'encode', 1);
+        return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
       })
       .then(async result => {
         console.log('Going to save key in db.');
@@ -239,21 +243,22 @@ export class SonickeyController {
         const channel = ChannelEnums.PORTAL;
         const newSonicKey = new this.sonicKeyService.sonicKeyModel({
           ...sonicKeyDtoWithAudioData,
-          contentFilePath: downloadFileUrl,
+          contentFilePath: s3UploadResult.Location,
           owner: owner,
           sonicKey: sonicKey,
           channel: channel,
-          downloadable:true,
+          downloadable: true,
+          s3FileMeta: s3UploadResult,
           _id: sonicKey,
           license: licenseId,
         });
-        return newSonicKey.save().finally(() => {
-          this.fileHandlerService.deleteFileAtPath(file.path);
-        });
+        return newSonicKey.save();
       })
       .catch(err => {
-        this.fileHandlerService.deleteFileAtPath(file.path);
         throw new InternalServerErrorException(err);
+      })
+      .finally(() => {
+        this.fileHandlerService.deleteFileAtPath(file.path);
       });
   }
 

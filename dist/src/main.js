@@ -16,6 +16,8 @@ async function bootstrap() {
     app.enableCors({
         origin: [
             'https://portal.sonicdata.com',
+            'https://admin.sonicdata.com',
+            'http://admin.sonicdata.com',
             'https://sonicportal.arba-dev.uk',
             'https://sonicadminportal.arba-dev.uk',
             'http://localhost:3000',

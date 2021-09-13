@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
-import { DataMapper, DataMapperConfiguration, ScanParameters } from '@aws/dynamodb-data-mapper';
+import {S3Client} from '@aws-sdk/client-s3';
+import {
+  DataMapper,
+  DataMapperConfiguration,
+  ScanParameters,
+} from '@aws/dynamodb-data-mapper';
 import { ConfigService } from '@nestjs/config';
 import { DynamoDB } from 'aws-sdk';
 @Injectable()
@@ -23,7 +28,7 @@ export class GlobalAwsService {
   getDynamoDbMapperConfiguration(): DataMapperConfiguration {
     const client = new AWS.DynamoDB({});
 
-    return { client: client }
+    return { client: client };
   }
 
   getDynamoDbDocumentClient(): AWS.DynamoDB.DocumentClient {
@@ -40,6 +45,15 @@ export class GlobalAwsService {
     return s3;
   }
 
+  getS3ClientV2():S3Client {
+    return new S3Client({
+      credentials: {
+        accessKeyId: this.configService.get('AWS_ACCESS_KEY_ID'),
+        secretAccessKey: this.configService.get('AWS_SECRET_ACCESS_KEY'),
+      },
+    });
+  }
+
   getCognitoIdentityServiceProvider(): AWS.CognitoIdentityServiceProvider {
     const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider(
       {
@@ -50,10 +64,10 @@ export class GlobalAwsService {
   }
 }
 
-export class GlobalDynamoDbDataMapper extends DataMapper{
-  constructor(){
+export class GlobalDynamoDbDataMapper extends DataMapper {
+  constructor() {
     super({
-      client:new DynamoDB({})
-    })
+      client: new DynamoDB({}),
+    });
   }
 }

@@ -15,7 +15,11 @@ export declare class SonickeyController {
     private readonly fileHandlerService;
     constructor(sonicKeyService: SonickeyService, licensekeyService: LicensekeyService, fileHandlerService: FileHandlerService);
     getAll(parsedQueryDto: ParsedQueryDto): Promise<import("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto>;
-    generateUniqueSonicKey(): Promise<string>;
+    generateUniqueSonicKey(): Promise<{
+        msg: string;
+        result: import("aws-sdk/clients/s3").ManagedUpload.SendData;
+    }>;
+    fileDownloadTest(): Promise<string>;
     createForJob(createSonicKeyDto: CreateSonicKeyFromJobDto, owner: string, req: any): Promise<SonicKey>;
     getOwnersKeys(ownerId: string, parsedQueryDto: ParsedQueryDto): Promise<import("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto>;
     getKeysByJob(jobId: string, parsedQueryDto: ParsedQueryDto): Promise<import("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto>;

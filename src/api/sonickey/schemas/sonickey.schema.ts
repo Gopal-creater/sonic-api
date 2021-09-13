@@ -4,11 +4,12 @@ import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { Job, JobSchemaName } from '../../job/schemas/job.schema';
 import { ApiKeySchemaName } from '../../api-key/schemas/api-key.schema';
 import { ChannelEnums } from '../../../constants/Enums';
+import { S3FileUploadI } from '../../s3fileupload/interfaces';
 
 export const SonicKeySchemaName = 'SonicKey';
 
 @Schema()
-export class FileMeta {
+export class S3FileMeta implements S3FileUploadI {
 
   @ApiProperty()
   ETag: string;
@@ -108,8 +109,8 @@ export class SonicKey extends Document {
   contentFilePath: string;
 
   @ApiProperty()
-  @Prop({type:FileMeta,required:true})
-  fileMeta: FileMeta;
+  @Prop({type:S3FileMeta,required:true})
+  s3FileMeta: S3FileMeta;
 
   @ApiProperty()
   @Prop()

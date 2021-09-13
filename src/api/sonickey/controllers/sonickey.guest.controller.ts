@@ -96,22 +96,24 @@ export class SonickeyGuestController {
     const owner = 'guest'
     const licenseId = "guest_license"
     return this.sonicKeyService
-      .encode(file, sonicKeyDto.encodingStrength)
+      .encodeAndUploadToS3(file,owner, sonicKeyDto.encodingStrength)
       .then(async data => {
         const sonicKeyDtoWithMeta = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file,sonicKeyDto)
         const newSonicKey = new this.sonicKeyService.sonicKeyModel({
             ...sonicKeyDtoWithMeta,
-              contentFilePath: data.downloadFileUrl,
+              contentFilePath: data.s3UploadResult?.Location,
+              s3FileMeta:data.s3UploadResult,
               owner: owner,
               channel:channel,
               sonicKey: data.sonicKey,
               _id:data.sonicKey,
               license: licenseId
           });
-          return newSonicKey.save().finally(() => {
-            this.fileHandlerService.deleteFileAtPath(file.path);
-          });
-      });
+          return newSonicKey.save()
+      })
+      .finally(()=>{
+        this.fileHandlerService.deleteFileAtPath(file.path);
+      })
   }
 
   @UseInterceptors(

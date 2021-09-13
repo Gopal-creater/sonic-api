@@ -30,8 +30,13 @@ export function isValidUUID(str:string) {
  * @returns {Promise} [ data, undefined ]
  * @returns {Promise} [ undefined, Error ]
  */
-function promiseHandler(promise:any):Promise<[any,any]>{
+export function promiseHandler(promise:any):Promise<[any,any]>{
     return promise
       .then((data: any) => Promise.resolve([data, undefined]))
       .catch((error: any) => Promise.resolve([undefined, error]));
   }
+
+  export function extractFileName(url:string){
+    var filename = url.substring(url.lastIndexOf('/')+1);
+    return filename
+    }
