@@ -17,33 +17,48 @@ const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const s3fileupload_service_1 = require("./s3fileupload.service");
 const swagger_1 = require("@nestjs/swagger");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
+const user_decorator_1 = require("../auth/decorators/user.decorator");
 let S3FileUploadController = class S3FileUploadController {
     constructor(s3FileUploadService) {
         this.s3FileUploadService = s3FileUploadService;
     }
-    getSignedUrl(key) {
+    getSignedUrl(key, userId) {
+        if (!(key === null || key === void 0 ? void 0 : key.includes(userId))) {
+            throw new common_1.ForbiddenException('You are not the owner of this file');
+        }
         return this.s3FileUploadService.getSignedUrl(key);
     }
-    async getFile(key) {
+    async getFile(key, userId) {
+        if (!(key === null || key === void 0 ? void 0 : key.includes(userId))) {
+            throw new common_1.ForbiddenException('You are not the owner of this file');
+        }
         const file = await this.s3FileUploadService.getFile(key);
-        console.log("file", file);
-        return "done";
+        return new common_1.StreamableFile(Buffer.from(file.Body));
     }
 };
 __decorate([
     common_1.Get('/signed-url/:key'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get Signed Url for download' }),
     openapi.ApiResponse({ status: 200, type: String }),
     __param(0, common_1.Param('key')),
+    __param(1, user_decorator_1.User('sub')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], S3FileUploadController.prototype, "getSignedUrl", null);
 __decorate([
     common_1.Get(':key'),
-    openapi.ApiResponse({ status: 200, type: String }),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Download file' }),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Param('key')),
+    __param(1, user_decorator_1.User('sub')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], S3FileUploadController.prototype, "getFile", null);
 S3FileUploadController = __decorate([

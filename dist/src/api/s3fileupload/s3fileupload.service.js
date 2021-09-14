@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.S3FileUploadService = void 0;
 const global_aws_service_1 = require("../../shared/modules/global-aws/global-aws.service");
 const common_1 = require("@nestjs/common");
-const client_s3_1 = require("@aws-sdk/client-s3");
 const fs = require("fs");
 const uniqid = require("uniqid");
 const Enums_1 = require("../../constants/Enums");
@@ -24,15 +23,19 @@ let S3FileUploadService = class S3FileUploadService {
         this.s3ClientV2 = this.globalAwsService.getS3ClientV2();
         this.bucketName = process.env.AWS_S3_BUCKET_NAME;
     }
-    async upload(file, destinationFolder, acl = Enums_1.S3ACL.PUBLIC_READ) {
+    async upload(file, destinationFolder, acl = Enums_1.S3ACL.PRIVATE) {
         const { originalname } = file;
-        const bucketS3Destination = destinationFolder ? `${this.bucketName}/${destinationFolder}` : this.bucketName;
+        const bucketS3Destination = destinationFolder
+            ? `${this.bucketName}/${destinationFolder}`
+            : this.bucketName;
         return this.uploadS3(file.buffer, bucketS3Destination, originalname, acl);
     }
     async uploadFromPath(filePath, destinationFolder, acl = Enums_1.S3ACL.PUBLIC_READ) {
         const fileContect = fs.createReadStream(filePath);
         const fileName = utils_1.extractFileName(filePath);
-        const bucketS3Destination = destinationFolder ? `${this.bucketName}/${destinationFolder}` : this.bucketName;
+        const bucketS3Destination = destinationFolder
+            ? `${this.bucketName}/${destinationFolder}`
+            : this.bucketName;
         return this.uploadS3(fileContect, bucketS3Destination, fileName, acl);
     }
     async uploadS3(file, bucket, name, acl) {
@@ -40,16 +43,16 @@ let S3FileUploadService = class S3FileUploadService {
             Bucket: bucket,
             Key: `${uniqid()}-${name}`,
             Body: file,
-            ACL: acl
+            ACL: acl,
         };
         return this.s3.upload(params).promise();
     }
     getFile(key) {
-        const getObjectCommand = new client_s3_1.GetObjectCommand({
+        const params = {
             Bucket: this.bucketName,
-            Key: key
-        });
-        return this.s3ClientV2.send(getObjectCommand);
+            Key: key,
+        };
+        return this.s3.getObject(params).promise();
     }
     getFiles() {
         const params = {
@@ -61,7 +64,7 @@ let S3FileUploadService = class S3FileUploadService {
         const params = {
             Bucket: this.bucketName,
             Key: key,
-            Expires: expiry
+            Expires: expiry,
         };
         return this.s3.getSignedUrlPromise('getObject', params);
     }

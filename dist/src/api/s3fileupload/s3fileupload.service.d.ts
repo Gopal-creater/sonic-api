@@ -10,7 +10,7 @@ export declare class S3FileUploadService {
     upload(file: any, destinationFolder?: string, acl?: S3ACL): Promise<AWS.S3.ManagedUpload.SendData>;
     uploadFromPath(filePath: string, destinationFolder?: string, acl?: S3ACL): Promise<AWS.S3.ManagedUpload.SendData>;
     uploadS3(file: any, bucket: string, name: string, acl: S3ACL): Promise<AWS.S3.ManagedUpload.SendData>;
-    getFile(key: string): Promise<import("@aws-sdk/client-s3").GetObjectCommandOutput>;
+    getFile(key: string): Promise<import("aws-sdk/lib/request").PromiseResult<AWS.S3.GetObjectOutput, AWS.AWSError>>;
     getFiles(): Promise<import("aws-sdk/lib/request").PromiseResult<AWS.S3.ListObjectsV2Output, AWS.AWSError>>;
     getSignedUrl(key: string, expiry?: number): Promise<string>;
     deleteFile(key: string): Promise<import("aws-sdk/lib/request").PromiseResult<AWS.S3.DeleteObjectOutput, AWS.AWSError>>;
