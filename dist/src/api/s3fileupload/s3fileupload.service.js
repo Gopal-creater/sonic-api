@@ -30,7 +30,7 @@ let S3FileUploadService = class S3FileUploadService {
             : this.bucketName;
         return this.uploadS3(file.buffer, bucketS3Destination, originalname, acl);
     }
-    async uploadFromPath(filePath, destinationFolder, acl = Enums_1.S3ACL.PUBLIC_READ) {
+    async uploadFromPath(filePath, destinationFolder, acl = Enums_1.S3ACL.PRIVATE) {
         const fileContect = fs.createReadStream(filePath);
         const fileName = utils_1.extractFileName(filePath);
         const bucketS3Destination = destinationFolder

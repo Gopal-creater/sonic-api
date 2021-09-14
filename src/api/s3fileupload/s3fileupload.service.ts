@@ -31,7 +31,7 @@ export class S3FileUploadService {
   async uploadFromPath(
     filePath: string,
     destinationFolder?: string,
-    acl = S3ACL.PUBLIC_READ,
+    acl = S3ACL.PRIVATE,
   ) {
     const fileContect = fs.createReadStream(filePath);
     const fileName = extractFileName(filePath);
