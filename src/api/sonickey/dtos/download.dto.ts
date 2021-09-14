@@ -7,3 +7,8 @@ export class DownloadDto {
     @ApiProperty()
     contentType?: string;
 }
+
+export class S3DownloadDto {
+    @ApiProperty()
+    key: string
+}

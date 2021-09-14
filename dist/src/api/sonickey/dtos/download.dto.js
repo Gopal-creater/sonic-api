@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DownloadDto = void 0;
+exports.S3DownloadDto = exports.DownloadDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 class DownloadDto {
@@ -26,4 +26,14 @@ __decorate([
     __metadata("design:type", String)
 ], DownloadDto.prototype, "contentType", void 0);
 exports.DownloadDto = DownloadDto;
+class S3DownloadDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { key: { required: true, type: () => String } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], S3DownloadDto.prototype, "key", void 0);
+exports.S3DownloadDto = S3DownloadDto;
 //# sourceMappingURL=download.dto.js.map
