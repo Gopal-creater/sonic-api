@@ -6,6 +6,7 @@ export enum ChannelEnums {
   MOBILEAPP = 'MOBILEAPP',
   HARDWARE = 'HARDWARE',
   RADIOSTATION = 'RADIOSTATION',
+  STREAMREADER = 'STREAMREADER'
 }
 
 export enum Permissions {

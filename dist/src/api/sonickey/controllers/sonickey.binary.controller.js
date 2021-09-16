@@ -22,7 +22,7 @@ const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 const binary_license_validation_guard_1 = require("../../auth/guards/binary-license-validation.guard");
 const apikey_decorator_1 = require("../../auth/decorators/apikey.decorator");
 const Enums_1 = require("../../../constants/Enums");
-const licensekey_decorator_1 = require("../../auth/decorators/licensekey.decorator");
+const validatedlicense_decorator_1 = require("../../auth/decorators/validatedlicense.decorator");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 let SonickeyBinaryController = class SonickeyBinaryController {
     constructor(sonicKeyService, licensekeyService) {
@@ -50,7 +50,7 @@ __decorate([
     __param(0, common_1.Body()),
     __param(1, apikey_decorator_1.ApiKey('customer')),
     __param(2, apikey_decorator_1.ApiKey('_id')),
-    __param(3, licensekey_decorator_1.LicenseKey('key')),
+    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromBinaryDto, String, String, String]),
     __metadata("design:returntype", Promise)

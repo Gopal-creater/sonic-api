@@ -22,5 +22,6 @@ import { RadioStationListener } from './listeners/radiostation.listener';
     RadiostationService,
     RadioStationListener,
   ],
+  exports:[RadiostationService]
 })
 export class RadiostationModule {}

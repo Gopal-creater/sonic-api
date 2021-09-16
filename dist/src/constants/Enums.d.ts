@@ -5,7 +5,8 @@ export declare enum ChannelEnums {
     PORTAL = "PORTAL",
     MOBILEAPP = "MOBILEAPP",
     HARDWARE = "HARDWARE",
-    RADIOSTATION = "RADIOSTATION"
+    RADIOSTATION = "RADIOSTATION",
+    STREAMREADER = "STREAMREADER"
 }
 export declare enum Permissions {
     MANAGE = 1

@@ -73,6 +73,14 @@ export class LicenseKey extends Document {
   decodeUses: number;
 
   @ApiProperty()
+  @Prop({ required: true,default: 0 })
+  maxMonitoringUses: number;
+
+  @ApiProperty()
+  @Prop({ default: 0 })
+  monitoringUses: number;
+
+  @ApiProperty()
   @Prop({
     type: Date,
     default: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),

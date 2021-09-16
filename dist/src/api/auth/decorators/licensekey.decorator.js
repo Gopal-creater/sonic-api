@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LicenseKey = void 0;
+exports.ValidatedLicense = void 0;
 const common_1 = require("@nestjs/common");
-exports.LicenseKey = common_1.createParamDecorator((data, ctx) => {
+exports.ValidatedLicense = common_1.createParamDecorator((data, ctx) => {
     const req = ctx.switchToHttp().getRequest();
     if (data) {
         return req.validLicense[data];

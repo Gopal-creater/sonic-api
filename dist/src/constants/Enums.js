@@ -10,6 +10,7 @@ var ChannelEnums;
     ChannelEnums["MOBILEAPP"] = "MOBILEAPP";
     ChannelEnums["HARDWARE"] = "HARDWARE";
     ChannelEnums["RADIOSTATION"] = "RADIOSTATION";
+    ChannelEnums["STREAMREADER"] = "STREAMREADER";
 })(ChannelEnums = exports.ChannelEnums || (exports.ChannelEnums = {}));
 var Permissions;
 (function (Permissions) {

@@ -31,6 +31,7 @@ RadiostationModule = __decorate([
             radiostation_service_1.RadiostationService,
             radiostation_listener_1.RadioStationListener,
         ],
+        exports: [radiostation_service_1.RadiostationService]
     })
 ], RadiostationModule);
 exports.RadiostationModule = RadiostationModule;

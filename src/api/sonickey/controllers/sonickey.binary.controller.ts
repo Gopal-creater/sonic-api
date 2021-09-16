@@ -17,7 +17,7 @@ import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { BinaryLicenseValidationGuard } from '../../auth/guards/binary-license-validation.guard';
 import { ApiKey } from '../../auth/decorators/apikey.decorator';
 import { ChannelEnums } from '../../../constants/Enums';
-import { LicenseKey } from '../../auth/decorators/licensekey.decorator';
+import { ValidatedLicense } from '../../auth/decorators/validatedlicense.decorator';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 
 @ApiTags('SonicKeys ThirdParty-Binary Controller (protected by x-api-key)')
@@ -37,7 +37,7 @@ export class SonickeyBinaryController {
     @Body() createSonicKeyDto: CreateSonicKeyFromBinaryDto,
     @ApiKey('customer') customer: string,
     @ApiKey('_id') apiKey: string,
-    @LicenseKey('key') licenseKey: string
+    @ValidatedLicense('key') licenseKey: string
   ) {
     const channel = ChannelEnums.BINARY
     const newSonicKey = new this.sonicKeyService.sonicKeyModel({

@@ -125,6 +125,12 @@ let LicensekeyService = class LicensekeyService {
                 throw new common_1.UnprocessableEntityException("Can't increment uses because this increment will exceed the maxUses.");
             }
         }
+        else if (usesFor == 'monitor') {
+            licenseKey.monitoringUses = licenseKey.monitoringUses + incrementBy;
+            if (licenseKey.monitoringUses > licenseKey.maxMonitoringUses) {
+                throw new common_1.UnprocessableEntityException("Can't increment uses because this increment will exceed the maxUses for monitor.");
+            }
+        }
         return licenseKey.save();
     }
     async decrementUses(id, usesFor, decrementBy = 1) {
@@ -141,6 +147,12 @@ let LicensekeyService = class LicensekeyService {
             licenseKey.encodeUses = licenseKey.encodeUses - decrementBy;
             if (licenseKey.encodeUses < 0) {
                 throw new common_1.UnprocessableEntityException("Can't decrement uses because this decrement will become less than 0.");
+            }
+        }
+        else if (usesFor == 'monitor') {
+            licenseKey.monitoringUses = licenseKey.monitoringUses - decrementBy;
+            if (licenseKey.monitoringUses < 0) {
+                throw new common_1.UnprocessableEntityException("Can't decrement uses because this decrement will become less than 0 for monitor.");
             }
         }
         return licenseKey.save();

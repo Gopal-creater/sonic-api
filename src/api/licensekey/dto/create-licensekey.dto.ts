@@ -23,6 +23,12 @@ export class CreateLicensekeyDto {
   
     @ApiProperty()
     decodeUses: number;
+
+    @ApiProperty()
+    maxMonitoringUses: number;
+  
+    @ApiProperty()
+    monitoringUses: number;
   
     @ApiProperty()
     validity: Date;

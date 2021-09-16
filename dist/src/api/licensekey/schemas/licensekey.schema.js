@@ -103,6 +103,16 @@ __decorate([
 ], LicenseKey.prototype, "decodeUses", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ required: true, default: 0 }),
+    __metadata("design:type", Number)
+], LicenseKey.prototype, "maxMonitoringUses", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: 0 }),
+    __metadata("design:type", Number)
+], LicenseKey.prototype, "monitoringUses", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop({
         type: Date,
         default: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),

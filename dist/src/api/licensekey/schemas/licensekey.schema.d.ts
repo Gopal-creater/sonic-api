@@ -20,6 +20,8 @@ export declare class LicenseKey extends Document {
     encodeUses: number;
     maxDecodeUses: number;
     decodeUses: number;
+    maxMonitoringUses: number;
+    monitoringUses: number;
     validity?: Date;
     metaData?: Map<string, any>;
     createdBy?: string;

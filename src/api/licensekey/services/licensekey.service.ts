@@ -16,7 +16,7 @@ import { MongoosePaginateLicensekeyDto } from '../dto/mongoosepaginate-licenseke
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { UserService } from '../../user/user.service';
 
-type usesFor = 'encode' | 'decode';
+type usesFor = 'encode' | 'decode' | 'monitor';
 
 @Injectable()
 export class LicensekeyService {
@@ -125,6 +125,14 @@ export class LicensekeyService {
         );
       }
     }
+    else if (usesFor == 'monitor') {
+      licenseKey.monitoringUses = licenseKey.monitoringUses + incrementBy;
+      if (licenseKey.monitoringUses > licenseKey.maxMonitoringUses) {
+        throw new UnprocessableEntityException(
+          "Can't increment uses because this increment will exceed the maxUses for monitor.",
+        );
+      }
+    }
     return licenseKey.save();
   }
 
@@ -143,6 +151,14 @@ export class LicensekeyService {
       if (licenseKey.encodeUses < 0) {
         throw new UnprocessableEntityException(
           "Can't decrement uses because this decrement will become less than 0.",
+        );
+      }
+    }
+    else if (usesFor == 'monitor') {
+      licenseKey.monitoringUses = licenseKey.monitoringUses - decrementBy;
+      if (licenseKey.monitoringUses < 0) {
+        throw new UnprocessableEntityException(
+          "Can't decrement uses because this decrement will become less than 0 for monitor.",
         );
       }
     }

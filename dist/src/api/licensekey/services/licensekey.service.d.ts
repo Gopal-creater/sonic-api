@@ -5,7 +5,7 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateLicensekeyDto } from '../dto/mongoosepaginate-licensekey.dto';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { UserService } from '../../user/user.service';
-declare type usesFor = 'encode' | 'decode';
+declare type usesFor = 'encode' | 'decode' | 'monitor';
 export declare class LicensekeyService {
     readonly licenseKeyModel: Model<LicenseKey>;
     readonly keygenService: KeygenService;

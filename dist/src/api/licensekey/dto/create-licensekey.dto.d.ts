@@ -7,6 +7,8 @@ export declare class CreateLicensekeyDto {
     encodeUses: number;
     maxDecodeUses: number;
     decodeUses: number;
+    maxMonitoringUses: number;
+    monitoringUses: number;
     validity: Date;
     metaData?: Map<string, any>;
 }

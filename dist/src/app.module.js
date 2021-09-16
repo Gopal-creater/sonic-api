@@ -36,6 +36,7 @@ const api_key_module_1 = require("./api/api-key/api-key.module");
 const detection_module_1 = require("./api/detection/detection.module");
 const licensekey_module_1 = require("./api/licensekey/licensekey.module");
 const s3fileupload_module_1 = require("./api/s3fileupload/s3fileupload.module");
+const radiomonitor_module_1 = require("./api/radiomonitor/radiomonitor.module");
 mongoosePaginate.paginate.options = {
     limit: 50,
 };
@@ -90,6 +91,7 @@ AppModule = __decorate([
             detection_module_1.DetectionModule,
             licensekey_module_1.LicensekeyModule,
             s3fileupload_module_1.S3FileUploadModule,
+            radiomonitor_module_1.RadiomonitorModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, app_gateway_1.AppGateway],
