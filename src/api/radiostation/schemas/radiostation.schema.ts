@@ -23,7 +23,15 @@ export class RadioStation extends Document {
   name: string;
 
   @ApiProperty()
-  @Prop()
+  @Prop({
+    required:true
+  })
+  country: string;
+
+  @ApiProperty()
+  @Prop({
+    required:true
+  })
   streamingUrl: string;
 
   @ApiProperty()

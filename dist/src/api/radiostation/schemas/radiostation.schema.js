@@ -39,7 +39,9 @@ __decorate([
 ], RadioStation.prototype, "name", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    mongoose_1.Prop({
+        required: true
+    }),
     __metadata("design:type", String)
 ], RadioStation.prototype, "streamingUrl", void 0);
 __decorate([
