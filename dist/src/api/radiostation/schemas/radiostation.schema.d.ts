@@ -6,6 +6,7 @@ export declare class Credential {
 }
 export declare class RadioStation extends Document {
     name: string;
+    country: string;
     streamingUrl: string;
     website: string;
     logo: string;
