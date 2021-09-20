@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
   forwardRef,
-  Inject
+  Inject,
 } from '@nestjs/common';
 import { CreateLicensekeyDto } from '../dto/create-licensekey.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -111,26 +111,31 @@ export class LicensekeyService {
     const licenseKey = await this.licenseKeyModel.findById(id);
     if (!licenseKey) throw new NotFoundException();
     if (usesFor == 'decode') {
-      licenseKey.decodeUses = licenseKey.decodeUses + incrementBy;
-      if (licenseKey.decodeUses > licenseKey.maxDecodeUses) {
-        throw new UnprocessableEntityException(
-          "Can't increment uses because this increment will exceed the maxUses.",
-        );
+      if (!licenseKey.isUnlimitedDecode) {
+        licenseKey.decodeUses = licenseKey.decodeUses + incrementBy;
+        if (licenseKey.decodeUses > licenseKey.maxDecodeUses) {
+          throw new UnprocessableEntityException(
+            "Can't increment uses because this increment will exceed the maxUses.",
+          );
+        }
       }
     } else if (usesFor == 'encode') {
-      licenseKey.encodeUses = licenseKey.encodeUses + incrementBy;
-      if (licenseKey.encodeUses > licenseKey.maxEncodeUses) {
-        throw new UnprocessableEntityException(
-          "Can't increment uses because this increment will exceed the maxUses.",
-        );
+      if (!licenseKey.isUnlimitedEncode) {
+        licenseKey.encodeUses = licenseKey.encodeUses + incrementBy;
+        if (licenseKey.encodeUses > licenseKey.maxEncodeUses) {
+          throw new UnprocessableEntityException(
+            "Can't increment uses because this increment will exceed the maxUses.",
+          );
+        }
       }
-    }
-    else if (usesFor == 'monitor') {
-      licenseKey.monitoringUses = licenseKey.monitoringUses + incrementBy;
-      if (licenseKey.monitoringUses > licenseKey.maxMonitoringUses) {
-        throw new UnprocessableEntityException(
-          "Can't increment uses because this increment will exceed the maxUses for monitor.",
-        );
+    } else if (usesFor == 'monitor') {
+      if (!licenseKey.isUnlimitedMonitor) {
+        licenseKey.monitoringUses = licenseKey.monitoringUses + incrementBy;
+        if (licenseKey.monitoringUses > licenseKey.maxMonitoringUses) {
+          throw new UnprocessableEntityException(
+            "Can't increment uses because this increment will exceed the maxUses for monitor.",
+          );
+        }
       }
     }
     return licenseKey.save();
@@ -140,26 +145,31 @@ export class LicensekeyService {
     const licenseKey = await this.licenseKeyModel.findById(id);
     if (!licenseKey) throw new NotFoundException();
     if (usesFor == 'decode') {
-      licenseKey.decodeUses = licenseKey.decodeUses - decrementBy;
-      if (licenseKey.decodeUses < 0) {
-        throw new UnprocessableEntityException(
-          "Can't decrement uses because this decrement will become less than 0.",
-        );
+      if (!licenseKey.isUnlimitedDecode) {
+        licenseKey.decodeUses = licenseKey.decodeUses - decrementBy;
+        if (licenseKey.decodeUses < 0) {
+          throw new UnprocessableEntityException(
+            "Can't decrement uses because this decrement will become less than 0.",
+          );
+        }
       }
     } else if (usesFor == 'encode') {
-      licenseKey.encodeUses = licenseKey.encodeUses - decrementBy;
-      if (licenseKey.encodeUses < 0) {
-        throw new UnprocessableEntityException(
-          "Can't decrement uses because this decrement will become less than 0.",
-        );
+      if (!licenseKey.isUnlimitedEncode) {
+        licenseKey.encodeUses = licenseKey.encodeUses - decrementBy;
+        if (licenseKey.encodeUses < 0) {
+          throw new UnprocessableEntityException(
+            "Can't decrement uses because this decrement will become less than 0.",
+          );
+        }
       }
-    }
-    else if (usesFor == 'monitor') {
-      licenseKey.monitoringUses = licenseKey.monitoringUses - decrementBy;
-      if (licenseKey.monitoringUses < 0) {
-        throw new UnprocessableEntityException(
-          "Can't decrement uses because this decrement will become less than 0 for monitor.",
-        );
+    } else if (usesFor == 'monitor') {
+      if (!licenseKey.isUnlimitedMonitor) {
+        licenseKey.monitoringUses = licenseKey.monitoringUses - decrementBy;
+        if (licenseKey.monitoringUses < 0) {
+          throw new UnprocessableEntityException(
+            "Can't decrement uses because this decrement will become less than 0 for monitor.",
+          );
+        }
       }
     }
     return licenseKey.save();
@@ -226,22 +236,22 @@ export class LicensekeyService {
     const { data, error } = await this.keygenService.getAllLicenses('limit=90');
     for await (const license of data) {
       const oldLicense = license?.attributes;
-      const {reserves,...oldOwners} = oldLicense?.metadata ||{}
+      const { reserves, ...oldOwners } = oldLicense?.metadata || {};
       console.log('Name', oldLicense?.name);
-      const oldOwnersArr = Object.values(oldOwners||{}) as string[]
+      const oldOwnersArr = Object.values(oldOwners || {}) as string[];
       console.log('oldOwners', oldOwnersArr);
-      var newOwners:LKOwner[]=[]
+      var newOwners: LKOwner[] = [];
       for await (const ownerId of oldOwnersArr) {
-        const user = await this.userService.getUserProfile(ownerId)
-        if(user){
-          const lkOwner = new LKOwner()
+        const user = await this.userService.getUserProfile(ownerId);
+        if (user) {
+          const lkOwner = new LKOwner();
           lkOwner.ownerId = ownerId;
           lkOwner.username = user.Username;
           lkOwner.email = user.UserAttributes.find(
             attr => attr.Name == 'email',
           ).Value;
           lkOwner.name = user.Username;
-          newOwners.push(lkOwner)
+          newOwners.push(lkOwner);
         }
       }
       newOwners = _.uniqBy(newOwners, 'ownerId');
@@ -259,16 +269,15 @@ export class LicensekeyService {
         decodeUses: 0,
         validity: oldLicense.expiry,
         createdBy:
-          process.env.NODE_ENV== 'production'
+          process.env.NODE_ENV == 'production'
             ? '9ab5a58b-09e0-46ce-bb50-1321d927c382'
             : '5728f50d-146b-47d2-aa7b-a50bc37d641d',
         owners: newOwners,
-      })
+      });
 
-      await newLicense.save()
-      .catch(err=>{
-        console.log(`Error saving license ${oldLicense.name}`,err)
-      })
+      await newLicense.save().catch(err => {
+        console.log(`Error saving license ${oldLicense.name}`, err);
+      });
     }
     return data.length || 0;
   }

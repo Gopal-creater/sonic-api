@@ -18,10 +18,13 @@ export declare class LicenseKey extends Document {
     suspended?: boolean;
     maxEncodeUses: number;
     encodeUses: number;
+    isUnlimitedEncode: boolean;
     maxDecodeUses: number;
     decodeUses: number;
+    isUnlimitedDecode: boolean;
     maxMonitoringUses: number;
     monitoringUses: number;
+    isUnlimitedMonitor: boolean;
     validity?: Date;
     metaData?: Map<string, any>;
     createdBy?: string;

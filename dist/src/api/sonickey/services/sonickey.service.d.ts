@@ -9,12 +9,15 @@ import { Model } from 'mongoose';
 import { MongoosePaginateSonicKeyDto } from '../dtos/mongoosepaginate-sonickey.dto';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { S3FileUploadService } from '../../s3fileupload/s3fileupload.service';
+import { DetectionService } from '../../detection/detection.service';
+import { Detection } from 'src/api/detection/schemas/detection.schema';
 export declare class SonickeyService {
     sonicKeyModel: Model<SonicKey>;
     private readonly fileOperationService;
     private readonly fileHandlerService;
     private readonly s3FileUploadService;
-    constructor(sonicKeyModel: Model<SonicKey>, fileOperationService: FileOperationService, fileHandlerService: FileHandlerService, s3FileUploadService: S3FileUploadService);
+    private readonly detectionService;
+    constructor(sonicKeyModel: Model<SonicKey>, fileOperationService: FileOperationService, fileHandlerService: FileHandlerService, s3FileUploadService: S3FileUploadService, detectionService: DetectionService);
     generateUniqueSonicKey(): string;
     testUploadFromPath(): Promise<{
         msg: string;
@@ -34,6 +37,7 @@ export declare class SonickeyService {
         sonicKey: string;
     }>;
     decode(file: IUploadedFile): Promise<unknown>;
+    findAndGetValidSonicKeyFromRandomDecodedKeys(keys: string[], saveDetection: boolean, detectionToSave: Detection): Promise<SonicKey[]>;
     decodeAllKeys(file: IUploadedFile): Promise<{
         sonicKeys: string[];
     }>;

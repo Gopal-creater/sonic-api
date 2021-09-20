@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module,forwardRef } from '@nestjs/common';
 import { DetectionService } from './detection.service';
 import { DetectionController } from './controllers/detection.controller';
 import { DetectionOwnerController } from './controllers/detection.owner.controller';
@@ -19,7 +19,7 @@ import { SonickeyModule } from '../sonickey/sonickey.module';
         },
       ]),
       ApiKeyModule,
-      SonickeyModule
+      forwardRef(()=>SonickeyModule)
     ],
   controllers: [DetectionController,DetectionOwnerController],
   providers: [DetectionService],

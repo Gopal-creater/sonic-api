@@ -11,6 +11,7 @@ import {
   ClassSerializerInterceptor,
   Get,
   Query,
+  Param,
 } from '@nestjs/common';
 import { SonickeyService } from '../services/sonickey.service';
 import { SonicKey } from '../schemas/sonickey.schema';
@@ -23,13 +24,15 @@ import {
   ApiOperation,
   ApiTags,
   ApiConsumes,
-  ApiBody
+  ApiBody,
+  ApiParam,
 } from '@nestjs/swagger';
 import * as uniqid from 'uniqid';
 import { FileHandlerService } from '../../../shared/services/file-handler.service';
 import { PublicEncodeDto } from '../dtos/public-encode.dto';
 import { PublicDecodeDto } from '../dtos/public-decode.dto';
-import { ChannelEnums} from '../../../constants/Enums';
+import { ChannelEnums } from '../../../constants/Enums';
+import { DetectionService } from '../../detection/detection.service';
 
 /**
  * Prabin:
@@ -37,15 +40,14 @@ import { ChannelEnums} from '../../../constants/Enums';
  * To get all owner's sonickeys we have to create a global secondary index table.
  */
 
-
 @ApiTags('Public Controller')
 @Controller('sonic-keys-guest')
 export class SonickeyGuestController {
   constructor(
     private readonly sonicKeyService: SonickeyService,
     private readonly fileHandlerService: FileHandlerService,
+    private readonly detectionService: DetectionService,
   ) {}
-
 
   @UseInterceptors(
     FileInterceptor('mediaFile', {
@@ -91,29 +93,32 @@ export class SonickeyGuestController {
     @UploadedFile() file: IUploadedFile,
     @Req() req: any,
   ) {
-    const channel = ChannelEnums.MOBILEAPP
+    const channel = ChannelEnums.MOBILEAPP;
     console.log('file', file);
-    const owner = 'guest'
-    const licenseId = "guest_license"
+    const owner = 'guest';
+    const licenseId = 'guest_license';
     return this.sonicKeyService
-      .encodeAndUploadToS3(file,owner, sonicKeyDto.encodingStrength)
+      .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
       .then(async data => {
-        const sonicKeyDtoWithMeta = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file,sonicKeyDto)
+        const sonicKeyDtoWithMeta = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(
+          file,
+          sonicKeyDto,
+        );
         const newSonicKey = new this.sonicKeyService.sonicKeyModel({
-            ...sonicKeyDtoWithMeta,
-              contentFilePath: data.s3UploadResult?.Location,
-              s3FileMeta:data.s3UploadResult,
-              owner: owner,
-              channel:channel,
-              sonicKey: data.sonicKey,
-              _id:data.sonicKey,
-              license: licenseId
-          });
-          return newSonicKey.save()
+          ...sonicKeyDtoWithMeta,
+          contentFilePath: data.s3UploadResult?.Location,
+          s3FileMeta: data.s3UploadResult,
+          owner: owner,
+          channel: channel,
+          sonicKey: data.sonicKey,
+          _id: data.sonicKey,
+          license: licenseId,
+        });
+        return newSonicKey.save();
       })
-      .finally(()=>{
+      .finally(() => {
         this.fileHandlerService.deleteFileAtPath(file.path);
-      })
+      });
   }
 
   @UseInterceptors(
@@ -150,22 +155,39 @@ export class SonickeyGuestController {
     description: 'File To Decode',
     type: PublicDecodeDto,
   })
-  @Post('/decode')
+  @Post(':channel/decode')
+  @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums)] })
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ summary: 'Decode File and retrive key information' })
-  async decode(@UploadedFile() file: IUploadedFile) {
+  async decode(
+    @Param('channel') channel: string,
+    @UploadedFile() file: IUploadedFile,
+  ) {
     return this.sonicKeyService
       .decodeAllKeys(file)
       .then(async ({ sonicKeys }) => {
         console.log('Detected keys from Decode', sonicKeys);
         //iterate all the sonicKeys from decode function in order to get metadata
-        var sonicKeysMetadata:SonicKey[] = [];
+        var sonicKeysMetadata: SonicKey[] = [];
         for await (const sonicKey of sonicKeys) {
-          const metadata = await this.sonicKeyService.findBySonicKey(sonicKey);
-          if (!metadata) {
+          const validSonicKey = await this.sonicKeyService.findBySonicKey(
+            sonicKey,
+          );
+          if (!validSonicKey) {
             continue;
           }
-          sonicKeysMetadata.push(metadata);
+          const newDetection = await this.detectionService.detectionModel.create(
+            {
+              sonicKey: sonicKey,
+              owner: validSonicKey.owner,
+              sonicKeyOwnerId: validSonicKey.owner,
+              sonicKeyOwnerName: validSonicKey.contentOwner,
+              channel: channel,
+              detectedAt: new Date(),
+            },
+          );
+          await newDetection.save();
+          sonicKeysMetadata.push(validSonicKey);
         }
         return sonicKeysMetadata;
       });

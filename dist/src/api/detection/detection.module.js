@@ -27,7 +27,7 @@ DetectionModule = __decorate([
                 },
             ]),
             api_key_module_1.ApiKeyModule,
-            sonickey_module_1.SonickeyModule
+            common_1.forwardRef(() => sonickey_module_1.SonickeyModule)
         ],
         controllers: [detection_controller_1.DetectionController, detection_owner_controller_1.DetectionOwnerController],
         providers: [detection_service_1.DetectionService],

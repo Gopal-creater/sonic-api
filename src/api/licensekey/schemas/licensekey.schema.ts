@@ -57,12 +57,16 @@ export class LicenseKey extends Document {
   suspended?: boolean;
 
   @ApiProperty()
-  @Prop({ required: true })
+  @Prop({ required: true,default: 0 })
   maxEncodeUses: number;
 
   @ApiProperty()
   @Prop({ default: 0 })
   encodeUses: number;
+
+  @ApiProperty()
+  @Prop({ required: false,default: false })
+  isUnlimitedEncode: boolean;
 
   @ApiProperty()
   @Prop({ required: true,default: 0 })
@@ -73,12 +77,20 @@ export class LicenseKey extends Document {
   decodeUses: number;
 
   @ApiProperty()
+  @Prop({ required: false,default: false, })
+  isUnlimitedDecode: boolean;
+
+  @ApiProperty()
   @Prop({ required: true,default: 0 })
   maxMonitoringUses: number;
 
   @ApiProperty()
   @Prop({ default: 0 })
   monitoringUses: number;
+
+  @ApiProperty()
+  @Prop({ required: false,default: false })
+  isUnlimitedMonitor: boolean;
 
   @ApiProperty()
   @Prop({

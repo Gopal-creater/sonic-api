@@ -41,6 +41,9 @@ let LicenseValidationGuard = class LicenseValidationGuard {
         if (!validationResult.valid) {
             throw new common_1.UnprocessableEntityException({ message: validationResult.message });
         }
+        if (licenseKey.isUnlimitedEncode) {
+            return true;
+        }
         var reservedLicenceCount = 0;
         if (licenseKey.reserves && Array.isArray(licenseKey.reserves)) {
             reservedLicenceCount = licenseKey.reserves.reduce((sum, { count }) => sum + count, 0);
@@ -93,6 +96,9 @@ let SubscribeRadioMonitorLicenseValidationGuard = class SubscribeRadioMonitorLic
         const { validationResult, licenseKey } = await this.licensekeyService.validateLicence(id);
         if (!validationResult.valid) {
             throw new common_1.UnprocessableEntityException({ message: validationResult.message });
+        }
+        if (licenseKey.isUnlimitedMonitor) {
+            return true;
         }
         const uses = licenseKey.monitoringUses;
         const maxUses = licenseKey.maxMonitoringUses;

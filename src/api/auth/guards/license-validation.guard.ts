@@ -39,6 +39,9 @@ export class LicenseValidationGuard implements CanActivate {
     if (!validationResult.valid) {
       throw new UnprocessableEntityException({message:validationResult.message})
     }
+    if(licenseKey.isUnlimitedEncode){
+      return true;
+    }
     var reservedLicenceCount = 0;
     if (licenseKey.reserves && Array.isArray(licenseKey.reserves)) {
       reservedLicenceCount = licenseKey.reserves.reduce(
@@ -95,6 +98,9 @@ export class SubscribeRadioMonitorLicenseValidationGuard implements CanActivate 
     const { validationResult,licenseKey } = await this.licensekeyService.validateLicence(id);
     if (!validationResult.valid) {
       throw new UnprocessableEntityException({message:validationResult.message})
+    }
+    if(licenseKey.isUnlimitedMonitor){
+      return true;
     }
     const uses = licenseKey.monitoringUses
     const maxUses = licenseKey.maxMonitoringUses

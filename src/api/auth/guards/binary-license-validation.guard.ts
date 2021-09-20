@@ -33,6 +33,10 @@ export class BinaryLicenseValidationGuard implements CanActivate {
         message: 'Invalid license.',
       });
     }
+    if(licenseKey.isUnlimitedEncode){
+      request.validLicense = licenseKey;
+      return true;
+    }
     const uses = licenseKey.encodeUses;
     const maxUses = licenseKey.maxEncodeUses;
     const remaniningUses = maxUses - uses;

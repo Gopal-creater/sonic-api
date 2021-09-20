@@ -35,16 +35,18 @@ const file_handler_service_1 = require("../../../shared/services/file-handler.se
 const public_encode_dto_1 = require("../dtos/public-encode.dto");
 const public_decode_dto_1 = require("../dtos/public-decode.dto");
 const Enums_1 = require("../../../constants/Enums");
+const detection_service_1 = require("../../detection/detection.service");
 let SonickeyGuestController = class SonickeyGuestController {
-    constructor(sonicKeyService, fileHandlerService) {
+    constructor(sonicKeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
         this.fileHandlerService = fileHandlerService;
+        this.detectionService = detectionService;
     }
     encode(sonicKeyDto, file, req) {
         const channel = Enums_1.ChannelEnums.MOBILEAPP;
         console.log('file', file);
         const owner = 'guest';
-        const licenseId = "guest_license";
+        const licenseId = 'guest_license';
         return this.sonicKeyService
             .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
             .then(async (data) => {
@@ -57,7 +59,7 @@ let SonickeyGuestController = class SonickeyGuestController {
             this.fileHandlerService.deleteFileAtPath(file.path);
         });
     }
-    async decode(file) {
+    async decode(channel, file) {
         return this.sonicKeyService
             .decodeAllKeys(file)
             .then(async ({ sonicKeys }) => {
@@ -67,11 +69,20 @@ let SonickeyGuestController = class SonickeyGuestController {
             try {
                 for (var sonicKeys_1 = __asyncValues(sonicKeys), sonicKeys_1_1; sonicKeys_1_1 = await sonicKeys_1.next(), !sonicKeys_1_1.done;) {
                     const sonicKey = sonicKeys_1_1.value;
-                    const metadata = await this.sonicKeyService.findBySonicKey(sonicKey);
-                    if (!metadata) {
+                    const validSonicKey = await this.sonicKeyService.findBySonicKey(sonicKey);
+                    if (!validSonicKey) {
                         continue;
                     }
-                    sonicKeysMetadata.push(metadata);
+                    const newDetection = await this.detectionService.detectionModel.create({
+                        sonicKey: sonicKey,
+                        owner: validSonicKey.owner,
+                        sonicKeyOwnerId: validSonicKey.owner,
+                        sonicKeyOwnerName: validSonicKey.contentOwner,
+                        channel: channel,
+                        detectedAt: new Date(),
+                    });
+                    await newDetection.save();
+                    sonicKeysMetadata.push(validSonicKey);
                 }
             }
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -136,20 +147,23 @@ __decorate([
         description: 'File To Decode',
         type: public_decode_dto_1.PublicDecodeDto,
     }),
-    common_1.Post('/decode'),
+    common_1.Post(':channel/decode'),
+    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums)] }),
     common_1.UseInterceptors(common_1.ClassSerializerInterceptor),
     swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
     openapi.ApiResponse({ status: 201, type: [require("../schemas/sonickey.schema").SonicKey] }),
-    __param(0, common_1.UploadedFile()),
+    __param(0, common_1.Param('channel')),
+    __param(1, common_1.UploadedFile()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], SonickeyGuestController.prototype, "decode", null);
 SonickeyGuestController = __decorate([
     swagger_1.ApiTags('Public Controller'),
     common_1.Controller('sonic-keys-guest'),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
-        file_handler_service_1.FileHandlerService])
+        file_handler_service_1.FileHandlerService,
+        detection_service_1.DetectionService])
 ], SonickeyGuestController);
 exports.SonickeyGuestController = SonickeyGuestController;
 //# sourceMappingURL=sonickey.guest.controller.js.map

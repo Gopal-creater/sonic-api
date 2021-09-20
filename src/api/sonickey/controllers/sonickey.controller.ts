@@ -42,6 +42,7 @@ import {
   ApiOkResponse,
   ApiResponse,
   ApiQuery,
+  ApiParam,
 } from '@nestjs/swagger';
 import * as uniqid from 'uniqid';
 import { JwtAuthGuard } from '../../auth/guards';
@@ -55,6 +56,7 @@ import { Response } from 'express';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { ChannelEnums } from '../../../constants/Enums';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
+import { DetectionService } from '../../detection/detection.service';
 
 /**
  * Prabin:
@@ -69,6 +71,7 @@ export class SonickeyController {
     private readonly sonicKeyService: SonickeyService,
     private readonly licensekeyService: LicensekeyService,
     private readonly fileHandlerService: FileHandlerService,
+    private readonly detectionService: DetectionService,
   ) {}
 
   // @Get('/update-channel')
@@ -297,22 +300,39 @@ export class SonickeyController {
     type: DecodeDto,
   })
   @UseGuards(JwtAuthGuard)
-  @Post('/decode')
+  @Post(':channel/decode')
+  @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums)] })
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Decode File and retrive key information' })
-  async decode(@UploadedFile() file: IUploadedFile) {
+  async decode(
+    @UploadedFile() file: IUploadedFile,
+    @Param('channel') channel: string,
+  ) {
     return this.sonicKeyService
       .decodeAllKeys(file)
       .then(async ({ sonicKeys }) => {
         console.log('Detected keys from Decode', sonicKeys);
         //iterate all the sonicKeys from decode function in order to get metadata
-        var sonicKeysMetadata = [];
+        var sonicKeysMetadata: SonicKey[] = [];
         for await (const sonicKey of sonicKeys) {
-          const metadata = await this.sonicKeyService.findBySonicKey(sonicKey);
-          if (!metadata) {
+          const validSonicKey = await this.sonicKeyService.findBySonicKey(
+            sonicKey,
+          );
+          if (!validSonicKey) {
             continue;
           }
-          sonicKeysMetadata.push(metadata);
+          const newDetection = await this.detectionService.detectionModel.create(
+            {
+              sonicKey: sonicKey,
+              owner: validSonicKey.owner,
+              sonicKeyOwnerId: validSonicKey.owner,
+              sonicKeyOwnerName: validSonicKey.contentOwner,
+              channel: channel,
+              detectedAt: new Date(),
+            },
+          );
+          await newDetection.save();
+          sonicKeysMetadata.push(validSonicKey);
         }
         return sonicKeysMetadata;
       })
