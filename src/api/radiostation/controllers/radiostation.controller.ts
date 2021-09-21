@@ -21,12 +21,37 @@ import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { User } from '../../auth/decorators/user.decorator';
-import { subtract } from 'lodash';
+import { forEach, subtract } from 'lodash';
+import * as fs from 'fs'
 
 @ApiTags('Radio Station Controller')
 @Controller('radiostations')
 export class RadiostationController {
   constructor(private readonly radiostationService: RadiostationService) {}
+
+  // @Get('/generate-json')
+  // async genJson(
+  // ) {
+  //   var obj = {
+  //     stations: []
+  //  };
+   
+  //   const stations = await this.radiostationService.radioStationModel.find();
+  //   console.log("forEach Stating")
+  //   stations.forEach(station=>{
+  //     const newObj = {
+  //       id:station.id,
+  //       streamingUrl:station.streamingUrl,
+  //       website:station.website
+  //     }
+  //     obj.stations.push(newObj);
+  //   })
+  //   console.log("forEach End")
+  //   var json = JSON.stringify(obj);
+  //   fs.writeFileSync('stations.json', json, 'utf8');
+  //   return "Done"
+    
+  // }
 
   @Post()
   @UseGuards(JwtAuthGuard)

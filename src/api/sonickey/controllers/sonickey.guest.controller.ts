@@ -155,12 +155,10 @@ export class SonickeyGuestController {
     description: 'File To Decode',
     type: PublicDecodeDto,
   })
-  @Post(':channel/decode')
-  @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums)] })
+  @Post('/decode')
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ summary: 'Decode File and retrive key information' })
   async decode(
-    @Param('channel') channel: string,
     @UploadedFile() file: IUploadedFile,
   ) {
     return this.sonicKeyService
@@ -182,7 +180,7 @@ export class SonickeyGuestController {
               owner: validSonicKey.owner,
               sonicKeyOwnerId: validSonicKey.owner,
               sonicKeyOwnerName: validSonicKey.contentOwner,
-              channel: channel,
+              channel: ChannelEnums.MOBILEAPP,
               detectedAt: new Date(),
             },
           );

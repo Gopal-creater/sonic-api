@@ -300,11 +300,86 @@ export class SonickeyController {
     type: DecodeDto,
   })
   @UseGuards(JwtAuthGuard)
+  @Post('/decode')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Decode File and retrive key information' })
+  async decode(
+    @UploadedFile() file: IUploadedFile,
+  ) {
+    return this.sonicKeyService
+      .decodeAllKeys(file)
+      .then(async ({ sonicKeys }) => {
+        console.log('Detected keys from Decode', sonicKeys);
+        //iterate all the sonicKeys from decode function in order to get metadata
+        var sonicKeysMetadata: SonicKey[] = [];
+        for await (const sonicKey of sonicKeys) {
+          const validSonicKey = await this.sonicKeyService.findBySonicKey(
+            sonicKey,
+          );
+          if (!validSonicKey) {
+            continue;
+          }
+          const newDetection = await this.detectionService.detectionModel.create(
+            {
+              sonicKey: sonicKey,
+              owner: validSonicKey.owner,
+              sonicKeyOwnerId: validSonicKey.owner,
+              sonicKeyOwnerName: validSonicKey.contentOwner,
+              channel: ChannelEnums.PORTAL,
+              detectedAt: new Date(),
+            },
+          );
+          await newDetection.save();
+          sonicKeysMetadata.push(validSonicKey);
+        }
+        return sonicKeysMetadata;
+      })
+      .catch(err => {
+        this.fileHandlerService.deleteFileAtPath(file.path);
+        throw new BadRequestException(err);
+      });
+  }
+
+  @UseInterceptors(
+    FileInterceptor('mediaFile', {
+      // Check the mimetypes to allow for upload
+      // fileFilter: (req: any, file: any, cb: any) => {
+      //   const mimetype = file.mimetype as string;
+      //   if (mimetype.includes('audio')) {
+      //     // Allow storage of file
+      //     cb(null, true);
+      //   } else {
+      //     // Reject file
+      //     cb(new BadRequestException('Unsupported file type'), false);
+      //   }
+      // },
+      storage: diskStorage({
+        destination: async (req, file, cb) => {
+          const currentUserId = req['user']['sub'];
+          const imagePath = await makeDir(
+            `${appConfig.MULTER_DEST}/${currentUserId}`,
+          );
+          cb(null, imagePath);
+        },
+        filename: (req, file, cb) => {
+          let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+          const randomName = uniqid();
+          cb(null, `${randomName}-${orgName}`);
+        },
+      }),
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'File To Decode',
+    type: DecodeDto,
+  })
+  @UseGuards(JwtAuthGuard)
   @Post(':channel/decode')
   @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums)] })
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Decode File and retrive key information' })
-  async decode(
+  async decodeFromChannel(
     @UploadedFile() file: IUploadedFile,
     @Param('channel') channel: string,
   ) {

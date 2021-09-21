@@ -110,7 +110,7 @@ let SonickeyController = class SonickeyController {
             this.fileHandlerService.deleteFileAtPath(file.path);
         });
     }
-    async decode(file, channel) {
+    async decode(file) {
         return this.sonicKeyService
             .decodeAllKeys(file)
             .then(async ({ sonicKeys }) => {
@@ -129,7 +129,7 @@ let SonickeyController = class SonickeyController {
                         owner: validSonicKey.owner,
                         sonicKeyOwnerId: validSonicKey.owner,
                         sonicKeyOwnerName: validSonicKey.contentOwner,
-                        channel: channel,
+                        channel: Enums_1.ChannelEnums.PORTAL,
                         detectedAt: new Date(),
                     });
                     await newDetection.save();
@@ -142,6 +142,46 @@ let SonickeyController = class SonickeyController {
                     if (sonicKeys_1_1 && !sonicKeys_1_1.done && (_a = sonicKeys_1.return)) await _a.call(sonicKeys_1);
                 }
                 finally { if (e_1) throw e_1.error; }
+            }
+            return sonicKeysMetadata;
+        })
+            .catch(err => {
+            this.fileHandlerService.deleteFileAtPath(file.path);
+            throw new common_1.BadRequestException(err);
+        });
+    }
+    async decodeFromChannel(file, channel) {
+        return this.sonicKeyService
+            .decodeAllKeys(file)
+            .then(async ({ sonicKeys }) => {
+            var e_2, _a;
+            console.log('Detected keys from Decode', sonicKeys);
+            var sonicKeysMetadata = [];
+            try {
+                for (var sonicKeys_2 = __asyncValues(sonicKeys), sonicKeys_2_1; sonicKeys_2_1 = await sonicKeys_2.next(), !sonicKeys_2_1.done;) {
+                    const sonicKey = sonicKeys_2_1.value;
+                    const validSonicKey = await this.sonicKeyService.findBySonicKey(sonicKey);
+                    if (!validSonicKey) {
+                        continue;
+                    }
+                    const newDetection = await this.detectionService.detectionModel.create({
+                        sonicKey: sonicKey,
+                        owner: validSonicKey.owner,
+                        sonicKeyOwnerId: validSonicKey.owner,
+                        sonicKeyOwnerName: validSonicKey.contentOwner,
+                        channel: channel,
+                        detectedAt: new Date(),
+                    });
+                    await newDetection.save();
+                    sonicKeysMetadata.push(validSonicKey);
+                }
+            }
+            catch (e_2_1) { e_2 = { error: e_2_1 }; }
+            finally {
+                try {
+                    if (sonicKeys_2_1 && !sonicKeys_2_1.done && (_a = sonicKeys_2.return)) await _a.call(sonicKeys_2);
+                }
+                finally { if (e_2) throw e_2.error; }
             }
             return sonicKeysMetadata;
         })
@@ -331,6 +371,36 @@ __decorate([
         type: decode_dto_1.DecodeDto,
     }),
     common_1.UseGuards(guards_1.JwtAuthGuard),
+    common_1.Post('/decode'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
+    openapi.ApiResponse({ status: 201, type: [require("../schemas/sonickey.schema").SonicKey] }),
+    __param(0, common_1.UploadedFile()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "decode", null);
+__decorate([
+    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
+        storage: multer_1.diskStorage({
+            destination: async (req, file, cb) => {
+                const currentUserId = req['user']['sub'];
+                const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
+                cb(null, imagePath);
+            },
+            filename: (req, file, cb) => {
+                let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+                const randomName = uniqid();
+                cb(null, `${randomName}-${orgName}`);
+            },
+        }),
+    })),
+    swagger_1.ApiConsumes('multipart/form-data'),
+    swagger_1.ApiBody({
+        description: 'File To Decode',
+        type: decode_dto_1.DecodeDto,
+    }),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
     common_1.Post(':channel/decode'),
     swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums)] }),
     swagger_1.ApiBearerAuth(),
@@ -341,7 +411,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
-], SonickeyController.prototype, "decode", null);
+], SonickeyController.prototype, "decodeFromChannel", null);
 __decorate([
     common_1.Patch('/:sonickey'),
     common_1.UseGuards(guards_1.JwtAuthGuard),

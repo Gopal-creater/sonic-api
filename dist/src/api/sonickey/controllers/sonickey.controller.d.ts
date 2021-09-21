@@ -28,7 +28,8 @@ export declare class SonickeyController {
     getCount(queryDto: ParsedQueryDto): Promise<number>;
     getOne(sonickey: string): Promise<SonicKey>;
     encode(sonicKeyDto: SonicKeyDto, file: IUploadedFile, owner: string, req: any): Promise<SonicKey>;
-    decode(file: IUploadedFile, channel: string): Promise<SonicKey[]>;
+    decode(file: IUploadedFile): Promise<SonicKey[]>;
+    decodeFromChannel(file: IUploadedFile, channel: string): Promise<SonicKey[]>;
     updateMeta(sonickey: string, updateSonicKeyDto: UpdateSonicKeyDto): Promise<SonicKey>;
     delete(sonickey: string): Promise<{
         ok?: number;

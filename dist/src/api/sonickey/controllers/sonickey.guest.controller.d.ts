@@ -10,5 +10,5 @@ export declare class SonickeyGuestController {
     private readonly detectionService;
     constructor(sonicKeyService: SonickeyService, fileHandlerService: FileHandlerService, detectionService: DetectionService);
     encode(sonicKeyDto: SonicKeyDto, file: IUploadedFile, req: any): Promise<SonicKey>;
-    decode(channel: string, file: IUploadedFile): Promise<SonicKey[]>;
+    decode(file: IUploadedFile): Promise<SonicKey[]>;
 }

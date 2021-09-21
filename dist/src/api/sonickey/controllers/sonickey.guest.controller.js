@@ -59,7 +59,7 @@ let SonickeyGuestController = class SonickeyGuestController {
             this.fileHandlerService.deleteFileAtPath(file.path);
         });
     }
-    async decode(channel, file) {
+    async decode(file) {
         return this.sonicKeyService
             .decodeAllKeys(file)
             .then(async ({ sonicKeys }) => {
@@ -78,7 +78,7 @@ let SonickeyGuestController = class SonickeyGuestController {
                         owner: validSonicKey.owner,
                         sonicKeyOwnerId: validSonicKey.owner,
                         sonicKeyOwnerName: validSonicKey.contentOwner,
-                        channel: channel,
+                        channel: Enums_1.ChannelEnums.MOBILEAPP,
                         detectedAt: new Date(),
                     });
                     await newDetection.save();
@@ -147,15 +147,13 @@ __decorate([
         description: 'File To Decode',
         type: public_decode_dto_1.PublicDecodeDto,
     }),
-    common_1.Post(':channel/decode'),
-    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums)] }),
+    common_1.Post('/decode'),
     common_1.UseInterceptors(common_1.ClassSerializerInterceptor),
     swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
     openapi.ApiResponse({ status: 201, type: [require("../schemas/sonickey.schema").SonicKey] }),
-    __param(0, common_1.Param('channel')),
-    __param(1, common_1.UploadedFile()),
+    __param(0, common_1.UploadedFile()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SonickeyGuestController.prototype, "decode", null);
 SonickeyGuestController = __decorate([
