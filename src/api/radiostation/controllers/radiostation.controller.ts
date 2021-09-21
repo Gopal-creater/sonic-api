@@ -38,8 +38,9 @@ export class RadiostationController {
    
   //   const stations = await this.radiostationService.radioStationModel.find();
   //   console.log("forEach Stating")
-  //   stations.forEach(station=>{
+  //   stations.forEach((station,index)=>{
   //     const newObj = {
+  //       sn:index+1,
   //       id:station.id,
   //       streamingUrl:station.streamingUrl,
   //       website:station.website
