@@ -13,16 +13,19 @@ exports.EncodeFromUrlDto = exports.EncodeDto = void 0;
 const openapi = require("@nestjs/swagger");
 const sonicKey_dto_1 = require("./sonicKey.dto");
 const swagger_1 = require("@nestjs/swagger");
+const class_validator_1 = require("class-validator");
 class EncodeDto {
     static _OPENAPI_METADATA_FACTORY() {
         return { mediaFile: { required: true, type: () => Object }, data: { required: true, type: () => require("./sonicKey.dto").SonicKeyDto } };
     }
 }
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty({ type: 'string', format: 'binary' }),
     __metadata("design:type", Object)
 ], EncodeDto.prototype, "mediaFile", void 0);
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
 ], EncodeDto.prototype, "data", void 0);
@@ -33,10 +36,12 @@ class EncodeFromUrlDto {
     }
 }
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], EncodeFromUrlDto.prototype, "mediaFile", void 0);
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
 ], EncodeFromUrlDto.prototype, "data", void 0);
