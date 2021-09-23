@@ -140,6 +140,7 @@ export class SonicKey extends Document {
   @Prop()
   tuneCode?: string;
 
+  @IsNotEmpty()
   @ApiProperty()
   @Prop()
   contentName?: string;
