@@ -143,7 +143,7 @@ export class SonicKey extends Document {
   @IsNotEmpty()
   @ApiProperty()
   @Prop()
-  contentName?: string;
+  contentName: string;
 
   @IsNotEmpty()
   @ApiProperty()
@@ -154,6 +154,7 @@ export class SonicKey extends Document {
   @Prop({default:false})
   contentValidation?: boolean;
 
+  @IsNotEmpty()
   @ApiProperty()
   @Prop()
   contentFileName: string;

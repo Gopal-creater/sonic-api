@@ -8,6 +8,9 @@ export class CreateSonicKeyFromJobDto extends SonicKeyDto {
     @ApiProperty()
     sonicKey:string
 
+    @ApiProperty()
+    contentFilePath:string
+
     @IsNotEmpty()
     @ApiProperty()
     job:string
@@ -30,6 +33,9 @@ export class CreateSonicKeyFromBinaryDto extends SonicKeyDto {
     @IsNotEmpty()
     @ApiProperty()
     sonicKey:string
+
+    @ApiProperty()
+    contentFilePath:string
 
     @IsNotEmpty()
     @ApiProperty()
