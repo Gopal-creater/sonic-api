@@ -36,8 +36,4 @@ export class CreateSonicKeyFromBinaryDto extends SonicKeyDto {
 
     @ApiProperty()
     contentFilePath:string
-
-    @IsNotEmpty()
-    @ApiProperty()
-    license:string
 }

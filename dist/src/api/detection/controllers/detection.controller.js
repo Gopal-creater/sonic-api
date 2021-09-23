@@ -18,13 +18,13 @@ const common_1 = require("@nestjs/common");
 const detection_service_1 = require("../detection.service");
 const create_detection_dto_1 = require("../dto/create-detection.dto");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
-const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
-const apikey_decorator_1 = require("../../auth/decorators/apikey.decorator");
 const swagger_1 = require("@nestjs/swagger");
 const Enums_1 = require("../../../constants/Enums");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
+const apikey_auth_guard_1 = require("../../api-key/guards/apikey-auth.guard");
+const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
 let DetectionController = class DetectionController {
     constructor(detectionService, sonickeyServive) {
         this.detectionService = detectionService;

@@ -23,11 +23,13 @@ const Enums_1 = require("../../../constants/Enums");
 const FileFromUrl_interceptor_1 = require("../../../shared/interceptors/FileFromUrl.interceptor");
 const encode_dto_1 = require("../dtos/encode.dto");
 const common_2 = require("@nestjs/common");
-const license_validation_guard_1 = require("../../auth/guards/license-validation.guard");
 const decorators_1 = require("../../auth/decorators");
-const validatedlicense_decorator_1 = require("../../auth/decorators/validatedlicense.decorator");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
-const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
+const create_sonickey_dto_1 = require("../dtos/create-sonickey.dto");
+const apikey_auth_guard_1 = require("../../api-key/guards/apikey-auth.guard");
+const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
+const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
+const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
 let SonickeyThirdPartyController = class SonickeyThirdPartyController {
     constructor(sonicKeyService, fileHandlerService, licensekeyService) {
         this.sonicKeyService = sonicKeyService;
@@ -59,6 +61,17 @@ let SonickeyThirdPartyController = class SonickeyThirdPartyController {
             this.fileHandlerService.deleteFileAtPath(file.path);
         });
     }
+    async createFormBinary(createSonicKeyDto, customer, apiKey, licenseKey) {
+        const channel = Enums_1.ChannelEnums.BINARY;
+        const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { owner: customer, apiKey: apiKey, channel: channel, license: licenseKey, _id: createSonicKeyDto.sonicKey }));
+        const savedSonicKey = await newSonicKey.save();
+        await this.licensekeyService.incrementUses(licenseKey, "encode", 1)
+            .catch(async (err) => {
+            await this.sonicKeyService.sonicKeyModel.deleteOne({ _id: savedSonicKey.id });
+            throw new common_2.BadRequestException('Unable to increment the license usage!');
+        });
+        return savedSonicKey;
+    }
 };
 __decorate([
     common_1.UseInterceptors(FileFromUrl_interceptor_1.FileFromUrlInterceptor('mediaFile')),
@@ -78,6 +91,20 @@ __decorate([
     __metadata("design:paramtypes", [sonicKey_dto_1.SonicKeyDto, Object, String, String]),
     __metadata("design:returntype", void 0)
 ], SonickeyThirdPartyController.prototype, "encodeFromUrl", null);
+__decorate([
+    common_2.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, license_validation_guard_1.LicenseValidationGuard),
+    common_1.Post('/create-from-binary'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Save to database after local encode from binary.' }),
+    openapi.ApiResponse({ status: 201, type: require("../schemas/sonickey.schema").SonicKey }),
+    __param(0, common_1.Body()),
+    __param(1, apikey_decorator_1.ApiKey('customer')),
+    __param(2, apikey_decorator_1.ApiKey('_id')),
+    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromBinaryDto, String, String, String]),
+    __metadata("design:returntype", Promise)
+], SonickeyThirdPartyController.prototype, "createFormBinary", null);
 SonickeyThirdPartyController = __decorate([
     swagger_1.ApiTags('ThirdParty Integration Controller, Protected By XAPI-Key'),
     swagger_1.ApiSecurity('x-api-key'),

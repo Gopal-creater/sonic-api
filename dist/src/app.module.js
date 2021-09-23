@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
-const externalsonickey_module_1 = require("./api/external-api/externalsonickey/externalsonickey.module");
 const global_aws_module_1 = require("./shared/modules/global-aws/global-aws.module");
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
@@ -83,7 +82,6 @@ AppModule = __decorate([
             global_aws_module_1.GlobalAwsModule,
             user_module_1.UserModule,
             sonickey_module_1.SonickeyModule,
-            externalsonickey_module_1.ExternalSonickeyModule,
             job_module_1.JobModule,
             radiostation_module_1.RadiostationModule,
             thirdparty_detection_module_1.ThirdpartyDetectionModule,

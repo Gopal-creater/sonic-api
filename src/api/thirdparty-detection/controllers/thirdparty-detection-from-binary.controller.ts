@@ -21,13 +21,13 @@ import {
   ApiTags,
   ApiQuery,
 } from '@nestjs/swagger';
-import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
-import { ApiKey } from '../../auth/decorators/apikey.decorator';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { DetectionService } from '../../detection/detection.service';
 import { ChannelEnums } from 'src/constants/Enums';
+import { ApiKeyAuthGuard } from '../../api-key/guards/apikey-auth.guard';
+import { ApiKey } from '../../api-key/decorators/apikey.decorator';
 
 @ApiTags('ThirdParty-Binary Controller (protected by x-api-key)')
 @ApiSecurity('x-api-key')

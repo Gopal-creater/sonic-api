@@ -31,7 +31,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import * as makeDir from 'make-dir';
 import { diskStorage } from 'multer';
 import { appConfig } from '../../../config';
-import { LicenseValidationGuard } from '../../auth/guards/license-validation.guard';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -58,7 +57,8 @@ import { ChannelEnums } from '../../../constants/Enums';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 import { DetectionService } from '../../detection/detection.service';
 import { FileFromUrlInterceptor, UploadedFileFromUrl } from '../../../shared/interceptors/FileFromUrl.interceptor';
-import { ValidatedLicense } from 'src/api/auth/decorators/validatedlicense.decorator';
+import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
+import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
 
 /**
  * Prabin:

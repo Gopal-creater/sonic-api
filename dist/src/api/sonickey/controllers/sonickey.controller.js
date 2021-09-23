@@ -33,7 +33,6 @@ const platform_express_1 = require("@nestjs/platform-express");
 const makeDir = require("make-dir");
 const multer_1 = require("multer");
 const config_1 = require("../../../config");
-const license_validation_guard_1 = require("../../auth/guards/license-validation.guard");
 const swagger_1 = require("@nestjs/swagger");
 const uniqid = require("uniqid");
 const guards_1 = require("../../auth/guards");
@@ -48,7 +47,8 @@ const Enums_1 = require("../../../constants/Enums");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 const detection_service_1 = require("../../detection/detection.service");
 const FileFromUrl_interceptor_1 = require("../../../shared/interceptors/FileFromUrl.interceptor");
-const validatedlicense_decorator_1 = require("../../auth/decorators/validatedlicense.decorator");
+const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
+const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;

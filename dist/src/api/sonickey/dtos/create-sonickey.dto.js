@@ -49,7 +49,7 @@ __decorate([
 exports.CreateSonicKeyFromJobDto = CreateSonicKeyFromJobDto;
 class CreateSonicKeyFromBinaryDto extends sonicKey_dto_1.SonicKeyDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { sonicKey: { required: true, type: () => String }, contentFilePath: { required: true, type: () => String }, license: { required: true, type: () => String } };
+        return { sonicKey: { required: true, type: () => String }, contentFilePath: { required: true, type: () => String } };
     }
 }
 __decorate([
@@ -61,10 +61,5 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateSonicKeyFromBinaryDto.prototype, "contentFilePath", void 0);
-__decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], CreateSonicKeyFromBinaryDto.prototype, "license", void 0);
 exports.CreateSonicKeyFromBinaryDto = CreateSonicKeyFromBinaryDto;
 //# sourceMappingURL=create-sonickey.dto.js.map

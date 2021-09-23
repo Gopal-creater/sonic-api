@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SubscribeRadioMonitorLicenseValidationGuard = exports.LicenseValidationGuard = void 0;
 const common_1 = require("@nestjs/common");
-const licensekey_schema_1 = require("../../licensekey/schemas/licensekey.schema");
-const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
+const licensekey_schema_1 = require("../schemas/licensekey.schema");
+const licensekey_service_1 = require("../services/licensekey.service");
 let LicenseValidationGuard = class LicenseValidationGuard {
     constructor(licensekeyService) {
         this.licensekeyService = licensekeyService;

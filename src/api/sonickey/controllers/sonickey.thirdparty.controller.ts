@@ -22,13 +22,15 @@ import { FileHandlerService } from '../../../shared/services/file-handler.servic
 import { ChannelEnums } from '../../../constants/Enums';
 import { FileFromUrlInterceptor, UploadedFileFromUrl } from '../../../shared/interceptors/FileFromUrl.interceptor';
 import { EncodeFromUrlDto } from '../dtos/encode.dto';
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, BadRequestException } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { LicenseValidationGuard } from '../../auth/guards/license-validation.guard';
 import { User } from 'src/api/auth/decorators';
-import { ValidatedLicense } from '../../auth/decorators/validatedlicense.decorator';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
-import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
+import { CreateSonicKeyFromBinaryDto } from '../dtos/create-sonickey.dto';
+import { ApiKeyAuthGuard } from '../../api-key/guards/apikey-auth.guard';
+import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
+import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
+import { ApiKey } from '../../api-key/decorators/apikey.decorator';
 
 
 @ApiTags('ThirdParty Integration Controller, Protected By XAPI-Key')
@@ -92,6 +94,36 @@ export class SonickeyThirdPartyController {
       .finally(() => {
         this.fileHandlerService.deleteFileAtPath(file.path);
       });
+  }
+
+  @UseGuards(ApiKeyAuthGuard, LicenseValidationGuard)
+  @Post('/create-from-binary')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Save to database after local encode from binary.' })
+  async createFormBinary(
+    @Body() createSonicKeyDto: CreateSonicKeyFromBinaryDto,
+    @ApiKey('customer') customer: string,
+    @ApiKey('_id') apiKey: string,
+    @ValidatedLicense('key') licenseKey: string
+  ) {
+    const channel = ChannelEnums.BINARY
+    const newSonicKey = new this.sonicKeyService.sonicKeyModel({
+      ...createSonicKeyDto,
+      owner:customer,
+      apiKey:apiKey,
+      channel:channel,
+      license: licenseKey,
+      _id:createSonicKeyDto.sonicKey
+    });
+    const savedSonicKey = await newSonicKey.save();
+     await this.licensekeyService.incrementUses(licenseKey,"encode", 1)
+     .catch(async err=>{
+      await this.sonicKeyService.sonicKeyModel.deleteOne({_id:savedSonicKey.id})
+      throw new BadRequestException(
+        'Unable to increment the license usage!',
+      );
+     })
+    return savedSonicKey
   }
 
 }

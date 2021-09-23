@@ -16,8 +16,6 @@ import {
   CreateDetectionFromHardwareDto,
 } from '../dto/create-detection.dto';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
-import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
-import { ApiKey } from '../../auth/decorators/apikey.decorator';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -30,6 +28,8 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
+import { ApiKeyAuthGuard } from '../../api-key/guards/apikey-auth.guard';
+import { ApiKey } from '../../api-key/decorators/apikey.decorator';
 
 @ApiTags('Detection Controller')
 @Controller('detections')

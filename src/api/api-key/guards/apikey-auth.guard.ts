@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { UserSession } from 'src/api/user/schemas/user.schema';
-import { ApiKeyService } from '../../api-key/api-key.service';
+import { ApiKeyService } from '../api-key.service';
 import { UserService } from '../../user/user.service';
 
 @Injectable()

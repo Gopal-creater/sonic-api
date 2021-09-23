@@ -12,13 +12,14 @@ import {
 import { RadioMonitorService } from '../radiomonitor.service';
 import { CreateRadioMonitorDto } from '../dto/create-radiomonitor.dto';
 import { User } from '../../auth/decorators';
-import { ValidatedLicense } from '../../auth/decorators/validatedlicense.decorator';
 import { RadiostationService } from '../../radiostation/services/radiostation.service';
 import { ApiBody, ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { BulkByIdsDto } from '../../../shared/dtos/bulk.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
-import { JwtAuthGuard, SubscribeRadioMonitorLicenseValidationGuard } from 'src/api/auth/guards';
+import { JwtAuthGuard } from 'src/api/auth/guards';
+import { SubscribeRadioMonitorLicenseValidationGuard } from 'src/api/licensekey/guards/license-validation.guard';
+import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
 
 @ApiTags('Radio Monitoring Controller')
 @Controller('radiomonitors')

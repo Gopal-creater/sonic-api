@@ -1,4 +1,3 @@
-import { ExternalSonickeyModule } from './api/external-api/externalsonickey/externalsonickey.module';
 import { GlobalAwsModule } from './shared/modules/global-aws/global-aws.module';
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
@@ -70,7 +69,6 @@ console.log('Node_env', process.env.NODE_ENV);
     GlobalAwsModule,
     UserModule,
     SonickeyModule,
-    ExternalSonickeyModule,
     JobModule,
     RadiostationModule,
     ThirdpartyDetectionModule,

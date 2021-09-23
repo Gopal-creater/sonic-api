@@ -18,13 +18,14 @@ const common_1 = require("@nestjs/common");
 const radiomonitor_service_1 = require("../radiomonitor.service");
 const create_radiomonitor_dto_1 = require("../dto/create-radiomonitor.dto");
 const decorators_1 = require("../../auth/decorators");
-const validatedlicense_decorator_1 = require("../../auth/decorators/validatedlicense.decorator");
 const radiostation_service_1 = require("../../radiostation/services/radiostation.service");
 const swagger_1 = require("@nestjs/swagger");
 const bulk_dto_1 = require("../../../shared/dtos/bulk.dto");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const guards_1 = require("../../auth/guards");
+const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
+const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 let RadioMonitorOwnerController = class RadioMonitorOwnerController {
     constructor(radiomonitorService, radiostationService) {
         this.radiomonitorService = radiomonitorService;
@@ -72,7 +73,7 @@ let RadioMonitorOwnerController = class RadioMonitorOwnerController {
 };
 __decorate([
     common_1.Post('/owners/:ownerId/subscribe'),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.SubscribeRadioMonitorLicenseValidationGuard),
+    common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.SubscribeRadioMonitorLicenseValidationGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Subscribe the radio monitoring' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/radiomonitor.schema").RadioMonitor }),
@@ -85,7 +86,7 @@ __decorate([
 ], RadioMonitorOwnerController.prototype, "subscribe", null);
 __decorate([
     common_1.Post('/owners/:ownerId/subscribe-bulk'),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.SubscribeRadioMonitorLicenseValidationGuard),
+    common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.SubscribeRadioMonitorLicenseValidationGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Subscribe the BULK radio monitoring' }),
     swagger_1.ApiBody({ type: [create_radiomonitor_dto_1.CreateRadioMonitorDto] }),

@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnprocessableEntityException, BadRequestException } from '@nestjs/common';
 import { LicenseKey } from 'src/api/licensekey/schemas/licensekey.schema';
-import { LicensekeyService } from '../../licensekey/services/licensekey.service';
+import { LicensekeyService } from '../services/licensekey.service';
 import { UserSession } from '../../user/schemas/user.schema';
 
 /**
@@ -17,7 +17,6 @@ export class LicenseValidationGuard implements CanActivate {
   ){
     const request = context.switchToHttp().getRequest();
     const user = request.user as UserSession;
-    const ownerKey =`owner${user?.sub}`.replace(/-/g,'')
     const data= await this.licensekeyService.licenseKeyModel.find({"owners.ownerId":user.sub})
     if(!data || data.length<=0){
       throw new UnprocessableEntityException("No License keys present. Please add a license key to subscribe for encode.")
