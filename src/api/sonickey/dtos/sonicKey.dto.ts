@@ -7,5 +7,6 @@ export class SonicKeyDto extends OmitType(SonicKey, [
     'channel',
     'apiKey',
     'license',
-    'status'
+    'status',
+    's3FileMeta'
   ]) {}

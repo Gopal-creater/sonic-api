@@ -20,14 +20,17 @@ class CreateSonicKeyFromJobDto extends sonicKey_dto_1.SonicKeyDto {
     }
 }
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateSonicKeyFromJobDto.prototype, "sonicKey", void 0);
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateSonicKeyFromJobDto.prototype, "job", void 0);
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateSonicKeyFromJobDto.prototype, "owner", void 0);

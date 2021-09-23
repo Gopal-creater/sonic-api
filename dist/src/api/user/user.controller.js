@@ -50,6 +50,7 @@ let UserController = class UserController {
         if (!profile) {
             throw new common_1.NotFoundException("User not found");
         }
+        return profile;
     }
     async getGroupsOfUser(username) {
         return this.userServices.getGroupsForUser(username);
@@ -94,54 +95,17 @@ __decorate([
 __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOkResponse({
-        description: `
-  <b>Response Example from <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminGetUser.html" target="_blank">Cognito GetUser</a> </b>
-  <pre>
-  {
-    "Enabled": boolean,
-    "MFAOptions": [ 
-       { 
-          "AttributeName": "string",
-          "DeliveryMedium": "string"
-       }
-    ],
-    "PreferredMfaSetting": "string",
-    "UserAttributes": [ 
-       { 
-          "Name": "string",
-          "Value": "string"
-       }
-    ],
-    "UserCreateDate": number,
-    "UserLastModifiedDate": number,
-    "UserMFASettingList": [ "string" ],
-    "Username": "string",
-    "UserStatus": "string"
- }
- </pre>
- <b>UserAttributes Will Contains</b>
- <pre>
- {
-  sub: string,
-  'cognito:groups'?: string[],
-  email_verified?: boolean,
-  phone_number_verified?: boolean,
-  phone_number?: string,
-  email: string
- }
- </pre>
-  `,
-    }),
     swagger_1.ApiOperation({ summary: 'Get User profile by username or sub id' }),
     common_1.Get('/:username/profile'),
-    openapi.ApiResponse({ status: 200 }),
+    openapi.ApiResponse({ status: 200, type: require("./schemas/user.schema").UserProfile }),
     __param(0, common_1.Param('username')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserProfile", null);
 __decorate([
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOkResponse({
         description: `
   <b>Response Example from <a href="https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminListGroupsForUser.html" target="_blank">Cognito AdminListGroupsForUser</a> </b>

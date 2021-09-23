@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EncodeDto = void 0;
+exports.EncodeFromUrlDto = exports.EncodeDto = void 0;
 const openapi = require("@nestjs/swagger");
 const sonicKey_dto_1 = require("./sonicKey.dto");
 const swagger_1 = require("@nestjs/swagger");
@@ -27,4 +27,18 @@ __decorate([
     __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
 ], EncodeDto.prototype, "data", void 0);
 exports.EncodeDto = EncodeDto;
+class EncodeFromUrlDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { mediaFile: { required: true, type: () => String }, data: { required: true, type: () => require("./sonicKey.dto").SonicKeyDto } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], EncodeFromUrlDto.prototype, "mediaFile", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
+], EncodeFromUrlDto.prototype, "data", void 0);
+exports.EncodeFromUrlDto = EncodeFromUrlDto;
 //# sourceMappingURL=encode.dto.js.map

@@ -1,10 +1,12 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { UserSession } from 'src/api/user/schemas/user.schema';
 import { ApiKeyService } from '../../api-key/api-key.service';
+import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class ApiKeyAuthGuard implements CanActivate {
-  constructor(private readonly apiKeyService: ApiKeyService) {}
+  constructor(private readonly apiKeyService: ApiKeyService,private readonly userService: UserService) {}
   async canActivate(
     context: ExecutionContext,
   ){
@@ -25,6 +27,19 @@ export class ApiKeyAuthGuard implements CanActivate {
    
     if (new Date(apikeyFromDb.validity).getTime() < new Date().getTime()) throw new ForbiddenException("Forbidden resource deuto no apikey is expired")
    
+    const userProfile = await this.userService.getUserProfile(apikeyFromDb.customer,true)
+    if(!userProfile) throw new ForbiddenException("User not found for this apikey")
+    const userSession:UserSession = {
+      sub:userProfile.sub,
+      email_verified:userProfile.userAttributeObj.email_verified,
+      phone_number_verified:userProfile.userAttributeObj.phone_number_verified,
+      "cognito:username":userProfile.username,
+      email:userProfile.userAttributeObj.email,
+      "cognito:groups":userProfile.groups,
+      phone_number:userProfile.userAttributeObj.phone_number,
+      from:'apikey'
+    }
+    request.user = userSession
     request.apikey = apikeyFromDb
     return true
   }

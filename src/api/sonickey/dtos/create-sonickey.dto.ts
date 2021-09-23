@@ -4,15 +4,19 @@ import { IsNotEmpty } from 'class-validator';
 
 
 export class CreateSonicKeyFromJobDto extends SonicKeyDto {
+    @IsNotEmpty()
     @ApiProperty()
     sonicKey:string
 
+    @IsNotEmpty()
     @ApiProperty()
     job:string
 
+    @IsNotEmpty()
     @ApiProperty()
     owner:string
 
+    
     @ApiProperty()
     license:string
 

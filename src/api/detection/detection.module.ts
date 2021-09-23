@@ -9,16 +9,18 @@ import {
 } from './schemas/detection.schema';
 import { ApiKeyModule } from '../api-key/api-key.module';
 import { SonickeyModule } from '../sonickey/sonickey.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
-  MongooseModule.forFeature([
+MongooseModule.forFeature([
         {
           name: Detection.name,
           schema: DetectionSchema,
         },
       ]),
       ApiKeyModule,
+      UserModule,
       forwardRef(()=>SonickeyModule)
     ],
   controllers: [DetectionController,DetectionOwnerController],

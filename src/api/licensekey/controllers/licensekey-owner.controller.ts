@@ -49,14 +49,10 @@ export class LicensekeyOwnerController {
     if (!user) throw new NotFoundException('User not found');
     
     const newLKOwner = new LKOwner();
-    newLKOwner.ownerId = user.UserAttributes.find(
-      attr => attr.Name == 'sub',
-    ).Value;
-    newLKOwner.username = user.Username;
-    newLKOwner.email = user.UserAttributes.find(
-      attr => attr.Name == 'email',
-    ).Value;
-    newLKOwner.name = user.Username;
+    newLKOwner.ownerId = user.userAttributeObj.sub
+    newLKOwner.username = user.username;
+    newLKOwner.email = user.userAttributeObj.email
+    newLKOwner.name = user.username;
     const updatedLicense = await this.licensekeyService.addOwnerToLicense(
       licenseId,
       newLKOwner,
@@ -86,8 +82,7 @@ export class LicensekeyOwnerController {
       usernameOrSub,
     );
     if (!user) throw new NotFoundException('User not found');
-    const ownerId = user.UserAttributes.find(attr => attr.Name == 'sub').Value;
     
-    return this.licensekeyService.removeOwnerFromLicense(licenseId, ownerId);
+    return this.licensekeyService.removeOwnerFromLicense(licenseId, user.sub);
   }
 }

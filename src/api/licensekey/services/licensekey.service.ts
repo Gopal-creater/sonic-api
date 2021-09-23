@@ -246,11 +246,9 @@ export class LicensekeyService {
         if (user) {
           const lkOwner = new LKOwner();
           lkOwner.ownerId = ownerId;
-          lkOwner.username = user.Username;
-          lkOwner.email = user.UserAttributes.find(
-            attr => attr.Name == 'email',
-          ).Value;
-          lkOwner.name = user.Username;
+          lkOwner.username = user.username;
+          lkOwner.email = user.userAttributeObj.email
+          lkOwner.name = user.username;
           newOwners.push(lkOwner);
         }
       }

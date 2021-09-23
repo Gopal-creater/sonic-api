@@ -47,6 +47,8 @@ const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anya
 const Enums_1 = require("../../../constants/Enums");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 const detection_service_1 = require("../../detection/detection.service");
+const FileFromUrl_interceptor_1 = require("../../../shared/interceptors/FileFromUrl.interceptor");
+const validatedlicense_decorator_1 = require("../../auth/decorators/validatedlicense.decorator");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
@@ -86,6 +88,31 @@ let SonickeyController = class SonickeyController {
         var _a;
         console.log('file', file);
         const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.key;
+        var s3UploadResult;
+        var sonicKey;
+        return this.sonicKeyService
+            .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
+            .then(data => {
+            s3UploadResult = data.s3UploadResult;
+            sonicKey = data.sonicKey;
+            console.log('Increment Usages upon successfull encode');
+            return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
+        })
+            .then(async (result) => {
+            console.log('Going to save key in db.');
+            const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
+            const channel = Enums_1.ChannelEnums.PORTAL;
+            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId }));
+            return newSonicKey.save();
+        })
+            .catch(err => {
+            throw new common_1.InternalServerErrorException(err);
+        })
+            .finally(() => {
+            this.fileHandlerService.deleteFileAtPath(file.path);
+        });
+    }
+    encodeFromUrl(sonicKeyDto, file, owner, licenseId) {
         var s3UploadResult;
         var sonicKey;
         return this.sonicKeyService
@@ -350,6 +377,25 @@ __decorate([
     __metadata("design:paramtypes", [sonicKey_dto_1.SonicKeyDto, Object, String, Object]),
     __metadata("design:returntype", void 0)
 ], SonickeyController.prototype, "encode", null);
+__decorate([
+    common_1.UseInterceptors(FileFromUrl_interceptor_1.FileFromUrlInterceptor('mediaFile')),
+    swagger_1.ApiBody({
+        description: 'File To Encode',
+        type: encode_dto_1.EncodeFromUrlDto,
+    }),
+    common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
+    common_1.Post('/encode-from-url'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Encode File From URL And save to database' }),
+    openapi.ApiResponse({ status: 201, type: require("../schemas/sonickey.schema").SonicKey }),
+    __param(0, common_1.Body('data')),
+    __param(1, FileFromUrl_interceptor_1.UploadedFileFromUrl()),
+    __param(2, decorators_1.User('sub')),
+    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [sonicKey_dto_1.SonicKeyDto, Object, String, String]),
+    __metadata("design:returntype", void 0)
+], SonickeyController.prototype, "encodeFromUrl", null);
 __decorate([
     common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
         storage: multer_1.diskStorage({

@@ -13,7 +13,9 @@ import { isValidUUID } from '../../shared/utils/index';
 import {
   AdminGetUserResponse,
   UserType,
+  AttributeType,
 } from 'aws-sdk/clients/cognitoidentityserviceprovider';
+import { UserProfile, UserAttributesObj } from './schemas/user.schema';
 
 @Injectable()
 export class UserService {
@@ -51,14 +53,10 @@ export class UserService {
       });
     }
     const newLKOwner = new LKOwner();
-    newLKOwner.ownerId = user.UserAttributes.find(
-      attr => attr.Name == 'sub',
-    ).Value;
-    newLKOwner.username = user.Username;
-    newLKOwner.email = user.UserAttributes.find(
-      attr => attr.Name == 'email',
-    ).Value;
-    newLKOwner.name = user.Username;
+    newLKOwner.ownerId = user.userAttributeObj.sub;
+    newLKOwner.username = user.username;
+    newLKOwner.email = user.userAttributeObj.email;
+    newLKOwner.name = user.username;
     return this.licensekeyService.addOwnerToLicense(licenseId, newLKOwner);
   }
 
@@ -72,14 +70,10 @@ export class UserService {
 
     const promises = licenseIds.map(async licenseId => {
       const newLKOwner = new LKOwner();
-      newLKOwner.ownerId = user.UserAttributes.find(
-        attr => attr.Name == 'sub',
-      ).Value;
-      newLKOwner.username = user.Username;
-      newLKOwner.email = user.UserAttributes.find(
-        attr => attr.Name == 'email',
-      ).Value;
-      newLKOwner.name = user.Username;
+      newLKOwner.ownerId = user.userAttributeObj.sub;
+      newLKOwner.username = user.username;
+      newLKOwner.email = user.userAttributeObj.email;
+      newLKOwner.name = user.username;
       return this.licensekeyService
         .addOwnerToLicense(licenseId, newLKOwner)
         .catch(err => ({
@@ -104,7 +98,7 @@ export class UserService {
    * Get User profile by username or sub
    * @param usernameOrSub this can be username or sub
    */
-  async getUserProfile(usernameOrSub: string): Promise<AdminGetUserResponse> {
+  async getUserProfile(usernameOrSub: string,includeGroups:boolean=false): Promise<UserProfile> {
     const params = {
       UserPoolId: this.cognitoUserPoolId,
       Username: usernameOrSub,
@@ -118,15 +112,30 @@ export class UserService {
     }
     const profile = await this.cognitoIdentityServiceProvider
       .adminGetUser(params)
-      .promise()
-      .catch(err => {
-        return Promise.resolve(null);
-      });
+      .promise();
+
     if (!profile) {
       return Promise.resolve(null);
     }
+    const userAttributeObj = this.convertUserAttributesToObj(
+      profile.UserAttributes,
+    );
 
-    return this.addAttributesObjToProfile(profile);
+    const finalProfile = new UserProfile({
+      username: profile.Username,
+      sub: userAttributeObj.sub,
+      userAttributes: profile.UserAttributes,
+      userAttributeObj: userAttributeObj,
+      enabled: profile.Enabled,
+      userStatus: profile.UserStatus,
+    });
+
+    if(includeGroups){
+      const groupsResult = await this.getGroupsForUser(params.Username)
+      finalProfile.groups=groupsResult.groupNames
+    }
+
+    return finalProfile;
   }
 
   /**
@@ -142,9 +151,16 @@ export class UserService {
       const { username } = await this.getUserFromSub(usernameOrSub);
       params.Username = username;
     }
-    return this.cognitoIdentityServiceProvider
+    const adminListGroupsForUserResponse = await this.cognitoIdentityServiceProvider
       .adminListGroupsForUser(params)
       .promise();
+    const groupNames = adminListGroupsForUserResponse.Groups.map(
+      group => group.GroupName,
+    );
+    return {
+      adminListGroupsForUserResponse: adminListGroupsForUserResponse,
+      groupNames: groupNames,
+    };
   }
 
   /**
@@ -157,23 +173,21 @@ export class UserService {
     };
     const group = await this.cognitoIdentityServiceProvider
       .getGroup(params)
-      .promise()
-      .catch(err => {
-        return Promise.resolve(null);
-      });
-      console.log("group",group)
-    return group
+      .promise();
+
+    return group.Group;
   }
 
-  addAttributesObjToProfile(profile: AdminGetUserResponse) {
+  convertUserAttributesToObj(
+    userAttributeType: AttributeType[],
+  ): UserAttributesObj {
     var attributesObj = {};
-    for (let index = 0; index < profile.UserAttributes.length; index++) {
-      const element = profile.UserAttributes[index];
+    for (let index = 0; index < userAttributeType.length; index++) {
+      const element = userAttributeType[index];
       attributesObj[element.Name] = element.Value;
     }
-    profile['UserAttributesObj'] = attributesObj;
 
-    return profile;
+    return attributesObj;
   }
 
   async exportFromLic() {

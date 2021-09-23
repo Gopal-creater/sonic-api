@@ -28,19 +28,44 @@ export class UserAttributesObj {
 
 export class UserSession {
   sub: string;
-  'cognito:groups': string[];
+  'cognito:groups'?: string[];
   email_verified: boolean;
-  'cognito:preferred_role': string;
-  iss: string;
+  'cognito:preferred_role'?: string;
+  iss?: string;
   phone_number_verified: boolean;
   'cognito:username': string;
-  'cognito:roles': string[];
-  aud: string;
-  event_id: string;
-  token_use: string;
-  auth_time: number;
-  phone_number: string;
-  exp: number;
-  iat: number;
-  email: string;
+  'cognito:roles'?: string[];
+  aud?: string;
+  event_id?: string;
+  token_use?: string;
+  auth_time?: number;
+  phone_number?: string;
+  exp?: number;
+  iat?: number;
+  email?: string;
+  from?:string;
+}
+
+export interface IUserProfile {
+  sub: string;
+  username: string;
+  userAttributeObj?: UserAttributesObj;
+  userAttributes: AttributeType[];
+  groups?:string[]
+  enabled:boolean;
+  userStatus:string
+}
+
+export class UserProfile implements IUserProfile {
+  sub: string;
+  username: string;
+  userAttributeObj: UserAttributesObj;
+  userAttributes: AttributeType[];
+  groups?:string[];
+  enabled:boolean;
+  userStatus:string;
+
+  constructor(params: IUserProfile) {
+    Object.assign(this, params);
+  }
 }

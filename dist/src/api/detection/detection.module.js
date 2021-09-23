@@ -15,6 +15,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const detection_schema_1 = require("./schemas/detection.schema");
 const api_key_module_1 = require("../api-key/api-key.module");
 const sonickey_module_1 = require("../sonickey/sonickey.module");
+const user_module_1 = require("../user/user.module");
 let DetectionModule = class DetectionModule {
 };
 DetectionModule = __decorate([
@@ -27,6 +28,7 @@ DetectionModule = __decorate([
                 },
             ]),
             api_key_module_1.ApiKeyModule,
+            user_module_1.UserModule,
             common_1.forwardRef(() => sonickey_module_1.SonickeyModule)
         ],
         controllers: [detection_controller_1.DetectionController, detection_owner_controller_1.DetectionOwnerController],

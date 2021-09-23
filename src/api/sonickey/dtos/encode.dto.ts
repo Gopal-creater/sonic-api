@@ -8,3 +8,11 @@ export class EncodeDto {
   @ApiProperty()
   data: SonicKeyDto;
 }
+
+export class EncodeFromUrlDto {
+  @ApiProperty()
+  mediaFile: string;
+
+  @ApiProperty()
+  data: SonicKeyDto;
+}

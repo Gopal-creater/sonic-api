@@ -11,11 +11,14 @@ import { ApiKeyModule } from '../api-key/api-key.module';
 import { LicensekeyModule } from '../licensekey/licensekey.module';
 import { S3FileUploadModule } from '../s3fileupload/s3fileupload.module';
 import { DetectionModule } from '../detection/detection.module';
+import { SonickeyThirdPartyController } from './controllers/sonickey.thirdparty.controller';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
-    ApiKeyModule,
+ApiKeyModule,
     LicensekeyModule,
+    UserModule,
     forwardRef(()=>DetectionModule),
     S3FileUploadModule,
     MongooseModule.forFeature([
@@ -26,6 +29,7 @@ import { DetectionModule } from '../detection/detection.module';
     SonickeyController,
     SonickeyGuestController,
     SonickeyBinaryController,
+    SonickeyThirdPartyController
   ],
   providers: [SonickeyService, FileOperationService, FileHandlerService],
   exports: [SonickeyService],

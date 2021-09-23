@@ -1,7 +1,7 @@
 import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
 import { UpdateSonicKeyDto } from '../dtos/update-sonickey.dto';
 import { DecodeDto } from '../dtos/decode.dto';
-import { EncodeDto } from '../dtos/encode.dto';
+import { EncodeDto, EncodeFromUrlDto } from '../dtos/encode.dto';
 import { SonicKeyDto } from '../dtos/sonicKey.dto';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { JsonParsePipe } from '../../../shared/pipes/jsonparse.pipe';
@@ -57,6 +57,8 @@ import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytempl
 import { ChannelEnums } from '../../../constants/Enums';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 import { DetectionService } from '../../detection/detection.service';
+import { FileFromUrlInterceptor, UploadedFileFromUrl } from '../../../shared/interceptors/FileFromUrl.interceptor';
+import { ValidatedLicense } from 'src/api/auth/decorators/validatedlicense.decorator';
 
 /**
  * Prabin:
@@ -264,6 +266,62 @@ export class SonickeyController {
         this.fileHandlerService.deleteFileAtPath(file.path);
       });
   }
+
+  @UseInterceptors(FileFromUrlInterceptor('mediaFile'))
+  @ApiBody({
+    description: 'File To Encode',
+    type: EncodeFromUrlDto,
+  })
+  @UseGuards(JwtAuthGuard, LicenseValidationGuard)
+  @Post('/encode-from-url')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Encode File From URL And save to database' })
+  encodeFromUrl(
+    @Body('data') sonicKeyDto: SonicKeyDto,
+    @UploadedFileFromUrl() file: IUploadedFile,
+    @User('sub') owner: string,
+    @ValidatedLicense('key') licenseId:string
+  ) {
+    var s3UploadResult: S3FileMeta;
+    var sonicKey: string;
+    return this.sonicKeyService
+      .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
+      .then(data => {
+        s3UploadResult = data.s3UploadResult as S3FileMeta;
+        sonicKey = data.sonicKey;
+        console.log('Increment Usages upon successfull encode');
+        return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
+      })
+      .then(async result => {
+        console.log('Going to save key in db.');
+        const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(
+          file,
+          sonicKeyDto,
+        );
+
+        const channel = ChannelEnums.PORTAL;
+        const newSonicKey = new this.sonicKeyService.sonicKeyModel({
+          ...sonicKeyDtoWithAudioData,
+          contentFilePath: s3UploadResult.Location,
+          owner: owner,
+          sonicKey: sonicKey,
+          channel: channel,
+          downloadable: true,
+          s3FileMeta: s3UploadResult,
+          _id: sonicKey,
+          license: licenseId,
+        });
+        return newSonicKey.save();
+      })
+      .catch(err => {
+        throw new InternalServerErrorException(err);
+      })
+      .finally(() => {
+        this.fileHandlerService.deleteFileAtPath(file.path);
+      });
+  }
+
+
 
   @UseInterceptors(
     FileInterceptor('mediaFile', {
