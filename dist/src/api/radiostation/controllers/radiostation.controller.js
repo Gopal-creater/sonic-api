@@ -29,20 +29,21 @@ let RadiostationController = class RadiostationController {
     constructor(radiostationService) {
         this.radiostationService = radiostationService;
     }
-    async create(owner, createRadiostationDto) {
+    async genJson() {
+        return this.radiostationService.updateFromJson();
+    }
+    async create(createdBy, createRadiostationDto) {
         const isPresent = await this.radiostationService.radioStationModel.findOne({
             streamingUrl: createRadiostationDto.streamingUrl,
         });
         if (isPresent) {
             throw new common_1.BadRequestException('Duplicate stramingURL');
         }
-        return this.radiostationService.create(createRadiostationDto);
+        return this.radiostationService.create(createRadiostationDto, {
+            createdBy: createdBy,
+        });
     }
     findAll(queryDto) {
-        return this.radiostationService.findAll(queryDto);
-    }
-    async getOwnersRadioStations(ownerId, queryDto) {
-        queryDto.filter['owner'] = ownerId;
         return this.radiostationService.findAll(queryDto);
     }
     async getCount(queryDto) {
@@ -80,8 +81,8 @@ let RadiostationController = class RadiostationController {
     bulkStopListeningStream(bulkDto) {
         return this.radiostationService.bulkStopListeningStream(bulkDto.ids);
     }
-    async update(id, updateRadiostationDto) {
-        const updatedRadioStation = await this.radiostationService.radioStationModel.findOneAndUpdate({ _id: id }, updateRadiostationDto, { new: true });
+    async update(id, updatedBy, updateRadiostationDto) {
+        const updatedRadioStation = await this.radiostationService.radioStationModel.findOneAndUpdate({ _id: id }, Object.assign(Object.assign({}, updateRadiostationDto), { updatedBy: updatedBy }), { new: true });
         if (!updatedRadioStation) {
             throw new common_1.NotFoundException();
         }
@@ -99,6 +100,13 @@ let RadiostationController = class RadiostationController {
         });
     }
 };
+__decorate([
+    common_1.Get('/generate-json'),
+    openapi.ApiResponse({ status: 200, type: String }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], RadiostationController.prototype, "genJson", null);
 __decorate([
     common_1.Post(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
@@ -123,19 +131,6 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], RadiostationController.prototype, "findAll", null);
-__decorate([
-    common_1.Get('/owners/:ownerId'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({ summary: 'Get All Radio Stations of particular user' }),
-    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto }),
-    __param(0, common_1.Param('ownerId')),
-    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
-    __metadata("design:returntype", Promise)
-], RadiostationController.prototype, "getOwnersRadioStations", null);
 __decorate([
     common_1.Get('/count'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
@@ -211,9 +206,10 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Update Single Radio Station' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/radiostation.schema").RadioStation }),
     __param(0, common_1.Param('id')),
-    __param(1, common_1.Body()),
+    __param(1, user_decorator_1.User('sub')),
+    __param(2, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_radiostation_dto_1.UpdateRadiostationDto]),
+    __metadata("design:paramtypes", [String, String, update_radiostation_dto_1.UpdateRadiostationDto]),
     __metadata("design:returntype", Promise)
 ], RadiostationController.prototype, "update", null);
 __decorate([

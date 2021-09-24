@@ -7,9 +7,11 @@ export const LicenseKeySchemaName = 'LicenseKey';
 @Schema()
 export class LKOwner{
   @ApiProperty()
+  @Prop({required:true})
   ownerId: string;
 
   @ApiProperty()
+  @Prop({required:true})
   username: string;
 
   @ApiProperty()
@@ -22,9 +24,11 @@ export class LKOwner{
 @Schema()
 export class LKReserve{
   @ApiProperty()
+  @Prop({required:true})
   jobId: string;
 
   @ApiProperty()
+  @Prop({required:true})
   count: number;
 }
 

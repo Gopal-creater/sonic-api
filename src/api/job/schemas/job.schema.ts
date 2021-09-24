@@ -26,9 +26,6 @@ export class Job extends Document {
   encodingStrength: number;
 
   @ApiProperty()
-  @Prop({
-    required:true
-  })
   license: string;
 
   @ApiProperty()

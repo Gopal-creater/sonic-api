@@ -13,14 +13,17 @@ exports.RadioStationSchema = exports.RadioStation = exports.Credential = exports
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
+const class_validator_1 = require("class-validator");
 exports.RadioStationSchemaName = "RadioStation";
 let Credential = class Credential {
 };
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Credential.prototype, "username", void 0);
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Credential.prototype, "password", void 0);
@@ -31,6 +34,7 @@ exports.Credential = Credential;
 let RadioStation = class RadioStation extends mongoose_2.Document {
 };
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
         required: true
@@ -38,6 +42,7 @@ __decorate([
     __metadata("design:type", String)
 ], RadioStation.prototype, "name", void 0);
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
         required: true
@@ -45,9 +50,11 @@ __decorate([
     __metadata("design:type", String)
 ], RadioStation.prototype, "country", void 0);
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        required: true
+        required: true,
+        unique: true
     }),
     __metadata("design:type", String)
 ], RadioStation.prototype, "streamingUrl", void 0);
@@ -70,7 +77,12 @@ __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
-], RadioStation.prototype, "owner", void 0);
+], RadioStation.prototype, "createdBy", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], RadioStation.prototype, "updatedBy", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ type: Date }),

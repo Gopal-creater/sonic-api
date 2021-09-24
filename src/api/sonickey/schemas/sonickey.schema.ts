@@ -82,7 +82,7 @@ export class SonicKey extends Document {
   status: boolean;
 
   @ApiProperty()
-  @Prop()
+  @Prop({required:true})
   encodingStrength: number;
 
   @IsNotEmpty()

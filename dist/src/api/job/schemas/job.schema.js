@@ -37,9 +37,6 @@ __decorate([
 ], Job.prototype, "encodingStrength", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({
-        required: true
-    }),
     __metadata("design:type", String)
 ], Job.prototype, "license", void 0);
 __decorate([

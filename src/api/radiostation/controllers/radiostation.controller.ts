@@ -22,44 +22,24 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { User } from '../../auth/decorators/user.decorator';
 import { forEach, subtract } from 'lodash';
-import * as fs from 'fs'
+import * as fs from 'fs';
 
 @ApiTags('Radio Station Controller')
 @Controller('radiostations')
 export class RadiostationController {
   constructor(private readonly radiostationService: RadiostationService) {}
 
-  // @Get('/generate-json')
-  // async genJson(
-  // ) {
-  //   var obj = {
-  //     stations: []
-  //  };
-   
-  //   const stations = await this.radiostationService.radioStationModel.find();
-  //   console.log("forEach Stating")
-  //   stations.forEach((station,index)=>{
-  //     const newObj = {
-  //       sn:index+1,
-  //       id:station.id,
-  //       streamingUrl:station.streamingUrl,
-  //       website:station.website
-  //     }
-  //     obj.stations.push(newObj);
-  //   })
-  //   console.log("forEach End")
-  //   var json = JSON.stringify(obj);
-  //   fs.writeFileSync('stations.json', json, 'utf8');
-  //   return "Done"
-    
-  // }
+  @Get('/generate-json')
+  async genJson() {
+    return this.radiostationService.updateFromJson();
+  }
 
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Radio Station' })
   async create(
-    @User('sub') owner: string,
+    @User('sub') createdBy: string,
     @Body() createRadiostationDto: CreateRadiostationDto,
   ) {
     const isPresent = await this.radiostationService.radioStationModel.findOne({
@@ -68,7 +48,9 @@ export class RadiostationController {
     if (isPresent) {
       throw new BadRequestException('Duplicate stramingURL');
     }
-    return this.radiostationService.create(createRadiostationDto);
+    return this.radiostationService.create(createRadiostationDto, {
+      createdBy: createdBy,
+    });
   }
 
   /**
@@ -82,19 +64,6 @@ export class RadiostationController {
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Radio Stations' })
   findAll(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto) {
-    return this.radiostationService.findAll(queryDto);
-  }
-
-  @Get('/owners/:ownerId')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @AnyApiQueryTemplate()
-  @ApiOperation({ summary: 'Get All Radio Stations of particular user' })
-  async getOwnersRadioStations(
-    @Param('ownerId') ownerId: string,
-    @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
-  ) {
-    queryDto.filter['owner'] = ownerId;
     return this.radiostationService.findAll(queryDto);
   }
 
@@ -174,11 +143,12 @@ export class RadiostationController {
   @ApiOperation({ summary: 'Update Single Radio Station' })
   async update(
     @Param('id') id: string,
+    @User('sub') updatedBy: string,
     @Body() updateRadiostationDto: UpdateRadiostationDto,
   ) {
     const updatedRadioStation = await this.radiostationService.radioStationModel.findOneAndUpdate(
       { _id: id },
-      updateRadiostationDto,
+      { ...updateRadiostationDto, updatedBy: updatedBy },
       { new: true },
     );
     if (!updatedRadioStation) {

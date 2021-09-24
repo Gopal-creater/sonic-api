@@ -1,14 +1,17 @@
 import { Prop, Schema, SchemaFactory, } from '@nestjs/mongoose';
 import { Document,Schema as MogSchema} from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 
 export const RadioStationSchemaName="RadioStation"
 
 @Schema()
 export class Credential {
+  @IsNotEmpty()
   @ApiProperty()
   username: string;
 
+  @IsNotEmpty()
   @ApiProperty()
   password: string;
 }
@@ -16,21 +19,25 @@ export class Credential {
 @Schema({ timestamps: true,collection:RadioStationSchemaName})
 export class RadioStation extends Document {
 
+  @IsNotEmpty()
   @ApiProperty()
   @Prop({
     required:true
   })
   name: string;
 
+  @IsNotEmpty()
   @ApiProperty()
   @Prop({
     required:true
   })
   country: string;
 
+  @IsNotEmpty()
   @ApiProperty()
   @Prop({
-    required:true
+    required:true,
+    unique:true
   })
   streamingUrl: string;
 
@@ -48,7 +55,11 @@ export class RadioStation extends Document {
 
   @ApiProperty()
   @Prop()
-  owner: string;
+  createdBy: string;
+
+  @ApiProperty()
+  @Prop()
+  updatedBy: string;
 
   @ApiProperty()
   @Prop({type:Date})

@@ -19,7 +19,9 @@ let ApiKey = class ApiKey extends mongoose_2.Document {
 };
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    mongoose_1.Prop({
+        required: true
+    }),
     __metadata("design:type", String)
 ], ApiKey.prototype, "customer", void 0);
 __decorate([

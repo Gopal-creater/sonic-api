@@ -18,10 +18,12 @@ let LKOwner = class LKOwner {
 };
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ required: true }),
     __metadata("design:type", String)
 ], LKOwner.prototype, "ownerId", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ required: true }),
     __metadata("design:type", String)
 ], LKOwner.prototype, "username", void 0);
 __decorate([
@@ -40,10 +42,12 @@ let LKReserve = class LKReserve {
 };
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ required: true }),
     __metadata("design:type", String)
 ], LKReserve.prototype, "jobId", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ required: true }),
     __metadata("design:type", Number)
 ], LKReserve.prototype, "count", void 0);
 LKReserve = __decorate([

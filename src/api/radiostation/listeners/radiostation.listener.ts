@@ -14,6 +14,7 @@ import * as uniqid from 'uniqid';
 import { RadiostationService } from '../services/radiostation.service';
 import { DetectionService } from '../../detection/detection.service';
 import { ChannelEnums } from 'src/constants/Enums';
+import { RadioMonitorService } from '../../radiomonitor/radiomonitor.service';
 
 @Injectable()
 export class RadioStationListener implements OnApplicationBootstrap {
@@ -21,6 +22,7 @@ export class RadioStationListener implements OnApplicationBootstrap {
     private schedulerRegistry: SchedulerRegistry,
     private sonickeyService: SonickeyService,
     private radiostationService: RadiostationService,
+    private radioMonitorService: RadioMonitorService,
     private detectionService: DetectionService,
   ) {}
   async onApplicationBootstrap() {
@@ -178,11 +180,17 @@ export class RadioStationListener implements OnApplicationBootstrap {
               sonicKey,
             );
             if (isKeyPresent) {
+              const isSubscribedForMonitor = await this.radioMonitorService.radioMonitorModel.findOne(
+                { owner: isKeyPresent.owner, radio: radioStation._id },
+              );
+              if (!isSubscribedForMonitor) continue;
+              // SendEmailTO thisUser
+              // Save It to detection Table
               const newDetection = await this.detectionService.detectionModel.create(
                 {
                   radioStation: radioStation._id,
                   sonicKey: sonicKey,
-                  owner: radioStation.owner,
+                  // owner: radioStation.owner,
                   sonicKeyOwnerId: isKeyPresent.owner,
                   sonicKeyOwnerName: isKeyPresent.contentOwner,
                   channel: ChannelEnums.RADIOSTATION,

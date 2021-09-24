@@ -33,11 +33,13 @@ const uniqid = require("uniqid");
 const radiostation_service_1 = require("../services/radiostation.service");
 const detection_service_1 = require("../../detection/detection.service");
 const Enums_1 = require("../../../constants/Enums");
+const radiomonitor_service_1 = require("../../radiomonitor/radiomonitor.service");
 let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
-    constructor(schedulerRegistry, sonickeyService, radiostationService, detectionService) {
+    constructor(schedulerRegistry, sonickeyService, radiostationService, radioMonitorService, detectionService) {
         this.schedulerRegistry = schedulerRegistry;
         this.sonickeyService = sonickeyService;
         this.radiostationService = radiostationService;
+        this.radioMonitorService = radioMonitorService;
         this.detectionService = detectionService;
         this.radioStationListenerLogger = new common_1.Logger(RadioStationListener_1.name);
         this.streamingIntervalLogger = new common_1.Logger('StreamingInterval');
@@ -119,10 +121,12 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
                             const sonicKey = sonicKeys_1_1.value;
                             const isKeyPresent = await this.sonickeyService.findBySonicKey(sonicKey);
                             if (isKeyPresent) {
+                                const isSubscribedForMonitor = await this.radioMonitorService.radioMonitorModel.findOne({ owner: isKeyPresent.owner, radio: radioStation._id });
+                                if (!isSubscribedForMonitor)
+                                    continue;
                                 const newDetection = await this.detectionService.detectionModel.create({
                                     radioStation: radioStation._id,
                                     sonicKey: sonicKey,
-                                    owner: radioStation.owner,
                                     sonicKeyOwnerId: isKeyPresent.owner,
                                     sonicKeyOwnerName: isKeyPresent.contentOwner,
                                     channel: Enums_1.ChannelEnums.RADIOSTATION,
@@ -179,6 +183,7 @@ RadioStationListener = RadioStationListener_1 = __decorate([
     __metadata("design:paramtypes", [schedule_1.SchedulerRegistry,
         sonickey_service_1.SonickeyService,
         radiostation_service_1.RadiostationService,
+        radiomonitor_service_1.RadioMonitorService,
         detection_service_1.DetectionService])
 ], RadioStationListener);
 exports.RadioStationListener = RadioStationListener;

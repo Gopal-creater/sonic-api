@@ -5,6 +5,8 @@ export class CreateRadiostationDto extends OmitType(RadioStation, [
  'startedAt',
  'stopAt',
  'isStreamStarted',
+ 'createdBy',
+ 'updatedBy',
  'error',
  'isError'
 ]) {}
