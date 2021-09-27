@@ -15,6 +15,7 @@ const radiostation_schema_1 = require("./schemas/radiostation.schema");
 const sonickey_module_1 = require("../sonickey/sonickey.module");
 const detection_module_1 = require("../detection/detection.module");
 const radiostation_listener_1 = require("./listeners/radiostation.listener");
+const radiomonitor_module_1 = require("../radiomonitor/radiomonitor.module");
 let RadiostationModule = class RadiostationModule {
 };
 RadiostationModule = __decorate([
@@ -24,6 +25,7 @@ RadiostationModule = __decorate([
                 { name: radiostation_schema_1.RadioStationSchemaName, schema: radiostation_schema_1.RadioStationSchema }
             ]),
             sonickey_module_1.SonickeyModule,
+            common_1.forwardRef(() => radiomonitor_module_1.RadiomonitorModule),
             detection_module_1.DetectionModule
         ],
         controllers: [radiostation_controller_1.RadiostationController],

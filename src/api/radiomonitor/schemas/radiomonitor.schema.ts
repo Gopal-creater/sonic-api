@@ -19,7 +19,7 @@ export class RadioMonitor extends Document {
 
   @ApiProperty()
   @Prop({
-    type: MogSchema.Types.ObjectId,
+    type: MogSchema.Types.String,
     ref: LicenseKeySchemaName,
     required: true,
     autopopulate: false,

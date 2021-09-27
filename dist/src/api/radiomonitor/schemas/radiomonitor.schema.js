@@ -31,7 +31,7 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        type: mongoose_2.Schema.Types.ObjectId,
+        type: mongoose_2.Schema.Types.String,
         ref: licensekey_schema_1.LicenseKeySchemaName,
         required: true,
         autopopulate: false,

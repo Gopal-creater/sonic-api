@@ -21,13 +21,14 @@ RadiomonitorModule = __decorate([
     common_1.Module({
         imports: [
             licensekey_module_1.LicensekeyModule,
-            radiostation_module_1.RadiostationModule,
+            common_1.forwardRef(() => radiostation_module_1.RadiostationModule),
             mongoose_1.MongooseModule.forFeature([
                 { name: radiomonitor_schema_1.RadioMonitorSchemaName, schema: radiomonitor_schema_1.RadioMonitorSchema },
             ]),
         ],
         controllers: [radiomonitor_controller_1.RadioMonitorController, radiomonitor_owner_controller_1.RadioMonitorOwnerController],
         providers: [radiomonitor_service_1.RadioMonitorService],
+        exports: [radiomonitor_service_1.RadioMonitorService]
     })
 ], RadiomonitorModule);
 exports.RadiomonitorModule = RadiomonitorModule;
