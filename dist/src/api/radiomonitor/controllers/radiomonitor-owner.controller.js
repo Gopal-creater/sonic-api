@@ -80,7 +80,7 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get all subscribed radio stations' }),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiomonitordto").MongoosePaginateRadioMonitorDto }),
     __param(0, decorators_1.User('sub')),
     __param(1, common_1.Param('ownerId')),
     __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
