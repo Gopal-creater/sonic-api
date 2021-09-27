@@ -10,7 +10,7 @@ import {
 import { Observable } from 'rxjs';
 import * as makeDir from 'make-dir';
 import { appConfig } from '../../config/app.config';
-import { extractFileName } from 'src/shared/utils';
+import { extractFileName, isValidHttpUrl } from 'src/shared/utils';
 import * as uniqid from 'uniqid';
 import * as fs from 'fs';
 import * as http from 'https';
@@ -30,6 +30,9 @@ export const FileFromUrlInterceptor = (fieldName: string) => {
         throw new BadRequestException(
           `${fieldName} is missing in request body`,
         );
+      }
+      if(!isValidHttpUrl(url)){
+        throw new BadRequestException("Invalid mediaFile Url");
       }
       const currentUserId = req['user']?.['sub'] || 'guestUser';
       const imagePath = await makeDir(

@@ -24,6 +24,9 @@ const FileFromUrlInterceptor = (fieldName) => {
             if (!url) {
                 throw new common_1.BadRequestException(`${fieldName} is missing in request body`);
             }
+            if (!utils_1.isValidHttpUrl(url)) {
+                throw new common_1.BadRequestException("Invalid mediaFile Url");
+            }
             const currentUserId = ((_a = req['user']) === null || _a === void 0 ? void 0 : _a['sub']) || 'guestUser';
             const imagePath = await makeDir(`${app_config_1.appConfig.MULTER_DEST}/${currentUserId}`);
             await makeDir(`${app_config_1.appConfig.MULTER_DEST}/${currentUserId}/encodedFiles`);

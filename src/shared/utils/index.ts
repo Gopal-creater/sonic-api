@@ -40,3 +40,8 @@ export function promiseHandler(promise:any):Promise<[any,any]>{
     var filename = url.substring(url.lastIndexOf('/')+1);
     return filename
     }
+
+    export function isValidHttpUrl(string:string) {
+      let url = new URL(string);
+      return url.protocol === "http:" || url.protocol === "https:";
+    }
