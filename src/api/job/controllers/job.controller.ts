@@ -23,6 +23,7 @@ import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
+import { JobLicenseValidationGuard } from '../../licensekey/guards/job-license-validation.guard';
 
 @ApiTags('Jobs Controller')
 @Controller('jobs')
@@ -52,7 +53,7 @@ export class JobController {
     return this.jobService.findAll(queryDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard,JobLicenseValidationGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a Job' })
   @Post()
