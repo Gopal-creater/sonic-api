@@ -85,12 +85,10 @@ export class SonicKey extends Document {
   @Prop({required:true})
   encodingStrength: number;
 
-  @IsNotEmpty()
   @ApiProperty()
   @Prop()
   contentType: string;
 
-  @IsNotEmpty()
   @ApiProperty()
   @Prop()
   contentDescription: string;
@@ -139,7 +137,6 @@ export class SonicKey extends Document {
   @Prop()
   tuneCode?: string;
 
-  @IsNotEmpty()
   @ApiProperty()
   @Prop()
   contentName: string;
@@ -153,7 +150,6 @@ export class SonicKey extends Document {
   @Prop({default:false})
   contentValidation?: boolean;
 
-  @IsNotEmpty()
   @ApiProperty()
   @Prop()
   contentFileName: string;

@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, UnprocessableEntityException
 import { LicenseKey } from 'src/api/licensekey/schemas/licensekey.schema';
 import { LicensekeyService } from '../services/licensekey.service';
 import { UserSession } from '../../user/schemas/user.schema';
+import { HttpException } from '@nestjs/common';
 
 /**
  * This Guard is responsible for checking valid license from user and add the validLicense field to the request object
@@ -17,29 +18,64 @@ export class LicenseValidationGuard implements CanActivate {
   ){
     const request = context.switchToHttp().getRequest();
     const user = request.user as UserSession;
-    const data= await this.licensekeyService.licenseKeyModel.find({"owners.ownerId":user.sub})
-    if(!data || data.length<=0){
+    const licenses= await this.licensekeyService.licenseKeyModel.find({"owners.ownerId":user.sub})
+    if(!licenses || licenses.length<=0){
       throw new UnprocessableEntityException("No License keys present. Please add a license key to subscribe for encode.")
     }
-    let currentValidLicense
-    for (let index = 0; index < data.length; index++) {
-      const license = data[index];
-      if(await this.isValidLicense(license.key)){
+    var currentValidLicense:LicenseKey
+    var valid:boolean
+    var message:string
+    var remainingUses:number
+    var reservedLicenceCount:number
+    var remaniningUsesAfterReservedCount:number
+    var usesToBeUsed: number
+    var maxEncodeUses:number
+    var statusCode:number
+    for await (const license of licenses) {
+      const validationResults = await this.isValidLicenseForEncode(license.key)
+      if(validationResults.valid){
+        valid=true
         currentValidLicense=license
         break;
       }
+      valid=false
+      statusCode=validationResults.statusCode||422
+      message=validationResults.message || "License validation failded"
+      remainingUses=validationResults.remainingUses;
+      reservedLicenceCount=validationResults.reservedLicenceCount;
+      remaniningUsesAfterReservedCount=validationResults.remaniningUsesAfterReservedCount;
+      usesToBeUsed=validationResults.usesToBeUsed;
+      maxEncodeUses=validationResults.maxEncodeUses 
+    }
+    if(!valid){
+      throw new HttpException({
+        valid:valid,
+        message:message,
+        remainingUses:remainingUses,
+        reservedLicenceCount:reservedLicenceCount,
+        remaniningUsesAfterReservedCount:remaniningUsesAfterReservedCount,
+        usesToBeUsed: usesToBeUsed,
+        maxEncodeUses:maxEncodeUses
+      },statusCode)
     }
     request.validLicense = currentValidLicense
     return Boolean(currentValidLicense)
   }
 
-  async isValidLicense(id: string){
+  async isValidLicenseForEncode(id: string){
     const { validationResult,licenseKey } = await this.licensekeyService.validateLicence(id);
     if (!validationResult.valid) {
-      throw new UnprocessableEntityException({message:validationResult.message})
+      return{
+        valid:false,
+        message:validationResult.message,
+        statusCode:422,
+        usesExceeded:false
+      }
     }
     if(licenseKey.isUnlimitedEncode){
-      return true;
+      return{
+        valid:true
+      }
     }
     var reservedLicenceCount = 0;
     if (licenseKey.reserves && Array.isArray(licenseKey.reserves)) {
@@ -54,16 +90,21 @@ export class LicenseValidationGuard implements CanActivate {
     const remaniningUsesAfterReservedCount = remainingUses - reservedLicenceCount;
     const usesToBeUsed = 1 //One at a time currently
     if (remaniningUsesAfterReservedCount < usesToBeUsed) {
-      throw new UnprocessableEntityException({
-        message:
-          'Error deuto your maximum license usage count exceeded.',
-        remainingUsages: remainingUses,
-        reservedLicenceCount: reservedLicenceCount,
-        remaniningUsesAfterReservedCount: remaniningUsesAfterReservedCount,
+      return{
+        valid:false,
+        message:'Error deuto your maximum license usage count exceeded.',
+        statusCode:422,
+        usesExceeded:true,
+        remainingUses:remainingUses,
+        reservedLicenceCount:reservedLicenceCount,
+        remaniningUsesAfterReservedCount:remaniningUsesAfterReservedCount,
         usesToBeUsed: usesToBeUsed,
-      });
+        maxEncodeUses:maxUses
+      }
     }
-    return true;
+    return{
+      valid:true
+    }
     
   }
 }
@@ -77,17 +118,40 @@ export class SubscribeRadioMonitorLicenseValidationGuard implements CanActivate 
   ){
     const request = context.switchToHttp().getRequest();
     const user = request.user as UserSession;
-    const data= await this.licensekeyService.licenseKeyModel.find({"owners.ownerId":user.sub})
-    if(!data || data.length<=0){
+    const licenses= await this.licensekeyService.licenseKeyModel.find({"owners.ownerId":user.sub})
+    if(!licenses || licenses.length<=0){
       throw new UnprocessableEntityException("No License keys present. Please add a license key to subscribe for monitor.")
     }
-    let currentValidLicense:LicenseKey
-    for (let index = 0; index < data.length; index++) {
-      const license = data[index];
-      if(await this.isValidLicenseForMonitor(license.key,request.body)){
+    var currentValidLicense:LicenseKey
+    var valid:boolean
+    var message:string
+    var remainingUses:number
+    var usesToBeUsed: number
+    var maxMonitoringUses:number
+    var statusCode:number
+
+    for await (const license of licenses) {
+      const validationResults = await this.isValidLicenseForMonitor(license.key,request.body)
+      if(validationResults.valid){
+        valid=true
         currentValidLicense=license
         break;
       }
+      valid=false
+      statusCode=validationResults.statusCode||422
+      message=validationResults.message || "License validation failded"
+      remainingUses=validationResults.remainingUses;
+      usesToBeUsed=validationResults.usesToBeUsed;
+      maxMonitoringUses=validationResults.maxMonitoringUses 
+    }
+    if(!valid){
+      throw new HttpException({
+        valid:valid,
+        message:message,
+        remainingUses:remainingUses,
+        usesToBeUsed: usesToBeUsed,
+        maxMonitoringUses:maxMonitoringUses
+      },statusCode)
     }
     request.validLicense = currentValidLicense
     return Boolean(currentValidLicense)
@@ -96,24 +160,36 @@ export class SubscribeRadioMonitorLicenseValidationGuard implements CanActivate 
   async isValidLicenseForMonitor(id: string,body:any){
     const { validationResult,licenseKey } = await this.licensekeyService.validateLicence(id);
     if (!validationResult.valid) {
-      throw new UnprocessableEntityException({message:validationResult.message})
+      return{
+        valid:false,
+        message:validationResult.message,
+        statusCode:422,
+        usesExceeded:false
+      }
     }
     if(licenseKey.isUnlimitedMonitor){
-      return true;
+      return{
+        valid:true
+      }
     }
     const uses = licenseKey.monitoringUses
     const maxUses = licenseKey.maxMonitoringUses
     const remainingUses = maxUses-uses
     const usesToBeUsed = Array.isArray(body) ? body.length:1
     if (remainingUses < usesToBeUsed) {
-      throw new UnprocessableEntityException({
-        message:
-          'Error deuto your maximum license usage count exceeded.',
-        remainingUsages: remainingUses,
+      return{
+        valid:false,
+        message:'Error deuto your maximum license usage count exceeded.',
+        statusCode:422,
+        usesExceeded:true,
+        remainingUses:remainingUses,
         usesToBeUsed: usesToBeUsed,
-      });
+        maxMonitoringUses:maxUses
+      }
     }
-    return true;
+    return{
+      valid:true
+    }
     
   }
 }

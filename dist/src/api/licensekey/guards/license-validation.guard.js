@@ -8,40 +8,94 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SubscribeRadioMonitorLicenseValidationGuard = exports.LicenseValidationGuard = void 0;
 const common_1 = require("@nestjs/common");
 const licensekey_schema_1 = require("../schemas/licensekey.schema");
 const licensekey_service_1 = require("../services/licensekey.service");
+const common_2 = require("@nestjs/common");
 let LicenseValidationGuard = class LicenseValidationGuard {
     constructor(licensekeyService) {
         this.licensekeyService = licensekeyService;
     }
     async canActivate(context) {
+        var e_1, _a;
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        const data = await this.licensekeyService.licenseKeyModel.find({ "owners.ownerId": user.sub });
-        if (!data || data.length <= 0) {
+        const licenses = await this.licensekeyService.licenseKeyModel.find({ "owners.ownerId": user.sub });
+        if (!licenses || licenses.length <= 0) {
             throw new common_1.UnprocessableEntityException("No License keys present. Please add a license key to subscribe for encode.");
         }
-        let currentValidLicense;
-        for (let index = 0; index < data.length; index++) {
-            const license = data[index];
-            if (await this.isValidLicense(license.key)) {
-                currentValidLicense = license;
-                break;
+        var currentValidLicense;
+        var valid;
+        var message;
+        var remainingUses;
+        var reservedLicenceCount;
+        var remaniningUsesAfterReservedCount;
+        var usesToBeUsed;
+        var maxEncodeUses;
+        var statusCode;
+        try {
+            for (var licenses_1 = __asyncValues(licenses), licenses_1_1; licenses_1_1 = await licenses_1.next(), !licenses_1_1.done;) {
+                const license = licenses_1_1.value;
+                const validationResults = await this.isValidLicenseForEncode(license.key);
+                if (validationResults.valid) {
+                    valid = true;
+                    currentValidLicense = license;
+                    break;
+                }
+                valid = false;
+                statusCode = validationResults.statusCode || 422;
+                message = validationResults.message || "License validation failded";
+                remainingUses = validationResults.remainingUses;
+                reservedLicenceCount = validationResults.reservedLicenceCount;
+                remaniningUsesAfterReservedCount = validationResults.remaniningUsesAfterReservedCount;
+                usesToBeUsed = validationResults.usesToBeUsed;
+                maxEncodeUses = validationResults.maxEncodeUses;
             }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (licenses_1_1 && !licenses_1_1.done && (_a = licenses_1.return)) await _a.call(licenses_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        if (!valid) {
+            throw new common_2.HttpException({
+                valid: valid,
+                message: message,
+                remainingUses: remainingUses,
+                reservedLicenceCount: reservedLicenceCount,
+                remaniningUsesAfterReservedCount: remaniningUsesAfterReservedCount,
+                usesToBeUsed: usesToBeUsed,
+                maxEncodeUses: maxEncodeUses
+            }, statusCode);
         }
         request.validLicense = currentValidLicense;
         return Boolean(currentValidLicense);
     }
-    async isValidLicense(id) {
+    async isValidLicenseForEncode(id) {
         const { validationResult, licenseKey } = await this.licensekeyService.validateLicence(id);
         if (!validationResult.valid) {
-            throw new common_1.UnprocessableEntityException({ message: validationResult.message });
+            return {
+                valid: false,
+                message: validationResult.message,
+                statusCode: 422,
+                usesExceeded: false
+            };
         }
         if (licenseKey.isUnlimitedEncode) {
-            return true;
+            return {
+                valid: true
+            };
         }
         var reservedLicenceCount = 0;
         if (licenseKey.reserves && Array.isArray(licenseKey.reserves)) {
@@ -53,15 +107,21 @@ let LicenseValidationGuard = class LicenseValidationGuard {
         const remaniningUsesAfterReservedCount = remainingUses - reservedLicenceCount;
         const usesToBeUsed = 1;
         if (remaniningUsesAfterReservedCount < usesToBeUsed) {
-            throw new common_1.UnprocessableEntityException({
+            return {
+                valid: false,
                 message: 'Error deuto your maximum license usage count exceeded.',
-                remainingUsages: remainingUses,
+                statusCode: 422,
+                usesExceeded: true,
+                remainingUses: remainingUses,
                 reservedLicenceCount: reservedLicenceCount,
                 remaniningUsesAfterReservedCount: remaniningUsesAfterReservedCount,
                 usesToBeUsed: usesToBeUsed,
-            });
+                maxEncodeUses: maxUses
+            };
         }
-        return true;
+        return {
+            valid: true
+        };
     }
 };
 LicenseValidationGuard = __decorate([
@@ -74,19 +134,52 @@ let SubscribeRadioMonitorLicenseValidationGuard = class SubscribeRadioMonitorLic
         this.licensekeyService = licensekeyService;
     }
     async canActivate(context) {
+        var e_2, _a;
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        const data = await this.licensekeyService.licenseKeyModel.find({ "owners.ownerId": user.sub });
-        if (!data || data.length <= 0) {
+        const licenses = await this.licensekeyService.licenseKeyModel.find({ "owners.ownerId": user.sub });
+        if (!licenses || licenses.length <= 0) {
             throw new common_1.UnprocessableEntityException("No License keys present. Please add a license key to subscribe for monitor.");
         }
-        let currentValidLicense;
-        for (let index = 0; index < data.length; index++) {
-            const license = data[index];
-            if (await this.isValidLicenseForMonitor(license.key, request.body)) {
-                currentValidLicense = license;
-                break;
+        var currentValidLicense;
+        var valid;
+        var message;
+        var remainingUses;
+        var usesToBeUsed;
+        var maxMonitoringUses;
+        var statusCode;
+        try {
+            for (var licenses_2 = __asyncValues(licenses), licenses_2_1; licenses_2_1 = await licenses_2.next(), !licenses_2_1.done;) {
+                const license = licenses_2_1.value;
+                const validationResults = await this.isValidLicenseForMonitor(license.key, request.body);
+                if (validationResults.valid) {
+                    valid = true;
+                    currentValidLicense = license;
+                    break;
+                }
+                valid = false;
+                statusCode = validationResults.statusCode || 422;
+                message = validationResults.message || "License validation failded";
+                remainingUses = validationResults.remainingUses;
+                usesToBeUsed = validationResults.usesToBeUsed;
+                maxMonitoringUses = validationResults.maxMonitoringUses;
             }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (licenses_2_1 && !licenses_2_1.done && (_a = licenses_2.return)) await _a.call(licenses_2);
+            }
+            finally { if (e_2) throw e_2.error; }
+        }
+        if (!valid) {
+            throw new common_2.HttpException({
+                valid: valid,
+                message: message,
+                remainingUses: remainingUses,
+                usesToBeUsed: usesToBeUsed,
+                maxMonitoringUses: maxMonitoringUses
+            }, statusCode);
         }
         request.validLicense = currentValidLicense;
         return Boolean(currentValidLicense);
@@ -94,23 +187,36 @@ let SubscribeRadioMonitorLicenseValidationGuard = class SubscribeRadioMonitorLic
     async isValidLicenseForMonitor(id, body) {
         const { validationResult, licenseKey } = await this.licensekeyService.validateLicence(id);
         if (!validationResult.valid) {
-            throw new common_1.UnprocessableEntityException({ message: validationResult.message });
+            return {
+                valid: false,
+                message: validationResult.message,
+                statusCode: 422,
+                usesExceeded: false
+            };
         }
         if (licenseKey.isUnlimitedMonitor) {
-            return true;
+            return {
+                valid: true
+            };
         }
         const uses = licenseKey.monitoringUses;
         const maxUses = licenseKey.maxMonitoringUses;
         const remainingUses = maxUses - uses;
         const usesToBeUsed = Array.isArray(body) ? body.length : 1;
         if (remainingUses < usesToBeUsed) {
-            throw new common_1.UnprocessableEntityException({
+            return {
+                valid: false,
                 message: 'Error deuto your maximum license usage count exceeded.',
-                remainingUsages: remainingUses,
+                statusCode: 422,
+                usesExceeded: true,
+                remainingUses: remainingUses,
                 usesToBeUsed: usesToBeUsed,
-            });
+                maxMonitoringUses: maxUses
+            };
         }
-        return true;
+        return {
+            valid: true
+        };
     }
 };
 SubscribeRadioMonitorLicenseValidationGuard = __decorate([

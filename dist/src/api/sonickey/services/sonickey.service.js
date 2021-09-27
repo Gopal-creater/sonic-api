@@ -200,7 +200,6 @@ let SonickeyService = class SonickeyService {
         const musicData = await this.exractMusicMetaFromFile(file.path);
         sonicKeyDto.contentSize = sonicKeyDto.contentSize || (file === null || file === void 0 ? void 0 : file.size);
         sonicKeyDto.contentFileName = sonicKeyDto.contentFileName || (file === null || file === void 0 ? void 0 : file.filename);
-        sonicKeyDto.contentType = sonicKeyDto.contentType || (file === null || file === void 0 ? void 0 : file.mimetype);
         sonicKeyDto.contentFileType = sonicKeyDto.contentFileType || (file === null || file === void 0 ? void 0 : file.mimetype);
         sonicKeyDto.contentDuration =
             sonicKeyDto.contentDuration || ((_a = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _a === void 0 ? void 0 : _a.duration);
