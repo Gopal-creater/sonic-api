@@ -5,6 +5,8 @@ import { Model } from 'mongoose';
 import { RadiostationService } from '../radiostation/services/radiostation.service';
 import { CreateRadioMonitorDto } from './dto/create-radiomonitor.dto';
 import { LicensekeyService } from '../licensekey/services/licensekey.service';
+import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
+import { MongoosePaginateRadioMonitorDto } from './dto/mongoosepaginate-radiomonitordto';
 
 @Injectable()
 export class RadioMonitorService {
@@ -14,6 +16,21 @@ export class RadioMonitorService {
     public readonly radiostationService: RadiostationService,
     public readonly licensekeyService: LicensekeyService,
   ) {}
+
+
+  async findAll(
+    queryDto: ParsedQueryDto,
+  ): Promise<MongoosePaginateRadioMonitorDto> {
+    const { limit, skip, sort, page, filter, select, populate } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    return this.radioMonitorModel['paginate'](filter, paginateOptions);
+  }
 
   async subscribeRadioToMonitor(
     createRadioMonitorDto: CreateRadioMonitorDto,

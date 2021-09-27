@@ -31,6 +31,10 @@ let RadioMonitorOwnerController = class RadioMonitorOwnerController {
         this.radiomonitorService = radiomonitorService;
         this.radiostationService = radiostationService;
     }
+    async getSubscriberedStations(owner, ownerId, queryDto) {
+        queryDto.filter['owner'] = ownerId;
+        return this.radiomonitorService.findAll(queryDto);
+    }
     async subscribe(createRadiomonitorDto, owner, license) {
         const { radio } = createRadiomonitorDto;
         await this.radiostationService.findByIdOrFail(radio);
@@ -71,6 +75,19 @@ let RadioMonitorOwnerController = class RadioMonitorOwnerController {
         return this.radiomonitorService.unsubscribeBulk(ids);
     }
 };
+__decorate([
+    common_1.Get('owners/:ownerId/subscribed-stations'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get all subscribed radio stations' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, decorators_1.User('sub')),
+    __param(1, common_1.Param('ownerId')),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], RadioMonitorOwnerController.prototype, "getSubscriberedStations", null);
 __decorate([
     common_1.Post('/owners/:ownerId/subscribe'),
     common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.SubscribeRadioMonitorLicenseValidationGuard),

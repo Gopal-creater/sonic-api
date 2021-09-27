@@ -29,6 +29,19 @@ export class RadioMonitorOwnerController {
     private readonly radiostationService: RadiostationService,
   ) {}
 
+  @Get('owners/:ownerId/subscribed-stations')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all subscribed radio stations' })
+  async getSubscriberedStations(
+    @User('sub') owner: string,
+    @Param('ownerId') ownerId: string,
+    @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
+  ) {
+    queryDto.filter['owner'] = ownerId;
+    return this.radiomonitorService.findAll(queryDto)
+  }
+
   @Post('/owners/:ownerId/subscribe')
   @UseGuards(JwtAuthGuard,SubscribeRadioMonitorLicenseValidationGuard)
   @ApiBearerAuth()

@@ -25,6 +25,17 @@ let RadioMonitorService = class RadioMonitorService {
         this.radiostationService = radiostationService;
         this.licensekeyService = licensekeyService;
     }
+    async findAll(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        return this.radioMonitorModel['paginate'](filter, paginateOptions);
+    }
     async subscribeRadioToMonitor(createRadioMonitorDto, owner, license) {
         const { radio } = createRadioMonitorDto;
         const isValidRadioStation = await this.radiostationService.radioStationModel.findById(radio);
