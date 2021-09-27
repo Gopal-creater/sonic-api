@@ -108,7 +108,7 @@ __decorate([
 ], SonicKey.prototype, "status", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ required: true }),
+    mongoose_1.Prop({ default: 10 }),
     __metadata("design:type", Number)
 ], SonicKey.prototype, "encodingStrength", void 0);
 __decorate([

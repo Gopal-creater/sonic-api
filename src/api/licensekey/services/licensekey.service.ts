@@ -66,11 +66,11 @@ export class LicensekeyService {
       validationResult.message = 'Invalid license key';
     } else if (new Date(licenseKey.validity).getTime() < new Date().getTime()) {
       validationResult.valid = false;
-      validationResult.message = 'This license key is expired';
+      validationResult.message = 'License key is expired';
     } else if (licenseKey.disabled || licenseKey.suspended) {
       validationResult.valid = false;
       validationResult.message =
-        'This license key is either disabled or suspended';
+        'License key is either disabled or suspended';
     }
 
     return { validationResult, licenseKey };
