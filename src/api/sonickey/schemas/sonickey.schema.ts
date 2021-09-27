@@ -5,6 +5,7 @@ import { Job, JobSchemaName } from '../../job/schemas/job.schema';
 import { ApiKeySchemaName } from '../../api-key/schemas/api-key.schema';
 import { ChannelEnums } from '../../../constants/Enums';
 import { S3FileUploadI } from '../../s3fileupload/interfaces';
+import { IsNotEmpty } from 'class-validator';
 
 export const SonicKeySchemaName = 'SonicKey';
 
@@ -81,12 +82,12 @@ export class SonicKey extends Document {
   status: boolean;
 
   @ApiProperty()
-  @Prop()
+  @Prop({required:true})
   encodingStrength: number;
 
   @ApiProperty()
   @Prop()
-  contentType?: string;
+  contentType: string;
 
   @ApiProperty()
   @Prop()
@@ -102,15 +103,15 @@ export class SonicKey extends Document {
 
   @ApiProperty()
   @Prop()
-  contentSize: number;
+  contentSize?: number;
 
   @ApiProperty()
   @Prop()
   contentFilePath: string;
 
   @ApiProperty()
-  @Prop({type:S3FileMeta,required:true})
-  s3FileMeta: S3FileMeta;
+  @Prop({type:S3FileMeta})
+  s3FileMeta?: S3FileMeta;
 
   @ApiProperty()
   @Prop()
@@ -138,20 +139,22 @@ export class SonicKey extends Document {
 
   @ApiProperty()
   @Prop()
-  contentName?: string;
+  contentName: string;
 
+  @IsNotEmpty()
   @ApiProperty()
   @Prop()
-  contentOwner?: string;
+  contentOwner: string;
 
   @ApiProperty()
-  @Prop()
+  @Prop({default:false})
   contentValidation?: boolean;
 
   @ApiProperty()
   @Prop()
   contentFileName: string;
 
+  @IsNotEmpty()
   @ApiProperty()
   @Prop()
   contentQuality: string;

@@ -6,9 +6,13 @@ import { Model } from 'mongoose';
 import { QueryDto } from '../../../shared/dtos/query.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
-import { STOP_LISTENING_STREAM, START_LISTENING_STREAM } from '../listeners/constants';
+import {
+  STOP_LISTENING_STREAM,
+  START_LISTENING_STREAM,
+} from '../listeners/constants';
 import { MongoosePaginateRadioStationDto } from '../dto/mongoosepaginate-radiostation.dto';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import * as fs from 'fs';
 
 @Injectable()
 export class RadiostationService {
@@ -16,10 +20,10 @@ export class RadiostationService {
     @InjectModel(RadioStation.name)
     public readonly radioStationModel: Model<RadioStation>,
     public readonly sonickeyService: SonickeyService,
-    private readonly eventEmitter: EventEmitter2
+    private readonly eventEmitter: EventEmitter2,
   ) {}
-  create(createRadiostationDto: CreateRadiostationDto) {
-    const newRadioStation = new this.radioStationModel(createRadiostationDto);
+  create(createRadiostationDto: CreateRadiostationDto,additionalAttribute?:Object) {
+    const newRadioStation = new this.radioStationModel({...createRadiostationDto,...additionalAttribute});
     return newRadioStation.save();
   }
 
@@ -36,7 +40,7 @@ export class RadiostationService {
       return radioStation;
     }
 
-    this.eventEmitter.emit(STOP_LISTENING_STREAM,radioStation)
+    this.eventEmitter.emit(STOP_LISTENING_STREAM, radioStation);
     //Do Stop Listening Stuff
     return this.radioStationModel.findOneAndUpdate(
       { _id: id },
@@ -62,21 +66,23 @@ export class RadiostationService {
     }
     //https://nodejs.org/api/worker_threads.html
     //Do Start Listening Stuff
-    this.eventEmitter.emit(START_LISTENING_STREAM,radioStation)
+    this.eventEmitter.emit(START_LISTENING_STREAM, radioStation);
     return this.radioStationModel.findOneAndUpdate(
       { _id: id },
       {
         startedAt: new Date(),
         isStreamStarted: true,
-        error:null,
-        isError:false
+        error: null,
+        isError: false,
       },
       { new: true },
     );
   }
 
-  async findAll(queryDto: ParsedQueryDto):Promise<MongoosePaginateRadioStationDto> {
-    const { limit,skip,sort,page,filter,select, populate} = queryDto;
+  async findAll(
+    queryDto: ParsedQueryDto,
+  ): Promise<MongoosePaginateRadioStationDto> {
+    const { limit, skip, sort, page, filter, select, populate } = queryDto;
     var paginateOptions = {};
     paginateOptions['sort'] = sort;
     paginateOptions['select'] = select;
@@ -84,7 +90,7 @@ export class RadiostationService {
     paginateOptions['offset'] = skip;
     paginateOptions['page'] = page;
     paginateOptions['limit'] = limit;
-    return this.radioStationModel["paginate"](filter,paginateOptions)
+    return this.radioStationModel['paginate'](filter, paginateOptions);
 
     // return this.radioStationModel
     //   .find(query || {})
@@ -175,5 +181,40 @@ export class RadiostationService {
         failedData: failedData,
       };
     });
+  }
+
+  async exportToJson() {
+    var obj = {
+      stations: [],
+    };
+
+    const stations = await this.radioStationModel.find();
+    stations.forEach((station, index) => {
+      const newObj = {
+        sn: index + 1,
+        id: station.id,
+        streamingUrl: station.streamingUrl,
+        website: station.website,
+      };
+      obj.stations.push(newObj);
+    });
+    var json = JSON.stringify(obj);
+    fs.writeFileSync('stations.json', json, 'utf8');
+    return 'Done';
+  }
+
+  async updateFromJson() {
+    // const stationsArr = stationslist.stations;
+    // for await (const station of stationsArr) {
+    //   await this.radioStationModel.updateOne(
+    //     { _id: station.id },
+    //     { country: station.country},
+    //   );
+    // }
+    await this.radioStationModel.updateMany(
+      { },
+      { $unset: { owner: "" } }
+   )
+    return 'Done';
   }
 }

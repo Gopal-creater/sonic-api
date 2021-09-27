@@ -163,7 +163,7 @@ export class JobFileController {
         jobData.id,
         savedJobFiles.length,
       )
-      .catch(async err => {
+      .catch(async(err) => {
         await this.jobService.jobFileModel.deleteMany(savedJobFiles);
         throw new UnprocessableEntityException();
       });

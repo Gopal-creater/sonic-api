@@ -1,4 +1,3 @@
-import { ExternalSonickeyModule } from './api/external-api/externalsonickey/externalsonickey.module';
 import { GlobalAwsModule } from './shared/modules/global-aws/global-aws.module';
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
@@ -26,6 +25,7 @@ import { ApiKeyModule } from './api/api-key/api-key.module';
 import { DetectionModule } from './api/detection/detection.module';
 import { LicensekeyModule } from './api/licensekey/licensekey.module';
 import { S3FileUploadModule } from './api/s3fileupload/s3fileupload.module';
+import { RadiomonitorModule } from './api/radiomonitor/radiomonitor.module';
 mongoosePaginate.paginate.options = {
   limit: 50,
 };
@@ -69,7 +69,6 @@ console.log('Node_env', process.env.NODE_ENV);
     GlobalAwsModule,
     UserModule,
     SonickeyModule,
-    ExternalSonickeyModule,
     JobModule,
     RadiostationModule,
     ThirdpartyDetectionModule,
@@ -77,6 +76,7 @@ console.log('Node_env', process.env.NODE_ENV);
     DetectionModule,
     LicensekeyModule,
     S3FileUploadModule,
+    RadiomonitorModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],

@@ -11,7 +11,6 @@ class UpdateSonicKeyDto extends swagger_1.PartialType(swagger_1.OmitType(sonicKe
     'contentCreatedDate',
     'contentEncoding',
     'contentFileName',
-    'contentFilePath',
     'contentFileType',
     'contentSamplingFrequency',
     'contentSize',

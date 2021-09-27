@@ -20,14 +20,15 @@ const mongoose_2 = require("mongoose");
 const event_emitter_1 = require("@nestjs/event-emitter");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const constants_1 = require("../listeners/constants");
+const fs = require("fs");
 let RadiostationService = class RadiostationService {
     constructor(radioStationModel, sonickeyService, eventEmitter) {
         this.radioStationModel = radioStationModel;
         this.sonickeyService = sonickeyService;
         this.eventEmitter = eventEmitter;
     }
-    create(createRadiostationDto) {
-        const newRadioStation = new this.radioStationModel(createRadiostationDto);
+    create(createRadiostationDto, additionalAttribute) {
+        const newRadioStation = new this.radioStationModel(Object.assign(Object.assign({}, createRadiostationDto), additionalAttribute));
         return newRadioStation.save();
     }
     async stopListeningStream(id) {
@@ -65,7 +66,7 @@ let RadiostationService = class RadiostationService {
             startedAt: new Date(),
             isStreamStarted: true,
             error: null,
-            isError: false
+            isError: false,
         }, { new: true });
     }
     async findAll(queryDto) {
@@ -77,7 +78,7 @@ let RadiostationService = class RadiostationService {
         paginateOptions['offset'] = skip;
         paginateOptions['page'] = page;
         paginateOptions['limit'] = limit;
-        return this.radioStationModel["paginate"](filter, paginateOptions);
+        return this.radioStationModel['paginate'](filter, paginateOptions);
     }
     async findByIdOrFail(id) {
         const radioStation = await this.radioStationModel.findById(id);
@@ -135,6 +136,28 @@ let RadiostationService = class RadiostationService {
                 failedData: failedData,
             };
         });
+    }
+    async exportToJson() {
+        var obj = {
+            stations: [],
+        };
+        const stations = await this.radioStationModel.find();
+        stations.forEach((station, index) => {
+            const newObj = {
+                sn: index + 1,
+                id: station.id,
+                streamingUrl: station.streamingUrl,
+                website: station.website,
+            };
+            obj.stations.push(newObj);
+        });
+        var json = JSON.stringify(obj);
+        fs.writeFileSync('stations.json', json, 'utf8');
+        return 'Done';
+    }
+    async updateFromJson() {
+        await this.radioStationModel.updateMany({}, { $unset: { owner: "" } });
+        return 'Done';
     }
 };
 RadiostationService = __decorate([

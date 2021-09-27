@@ -12,12 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DecodeDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
+const class_validator_1 = require("class-validator");
 class DecodeDto {
     static _OPENAPI_METADATA_FACTORY() {
         return { mediaFile: { required: true, type: () => Object } };
     }
 }
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty({ type: 'string', format: 'binary' }),
     __metadata("design:type", Object)
 ], DecodeDto.prototype, "mediaFile", void 0);

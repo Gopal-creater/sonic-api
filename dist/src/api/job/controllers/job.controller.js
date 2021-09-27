@@ -27,6 +27,7 @@ const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pi
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
+const job_license_validation_guard_1 = require("../../licensekey/guards/job-license-validation.guard");
 let JobController = class JobController {
     constructor(jobService, sonickeyService, licensekeyService) {
         this.jobService = jobService;
@@ -109,7 +110,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], JobController.prototype, "getOwnerJobs", null);
 __decorate([
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, job_license_validation_guard_1.JobLicenseValidationGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create a Job' }),
     common_1.Post(),

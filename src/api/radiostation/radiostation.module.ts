@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module,forwardRef } from '@nestjs/common';
 import { RadiostationService } from './services/radiostation.service';
 import { RadiostationController } from './controllers/radiostation.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,12 +9,14 @@ import {
 import { SonickeyModule } from '../sonickey/sonickey.module';
 import { DetectionModule } from '../detection/detection.module';
 import { RadioStationListener } from './listeners/radiostation.listener';
+import { RadiomonitorModule } from '../radiomonitor/radiomonitor.module';
 @Module({
   imports: [
   MongooseModule.forFeature([
       { name: RadioStationSchemaName, schema: RadioStationSchema }
     ]),
     SonickeyModule,
+    forwardRef(()=>RadiomonitorModule),
     DetectionModule
   ],
   controllers: [RadiostationController],
@@ -22,5 +24,6 @@ import { RadioStationListener } from './listeners/radiostation.listener';
     RadiostationService,
     RadioStationListener,
   ],
+  exports:[RadiostationService]
 })
 export class RadiostationModule {}

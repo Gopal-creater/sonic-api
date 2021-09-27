@@ -19,6 +19,7 @@ const common_1 = require("@nestjs/common");
 const licensekey_service_1 = require("../licensekey/services/licensekey.service");
 const licensekey_schema_1 = require("../licensekey/schemas/licensekey.schema");
 const index_1 = require("../../shared/utils/index");
+const user_schema_1 = require("./schemas/user.schema");
 let UserService = class UserService {
     constructor(licensekeyService, globalAwsService, configService) {
         this.licensekeyService = licensekeyService;
@@ -45,10 +46,10 @@ let UserService = class UserService {
             });
         }
         const newLKOwner = new licensekey_schema_1.LKOwner();
-        newLKOwner.ownerId = user.UserAttributes.find(attr => attr.Name == 'sub').Value;
-        newLKOwner.username = user.Username;
-        newLKOwner.email = user.UserAttributes.find(attr => attr.Name == 'email').Value;
-        newLKOwner.name = user.Username;
+        newLKOwner.ownerId = user.userAttributeObj.sub;
+        newLKOwner.username = user.username;
+        newLKOwner.email = user.userAttributeObj.email;
+        newLKOwner.name = user.username;
         return this.licensekeyService.addOwnerToLicense(licenseId, newLKOwner);
     }
     async addBulkNewLicenses(licenseIds, ownerIdOrUsername) {
@@ -60,10 +61,10 @@ let UserService = class UserService {
         });
         const promises = licenseIds.map(async (licenseId) => {
             const newLKOwner = new licensekey_schema_1.LKOwner();
-            newLKOwner.ownerId = user.UserAttributes.find(attr => attr.Name == 'sub').Value;
-            newLKOwner.username = user.Username;
-            newLKOwner.email = user.UserAttributes.find(attr => attr.Name == 'email').Value;
-            newLKOwner.name = user.Username;
+            newLKOwner.ownerId = user.userAttributeObj.sub;
+            newLKOwner.username = user.username;
+            newLKOwner.email = user.userAttributeObj.email;
+            newLKOwner.name = user.username;
             return this.licensekeyService
                 .addOwnerToLicense(licenseId, newLKOwner)
                 .catch(err => ({
@@ -80,7 +81,7 @@ let UserService = class UserService {
             };
         });
     }
-    async getUserProfile(usernameOrSub) {
+    async getUserProfile(usernameOrSub, includeGroups = false) {
         const params = {
             UserPoolId: this.cognitoUserPoolId,
             Username: usernameOrSub,
@@ -94,14 +95,24 @@ let UserService = class UserService {
         }
         const profile = await this.cognitoIdentityServiceProvider
             .adminGetUser(params)
-            .promise()
-            .catch(err => {
-            return Promise.resolve(null);
-        });
+            .promise();
         if (!profile) {
             return Promise.resolve(null);
         }
-        return this.addAttributesObjToProfile(profile);
+        const userAttributeObj = this.convertUserAttributesToObj(profile.UserAttributes);
+        const finalProfile = new user_schema_1.UserProfile({
+            username: profile.Username,
+            sub: userAttributeObj.sub,
+            userAttributes: profile.UserAttributes,
+            userAttributeObj: userAttributeObj,
+            enabled: profile.Enabled,
+            userStatus: profile.UserStatus,
+        });
+        if (includeGroups) {
+            const groupsResult = await this.getGroupsForUser(params.Username);
+            finalProfile.groups = groupsResult.groupNames;
+        }
+        return finalProfile;
     }
     async getGroupsForUser(usernameOrSub) {
         const params = {
@@ -112,9 +123,14 @@ let UserService = class UserService {
             const { username } = await this.getUserFromSub(usernameOrSub);
             params.Username = username;
         }
-        return this.cognitoIdentityServiceProvider
+        const adminListGroupsForUserResponse = await this.cognitoIdentityServiceProvider
             .adminListGroupsForUser(params)
             .promise();
+        const groupNames = adminListGroupsForUserResponse.Groups.map(group => group.GroupName);
+        return {
+            adminListGroupsForUserResponse: adminListGroupsForUserResponse,
+            groupNames: groupNames,
+        };
     }
     async getGroup(groupName) {
         const params = {
@@ -123,21 +139,16 @@ let UserService = class UserService {
         };
         const group = await this.cognitoIdentityServiceProvider
             .getGroup(params)
-            .promise()
-            .catch(err => {
-            return Promise.resolve(null);
-        });
-        console.log("group", group);
-        return group;
+            .promise();
+        return group.Group;
     }
-    addAttributesObjToProfile(profile) {
+    convertUserAttributesToObj(userAttributeType) {
         var attributesObj = {};
-        for (let index = 0; index < profile.UserAttributes.length; index++) {
-            const element = profile.UserAttributes[index];
+        for (let index = 0; index < userAttributeType.length; index++) {
+            const element = userAttributeType[index];
             attributesObj[element.Name] = element.Value;
         }
-        profile['UserAttributesObj'] = attributesObj;
-        return profile;
+        return attributesObj;
     }
     async exportFromLic() {
         const params = {

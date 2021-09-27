@@ -9,7 +9,6 @@ export class UpdateSonicKeyDto extends PartialType(
     'contentCreatedDate',
     'contentEncoding',
     'contentFileName',
-    'contentFilePath',
     'contentFileType',
     'contentSamplingFrequency',
     'contentSize',

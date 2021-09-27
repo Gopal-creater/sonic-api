@@ -15,6 +15,7 @@ const passport_1 = require("@nestjs/passport");
 const jwt_strategy_1 = require("./strategies/jwt.strategy");
 const api_key_module_1 = require("../api-key/api-key.module");
 const licensekey_module_1 = require("../licensekey/licensekey.module");
+const user_module_1 = require("../user/user.module");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -23,6 +24,7 @@ AuthModule = __decorate([
             passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
             api_key_module_1.ApiKeyModule,
             licensekey_module_1.LicensekeyModule,
+            user_module_1.UserModule
         ],
         providers: [auth_config_1.AuthConfig, auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],
         controllers: [auth_controller_1.AuthController],

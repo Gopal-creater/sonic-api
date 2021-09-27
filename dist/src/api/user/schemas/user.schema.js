@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserSession = exports.UserAttributesObj = void 0;
+exports.UserProfile = exports.UserSession = exports.UserAttributesObj = void 0;
 const swagger_1 = require("@nestjs/swagger");
 class UserAttributesObj {
 }
@@ -41,4 +41,10 @@ exports.UserAttributesObj = UserAttributesObj;
 class UserSession {
 }
 exports.UserSession = UserSession;
+class UserProfile {
+    constructor(params) {
+        Object.assign(this, params);
+    }
+}
+exports.UserProfile = UserProfile;
 //# sourceMappingURL=user.schema.js.map

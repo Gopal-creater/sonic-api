@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document,Schema as MogSchema} from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { JobFile,JobFileSchemaName } from './jobfile.schema';
+import { IsNotEmpty } from 'class-validator';
 
 export const JobSchemaName="Job"
 
@@ -9,6 +10,7 @@ export const JobSchemaName="Job"
 @Schema({ timestamps: true,collection:JobSchemaName})
 export class Job extends Document {
 
+  @IsNotEmpty()
   @ApiProperty()
   @Prop({
     required:true

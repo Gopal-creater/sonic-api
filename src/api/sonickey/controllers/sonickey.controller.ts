@@ -1,7 +1,7 @@
 import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
 import { UpdateSonicKeyDto } from '../dtos/update-sonickey.dto';
 import { DecodeDto } from '../dtos/decode.dto';
-import { EncodeDto } from '../dtos/encode.dto';
+import { EncodeDto, EncodeFromUrlDto } from '../dtos/encode.dto';
 import { SonicKeyDto } from '../dtos/sonicKey.dto';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { JsonParsePipe } from '../../../shared/pipes/jsonparse.pipe';
@@ -31,7 +31,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import * as makeDir from 'make-dir';
 import { diskStorage } from 'multer';
 import { appConfig } from '../../../config';
-import { LicenseValidationGuard } from '../../auth/guards/license-validation.guard';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -42,6 +41,7 @@ import {
   ApiOkResponse,
   ApiResponse,
   ApiQuery,
+  ApiParam,
 } from '@nestjs/swagger';
 import * as uniqid from 'uniqid';
 import { JwtAuthGuard } from '../../auth/guards';
@@ -55,6 +55,10 @@ import { Response } from 'express';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { ChannelEnums } from '../../../constants/Enums';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
+import { DetectionService } from '../../detection/detection.service';
+import { FileFromUrlInterceptor, UploadedFileFromUrl } from '../../../shared/interceptors/FileFromUrl.interceptor';
+import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
+import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
 
 /**
  * Prabin:
@@ -69,6 +73,7 @@ export class SonickeyController {
     private readonly sonicKeyService: SonickeyService,
     private readonly licensekeyService: LicensekeyService,
     private readonly fileHandlerService: FileHandlerService,
+    private readonly detectionService: DetectionService,
   ) {}
 
   // @Get('/update-channel')
@@ -262,6 +267,62 @@ export class SonickeyController {
       });
   }
 
+  @UseInterceptors(FileFromUrlInterceptor('mediaFile'))
+  @ApiBody({
+    description: 'File To Encode',
+    type: EncodeFromUrlDto,
+  })
+  @UseGuards(JwtAuthGuard, LicenseValidationGuard)
+  @Post('/encode-from-url')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Encode File From URL And save to database' })
+  encodeFromUrl(
+    @Body('data') sonicKeyDto: SonicKeyDto,
+    @UploadedFileFromUrl() file: IUploadedFile,
+    @User('sub') owner: string,
+    @ValidatedLicense('key') licenseId:string
+  ) {
+    var s3UploadResult: S3FileMeta;
+    var sonicKey: string;
+    return this.sonicKeyService
+      .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
+      .then(data => {
+        s3UploadResult = data.s3UploadResult as S3FileMeta;
+        sonicKey = data.sonicKey;
+        console.log('Increment Usages upon successfull encode');
+        return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
+      })
+      .then(async result => {
+        console.log('Going to save key in db.');
+        const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(
+          file,
+          sonicKeyDto,
+        );
+
+        const channel = ChannelEnums.PORTAL;
+        const newSonicKey = new this.sonicKeyService.sonicKeyModel({
+          ...sonicKeyDtoWithAudioData,
+          contentFilePath: s3UploadResult.Location,
+          owner: owner,
+          sonicKey: sonicKey,
+          channel: channel,
+          downloadable: true,
+          s3FileMeta: s3UploadResult,
+          _id: sonicKey,
+          license: licenseId,
+        });
+        return newSonicKey.save();
+      })
+      .catch(err => {
+        throw new InternalServerErrorException(err);
+      })
+      .finally(() => {
+        this.fileHandlerService.deleteFileAtPath(file.path);
+      });
+  }
+
+
+
   @UseInterceptors(
     FileInterceptor('mediaFile', {
       // Check the mimetypes to allow for upload
@@ -300,19 +361,111 @@ export class SonickeyController {
   @Post('/decode')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Decode File and retrive key information' })
-  async decode(@UploadedFile() file: IUploadedFile) {
+  async decode(
+    @UploadedFile() file: IUploadedFile,
+  ) {
     return this.sonicKeyService
       .decodeAllKeys(file)
       .then(async ({ sonicKeys }) => {
         console.log('Detected keys from Decode', sonicKeys);
         //iterate all the sonicKeys from decode function in order to get metadata
-        var sonicKeysMetadata = [];
+        var sonicKeysMetadata: SonicKey[] = [];
         for await (const sonicKey of sonicKeys) {
-          const metadata = await this.sonicKeyService.findBySonicKey(sonicKey);
-          if (!metadata) {
+          const validSonicKey = await this.sonicKeyService.findBySonicKey(
+            sonicKey,
+          );
+          if (!validSonicKey) {
             continue;
           }
-          sonicKeysMetadata.push(metadata);
+          const newDetection = await this.detectionService.detectionModel.create(
+            {
+              sonicKey: sonicKey,
+              owner: validSonicKey.owner,
+              sonicKeyOwnerId: validSonicKey.owner,
+              sonicKeyOwnerName: validSonicKey.contentOwner,
+              channel: ChannelEnums.PORTAL,
+              detectedAt: new Date(),
+            },
+          );
+          await newDetection.save();
+          sonicKeysMetadata.push(validSonicKey);
+        }
+        return sonicKeysMetadata;
+      })
+      .catch(err => {
+        this.fileHandlerService.deleteFileAtPath(file.path);
+        throw new BadRequestException(err);
+      });
+  }
+
+  @UseInterceptors(
+    FileInterceptor('mediaFile', {
+      // Check the mimetypes to allow for upload
+      // fileFilter: (req: any, file: any, cb: any) => {
+      //   const mimetype = file.mimetype as string;
+      //   if (mimetype.includes('audio')) {
+      //     // Allow storage of file
+      //     cb(null, true);
+      //   } else {
+      //     // Reject file
+      //     cb(new BadRequestException('Unsupported file type'), false);
+      //   }
+      // },
+      storage: diskStorage({
+        destination: async (req, file, cb) => {
+          const currentUserId = req['user']['sub'];
+          const imagePath = await makeDir(
+            `${appConfig.MULTER_DEST}/${currentUserId}`,
+          );
+          cb(null, imagePath);
+        },
+        filename: (req, file, cb) => {
+          let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+          const randomName = uniqid();
+          cb(null, `${randomName}-${orgName}`);
+        },
+      }),
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'File To Decode',
+    type: DecodeDto,
+  })
+  @UseGuards(JwtAuthGuard)
+  @Post(':channel/decode')
+  @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums)] })
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Decode File and retrive key information' })
+  async decodeFromChannel(
+    @UploadedFile() file: IUploadedFile,
+    @Param('channel') channel: string,
+  ) {
+    return this.sonicKeyService
+      .decodeAllKeys(file)
+      .then(async ({ sonicKeys }) => {
+        console.log('Detected keys from Decode', sonicKeys);
+        //iterate all the sonicKeys from decode function in order to get metadata
+        var sonicKeysMetadata: SonicKey[] = [];
+        for await (const sonicKey of sonicKeys) {
+          const validSonicKey = await this.sonicKeyService.findBySonicKey(
+            sonicKey,
+          );
+          if (!validSonicKey) {
+            continue;
+          }
+          const newDetection = await this.detectionService.detectionModel.create(
+            {
+              sonicKey: sonicKey,
+              owner: validSonicKey.owner,
+              sonicKeyOwnerId: validSonicKey.owner,
+              sonicKeyOwnerName: validSonicKey.contentOwner,
+              channel: channel,
+              detectedAt: new Date(),
+            },
+          );
+          await newDetection.save();
+          sonicKeysMetadata.push(validSonicKey);
         }
         return sonicKeysMetadata;
       })

@@ -16,6 +16,7 @@ const swagger_1 = require("@nestjs/swagger");
 const job_schema_1 = require("../../job/schemas/job.schema");
 const api_key_schema_1 = require("../../api-key/schemas/api-key.schema");
 const Enums_1 = require("../../../constants/Enums");
+const class_validator_1 = require("class-validator");
 exports.SonicKeySchemaName = 'SonicKey';
 let S3FileMeta = class S3FileMeta {
 };
@@ -107,7 +108,7 @@ __decorate([
 ], SonicKey.prototype, "status", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    mongoose_1.Prop({ required: true }),
     __metadata("design:type", Number)
 ], SonicKey.prototype, "encodingStrength", void 0);
 __decorate([
@@ -142,7 +143,7 @@ __decorate([
 ], SonicKey.prototype, "contentFilePath", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: S3FileMeta, required: true }),
+    mongoose_1.Prop({ type: S3FileMeta }),
     __metadata("design:type", S3FileMeta)
 ], SonicKey.prototype, "s3FileMeta", void 0);
 __decorate([
@@ -181,13 +182,14 @@ __decorate([
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentName", void 0);
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentOwner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    mongoose_1.Prop({ default: false }),
     __metadata("design:type", Boolean)
 ], SonicKey.prototype, "contentValidation", void 0);
 __decorate([
@@ -196,6 +198,7 @@ __decorate([
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentFileName", void 0);
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)

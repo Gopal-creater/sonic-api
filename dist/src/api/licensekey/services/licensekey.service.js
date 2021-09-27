@@ -114,15 +114,27 @@ let LicensekeyService = class LicensekeyService {
         if (!licenseKey)
             throw new common_1.NotFoundException();
         if (usesFor == 'decode') {
-            licenseKey.decodeUses = licenseKey.decodeUses + incrementBy;
-            if (licenseKey.decodeUses > licenseKey.maxDecodeUses) {
-                throw new common_1.UnprocessableEntityException("Can't increment uses because this increment will exceed the maxUses.");
+            if (!licenseKey.isUnlimitedDecode) {
+                licenseKey.decodeUses = licenseKey.decodeUses + incrementBy;
+                if (licenseKey.decodeUses > licenseKey.maxDecodeUses) {
+                    throw new common_1.UnprocessableEntityException("Can't increment uses because this increment will exceed the maxUses.");
+                }
             }
         }
         else if (usesFor == 'encode') {
-            licenseKey.encodeUses = licenseKey.encodeUses + incrementBy;
-            if (licenseKey.encodeUses > licenseKey.maxEncodeUses) {
-                throw new common_1.UnprocessableEntityException("Can't increment uses because this increment will exceed the maxUses.");
+            if (!licenseKey.isUnlimitedEncode) {
+                licenseKey.encodeUses = licenseKey.encodeUses + incrementBy;
+                if (licenseKey.encodeUses > licenseKey.maxEncodeUses) {
+                    throw new common_1.UnprocessableEntityException("Can't increment uses because this increment will exceed the maxUses.");
+                }
+            }
+        }
+        else if (usesFor == 'monitor') {
+            if (!licenseKey.isUnlimitedMonitor) {
+                licenseKey.monitoringUses = licenseKey.monitoringUses + incrementBy;
+                if (licenseKey.monitoringUses > licenseKey.maxMonitoringUses) {
+                    throw new common_1.UnprocessableEntityException("Can't increment uses because this increment will exceed the maxUses for monitor.");
+                }
             }
         }
         return licenseKey.save();
@@ -132,15 +144,27 @@ let LicensekeyService = class LicensekeyService {
         if (!licenseKey)
             throw new common_1.NotFoundException();
         if (usesFor == 'decode') {
-            licenseKey.decodeUses = licenseKey.decodeUses - decrementBy;
-            if (licenseKey.decodeUses < 0) {
-                throw new common_1.UnprocessableEntityException("Can't decrement uses because this decrement will become less than 0.");
+            if (!licenseKey.isUnlimitedDecode) {
+                licenseKey.decodeUses = licenseKey.decodeUses - decrementBy;
+                if (licenseKey.decodeUses < 0) {
+                    throw new common_1.UnprocessableEntityException("Can't decrement uses because this decrement will become less than 0.");
+                }
             }
         }
         else if (usesFor == 'encode') {
-            licenseKey.encodeUses = licenseKey.encodeUses - decrementBy;
-            if (licenseKey.encodeUses < 0) {
-                throw new common_1.UnprocessableEntityException("Can't decrement uses because this decrement will become less than 0.");
+            if (!licenseKey.isUnlimitedEncode) {
+                licenseKey.encodeUses = licenseKey.encodeUses - decrementBy;
+                if (licenseKey.encodeUses < 0) {
+                    throw new common_1.UnprocessableEntityException("Can't decrement uses because this decrement will become less than 0.");
+                }
+            }
+        }
+        else if (usesFor == 'monitor') {
+            if (!licenseKey.isUnlimitedMonitor) {
+                licenseKey.monitoringUses = licenseKey.monitoringUses - decrementBy;
+                if (licenseKey.monitoringUses < 0) {
+                    throw new common_1.UnprocessableEntityException("Can't decrement uses because this decrement will become less than 0 for monitor.");
+                }
             }
         }
         return licenseKey.save();
@@ -212,9 +236,9 @@ let LicensekeyService = class LicensekeyService {
                         if (user) {
                             const lkOwner = new licensekey_schema_1.LKOwner();
                             lkOwner.ownerId = ownerId;
-                            lkOwner.username = user.Username;
-                            lkOwner.email = user.UserAttributes.find(attr => attr.Name == 'email').Value;
-                            lkOwner.name = user.Username;
+                            lkOwner.username = user.username;
+                            lkOwner.email = user.userAttributeObj.email;
+                            lkOwner.name = user.username;
                             newOwners.push(lkOwner);
                         }
                     }
@@ -244,8 +268,7 @@ let LicensekeyService = class LicensekeyService {
                         : '5728f50d-146b-47d2-aa7b-a50bc37d641d',
                     owners: newOwners,
                 });
-                await newLicense.save()
-                    .catch(err => {
+                await newLicense.save().catch(err => {
                     console.log(`Error saving license ${oldLicense.name}`, err);
                 });
             }

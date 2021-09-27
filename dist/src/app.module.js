@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
-const externalsonickey_module_1 = require("./api/external-api/externalsonickey/externalsonickey.module");
 const global_aws_module_1 = require("./shared/modules/global-aws/global-aws.module");
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
@@ -36,6 +35,7 @@ const api_key_module_1 = require("./api/api-key/api-key.module");
 const detection_module_1 = require("./api/detection/detection.module");
 const licensekey_module_1 = require("./api/licensekey/licensekey.module");
 const s3fileupload_module_1 = require("./api/s3fileupload/s3fileupload.module");
+const radiomonitor_module_1 = require("./api/radiomonitor/radiomonitor.module");
 mongoosePaginate.paginate.options = {
     limit: 50,
 };
@@ -82,7 +82,6 @@ AppModule = __decorate([
             global_aws_module_1.GlobalAwsModule,
             user_module_1.UserModule,
             sonickey_module_1.SonickeyModule,
-            externalsonickey_module_1.ExternalSonickeyModule,
             job_module_1.JobModule,
             radiostation_module_1.RadiostationModule,
             thirdparty_detection_module_1.ThirdpartyDetectionModule,
@@ -90,6 +89,7 @@ AppModule = __decorate([
             detection_module_1.DetectionModule,
             licensekey_module_1.LicensekeyModule,
             s3fileupload_module_1.S3FileUploadModule,
+            radiomonitor_module_1.RadiomonitorModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, app_gateway_1.AppGateway],

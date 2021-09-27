@@ -8,6 +8,8 @@ class CreateRadiostationDto extends swagger_1.OmitType(radiostation_schema_1.Rad
     'startedAt',
     'stopAt',
     'isStreamStarted',
+    'createdBy',
+    'updatedBy',
     'error',
     'isError'
 ]) {

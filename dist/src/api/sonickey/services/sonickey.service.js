@@ -11,6 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonickeyService = void 0;
 const file_handler_service_1 = require("../../../shared/services/file-handler.service");
@@ -25,12 +32,15 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const Enums_1 = require("../../../constants/Enums");
 const s3fileupload_service_1 = require("../../s3fileupload/s3fileupload.service");
+const detection_service_1 = require("../../detection/detection.service");
+const detection_schema_1 = require("../../detection/schemas/detection.schema");
 let SonickeyService = class SonickeyService {
-    constructor(sonicKeyModel, fileOperationService, fileHandlerService, s3FileUploadService) {
+    constructor(sonicKeyModel, fileOperationService, fileHandlerService, s3FileUploadService, detectionService) {
         this.sonicKeyModel = sonicKeyModel;
         this.fileOperationService = fileOperationService;
         this.fileHandlerService = fileHandlerService;
         this.s3FileUploadService = s3FileUploadService;
+        this.detectionService = detectionService;
     }
     generateUniqueSonicKey() {
         return nanoid_1.nanoid(11);
@@ -39,8 +49,8 @@ let SonickeyService = class SonickeyService {
         const filePath = `${config_1.appConfig.MULTER_DEST}/guest/4fqq9xz8ckosgjzea-SonicTest_Detect.wav`;
         const result = await this.s3FileUploadService.uploadFromPath(filePath, 'userId1234345/encodedFiles', Enums_1.S3ACL.PRIVATE);
         return {
-            msg: "uploaded",
-            result: result
+            msg: 'uploaded',
+            result: result,
         };
     }
     async testDownloadFile() {
@@ -134,6 +144,32 @@ let SonickeyService = class SonickeyService {
             this.fileHandlerService.deleteFileAtPath(inFilePath);
         }));
     }
+    async findAndGetValidSonicKeyFromRandomDecodedKeys(keys, saveDetection, detectionToSave) {
+        var e_1, _a;
+        var sonicKeys = [];
+        try {
+            for (var keys_1 = __asyncValues(keys), keys_1_1; keys_1_1 = await keys_1.next(), !keys_1_1.done;) {
+                const key = keys_1_1.value;
+                const sonickey = await this.findBySonicKey(key);
+                if (!sonickey) {
+                    continue;
+                }
+                if (saveDetection) {
+                    const newDetection = await this.detectionService.detectionModel.create(detectionToSave);
+                    await newDetection.save();
+                }
+                sonicKeys.push(sonickey);
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (keys_1_1 && !keys_1_1.done && (_a = keys_1.return)) await _a.call(keys_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return sonicKeys;
+    }
     async decodeAllKeys(file) {
         file.path = upath.toUnix(file.path);
         const inFilePath = file.path;
@@ -164,7 +200,6 @@ let SonickeyService = class SonickeyService {
         const musicData = await this.exractMusicMetaFromFile(file.path);
         sonicKeyDto.contentSize = sonicKeyDto.contentSize || (file === null || file === void 0 ? void 0 : file.size);
         sonicKeyDto.contentFileName = sonicKeyDto.contentFileName || (file === null || file === void 0 ? void 0 : file.filename);
-        sonicKeyDto.contentType = sonicKeyDto.contentType || (file === null || file === void 0 ? void 0 : file.mimetype);
         sonicKeyDto.contentFileType = sonicKeyDto.contentFileType || (file === null || file === void 0 ? void 0 : file.mimetype);
         sonicKeyDto.contentDuration =
             sonicKeyDto.contentDuration || ((_a = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _a === void 0 ? void 0 : _a.duration);
@@ -197,7 +232,8 @@ SonickeyService = __decorate([
     __metadata("design:paramtypes", [mongoose_2.Model,
         file_operation_service_1.FileOperationService,
         file_handler_service_1.FileHandlerService,
-        s3fileupload_service_1.S3FileUploadService])
+        s3fileupload_service_1.S3FileUploadService,
+        detection_service_1.DetectionService])
 ], SonickeyService);
 exports.SonickeyService = SonickeyService;
 //# sourceMappingURL=sonickey.service.js.map

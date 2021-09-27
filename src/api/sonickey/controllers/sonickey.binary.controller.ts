@@ -13,12 +13,14 @@ import {
   ApiTags,
   ApiSecurity
 } from '@nestjs/swagger';
-import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
-import { BinaryLicenseValidationGuard } from '../../auth/guards/binary-license-validation.guard';
-import { ApiKey } from '../../auth/decorators/apikey.decorator';
 import { ChannelEnums } from '../../../constants/Enums';
-import { LicenseKey } from '../../auth/decorators/licensekey.decorator';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
+import { ApiKeyAuthGuard } from '../../api-key/guards/apikey-auth.guard';
+import { ApiKey } from '../../api-key/decorators/apikey.decorator';
+import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
+import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
+
+//REMOVABLE:  Added on thirdparty-controller
 
 @ApiTags('SonicKeys ThirdParty-Binary Controller (protected by x-api-key)')
 @ApiSecurity('x-api-key')
@@ -29,7 +31,7 @@ export class SonickeyBinaryController {
     private readonly licensekeyService: LicensekeyService,
   ) {}
 
-  @UseGuards(ApiKeyAuthGuard, BinaryLicenseValidationGuard)
+  @UseGuards(ApiKeyAuthGuard, LicenseValidationGuard)
   @Post('/create-from-binary')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Save to database after local encode from binary.' })
@@ -37,7 +39,7 @@ export class SonickeyBinaryController {
     @Body() createSonicKeyDto: CreateSonicKeyFromBinaryDto,
     @ApiKey('customer') customer: string,
     @ApiKey('_id') apiKey: string,
-    @LicenseKey('key') licenseKey: string
+    @ValidatedLicense('key') licenseKey: string
   ) {
     const channel = ChannelEnums.BINARY
     const newSonicKey = new this.sonicKeyService.sonicKeyModel({

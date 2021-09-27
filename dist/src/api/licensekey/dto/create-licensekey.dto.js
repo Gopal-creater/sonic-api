@@ -14,7 +14,7 @@ const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 class CreateLicensekeyDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, disabled: { required: false, type: () => Boolean }, suspended: { required: false, type: () => Boolean }, maxEncodeUses: { required: true, type: () => Number }, encodeUses: { required: true, type: () => Number }, maxDecodeUses: { required: true, type: () => Number }, decodeUses: { required: true, type: () => Number }, validity: { required: true, type: () => Date }, metaData: { required: false } };
+        return { name: { required: true, type: () => String }, disabled: { required: false, type: () => Boolean }, suspended: { required: false, type: () => Boolean }, maxEncodeUses: { required: true, type: () => Number }, encodeUses: { required: true, type: () => Number }, maxDecodeUses: { required: true, type: () => Number }, decodeUses: { required: true, type: () => Number }, maxMonitoringUses: { required: true, type: () => Number }, monitoringUses: { required: true, type: () => Number }, validity: { required: true, type: () => Date }, metaData: { required: false } };
     }
 }
 __decorate([
@@ -45,6 +45,14 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], CreateLicensekeyDto.prototype, "decodeUses", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], CreateLicensekeyDto.prototype, "maxMonitoringUses", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], CreateLicensekeyDto.prototype, "monitoringUses", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Date)

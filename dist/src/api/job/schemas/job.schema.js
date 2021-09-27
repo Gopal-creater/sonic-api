@@ -13,10 +13,12 @@ exports.JobSchema = exports.Job = exports.JobSchemaName = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
+const class_validator_1 = require("class-validator");
 exports.JobSchemaName = "Job";
 let Job = class Job extends mongoose_2.Document {
 };
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
         required: true

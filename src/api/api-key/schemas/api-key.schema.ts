@@ -10,7 +10,9 @@ export const ApiKeySchemaName = 'ApiKey';
 export class ApiKey extends Document { //_id or id will be apikey here, which is always unique
 
   @ApiProperty()
-  @Prop()
+  @Prop({
+    required:true
+  })
   customer: string;
 
   @ApiProperty()
