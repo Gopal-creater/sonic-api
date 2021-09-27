@@ -154,7 +154,6 @@ export class SonicKey extends Document {
   @Prop()
   contentFileName: string;
 
-  @IsNotEmpty()
   @ApiProperty()
   @Prop()
   contentQuality: string;

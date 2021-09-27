@@ -198,7 +198,6 @@ __decorate([
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentFileName", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
