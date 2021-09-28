@@ -217,7 +217,7 @@ export class SonickeyController {
     description: 'File To Encode',
     type: EncodeDto,
   })
-  @UsePipes(new ValidationPipe({transform:true}))
+  @UsePipes(new JsonParsePipe('data'),new ValidationPipe({transform:true}))
   @UseGuards(JwtAuthGuard, LicenseValidationGuard)
   @Post('/encode')
   @ApiBearerAuth()

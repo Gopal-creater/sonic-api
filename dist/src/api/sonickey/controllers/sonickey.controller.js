@@ -365,7 +365,7 @@ __decorate([
         description: 'File To Encode',
         type: encode_dto_1.EncodeDto,
     }),
-    common_2.UsePipes(new common_1.ValidationPipe({ transform: true })),
+    common_2.UsePipes(new jsonparse_pipe_1.JsonParsePipe('data'), new common_1.ValidationPipe({ transform: true })),
     common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
     common_1.Post('/encode'),
     swagger_1.ApiBearerAuth(),
