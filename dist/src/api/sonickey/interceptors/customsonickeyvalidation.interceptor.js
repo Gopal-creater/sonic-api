@@ -12,6 +12,7 @@ let CustomSonicKeyValidationInterceptor = class CustomSonicKeyValidationIntercep
     intercept(context, next) {
         try {
             const req = context.switchToHttp().getRequest();
+            console.log("req", req);
             const data = req.body['data'];
             console.log("data", data);
             if (!data)
@@ -19,6 +20,7 @@ let CustomSonicKeyValidationInterceptor = class CustomSonicKeyValidationIntercep
             const sonicKeyDto = JSON.parse(data);
             if (!sonicKeyDto.contentOwner)
                 throw new common_1.BadRequestException({ message: ["contentOwner can not be empty"] });
+            throw new common_1.BadRequestException("Done Error");
             return next
                 .handle();
         }

@@ -6,13 +6,16 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as multer from 'multer'
 
 global['fetch'] = require('node-fetch');
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bodyParser: true,
+    
   });
+  // app.use(multer)
   // app.enableVersioning()
   const configService = app.get(ConfigService);
   // app.enableCors()
@@ -34,7 +37,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useStaticAssets(appRootPath.path.toString()+'/storage/uploads/guest',{prefix:'/storage/uploads/guest'})
   app.useStaticAssets(appRootPath.path.toString()+'/storage/uploads/public',{prefix:'/storage/uploads/public'})
-  app.useGlobalPipes(new ValidationPipe({ transform: true,whitelist:true}));
+  app.useGlobalPipes(new ValidationPipe({ transform: true}));
   const PORT = configService.get('PORT')||8000;
 
   //Swagger Integration
