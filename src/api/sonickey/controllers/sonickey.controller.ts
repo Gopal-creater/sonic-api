@@ -59,6 +59,7 @@ import { DetectionService } from '../../detection/detection.service';
 import { FileFromUrlInterceptor, UploadedFileFromUrl } from '../../../shared/interceptors/FileFromUrl.interceptor';
 import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
+import { CustomSonicKeyValidationInterceptor } from '../interceptors/customsonickeyvalidation.interceptor';
 
 /**
  * Prabin:
@@ -179,6 +180,7 @@ export class SonickeyController {
   }
 
   @UseInterceptors(
+    CustomSonicKeyValidationInterceptor,
     FileInterceptor('mediaFile', {
       // Check the mimetypes to allow for upload
       // fileFilter: (req: any, file: any, cb: any) => {
@@ -267,7 +269,7 @@ export class SonickeyController {
       });
   }
 
-  @UseInterceptors(FileFromUrlInterceptor('mediaFile'))
+  @UseInterceptors(CustomSonicKeyValidationInterceptor,FileFromUrlInterceptor('mediaFile'))
   @ApiBody({
     description: 'File To Encode',
     type: EncodeFromUrlDto,

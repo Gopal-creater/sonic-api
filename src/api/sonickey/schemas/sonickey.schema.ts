@@ -156,7 +156,7 @@ export class SonicKey extends Document {
   @Prop()
   contentName: string;
 
-  @IsNotEmpty()
+  // @IsNotEmpty()
   @ApiProperty()
   @Prop()
   contentOwner: string;

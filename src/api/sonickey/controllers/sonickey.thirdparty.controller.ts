@@ -31,6 +31,7 @@ import { ApiKeyAuthGuard } from '../../api-key/guards/apikey-auth.guard';
 import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
+import { CustomSonicKeyValidationInterceptor } from '../interceptors/customsonickeyvalidation.interceptor';
 
 
 @ApiTags('ThirdParty Integration Controller, Protected By XAPI-Key')
@@ -43,7 +44,7 @@ export class SonickeyThirdPartyController {
     private readonly licensekeyService: LicensekeyService,
   ) {}
 
-  @UseInterceptors(FileFromUrlInterceptor('mediaFile'))
+  @UseInterceptors(CustomSonicKeyValidationInterceptor,FileFromUrlInterceptor('mediaFile'))
   @ApiBody({
     description: 'File To Encode',
     type: EncodeFromUrlDto,

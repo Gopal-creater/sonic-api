@@ -49,6 +49,7 @@ const detection_service_1 = require("../../detection/detection.service");
 const FileFromUrl_interceptor_1 = require("../../../shared/interceptors/FileFromUrl.interceptor");
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
+const customsonickeyvalidation_interceptor_1 = require("../interceptors/customsonickeyvalidation.interceptor");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
@@ -344,7 +345,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getOne", null);
 __decorate([
-    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
+    common_1.UseInterceptors(customsonickeyvalidation_interceptor_1.CustomSonicKeyValidationInterceptor, platform_express_1.FileInterceptor('mediaFile', {
         storage: multer_1.diskStorage({
             destination: async (req, file, cb) => {
                 const currentUserId = req['user']['sub'];
@@ -378,7 +379,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SonickeyController.prototype, "encode", null);
 __decorate([
-    common_1.UseInterceptors(FileFromUrl_interceptor_1.FileFromUrlInterceptor('mediaFile')),
+    common_1.UseInterceptors(customsonickeyvalidation_interceptor_1.CustomSonicKeyValidationInterceptor, FileFromUrl_interceptor_1.FileFromUrlInterceptor('mediaFile')),
     swagger_1.ApiBody({
         description: 'File To Encode',
         type: encode_dto_1.EncodeFromUrlDto,
