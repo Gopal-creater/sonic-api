@@ -1,15 +1,17 @@
 import { SonicKeyDto } from './sonicKey.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty,IsJSON } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsNotEmpty,IsJSON,ValidateNested } from 'class-validator';
+import { Transform ,plainToClass,Type} from 'class-transformer';
 
 export class EncodeDto {
   @IsNotEmpty()
   @ApiProperty({ type: 'string', format: 'binary' })
   mediaFile: any;
 
+  @ValidateNested({ each: true })
+  @Transform((data) => plainToClass(SonicKeyDto, JSON.parse(data)))
+  @Type(() => SonicKeyDto)
   @IsNotEmpty()
-  @IsJSON()
   @ApiProperty()
   data: SonicKeyDto;
 }
