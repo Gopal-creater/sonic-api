@@ -23,10 +23,12 @@ let HttpExceptionFilter = class HttpExceptionFilter {
             : { error: error.name, message: error.message };
         const fileHandler = new file_handler_service_1.FileHandlerService();
         if (request.file) {
+            fileHandler.deleteFileAtPath(request.file.path);
         }
         if (request.files) {
             for (let index = 0; index < request.files.length; index++) {
                 const file = request.files[index];
+                fileHandler.deleteFileAtPath(file);
             }
         }
         const errorObj = error instanceof common_1.HttpException

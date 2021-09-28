@@ -27,12 +27,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
     //Delete Already Uploaded File If Validation Failed
     const fileHandler = new FileHandlerService();
     if (request.file) {
-      // fileHandler.deleteFileAtPath(request.file.path);
+      fileHandler.deleteFileAtPath(request.file.path);
     }
     if (request.files) {
       for (let index = 0; index < request.files.length; index++) {
         const file = request.files[index];
-        // fileHandler.deleteFileAtPath(file);
+        fileHandler.deleteFileAtPath(file);
       }
     }
     //Delete Already Uploaded File If Validation Failed
