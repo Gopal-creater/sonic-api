@@ -60,7 +60,6 @@ import { DetectionService } from '../../detection/detection.service';
 import { FileFromUrlInterceptor, UploadedFileFromUrl } from '../../../shared/interceptors/FileFromUrl.interceptor';
 import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
-import { UsePipes } from '@nestjs/common';
 
 /**
  * Prabin:
@@ -217,13 +216,12 @@ export class SonickeyController {
     description: 'File To Encode',
     type: EncodeDto,
   })
-  @UsePipes(new JsonParsePipe('data'),new ValidationPipe({transform:true}))
   @UseGuards(JwtAuthGuard, LicenseValidationGuard)
   @Post('/encode')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Encode File And save to database' })
   encode(
-    @Body('data', JsonParsePipe) sonicKeyDto: SonicKeyDto,
+    @Body('data', JsonParsePipe,new ValidationPipe()) sonicKeyDto: SonicKeyDto,
     @UploadedFile() file: IUploadedFile,
     @User('sub') owner: string,
     @Req() req: any,

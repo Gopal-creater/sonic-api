@@ -2,14 +2,11 @@ import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from
 
 @Injectable()
 export class JsonParsePipe implements PipeTransform {
-  constructor(private field?:string){
-
-  }
   transform(value: any, metadata: ArgumentMetadata) {
     try {
-      console.log("JsonParsePipe-value",value);
-      const data = this.field ? value[this.field]:value
-      return data && JSON.parse(data);
+      console.log("value",value);
+      
+      return value && JSON.parse(value);
     } catch (error) {
       throw new BadRequestException(error);
     }
