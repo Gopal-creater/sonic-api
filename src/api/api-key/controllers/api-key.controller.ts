@@ -33,7 +33,7 @@ export class ApiKeyController {
     if(createApiKeyDto.type==ApiKeyType.INDIVIDUAL){
       const user = await this.apiKeyService.userService.getUserProfile(createApiKeyDto.customer)
       if(!user) throw new NotFoundException("Unknown user")
-      createApiKeyDto.customer=user?.["UserAttributesObj"]?.sub
+      createApiKeyDto.customer=user?.sub
     }else if(createApiKeyDto.type==ApiKeyType.GROUP){
       const group = await this.apiKeyService.userService.getGroup(createApiKeyDto.groups?.[0])
       if(!group) throw new NotFoundException("Unknown group")
