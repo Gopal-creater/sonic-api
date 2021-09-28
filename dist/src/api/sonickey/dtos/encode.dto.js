@@ -26,13 +26,9 @@ __decorate([
     __metadata("design:type", Object)
 ], EncodeDto.prototype, "mediaFile", void 0);
 __decorate([
-    class_transformer_1.Transform((data) => {
-        console.log("In Transform", data);
-        return class_transformer_1.plainToClass(sonicKey_dto_1.SonicKeyDto, JSON.parse(data));
-    }),
-    class_transformer_1.Type(() => sonicKey_dto_1.SonicKeyDto),
+    class_validator_1.ValidateNested(),
+    class_transformer_1.Transform((value) => class_transformer_1.plainToClass(sonicKey_dto_1.SonicKeyDto, JSON.parse(value))),
     class_validator_1.IsNotEmpty(),
-    class_validator_1.IsJSON(),
     swagger_1.ApiProperty(),
     __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
 ], EncodeDto.prototype, "data", void 0);

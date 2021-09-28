@@ -369,7 +369,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Encode File And save to database' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/sonickey.schema").SonicKey }),
-    __param(0, common_1.Body('data', jsonparse_pipe_1.JsonParsePipe, new common_1.ValidationPipe())),
+    __param(0, common_1.Body('data', jsonparse_pipe_1.JsonParsePipe)),
     __param(1, common_1.UploadedFile()),
     __param(2, decorators_1.User('sub')),
     __param(3, common_1.Req()),

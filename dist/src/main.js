@@ -5,6 +5,7 @@ const http_exception_filter_1 = require("./shared/filters/http-exception.filter"
 const appRootPath = require("app-root-path");
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
+const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 global['fetch'] = require('node-fetch');
 async function bootstrap() {
@@ -30,6 +31,7 @@ async function bootstrap() {
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());
     app.useStaticAssets(appRootPath.path.toString() + '/storage/uploads/guest', { prefix: '/storage/uploads/guest' });
     app.useStaticAssets(appRootPath.path.toString() + '/storage/uploads/public', { prefix: '/storage/uploads/public' });
+    app.useGlobalPipes(new common_1.ValidationPipe({ transform: true, forbidNonWhitelisted: true }));
     const PORT = configService.get('PORT') || 8000;
     const options = new swagger_1.DocumentBuilder()
         .setTitle('Sonic API Development')

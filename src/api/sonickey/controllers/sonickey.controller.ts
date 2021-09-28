@@ -24,7 +24,6 @@ import {
   Query,
   UnauthorizedException,
   InternalServerErrorException,
-  ValidationPipe,
 } from '@nestjs/common';
 import { SonickeyService } from '../services/sonickey.service';
 import { S3FileMeta, SonicKey } from '../schemas/sonickey.schema';
@@ -221,7 +220,7 @@ export class SonickeyController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Encode File And save to database' })
   encode(
-    @Body('data', JsonParsePipe,new ValidationPipe()) sonicKeyDto: SonicKeyDto,
+    @Body('data', JsonParsePipe) sonicKeyDto: SonicKeyDto,
     @UploadedFile() file: IUploadedFile,
     @User('sub') owner: string,
     @Req() req: any,

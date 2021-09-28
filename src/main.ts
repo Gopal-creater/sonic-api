@@ -34,7 +34,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useStaticAssets(appRootPath.path.toString()+'/storage/uploads/guest',{prefix:'/storage/uploads/guest'})
   app.useStaticAssets(appRootPath.path.toString()+'/storage/uploads/public',{prefix:'/storage/uploads/public'})
-  // app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(new ValidationPipe({ transform: true,forbidNonWhitelisted:true }));
   const PORT = configService.get('PORT')||8000;
 
   //Swagger Integration
