@@ -87,6 +87,8 @@ let SonickeyController = class SonickeyController {
     encode(sonicKeyDto, file, owner, req) {
         var _a;
         console.log('file', file);
+        if (!sonicKeyDto.contentOwner)
+            throw new common_1.BadRequestException("contentOwner is required");
         const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.key;
         var s3UploadResult;
         var sonicKey;
@@ -113,6 +115,8 @@ let SonickeyController = class SonickeyController {
         });
     }
     encodeFromUrl(sonicKeyDto, file, owner, licenseId) {
+        if (!sonicKeyDto.contentOwner)
+            throw new common_1.BadRequestException("contentOwner is required");
         var s3UploadResult;
         var sonicKey;
         return this.sonicKeyService
@@ -347,14 +351,8 @@ __decorate([
     common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
         storage: multer_1.diskStorage({
             destination: async (req, file, cb) => {
-                var _a, _b;
+                var _a;
                 const currentUserId = (_a = req['user']) === null || _a === void 0 ? void 0 : _a['sub'];
-                const sonicKeyDto = (_b = req['body']) === null || _b === void 0 ? void 0 : _b['data'];
-                console.log("sonicKeyDto in file interceptor", sonicKeyDto);
-                if (!sonicKeyDto)
-                    throw new common_1.BadRequestException("data is required");
-                if (!sonicKeyDto.contentOwner)
-                    throw new common_1.BadRequestException("contentOwner is required");
                 const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
                 await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}/encodedFiles`);
                 cb(null, imagePath);

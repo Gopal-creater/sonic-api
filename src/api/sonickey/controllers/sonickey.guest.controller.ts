@@ -12,6 +12,7 @@ import {
   Get,
   Query,
   Param,
+  BadRequestException,
 } from '@nestjs/common';
 import { SonickeyService } from '../services/sonickey.service';
 import { SonicKey } from '../schemas/sonickey.schema';
@@ -93,6 +94,7 @@ export class SonickeyGuestController {
     @UploadedFile() file: IUploadedFile,
     @Req() req: any,
   ) {
+    if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
     const channel = ChannelEnums.MOBILEAPP;
     console.log('file', file);
     const owner = 'guest';

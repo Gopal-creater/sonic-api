@@ -18,16 +18,21 @@ const mime = require("mime");
 const FileFromUrlInterceptor = (fieldName) => {
     let FileFromUrlInterceptorClass = class FileFromUrlInterceptorClass {
         async intercept(context, next) {
-            var _a;
+            var _a, _b;
             const req = context.switchToHttp().getRequest();
             const url = req.body[fieldName];
+            const sonicKeyDto = (_a = req.body) === null || _a === void 0 ? void 0 : _a.data;
             if (!url) {
                 throw new common_1.BadRequestException(`${fieldName} is missing in request body`);
             }
             if (!utils_1.isValidHttpUrl(url)) {
-                throw new common_1.BadRequestException("Invalid mediaFile Url");
+                throw new common_1.BadRequestException('Invalid mediaFile Url');
             }
-            const currentUserId = ((_a = req['user']) === null || _a === void 0 ? void 0 : _a['sub']) || 'guestUser';
+            if (!sonicKeyDto)
+                throw new common_1.BadRequestException('data is required');
+            if (!sonicKeyDto.contentOwner)
+                throw new common_1.BadRequestException('contentOwner is required');
+            const currentUserId = ((_b = req['user']) === null || _b === void 0 ? void 0 : _b['sub']) || 'guestUser';
             const imagePath = await makeDir(`${app_config_1.appConfig.MULTER_DEST}/${currentUserId}`);
             await makeDir(`${app_config_1.appConfig.MULTER_DEST}/${currentUserId}/encodedFiles`);
             const originalname = utils_1.extractFileName(url);

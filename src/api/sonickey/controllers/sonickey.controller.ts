@@ -194,10 +194,6 @@ export class SonickeyController {
       storage: diskStorage({
         destination: async (req, file, cb) => {
           const currentUserId = req['user']?.['sub'];
-          const sonicKeyDto = req['body']?.['data'] as SonicKeyDto;
-          console.log("sonicKeyDto in file interceptor",sonicKeyDto);
-          if(!sonicKeyDto) throw new BadRequestException("data is required")
-          if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
           const imagePath = await makeDir(
             `${appConfig.MULTER_DEST}/${currentUserId}`,
           );
@@ -230,7 +226,7 @@ export class SonickeyController {
     @Req() req: any,
   ) {
     console.log('file', file);
-
+    if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
     const licenseId = req?.validLicense?.key as string;
     var s3UploadResult: S3FileMeta;
     var sonicKey: string;
@@ -286,6 +282,7 @@ export class SonickeyController {
     @User('sub') owner: string,
     @ValidatedLicense('key') licenseId:string
   ) {
+    if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
     var s3UploadResult: S3FileMeta;
     var sonicKey: string;
     return this.sonicKeyService

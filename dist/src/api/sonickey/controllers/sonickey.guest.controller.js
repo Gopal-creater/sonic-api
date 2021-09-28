@@ -43,6 +43,8 @@ let SonickeyGuestController = class SonickeyGuestController {
         this.detectionService = detectionService;
     }
     encode(sonicKeyDto, file, req) {
+        if (!sonicKeyDto.contentOwner)
+            throw new common_1.BadRequestException("contentOwner is required");
         const channel = Enums_1.ChannelEnums.MOBILEAPP;
         console.log('file', file);
         const owner = 'guest';

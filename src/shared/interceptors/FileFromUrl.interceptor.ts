@@ -16,6 +16,7 @@ import * as fs from 'fs';
 import * as http from 'https';
 import * as mime from 'mime';
 import { IUploadedFile } from '../interfaces/UploadedFile.interface';
+import { SonicKeyDto } from '../../api/sonickey/dtos/sonicKey.dto';
 
 export const FileFromUrlInterceptor = (fieldName: string) => {
   @Injectable()
@@ -26,14 +27,18 @@ export const FileFromUrlInterceptor = (fieldName: string) => {
     ): Promise<Observable<any>> {
       const req = context.switchToHttp().getRequest();
       const url = req.body[fieldName] as string;
+      const sonicKeyDto = req.body?.data as SonicKeyDto;
       if (!url) {
         throw new BadRequestException(
           `${fieldName} is missing in request body`,
         );
       }
-      if(!isValidHttpUrl(url)){
-        throw new BadRequestException("Invalid mediaFile Url");
+      if (!isValidHttpUrl(url)) {
+        throw new BadRequestException('Invalid mediaFile Url');
       }
+      if (!sonicKeyDto) throw new BadRequestException('data is required');
+      if (!sonicKeyDto.contentOwner)
+        throw new BadRequestException('contentOwner is required');
       const currentUserId = req['user']?.['sub'] || 'guestUser';
       const imagePath = await makeDir(
         `${appConfig.MULTER_DEST}/${currentUserId}`,
@@ -43,7 +48,7 @@ export const FileFromUrlInterceptor = (fieldName: string) => {
       const filename = `${uniqid()}-${originalname}`;
       const destination = `${imagePath}/${filename}`;
       const uploaded = await this.download(url, destination);
-      const fileStat = fs.statSync(destination)
+      const fileStat = fs.statSync(destination);
       const mimeType = mime.getType(destination);
       const fileUploadResult: IUploadedFile = {
         fieldname: fieldName,
@@ -86,7 +91,6 @@ export const FileFromUrlInterceptor = (fieldName: string) => {
   }
   return mixin(FileFromUrlInterceptorClass);
 };
-
 
 export const UploadedFileFromUrl = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
