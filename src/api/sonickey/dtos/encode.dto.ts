@@ -8,8 +8,10 @@ export class EncodeDto {
   @ApiProperty({ type: 'string', format: 'binary' })
   mediaFile: any;
 
-  @ValidateNested({ each: true })
-  @Transform((data) => plainToClass(SonicKeyDto, JSON.parse(data)))
+  @Transform((data) => {
+    console.log("In Transform",data)
+    return plainToClass(SonicKeyDto, JSON.parse(data))
+  })
   @Type(() => SonicKeyDto)
   @IsNotEmpty()
   @IsJSON()
