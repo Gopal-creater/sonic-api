@@ -1,6 +1,7 @@
 import { SonicKeyDto } from './sonicKey.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class EncodeDto {
   @IsNotEmpty()
@@ -8,6 +9,7 @@ export class EncodeDto {
   mediaFile: any;
 
   @IsNotEmpty()
+  @Transform((value, obj) => value && JSON.parse(value))
   @ApiProperty()
   data: SonicKeyDto;
 }
