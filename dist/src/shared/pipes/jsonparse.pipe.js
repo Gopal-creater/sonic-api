@@ -11,7 +11,7 @@ const common_1 = require("@nestjs/common");
 let JsonParsePipe = class JsonParsePipe {
     transform(value, metadata) {
         try {
-            console.log("value", value);
+            console.log("JsonParsePipe-value", value);
             return value && JSON.parse(value);
         }
         catch (error) {

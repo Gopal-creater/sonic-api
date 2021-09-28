@@ -4,7 +4,7 @@ import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from
 export class JsonParsePipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     try {
-      console.log("value",value);
+      console.log("JsonParsePipe-value",value);
       
       return value && JSON.parse(value);
     } catch (error) {
