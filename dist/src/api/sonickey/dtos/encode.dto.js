@@ -30,6 +30,7 @@ __decorate([
     class_transformer_1.Transform((data) => class_transformer_1.plainToClass(sonicKey_dto_1.SonicKeyDto, JSON.parse(data))),
     class_transformer_1.Type(() => sonicKey_dto_1.SonicKeyDto),
     class_validator_1.IsNotEmpty(),
+    class_validator_1.IsJSON(),
     swagger_1.ApiProperty(),
     __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
 ], EncodeDto.prototype, "data", void 0);

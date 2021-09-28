@@ -12,6 +12,7 @@ export class EncodeDto {
   @Transform((data) => plainToClass(SonicKeyDto, JSON.parse(data)))
   @Type(() => SonicKeyDto)
   @IsNotEmpty()
+  @IsJSON()
   @ApiProperty()
   data: SonicKeyDto;
 }
