@@ -24,6 +24,7 @@ import {
   Query,
   UnauthorizedException,
   InternalServerErrorException,
+  ValidationPipe,
 } from '@nestjs/common';
 import { SonickeyService } from '../services/sonickey.service';
 import { S3FileMeta, SonicKey } from '../schemas/sonickey.schema';
@@ -59,6 +60,7 @@ import { DetectionService } from '../../detection/detection.service';
 import { FileFromUrlInterceptor, UploadedFileFromUrl } from '../../../shared/interceptors/FileFromUrl.interceptor';
 import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
+import { UsePipes } from '@nestjs/common';
 
 /**
  * Prabin:
@@ -215,6 +217,7 @@ export class SonickeyController {
     description: 'File To Encode',
     type: EncodeDto,
   })
+  @UsePipes(new ValidationPipe({transform:true}))
   @UseGuards(JwtAuthGuard, LicenseValidationGuard)
   @Post('/encode')
   @ApiBearerAuth()

@@ -49,6 +49,7 @@ const detection_service_1 = require("../../detection/detection.service");
 const FileFromUrl_interceptor_1 = require("../../../shared/interceptors/FileFromUrl.interceptor");
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
+const common_2 = require("@nestjs/common");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
@@ -364,6 +365,7 @@ __decorate([
         description: 'File To Encode',
         type: encode_dto_1.EncodeDto,
     }),
+    common_2.UsePipes(new common_1.ValidationPipe({ transform: true })),
     common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
     common_1.Post('/encode'),
     swagger_1.ApiBearerAuth(),
