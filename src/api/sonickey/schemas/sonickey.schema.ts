@@ -5,7 +5,7 @@ import { Job, JobSchemaName } from '../../job/schemas/job.schema';
 import { ApiKeySchemaName } from '../../api-key/schemas/api-key.schema';
 import { ChannelEnums } from '../../../constants/Enums';
 import { S3FileUploadI } from '../../s3fileupload/interfaces';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export const SonicKeySchemaName = 'SonicKey';
 
@@ -81,62 +81,77 @@ export class SonicKey extends Document {
   @Prop({ default: true })
   status: boolean;
 
+  @IsOptional()
   @ApiProperty()
   @Prop({default:10})
   encodingStrength: number;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   contentType: string;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   contentDescription: string;
 
+  @IsOptional()
   @ApiProperty()
   @Prop({ default: new Date() })
   contentCreatedDate: Date;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   contentDuration?: number;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   contentSize?: number;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   contentFilePath: string;
 
+  @IsOptional()
   @ApiProperty()
   @Prop({type:S3FileMeta})
   s3FileMeta?: S3FileMeta;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   contentFileType: string;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   contentEncoding: string;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   contentSamplingFrequency: string;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   isrcCode?: string;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   iswcCode?: string;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   tuneCode?: string;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   contentName: string;
@@ -146,18 +161,22 @@ export class SonicKey extends Document {
   @Prop()
   contentOwner: string;
 
+  @IsOptional()
   @ApiProperty()
   @Prop({default:false})
   contentValidation?: boolean;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   contentFileName: string;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   contentQuality: string;
 
+  @IsOptional()
   @ApiProperty()
   @Prop()
   additionalMetadata: Map<string, any>;

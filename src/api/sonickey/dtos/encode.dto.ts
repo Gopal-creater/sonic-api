@@ -11,7 +11,7 @@ export class EncodeDto {
   @ValidateNested()
   @Transform((value) => plainToClass(SonicKeyDto, JSON.parse(value)))
   // @Type(() => SonicKeyDto)
-  @IsNotEmpty()
+  // @IsNotEmpty()
   // @IsJSON()
   @ApiProperty()
   data: SonicKeyDto;
