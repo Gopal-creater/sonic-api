@@ -13,6 +13,7 @@ let CustomSonicKeyValidationInterceptor = class CustomSonicKeyValidationIntercep
         try {
             const req = context.switchToHttp().getRequest();
             const data = req.body['data'];
+            console.log("data", data);
             if (!data)
                 throw new common_1.BadRequestException("data can not be empty");
             const sonicKeyDto = JSON.parse(data);
