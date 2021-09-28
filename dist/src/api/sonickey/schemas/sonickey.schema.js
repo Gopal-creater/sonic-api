@@ -218,6 +218,12 @@ __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
+], SonicKey.prototype, "originalFileName", void 0);
+__decorate([
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
 ], SonicKey.prototype, "contentQuality", void 0);
 __decorate([
     class_validator_1.IsOptional(),

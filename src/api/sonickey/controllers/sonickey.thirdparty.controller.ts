@@ -78,6 +78,7 @@ export class SonickeyThirdPartyController {
         const newSonicKey = new this.sonicKeyService.sonicKeyModel({
           ...sonicKeyDtoWithAudioData,
           contentFilePath: s3UploadResult.Location,
+          originalFileName:file?.originalname,
           owner: owner,
           sonicKey: sonicKey,
           channel: channel,

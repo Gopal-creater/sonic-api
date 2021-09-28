@@ -279,7 +279,7 @@ export class SonickeyService {
   ) {
     const musicData = await this.exractMusicMetaFromFile(file.path);
     sonicKeyDto.contentSize = sonicKeyDto.contentSize || file?.size;
-    sonicKeyDto.contentFileName = sonicKeyDto.contentFileName || file?.filename;
+    sonicKeyDto.contentFileName = sonicKeyDto.contentFileName || file?.originalname;
     // sonicKeyDto.contentType = sonicKeyDto.contentType || file?.mimetype;
     sonicKeyDto.contentFileType = sonicKeyDto.contentFileType || file?.mimetype;
     sonicKeyDto.contentDuration =

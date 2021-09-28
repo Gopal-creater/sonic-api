@@ -9,6 +9,7 @@ class SonicKeyDto extends swagger_1.OmitType(sonickey_schema_1.SonicKey, [
     'owner',
     'job',
     'channel',
+    'originalFileName',
     'contentFilePath',
     'apiKey',
     'license',

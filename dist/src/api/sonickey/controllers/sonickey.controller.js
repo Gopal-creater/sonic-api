@@ -86,9 +86,6 @@ let SonickeyController = class SonickeyController {
     }
     encode(sonicKeyDto, file, owner, req) {
         var _a;
-        console.log('file', file);
-        if (!sonicKeyDto.contentOwner)
-            throw new common_1.BadRequestException("contentOwner is required");
         const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.key;
         var s3UploadResult;
         var sonicKey;
@@ -104,7 +101,7 @@ let SonickeyController = class SonickeyController {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Enums_1.ChannelEnums.PORTAL;
-            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId }));
+            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId }));
             return newSonicKey.save();
         })
             .catch(err => {
@@ -115,8 +112,6 @@ let SonickeyController = class SonickeyController {
         });
     }
     encodeFromUrl(sonicKeyDto, file, owner, licenseId) {
-        if (!sonicKeyDto.contentOwner)
-            throw new common_1.BadRequestException("contentOwner is required");
         var s3UploadResult;
         var sonicKey;
         return this.sonicKeyService
@@ -131,7 +126,7 @@ let SonickeyController = class SonickeyController {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Enums_1.ChannelEnums.PORTAL;
-            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId }));
+            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId }));
             return newSonicKey.save();
         })
             .catch(err => {

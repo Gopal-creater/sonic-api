@@ -199,7 +199,7 @@ let SonickeyService = class SonickeyService {
         var _a, _b, _c, _d, _e, _f, _g, _h;
         const musicData = await this.exractMusicMetaFromFile(file.path);
         sonicKeyDto.contentSize = sonicKeyDto.contentSize || (file === null || file === void 0 ? void 0 : file.size);
-        sonicKeyDto.contentFileName = sonicKeyDto.contentFileName || (file === null || file === void 0 ? void 0 : file.filename);
+        sonicKeyDto.contentFileName = sonicKeyDto.contentFileName || (file === null || file === void 0 ? void 0 : file.originalname);
         sonicKeyDto.contentFileType = sonicKeyDto.contentFileType || (file === null || file === void 0 ? void 0 : file.mimetype);
         sonicKeyDto.contentDuration =
             sonicKeyDto.contentDuration || ((_a = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _a === void 0 ? void 0 : _a.duration);

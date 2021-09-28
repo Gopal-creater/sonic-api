@@ -225,8 +225,7 @@ export class SonickeyController {
     @User('sub') owner: string,
     @Req() req: any,
   ) {
-    console.log('file', file);
-    if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
+    // if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
     const licenseId = req?.validLicense?.key as string;
     var s3UploadResult: S3FileMeta;
     var sonicKey: string;
@@ -249,6 +248,7 @@ export class SonickeyController {
         const newSonicKey = new this.sonicKeyService.sonicKeyModel({
           ...sonicKeyDtoWithAudioData,
           contentFilePath: s3UploadResult.Location,
+          originalFileName:file?.originalname,
           owner: owner,
           sonicKey: sonicKey,
           channel: channel,
@@ -282,7 +282,7 @@ export class SonickeyController {
     @User('sub') owner: string,
     @ValidatedLicense('key') licenseId:string
   ) {
-    if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
+    // if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
     var s3UploadResult: S3FileMeta;
     var sonicKey: string;
     return this.sonicKeyService
@@ -304,6 +304,7 @@ export class SonickeyController {
         const newSonicKey = new this.sonicKeyService.sonicKeyModel({
           ...sonicKeyDtoWithAudioData,
           contentFilePath: s3UploadResult.Location,
+          originalFileName:file?.originalname,
           owner: owner,
           sonicKey: sonicKey,
           channel: channel,

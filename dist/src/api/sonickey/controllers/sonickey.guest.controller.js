@@ -43,8 +43,6 @@ let SonickeyGuestController = class SonickeyGuestController {
         this.detectionService = detectionService;
     }
     encode(sonicKeyDto, file, req) {
-        if (!sonicKeyDto.contentOwner)
-            throw new common_1.BadRequestException("contentOwner is required");
         const channel = Enums_1.ChannelEnums.MOBILEAPP;
         console.log('file', file);
         const owner = 'guest';
@@ -54,7 +52,7 @@ let SonickeyGuestController = class SonickeyGuestController {
             .then(async (data) => {
             var _a;
             const sonicKeyDtoWithMeta = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
-            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithMeta), { contentFilePath: (_a = data.s3UploadResult) === null || _a === void 0 ? void 0 : _a.Location, s3FileMeta: data.s3UploadResult, owner: owner, channel: channel, sonicKey: data.sonicKey, _id: data.sonicKey, license: licenseId }));
+            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithMeta), { contentFilePath: (_a = data.s3UploadResult) === null || _a === void 0 ? void 0 : _a.Location, s3FileMeta: data.s3UploadResult, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, channel: channel, sonicKey: data.sonicKey, _id: data.sonicKey, license: licenseId }));
             return newSonicKey.save();
         })
             .finally(() => {

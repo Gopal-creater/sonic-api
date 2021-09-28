@@ -174,6 +174,11 @@ export class SonicKey extends Document {
   @IsOptional()
   @ApiProperty()
   @Prop()
+  originalFileName: string;
+
+  @IsOptional()
+  @ApiProperty()
+  @Prop()
   contentQuality: string;
 
   @IsOptional()

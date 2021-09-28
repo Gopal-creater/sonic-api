@@ -94,7 +94,7 @@ export class SonickeyGuestController {
     @UploadedFile() file: IUploadedFile,
     @Req() req: any,
   ) {
-    if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
+    // if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
     const channel = ChannelEnums.MOBILEAPP;
     console.log('file', file);
     const owner = 'guest';
@@ -110,6 +110,7 @@ export class SonickeyGuestController {
           ...sonicKeyDtoWithMeta,
           contentFilePath: data.s3UploadResult?.Location,
           s3FileMeta: data.s3UploadResult,
+          originalFileName:file?.originalname,
           owner: owner,
           channel: channel,
           sonicKey: data.sonicKey,
