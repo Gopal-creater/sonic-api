@@ -49,7 +49,6 @@ const detection_service_1 = require("../../detection/detection.service");
 const FileFromUrl_interceptor_1 = require("../../../shared/interceptors/FileFromUrl.interceptor");
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
-const customsonickeyvalidation_interceptor_1 = require("../interceptors/customsonickeyvalidation.interceptor");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
@@ -345,10 +344,17 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getOne", null);
 __decorate([
-    common_1.UseInterceptors(customsonickeyvalidation_interceptor_1.CustomSonicKeyValidationInterceptor, platform_express_1.FileInterceptor('mediaFile', {
+    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
         storage: multer_1.diskStorage({
             destination: async (req, file, cb) => {
-                const currentUserId = req['user']['sub'];
+                var _a, _b;
+                const currentUserId = (_a = req['user']) === null || _a === void 0 ? void 0 : _a['sub'];
+                const sonicKeyDto = (_b = req['body']) === null || _b === void 0 ? void 0 : _b['data'];
+                console.log("sonicKeyDto in file interceptor", sonicKeyDto);
+                if (!sonicKeyDto)
+                    throw new common_1.BadRequestException("data is required");
+                if (!sonicKeyDto.contentOwner)
+                    throw new common_1.BadRequestException("contentOwner is required");
                 const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
                 await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}/encodedFiles`);
                 cb(null, imagePath);
@@ -379,7 +385,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SonickeyController.prototype, "encode", null);
 __decorate([
-    common_1.UseInterceptors(customsonickeyvalidation_interceptor_1.CustomSonicKeyValidationInterceptor, FileFromUrl_interceptor_1.FileFromUrlInterceptor('mediaFile')),
+    common_1.UseInterceptors(FileFromUrl_interceptor_1.FileFromUrlInterceptor('mediaFile')),
     swagger_1.ApiBody({
         description: 'File To Encode',
         type: encode_dto_1.EncodeFromUrlDto,

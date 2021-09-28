@@ -30,7 +30,6 @@ const apikey_auth_guard_1 = require("../../api-key/guards/apikey-auth.guard");
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
-const customsonickeyvalidation_interceptor_1 = require("../interceptors/customsonickeyvalidation.interceptor");
 let SonickeyThirdPartyController = class SonickeyThirdPartyController {
     constructor(sonicKeyService, fileHandlerService, licensekeyService) {
         this.sonicKeyService = sonicKeyService;
@@ -75,7 +74,7 @@ let SonickeyThirdPartyController = class SonickeyThirdPartyController {
     }
 };
 __decorate([
-    common_1.UseInterceptors(customsonickeyvalidation_interceptor_1.CustomSonicKeyValidationInterceptor, FileFromUrl_interceptor_1.FileFromUrlInterceptor('mediaFile')),
+    common_1.UseInterceptors(FileFromUrl_interceptor_1.FileFromUrlInterceptor('mediaFile')),
     swagger_1.ApiBody({
         description: 'File To Encode',
         type: encode_dto_1.EncodeFromUrlDto,

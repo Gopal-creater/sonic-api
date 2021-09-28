@@ -59,7 +59,6 @@ import { DetectionService } from '../../detection/detection.service';
 import { FileFromUrlInterceptor, UploadedFileFromUrl } from '../../../shared/interceptors/FileFromUrl.interceptor';
 import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
-import { CustomSonicKeyValidationInterceptor } from '../interceptors/customsonickeyvalidation.interceptor';
 
 /**
  * Prabin:
@@ -180,7 +179,6 @@ export class SonickeyController {
   }
 
   @UseInterceptors(
-    CustomSonicKeyValidationInterceptor,
     FileInterceptor('mediaFile', {
       // Check the mimetypes to allow for upload
       // fileFilter: (req: any, file: any, cb: any) => {
@@ -195,7 +193,11 @@ export class SonickeyController {
       // },
       storage: diskStorage({
         destination: async (req, file, cb) => {
-          const currentUserId = req['user']['sub'];
+          const currentUserId = req['user']?.['sub'];
+          const sonicKeyDto = req['body']?.['data'] as SonicKeyDto;
+          console.log("sonicKeyDto in file interceptor",sonicKeyDto);
+          if(!sonicKeyDto) throw new BadRequestException("data is required")
+          if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
           const imagePath = await makeDir(
             `${appConfig.MULTER_DEST}/${currentUserId}`,
           );
@@ -269,7 +271,7 @@ export class SonickeyController {
       });
   }
 
-  @UseInterceptors(CustomSonicKeyValidationInterceptor,FileFromUrlInterceptor('mediaFile'))
+  @UseInterceptors(FileFromUrlInterceptor('mediaFile'))
   @ApiBody({
     description: 'File To Encode',
     type: EncodeFromUrlDto,
