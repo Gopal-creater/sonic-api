@@ -9,7 +9,7 @@ export function AnyApiQueryTemplate(options?: {
   return applyDecorators(
     ApiQuery({
       name: 'query',
-      type: Object,
+      type: 'object',
       required: false,
       description: `<b>Here you can add any query string as you need for your query options, 
       But please follow the standard here</b> <a target="_blank" href="https://www.npmjs.com/package/mongoose-query-parser">https://www.npmjs.com/package/mongoose-query-parser</a>

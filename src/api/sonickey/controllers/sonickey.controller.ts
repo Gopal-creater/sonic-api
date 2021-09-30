@@ -99,11 +99,11 @@ export class SonickeyController {
   //   );
   // }
 
+  @AnyApiQueryTemplate()
   @Get('/')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get All Sonic Keys' })
-  @AnyApiQueryTemplate()
   async getAll(@Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto) {
     return this.sonicKeyService.getAll(parsedQueryDto);
   }

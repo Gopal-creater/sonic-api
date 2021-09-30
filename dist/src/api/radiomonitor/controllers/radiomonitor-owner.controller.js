@@ -26,6 +26,7 @@ const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const guards_1 = require("../../auth/guards");
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
+const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 let RadioMonitorOwnerController = class RadioMonitorOwnerController {
     constructor(radiomonitorService, radiostationService) {
         this.radiomonitorService = radiomonitorService;
@@ -35,27 +36,27 @@ let RadioMonitorOwnerController = class RadioMonitorOwnerController {
         queryDto.filter['owner'] = ownerId;
         return this.radiomonitorService.findAll(queryDto);
     }
-    async subscribe(createRadiomonitorDto, owner, license) {
+    async subscribe(createRadiomonitorDto, ownerId, owner, license) {
         const { radio } = createRadiomonitorDto;
         await this.radiostationService.findByIdOrFail(radio);
         return this.radiomonitorService.subscribeRadioToMonitor(createRadiomonitorDto, owner, license);
     }
-    async subscribeBulk(createRadiomonitorsDto, owner, license) {
+    async subscribeBulk(createRadiomonitorsDto, ownerId, owner, license) {
         return this.radiomonitorService.subscribeRadioToMonitorBulk(createRadiomonitorsDto, owner, license);
     }
-    async stopListeningStream(id) {
+    async stopListeningStream(id, ownerId) {
         await this.radiomonitorService.findByIdOrFail(id);
         return this.radiomonitorService.stopListeningStream(id);
     }
-    async stopListeningStreamBulk(bulkDto) {
+    async stopListeningStreamBulk(bulkDto, ownerId) {
         const { ids } = bulkDto;
         return this.radiomonitorService.stopListeningStreamBulk(ids);
     }
-    async startListeningStream(id) {
+    async startListeningStream(id, ownerId) {
         await this.radiomonitorService.findByIdOrFail(id);
         return this.radiomonitorService.startListeningStream(id);
     }
-    async startListeningStreamBulk(bulkDto) {
+    async startListeningStreamBulk(bulkDto, ownerId) {
         const { ids } = bulkDto;
         return this.radiomonitorService.startListeningStreamBulk(ids);
     }
@@ -66,11 +67,11 @@ let RadioMonitorOwnerController = class RadioMonitorOwnerController {
             .where(filter)
             .countDocuments();
     }
-    async unsubscribe(id) {
+    async unsubscribe(id, ownerId) {
         await this.radiomonitorService.findByIdOrFail(id);
         return this.radiomonitorService.unsubscribeById(id);
     }
-    async unsubscribeBulk(bulkDto) {
+    async unsubscribeBulk(bulkDto, ownerId) {
         const { ids } = bulkDto;
         return this.radiomonitorService.unsubscribeBulk(ids);
     }
@@ -78,6 +79,7 @@ let RadioMonitorOwnerController = class RadioMonitorOwnerController {
 __decorate([
     common_1.Get('owners/:ownerId/subscribed-stations'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get all subscribed radio stations' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiomonitordto").MongoosePaginateRadioMonitorDto }),
@@ -95,10 +97,11 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Subscribe the radio monitoring' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/radiomonitor.schema").RadioMonitor }),
     __param(0, common_1.Body()),
-    __param(1, decorators_1.User('sub')),
-    __param(2, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __param(1, common_1.Param('ownerId')),
+    __param(2, decorators_1.User('sub')),
+    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_radiomonitor_dto_1.CreateRadioMonitorDto, String, String]),
+    __metadata("design:paramtypes", [create_radiomonitor_dto_1.CreateRadioMonitorDto, String, String, String]),
     __metadata("design:returntype", Promise)
 ], RadioMonitorOwnerController.prototype, "subscribe", null);
 __decorate([
@@ -109,10 +112,11 @@ __decorate([
     swagger_1.ApiBody({ type: [create_radiomonitor_dto_1.CreateRadioMonitorDto] }),
     openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Body()),
-    __param(1, decorators_1.User('sub')),
-    __param(2, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __param(1, common_1.Param('ownerId')),
+    __param(2, decorators_1.User('sub')),
+    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array, String, String]),
+    __metadata("design:paramtypes", [Array, String, String, String]),
     __metadata("design:returntype", Promise)
 ], RadioMonitorOwnerController.prototype, "subscribeBulk", null);
 __decorate([
@@ -122,8 +126,9 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Stop listening for stream' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/radiomonitor.schema").RadioMonitor }),
     __param(0, common_1.Param('id')),
+    __param(1, common_1.Param('ownerId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], RadioMonitorOwnerController.prototype, "stopListeningStream", null);
 __decorate([
@@ -133,8 +138,9 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Stop listening for stream bulk' }),
     openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Body()),
+    __param(1, common_1.Param('ownerId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [bulk_dto_1.BulkByIdsDto]),
+    __metadata("design:paramtypes", [bulk_dto_1.BulkByIdsDto, String]),
     __metadata("design:returntype", Promise)
 ], RadioMonitorOwnerController.prototype, "stopListeningStreamBulk", null);
 __decorate([
@@ -144,8 +150,9 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Start listening for stream' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/radiomonitor.schema").RadioMonitor }),
     __param(0, common_1.Param('id')),
+    __param(1, common_1.Param('ownerId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], RadioMonitorOwnerController.prototype, "startListeningStream", null);
 __decorate([
@@ -155,8 +162,9 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Start listening for stream' }),
     openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Body()),
+    __param(1, common_1.Param('ownerId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [bulk_dto_1.BulkByIdsDto]),
+    __metadata("design:paramtypes", [bulk_dto_1.BulkByIdsDto, String]),
     __metadata("design:returntype", Promise)
 ], RadioMonitorOwnerController.prototype, "startListeningStreamBulk", null);
 __decorate([
@@ -179,8 +187,9 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Un-subscribe the radio monitoring' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/radiomonitor.schema").RadioMonitor }),
     __param(0, common_1.Param('id')),
+    __param(1, common_1.Param('ownerId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], RadioMonitorOwnerController.prototype, "unsubscribe", null);
 __decorate([
@@ -190,8 +199,9 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Un-subscribe the BULK radio monitoring' }),
     openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Body()),
+    __param(1, common_1.Param('ownerId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [bulk_dto_1.BulkByIdsDto]),
+    __metadata("design:paramtypes", [bulk_dto_1.BulkByIdsDto, String]),
     __metadata("design:returntype", Promise)
 ], RadioMonitorOwnerController.prototype, "unsubscribeBulk", null);
 RadioMonitorOwnerController = __decorate([

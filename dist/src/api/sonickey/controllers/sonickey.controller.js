@@ -252,11 +252,11 @@ let SonickeyController = class SonickeyController {
     }
 };
 __decorate([
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     common_1.Get('/'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys' }),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),

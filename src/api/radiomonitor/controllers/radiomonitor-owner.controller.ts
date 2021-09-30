@@ -20,6 +20,7 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { JwtAuthGuard } from 'src/api/auth/guards';
 import { SubscribeRadioMonitorLicenseValidationGuard } from 'src/api/licensekey/guards/license-validation.guard';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
+import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 
 @ApiTags('Radio Monitoring Controller')
 @Controller('radiomonitors')
@@ -31,6 +32,7 @@ export class RadioMonitorOwnerController {
 
   @Get('owners/:ownerId/subscribed-stations')
   @UseGuards(JwtAuthGuard)
+  @AnyApiQueryTemplate()
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all subscribed radio stations' })
   async getSubscriberedStations(
@@ -48,6 +50,7 @@ export class RadioMonitorOwnerController {
   @ApiOperation({ summary: 'Subscribe the radio monitoring' })
   async subscribe(
     @Body() createRadiomonitorDto: CreateRadioMonitorDto,
+    @Param('ownerId') ownerId: string,
     @User('sub') owner: string,
     @ValidatedLicense('key') license: string,
   ) {
@@ -67,6 +70,7 @@ export class RadioMonitorOwnerController {
   @ApiBody({ type: [CreateRadioMonitorDto] })
   async subscribeBulk(
     @Body() createRadiomonitorsDto: CreateRadioMonitorDto[],
+    @Param('ownerId') ownerId: string,
     @User('sub') owner: string,
     @ValidatedLicense('key') license: string,
   ) {
@@ -81,7 +85,7 @@ export class RadioMonitorOwnerController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Stop listening for stream' })
-  async stopListeningStream(@Param('id') id: string) {
+  async stopListeningStream(@Param('id') id: string,@Param('ownerId') ownerId: string,) {
     await this.radiomonitorService.findByIdOrFail(id);
     return this.radiomonitorService.stopListeningStream(id);
   }
@@ -90,7 +94,7 @@ export class RadioMonitorOwnerController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Stop listening for stream bulk' })
-  async stopListeningStreamBulk(@Body() bulkDto: BulkByIdsDto) {
+  async stopListeningStreamBulk(@Body() bulkDto: BulkByIdsDto,@Param('ownerId') ownerId: string,) {
     const { ids } = bulkDto;
     return this.radiomonitorService.stopListeningStreamBulk(ids);
   }
@@ -99,7 +103,7 @@ export class RadioMonitorOwnerController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Start listening for stream' })
-  async startListeningStream(@Param('id') id: string) {
+  async startListeningStream(@Param('id') id: string,@Param('ownerId') ownerId: string,) {
     await this.radiomonitorService.findByIdOrFail(id);
     return this.radiomonitorService.startListeningStream(id);
   }
@@ -108,7 +112,7 @@ export class RadioMonitorOwnerController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Start listening for stream' })
-  async startListeningStreamBulk(@Body() bulkDto: BulkByIdsDto) {
+  async startListeningStreamBulk(@Body() bulkDto: BulkByIdsDto,@Param('ownerId') ownerId: string,) {
     const { ids } = bulkDto;
     return this.radiomonitorService.startListeningStreamBulk(ids);
   }
@@ -133,7 +137,7 @@ export class RadioMonitorOwnerController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Un-subscribe the radio monitoring' })
-  async unsubscribe(@Param('id') id: string) {
+  async unsubscribe(@Param('id') id: string,@Param('ownerId') ownerId: string,) {
     await this.radiomonitorService.findByIdOrFail(id);
     return this.radiomonitorService.unsubscribeById(id);
   }
@@ -142,7 +146,7 @@ export class RadioMonitorOwnerController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Un-subscribe the BULK radio monitoring' })
-  async unsubscribeBulk(@Body() bulkDto: BulkByIdsDto) {
+  async unsubscribeBulk(@Body() bulkDto: BulkByIdsDto,@Param('ownerId') ownerId: string,) {
     const { ids } = bulkDto;
     return this.radiomonitorService.unsubscribeBulk(ids);
   }
