@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { RadioStationSchemaName } from '../../radiostation/schemas/radiostation.schema';
+import { RadioStation, RadioStationSchemaName } from '../../radiostation/schemas/radiostation.schema';
 import { LicenseKeySchemaName } from '../../licensekey/schemas/licensekey.schema';
 
 export const RadioMonitorSchemaName = 'RadioMonitor';
@@ -16,6 +16,10 @@ export class RadioMonitor extends Document {
     autopopulate: true,
   })
   radio: any;
+
+  @ApiProperty()
+  @Prop({type:RadioStation})
+  radioSearch: RadioStation;
 
   @ApiProperty()
   @Prop({

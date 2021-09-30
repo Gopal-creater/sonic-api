@@ -63,6 +63,7 @@ export class RadioMonitorService {
     }
     const newMonitor = await this.radioMonitorModel.create({
       radio: radio,
+      radioSearch:isValidRadioStation,
       owner: owner,
       license: license,
     });
@@ -156,7 +157,7 @@ export class RadioMonitorService {
       { _id: id },
       {
         stopAt: new Date(),
-        isListeningStarted: false,
+        isListeningStarted: false
       },
       { new: true },
     );
@@ -200,6 +201,7 @@ export class RadioMonitorService {
       {
         startedAt: new Date(),
         isListeningStarted: true,
+        radioSearch:isValidRadioStation,
         error: null,
         isError: false,
       },

@@ -30,6 +30,11 @@ __decorate([
 ], RadioMonitor.prototype, "radio", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: radiostation_schema_1.RadioStation }),
+    __metadata("design:type", radiostation_schema_1.RadioStation)
+], RadioMonitor.prototype, "radioSearch", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop({
         type: mongoose_2.Schema.Types.String,
         ref: licensekey_schema_1.LicenseKeySchemaName,

@@ -59,6 +59,7 @@ let RadioMonitorService = class RadioMonitorService {
         }
         const newMonitor = await this.radioMonitorModel.create({
             radio: radio,
+            radioSearch: isValidRadioStation,
             owner: owner,
             license: license,
         });
@@ -125,7 +126,7 @@ let RadioMonitorService = class RadioMonitorService {
         }
         return this.radioMonitorModel.findOneAndUpdate({ _id: id }, {
             stopAt: new Date(),
-            isListeningStarted: false,
+            isListeningStarted: false
         }, { new: true });
     }
     async startListeningStream(id) {
@@ -159,6 +160,7 @@ let RadioMonitorService = class RadioMonitorService {
         return this.radioMonitorModel.findOneAndUpdate({ _id: id }, {
             startedAt: new Date(),
             isListeningStarted: true,
+            radioSearch: isValidRadioStation,
             error: null,
             isError: false,
         }, { new: true });
