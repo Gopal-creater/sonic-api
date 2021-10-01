@@ -32,7 +32,7 @@ import * as uniqid from 'uniqid';
 import { FileHandlerService } from '../../../shared/services/file-handler.service';
 import { PublicEncodeDto } from '../dtos/public-encode.dto';
 import { PublicDecodeDto } from '../dtos/public-decode.dto';
-import { ChannelEnums } from '../../../constants/Enums';
+import { ChannelEnums, S3ACL } from '../../../constants/Enums';
 import { DetectionService } from '../../detection/detection.service';
 
 /**
@@ -100,7 +100,7 @@ export class SonickeyGuestController {
     const owner = 'guest';
     const licenseId = 'guest_license';
     return this.sonicKeyService
-      .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
+      .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength,S3ACL.PUBLIC_READ)
       .then(async data => {
         const sonicKeyDtoWithMeta = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(
           file,
@@ -177,17 +177,17 @@ export class SonickeyGuestController {
           if (!validSonicKey) {
             continue;
           }
-          const newDetection = await this.detectionService.detectionModel.create(
-            {
-              sonicKey: sonicKey,
-              owner: validSonicKey.owner,
-              sonicKeyOwnerId: validSonicKey.owner,
-              sonicKeyOwnerName: validSonicKey.contentOwner,
-              channel: ChannelEnums.MOBILEAPP,
-              detectedAt: new Date(),
-            },
-          );
-          await newDetection.save();
+          // const newDetection = await this.detectionService.detectionModel.create(
+          //   {
+          //     sonicKey: sonicKey,
+          //     owner: validSonicKey.owner,
+          //     sonicKeyOwnerId: validSonicKey.owner,
+          //     sonicKeyOwnerName: validSonicKey.contentOwner,
+          //     channel: ChannelEnums.MOBILEAPP,
+          //     detectedAt: new Date(),
+          //   },
+          // );
+          // await newDetection.save();
           sonicKeysMetadata.push(validSonicKey);
         }
         return sonicKeysMetadata;

@@ -48,7 +48,7 @@ let SonickeyGuestController = class SonickeyGuestController {
         const owner = 'guest';
         const licenseId = 'guest_license';
         return this.sonicKeyService
-            .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
+            .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength, Enums_1.S3ACL.PUBLIC_READ)
             .then(async (data) => {
             var _a;
             const sonicKeyDtoWithMeta = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
@@ -73,15 +73,6 @@ let SonickeyGuestController = class SonickeyGuestController {
                     if (!validSonicKey) {
                         continue;
                     }
-                    const newDetection = await this.detectionService.detectionModel.create({
-                        sonicKey: sonicKey,
-                        owner: validSonicKey.owner,
-                        sonicKeyOwnerId: validSonicKey.owner,
-                        sonicKeyOwnerName: validSonicKey.contentOwner,
-                        channel: Enums_1.ChannelEnums.MOBILEAPP,
-                        detectedAt: new Date(),
-                    });
-                    await newDetection.save();
                     sonicKeysMetadata.push(validSonicKey);
                 }
             }

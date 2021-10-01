@@ -101,7 +101,7 @@ let SonickeyService = class SonickeyService {
             this.fileHandlerService.deleteFileAtPath(inFilePath);
         });
     }
-    async encodeAndUploadToS3(file, user, encodingStrength = 10) {
+    async encodeAndUploadToS3(file, user, encodingStrength = 10, s3Acl) {
         const random11CharKey = this.generateUniqueSonicKey();
         file.path = upath.toUnix(file.path);
         file.destination = upath.toUnix(file.destination);
@@ -119,7 +119,7 @@ let SonickeyService = class SonickeyService {
         return this.fileOperationService
             .encodeFile(sonicEncodeCmd, outFilePath)
             .then(() => {
-            return this.s3FileUploadService.uploadFromPath(outFilePath, `${user}/encodedFiles`);
+            return this.s3FileUploadService.uploadFromPath(outFilePath, `${user}/encodedFiles`, s3Acl);
         })
             .then(s3UploadResult => {
             return {

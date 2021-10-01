@@ -143,6 +143,7 @@ export class SonickeyService {
     file: IUploadedFile,
     user: string,
     encodingStrength: number = 10,
+    s3Acl?:S3ACL
   ) {
     // The sonic key generation - done randomely.
     const random11CharKey = this.generateUniqueSonicKey();
@@ -170,6 +171,7 @@ export class SonickeyService {
         return this.s3FileUploadService.uploadFromPath(
           outFilePath,
           `${user}/encodedFiles`,
+          s3Acl
         );
       })
       .then(s3UploadResult => {
