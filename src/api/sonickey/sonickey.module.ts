@@ -1,5 +1,5 @@
 import { FileHandlerService } from './../../shared/services/file-handler.service';
-import { Module,forwardRef } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { SonickeyController } from './controllers/sonickey.controller';
 import { SonickeyService } from './services/sonickey.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -13,13 +13,15 @@ import { S3FileUploadModule } from '../s3fileupload/s3fileupload.module';
 import { DetectionModule } from '../detection/detection.module';
 import { SonickeyThirdPartyController } from './controllers/sonickey.thirdparty.controller';
 import { UserModule } from '../user/user.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-ApiKeyModule,
+    ApiKeyModule,
     LicensekeyModule,
     UserModule,
-    forwardRef(()=>DetectionModule),
+    AuthModule,
+    forwardRef(() => DetectionModule),
     S3FileUploadModule,
     MongooseModule.forFeature([
       { name: SonicKeySchemaName, schema: SonicKeySchema },
@@ -29,7 +31,7 @@ ApiKeyModule,
     SonickeyController,
     SonickeyGuestController,
     SonickeyBinaryController,
-    SonickeyThirdPartyController
+    SonickeyThirdPartyController,
   ],
   providers: [SonickeyService, FileOperationService, FileHandlerService],
   exports: [SonickeyService],

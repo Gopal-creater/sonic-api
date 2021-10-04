@@ -32,6 +32,7 @@ const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 const isTargetUserLoggedIn_guard_1 = require("../../auth/guards/isTargetUserLoggedIn.guard");
 const types_1 = require("../../../shared/types");
+const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
 let DetectionOwnerController = class DetectionOwnerController {
     constructor(detectionService, sonickeyServive) {
         this.detectionService = detectionService;
@@ -133,7 +134,7 @@ __decorate([
   </fieldset>
  `,
     }),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get Top radiostations with top sonickeys' }),
     openapi.ApiResponse({ status: 200 }),
@@ -149,6 +150,7 @@ __decorate([
     common_1.Get('/:channel/data'),
     swagger_1.ApiQuery({ name: "radioStation", type: String, required: false }),
     swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Detections for specific channel and specific user' }),

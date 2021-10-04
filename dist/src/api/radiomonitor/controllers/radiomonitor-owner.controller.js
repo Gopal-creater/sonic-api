@@ -27,6 +27,7 @@ const guards_1 = require("../../auth/guards");
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
+const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
 let RadioMonitorOwnerController = class RadioMonitorOwnerController {
     constructor(radiomonitorService, radiostationService) {
         this.radiomonitorService = radiomonitorService;
@@ -78,8 +79,9 @@ let RadioMonitorOwnerController = class RadioMonitorOwnerController {
 };
 __decorate([
     common_1.Get('owners/:ownerId/subscribed-stations'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get all subscribed radio stations' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiomonitordto").MongoosePaginateRadioMonitorDto }),

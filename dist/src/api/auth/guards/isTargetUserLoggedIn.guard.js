@@ -27,7 +27,7 @@ let IsTargetUserLoggedInGuard = class IsTargetUserLoggedInGuard {
                     }
                     const loggedInUser = request.user;
                     const targetUser = query[this.name];
-                    if (targetUser == loggedInUser['sub']) {
+                    if (targetUser == loggedInUser.sub) {
                         delete query.targetUser;
                         request.query = query;
                         return true;

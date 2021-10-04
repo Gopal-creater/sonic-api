@@ -59,6 +59,7 @@ import { DetectionService } from '../../detection/detection.service';
 import { FileFromUrlInterceptor, UploadedFileFromUrl } from '../../../shared/interceptors/FileFromUrl.interceptor';
 import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
+import { ConditionalAuthGuard } from '../../auth/guards/conditional-auth.guard';
 
 /**
  * Prabin:
@@ -272,7 +273,7 @@ export class SonickeyController {
     description: 'File To Encode',
     type: EncodeFromUrlDto,
   })
-  @UseGuards(JwtAuthGuard, LicenseValidationGuard)
+  @UseGuards(ConditionalAuthGuard, LicenseValidationGuard)
   @Post('/encode-from-url')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Encode File From URL And save to database' })

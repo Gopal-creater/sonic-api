@@ -49,6 +49,7 @@ const detection_service_1 = require("../../detection/detection.service");
 const FileFromUrl_interceptor_1 = require("../../../shared/interceptors/FileFromUrl.interceptor");
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
+const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
@@ -383,7 +384,7 @@ __decorate([
         description: 'File To Encode',
         type: encode_dto_1.EncodeFromUrlDto,
     }),
-    common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, license_validation_guard_1.LicenseValidationGuard),
     common_1.Post('/encode-from-url'),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Encode File From URL And save to database' }),

@@ -13,7 +13,7 @@ import { RadioMonitorService } from '../radiomonitor.service';
 import { CreateRadioMonitorDto } from '../dto/create-radiomonitor.dto';
 import { User } from '../../auth/decorators';
 import { RadiostationService } from '../../radiostation/services/radiostation.service';
-import { ApiBody, ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiTags, ApiBearerAuth, ApiOperation, ApiSecurity } from '@nestjs/swagger';
 import { BulkByIdsDto } from '../../../shared/dtos/bulk.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
@@ -21,6 +21,7 @@ import { JwtAuthGuard } from 'src/api/auth/guards';
 import { SubscribeRadioMonitorLicenseValidationGuard } from 'src/api/licensekey/guards/license-validation.guard';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
+import { ConditionalAuthGuard } from '../../auth/guards/conditional-auth.guard';
 
 @ApiTags('Radio Monitoring Controller')
 @Controller('radiomonitors')
@@ -31,8 +32,9 @@ export class RadioMonitorOwnerController {
   ) {}
 
   @Get('owners/:ownerId/subscribed-stations')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ConditionalAuthGuard)
   @AnyApiQueryTemplate()
+  @ApiSecurity('x-api-key')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all subscribed radio stations' })
   async getSubscriberedStations(

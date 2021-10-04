@@ -24,6 +24,7 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { IsTargetUserLoggedInGuard } from 'src/api/auth/guards/isTargetUserLoggedIn.guard';
 import { groupByTime } from 'src/shared/types';
+import { ConditionalAuthGuard } from '../../auth/guards/conditional-auth.guard';
 
 @ApiTags('Detection Controller')
 @Controller('detections/owners/:targetUser')
@@ -94,7 +95,7 @@ export class DetectionOwnerController {
   </fieldset>
  `,
   })
-  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Top radiostations with top sonickeys' })
   async getSonicKeyGraphs(
@@ -114,7 +115,7 @@ export class DetectionOwnerController {
   @Get('/:channel/data')
   @ApiQuery({name:"radioStation",type:String,required:false})
   @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
-  // @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Detections for specific channel and specific user' })

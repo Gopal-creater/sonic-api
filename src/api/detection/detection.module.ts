@@ -11,6 +11,7 @@ import { ApiKeyModule } from '../api-key/api-key.module';
 import { SonickeyModule } from '../sonickey/sonickey.module';
 import { UserModule } from '../user/user.module';
 import { DetectionThirdPartyController } from './controllers/detection.thirdparty.controller';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ MongooseModule.forFeature([
       ]),
       ApiKeyModule,
       UserModule,
+      AuthModule,
       forwardRef(()=>SonickeyModule)
     ],
   controllers: [DetectionController,DetectionOwnerController,DetectionThirdPartyController],

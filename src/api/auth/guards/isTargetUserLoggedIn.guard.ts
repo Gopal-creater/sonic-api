@@ -24,7 +24,7 @@ export class IsTargetUserLoggedInGuard implements CanActivate {
           const loggedInUser = request.user as UserSession;
           const targetUser = query[this.name];
           // delete req
-          if (targetUser == loggedInUser['sub']) {
+          if (targetUser == loggedInUser.sub) {
             delete query.targetUser;
             request.query = query;
             return true;
