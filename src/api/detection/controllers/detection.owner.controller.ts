@@ -95,7 +95,7 @@ export class DetectionOwnerController {
   </fieldset>
  `,
   })
-  @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Top radiostations with top sonickeys' })
   async getSonicKeyGraphs(
@@ -115,7 +115,7 @@ export class DetectionOwnerController {
   @Get('/:channel/data')
   @ApiQuery({name:"radioStation",type:String,required:false})
   @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
-  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Detections for specific channel and specific user' })
