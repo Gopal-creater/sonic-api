@@ -16,6 +16,7 @@ import {
   ApiTags,
   ApiParam,
   ApiQuery,
+  ApiSecurity,
 } from '@nestjs/swagger';
 import { ChannelEnums } from 'src/constants/Enums';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
@@ -117,6 +118,7 @@ export class DetectionOwnerController {
   @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
   @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Detections for specific channel and specific user' })
   findAll(

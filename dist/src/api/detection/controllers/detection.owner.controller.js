@@ -152,6 +152,7 @@ __decorate([
     swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
     common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Detections for specific channel and specific user' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDeectionDto }),
