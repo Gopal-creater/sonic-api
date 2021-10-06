@@ -137,7 +137,7 @@ export class DetectionOwnerController {
   @ApiQuery({name:"radioStation",type:String,required:false})
   // @ApiQuery({name:"select",type:String,required:false})
   @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
-  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get Detected Details for specific channel and specific sonickey' })

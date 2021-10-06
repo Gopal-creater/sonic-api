@@ -88,6 +88,7 @@ let SonickeyGuestController = class SonickeyGuestController {
     }
 };
 __decorate([
+    swagger_1.ApiExcludeEndpoint(true),
     common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
         storage: multer_1.diskStorage({
             destination: async (req, file, cb) => {
@@ -119,6 +120,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SonickeyGuestController.prototype, "encode", null);
 __decorate([
+    swagger_1.ApiExcludeEndpoint(true),
     common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
         storage: multer_1.diskStorage({
             destination: async (req, file, cb) => {

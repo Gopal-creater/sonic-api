@@ -10,13 +10,15 @@ exports.S3FileUploadModule = void 0;
 const common_1 = require("@nestjs/common");
 const s3fileupload_service_1 = require("./s3fileupload.service");
 const s3fileupload_controller_1 = require("./s3fileupload.controller");
+const auth_module_1 = require("../auth/auth.module");
 let S3FileUploadModule = class S3FileUploadModule {
 };
 S3FileUploadModule = __decorate([
     common_1.Module({
+        imports: [auth_module_1.AuthModule],
         controllers: [s3fileupload_controller_1.S3FileUploadController],
         providers: [s3fileupload_service_1.S3FileUploadService],
-        exports: [s3fileupload_service_1.S3FileUploadService]
+        exports: [s3fileupload_service_1.S3FileUploadService],
     })
 ], S3FileUploadModule);
 exports.S3FileUploadModule = S3FileUploadModule;

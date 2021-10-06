@@ -3,6 +3,7 @@ import { S3FileUploadService } from './s3fileupload.service';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from '../auth/decorators/user.decorator';
+import { ConditionalAuthGuard } from '../auth/guards/conditional-auth.guard';
 
 @ApiTags('S3 File Upload Controller')
 @Controller('s3-file-uploads')
@@ -10,7 +11,7 @@ export class S3FileUploadController {
   constructor(private readonly s3FileUploadService: S3FileUploadService) {}
 
   @Get('/signed-url/:key')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ConditionalAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Signed Url for download' })
   getSignedUrl(@Param('key') key: string,@User('sub') userId: string,) {

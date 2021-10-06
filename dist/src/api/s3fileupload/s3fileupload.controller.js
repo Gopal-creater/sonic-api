@@ -19,6 +19,7 @@ const s3fileupload_service_1 = require("./s3fileupload.service");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const user_decorator_1 = require("../auth/decorators/user.decorator");
+const conditional_auth_guard_1 = require("../auth/guards/conditional-auth.guard");
 let S3FileUploadController = class S3FileUploadController {
     constructor(s3FileUploadService) {
         this.s3FileUploadService = s3FileUploadService;
@@ -39,7 +40,7 @@ let S3FileUploadController = class S3FileUploadController {
 };
 __decorate([
     common_1.Get('/signed-url/:key'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get Signed Url for download' }),
     openapi.ApiResponse({ status: 200, type: String }),

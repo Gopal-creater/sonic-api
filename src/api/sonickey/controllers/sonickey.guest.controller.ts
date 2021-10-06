@@ -27,6 +27,7 @@ import {
   ApiConsumes,
   ApiBody,
   ApiParam,
+  ApiExcludeEndpoint
 } from '@nestjs/swagger';
 import * as uniqid from 'uniqid';
 import { FileHandlerService } from '../../../shared/services/file-handler.service';
@@ -41,6 +42,7 @@ import { DetectionService } from '../../detection/detection.service';
  * To get all owner's sonickeys we have to create a global secondary index table.
  */
 
+
 @ApiTags('Public Controller')
 @Controller('sonic-keys-guest')
 export class SonickeyGuestController {
@@ -50,6 +52,7 @@ export class SonickeyGuestController {
     private readonly detectionService: DetectionService,
   ) {}
 
+  @ApiExcludeEndpoint(true)
   @UseInterceptors(
     FileInterceptor('mediaFile', {
       // Check the mimetypes to allow for upload
@@ -124,6 +127,7 @@ export class SonickeyGuestController {
       });
   }
 
+  @ApiExcludeEndpoint(true)
   @UseInterceptors(
     FileInterceptor('mediaFile', {
       // Check the mimetypes to allow for upload
