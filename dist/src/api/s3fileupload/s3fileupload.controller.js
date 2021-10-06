@@ -20,11 +20,18 @@ const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const user_decorator_1 = require("../auth/decorators/user.decorator");
 const conditional_auth_guard_1 = require("../auth/guards/conditional-auth.guard");
+const s3fileupload_dto_1 = require("./dtos/s3fileupload.dto");
 let S3FileUploadController = class S3FileUploadController {
     constructor(s3FileUploadService) {
         this.s3FileUploadService = s3FileUploadService;
     }
     getSignedUrl(key, userId) {
+        if (!(key === null || key === void 0 ? void 0 : key.includes(userId))) {
+            throw new common_1.ForbiddenException('You are not the owner of this file');
+        }
+        return this.s3FileUploadService.getSignedUrl(key);
+    }
+    getSignedUrlFromPost(key, userId) {
         if (!(key === null || key === void 0 ? void 0 : key.includes(userId))) {
             throw new common_1.ForbiddenException('You are not the owner of this file');
         }
@@ -51,6 +58,20 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], S3FileUploadController.prototype, "getSignedUrl", null);
+__decorate([
+    common_1.Post('/get-signed-url'),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiBody({ type: s3fileupload_dto_1.DownloadS3FileDto }),
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiOperation({ summary: 'Get Signed Url for download pass {key:string} in the body' }),
+    openapi.ApiResponse({ status: 201, type: String }),
+    __param(0, common_1.Body('key')),
+    __param(1, user_decorator_1.User('sub')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], S3FileUploadController.prototype, "getSignedUrlFromPost", null);
 __decorate([
     common_1.Get(':key'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
