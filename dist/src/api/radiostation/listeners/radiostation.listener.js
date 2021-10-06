@@ -129,7 +129,7 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
                                     sonicKey: sonicKey,
                                     sonicKeyOwnerId: isKeyPresent.owner,
                                     sonicKeyOwnerName: isKeyPresent.contentOwner,
-                                    channel: Enums_1.ChannelEnums.RADIOSTATION,
+                                    channel: Enums_1.ChannelEnums.STREAMREADER,
                                     detectedAt: new Date(),
                                 });
                                 await newDetection

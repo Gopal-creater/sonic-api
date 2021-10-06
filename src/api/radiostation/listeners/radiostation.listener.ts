@@ -193,7 +193,7 @@ export class RadioStationListener implements OnApplicationBootstrap {
                   // owner: radioStation.owner,
                   sonicKeyOwnerId: isKeyPresent.owner,
                   sonicKeyOwnerName: isKeyPresent.contentOwner,
-                  channel: ChannelEnums.RADIOSTATION,
+                  channel: ChannelEnums.STREAMREADER,
                   detectedAt: new Date(),
                 },
               );

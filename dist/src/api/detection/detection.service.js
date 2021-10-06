@@ -92,7 +92,7 @@ let DetectionService = class DetectionService {
         return topStationsWithTopKeys;
     }
     async findTopRadioStations(filter, topLimit) {
-        filter['channel'] = Enums_1.ChannelEnums.RADIOSTATION;
+        filter['channel'] = Enums_1.ChannelEnums.STREAMREADER;
         const topRadioStations = await this.detectionModel.aggregate([
             {
                 $match: filter,
