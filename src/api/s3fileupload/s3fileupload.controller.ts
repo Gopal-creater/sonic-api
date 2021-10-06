@@ -1,6 +1,6 @@
 import { Controller, Get, Param, StreamableFile, UseGuards, ForbiddenException } from '@nestjs/common';
 import { S3FileUploadService } from './s3fileupload.service';
-import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiSecurity } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from '../auth/decorators/user.decorator';
 import { ConditionalAuthGuard } from '../auth/guards/conditional-auth.guard';
@@ -13,6 +13,7 @@ export class S3FileUploadController {
   @Get('/signed-url/:key')
   @UseGuards(ConditionalAuthGuard)
   @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
   @ApiOperation({ summary: 'Get Signed Url for download' })
   getSignedUrl(@Param('key') key: string,@User('sub') userId: string,) {
       /* Checks for authenticated user in order to download the file */

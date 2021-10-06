@@ -139,6 +139,7 @@ export class DetectionOwnerController {
   @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
   @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get Detected Details for specific channel and specific sonickey' })
   getDetectedDetailsOfSingleSonicKey(

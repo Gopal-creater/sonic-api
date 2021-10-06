@@ -42,6 +42,7 @@ __decorate([
     common_1.Get('/signed-url/:key'),
     common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
     swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiOperation({ summary: 'Get Signed Url for download' }),
     openapi.ApiResponse({ status: 200, type: String }),
     __param(0, common_1.Param('key')),
