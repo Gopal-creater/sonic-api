@@ -7,11 +7,18 @@ const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const basicAuth = require("express-basic-auth");
 global['fetch'] = require('node-fetch');
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, {
         bodyParser: true,
     });
+    app.use(['/swagger-api/*', '/swagger-api-json'], basicAuth({
+        challenge: true,
+        users: {
+            swaggeruser: 'swaggeruser@2021',
+        },
+    }));
     const configService = app.get(config_1.ConfigService);
     app.enableCors({
         origin: [

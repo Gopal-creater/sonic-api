@@ -7,6 +7,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as multer from 'multer'
+import * as basicAuth from 'express-basic-auth';
 
 global['fetch'] = require('node-fetch');
 
@@ -15,6 +16,15 @@ async function bootstrap() {
     bodyParser: true,
     
   });
+  app.use(
+    ['/swagger-api/*', '/swagger-api-json'],
+    basicAuth({
+        challenge: true,
+        users: {
+          swaggeruser: 'swaggeruser@2021',
+        },
+    }),
+);
   // app.use(multer)
   // app.enableVersioning()
   const configService = app.get(ConfigService);
