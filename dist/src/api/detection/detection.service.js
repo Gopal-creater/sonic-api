@@ -45,7 +45,7 @@ let DetectionService = class DetectionService {
             {
                 $match: Object.assign({}, filter),
             },
-            { $group: { _id: '$sonicKey', totalHits: { $sum: 1 }, detectedTiming: { $push: '$detectedAt' } } },
+            { $group: { _id: '$sonicKey', totalHits: { $sum: 1 } } },
             {
                 $lookup: {
                     from: 'SonicKey',
@@ -58,7 +58,6 @@ let DetectionService = class DetectionService {
                 $project: {
                     sonicKey: { $first: '$sonicKey' },
                     totalHits: 1,
-                    detectedTiming: 1,
                     otherField: 1,
                 },
             },

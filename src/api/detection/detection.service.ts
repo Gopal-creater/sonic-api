@@ -42,7 +42,7 @@ export class DetectionService {
           ...filter,
         },
       },
-      { $group: { _id: '$sonicKey', totalHits: { $sum: 1 },detectedTiming:{$push:'$detectedAt'} } }, //group by radioStation to get duplicates counts
+      { $group: { _id: '$sonicKey', totalHits: { $sum: 1 } } }, //group by radioStation to get duplicates counts
       {
         $lookup: {
           //populate radioStation from its relational table
@@ -56,7 +56,6 @@ export class DetectionService {
         $project: {
           sonicKey: { $first: '$sonicKey' },
           totalHits: 1,
-          detectedTiming: 1,
           otherField: 1,
         }, //lookup will return array so always tale first index elememt
       },
