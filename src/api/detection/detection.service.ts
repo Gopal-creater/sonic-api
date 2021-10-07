@@ -56,6 +56,7 @@ export class DetectionService {
         $project: {
           sonicKey: { $first: '$sonicKey' },
           totalHits: 1,
+          detectedTiming: 1,
           otherField: 1,
         }, //lookup will return array so always tale first index elememt
       },

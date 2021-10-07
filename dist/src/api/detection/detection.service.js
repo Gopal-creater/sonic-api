@@ -58,6 +58,7 @@ let DetectionService = class DetectionService {
                 $project: {
                     sonicKey: { $first: '$sonicKey' },
                     totalHits: 1,
+                    detectedTiming: 1,
                     otherField: 1,
                 },
             },
