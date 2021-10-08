@@ -14,6 +14,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
+const isValidCountry_validation_1 = require("../validation/isValidCountry.validation");
 exports.RadioStationSchemaName = "RadioStation";
 let Credential = class Credential {
 };
@@ -43,6 +44,7 @@ __decorate([
 ], RadioStation.prototype, "name", void 0);
 __decorate([
     class_validator_1.IsNotEmpty(),
+    isValidCountry_validation_1.IsValidCountry(),
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
         required: true

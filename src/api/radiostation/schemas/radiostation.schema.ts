@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory, } from '@nestjs/mongoose';
 import { Document,Schema as MogSchema} from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, Validate } from 'class-validator';
+import { IsValidCountry } from '../validation/isValidCountry.validation';
 
 export const RadioStationSchemaName="RadioStation"
 
@@ -27,6 +28,7 @@ export class RadioStation extends Document {
   name: string;
 
   @IsNotEmpty()
+  @IsValidCountry()
   @ApiProperty()
   @Prop({
     required:true
