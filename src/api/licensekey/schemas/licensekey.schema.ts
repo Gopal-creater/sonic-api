@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 
+
 export const LicenseKeySchemaName = 'LicenseKey';
 
 @Schema()
@@ -21,6 +22,11 @@ export class LKOwner{
   name: string;
 }
 
+/**
+ * userType==> [WPMS=1]
+ * Payment (Id, OwnerId, cost, method,plan)
+ * ServiceSubscription (Id, ownerId, payment)
+ */
 @Schema()
 export class LKReserve{
   @ApiProperty()

@@ -43,6 +43,11 @@ export class RadioStation extends Document {
   })
   streamingUrl: string;
 
+  @IsNotEmpty()
+  @ApiProperty()
+  @Prop({required:true})
+  adminEmail: string;
+
   @ApiProperty()
   @Prop()
   website: string;
