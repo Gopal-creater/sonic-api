@@ -109,7 +109,7 @@ __decorate([
 __decorate([
     class_validator_1.IsOptional(),
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: 10 }),
+    mongoose_1.Prop({ default: 15 }),
     __metadata("design:type", Number)
 ], SonicKey.prototype, "encodingStrength", void 0);
 __decorate([

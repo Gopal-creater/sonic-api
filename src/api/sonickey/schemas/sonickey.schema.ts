@@ -83,7 +83,7 @@ export class SonicKey extends Document {
 
   @IsOptional()
   @ApiProperty()
-  @Prop({default:10})
+  @Prop({default:15})
   encodingStrength: number;
 
   @IsOptional()

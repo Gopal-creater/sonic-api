@@ -73,7 +73,7 @@ let SonickeyService = class SonickeyService {
         paginateOptions['limit'] = limit;
         return await this.sonicKeyModel['paginate'](filter, paginateOptions);
     }
-    async encode(file, encodingStrength = 10) {
+    async encode(file, encodingStrength = 15) {
         const random11CharKey = this.generateUniqueSonicKey();
         file.path = upath.toUnix(file.path);
         file.destination = upath.toUnix(file.destination);
@@ -101,7 +101,7 @@ let SonickeyService = class SonickeyService {
             this.fileHandlerService.deleteFileAtPath(inFilePath);
         });
     }
-    async encodeAndUploadToS3(file, user, encodingStrength = 10, s3Acl) {
+    async encodeAndUploadToS3(file, user, encodingStrength = 15, s3Acl) {
         const random11CharKey = this.generateUniqueSonicKey();
         file.path = upath.toUnix(file.path);
         file.destination = upath.toUnix(file.destination);

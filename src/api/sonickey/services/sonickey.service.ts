@@ -97,7 +97,7 @@ export class SonickeyService {
    * @param file
    * @param encodingStrength
    */
-  async encode(file: IUploadedFile, encodingStrength: number = 10) {
+  async encode(file: IUploadedFile, encodingStrength: number = 15) {
     // The sonic key generation - done randomely.
     const random11CharKey = this.generateUniqueSonicKey();
     // TODO: Must verify for uniqueness of generated key
@@ -142,7 +142,7 @@ export class SonickeyService {
   async encodeAndUploadToS3(
     file: IUploadedFile,
     user: string,
-    encodingStrength: number = 10,
+    encodingStrength: number = 15,
     s3Acl?:S3ACL
   ) {
     // The sonic key generation - done randomely.
