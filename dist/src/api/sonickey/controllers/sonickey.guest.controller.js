@@ -73,6 +73,17 @@ let SonickeyGuestController = class SonickeyGuestController {
                     if (!validSonicKey) {
                         continue;
                     }
+                    const newDetection = await this.detectionService.detectionModel.create({
+                        sonicKey: sonicKey,
+                        owner: validSonicKey.owner,
+                        sonicKeyOwnerId: validSonicKey.owner,
+                        sonicKeyOwnerName: validSonicKey.contentOwner,
+                        channel: Enums_1.ChannelEnums.MOBILEAPP,
+                        detectedAt: new Date(),
+                    });
+                    await newDetection.save().catch((err) => {
+                        console.log("error", err);
+                    });
                     sonicKeysMetadata.push(validSonicKey);
                 }
             }
