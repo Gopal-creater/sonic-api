@@ -111,8 +111,8 @@ export class SonickeyController {
 
   @Get('/generate-unique-sonic-key')
   @ApiOperation({ summary: 'Generate unique sonic key' })
-  async generateUniqueSonicKey() {
-    return this.sonicKeyService.testUploadFromPath();
+  generateUniqueSonicKey() {
+    return this.sonicKeyService.generateUniqueSonicKey();
   }
 
   @Get('/file-download-test')

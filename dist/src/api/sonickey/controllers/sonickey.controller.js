@@ -60,8 +60,8 @@ let SonickeyController = class SonickeyController {
     async getAll(parsedQueryDto) {
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
-    async generateUniqueSonicKey() {
-        return this.sonicKeyService.testUploadFromPath();
+    generateUniqueSonicKey() {
+        return this.sonicKeyService.generateUniqueSonicKey();
     }
     async fileDownloadTest() {
         return this.sonicKeyService.testDownloadFile();
@@ -267,10 +267,10 @@ __decorate([
 __decorate([
     common_1.Get('/generate-unique-sonic-key'),
     swagger_1.ApiOperation({ summary: 'Generate unique sonic key' }),
-    openapi.ApiResponse({ status: 200 }),
+    openapi.ApiResponse({ status: 200, type: String }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], SonickeyController.prototype, "generateUniqueSonicKey", null);
 __decorate([
     common_1.Get('/file-download-test'),
