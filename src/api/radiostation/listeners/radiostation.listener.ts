@@ -17,7 +17,7 @@ import { ChannelEnums } from 'src/constants/Enums';
 import { RadioMonitorService } from '../../radiomonitor/radiomonitor.service';
 
 @Injectable()
-export class RadioStationListener implements OnApplicationBootstrap {
+export class RadioStationListener {
   constructor(
     private schedulerRegistry: SchedulerRegistry,
     private sonickeyService: SonickeyService,
@@ -25,44 +25,7 @@ export class RadioStationListener implements OnApplicationBootstrap {
     private radioMonitorService: RadioMonitorService,
     private detectionService: DetectionService,
   ) {}
-  async onApplicationBootstrap() {
-    this.streamingIntervalLogger.debug(
-      'Called once after 0 seconds very firsttime, do restoring of listening of stream',
-    );
 
-    if (!appConfig.ENABLE_STREAMING_LISTENER) {
-      return;
-    }
-    // return
-    const radioStations = await this.radiostationService.radioStationModel.find(
-      { isStreamStarted: true },
-    );
-    this.streamingIntervalLogger.debug(
-      `${radioStations.length} number of streaming need to be restart deuto server reboot`,
-    );
-    const callback = async (radioStationData: RadioStation) => {
-      //Create folder if not present for streaming
-      await makeDir(
-        `${appRootPath.toString()}/storage/streaming/${radioStationData._id}`,
-      );
-      const outputPath = `${appRootPath.toString()}/storage/streaming/${
-        radioStationData._id
-      }/${uniqid()}.wav`;
-      this.startListeningLikeAStreamAndUpdateTable(
-        radioStationData,
-        outputPath,
-      );
-    };
-
-    radioStations.forEach(radioStation => {
-      const interval = setInterval(
-        () => callback(radioStation),
-        appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS * 1000,
-      );
-      const intervalName = radioStation._id;
-      this.schedulerRegistry.addInterval(intervalName, interval);
-    });
-  }
   private readonly radioStationListenerLogger = new Logger(
     RadioStationListener.name,
   );
@@ -73,29 +36,29 @@ export class RadioStationListener implements OnApplicationBootstrap {
     this.radioStationListenerLogger.log(
       `Start Listening Event on radioStation id ${radioStation._id}`,
     );
-    const callback = async (radioStationData: RadioStation) => {
-      this.streamingIntervalLogger.log(
-        `${appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS}sec Interval STARTED For radio station: ${radioStationData.name} with id ${radioStationData._id} having streamingURL :${radioStationData.streamingUrl} `,
-      );
-      //Create folder if not present for streaming
-      await makeDir(
-        `${appRootPath.toString()}/storage/streaming/${radioStation._id}`,
-      );
-      const outputPath = `${appRootPath.toString()}/storage/streaming/${
-        radioStation._id
-      }/${uniqid()}.wav`;
-      this.startListeningLikeAStreamAndUpdateTable(
-        radioStationData,
-        outputPath,
-      );
-    };
+    // const callback = async (radioStationData: RadioStation) => {
+    //   this.streamingIntervalLogger.log(
+    //     `${appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS}sec Interval STARTED For radio station: ${radioStationData.name} with id ${radioStationData._id} having streamingURL :${radioStationData.streamingUrl} `,
+    //   );
+    //   //Create folder if not present for streaming
+    //   await makeDir(
+    //     `${appRootPath.toString()}/storage/streaming/${radioStation._id}`,
+    //   );
+    //   const outputPath = `${appRootPath.toString()}/storage/streaming/${
+    //     radioStation._id
+    //   }/${uniqid()}.wav`;
+    //   this.startListeningLikeAStreamAndUpdateTable(
+    //     radioStationData,
+    //     outputPath,
+    //   );
+    // };
 
-    const interval = setInterval(
-      () => callback(radioStation),
-      appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS * 1000,
-    );
-    const intervalName = radioStation._id;
-    this.schedulerRegistry.addInterval(intervalName, interval);
+    // const interval = setInterval(
+    //   () => callback(radioStation),
+    //   appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS * 1000,
+    // );
+    // const intervalName = radioStation._id;
+    // this.schedulerRegistry.addInterval(intervalName, interval);
   }
 
   @OnEvent(STOP_LISTENING_STREAM)
@@ -103,15 +66,15 @@ export class RadioStationListener implements OnApplicationBootstrap {
     this.radioStationListenerLogger.log(
       `Stop Listening Event on radioStation id ${radioStation._id}`,
     );
-    const intervalName = radioStation._id;
-    const isPresentInterval = this.schedulerRegistry.doesExists(
-      'interval',
-      intervalName,
-    );
+    // const intervalName = radioStation._id;
+    // const isPresentInterval = this.schedulerRegistry.doesExists(
+    //   'interval',
+    //   intervalName,
+    // );
 
-    if (isPresentInterval) {
-      this.schedulerRegistry.deleteInterval(intervalName);
-    }
+    // if (isPresentInterval) {
+    //   this.schedulerRegistry.deleteInterval(intervalName);
+    // }
   }
 
   async startListeningLikeAStreamAndUpdateTable(

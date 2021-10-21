@@ -27,9 +27,6 @@ const app_config_1 = require("../../../config/app.config");
 const fs = require("fs");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const children = require("child_process");
-const appRootPath = require("app-root-path");
-const makeDir = require("make-dir");
-const uniqid = require("uniqid");
 const radiostation_service_1 = require("../services/radiostation.service");
 const detection_service_1 = require("../../detection/detection.service");
 const Enums_1 = require("../../../constants/Enums");
@@ -44,43 +41,11 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
         this.radioStationListenerLogger = new common_1.Logger(RadioStationListener_1.name);
         this.streamingIntervalLogger = new common_1.Logger('StreamingInterval');
     }
-    async onApplicationBootstrap() {
-        this.streamingIntervalLogger.debug('Called once after 0 seconds very firsttime, do restoring of listening of stream');
-        if (!app_config_1.appConfig.ENABLE_STREAMING_LISTENER) {
-            return;
-        }
-        const radioStations = await this.radiostationService.radioStationModel.find({ isStreamStarted: true });
-        this.streamingIntervalLogger.debug(`${radioStations.length} number of streaming need to be restart deuto server reboot`);
-        const callback = async (radioStationData) => {
-            await makeDir(`${appRootPath.toString()}/storage/streaming/${radioStationData._id}`);
-            const outputPath = `${appRootPath.toString()}/storage/streaming/${radioStationData._id}/${uniqid()}.wav`;
-            this.startListeningLikeAStreamAndUpdateTable(radioStationData, outputPath);
-        };
-        radioStations.forEach(radioStation => {
-            const interval = setInterval(() => callback(radioStation), app_config_1.appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS * 1000);
-            const intervalName = radioStation._id;
-            this.schedulerRegistry.addInterval(intervalName, interval);
-        });
-    }
     handleStartListeningEvent(radioStation) {
         this.radioStationListenerLogger.log(`Start Listening Event on radioStation id ${radioStation._id}`);
-        const callback = async (radioStationData) => {
-            this.streamingIntervalLogger.log(`${app_config_1.appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS}sec Interval STARTED For radio station: ${radioStationData.name} with id ${radioStationData._id} having streamingURL :${radioStationData.streamingUrl} `);
-            await makeDir(`${appRootPath.toString()}/storage/streaming/${radioStation._id}`);
-            const outputPath = `${appRootPath.toString()}/storage/streaming/${radioStation._id}/${uniqid()}.wav`;
-            this.startListeningLikeAStreamAndUpdateTable(radioStationData, outputPath);
-        };
-        const interval = setInterval(() => callback(radioStation), app_config_1.appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS * 1000);
-        const intervalName = radioStation._id;
-        this.schedulerRegistry.addInterval(intervalName, interval);
     }
     handleStopListeningEvent(radioStation) {
         this.radioStationListenerLogger.log(`Stop Listening Event on radioStation id ${radioStation._id}`);
-        const intervalName = radioStation._id;
-        const isPresentInterval = this.schedulerRegistry.doesExists('interval', intervalName);
-        if (isPresentInterval) {
-            this.schedulerRegistry.deleteInterval(intervalName);
-        }
     }
     async startListeningLikeAStreamAndUpdateTable(radioStation, outputPath) {
         const intervalName = radioStation._id;
