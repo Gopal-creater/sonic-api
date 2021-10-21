@@ -26,6 +26,7 @@ import { DetectionModule } from './api/detection/detection.module';
 import { LicensekeyModule } from './api/licensekey/licensekey.module';
 import { S3FileUploadModule } from './api/s3fileupload/s3fileupload.module';
 import { RadiomonitorModule } from './api/radiomonitor/radiomonitor.module';
+import { HttpModule } from '@nestjs/axios';
 mongoosePaginate.paginate.options = {
   limit: 50,
 };
@@ -33,6 +34,7 @@ console.log('Node_env', process.env.NODE_ENV);
 
 @Module({
   imports: [
+    HttpModule,
     AuthModule,
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),

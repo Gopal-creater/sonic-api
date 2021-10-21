@@ -36,6 +36,7 @@ const detection_module_1 = require("./api/detection/detection.module");
 const licensekey_module_1 = require("./api/licensekey/licensekey.module");
 const s3fileupload_module_1 = require("./api/s3fileupload/s3fileupload.module");
 const radiomonitor_module_1 = require("./api/radiomonitor/radiomonitor.module");
+const axios_1 = require("@nestjs/axios");
 mongoosePaginate.paginate.options = {
     limit: 50,
 };
@@ -46,6 +47,7 @@ let AppModule = class AppModule {
 AppModule = __decorate([
     common_1.Module({
         imports: [
+            axios_1.HttpModule,
             auth_module_1.AuthModule,
             schedule_1.ScheduleModule.forRoot(),
             event_emitter_1.EventEmitterModule.forRoot(),
