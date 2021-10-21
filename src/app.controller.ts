@@ -15,13 +15,13 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  // @Get('/get-insance-details')
-  // getInstanceDetails() {
-  //   return axios
-  //     .get('http://169.254.169.254/latest/meta-data/')
-  //     .then(res =>{
-  //       console.log("res",res)
-  //       return res.data
-  //     });
-  // }
+  @Get('/get-insance-details')
+  getInstanceDetails() {
+    return axios
+      .get('http://169.254.169.254/latest/meta-data/')
+      .then(res =>{
+        console.log("res",res)
+        return res.data
+      });
+  }
 }
