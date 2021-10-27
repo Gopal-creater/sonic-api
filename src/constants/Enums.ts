@@ -36,7 +36,7 @@ export enum EC2InstanceMetadata {
   'ami_id' = 'ami-id',
   'hostname' = 'hostname',
   'instance_id' = 'instance-id',
-  'instance_type' = 'instance-id',
+  'instance_type' = 'instance-type',
   'local_hostname' = 'local-hostname',
   'local_ipv4' = 'local-ipv4',
   'mac' = 'mac',

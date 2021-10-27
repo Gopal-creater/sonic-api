@@ -40,7 +40,7 @@ var EC2InstanceMetadata;
     EC2InstanceMetadata["ami_id"] = "ami-id";
     EC2InstanceMetadata["hostname"] = "hostname";
     EC2InstanceMetadata["instance_id"] = "instance-id";
-    EC2InstanceMetadata["instance_type"] = "instance-id";
+    EC2InstanceMetadata["instance_type"] = "instance-type";
     EC2InstanceMetadata["local_hostname"] = "local-hostname";
     EC2InstanceMetadata["local_ipv4"] = "local-ipv4";
     EC2InstanceMetadata["mac"] = "mac";

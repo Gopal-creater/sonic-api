@@ -43,6 +43,12 @@ let Ec2InstanceService = class Ec2InstanceService {
             return Object.assign({}, ...values);
         });
     }
+    async getCurrentlyRunningServerDetailsWithEc2InstanceInfo() {
+        const ec2InstanceDetails = await this.getInstanceDetails();
+        const port = 8000;
+        const domain_hostname = 'https://sonicserver.arba-dev.uk';
+        return Object.assign(Object.assign({}, ec2InstanceDetails), { server_running_port_number: port, domain_hostname: domain_hostname });
+    }
 };
 Ec2InstanceService = __decorate([
     common_1.Injectable()

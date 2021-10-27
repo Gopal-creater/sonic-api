@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { EC2InstanceMetadata } from 'src/constants/Enums';
+import {
+  IEc2RunningServerWithInstanceInfo,
+  IEc2InstanceInfo,
+} from '../interfaces/common.interface';
 import { enumToArrayOfObject } from '../utils';
 @Injectable()
 export class Ec2InstanceService {
@@ -18,7 +22,7 @@ export class Ec2InstanceService {
       });
   }
 
-  async getInstanceDetails() {
+  async getInstanceDetails(): Promise<IEc2InstanceInfo> {
     const metadataArr = enumToArrayOfObject<EC2InstanceMetadata>(
       EC2InstanceMetadata,
     );
@@ -40,5 +44,18 @@ export class Ec2InstanceService {
     return Promise.all(promises).then(values => {
       return Object.assign({}, ...values);
     });
+  }
+
+  async getCurrentlyRunningServerDetailsWithEc2InstanceInfo(): Promise<
+    IEc2RunningServerWithInstanceInfo
+  > {
+    const ec2InstanceDetails = await this.getInstanceDetails();
+    const port = 8000;
+    const domain_hostname = 'https://sonicserver.arba-dev.uk';
+    return {
+      ...ec2InstanceDetails,
+      server_running_port_number: port,
+      domain_hostname: domain_hostname,
+    };
   }
 }
