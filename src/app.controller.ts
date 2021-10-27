@@ -19,6 +19,6 @@ export class AppController {
 
   @Get('/get-insance-details')
   getInstanceDetails() {
-    return this.ec2InstanceService.getInstanceDetails()
+    return this.ec2InstanceService.getCurrentlyRunningServerDetailsWithEc2InstanceInfo()
   }
 }

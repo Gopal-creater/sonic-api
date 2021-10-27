@@ -28,7 +28,7 @@ let AppController = class AppController {
         return this.appService.getHello();
     }
     getInstanceDetails() {
-        return this.ec2InstanceService.getInstanceDetails();
+        return this.ec2InstanceService.getCurrentlyRunningServerDetailsWithEc2InstanceInfo();
     }
 };
 __decorate([
