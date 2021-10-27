@@ -27,6 +27,7 @@ import { LicensekeyModule } from './api/licensekey/licensekey.module';
 import { S3FileUploadModule } from './api/s3fileupload/s3fileupload.module';
 import { RadiomonitorModule } from './api/radiomonitor/radiomonitor.module';
 import { HttpModule } from '@nestjs/axios';
+import { Ec2InstanceService } from './shared/services/ec2instance.service';
 mongoosePaginate.paginate.options = {
   limit: 50,
 };
@@ -81,7 +82,7 @@ console.log('Node_env', process.env.NODE_ENV);
     RadiomonitorModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AppGateway],
+  providers: [AppService, AppGateway,Ec2InstanceService],
 })
 export class AppModule {
   constructor() {}

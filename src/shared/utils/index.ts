@@ -1,5 +1,5 @@
 export * as JSONUtils from './json.utils'
-
+import axios from 'axios';
 
 /* Check if string is valid UUID */
 export function isValidUUID(str:string) {
@@ -45,3 +45,31 @@ export function promiseHandler(promise:any):Promise<[any,any]>{
       let url = new URL(string);
       return url.protocol === "http:" || url.protocol === "https:";
     }
+
+  export function getInstanceMetaData() {
+    return axios
+      .get('http://169.254.169.254/latest/meta-data/')
+      .then(res =>{
+        return res.data
+      });
+  }
+
+  export function getInstanceDetailsForMetaData(metadata:string) {
+    return axios
+      .get(`http://169.254.169.254/latest/meta-data/${metadata}`)
+      .then(res =>{
+        return res.data
+      });
+  }
+
+  export function enumToArrayOfObject<E>(e:any){
+    const arrayObjects:{key:any,value:any}[] = []  
+      
+    for (const [propertyKey, propertyValue] of Object.entries(e)) {  
+          if (!Number.isNaN(Number(propertyKey))) {  
+            continue;  
+        }  
+        arrayObjects.push({key: propertyKey,value: propertyValue });  
+    }
+    return arrayObjects  
+  }

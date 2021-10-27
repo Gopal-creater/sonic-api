@@ -37,6 +37,7 @@ const licensekey_module_1 = require("./api/licensekey/licensekey.module");
 const s3fileupload_module_1 = require("./api/s3fileupload/s3fileupload.module");
 const radiomonitor_module_1 = require("./api/radiomonitor/radiomonitor.module");
 const axios_1 = require("@nestjs/axios");
+const ec2instance_service_1 = require("./shared/services/ec2instance.service");
 mongoosePaginate.paginate.options = {
     limit: 50,
 };
@@ -94,7 +95,7 @@ AppModule = __decorate([
             radiomonitor_module_1.RadiomonitorModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService, app_gateway_1.AppGateway],
+        providers: [app_service_1.AppService, app_gateway_1.AppGateway, ec2instance_service_1.Ec2InstanceService],
     }),
     __metadata("design:paramtypes", [])
 ], AppModule);

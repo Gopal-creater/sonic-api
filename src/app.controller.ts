@@ -2,11 +2,13 @@ import { HttpService } from '@nestjs/axios';
 import { Controller, Get, Req } from '@nestjs/common';
 import { AppService } from './app.service';
 import axios from 'axios';
+import { Ec2InstanceService } from './shared/services/ec2instance.service';
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly httpService: HttpService,
+    private readonly ec2InstanceService: Ec2InstanceService,
   ) {}
 
   // testing the guard.
@@ -17,11 +19,6 @@ export class AppController {
 
   @Get('/get-insance-details')
   getInstanceDetails() {
-    return axios
-      .get('http://169.254.169.254/latest/meta-data/')
-      .then(res =>{
-        console.log("res",res)
-        return res.data
-      });
+    return this.ec2InstanceService.getInstanceDetails()
   }
 }

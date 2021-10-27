@@ -7,7 +7,7 @@ export enum ChannelEnums {
   HARDWARE = 'HARDWARE',
   RADIOSTATION = 'RADIOSTATION',
   STREAMREADER = 'STREAMREADER',
-  THIRDPARTY = 'THIRDPARTY'
+  THIRDPARTY = 'THIRDPARTY',
 }
 
 export enum Permissions {
@@ -23,11 +23,23 @@ export enum ApiKeyType {
   GROUP = 'Group',
 }
 
-export enum S3ACL{
-  PRIVATE='private',
-  PUBLIC_READ='public-read',
-  PUBLIC_READ_WRITE='public-read-write',
-  AUTHENTICATED_READ='authenticated-read',
-  BUCKET_OWNER_READ='bucket-owner-read',
-  BUCKET_OWNER_FULL_CONTROL='bucket-owner-full-control'
+export enum S3ACL {
+  PRIVATE = 'private',
+  PUBLIC_READ = 'public-read',
+  PUBLIC_READ_WRITE = 'public-read-write',
+  AUTHENTICATED_READ = 'authenticated-read',
+  BUCKET_OWNER_READ = 'bucket-owner-read',
+  BUCKET_OWNER_FULL_CONTROL = 'bucket-owner-full-control',
+}
+
+export enum EC2InstanceMetadata {
+  'ami_id' = 'ami-id',
+  'hostname' = 'hostname',
+  'instance_id' = 'instance-id',
+  'instance_type' = 'instance-id',
+  'local_hostname' = 'local-hostname',
+  'local_ipv4' = 'local-ipv4',
+  'mac' = 'mac',
+  'public_hostname' = 'public-hostname',
+  'public_ipv4' = 'public-ipv4',
 }

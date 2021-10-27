@@ -17,22 +17,18 @@ const openapi = require("@nestjs/swagger");
 const axios_1 = require("@nestjs/axios");
 const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
-const axios_2 = require("axios");
+const ec2instance_service_1 = require("./shared/services/ec2instance.service");
 let AppController = class AppController {
-    constructor(appService, httpService) {
+    constructor(appService, httpService, ec2InstanceService) {
         this.appService = appService;
         this.httpService = httpService;
+        this.ec2InstanceService = ec2InstanceService;
     }
     getHello(req) {
         return this.appService.getHello();
     }
     getInstanceDetails() {
-        return axios_2.default
-            .get('http://169.254.169.254/latest/meta-data/')
-            .then(res => {
-            console.log("res", res);
-            return res.data;
-        });
+        return this.ec2InstanceService.getInstanceDetails();
     }
 };
 __decorate([
@@ -53,7 +49,8 @@ __decorate([
 AppController = __decorate([
     common_1.Controller(),
     __metadata("design:paramtypes", [app_service_1.AppService,
-        axios_1.HttpService])
+        axios_1.HttpService,
+        ec2instance_service_1.Ec2InstanceService])
 ], AppController);
 exports.AppController = AppController;
 //# sourceMappingURL=app.controller.js.map
