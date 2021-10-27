@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Controller, Get, Req } from '@nestjs/common';
 import { AppService } from './app.service';
-import axios from 'axios';
 import { Ec2InstanceService } from './shared/services/ec2instance.service';
 @Controller()
 export class AppController {

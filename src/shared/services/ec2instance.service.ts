@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { EC2InstanceMetadata } from 'src/constants/Enums';
-import {
-  IEc2RunningServerWithInstanceInfo,
-  IEc2InstanceInfo,
-} from '../interfaces/common.interface';
 import { enumToArrayOfObject } from '../utils';
+import { Ec2InstanceInfo,Ec2RunningServerWithInstanceInfo } from '../dtos/ec2instance.dto';
 @Injectable()
 export class Ec2InstanceService {
   getInstanceMetaData() {
@@ -22,7 +19,7 @@ export class Ec2InstanceService {
       });
   }
 
-  async getInstanceDetails(): Promise<IEc2InstanceInfo> {
+  async getInstanceDetails(): Promise<Ec2InstanceInfo> {
     const metadataArr = enumToArrayOfObject<EC2InstanceMetadata>(
       EC2InstanceMetadata,
     );
@@ -47,7 +44,7 @@ export class Ec2InstanceService {
   }
 
   async getCurrentlyRunningServerDetailsWithEc2InstanceInfo(): Promise<
-    IEc2RunningServerWithInstanceInfo
+  Ec2RunningServerWithInstanceInfo
   > {
     const ec2InstanceDetails = await this.getInstanceDetails();
     const port = 8000;

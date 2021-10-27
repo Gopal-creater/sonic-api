@@ -46,22 +46,6 @@ export function promiseHandler(promise:any):Promise<[any,any]>{
       return url.protocol === "http:" || url.protocol === "https:";
     }
 
-  export function getInstanceMetaData() {
-    return axios
-      .get('http://169.254.169.254/latest/meta-data/')
-      .then(res =>{
-        return res.data
-      });
-  }
-
-  export function getInstanceDetailsForMetaData(metadata:string) {
-    return axios
-      .get(`http://169.254.169.254/latest/meta-data/${metadata}`)
-      .then(res =>{
-        return res.data
-      });
-  }
-
   export function enumToArrayOfObject<E>(e:any){
     const arrayObjects:{key:any,value:any}[] = []  
       

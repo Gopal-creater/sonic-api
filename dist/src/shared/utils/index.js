@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.enumToArrayOfObject = exports.getInstanceDetailsForMetaData = exports.getInstanceMetaData = exports.isValidHttpUrl = exports.extractFileName = exports.promiseHandler = exports.isValidUUID = exports.JSONUtils = void 0;
+exports.enumToArrayOfObject = exports.isValidHttpUrl = exports.extractFileName = exports.promiseHandler = exports.isValidUUID = exports.JSONUtils = void 0;
 exports.JSONUtils = require("./json.utils");
-const axios_1 = require("axios");
 function isValidUUID(str) {
     const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
     return regexExp.test(str);
@@ -24,22 +23,6 @@ function isValidHttpUrl(string) {
     return url.protocol === "http:" || url.protocol === "https:";
 }
 exports.isValidHttpUrl = isValidHttpUrl;
-function getInstanceMetaData() {
-    return axios_1.default
-        .get('http://169.254.169.254/latest/meta-data/')
-        .then(res => {
-        return res.data;
-    });
-}
-exports.getInstanceMetaData = getInstanceMetaData;
-function getInstanceDetailsForMetaData(metadata) {
-    return axios_1.default
-        .get(`http://169.254.169.254/latest/meta-data/${metadata}`)
-        .then(res => {
-        return res.data;
-    });
-}
-exports.getInstanceDetailsForMetaData = getInstanceDetailsForMetaData;
 function enumToArrayOfObject(e) {
     const arrayObjects = [];
     for (const [propertyKey, propertyValue] of Object.entries(e)) {
