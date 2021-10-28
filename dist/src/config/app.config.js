@@ -18,4 +18,5 @@ exports.appConfig = {
         authority: `https://cognito-idp.${process.env.COGNITO_REGION}.amazonaws.com/${process.env.COGNITO_USER_POOL_ID}`,
     },
 };
+exports.default = () => exports.appConfig;
 //# sourceMappingURL=app.config.js.map

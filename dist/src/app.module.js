@@ -21,6 +21,7 @@ const sonickey_module_1 = require("./api/sonickey/sonickey.module");
 const multer_1 = require("multer");
 const user_module_1 = require("./api/user/user.module");
 const config_2 = require("./config");
+const app_config_1 = require("./config/app.config");
 const job_module_1 = require("./api/job/job.module");
 const uniqid = require("uniqid");
 const schedule_1 = require("@nestjs/schedule");
@@ -54,7 +55,8 @@ AppModule = __decorate([
             event_emitter_1.EventEmitterModule.forRoot(),
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
-                envFilePath: process.env.NODE_ENV == 'production' ? '.env' : '.env.arba',
+                envFilePath: ['.env.override', process.env.NODE_ENV == 'production' ? '.env' : '.env.staging'],
+                load: [app_config_1.default],
             }),
             mongoose_1.MongooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],

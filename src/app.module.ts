@@ -10,6 +10,7 @@ import { SonickeyModule } from './api/sonickey/sonickey.module';
 import { diskStorage } from 'multer';
 import { UserModule } from './api/user/user.module';
 import { appConfig } from './config';
+import appConfiguration from './config/app.config';
 import { JobModule } from './api/job/job.module';
 import * as uniqid from 'uniqid';
 
@@ -41,7 +42,8 @@ console.log('Node_env', process.env.NODE_ENV);
     EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: process.env.NODE_ENV == 'production' ? '.env' : '.env.arba',
+      envFilePath: ['.env.override',process.env.NODE_ENV == 'production' ? '.env' : '.env.staging'],
+      load: [appConfiguration],
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
