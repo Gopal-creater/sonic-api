@@ -36,7 +36,7 @@ To override more env variables, please check the variable name in .env or .env.s
 * libsndfile1-dev
 * zita-resampler
 * libfftw3-dev
-<br/>
+
 We Can install all these library using apt get as follows
 ```sh
 $ sudo apt install ffmpeg libsndfile1-dev zita-resampler libfftw3-dev
