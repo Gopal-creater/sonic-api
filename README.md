@@ -25,7 +25,7 @@ $ pm2 start npm --name "sonic stream reader" -- run "start:prod"
 ```
 
 # Env Files To Override
-In .env.override OR in command line
+Create .env.override file OR in command line
 ```.env.override
 BINARY_PATH=/home/ubuntu/code/Sonic-Radio-StreamReader/bin/
 ```
