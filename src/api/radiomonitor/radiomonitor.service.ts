@@ -47,7 +47,7 @@ export class RadioMonitorService {
         message: 'Radiostation not found',
       });
     }
-    if (isValidRadioStation.isStreamStarted) {
+    if (!isValidRadioStation.isStreamStarted) {
       return Promise.reject({
         status: 422,
         message:
