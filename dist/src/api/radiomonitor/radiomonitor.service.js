@@ -145,7 +145,7 @@ let RadioMonitorService = class RadioMonitorService {
                 message: 'Radiostation not found',
             });
         }
-        if (isValidRadioStation.isStreamStarted) {
+        if (!isValidRadioStation.isStreamStarted) {
             return Promise.reject({
                 status: 422,
                 message: 'Can not start listening to this radio station since this radio station has not listening for any streams currently.',
