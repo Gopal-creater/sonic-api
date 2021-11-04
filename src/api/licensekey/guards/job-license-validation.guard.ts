@@ -19,9 +19,8 @@ export class JobLicenseValidationGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const body = request.body as CreateJobDto;
-    console.log("body",body)
-    const license = body.license || body.licenseId
-    if (!license || !body.owner || !body.jobFiles) {
+    const owner = body.owner || request?.user?.['sub']
+    if (!body.license || !owner || !body.jobFiles) {
       throw new BadRequestException({
         message: 'missing parameters',
       });
@@ -32,7 +31,7 @@ export class JobLicenseValidationGuard implements CanActivate {
       });
     }
     const { validationResult,licenseKey } = await this.licensekeyService.validateLicence(
-      license,
+      body.license,
     );
     if (!validationResult.valid) {
       throw new BadRequestException({
