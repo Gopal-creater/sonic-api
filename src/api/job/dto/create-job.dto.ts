@@ -7,4 +7,8 @@ export class CreateJobDto extends OmitType(Job, [
   ]) {
     @ApiProperty({isArray:true,type:CreateJobFileDto,required:false})
     jobFiles?:CreateJobFileDto[]
+
+    @ApiProperty()
+    licenseId?:string
+
   }

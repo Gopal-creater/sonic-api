@@ -19,7 +19,8 @@ let JobLicenseValidationGuard = class JobLicenseValidationGuard {
     async canActivate(context) {
         const request = context.switchToHttp().getRequest();
         const body = request.body;
-        if (!body.license || !body.owner || !body.jobFiles) {
+        const license = body.license || body.licenseId;
+        if (!license || !body.owner || !body.jobFiles) {
             throw new common_1.BadRequestException({
                 message: 'missing parameters',
             });
@@ -29,7 +30,7 @@ let JobLicenseValidationGuard = class JobLicenseValidationGuard {
                 message: 'Please add some files to create job',
             });
         }
-        const { validationResult, licenseKey } = await this.licensekeyService.validateLicence(body.license);
+        const { validationResult, licenseKey } = await this.licensekeyService.validateLicence(license);
         if (!validationResult.valid) {
             throw new common_1.BadRequestException({
                 message: 'Invalid license.',
