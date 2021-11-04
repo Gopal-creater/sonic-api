@@ -19,6 +19,7 @@ let JobLicenseValidationGuard = class JobLicenseValidationGuard {
     async canActivate(context) {
         const request = context.switchToHttp().getRequest();
         const body = request.body;
+        console.log("body", body);
         const license = body.license || body.licenseId;
         if (!license || !body.owner || !body.jobFiles) {
             throw new common_1.BadRequestException({

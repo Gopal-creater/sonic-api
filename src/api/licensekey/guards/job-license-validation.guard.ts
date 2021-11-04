@@ -19,6 +19,7 @@ export class JobLicenseValidationGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const body = request.body as CreateJobDto;
+    console.log("body",body)
     const license = body.license || body.licenseId
     if (!license || !body.owner || !body.jobFiles) {
       throw new BadRequestException({
