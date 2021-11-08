@@ -8,7 +8,6 @@ import { S3FileUploadI } from '../../s3fileupload/interfaces';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export const SonicKeySchemaName = 'SonicKey';
-
 @Schema()
 export class S3FileMeta implements S3FileUploadI {
 
@@ -185,6 +184,17 @@ export class SonicKey extends Document {
   @ApiProperty()
   @Prop()
   additionalMetadata: Map<string, any>;
+
+  // client requirements
+  @IsOptional()
+  @ApiProperty()
+  @Prop({default:false})
+  isRightsHolderForEncode?:boolean
+
+  @IsOptional()
+  @ApiProperty()
+  @Prop({default:false})
+  isAuthorizedForEncode?:boolean
 }
 
 export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);
