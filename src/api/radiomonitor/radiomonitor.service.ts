@@ -47,23 +47,24 @@ export class RadioMonitorService {
         message: 'Radiostation not found',
       });
     }
-    if (!isValidRadioStation.isStreamStarted) {
-      return Promise.reject({
-        status: 422,
-        message:
-          'Can not subscribe to this radio station since this radio station has not listening for any streams currently.',
-      });
-    }
-    if (isValidRadioStation.isError) {
-      return Promise.reject({
-        status: 422,
-        message:
-          'Can not subscribe to this radio station since this radio station has facing error currently.',
-      });
-    }
+    // if (!isValidRadioStation.isStreamStarted) {
+    //   return Promise.reject({
+    //     status: 422,
+    //     message:
+    //       'Can not subscribe to this radio station since this radio station has not listening for any streams currently.',
+    //   });
+    // }
+    // if (isValidRadioStation.isError) {
+    //   return Promise.reject({
+    //     status: 422,
+    //     message:
+    //       'Can not subscribe to this radio station since this radio station has facing error currently.',
+    //   });
+    // }
     const newMonitor = await this.radioMonitorModel.create({
       radio: radio,
       radioSearch:isValidRadioStation,
+      isListeningStarted:true,
       owner: owner,
       license: license,
     });
@@ -145,6 +146,7 @@ export class RadioMonitorService {
     });
   }
 
+  //Dont do anything for now, simply return the radio monitor data
   async stopListeningStream(id: string) {
     const isValidRadioMonitor = await this.radioMonitorModel.findById(id);
     if (!isValidRadioMonitor) {
@@ -153,14 +155,15 @@ export class RadioMonitorService {
         message: 'Not found',
       });
     }
-    return this.radioMonitorModel.findOneAndUpdate(
-      { _id: id },
-      {
-        stopAt: new Date(),
-        isListeningStarted: false
-      },
-      { new: true },
-    );
+    // return this.radioMonitorModel.findOneAndUpdate(
+    //   { _id: id },
+    //   {
+    //     stopAt: new Date(),
+    //     isListeningStarted: false
+    //   },
+    //   { new: true },
+    // );
+    return isValidRadioMonitor
   }
 
   async startListeningStream(id: string) {
@@ -170,6 +173,10 @@ export class RadioMonitorService {
         status: 404,
         message: 'Not found',
       });
+    }
+    //Simply return the same validRadioMonitor if it is already listening
+    if(isValidRadioMonitor.isListeningStarted){
+      return isValidRadioMonitor
     }
     const { radio } = isValidRadioMonitor;
     const isValidRadioStation = await this.radiostationService.radioStationModel.findById(
