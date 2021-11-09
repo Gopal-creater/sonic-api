@@ -37,7 +37,9 @@ export function promiseHandler(promise:any):Promise<[any,any]>{
   }
 
   export function extractFileName(url:string){
-    var filename = url.substring(url.lastIndexOf('/')+1);
+    const newUrl = new URL(url)
+    const {pathname}=newUrl
+    var filename = pathname.substring(pathname.lastIndexOf('/')+1);
     return filename
     }
 

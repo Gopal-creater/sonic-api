@@ -14,7 +14,9 @@ function promiseHandler(promise) {
 }
 exports.promiseHandler = promiseHandler;
 function extractFileName(url) {
-    var filename = url.substring(url.lastIndexOf('/') + 1);
+    const newUrl = new URL(url);
+    const { pathname } = newUrl;
+    var filename = pathname.substring(pathname.lastIndexOf('/') + 1);
     return filename;
 }
 exports.extractFileName = extractFileName;
