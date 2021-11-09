@@ -188,20 +188,20 @@ export class RadioMonitorService {
         message: 'Radiostation not found',
       });
     }
-    if (!isValidRadioStation.isStreamStarted) {
-      return Promise.reject({
-        status: 422,
-        message:
-          'Can not start listening to this radio station since this radio station has not listening for any streams currently.',
-      });
-    }
-    if (isValidRadioStation.isError) {
-      return Promise.reject({
-        status: 422,
-        message:
-          'Can not start listening to this radio station since this radio station has facing error currently.',
-      });
-    }
+    // if (!isValidRadioStation.isStreamStarted) {
+    //   return Promise.reject({
+    //     status: 422,
+    //     message:
+    //       'Can not start listening to this radio station since this radio station has not listening for any streams currently.',
+    //   });
+    // }
+    // if (isValidRadioStation.isError) {
+    //   return Promise.reject({
+    //     status: 422,
+    //     message:
+    //       'Can not start listening to this radio station since this radio station has facing error currently.',
+    //   });
+    // }
 
     return this.radioMonitorModel.findOneAndUpdate(
       { _id: id },
