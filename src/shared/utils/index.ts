@@ -37,12 +37,17 @@ export function promiseHandler(promise:any):Promise<[any,any]>{
   }
 
   export function extractFileName(url:string){
-    console.log("url",url)
-    const newUrl = new URL(url)
-    console.log("newUrl",newUrl)
-    const {pathname}=newUrl
-    var filename = pathname.substring(pathname.lastIndexOf('/')+1);
-    return filename
+    url = url.includes('?')?url.split('?')[0]:url
+    if(isValidHttpUrl(url)){
+      const newUrl = new URL(url)
+      const {pathname}=newUrl
+      const filename = pathname.substring(pathname.lastIndexOf('/')+1);
+      return filename
+    }else{
+      const filename = url.substring(url.lastIndexOf('/')+1);
+      return filename
+    }
+   
     }
 
     export function isValidHttpUrl(string:string) {

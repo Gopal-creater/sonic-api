@@ -14,12 +14,17 @@ function promiseHandler(promise) {
 }
 exports.promiseHandler = promiseHandler;
 function extractFileName(url) {
-    console.log("url", url);
-    const newUrl = new URL(url);
-    console.log("newUrl", newUrl);
-    const { pathname } = newUrl;
-    var filename = pathname.substring(pathname.lastIndexOf('/') + 1);
-    return filename;
+    url = url.includes('?') ? url.split('?')[0] : url;
+    if (isValidHttpUrl(url)) {
+        const newUrl = new URL(url);
+        const { pathname } = newUrl;
+        const filename = pathname.substring(pathname.lastIndexOf('/') + 1);
+        return filename;
+    }
+    else {
+        const filename = url.substring(url.lastIndexOf('/') + 1);
+        return filename;
+    }
 }
 exports.extractFileName = extractFileName;
 function isValidHttpUrl(string) {
