@@ -51,8 +51,13 @@ export function promiseHandler(promise:any):Promise<[any,any]>{
     }
 
     export function isValidHttpUrl(string:string) {
-      let url = new URL(string);
+      try {
+        let url = new URL(string);
       return url.protocol === "http:" || url.protocol === "https:";
+      } catch (error) {
+        return false
+      }
+      
     }
 
   export function enumToArrayOfObject<E>(e:any){

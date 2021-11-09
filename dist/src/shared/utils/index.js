@@ -28,8 +28,13 @@ function extractFileName(url) {
 }
 exports.extractFileName = extractFileName;
 function isValidHttpUrl(string) {
-    let url = new URL(string);
-    return url.protocol === "http:" || url.protocol === "https:";
+    try {
+        let url = new URL(string);
+        return url.protocol === "http:" || url.protocol === "https:";
+    }
+    catch (error) {
+        return false;
+    }
 }
 exports.isValidHttpUrl = isValidHttpUrl;
 function enumToArrayOfObject(e) {
