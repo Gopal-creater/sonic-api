@@ -31,7 +31,10 @@ export class RadiostationController {
 
   @Get('/generate-json')
   async genJson() {
-    return this.radiostationService.updateFromJson();
+    // return this.radiostationService.exportToJson();
+    // return this.radiostationService.addMonitorGroupsFromExcel()
+    // return this.radiostationService.exportToExcel()
+    return "Not implemented"
   }
 
   @Post()

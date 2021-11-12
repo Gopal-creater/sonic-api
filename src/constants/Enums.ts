@@ -32,6 +32,11 @@ export enum S3ACL {
   BUCKET_OWNER_FULL_CONTROL = 'bucket-owner-full-control',
 }
 
+export enum MonitorGroupsEnum {
+  AIM = 'AIM',
+  AFEM = 'AFEM'
+}
+
 export enum EC2InstanceMetadata {
   'ami_id' = 'ami-id',
   'hostname' = 'hostname',

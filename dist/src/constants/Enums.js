@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EC2InstanceMetadata = exports.S3ACL = exports.ApiKeyType = exports.Roles = exports.Permissions = exports.ChannelEnums = void 0;
+exports.EC2InstanceMetadata = exports.MonitorGroupsEnum = exports.S3ACL = exports.ApiKeyType = exports.Roles = exports.Permissions = exports.ChannelEnums = void 0;
 var ChannelEnums;
 (function (ChannelEnums) {
     ChannelEnums["JOB"] = "JOB";
@@ -35,6 +35,11 @@ var S3ACL;
     S3ACL["BUCKET_OWNER_READ"] = "bucket-owner-read";
     S3ACL["BUCKET_OWNER_FULL_CONTROL"] = "bucket-owner-full-control";
 })(S3ACL = exports.S3ACL || (exports.S3ACL = {}));
+var MonitorGroupsEnum;
+(function (MonitorGroupsEnum) {
+    MonitorGroupsEnum["AIM"] = "AIM";
+    MonitorGroupsEnum["AFEM"] = "AFEM";
+})(MonitorGroupsEnum = exports.MonitorGroupsEnum || (exports.MonitorGroupsEnum = {}));
 var EC2InstanceMetadata;
 (function (EC2InstanceMetadata) {
     EC2InstanceMetadata["ami_id"] = "ami-id";

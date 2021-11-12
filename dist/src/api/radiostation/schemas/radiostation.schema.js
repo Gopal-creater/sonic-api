@@ -9,13 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RadioStationSchema = exports.RadioStation = exports.Credential = exports.RadioStationSchemaName = void 0;
+exports.RadioStationSchema = exports.RadioStation = exports.MonitorGroup = exports.Credential = exports.RadioStationSchemaName = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const isValidCountry_validation_1 = require("../validation/isValidCountry.validation");
-exports.RadioStationSchemaName = "RadioStation";
+exports.RadioStationSchemaName = 'RadioStation';
 let Credential = class Credential {
 };
 __decorate([
@@ -32,13 +32,24 @@ Credential = __decorate([
     mongoose_1.Schema()
 ], Credential);
 exports.Credential = Credential;
+let MonitorGroup = class MonitorGroup {
+};
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], MonitorGroup.prototype, "name", void 0);
+MonitorGroup = __decorate([
+    mongoose_1.Schema()
+], MonitorGroup);
+exports.MonitorGroup = MonitorGroup;
 let RadioStation = class RadioStation extends mongoose_2.Document {
 };
 __decorate([
     class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        required: true
+        required: true,
     }),
     __metadata("design:type", String)
 ], RadioStation.prototype, "name", void 0);
@@ -47,7 +58,7 @@ __decorate([
     isValidCountry_validation_1.IsValidCountry(),
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        required: true
+        required: true,
     }),
     __metadata("design:type", String)
 ], RadioStation.prototype, "country", void 0);
@@ -56,7 +67,7 @@ __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
         required: true,
-        unique: true
+        unique: true,
     }),
     __metadata("design:type", String)
 ], RadioStation.prototype, "streamingUrl", void 0);
@@ -76,6 +87,11 @@ __decorate([
     mongoose_1.Prop(),
     __metadata("design:type", String)
 ], RadioStation.prototype, "logo", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop([MonitorGroup]),
+    __metadata("design:type", Array)
+], RadioStation.prototype, "monitorGroups", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ type: Credential }),

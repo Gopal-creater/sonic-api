@@ -1,10 +1,10 @@
-import { Prop, Schema, SchemaFactory, } from '@nestjs/mongoose';
-import { Document,Schema as MogSchema} from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, Validate } from 'class-validator';
 import { IsValidCountry } from '../validation/isValidCountry.validation';
 
-export const RadioStationSchemaName="RadioStation"
+export const RadioStationSchemaName = 'RadioStation';
 
 @Schema()
 export class Credential {
@@ -17,13 +17,19 @@ export class Credential {
   password: string;
 }
 
-@Schema({ timestamps: true,collection:RadioStationSchemaName})
-export class RadioStation extends Document {
+@Schema()
+export class MonitorGroup {
+  @IsNotEmpty()
+  @ApiProperty()
+  name: string;
+}
 
+@Schema({ timestamps: true, collection: RadioStationSchemaName })
+export class RadioStation extends Document {
   @IsNotEmpty()
   @ApiProperty()
   @Prop({
-    required:true
+    required: true,
   })
   name: string;
 
@@ -31,21 +37,21 @@ export class RadioStation extends Document {
   @IsValidCountry()
   @ApiProperty()
   @Prop({
-    required:true
+    required: true,
   })
   country: string;
 
   @IsNotEmpty()
   @ApiProperty()
   @Prop({
-    required:true,
-    unique:true
+    required: true,
+    unique: true,
   })
   streamingUrl: string;
 
   @IsNotEmpty()
   @ApiProperty()
-  @Prop({required:true})
+  @Prop({ required: true })
   adminEmail: string;
 
   @ApiProperty()
@@ -57,7 +63,11 @@ export class RadioStation extends Document {
   logo: string;
 
   @ApiProperty()
-  @Prop({type:Credential})
+  @Prop([MonitorGroup])
+  monitorGroups?: MonitorGroup[]
+
+  @ApiProperty()
+  @Prop({ type: Credential })
   credential: Credential;
 
   @ApiProperty()
@@ -69,11 +79,11 @@ export class RadioStation extends Document {
   updatedBy: string;
 
   @ApiProperty()
-  @Prop({type:Date})
+  @Prop({ type: Date })
   startedAt: Date;
 
   @ApiProperty()
-  @Prop({type:Date})
+  @Prop({ type: Date })
   stopAt: Date;
 
   @ApiProperty()
@@ -85,7 +95,7 @@ export class RadioStation extends Document {
   isError: boolean;
 
   @ApiProperty()
-  @Prop({default: null })
+  @Prop({ default: null })
   error: Map<string, any>;
 
   @ApiProperty()
@@ -94,8 +104,7 @@ export class RadioStation extends Document {
 
   @ApiProperty()
   @Prop()
-  metaData: Map<string, any>;  
+  metaData: Map<string, any>;
 }
 
 export const RadioStationSchema = SchemaFactory.createForClass(RadioStation);
-
