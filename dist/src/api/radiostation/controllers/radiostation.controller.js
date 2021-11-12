@@ -30,7 +30,7 @@ let RadiostationController = class RadiostationController {
         this.radiostationService = radiostationService;
     }
     async genJson() {
-        return this.radiostationService.addMonitorGroupsFromExcel();
+        return "Not implemented";
     }
     async create(createdBy, createRadiostationDto) {
         const isPresent = await this.radiostationService.radioStationModel.findOne({
