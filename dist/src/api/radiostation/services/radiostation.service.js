@@ -162,9 +162,9 @@ let RadiostationService = class RadiostationService {
         fs.writeFileSync('exported_radiostations.json', json, 'utf8');
         return 'Done';
     }
-    async exportToExcel() {
+    async exportToExcel(stationsToMakeExcel = null) {
         var e_1, _a;
-        const stations = await this.radioStationModel.find();
+        const stations = stationsToMakeExcel || await this.radioStationModel.find();
         var stationsInJosnFormat = [];
         try {
             for (var stations_1 = __asyncValues(stations), stations_1_1; stations_1_1 = await stations_1.next(), !stations_1_1.done;) {
@@ -179,7 +179,7 @@ let RadiostationService = class RadiostationService {
             }
             finally { if (e_1) throw e_1.error; }
         }
-        const pathToStore = `${appRootPath.toString()}/exported_radiostations.xlsx`;
+        const pathToStore = `${appRootPath.toString()}/exported_radiostations_${Date.now()}.xlsx`;
         const fd = fs.openSync(pathToStore, 'w');
         const file = xlsx.readFile(pathToStore);
         const ws = xlsx.utils.json_to_sheet(stationsInJosnFormat);
@@ -264,6 +264,8 @@ let RadiostationService = class RadiostationService {
             }
             finally { if (e_4) throw e_4.error; }
         }
+        const undonRadios = await this.radioStationModel.find({ monitorGroups: null });
+        await this.exportToExcel(undonRadios);
         return 'Done';
     }
     async updateFromJson() {
