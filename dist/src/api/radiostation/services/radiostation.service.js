@@ -164,12 +164,15 @@ let RadiostationService = class RadiostationService {
     }
     async exportToExcel(stationsToMakeExcel = null) {
         var e_1, _a;
-        const stations = stationsToMakeExcel || await this.radioStationModel.find();
+        var _b, _c, _d, _e, _f;
+        const stations = stationsToMakeExcel || (await this.radioStationModel.find());
         var stationsInJosnFormat = [];
         try {
             for (var stations_1 = __asyncValues(stations), stations_1_1; stations_1_1 = await stations_1.next(), !stations_1_1.done;) {
                 const station = stations_1_1.value;
-                stationsInJosnFormat.push(station.toJSON());
+                const toJsonData = station.toJSON();
+                toJsonData.monitorGroups = (_f = (_e = (_d = (_c = (_b = toJsonData === null || toJsonData === void 0 ? void 0 : toJsonData.monitorGroups) === null || _b === void 0 ? void 0 : _b.map(gr => gr.name)) === null || _c === void 0 ? void 0 : _c.join) === null || _d === void 0 ? void 0 : _d.call(_c, ",")) === null || _e === void 0 ? void 0 : _e.toString) === null || _f === void 0 ? void 0 : _f.call(_e);
+                stationsInJosnFormat.push(toJsonData);
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -183,7 +186,7 @@ let RadiostationService = class RadiostationService {
         const fd = fs.openSync(pathToStore, 'w');
         const file = xlsx.readFile(pathToStore);
         const ws = xlsx.utils.json_to_sheet(stationsInJosnFormat);
-        xlsx.utils.book_append_sheet(file, ws, "FirstExport");
+        xlsx.utils.book_append_sheet(file, ws);
         xlsx.writeFile(file, pathToStore);
         return 'Done';
     }
@@ -196,7 +199,7 @@ let RadiostationService = class RadiostationService {
         try {
             for (var sheetsNameAIM_1 = __asyncValues(sheetsNameAIM), sheetsNameAIM_1_1; sheetsNameAIM_1_1 = await sheetsNameAIM_1.next(), !sheetsNameAIM_1_1.done;) {
                 const sheetNameAIM = sheetsNameAIM_1_1.value;
-                console.log("sheetNameAIM", sheetNameAIM);
+                console.log('sheetNameAIM', sheetNameAIM);
                 const aimJson = xlsx.utils.sheet_to_json(europestationsAIM.Sheets[sheetNameAIM]);
                 console.log(aimJson);
                 try {
@@ -204,12 +207,16 @@ let RadiostationService = class RadiostationService {
                         const data = aimJson_1_1.value;
                         const monitorGroup = new radiostation_schema_1.MonitorGroup();
                         monitorGroup.name = Enums_1.MonitorGroupsEnum.AIM;
-                        const radioStation = await this.radioStationModel.findOne({ $or: [{ name: { $regex: new RegExp(data['Station Name'], "i") }, website: data['Website'] }] });
+                        const radioStation = await this.radioStationModel.findOne({
+                            $or: [
+                                { name: { $regex: new RegExp(data['Station Name'], 'i') } },
+                                { website: data['Website'] },
+                            ],
+                        });
                         if (radioStation) {
                             radioStation.monitorGroups.push(monitorGroup);
                             radioStation.monitorGroups = _.uniqBy(radioStation.monitorGroups, 'name');
-                            await radioStation.save()
-                                .catch(err => console.log(err));
+                            await radioStation.save().catch(err => console.log(err));
                         }
                     }
                 }
@@ -239,12 +246,16 @@ let RadiostationService = class RadiostationService {
                         const data = afemJson_1_1.value;
                         const monitorGroup = new radiostation_schema_1.MonitorGroup();
                         monitorGroup.name = Enums_1.MonitorGroupsEnum.AFEM;
-                        const radioStation = await this.radioStationModel.findOne({ $or: [{ name: { $regex: new RegExp(data['Station Name'], "i") }, website: data['Website'] }] });
+                        const radioStation = await this.radioStationModel.findOne({
+                            $or: [
+                                { name: { $regex: new RegExp(data['Station Name'], 'i') } },
+                                { website: data['Website'] },
+                            ],
+                        });
                         if (radioStation) {
                             radioStation.monitorGroups.push(monitorGroup);
                             radioStation.monitorGroups = _.uniqBy(radioStation.monitorGroups, 'name');
-                            await radioStation.save()
-                                .catch(err => console.log(err));
+                            await radioStation.save().catch(err => console.log(err));
                         }
                     }
                 }
@@ -264,7 +275,9 @@ let RadiostationService = class RadiostationService {
             }
             finally { if (e_4) throw e_4.error; }
         }
-        const undonRadios = await this.radioStationModel.find({ monitorGroups: null });
+        const undonRadios = await this.radioStationModel.find({
+            monitorGroups: null,
+        });
         await this.exportToExcel(undonRadios);
         return 'Done';
     }

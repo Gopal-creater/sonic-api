@@ -28,10 +28,10 @@ let SonickeyModule = class SonickeyModule {
 SonickeyModule = __decorate([
     common_1.Module({
         imports: [
-            api_key_module_1.ApiKeyModule,
+            common_1.forwardRef(() => api_key_module_1.ApiKeyModule),
             licensekey_module_1.LicensekeyModule,
-            user_module_1.UserModule,
-            auth_module_1.AuthModule,
+            common_1.forwardRef(() => user_module_1.UserModule),
+            common_1.forwardRef(() => auth_module_1.AuthModule),
             common_1.forwardRef(() => detection_module_1.DetectionModule),
             s3fileupload_module_1.S3FileUploadModule,
             mongoose_1.MongooseModule.forFeature([

@@ -14,17 +14,12 @@ import {
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
+import { UserService } from '../user/user.service';
 
 @ApiTags('Authentication Controller')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
-
-  @Post('register')
-  @ApiOperation({ summary: 'Register User' })
-  async register(@Body() registerDTO: RegisterDTO) {
-    return await this.authService.registerUser(registerDTO);
-  }
+  constructor(private readonly authService: AuthService,public readonly userService: UserService,) {}
 
   @Post('login')
   @ApiOperation({ summary: 'User Login' })

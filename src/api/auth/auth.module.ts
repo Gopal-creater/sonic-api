@@ -11,13 +11,19 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ApiKeyAuthGuard } from '../api-key/guards/apikey-auth.guard';
 @Module({
   imports: [
-PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     ApiKeyModule,
     LicensekeyModule,
-    UserModule
+    UserModule,
   ],
-  providers: [AuthConfig, AuthService, JwtStrategy,JwtAuthGuard,ApiKeyAuthGuard],
+  providers: [
+    AuthConfig,
+    AuthService,
+    JwtStrategy,
+    JwtAuthGuard,
+    ApiKeyAuthGuard,
+  ],
   controllers: [AuthController],
-  exports:[JwtAuthGuard,ApiKeyAuthGuard]
+  exports: [JwtAuthGuard, ApiKeyAuthGuard],
 })
 export class AuthModule {}

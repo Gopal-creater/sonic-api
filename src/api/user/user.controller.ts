@@ -9,6 +9,7 @@ import {
   AddNewLicenseDto,
   AddBulkNewLicensesDto,
   UpdateProfileDto,
+  AdminCreateUserDTO,
 } from './dtos/index';
 import { UserService } from './user.service';
 import {
@@ -120,6 +121,20 @@ export class UserController {
   @ApiOperation({ summary: 'Get User groups by username or sub id' })
   @Get('/:username/groups')
   async getGroupsOfUser(@Param('username') username: string) {
-    return this.userServices.getGroupsForUser(username);
+    return this.userServices.adminListGroupsForUser(username);
+  }
+
+
+
+  @Post('admin-create-user')
+  @ApiOperation({ summary: 'Admin create user' })
+  async register(@Body() adminCreateUserDTO: AdminCreateUserDTO) {
+    if(adminCreateUserDTO.group){
+      await this.userServices.getGroup(adminCreateUserDTO.group)
+      .catch(err=>{
+        throw new BadRequestException(err.message||"Invalid group")
+      })
+    }
+    return this.userServices.adminCreateUser(adminCreateUserDTO);
   }
 }

@@ -11,14 +11,15 @@ const common_1 = require("@nestjs/common");
 const user_controller_1 = require("./user.controller");
 const user_service_1 = require("./user.service");
 const licensekey_module_1 = require("../licensekey/licensekey.module");
+const radiomonitor_module_1 = require("../radiomonitor/radiomonitor.module");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
     common_1.Module({
-        imports: [common_1.forwardRef(() => licensekey_module_1.LicensekeyModule)],
+        imports: [common_1.forwardRef(() => licensekey_module_1.LicensekeyModule), common_1.forwardRef(() => radiomonitor_module_1.RadiomonitorModule)],
         controllers: [user_controller_1.UserController],
         providers: [user_service_1.UserService],
-        exports: [user_service_1.UserService]
+        exports: [user_service_1.UserService],
     })
 ], UserModule);
 exports.UserModule = UserModule;

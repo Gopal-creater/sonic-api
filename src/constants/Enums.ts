@@ -14,9 +14,6 @@ export enum Permissions {
   MANAGE = 0x0000001,
 }
 
-export enum Roles {
-  ADMIN = 'Admin',
-}
 
 export enum ApiKeyType {
   INDIVIDUAL = 'Individual',
@@ -35,6 +32,12 @@ export enum S3ACL {
 export enum MonitorGroupsEnum {
   AIM = 'AIM',
   AFEM = 'AFEM'
+}
+
+export enum Roles {
+  ADMIN = 'Admin',
+  AIM='AIM',
+  AFEM='AFEM'
 }
 
 export enum EC2InstanceMetadata {

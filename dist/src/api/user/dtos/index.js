@@ -9,8 +9,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateProfileDto = exports.AddBulkNewLicensesDto = exports.AddNewLicenseDto = void 0;
+exports.AdminCreateUserDTO = exports.UpdateProfileDto = exports.AddBulkNewLicensesDto = exports.AddNewLicenseDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
+const register_dto_1 = require("../../auth/dto/register.dto");
 class AddNewLicenseDto {
 }
 __decorate([
@@ -32,4 +33,23 @@ __decorate([
     __metadata("design:type", Array)
 ], UpdateProfileDto.prototype, "attributes", void 0);
 exports.UpdateProfileDto = UpdateProfileDto;
+class AdminCreateUserDTO extends register_dto_1.RegisterDTO {
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Boolean)
+], AdminCreateUserDTO.prototype, "isEmailVerified", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Boolean)
+], AdminCreateUserDTO.prototype, "isPhoneNumberVerified", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], AdminCreateUserDTO.prototype, "group", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Boolean)
+], AdminCreateUserDTO.prototype, "sendInvitationByEmail", void 0);
+exports.AdminCreateUserDTO = AdminCreateUserDTO;
 //# sourceMappingURL=index.js.map

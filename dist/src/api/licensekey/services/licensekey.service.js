@@ -50,6 +50,45 @@ let LicensekeyService = class LicensekeyService {
         const newLicenseKey = new this.licenseKeyModel(Object.assign(Object.assign({}, createLicensekeyDto), { _id: key, key: key, createdBy: createdBy }));
         return newLicenseKey.save();
     }
+    createUnlimitedMonitoringLicense() {
+        const key = uuid_1.v4();
+        const newLicenseKey = new this.licenseKeyModel({
+            _id: key,
+            key: key,
+            name: `Unlimited_Monitoring_${Date.now()}`,
+            isUnlimitedMonitor: true,
+            validity: new Date(new Date().setFullYear(new Date().getFullYear() + 5)),
+            createdBy: 'auto_generate',
+        });
+        return newLicenseKey.save();
+    }
+    async findOrCreateUnlimitedMonitoringLicense() {
+        var now = new Date();
+        var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var license = await this.licenseKeyModel.findOne({
+            createdBy: 'auto_generate',
+            isUnlimitedMonitor: true,
+            disabled: false,
+            suspended: false,
+            validity: { $gte: startOfToday },
+        });
+        if (!license) {
+            license = await this.createUnlimitedMonitoringLicense();
+        }
+        return license;
+    }
+    async findUnlimitedMonitoringLicenseForUser(userId) {
+        var now = new Date();
+        var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var license = await this.licenseKeyModel.findOne({
+            'owners.ownerId': userId,
+            disabled: false,
+            suspended: false,
+            validity: { $gte: startOfToday },
+            $or: [{ isUnlimitedMonitor: true }, { createdBy: 'auto_generate' }],
+        });
+        return license;
+    }
     async findAll(queryDto) {
         const { limit, skip, sort, page, filter, select, populate } = queryDto;
         var paginateOptions = {};
@@ -77,8 +116,7 @@ let LicensekeyService = class LicensekeyService {
         }
         else if (licenseKey.disabled || licenseKey.suspended) {
             validationResult.valid = false;
-            validationResult.message =
-                'License key is either disabled or suspended';
+            validationResult.message = 'License key is either disabled or suspended';
         }
         return { validationResult, licenseKey };
     }
@@ -139,6 +177,36 @@ let LicensekeyService = class LicensekeyService {
         }
         return licenseKey.save();
     }
+    async allowedForIncrementUses(id, usesFor, incrementBy = 1) {
+        const licenseKey = await this.licenseKeyModel.findById(id);
+        if (!licenseKey)
+            return false;
+        if (usesFor == 'decode') {
+            if (!licenseKey.isUnlimitedDecode) {
+                licenseKey.decodeUses = licenseKey.decodeUses + incrementBy;
+                if (licenseKey.decodeUses > licenseKey.maxDecodeUses) {
+                    return false;
+                }
+            }
+        }
+        else if (usesFor == 'encode') {
+            if (!licenseKey.isUnlimitedEncode) {
+                licenseKey.encodeUses = licenseKey.encodeUses + incrementBy;
+                if (licenseKey.encodeUses > licenseKey.maxEncodeUses) {
+                    return false;
+                }
+            }
+        }
+        else if (usesFor == 'monitor') {
+            if (!licenseKey.isUnlimitedMonitor) {
+                licenseKey.monitoringUses = licenseKey.monitoringUses + incrementBy;
+                if (licenseKey.monitoringUses > licenseKey.maxMonitoringUses) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
     async decrementUses(id, usesFor, decrementBy = 1) {
         const licenseKey = await this.licenseKeyModel.findById(id);
         if (!licenseKey)
@@ -168,6 +236,36 @@ let LicensekeyService = class LicensekeyService {
             }
         }
         return licenseKey.save();
+    }
+    async allowedForDecrementUses(id, usesFor, decrementBy = 1) {
+        const licenseKey = await this.licenseKeyModel.findById(id);
+        if (!licenseKey)
+            return false;
+        if (usesFor == 'decode') {
+            if (!licenseKey.isUnlimitedDecode) {
+                licenseKey.decodeUses = licenseKey.decodeUses - decrementBy;
+                if (licenseKey.decodeUses < 0) {
+                    return false;
+                }
+            }
+        }
+        else if (usesFor == 'encode') {
+            if (!licenseKey.isUnlimitedEncode) {
+                licenseKey.encodeUses = licenseKey.encodeUses - decrementBy;
+                if (licenseKey.encodeUses < 0) {
+                    return false;
+                }
+            }
+        }
+        else if (usesFor == 'monitor') {
+            if (!licenseKey.isUnlimitedMonitor) {
+                licenseKey.monitoringUses = licenseKey.monitoringUses - decrementBy;
+                if (licenseKey.monitoringUses < 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     async resetUses(id, usesFor) {
         const licenseKey = await this.licenseKeyModel.findById(id);

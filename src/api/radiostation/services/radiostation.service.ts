@@ -212,18 +212,21 @@ export class RadiostationService {
     return 'Done';
   }
 
-  async exportToExcel(stationsToMakeExcel=null) {
-    const stations = stationsToMakeExcel||await this.radioStationModel.find();
-    var stationsInJosnFormat=[]
+  async exportToExcel(stationsToMakeExcel = null) {
+    const stations =
+      stationsToMakeExcel || (await this.radioStationModel.find());
+    var stationsInJosnFormat = [];
     for await (const station of stations) {
-      stationsInJosnFormat.push(station.toJSON())
+      const toJsonData = station.toJSON()
+      toJsonData.monitorGroups=toJsonData?.monitorGroups?.map(gr=>gr.name)?.join?.(",")?.toString?.();
+      stationsInJosnFormat.push(toJsonData);
     }
-    const pathToStore = `${appRootPath.toString()}/exported_radiostations_${Date.now()}.xlsx`
-    const fd = fs.openSync(pathToStore, 'w')
-    const file = xlsx.readFile(pathToStore)
-    const ws = xlsx.utils.json_to_sheet(stationsInJosnFormat)
-    xlsx.utils.book_append_sheet(file,ws,"FirstExport")
-    xlsx.writeFile(file,pathToStore)
+    const pathToStore = `${appRootPath.toString()}/exported_radiostations_${Date.now()}.xlsx`;
+    const fd = fs.openSync(pathToStore, 'w');
+    const file = xlsx.readFile(pathToStore);
+    const ws = xlsx.utils.json_to_sheet(stationsInJosnFormat);
+    xlsx.utils.book_append_sheet(file, ws);
+    xlsx.writeFile(file, pathToStore);
     return 'Done';
   }
 
@@ -237,40 +240,60 @@ export class RadiostationService {
     const sheetsNameAIM = europestationsAIM.SheetNames;
     const sheetsNameAFEM = radiodancestationsAFEM.SheetNames;
     for await (const sheetNameAIM of sheetsNameAIM) {
-      console.log("sheetNameAIM",sheetNameAIM)
-      const aimJson = xlsx.utils.sheet_to_json(europestationsAIM.Sheets[sheetNameAIM]);
-      console.log(aimJson)
+      console.log('sheetNameAIM', sheetNameAIM);
+      const aimJson = xlsx.utils.sheet_to_json(
+        europestationsAIM.Sheets[sheetNameAIM],
+      );
+      console.log(aimJson);
       for await (const data of aimJson) {
-        const monitorGroup = new MonitorGroup()
-        monitorGroup.name=MonitorGroupsEnum.AIM
-        const radioStation = await this.radioStationModel.findOne({$or:[{name:{ $regex : new RegExp(data['Station Name'], "i") },website:data['Website']}]})
-        if(radioStation){
-          radioStation.monitorGroups.push(monitorGroup)
-          radioStation.monitorGroups = _.uniqBy(radioStation.monitorGroups, 'name');
-          await radioStation.save()
-          .catch(err=>console.log(err))
+        const monitorGroup = new MonitorGroup();
+        monitorGroup.name = MonitorGroupsEnum.AIM;
+        const radioStation = await this.radioStationModel.findOne({
+          $or: [
+            { name: { $regex: new RegExp(data['Station Name'], 'i') } },
+            { website: data['Website'] },
+          ],
+        });
+        if (radioStation) {
+          radioStation.monitorGroups.push(monitorGroup);
+          radioStation.monitorGroups = _.uniqBy(
+            radioStation.monitorGroups,
+            'name',
+          );
+          await radioStation.save().catch(err => console.log(err));
         }
       }
     }
     for await (const sheetNameAFEM of sheetsNameAFEM) {
-      const afemJson = xlsx.utils.sheet_to_json(radiodancestationsAFEM.Sheets[sheetNameAFEM]);
-      console.log(afemJson)
+      const afemJson = xlsx.utils.sheet_to_json(
+        radiodancestationsAFEM.Sheets[sheetNameAFEM],
+      );
+      console.log(afemJson);
       for await (const data of afemJson) {
-        const monitorGroup = new MonitorGroup()
-        monitorGroup.name=MonitorGroupsEnum.AFEM
-        const radioStation = await this.radioStationModel.findOne({$or:[{name:{ $regex : new RegExp(data['Station Name'], "i") },website:data['Website']}]})
-        if(radioStation){
-          radioStation.monitorGroups.push(monitorGroup)
-          radioStation.monitorGroups = _.uniqBy(radioStation.monitorGroups, 'name');
-          await radioStation.save()
-          .catch(err=>console.log(err))
+        const monitorGroup = new MonitorGroup();
+        monitorGroup.name = MonitorGroupsEnum.AFEM;
+        const radioStation = await this.radioStationModel.findOne({
+          $or: [
+            { name: { $regex: new RegExp(data['Station Name'], 'i') } },
+            { website: data['Website'] },
+          ],
+        });
+        if (radioStation) {
+          radioStation.monitorGroups.push(monitorGroup);
+          radioStation.monitorGroups = _.uniqBy(
+            radioStation.monitorGroups,
+            'name',
+          );
+          await radioStation.save().catch(err => console.log(err));
         }
       }
     }
 
-    const undonRadios = await this.radioStationModel.find({monitorGroups:null})
-    await this.exportToExcel(undonRadios)
-    return 'Done'
+    const undonRadios = await this.radioStationModel.find({
+      monitorGroups: null,
+    });
+    await this.exportToExcel(undonRadios);
+    return 'Done';
   }
 
   async updateFromJson() {

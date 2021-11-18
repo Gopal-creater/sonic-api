@@ -21,9 +21,9 @@ MongooseModule.forFeature([
           schema: DetectionSchema,
         },
       ]),
-      ApiKeyModule,
-      UserModule,
-      AuthModule,
+      forwardRef(()=>ApiKeyModule),
+      forwardRef(()=>UserModule),
+      forwardRef(()=>AuthModule),
       forwardRef(()=>SonickeyModule)
     ],
   controllers: [DetectionController,DetectionOwnerController,DetectionThirdPartyController],

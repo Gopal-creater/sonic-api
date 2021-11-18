@@ -1,6 +1,6 @@
 import { GlobalAwsService } from '../../shared/modules/global-aws/global-aws.service';
 import { AuthConfig } from './config/auth.config';
-import { Inject, Injectable } from '@nestjs/common';
+import { BadGatewayException, Inject, Injectable } from '@nestjs/common';
 import * as lodash from 'lodash';
 
 import {
@@ -12,6 +12,7 @@ import {
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -20,31 +21,13 @@ export class AuthService {
   constructor(
     private readonly authConfig: AuthConfig,
     private readonly globalAwsService: GlobalAwsService,
+    public readonly userService: UserService,
   ) {
     this.userPool = new CognitoUserPool({
       UserPoolId: this.authConfig.userPoolId,
       ClientId: this.authConfig.clientId,
     });
     this.cognitoIdentityServiceProvider = globalAwsService.getCognitoIdentityServiceProvider();
-  }
-
-  registerUser(registerDTO: RegisterDTO) {
-    const { userName, email, password,phoneNumber } = registerDTO;
-    return new Promise((resolve, reject) => {
-      return this.userPool.signUp(
-        userName,
-        password,
-        [new CognitoUserAttribute({ Name: 'email', Value: email })],
-        null,
-        (error, result) => {
-          if (!result) {
-            reject(error);
-          } else {
-            resolve(result.user);
-          }
-        },
-      );
-    });
   }
 
   authenticateUser(loginDTO: LoginDto) {

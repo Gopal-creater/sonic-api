@@ -14,28 +14,17 @@ const global_aws_service_1 = require("../../shared/modules/global-aws/global-aws
 const auth_config_1 = require("./config/auth.config");
 const common_1 = require("@nestjs/common");
 const amazon_cognito_identity_js_1 = require("amazon-cognito-identity-js");
+const user_service_1 = require("../user/user.service");
 let AuthService = class AuthService {
-    constructor(authConfig, globalAwsService) {
+    constructor(authConfig, globalAwsService, userService) {
         this.authConfig = authConfig;
         this.globalAwsService = globalAwsService;
+        this.userService = userService;
         this.userPool = new amazon_cognito_identity_js_1.CognitoUserPool({
             UserPoolId: this.authConfig.userPoolId,
             ClientId: this.authConfig.clientId,
         });
         this.cognitoIdentityServiceProvider = globalAwsService.getCognitoIdentityServiceProvider();
-    }
-    registerUser(registerDTO) {
-        const { userName, email, password, phoneNumber } = registerDTO;
-        return new Promise((resolve, reject) => {
-            return this.userPool.signUp(userName, password, [new amazon_cognito_identity_js_1.CognitoUserAttribute({ Name: 'email', Value: email })], null, (error, result) => {
-                if (!result) {
-                    reject(error);
-                }
-                else {
-                    resolve(result.user);
-                }
-            });
-        });
     }
     authenticateUser(loginDTO) {
         const { name, password } = loginDTO;
@@ -63,7 +52,8 @@ let AuthService = class AuthService {
 AuthService = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [auth_config_1.AuthConfig,
-        global_aws_service_1.GlobalAwsService])
+        global_aws_service_1.GlobalAwsService,
+        user_service_1.UserService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

@@ -16,6 +16,7 @@ const radiostation_module_1 = require("../radiostation/radiostation.module");
 const radiomonitor_owner_controller_1 = require("./controllers/radiomonitor-owner.controller");
 const licensekey_module_1 = require("../licensekey/licensekey.module");
 const auth_module_1 = require("../auth/auth.module");
+const user_module_1 = require("../user/user.module");
 let RadiomonitorModule = class RadiomonitorModule {
 };
 RadiomonitorModule = __decorate([
@@ -26,7 +27,8 @@ RadiomonitorModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: radiomonitor_schema_1.RadioMonitorSchemaName, schema: radiomonitor_schema_1.RadioMonitorSchema },
             ]),
-            auth_module_1.AuthModule
+            common_1.forwardRef(() => auth_module_1.AuthModule),
+            common_1.forwardRef(() => user_module_1.UserModule)
         ],
         controllers: [radiomonitor_controller_1.RadioMonitorController, radiomonitor_owner_controller_1.RadioMonitorOwnerController],
         providers: [radiomonitor_service_1.RadioMonitorService],

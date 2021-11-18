@@ -10,15 +10,16 @@ import { RadiostationModule } from '../radiostation/radiostation.module';
 import { RadioMonitorOwnerController } from './controllers/radiomonitor-owner.controller';
 import { LicensekeyModule } from '../licensekey/licensekey.module';
 import { AuthModule } from '../auth/auth.module';
-
+import { UserModule } from '../user/user.module';
 @Module({
   imports: [
-  LicensekeyModule,
+LicensekeyModule,
     forwardRef(()=>RadiostationModule),
     MongooseModule.forFeature([
       { name: RadioMonitorSchemaName, schema: RadioMonitorSchema },
     ]),
-    AuthModule
+    forwardRef(()=>AuthModule),
+    forwardRef(() => UserModule)
   ],
   controllers: [RadioMonitorController, RadioMonitorOwnerController],
   providers: [RadioMonitorService],

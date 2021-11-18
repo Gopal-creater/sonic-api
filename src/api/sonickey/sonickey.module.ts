@@ -17,10 +17,10 @@ import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-    ApiKeyModule,
+    forwardRef(() => ApiKeyModule),
     LicensekeyModule,
-    UserModule,
-    AuthModule,
+    forwardRef(() => UserModule),
+    forwardRef(() => AuthModule),
     forwardRef(() => DetectionModule),
     S3FileUploadModule,
     MongooseModule.forFeature([

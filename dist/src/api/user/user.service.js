@@ -20,11 +20,14 @@ const licensekey_service_1 = require("../licensekey/services/licensekey.service"
 const licensekey_schema_1 = require("../licensekey/schemas/licensekey.schema");
 const index_1 = require("../../shared/utils/index");
 const user_schema_1 = require("./schemas/user.schema");
+const Enums_1 = require("../../constants/Enums");
+const radiomonitor_service_1 = require("../radiomonitor/radiomonitor.service");
 let UserService = class UserService {
-    constructor(licensekeyService, globalAwsService, configService) {
+    constructor(licensekeyService, globalAwsService, configService, radioMonitorService) {
         this.licensekeyService = licensekeyService;
         this.globalAwsService = globalAwsService;
         this.configService = configService;
+        this.radioMonitorService = radioMonitorService;
         this.cognitoIdentityServiceProvider = globalAwsService.getCognitoIdentityServiceProvider();
         this.cognitoUserPoolId = this.configService.get('COGNITO_USER_POOL_ID');
     }
@@ -109,12 +112,12 @@ let UserService = class UserService {
             userStatus: profile.UserStatus,
         });
         if (includeGroups) {
-            const groupsResult = await this.getGroupsForUser(params.Username);
+            const groupsResult = await this.adminListGroupsForUser(params.Username);
             finalProfile.groups = groupsResult.groupNames;
         }
         return finalProfile;
     }
-    async getGroupsForUser(usernameOrSub) {
+    async adminListGroupsForUser(usernameOrSub) {
         const params = {
             UserPoolId: this.cognitoUserPoolId,
             Username: usernameOrSub,
@@ -141,6 +144,35 @@ let UserService = class UserService {
             .getGroup(params)
             .promise();
         return group.Group;
+    }
+    async adminAddUserToGroup(usernameOrSub, groupName) {
+        const params = {
+            UserPoolId: this.cognitoUserPoolId,
+            GroupName: groupName,
+            Username: usernameOrSub,
+        };
+        if (index_1.isValidUUID(usernameOrSub)) {
+            const { username } = await this.getUserFromSub(usernameOrSub);
+            params.Username = username;
+        }
+        const group = await this.cognitoIdentityServiceProvider
+            .adminAddUserToGroup(params)
+            .promise();
+        return group;
+    }
+    async adminDeleteUser(usernameOrSub) {
+        const params = {
+            UserPoolId: this.cognitoUserPoolId,
+            Username: usernameOrSub,
+        };
+        if (index_1.isValidUUID(usernameOrSub)) {
+            const { username } = await this.getUserFromSub(usernameOrSub);
+            params.Username = username;
+        }
+        const deleted = await this.cognitoIdentityServiceProvider
+            .adminDeleteUser(params)
+            .promise();
+        return deleted;
     }
     convertUserAttributesToObj(userAttributeType) {
         var attributesObj = {};
@@ -201,13 +233,67 @@ let UserService = class UserService {
             });
         });
     }
+    async adminCreateUser(adminCreateUserDTO) {
+        const { userName, email, group, password, phoneNumber, isEmailVerified, isPhoneNumberVerified, sendInvitationByEmail, } = adminCreateUserDTO;
+        var registerNewUserParams = {
+            UserPoolId: this.cognitoUserPoolId,
+            Username: userName,
+            DesiredDeliveryMediums: sendInvitationByEmail ? ['EMAIL'] : null,
+            TemporaryPassword: password,
+            UserAttributes: [
+                {
+                    Name: 'email',
+                    Value: email,
+                },
+                {
+                    Name: 'email_verified',
+                    Value: isEmailVerified.toString(),
+                },
+                {
+                    Name: 'phone_number',
+                    Value: phoneNumber,
+                },
+                {
+                    Name: 'phone_number_verified',
+                    Value: isPhoneNumberVerified.toString(),
+                },
+            ],
+        };
+        const userCreated = await this.cognitoIdentityServiceProvider
+            .adminCreateUser(registerNewUserParams)
+            .promise();
+        if (group) {
+            await this.adminAddUserToGroup(userCreated.User.Username, group).catch(async (err) => {
+                await this.adminDeleteUser(userCreated.User.Username);
+                throw err;
+            });
+            if (group == Enums_1.MonitorGroupsEnum.AIM || group == Enums_1.MonitorGroupsEnum.AFEM) {
+                const unlimitedLicense = await this.addUnlimitedMonitoringLicenseToUser(userCreated.User.Username).catch(async (err) => {
+                    await this.adminDeleteUser(userCreated.User.Username);
+                    throw err;
+                });
+                await this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(userCreated.User.Username, unlimitedLicense.key)
+                    .catch(async (err) => {
+                    await this.adminDeleteUser(userCreated.User.Username);
+                    throw err;
+                });
+            }
+        }
+        return userCreated;
+    }
+    async addUnlimitedMonitoringLicenseToUser(ownerIdOrUsername) {
+        const unlimitedLicense = await this.licensekeyService.findOrCreateUnlimitedMonitoringLicense();
+        return this.addNewLicense(unlimitedLicense.key, ownerIdOrUsername);
+    }
 };
 UserService = __decorate([
     common_1.Injectable(),
     __param(0, common_1.Inject(common_1.forwardRef(() => licensekey_service_1.LicensekeyService))),
+    __param(3, common_1.Inject(common_1.forwardRef(() => radiomonitor_service_1.RadioMonitorService))),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService,
         global_aws_service_1.GlobalAwsService,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        radiomonitor_service_1.RadioMonitorService])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=user.service.js.map

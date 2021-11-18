@@ -53,7 +53,16 @@ let UserController = class UserController {
         return profile;
     }
     async getGroupsOfUser(username) {
-        return this.userServices.getGroupsForUser(username);
+        return this.userServices.adminListGroupsForUser(username);
+    }
+    async register(adminCreateUserDTO) {
+        if (adminCreateUserDTO.group) {
+            await this.userServices.getGroup(adminCreateUserDTO.group)
+                .catch(err => {
+                throw new common_1.BadRequestException(err.message || "Invalid group");
+            });
+        }
+        return this.userServices.adminCreateUser(adminCreateUserDTO);
     }
 };
 __decorate([
@@ -134,6 +143,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getGroupsOfUser", null);
+__decorate([
+    common_1.Post('admin-create-user'),
+    swagger_1.ApiOperation({ summary: 'Admin create user' }),
+    __param(0, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [index_1.AdminCreateUserDTO]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "register", null);
 UserController = __decorate([
     swagger_1.ApiTags('User Controller'),
     common_1.Controller('users'),

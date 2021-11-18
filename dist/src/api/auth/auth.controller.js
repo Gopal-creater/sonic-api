@@ -18,13 +18,11 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const auth_service_1 = require("./auth.service");
 const login_dto_1 = require("./dto/login.dto");
-const register_dto_1 = require("./dto/register.dto");
+const user_service_1 = require("../user/user.service");
 let AuthController = class AuthController {
-    constructor(authService) {
+    constructor(authService, userService) {
         this.authService = authService;
-    }
-    async register(registerDTO) {
-        return await this.authService.registerUser(registerDTO);
+        this.userService = userService;
     }
     async login(authenticateRequest) {
         try {
@@ -35,15 +33,6 @@ let AuthController = class AuthController {
         }
     }
 };
-__decorate([
-    common_1.Post('register'),
-    swagger_1.ApiOperation({ summary: 'Register User' }),
-    openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [register_dto_1.RegisterDTO]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "register", null);
 __decorate([
     common_1.Post('login'),
     swagger_1.ApiOperation({ summary: 'User Login' }),
@@ -56,7 +45,7 @@ __decorate([
 AuthController = __decorate([
     swagger_1.ApiTags('Authentication Controller'),
     common_1.Controller('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService, user_service_1.UserService])
 ], AuthController);
 exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controller.js.map

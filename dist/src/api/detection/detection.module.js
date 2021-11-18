@@ -29,9 +29,9 @@ DetectionModule = __decorate([
                     schema: detection_schema_1.DetectionSchema,
                 },
             ]),
-            api_key_module_1.ApiKeyModule,
-            user_module_1.UserModule,
-            auth_module_1.AuthModule,
+            common_1.forwardRef(() => api_key_module_1.ApiKeyModule),
+            common_1.forwardRef(() => user_module_1.UserModule),
+            common_1.forwardRef(() => auth_module_1.AuthModule),
             common_1.forwardRef(() => sonickey_module_1.SonickeyModule)
         ],
         controllers: [detection_controller_1.DetectionController, detection_owner_controller_1.DetectionOwnerController, detection_thirdparty_controller_1.DetectionThirdPartyController],

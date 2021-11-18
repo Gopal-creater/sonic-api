@@ -15,7 +15,7 @@ let S3FileUploadModule = class S3FileUploadModule {
 };
 S3FileUploadModule = __decorate([
     common_1.Module({
-        imports: [auth_module_1.AuthModule],
+        imports: [common_1.forwardRef(() => auth_module_1.AuthModule)],
         controllers: [s3fileupload_controller_1.S3FileUploadController],
         providers: [s3fileupload_service_1.S3FileUploadService],
         exports: [s3fileupload_service_1.S3FileUploadService],

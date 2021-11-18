@@ -26,11 +26,17 @@ AuthModule = __decorate([
             passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
             api_key_module_1.ApiKeyModule,
             licensekey_module_1.LicensekeyModule,
-            user_module_1.UserModule
+            user_module_1.UserModule,
         ],
-        providers: [auth_config_1.AuthConfig, auth_service_1.AuthService, jwt_strategy_1.JwtStrategy, jwt_auth_guard_1.JwtAuthGuard, apikey_auth_guard_1.ApiKeyAuthGuard],
+        providers: [
+            auth_config_1.AuthConfig,
+            auth_service_1.AuthService,
+            jwt_strategy_1.JwtStrategy,
+            jwt_auth_guard_1.JwtAuthGuard,
+            apikey_auth_guard_1.ApiKeyAuthGuard,
+        ],
         controllers: [auth_controller_1.AuthController],
-        exports: [jwt_auth_guard_1.JwtAuthGuard, apikey_auth_guard_1.ApiKeyAuthGuard]
+        exports: [jwt_auth_guard_1.JwtAuthGuard, apikey_auth_guard_1.ApiKeyAuthGuard],
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;
