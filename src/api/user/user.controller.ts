@@ -127,8 +127,11 @@ export class UserController {
 
 
   @Post('admin-create-user')
+  // @RolesAllowed(Roles.ADMIN)
+  // @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  // @ApiBearerAuth()
   @ApiOperation({ summary: 'Admin create user' })
-  async register(@Body() adminCreateUserDTO: AdminCreateUserDTO) {
+  async adminCreateUser(@Body() adminCreateUserDTO: AdminCreateUserDTO) {
     if(adminCreateUserDTO.group){
       await this.userServices.getGroup(adminCreateUserDTO.group)
       .catch(err=>{
@@ -136,5 +139,19 @@ export class UserController {
       })
     }
     return this.userServices.adminCreateUser(adminCreateUserDTO);
+  }
+
+  @Post('add-monitoring-subscription-from-monitoring-group/:usernameOrSub')
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Add monitoring Subscription From Monitoring Group' })
+  async addMonitoringSubscriptionFromMonitoringGroup(@Param('usernameOrSub') usernameOrSub: string) {
+     const user =  await this.userServices.getUserProfile(usernameOrSub)
+     if(!user){
+      throw new NotFoundException("Invalid user")
+     }
+     
+    return this.userServices.addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub);
   }
 }

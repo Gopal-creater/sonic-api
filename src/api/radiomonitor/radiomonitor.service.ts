@@ -126,23 +126,28 @@ export class RadioMonitorService {
    */
   async subscribeRadioToMonitorBulkWithInsertManyOperation(
     radioMonitors: any[],
+    owner: string,
+    validLicense: string,
   ) {
+    if (radioMonitors.length <= 0) {
+      return {};
+    }
     const isAllowedForSubscribe = await this.licensekeyService.allowedForIncrementUses(
-      radioMonitors?.[0]?.license,
+      validLicense,
       'monitor',
       radioMonitors.length,
     );
     if (!isAllowedForSubscribe) {
       return Promise.reject({
         status: 422,
-        message: `Not allowed for subscription deuto invalid license :${radioMonitors?.[0]?.license}`,
+        message: `Not allowed for monitoring subscription deuto invalid license :${validLicense}`,
       });
     }
     const inserted = await this.radioMonitorModel.collection.insertMany(
       radioMonitors,
     );
     await this.licensekeyService.incrementUses(
-      radioMonitors?.[0]?.license,
+      validLicense,
       'monitor',
       inserted.insertedCount,
     );
@@ -313,6 +318,20 @@ export class RadioMonitorService {
         message: 'User not found',
       });
     }
+    if (
+      !(
+        user?.groups?.includes(MonitorGroupsEnum.AIM) ||
+        user?.groups?.includes(MonitorGroupsEnum.AFEM)
+      )
+    ) {
+      return Promise.reject({
+        status: 422,
+        message: `Given user doesnot belongs to either of the monitoring group ${Object.values(
+          MonitorGroupsEnum,
+        ).toString()}`,
+      });
+    }
+
     if (!unlimitedMonitoringLicense) {
       const validLicence = await this.licensekeyService.findUnlimitedMonitoringLicenseForUser(
         user.sub,
@@ -320,12 +339,21 @@ export class RadioMonitorService {
       if (!validLicence) {
         return Promise.reject({
           status: 422,
-          message: 'There is no valid license.',
+          message: 'There is no valid license found for this action.',
         });
       }
       unlimitedMonitoringLicense = validLicence.key;
     }
-    var aimSaveDataResult, afemSaveDataResult;
+    var aimSaveDataResult = {
+      insertedResult: {},
+      radiosAlreadyMonitorsCount: 0,
+      radiosToMonitorCount: 0,
+    };
+    var afemSaveDataResult = {
+      insertedResult: {},
+      radiosAlreadyMonitorsCount: 0,
+      radiosToMonitorCount: 0,
+    };
     for await (const group of user.groups || []) {
       if (group == MonitorGroupsEnum.AIM) {
         const radiosAlreadyMonitors: string[] = await this.radioMonitorModel.aggregate(
@@ -336,25 +364,42 @@ export class RadioMonitorService {
             { $group: { _id: '$radio', ids: { $push: '$radio' } } },
           ],
         );
-        console.log('radiosAlreadyMonitors AIM', radiosAlreadyMonitors);
+        aimSaveDataResult.radiosAlreadyMonitorsCount =
+          radiosAlreadyMonitors.length;
+        console.log(
+          'radiosAlreadyMonitors AIM',
+          aimSaveDataResult.radiosAlreadyMonitorsCount,
+        );
         const radiosToMonitor = await this.radiostationService.radioStationModel.find(
           {
             'monitorGroups.name': group,
             _id: { $nin: radiosAlreadyMonitors },
           },
         );
-        console.log('radiosToMonitor AIM', radiosToMonitor.length);
-        const radioMonitors = radiosToMonitor.map(rd => {
-          return {
-            radio: rd._id,
-            owner: user.sub,
-            license: unlimitedMonitoringLicense,
-            radioSearch: rd,
-            isListeningStarted: true,
-          };
-        });
-
-        aimSaveDataResult = await this.subscribeRadioToMonitorBulkWithInsertManyOperation(radioMonitors)
+        aimSaveDataResult.radiosToMonitorCount = radiosToMonitor.length;
+        console.log(
+          'radiosToMonitor AIM',
+          aimSaveDataResult.radiosToMonitorCount,
+        );
+        if (radiosToMonitor.length > 0) {
+          const radioMonitors = radiosToMonitor.map(rd => {
+            return {
+              radio: rd._id,
+              owner: user.sub,
+              license: unlimitedMonitoringLicense,
+              radioSearch: rd,
+              isListeningStarted: true,
+              startedAt:new Date(),
+              createdAt: new Date(),
+              updatedAt:new Date()
+            };
+          });
+          aimSaveDataResult.insertedResult = await this.subscribeRadioToMonitorBulkWithInsertManyOperation(
+            radioMonitors,
+            user.sub,
+            unlimitedMonitoringLicense,
+          );
+        }
       }
 
       if (group == MonitorGroupsEnum.AFEM) {
@@ -366,25 +411,43 @@ export class RadioMonitorService {
             { $group: { _id: '$radio', ids: { $push: '$radio' } } },
           ],
         );
-        console.log('radiosAlreadyMonitors AFEM', radiosAlreadyMonitors);
+        afemSaveDataResult.radiosAlreadyMonitorsCount =
+          radiosAlreadyMonitors.length;
+        console.log(
+          'radiosAlreadyMonitors AFEM',
+          afemSaveDataResult.radiosAlreadyMonitorsCount,
+        );
         const radiosToMonitor = await this.radiostationService.radioStationModel.find(
           {
             'monitorGroups.name': group,
             _id: { $nin: radiosAlreadyMonitors },
           },
         );
-        console.log('radiosToMonitor AFEM', radiosToMonitor.length);
-        const radioMonitors = radiosToMonitor.map(rd => {
-          return {
-            radio: rd._id,
-            owner: user.sub,
-            license: unlimitedMonitoringLicense,
-            radioSearch: rd,
-            isListeningStarted: true,
-          };
-        });
+        afemSaveDataResult.radiosToMonitorCount = radiosToMonitor.length;
+        console.log(
+          'radiosToMonitor AFEM',
+          afemSaveDataResult.radiosToMonitorCount,
+        );
+        if (radiosToMonitor.length > 0) {
+          const radioMonitors = radiosToMonitor.map(rd => {
+            return {
+              radio: rd._id,
+              owner: user.sub,
+              license: unlimitedMonitoringLicense,
+              radioSearch: rd,
+              isListeningStarted: true,
+              startedAt:new Date(),
+              createdAt: new Date(),
+              updatedAt:new Date()
+            };
+          });
 
-        afemSaveDataResult =await this.subscribeRadioToMonitorBulkWithInsertManyOperation(radioMonitors)
+          afemSaveDataResult.insertedResult = await this.subscribeRadioToMonitorBulkWithInsertManyOperation(
+            radioMonitors,
+            user.sub,
+            unlimitedMonitoringLicense,
+          );
+        }
       }
     }
 

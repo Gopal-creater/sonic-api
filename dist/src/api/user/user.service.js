@@ -238,7 +238,6 @@ let UserService = class UserService {
         var registerNewUserParams = {
             UserPoolId: this.cognitoUserPoolId,
             Username: userName,
-            DesiredDeliveryMediums: sendInvitationByEmail ? ['EMAIL'] : null,
             TemporaryPassword: password,
             UserAttributes: [
                 {
@@ -259,6 +258,12 @@ let UserService = class UserService {
                 },
             ],
         };
+        if (sendInvitationByEmail) {
+            registerNewUserParams["DesiredDeliveryMediums"] = ['EMAIL'];
+        }
+        else {
+            registerNewUserParams["MessageAction"] = "SUPPRESS";
+        }
         const userCreated = await this.cognitoIdentityServiceProvider
             .adminCreateUser(registerNewUserParams)
             .promise();
@@ -280,6 +285,9 @@ let UserService = class UserService {
             }
         }
         return userCreated;
+    }
+    async addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub) {
+        return this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(usernameOrSub);
     }
     async addUnlimitedMonitoringLicenseToUser(ownerIdOrUsername) {
         const unlimitedLicense = await this.licensekeyService.findOrCreateUnlimitedMonitoringLicense();

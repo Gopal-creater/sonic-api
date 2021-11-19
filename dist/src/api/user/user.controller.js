@@ -22,7 +22,9 @@ const common_1 = require("@nestjs/common");
 const parseQueryValue_pipe_1 = require("../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 const licensekey_service_1 = require("../licensekey/services/licensekey.service");
+const roles_decorator_1 = require("../auth/decorators/roles.decorator");
 const Enums_1 = require("../../constants/Enums");
+const role_based_guard_1 = require("../auth/guards/role-based.guard");
 let UserController = class UserController {
     constructor(userServices, licensekeyService) {
         this.userServices = userServices;
@@ -55,7 +57,7 @@ let UserController = class UserController {
     async getGroupsOfUser(username) {
         return this.userServices.adminListGroupsForUser(username);
     }
-    async register(adminCreateUserDTO) {
+    async adminCreateUser(adminCreateUserDTO) {
         if (adminCreateUserDTO.group) {
             await this.userServices.getGroup(adminCreateUserDTO.group)
                 .catch(err => {
@@ -63,6 +65,13 @@ let UserController = class UserController {
             });
         }
         return this.userServices.adminCreateUser(adminCreateUserDTO);
+    }
+    async addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub) {
+        const user = await this.userServices.getUserProfile(usernameOrSub);
+        if (!user) {
+            throw new common_1.NotFoundException("Invalid user");
+        }
+        return this.userServices.addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub);
     }
 };
 __decorate([
@@ -150,7 +159,19 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [index_1.AdminCreateUserDTO]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "register", null);
+], UserController.prototype, "adminCreateUser", null);
+__decorate([
+    common_1.Post('add-monitoring-subscription-from-monitoring-group/:usernameOrSub'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Add monitoring Subscription From Monitoring Group' }),
+    openapi.ApiResponse({ status: 201 }),
+    __param(0, common_1.Param('usernameOrSub')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "addMonitoringSubscriptionFromMonitoringGroup", null);
 UserController = __decorate([
     swagger_1.ApiTags('User Controller'),
     common_1.Controller('users'),
