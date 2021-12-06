@@ -4,17 +4,15 @@
 # This script is only to be used with the sonic portal backend - with the execSync() 
 # Javascript API idiosyncracies.  Original script is in sonic-core repo: arun@arbadev.com
 # ------------------------------------------------------------------------------------------
-# When WEB_BUILD is snabled, both binaries takes one additional argument - the output file.
+# When WEB_BUILD is snabled, decode binary takes one additional argument - the output file.
 # Only decode binary needs to use it as the web backend in Javascript takes the decode output 
-# in this logfile by parsing it. In encoder.sh script (this script), you can see that this 
-# additional argument is hardcoded as /dev/null.
+# in this logfile by parsing it. 
 # -----------------------------------------------------------------------------------------
 # $1 : -h
 # $2 : Encoding_strength parameter (integer 1-100)
 # $3 : input file full path
 # $4 : output file full path
 # $5 : the sonic key
-# Last argument is hardcoded as /dev/null here.
 # -----------------------------------------------------------------------------------------
 # !!! IMPORANT: Change BIN_PATH according to the installation folder.
 # -----------------------------------------------------------------------------------------
@@ -52,9 +50,14 @@ echo "Otput temp file path: $out_tmpfile_path"
 # This hack can be removed now by modifying app code. 
 if [[ $inext == "wavx" || $inext == "WAVX" || $inext == "wav" || $inext == "WAV" ]]; then
     echo "Wave file processing"
+
+    # this is an unnecessary hack forced to put here by Simon Gogerly in 2021 December.
+    echo "0.5db reduction"
+    ffmpeg -i $3 -filter:a "volume=-0.5dB" $in_tmpfile_path
+
     echo "Watermarking..."
 
-    $WATERMARK $1 $2 $3 $4 $5
+    $WATERMARK $1 $2 $in_tmpfile_path $4 $5
     RESULT=$?
     if [ $RESULT -eq 0 ]; then
       echo "Watermark binary succeeded"
@@ -62,11 +65,14 @@ if [[ $inext == "wavx" || $inext == "WAVX" || $inext == "wav" || $inext == "WAV"
       echo "Watermark binary reported error: $RESULT"
       exit $RESULT
     fi
+
+    rm -f $in_tmpfile_path
 else
     echo "NON WAV file processing"
 
-    echo "Transcoding input $inext to wav using ffmpeg..."
-    ffmpeg -hide_banner -loglevel error -y -i $3 -vn -acodec pcm_s16le -ar 44100 -ac 2 $in_tmpfile_path
+    # the 0.5db reduction is an unnecessary hack forced to put here by Simon Gogerly in 2021 December.
+    echo "Transcoding input $inext to wav using ffmpeg (with 0.5db reduction)..."
+    ffmpeg -hide_banner -loglevel error -y -i $3 -filter:a "volume=-0.5dB" -vn -acodec pcm_s16le -ar 44100 -ac 2 $in_tmpfile_path
     RESULT=$?
     if [ $RESULT -eq 0 ]; then
       echo "Transcoding input: ffmpeg succeeded"
@@ -95,7 +101,7 @@ else
       exit $RESULT
     fi
 
-    rm $in_tmpfile_path $out_tmpfile_path
+    rm -f $in_tmpfile_path $out_tmpfile_path
 fi
 
 exit 0

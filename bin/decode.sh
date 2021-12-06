@@ -6,8 +6,7 @@
 # ------------------------------------------------------------------------------------------
 # When WEB_BUILD is snabled, both binaries takes one additional argument - the output file.
 # Only decode binary needs to use it as the web backend in Javascript takes the decode output 
-# in this logfile by parsing it. In encoder.sh script (this script), you can see that this 
-# additional argument is hardcoded as /dev/null.
+# in this logfile by parsing it.
 # -----------------------------------------------------------------------------------------
 # $1 : input file full path
 # $2 : output log file full path
