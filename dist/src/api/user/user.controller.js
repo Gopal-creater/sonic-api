@@ -25,6 +25,8 @@ const licensekey_service_1 = require("../licensekey/services/licensekey.service"
 const roles_decorator_1 = require("../auth/decorators/roles.decorator");
 const Enums_1 = require("../../constants/Enums");
 const role_based_guard_1 = require("../auth/guards/role-based.guard");
+const decorators_1 = require("../auth/decorators");
+const user_schema_1 = require("./schemas/user.schema");
 let UserController = class UserController {
     constructor(userServices, licensekeyService) {
         this.userServices = userServices;
@@ -33,6 +35,12 @@ let UserController = class UserController {
     async getUserLicenses(userId, queryDto) {
         queryDto.filter['owners.ownerId'] = userId;
         return this.licensekeyService.findAll(queryDto);
+    }
+    async checkAuthorization(user) {
+        return {
+            ok: true,
+            user: user
+        };
     }
     async addNewLicense(userIdOrUsername, addNewLicenseDto) {
         return this.userServices
@@ -86,6 +94,17 @@ __decorate([
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserLicenses", null);
+__decorate([
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'authorize user with their token' }),
+    common_1.Get('/authorize'),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, decorators_1.User()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_schema_1.UserSession]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "checkAuthorization", null);
 __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),

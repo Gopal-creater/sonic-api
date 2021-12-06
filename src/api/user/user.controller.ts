@@ -30,6 +30,8 @@ import { LicensekeyService } from '../licensekey/services/licensekey.service';
 import { RolesAllowed } from '../auth/decorators/roles.decorator';
 import { Roles } from 'src/constants/Enums';
 import { RoleBasedGuard } from '../auth/guards/role-based.guard';
+import { User } from '../auth/decorators';
+import { UserSession } from './schemas/user.schema';
 
 @ApiTags('User Controller')
 @Controller('users')
@@ -49,6 +51,17 @@ export class UserController {
   ) {
     queryDto.filter['owners.ownerId'] = userId;
     return this.licensekeyService.findAll(queryDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'authorize user with their token' })
+  @Get('/authorize')
+  async checkAuthorization(@User() user:UserSession) {
+    return {
+      ok:true,
+      user:user
+    }
   }
 
   @UseGuards(JwtAuthGuard)
