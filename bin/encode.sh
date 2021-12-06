@@ -51,9 +51,24 @@ echo "Otput temp file path: $out_tmpfile_path"
 if [[ $inext == "wavx" || $inext == "WAVX" || $inext == "wav" || $inext == "WAV" ]]; then
     echo "Wave file processing"
 
+    ACODEC="pcm_s16le"
+    BITDEPTH=`mediainfo $3 | grep "Bit depth" | cut -d ":" -f 2 | cut -d " " -f 2`
+    case $BITDEPTH in
+        24)
+            ACODEC="pcm_s24le"
+            ;;    
+        16)
+            ACODEC="pcm_s16le"
+            ;;
+        *)
+            echo "Warning: Unknown bit depth $BITDEPTH. ACODEC wil be forced to be 16bit"
+            ;;
+    esac
+    echo "ACODEC is set as: $ACODEC"
+
     # this is an unnecessary hack forced to put here by Simon Gogerly in 2021 December.
     echo "0.5db reduction"
-    ffmpeg -hide_banner -loglevel error -y -i $3 -filter:a "volume=-0.5dB" $in_tmpfile_path
+    ffmpeg -hide_banner -loglevel error -y -i $3 -filter:a "volume=-0.5dB" -acodec $ACODEC $in_tmpfile_path
 
     echo "Watermarking..."
 
