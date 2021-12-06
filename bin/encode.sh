@@ -53,7 +53,7 @@ if [[ $inext == "wavx" || $inext == "WAVX" || $inext == "wav" || $inext == "WAV"
 
     # this is an unnecessary hack forced to put here by Simon Gogerly in 2021 December.
     echo "0.5db reduction"
-    ffmpeg -i $3 -filter:a "volume=-0.5dB" $in_tmpfile_path
+    ffmpeg -hide_banner -loglevel error -y -i $3 -filter:a "volume=-0.5dB" $in_tmpfile_path
 
     echo "Watermarking..."
 
