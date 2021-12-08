@@ -32,7 +32,7 @@ let SonickeyBinaryController = class SonickeyBinaryController {
     async createFormBinary(createSonicKeyDto, customer, apiKey, licenseKey) {
         const channel = Enums_1.ChannelEnums.BINARY;
         const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { owner: customer, apiKey: apiKey, channel: channel, license: licenseKey, _id: createSonicKeyDto.sonicKey }));
-        const savedSonicKey = await newSonicKey.save();
+        const savedSonicKey = await this.sonicKeyService.createFromBinaryForUser(customer, newSonicKey);
         await this.licensekeyService.incrementUses(licenseKey, "encode", 1)
             .catch(async (err) => {
             await this.sonicKeyService.sonicKeyModel.deleteOne({ _id: savedSonicKey.id });

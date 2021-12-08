@@ -4,6 +4,7 @@ import {
   ArgumentMetadata,
   BadRequestException,
 } from '@nestjs/common';
+import { isArray } from 'lodash';
 import { MongooseQueryParser } from 'mongoose-query-parser';
 import { isObjectId, toObjectId } from '../utils/mongoose.utils';
 /**
@@ -13,13 +14,13 @@ import { isObjectId, toObjectId } from '../utils/mongoose.utils';
 @Injectable()
 export class ParseQueryValue implements PipeTransform {
   constructor(private values?: string[]) {}
-  transform(queries: any, metadata: ArgumentMetadata) {
+  transform(queries: any={}, metadata: ArgumentMetadata) {
     try {
+      const {aggregateSearch,...query}=queries
       const parser = new MongooseQueryParser();
-      queries = queries || {};
       const queryToParse = {
         page: 1,
-        ...queries,
+        ...query,
       };
       var parsed = parser.parse(queryToParse);
       parsed = {
@@ -32,6 +33,18 @@ export class ParseQueryValue implements PipeTransform {
         parsed['page'] = parsed?.filter?.page;
         delete parsed?.filter?.page;
       }
+
+      if(aggregateSearch){
+        const parsedAggregate = JSON.parse(aggregateSearch)
+        if(!isArray(parsedAggregate)){
+          throw new BadRequestException("aggregateSearch params must be an array of object type in stringify format")
+        }
+        console.log("passed========>")
+        if(parsedAggregate.some(e=>typeof(e)!='object')){
+          throw new BadRequestException("aggregateSearch params must be an array of object type in stringify format")
+        }
+        parsed['aggregateSearch'] = parsedAggregate
+      }
       if (parsed?.filter?.topLimit) {
         parsed['topLimit'] = parsed?.filter?.topLimit;
         delete parsed?.filter?.topLimit;
@@ -40,6 +53,11 @@ export class ParseQueryValue implements PipeTransform {
       if (parsed?.filter?.includeGraph!==null || parsed?.filter?.includeGraph!==undefined) {
         parsed['includeGraph'] = parsed?.filter?.includeGraph;
         delete parsed?.filter?.includeGraph;
+      }
+
+      if (parsed?.filter?.includeGroupData!==null || parsed?.filter?.includeGroupData!==undefined) {
+        parsed['includeGroupData'] = parsed?.filter?.includeGroupData;
+        delete parsed?.filter?.includeGroupData;
       }
 
       if (parsed?.filter?.groupByTime) {

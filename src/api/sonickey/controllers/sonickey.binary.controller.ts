@@ -50,7 +50,7 @@ export class SonickeyBinaryController {
       license: licenseKey,
       _id:createSonicKeyDto.sonicKey
     });
-    const savedSonicKey = await newSonicKey.save();
+    const savedSonicKey = await this.sonicKeyService.createFromBinaryForUser(customer,newSonicKey)
      await this.licensekeyService.incrementUses(licenseKey,"encode", 1)
      .catch(async err=>{
       await this.sonicKeyService.sonicKeyModel.deleteOne({_id:savedSonicKey.id})

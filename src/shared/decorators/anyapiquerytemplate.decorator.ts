@@ -38,7 +38,15 @@ export function AnyApiQueryTemplate(options?: {
         <h2>OR</h2>
         <code>BASE_URL?filter={ "$or": [ { "name": "Sonic" }, { "streamingUrl": "Sonic" } ] }</code> <br/>
         <br/>
-        <b>You can't test this king of query from swagger,Please use Postman Or Thunder Client</b>
+        <b>You can't test this kind of query from swagger,Please use Postman Or Thunder Client</b>
+        </li><br/>
+        <li>
+      <b>Eg-Aggregate-Filter:</b> 
+        <h5>For advanced usage ($or, $type, $elemMatch, etc.), pass any MongoDB aggregate array of object as JSON string in the aggregateSearch query parameter, ie:</h5>
+        <code>BASE_URL?aggregateSearch=[ { "$lookup": { "from": "SonicKey", "localField": "sonicKey", "foreignField": "_id", "as": "sonicKey" } }, { "$unwind": "$sonicKey" }, { "$match": { "sonicKey.contentOwner": { "$regex": "strin", "$options": "i" } } } ]</code> <br/>
+        <p><a target="_blank" href="https://docs.mongodb.com/manual/aggregation/">Learn more about mongoose aggregate</a></p>
+        <br/>
+        <b>You can't test this kind of query from swagger,Please use Postman Or Thunder Client</b>
         </li>
       </ul>
       ${

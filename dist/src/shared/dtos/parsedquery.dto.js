@@ -44,6 +44,10 @@ __decorate([
 ], ParsedQueryDto.prototype, "populate", void 0);
 __decorate([
     swagger_1.ApiHideProperty(),
+    __metadata("design:type", Array)
+], ParsedQueryDto.prototype, "aggregateSearch", void 0);
+__decorate([
+    swagger_1.ApiHideProperty(),
     __metadata("design:type", Number)
 ], ParsedQueryDto.prototype, "page", void 0);
 __decorate([
@@ -54,6 +58,10 @@ __decorate([
     swagger_1.ApiHideProperty(),
     __metadata("design:type", Boolean)
 ], ParsedQueryDto.prototype, "includeGraph", void 0);
+__decorate([
+    swagger_1.ApiHideProperty(),
+    __metadata("design:type", Boolean)
+], ParsedQueryDto.prototype, "includeGroupData", void 0);
 __decorate([
     swagger_1.ApiHideProperty(),
     __metadata("design:type", String)

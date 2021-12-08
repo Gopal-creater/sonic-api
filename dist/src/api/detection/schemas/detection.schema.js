@@ -74,6 +74,11 @@ __decorate([
     mongoose_1.Prop(),
     __metadata("design:type", Map)
 ], Detection.prototype, "metaData", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop([String]),
+    __metadata("design:type", Array)
+], Detection.prototype, "groups", void 0);
 Detection = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.DetectionSchemaName })
 ], Detection);

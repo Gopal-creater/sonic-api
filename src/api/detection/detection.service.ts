@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Detection } from './schemas/detection.schema';
-import { Model } from 'mongoose';
+import { Aggregate, Model } from 'mongoose';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateDeectionDto } from './dto/mongoosepaginate-radiostationsonickey.dto';
 import { ChannelEnums } from 'src/constants/Enums';
 import { toObjectId } from 'src/shared/utils/mongoose.utils';
 import { groupByTime } from 'src/shared/types';
+import { UserService } from '../user/user.service';
 import {
   TopRadioStation,
   TopRadioStationWithTopSonicKey,
@@ -19,13 +20,29 @@ export class DetectionService {
   constructor(
     @InjectModel(Detection.name)
     public readonly detectionModel: Model<Detection>,
+    @Inject(forwardRef(() => UserService))
+    private readonly userService: UserService,
   ) {}
+
+  async getPlaysDashboardData(){
+
+  }
 
   async findAll(
     queryDto: ParsedQueryDto,
     aggregateQuery?: boolean,
   ): Promise<MongoosePaginateDeectionDto> {
-    const { limit, skip, sort, page, filter, select, populate } = queryDto;
+    const {
+      limit,
+      skip,
+      sort,
+      page,
+      filter,
+      select,
+      populate,
+      aggregateSearch,
+      includeGroupData,
+    } = queryDto;
     var paginateOptions = {};
     paginateOptions['sort'] = sort;
     paginateOptions['select'] = select;
@@ -34,8 +51,20 @@ export class DetectionService {
     paginateOptions['page'] = page;
     paginateOptions['limit'] = limit;
 
-    console.log("paginateOptions",paginateOptions);
-    
+    // if (includeGroupData && filter.owner) {
+    //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
+    //   const usergroups = await this.userService.adminListGroupsForUser(
+    //     filter.owner,
+    //   );
+    //   if (usergroups.groupNames.length > 0) {
+    //     filter['$or'] = [
+    //       { groups: { $all: usergroups.groupNames } },
+    //       { owner: filter.owner },
+    //     ];
+    //     delete filter.owner;
+    //   }
+    // }
+
     const aggregate = this.detectionModel.aggregate([
       {
         $match: {
@@ -72,6 +101,184 @@ export class DetectionService {
     }
   }
 
+  async getTotalHitsCount(queryDto: ParsedQueryDto) {
+    const { filter, includeGroupData } = queryDto;
+    // if (includeGroupData && filter.owner) {
+    //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
+    //   const usergroups = await this.userService.adminListGroupsForUser(
+    //     filter.owner,
+    //   );
+    //   if (usergroups.groupNames.length > 0) {
+    //     filter['$or'] = [
+    //       { groups: { $all: usergroups.groupNames } },
+    //       { owner: filter.owner },
+    //     ];
+    //     delete filter.owner;
+    //   }
+    // }
+    return this.detectionModel
+      .find(filter || {})
+      .countDocuments()
+      .exec();
+  }
+
+
+  /**
+   * db.collection.aggregate([
+  {
+    $group: {
+      "_id": null,
+      "sonicKeys": {
+        $push: "$sonicKey"
+      }
+    }
+  },
+  //Since Reduce function starts with its initial Value, we have to add some dummy data at the end of array
+  {
+    $project: {
+      sonicKeys: {
+        $concatArrays: [
+          "$sonicKeys",
+          [
+            "Unknown"
+          ]
+        ]
+      },
+      uniqueSonicKeys: {
+        $setUnion: {
+          $reduce: {
+            input: "$sonicKeys",
+            initialValue: [],
+            in: {
+              $concatArrays: [
+                "$$value",
+                [
+                  "$$this"
+                ]
+              ]
+            },
+            
+          },
+          
+        }
+      }
+    }
+  },
+  {
+    $project: {
+      uniqueSonicKeys: 1,
+      keys: {
+        $reduce: {
+          input: "$sonicKeys",
+          initialValue: {
+            item: null,
+            count: 1,
+            results: []
+          },
+          in: {
+            $cond: [
+              {
+                $eq: [
+                  {
+                    $strcasecmp: [
+                      "$$value.item",
+                      "$$this"
+                    ]
+                  },
+                  0
+                ]
+              },
+              {
+                results: "$$value.results",
+                item: "$$this",
+                count: {
+                  $add: [
+                    "$$value.count",
+                    1
+                  ]
+                }
+              },
+              {
+                results: {
+                  $concatArrays: [
+                    "$$value.results",
+                    [
+                      {
+                        item: "$$value.item",
+                        count: "$$value.count"
+                      }
+                    ]
+                  ]
+                },
+                item: "$$this",
+                count: 1
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  //Since Reduce function add dummy data in the begning of array which we dont need, lets remove it
+  {
+    $project: {
+      uniqueSonicKeys: 1,
+      sonicKeys: {
+        $slice: [
+          "$keys.results",
+          1,
+          {
+            $size: "$keys.results"
+          }
+        ]
+      },
+      
+    }
+  },
+  {
+    $addFields: {
+      playsCount: {
+        $size: "$sonicKeys"
+      },
+      uniquePlaysCount: {
+        $size: "$uniqueSonicKeys"
+      }
+    }
+  }
+])
+   * @param queryDto 
+   * @returns 
+   */
+  async getTotalPlaysCount(queryDto: ParsedQueryDto) {
+    const { filter} = queryDto;
+    const playsDetails = await this.detectionModel.aggregate(
+      [
+        {
+          $match: filter,
+        },
+        { $sort: { detectedAt: -1 } }, //sort in decending order
+        { $group: { _id: '$radioStation', totalKeysDetected: { $sum: 1 } } }, //group by radioStation to get duplicates counts
+        {
+          $lookup: {
+            //populate radioStation from its relational table
+            from: 'RadioStation',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'radioStation',
+          },
+        },
+        {
+          $project: {
+            radioStation: { $first: '$radioStation' },
+            totalKeysDetected: 1,
+            otherField: 1,
+          }, //lookup will return array so always tale first index elememt
+        },
+        { $sort: { totalKeysDetected: -1 } }, //sort in decending order
+      ],
+    );
+    return playsDetails
+  }
 
   // perfect example==> https://stackoverflow.com/questions/22932364/mongodb-group-values-by-multiple-fields
   async findTopRadioStationsWithSonicKeysForOwner(
@@ -176,7 +383,7 @@ export class DetectionService {
       group_id['month'] = { $month: '$detectedAt' };
     } else if (groupByTime == 'dayOfMonth') {
       group_id['dayOfMonth'] = { $dayOfMonth: '$detectedAt' };
-    }else{
+    } else {
       group_id['dayOfMonth'] = { $dayOfMonth: '$detectedAt' };
     }
     const graphData: {

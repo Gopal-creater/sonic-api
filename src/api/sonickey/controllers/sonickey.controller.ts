@@ -104,6 +104,7 @@ export class SonickeyController {
   @Get('/')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @ApiQuery({name:"includeGroupData",type:Boolean,required:false})
   @ApiOperation({ summary: 'Get All Sonic Keys' })
   async getAll(@Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto) {
     return this.sonicKeyService.getAll(parsedQueryDto);
@@ -137,6 +138,7 @@ export class SonickeyController {
   @Get('/owners/:ownerId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @ApiQuery({name:"includeGroupData",type:Boolean,required:false})
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Sonic Keys of particular user' })
   async getOwnersKeys(
@@ -162,13 +164,13 @@ export class SonickeyController {
 
   @Get('/count')
   @UseGuards(JwtAuthGuard)
+  @ApiQuery({name:"includeGroupData",type:Boolean,required:false})
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get count of all sonickeys also accept filter as query params',
   })
   async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
-    const filter = queryDto.filter || {};
-    return this.sonicKeyService.sonicKeyModel.where(filter).countDocuments();
+    return this.sonicKeyService.getCount(queryDto)
   }
 
   @Get('/:sonickey')
@@ -244,7 +246,7 @@ export class SonickeyController {
           file,
           sonicKeyDto,
         );
-
+        // const userRoles = await
         const channel = ChannelEnums.PORTAL;
         const newSonicKey = new this.sonicKeyService.sonicKeyModel({
           ...sonicKeyDtoWithAudioData,
@@ -258,7 +260,7 @@ export class SonickeyController {
           _id: sonicKey,
           license: licenseId,
         });
-        return newSonicKey.save();
+        return this.sonicKeyService.saveSonicKeyForUser(owner,newSonicKey)
       })
       .catch(err => {
         throw new InternalServerErrorException(err);
@@ -314,7 +316,7 @@ export class SonickeyController {
           _id: sonicKey,
           license: licenseId,
         });
-        return newSonicKey.save();
+        return this.sonicKeyService.saveSonicKeyForUser(owner,newSonicKey)
       })
       .catch(err => {
         throw new InternalServerErrorException(err);

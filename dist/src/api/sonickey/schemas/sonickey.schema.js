@@ -243,6 +243,11 @@ __decorate([
     mongoose_1.Prop({ default: false }),
     __metadata("design:type", Boolean)
 ], SonicKey.prototype, "isAuthorizedForEncode", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop([String]),
+    __metadata("design:type", Array)
+], SonicKey.prototype, "groups", void 0);
 SonicKey = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.SonicKeySchemaName })
 ], SonicKey);

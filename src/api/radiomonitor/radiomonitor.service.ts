@@ -29,7 +29,7 @@ export class RadioMonitorService {
   async findAll(
     queryDto: ParsedQueryDto,
   ): Promise<MongoosePaginateRadioMonitorDto> {
-    const { limit, skip, sort, page, filter, select, populate } = queryDto;
+    const { limit, skip, sort, page, filter, select, populate,includeGroupData } = queryDto;
     var paginateOptions = {};
     paginateOptions['sort'] = sort;
     paginateOptions['select'] = select;
@@ -37,7 +37,44 @@ export class RadioMonitorService {
     paginateOptions['offset'] = skip;
     paginateOptions['page'] = page;
     paginateOptions['limit'] = limit;
+    // if (includeGroupData && filter.owner) {
+    //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
+    //   const usergroups = await this.userService.adminListGroupsForUser(
+    //     filter.owner,
+    //   );
+    //   if (usergroups.groupNames.length > 0) {
+    //     filter['$or'] = [
+    //       { groups: { $all: usergroups.groupNames } },
+    //       { owner: filter.owner },
+    //     ];
+    //     delete filter.owner;
+    //   }
+    // }
     return this.radioMonitorModel['paginate'](filter, paginateOptions);
+  }
+
+  async getCount(queryDto: ParsedQueryDto) {
+    const {
+      filter,
+      includeGroupData,
+    } = queryDto;
+    // if (includeGroupData && filter.owner) {
+    //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
+    //   const usergroups = await this.userService.adminListGroupsForUser(
+    //     filter.owner,
+    //   );
+    //   if (usergroups.groupNames.length > 0) {
+    //     filter['$or'] = [
+    //       { groups: { $all: usergroups.groupNames } },
+    //       { owner: filter.owner },
+    //     ];
+    //     delete filter.owner;
+    //   }
+    // }
+    return this.radioMonitorModel
+      .find(filter || {})
+      .countDocuments()
+      .exec();
   }
 
   async subscribeRadioToMonitor(

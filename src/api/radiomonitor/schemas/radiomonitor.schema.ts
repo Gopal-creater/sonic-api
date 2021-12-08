@@ -59,6 +59,10 @@ export class RadioMonitor extends Document {
   @ApiProperty()
   @Prop()
   metaData: Map<string, any>;
+
+  @ApiProperty()
+  @Prop([String])
+  groups?: [string];
 }
 
 export const RadioMonitorSchema = SchemaFactory.createForClass(RadioMonitor);

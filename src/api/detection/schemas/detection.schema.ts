@@ -55,6 +55,10 @@ export class Detection extends Document {
   @ApiProperty()
   @Prop()
   metaData?: Map<string, any>;
+
+  @ApiProperty()
+  @Prop([String])
+  groups?: [string];
 }
 
 export const DetectionSchema = SchemaFactory.createForClass(Detection);

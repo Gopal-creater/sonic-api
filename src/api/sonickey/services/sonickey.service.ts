@@ -2,7 +2,12 @@ import { SonicKeyDto } from '../dtos/sonicKey.dto';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { FileHandlerService } from '../../../shared/services/file-handler.service';
 import { FileOperationService } from '../../../shared/services/file-operation.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { SonicKey } from '../schemas/sonickey.schema';
 import * as mm from 'music-metadata';
 import * as upath from 'upath';
@@ -17,6 +22,7 @@ import { ChannelEnums, S3ACL } from '../../../constants/Enums';
 import { S3FileUploadService } from '../../s3fileupload/s3fileupload.service';
 import { DetectionService } from '../../detection/detection.service';
 import { Detection } from 'src/api/detection/schemas/detection.schema';
+import { UserService } from '../../user/user.service';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -27,6 +33,8 @@ export class SonickeyService {
     private readonly fileHandlerService: FileHandlerService,
     private readonly s3FileUploadService: S3FileUploadService,
     private readonly detectionService: DetectionService,
+    @Inject(forwardRef(() => UserService))
+    public readonly userService: UserService,
   ) {}
 
   generateUniqueSonicKey() {
@@ -59,17 +67,49 @@ export class SonickeyService {
 
   async createFromJob(createSonicKeyDto: CreateSonicKeyFromJobDto) {
     const channel = ChannelEnums.PCAPP;
+    const userGroups = await this.userService.adminListGroupsForUser(createSonicKeyDto.owner);
     const newSonicKey = new this.sonicKeyModel({
       ...createSonicKeyDto,
       license: createSonicKeyDto.licenseId || createSonicKeyDto.license,
       channel: channel,
+      groups:userGroups.groupNames,
       _id: createSonicKeyDto.sonicKey,
     });
     return newSonicKey.save();
   }
 
-  async getAll(queryDto: ParsedQueryDto): Promise<MongoosePaginateSonicKeyDto> {
-    const { limit, skip, sort, page, filter, select, populate } = queryDto;
+
+  async createFromBinaryForUser(ownerId: string, sonickey: SonicKey) {
+    const userGroups = await this.userService.adminListGroupsForUser(ownerId);
+    const newSonicKey = new this.sonicKeyModel({
+      ...sonickey,
+      owner: ownerId,
+      groups: userGroups.groupNames,
+    });
+    return newSonicKey.save();
+  }
+
+  async saveSonicKeyForUser(ownerId: string, sonickey: SonicKey) {
+    const userGroups = await this.userService.adminListGroupsForUser(ownerId);
+    const newSonicKey = new this.sonicKeyModel({
+      ...sonickey,
+      owner: ownerId,
+      groups: userGroups.groupNames,
+    });
+    return newSonicKey.save();
+  }
+
+  async getAll(queryDto: ParsedQueryDto) {
+    const {
+      limit,
+      skip,
+      sort,
+      page,
+      filter,
+      select,
+      populate,
+      includeGroupData,
+    } = queryDto;
     var paginateOptions = {};
     paginateOptions['sort'] = sort;
     paginateOptions['select'] = select;
@@ -77,14 +117,48 @@ export class SonickeyService {
     paginateOptions['offset'] = skip;
     paginateOptions['page'] = page;
     paginateOptions['limit'] = limit;
-
-    return await this.sonicKeyModel['paginate'](filter, paginateOptions);
+    // if (includeGroupData && filter.owner) {
+    //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
+    //   const usergroups = await this.userService.adminListGroupsForUser(
+    //     filter.owner,
+    //   );
+    //   if (usergroups.groupNames.length > 0) {
+    //     filter['$or'] = [
+    //       { groups: { $all: usergroups.groupNames } },
+    //       { owner: filter.owner },
+    //     ];
+    //     delete filter.owner;
+    //   }
+    // }
     // return this.sonicKeyModel
-    //   .find(query || {})
-    //   .skip(_offset)
-    //   .limit(_limit)
+    //   .find(filter || {})
+    //   .skip(skip)
+    //   .limit(limit)
     //   .sort(sort)
+    //   .count()
     //   .exec();
+    return await this.sonicKeyModel['paginate'](filter, paginateOptions);
+  }
+
+  async getCount(queryDto: ParsedQueryDto) {
+    const { filter, includeGroupData } = queryDto;
+    // if (includeGroupData && filter.owner) {
+    //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
+    //   const usergroups = await this.userService.adminListGroupsForUser(
+    //     filter.owner,
+    //   );
+    //   if (usergroups.groupNames.length > 0) {
+    //     filter['$or'] = [
+    //       { groups: { $all: usergroups.groupNames } },
+    //       { owner: filter.owner },
+    //     ];
+    //     delete filter.owner;
+    //   }
+    // }
+    return this.sonicKeyModel
+      .find(filter || {})
+      .countDocuments()
+      .exec();
   }
 
   /**
@@ -143,7 +217,7 @@ export class SonickeyService {
     file: IUploadedFile,
     user: string,
     encodingStrength: number = 15,
-    s3Acl?:S3ACL
+    s3Acl?: S3ACL,
   ) {
     // The sonic key generation - done randomely.
     const random11CharKey = this.generateUniqueSonicKey();
@@ -171,7 +245,7 @@ export class SonickeyService {
         return this.s3FileUploadService.uploadFromPath(
           outFilePath,
           `${user}/encodedFiles`,
-          s3Acl
+          s3Acl,
         );
       })
       .then(s3UploadResult => {
@@ -221,20 +295,26 @@ export class SonickeyService {
     );
   }
 
-  async findAndGetValidSonicKeyFromRandomDecodedKeys(keys: string[],saveDetection:boolean,detectionToSave:Detection) {
+  async findAndGetValidSonicKeyFromRandomDecodedKeys(
+    keys: string[],
+    saveDetection: boolean,
+    detectionToSave: Detection,
+  ) {
     var sonicKeys: SonicKey[] = [];
     for await (const key of keys) {
       const sonickey = await this.findBySonicKey(key);
       if (!sonickey) {
         continue;
       }
-      if(saveDetection){
-        const newDetection = await this.detectionService.detectionModel.create(detectionToSave)
-        await newDetection.save()
+      if (saveDetection) {
+        const newDetection = await this.detectionService.detectionModel.create(
+          detectionToSave,
+        );
+        await newDetection.save();
       }
       sonicKeys.push(sonickey);
     }
-    return sonicKeys
+    return sonicKeys;
   }
 
   /**
@@ -281,7 +361,8 @@ export class SonickeyService {
   ) {
     const musicData = await this.exractMusicMetaFromFile(file.path);
     sonicKeyDto.contentSize = sonicKeyDto.contentSize || file?.size;
-    sonicKeyDto.contentFileName = sonicKeyDto.contentFileName || file?.originalname;
+    sonicKeyDto.contentFileName =
+      sonicKeyDto.contentFileName || file?.originalname;
     // sonicKeyDto.contentType = sonicKeyDto.contentType || file?.mimetype;
     sonicKeyDto.contentFileType = sonicKeyDto.contentFileType || file?.mimetype;
     sonicKeyDto.contentDuration =

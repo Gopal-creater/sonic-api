@@ -13,7 +13,7 @@ import { RadioMonitorService } from '../radiomonitor.service';
 import { CreateRadioMonitorDto } from '../dto/create-radiomonitor.dto';
 import { User } from '../../auth/decorators';
 import { RadiostationService } from '../../radiostation/services/radiostation.service';
-import { ApiBody, ApiTags, ApiBearerAuth, ApiOperation, ApiSecurity } from '@nestjs/swagger';
+import { ApiBody,ApiQuery, ApiTags, ApiBearerAuth, ApiOperation, ApiSecurity } from '@nestjs/swagger';
 import { BulkByIdsDto } from '../../../shared/dtos/bulk.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
@@ -36,6 +36,7 @@ export class RadioMonitorOwnerController {
   @AnyApiQueryTemplate()
   @ApiSecurity('x-api-key')
   @ApiBearerAuth()
+  @ApiQuery({name:"includeGroupData",type:Boolean,required:false})
   @ApiOperation({ summary: 'Get all subscribed radio stations' })
   async getSubscriberedStations(
     @User('sub') owner: string,
@@ -121,6 +122,7 @@ export class RadioMonitorOwnerController {
 
   @Get('owners/:ownerId/subscriber-count')
   @UseGuards(JwtAuthGuard)
+  @ApiQuery({name:"includeGroupData",type:Boolean,required:false})
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get counts with filter eg: ?isListeningStarted=true OR ?isError=true etc..' })
   async getSubscriberCount(
@@ -128,11 +130,8 @@ export class RadioMonitorOwnerController {
     @Param('ownerId') ownerId: string,
     @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
   ) {
-    const filter = queryDto.filter || {};
-    filter['owner'] = ownerId;
-    return this.radiomonitorService.radioMonitorModel
-      .where(filter)
-      .countDocuments();
+    queryDto.filter['owner'] = ownerId;
+    return this.radiomonitorService.getCount(queryDto)
   }
 
   @Delete(':id/owners/:ownerId/unsubscribe')

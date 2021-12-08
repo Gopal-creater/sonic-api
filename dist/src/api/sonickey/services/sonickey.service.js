@@ -34,13 +34,15 @@ const Enums_1 = require("../../../constants/Enums");
 const s3fileupload_service_1 = require("../../s3fileupload/s3fileupload.service");
 const detection_service_1 = require("../../detection/detection.service");
 const detection_schema_1 = require("../../detection/schemas/detection.schema");
+const user_service_1 = require("../../user/user.service");
 let SonickeyService = class SonickeyService {
-    constructor(sonicKeyModel, fileOperationService, fileHandlerService, s3FileUploadService, detectionService) {
+    constructor(sonicKeyModel, fileOperationService, fileHandlerService, s3FileUploadService, detectionService, userService) {
         this.sonicKeyModel = sonicKeyModel;
         this.fileOperationService = fileOperationService;
         this.fileHandlerService = fileHandlerService;
         this.s3FileUploadService = s3FileUploadService;
         this.detectionService = detectionService;
+        this.userService = userService;
     }
     generateUniqueSonicKey() {
         return nanoid_1.nanoid(11);
@@ -59,11 +61,22 @@ let SonickeyService = class SonickeyService {
     }
     async createFromJob(createSonicKeyDto) {
         const channel = Enums_1.ChannelEnums.PCAPP;
-        const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { license: createSonicKeyDto.licenseId || createSonicKeyDto.license, channel: channel, _id: createSonicKeyDto.sonicKey }));
+        const userGroups = await this.userService.adminListGroupsForUser(createSonicKeyDto.owner);
+        const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { license: createSonicKeyDto.licenseId || createSonicKeyDto.license, channel: channel, groups: userGroups.groupNames, _id: createSonicKeyDto.sonicKey }));
+        return newSonicKey.save();
+    }
+    async createFromBinaryForUser(ownerId, sonickey) {
+        const userGroups = await this.userService.adminListGroupsForUser(ownerId);
+        const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, sonickey), { owner: ownerId, groups: userGroups.groupNames }));
+        return newSonicKey.save();
+    }
+    async saveSonicKeyForUser(ownerId, sonickey) {
+        const userGroups = await this.userService.adminListGroupsForUser(ownerId);
+        const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, sonickey), { owner: ownerId, groups: userGroups.groupNames }));
         return newSonicKey.save();
     }
     async getAll(queryDto) {
-        const { limit, skip, sort, page, filter, select, populate } = queryDto;
+        const { limit, skip, sort, page, filter, select, populate, includeGroupData, } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
         paginateOptions['select'] = select;
@@ -72,6 +85,13 @@ let SonickeyService = class SonickeyService {
         paginateOptions['page'] = page;
         paginateOptions['limit'] = limit;
         return await this.sonicKeyModel['paginate'](filter, paginateOptions);
+    }
+    async getCount(queryDto) {
+        const { filter, includeGroupData } = queryDto;
+        return this.sonicKeyModel
+            .find(filter || {})
+            .countDocuments()
+            .exec();
     }
     async encode(file, encodingStrength = 15) {
         const random11CharKey = this.generateUniqueSonicKey();
@@ -199,7 +219,8 @@ let SonickeyService = class SonickeyService {
         var _a, _b, _c, _d, _e, _f, _g, _h;
         const musicData = await this.exractMusicMetaFromFile(file.path);
         sonicKeyDto.contentSize = sonicKeyDto.contentSize || (file === null || file === void 0 ? void 0 : file.size);
-        sonicKeyDto.contentFileName = sonicKeyDto.contentFileName || (file === null || file === void 0 ? void 0 : file.originalname);
+        sonicKeyDto.contentFileName =
+            sonicKeyDto.contentFileName || (file === null || file === void 0 ? void 0 : file.originalname);
         sonicKeyDto.contentFileType = sonicKeyDto.contentFileType || (file === null || file === void 0 ? void 0 : file.mimetype);
         sonicKeyDto.contentDuration =
             sonicKeyDto.contentDuration || ((_a = musicData === null || musicData === void 0 ? void 0 : musicData.format) === null || _a === void 0 ? void 0 : _a.duration);
@@ -229,11 +250,13 @@ let SonickeyService = class SonickeyService {
 SonickeyService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(sonickey_schema_1.SonicKey.name)),
+    __param(5, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         file_operation_service_1.FileOperationService,
         file_handler_service_1.FileHandlerService,
         s3fileupload_service_1.S3FileUploadService,
-        detection_service_1.DetectionService])
+        detection_service_1.DetectionService,
+        user_service_1.UserService])
 ], SonickeyService);
 exports.SonickeyService = SonickeyService;
 //# sourceMappingURL=sonickey.service.js.map

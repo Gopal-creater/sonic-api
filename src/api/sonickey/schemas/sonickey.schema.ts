@@ -195,6 +195,11 @@ export class SonicKey extends Document {
   @ApiProperty()
   @Prop({default:false})
   isAuthorizedForEncode?:boolean
+  
+
+  @ApiProperty()
+  @Prop([String])
+  groups?: [string];
 }
 
 export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);

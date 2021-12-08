@@ -36,7 +36,7 @@ let RadioMonitorService = class RadioMonitorService {
         this.userService = userService;
     }
     async findAll(queryDto) {
-        const { limit, skip, sort, page, filter, select, populate } = queryDto;
+        const { limit, skip, sort, page, filter, select, populate, includeGroupData } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
         paginateOptions['select'] = select;
@@ -45,6 +45,13 @@ let RadioMonitorService = class RadioMonitorService {
         paginateOptions['page'] = page;
         paginateOptions['limit'] = limit;
         return this.radioMonitorModel['paginate'](filter, paginateOptions);
+    }
+    async getCount(queryDto) {
+        const { filter, includeGroupData, } = queryDto;
+        return this.radioMonitorModel
+            .find(filter || {})
+            .countDocuments()
+            .exec();
     }
     async subscribeRadioToMonitor(createRadioMonitorDto, owner, license) {
         const { radio } = createRadioMonitorDto;

@@ -35,6 +35,21 @@ export class DetectionOwnerController {
     private readonly sonickeyServive: SonickeyService,
   ) {}
 
+  @Get('/plays-dashboard-data')
+  @AnyApiQueryTemplate()
+  @ApiQuery({name:"groupByTime",enum:['month','year','dayOfMonth'],required:false})
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Top radiostations with top sonickeys' })
+  async getPlaysDashboardData(
+    @Param('targetUser') targetUser: string,
+    @Param('groupByTime') dateRange: groupByTime,
+    @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
+  ) {
+    const { filter } = queryDto;
+
+  }
+
   @Get(`/radioStations/top-radiostations-with-top-sonickeys`)
   @AnyApiQueryTemplate({
     additionalHtmlDescription: `
@@ -47,7 +62,7 @@ export class DetectionOwnerController {
   </fieldset>
  `,
   })
-  // @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @ApiQuery({name:"includeGraph",type:Boolean,required:false})
   @ApiQuery({name:"groupByTime",enum:['month','year','dayOfMonth'],required:false})
@@ -116,9 +131,10 @@ export class DetectionOwnerController {
   @Get('/:channel/data')
   @ApiQuery({name:"radioStation",type:String,required:false})
   @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
-  @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
-  @ApiBearerAuth()
+  // @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  // @ApiBearerAuth()
   @ApiSecurity('x-api-key')
+  @ApiQuery({name:"includeGroupData",type:Boolean,required:false})
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Detections for specific channel and specific user' })
   findAll(
@@ -136,6 +152,7 @@ export class DetectionOwnerController {
   @Get('/:channel/sonicKeys/:sonicKey/detected-details')
   @ApiQuery({name:"radioStation",type:String,required:false})
   // @ApiQuery({name:"select",type:String,required:false})
+  @ApiQuery({name:"includeGroupData",type:Boolean,required:false})
   @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
   @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
@@ -157,6 +174,7 @@ export class DetectionOwnerController {
   }
 
   @Get('/:channel/count')
+  @ApiQuery({name:"includeGroupData",type:Boolean,required:false})
   @ApiQuery({name:"radioStation",type:String,required:false})
   @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
   @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
@@ -173,6 +191,7 @@ export class DetectionOwnerController {
  `,
   })
   @ApiOperation({ summary: 'Get Count' })
+  @ApiQuery({name:"includeGroupData",type:Boolean,required:false})
   getCount(
     @Param('targetUser') targetUser: string,
     @Param('channel') channel: string,
@@ -182,7 +201,6 @@ export class DetectionOwnerController {
       queryDto.filter['channel'] = channel;
     }
     queryDto.filter['owner'] = targetUser;
-    const filter = queryDto.filter || {};
-    return this.detectionService.detectionModel.where(filter).countDocuments();
+    return this.detectionService.getTotalHitsCount(queryDto);
   }
 }

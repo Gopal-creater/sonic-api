@@ -53,8 +53,7 @@ let DetectionController = class DetectionController {
         return newDetection.save();
     }
     async getCount(queryDto) {
-        const filter = queryDto.filter || {};
-        return this.detectionService.detectionModel.where(filter).countDocuments();
+        return this.detectionService.getTotalHitsCount(queryDto);
     }
 };
 __decorate([

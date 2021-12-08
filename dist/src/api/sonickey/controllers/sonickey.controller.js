@@ -79,8 +79,7 @@ let SonickeyController = class SonickeyController {
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
     async getCount(queryDto) {
-        const filter = queryDto.filter || {};
-        return this.sonicKeyService.sonicKeyModel.where(filter).countDocuments();
+        return this.sonicKeyService.getCount(queryDto);
     }
     async getOne(sonickey) {
         return this.sonicKeyService.findBySonicKeyOrFail(sonickey);
@@ -103,7 +102,7 @@ let SonickeyController = class SonickeyController {
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Enums_1.ChannelEnums.PORTAL;
             const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId }));
-            return newSonicKey.save();
+            return this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
         })
             .catch(err => {
             throw new common_1.InternalServerErrorException(err);
@@ -128,7 +127,7 @@ let SonickeyController = class SonickeyController {
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Enums_1.ChannelEnums.PORTAL;
             const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId }));
-            return newSonicKey.save();
+            return this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
         })
             .catch(err => {
             throw new common_1.InternalServerErrorException(err);
@@ -257,8 +256,9 @@ __decorate([
     common_1.Get('/'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
+    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys' }),
-    openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
@@ -297,9 +297,10 @@ __decorate([
     common_1.Get('/owners/:ownerId'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
+    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user' }),
-    openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('ownerId')),
     __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
@@ -312,7 +313,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular job' }),
-    openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('jobId')),
     __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
@@ -322,6 +323,7 @@ __decorate([
 __decorate([
     common_1.Get('/count'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({
         summary: 'Get count of all sonickeys also accept filter as query params',

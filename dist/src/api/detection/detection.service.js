@@ -27,12 +27,16 @@ const mongoose_2 = require("mongoose");
 const Enums_1 = require("../../constants/Enums");
 const mongoose_utils_1 = require("../../shared/utils/mongoose.utils");
 const types_1 = require("../../shared/types");
+const user_service_1 = require("../user/user.service");
 let DetectionService = class DetectionService {
-    constructor(detectionModel) {
+    constructor(detectionModel, userService) {
         this.detectionModel = detectionModel;
+        this.userService = userService;
+    }
+    async getPlaysDashboardData() {
     }
     async findAll(queryDto, aggregateQuery) {
-        const { limit, skip, sort, page, filter, select, populate } = queryDto;
+        const { limit, skip, sort, page, filter, select, populate, aggregateSearch, includeGroupData, } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
         paginateOptions['select'] = select;
@@ -40,7 +44,6 @@ let DetectionService = class DetectionService {
         paginateOptions['offset'] = skip;
         paginateOptions['page'] = page;
         paginateOptions['limit'] = limit;
-        console.log("paginateOptions", paginateOptions);
         const aggregate = this.detectionModel.aggregate([
             {
                 $match: Object.assign({}, filter),
@@ -69,6 +72,40 @@ let DetectionService = class DetectionService {
         else {
             return this.detectionModel['paginate'](filter, paginateOptions);
         }
+    }
+    async getTotalHitsCount(queryDto) {
+        const { filter, includeGroupData } = queryDto;
+        return this.detectionModel
+            .find(filter || {})
+            .countDocuments()
+            .exec();
+    }
+    async getTotalPlaysCount(queryDto) {
+        const { filter } = queryDto;
+        const playsDetails = await this.detectionModel.aggregate([
+            {
+                $match: filter,
+            },
+            { $sort: { detectedAt: -1 } },
+            { $group: { _id: '$radioStation', totalKeysDetected: { $sum: 1 } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            {
+                $project: {
+                    radioStation: { $first: '$radioStation' },
+                    totalKeysDetected: 1,
+                    otherField: 1,
+                },
+            },
+            { $sort: { totalKeysDetected: -1 } },
+        ]);
+        return playsDetails;
     }
     async findTopRadioStationsWithSonicKeysForOwner(ownerId, topLimit, filter = {}) {
         var e_1, _a;
@@ -187,7 +224,9 @@ let DetectionService = class DetectionService {
 DetectionService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(detection_schema_1.Detection.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        user_service_1.UserService])
 ], DetectionService);
 exports.DetectionService = DetectionService;
 //# sourceMappingURL=detection.service.js.map

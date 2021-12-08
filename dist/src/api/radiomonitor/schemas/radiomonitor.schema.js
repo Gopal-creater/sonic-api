@@ -80,6 +80,11 @@ __decorate([
     mongoose_1.Prop(),
     __metadata("design:type", Map)
 ], RadioMonitor.prototype, "metaData", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop([String]),
+    __metadata("design:type", Array)
+], RadioMonitor.prototype, "groups", void 0);
 RadioMonitor = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.RadioMonitorSchemaName })
 ], RadioMonitor);

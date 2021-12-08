@@ -87,7 +87,7 @@ export class SonickeyThirdPartyController {
           _id: sonicKey,
           license: licenseId,
         });
-        return newSonicKey.save();
+        return this.sonicKeyService.saveSonicKeyForUser(owner,newSonicKey)
       })
       .catch(err => {
         throw new InternalServerErrorException(err);

@@ -156,7 +156,6 @@ export class DetectionController {
     summary: 'Get count of all detection also accept filter as query params',
   })
   async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
-    const filter = queryDto.filter || {};
-    return this.detectionService.detectionModel.where(filter).countDocuments();
+    return this.detectionService.getTotalHitsCount(queryDto)
   }
 }

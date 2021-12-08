@@ -62,11 +62,8 @@ let RadioMonitorOwnerController = class RadioMonitorOwnerController {
         return this.radiomonitorService.startListeningStreamBulk(ids);
     }
     async getSubscriberCount(owner, ownerId, queryDto) {
-        const filter = queryDto.filter || {};
-        filter['owner'] = ownerId;
-        return this.radiomonitorService.radioMonitorModel
-            .where(filter)
-            .countDocuments();
+        queryDto.filter['owner'] = ownerId;
+        return this.radiomonitorService.getCount(queryDto);
     }
     async unsubscribe(id, ownerId) {
         await this.radiomonitorService.findByIdOrFail(id);
@@ -83,6 +80,7 @@ __decorate([
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiBearerAuth(),
+    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
     swagger_1.ApiOperation({ summary: 'Get all subscribed radio stations' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiomonitordto").MongoosePaginateRadioMonitorDto }),
     __param(0, decorators_1.User('sub')),
@@ -172,6 +170,7 @@ __decorate([
 __decorate([
     common_1.Get('owners/:ownerId/subscriber-count'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get counts with filter eg: ?isListeningStarted=true OR ?isError=true etc..' }),
     openapi.ApiResponse({ status: 200, type: Number }),

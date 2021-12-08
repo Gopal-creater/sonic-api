@@ -5,7 +5,7 @@ import { groupByTime } from 'src/shared/types';
 
 export class ParsedQueryDto implements QueryOptions {
   @ApiHideProperty()
-  filter: any;
+  filter: Record<any,any>;
 
   @ApiHideProperty()
   sort?: any;
@@ -23,6 +23,9 @@ export class ParsedQueryDto implements QueryOptions {
   populate?: any;
 
   @ApiHideProperty()
+  aggregateSearch?:any[]
+
+  @ApiHideProperty()
   page?:number;
 
   @ApiHideProperty()
@@ -30,6 +33,9 @@ export class ParsedQueryDto implements QueryOptions {
 
   @ApiHideProperty()
   includeGraph?:boolean;
+
+  @ApiHideProperty()
+  includeGroupData?:boolean;
 
   @ApiHideProperty()
   groupByTime?:groupByTime;

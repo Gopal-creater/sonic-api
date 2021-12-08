@@ -38,6 +38,9 @@ let DetectionOwnerController = class DetectionOwnerController {
         this.detectionService = detectionService;
         this.sonickeyServive = sonickeyServive;
     }
+    async getPlaysDashboardData(targetUser, dateRange, queryDto) {
+        const { filter } = queryDto;
+    }
     async getTopRadiostations(targetUser, queryDto) {
         var e_1, _a;
         const { topLimit = 3, includeGraph, groupByTime, filter } = queryDto;
@@ -95,10 +98,24 @@ let DetectionOwnerController = class DetectionOwnerController {
             queryDto.filter['channel'] = channel;
         }
         queryDto.filter['owner'] = targetUser;
-        const filter = queryDto.filter || {};
-        return this.detectionService.detectionModel.where(filter).countDocuments();
+        return this.detectionService.getTotalHitsCount(queryDto);
     }
 };
+__decorate([
+    common_1.Get('/plays-dashboard-data'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiQuery({ name: "groupByTime", enum: ['month', 'year', 'dayOfMonth'], required: false }),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get Top radiostations with top sonickeys' }),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Param('groupByTime')),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], DetectionOwnerController.prototype, "getPlaysDashboardData", null);
 __decorate([
     common_1.Get(`/radioStations/top-radiostations-with-top-sonickeys`),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
@@ -112,6 +129,7 @@ __decorate([
   </fieldset>
  `,
     }),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiQuery({ name: "includeGraph", type: Boolean, required: false }),
     swagger_1.ApiQuery({ name: "groupByTime", enum: ['month', 'year', 'dayOfMonth'], required: false }),
@@ -150,9 +168,8 @@ __decorate([
     common_1.Get('/:channel/data'),
     swagger_1.ApiQuery({ name: "radioStation", type: String, required: false }),
     swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
     swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Detections for specific channel and specific user' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDeectionDto }),
@@ -166,6 +183,7 @@ __decorate([
 __decorate([
     common_1.Get('/:channel/sonicKeys/:sonicKey/detected-details'),
     swagger_1.ApiQuery({ name: "radioStation", type: String, required: false }),
+    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
     swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
     common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
@@ -183,6 +201,7 @@ __decorate([
 ], DetectionOwnerController.prototype, "getDetectedDetailsOfSingleSonicKey", null);
 __decorate([
     common_1.Get('/:channel/count'),
+    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
     swagger_1.ApiQuery({ name: "radioStation", type: String, required: false }),
     swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
@@ -199,7 +218,8 @@ __decorate([
  `,
     }),
     swagger_1.ApiOperation({ summary: 'Get Count' }),
-    openapi.ApiResponse({ status: 200 }),
+    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
+    openapi.ApiResponse({ status: 200, type: Number }),
     __param(0, common_1.Param('targetUser')),
     __param(1, common_1.Param('channel')),
     __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
