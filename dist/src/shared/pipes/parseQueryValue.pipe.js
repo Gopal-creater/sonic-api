@@ -69,6 +69,7 @@ let ParseQueryValue = class ParseQueryValue {
                 (_s = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _s === void 0 ? true : delete _s.groupByTime;
             }
             if (parsed === null || parsed === void 0 ? void 0 : parsed.filter) {
+                console.log("filter", parsed === null || parsed === void 0 ? void 0 : parsed.filter);
                 parsed.filter = this.castToObjectId(parsed === null || parsed === void 0 ? void 0 : parsed.filter);
             }
             console.log('parsed', JSON.stringify(parsed));
@@ -83,6 +84,7 @@ let ParseQueryValue = class ParseQueryValue {
         const res = {};
         for (const key in filter) {
             var value = filter[key];
+            console.log(`IsObjectId ${mongoose_utils_1.isObjectId(value)} :${value}`);
             if (mongoose_utils_1.isObjectId(value)) {
                 res[key] = mongoose_utils_1.toObjectId(value);
             }

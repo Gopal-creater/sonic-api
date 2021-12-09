@@ -85,6 +85,11 @@ let DetectionOwnerController = class DetectionOwnerController {
         queryDto.filter['owner'] = targetUser;
         return this.detectionService.findAll(queryDto, true);
     }
+    listPlays(targetUser, queryDto) {
+        queryDto.filter['owner'] = targetUser;
+        queryDto.limit = queryDto.limit || 10;
+        return this.detectionService.topRecentListPlays(queryDto);
+    }
     getDetectedDetailsOfSingleSonicKey(targetUser, channel, sonicKey, queryDto) {
         if (channel !== 'ALL') {
             queryDto.filter['channel'] = channel;
@@ -99,6 +104,13 @@ let DetectionOwnerController = class DetectionOwnerController {
         }
         queryDto.filter['owner'] = targetUser;
         return this.detectionService.getTotalHitsCount(queryDto);
+    }
+    getPlaysCount(targetUser, channel, queryDto) {
+        if (channel !== 'ALL') {
+            queryDto.filter['channel'] = channel;
+        }
+        queryDto.filter['owner'] = targetUser;
+        return this.detectionService.getTotalPlaysCount(queryDto);
     }
 };
 __decorate([
@@ -181,6 +193,20 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], DetectionOwnerController.prototype, "findAll", null);
 __decorate([
+    common_1.Get('/recent-list-plays'),
+    swagger_1.ApiQuery({ name: "radioStation", type: String, required: false }),
+    swagger_1.ApiQuery({ name: "limit", type: Number, required: false }),
+    swagger_1.ApiQuery({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'], required: false }),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({ summary: 'Get All Plays for specific user' }),
+    openapi.ApiResponse({ status: 200, type: [Object] }),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", void 0)
+], DetectionOwnerController.prototype, "listPlays", null);
+__decorate([
     common_1.Get('/:channel/sonicKeys/:sonicKey/detected-details'),
     swagger_1.ApiQuery({ name: "radioStation", type: String, required: false }),
     swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
@@ -227,6 +253,33 @@ __decorate([
     __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], DetectionOwnerController.prototype, "getCount", null);
+__decorate([
+    common_1.Get('/:channel/count-plays'),
+    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
+    swagger_1.ApiQuery({ name: "radioStation", type: String, required: false }),
+    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    swagger_1.ApiBearerAuth(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+        additionalHtmlDescription: `
+  <fieldset>
+  <legend><h1>Example:</h1></legend>
+  <code><small>BASE_URL/detections/owners/:targetUser/:channel/count-plays/?detectedAt<2021-06-30&detectedAt>2021-06-01</small></code>
+ <br/>
+ <h4>OR For Specific RadioStation</h4>
+ <code><small>BASE_URL/detections/owners/:targetUser/:channel/count-plays/?detectedAt<2021-06-30&detectedAt>2021-06-01&radioStation=609cd75081fe3a15732162ef</small></code>
+  </fieldset>
+ `,
+    }),
+    swagger_1.ApiOperation({ summary: 'Get Plays Count' }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/general.dto").PlaysCountResponseDto }),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Param('channel')),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", void 0)
+], DetectionOwnerController.prototype, "getPlaysCount", null);
 DetectionOwnerController = __decorate([
     swagger_1.ApiTags('Detection Controller'),
     common_1.Controller('detections/owners/:targetUser'),

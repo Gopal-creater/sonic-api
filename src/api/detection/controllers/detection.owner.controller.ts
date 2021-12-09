@@ -149,6 +149,24 @@ export class DetectionOwnerController {
     return this.detectionService.findAll(queryDto,true);
   }
 
+  @Get('/recent-list-plays')
+  @ApiQuery({name:"radioStation",type:String,required:false})
+  @ApiQuery({name:"limit",type:Number,required:false})
+  @ApiQuery({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'],required:false })
+  // @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  // @ApiBearerAuth()
+  // @ApiSecurity('x-api-key')
+  @AnyApiQueryTemplate()
+  @ApiOperation({ summary: 'Get All Plays for specific user' })
+  listPlays(
+    @Param('targetUser') targetUser: string,
+    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+  ) {
+    queryDto.filter['owner'] = targetUser;
+    queryDto.limit=queryDto.limit||10
+    return this.detectionService.topRecentListPlays(queryDto);
+  }
+
   @Get('/:channel/sonicKeys/:sonicKey/detected-details')
   @ApiQuery({name:"radioStation",type:String,required:false})
   // @ApiQuery({name:"select",type:String,required:false})
@@ -202,5 +220,35 @@ export class DetectionOwnerController {
     }
     queryDto.filter['owner'] = targetUser;
     return this.detectionService.getTotalHitsCount(queryDto);
+  }
+
+  @Get('/:channel/count-plays')
+  @ApiQuery({name:"includeGroupData",type:Boolean,required:false})
+  @ApiQuery({name:"radioStation",type:String,required:false})
+  @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @ApiBearerAuth()
+  @AnyApiQueryTemplate({
+    additionalHtmlDescription: `
+  <fieldset>
+  <legend><h1>Example:</h1></legend>
+  <code><small>BASE_URL/detections/owners/:targetUser/:channel/count-plays/?detectedAt<2021-06-30&detectedAt>2021-06-01</small></code>
+ <br/>
+ <h4>OR For Specific RadioStation</h4>
+ <code><small>BASE_URL/detections/owners/:targetUser/:channel/count-plays/?detectedAt<2021-06-30&detectedAt>2021-06-01&radioStation=609cd75081fe3a15732162ef</small></code>
+  </fieldset>
+ `,
+  })
+  @ApiOperation({ summary: 'Get Plays Count' })
+  getPlaysCount(
+    @Param('targetUser') targetUser: string,
+    @Param('channel') channel: string,
+    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+  ) {
+    if (channel !== 'ALL') {
+      queryDto.filter['channel'] = channel;
+    }
+    queryDto.filter['owner'] = targetUser;
+    return this.detectionService.getTotalPlaysCount(queryDto);
   }
 }

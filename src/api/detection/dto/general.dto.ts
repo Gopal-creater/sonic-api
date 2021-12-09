@@ -24,6 +24,17 @@ export class TopRadioStation{
     @ApiProperty()
     sonicKey: SonicKey;
   };
+
+  export class PlaysCountResponseDto {
+    @ApiProperty()
+    _id: string;
+  
+    @ApiProperty()
+    playsCount: number;
+  
+    @ApiProperty()
+    uniquePlaysCount: number;
+  };
   
   export class GraphData{
     @ApiProperty()

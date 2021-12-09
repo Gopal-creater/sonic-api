@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TopRadioStationWithTopSonicKey = exports.GraphData = exports.TopSonicKey = exports.TopRadioStation = void 0;
+exports.TopRadioStationWithTopSonicKey = exports.GraphData = exports.PlaysCountResponseDto = exports.TopSonicKey = exports.TopRadioStation = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const sonickey_schema_1 = require("../../sonickey/schemas/sonickey.schema");
@@ -51,6 +51,25 @@ __decorate([
     __metadata("design:type", sonickey_schema_1.SonicKey)
 ], TopSonicKey.prototype, "sonicKey", void 0);
 exports.TopSonicKey = TopSonicKey;
+;
+class PlaysCountResponseDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { _id: { required: true, type: () => String }, playsCount: { required: true, type: () => Number }, uniquePlaysCount: { required: true, type: () => Number } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], PlaysCountResponseDto.prototype, "_id", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysCountResponseDto.prototype, "playsCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysCountResponseDto.prototype, "uniquePlaysCount", void 0);
+exports.PlaysCountResponseDto = PlaysCountResponseDto;
 ;
 class GraphData {
     static _OPENAPI_METADATA_FACTORY() {

@@ -13,6 +13,7 @@ import {
   TopRadioStationWithTopSonicKey,
   GraphData,
   TopSonicKey,
+  PlaysCountResponseDto,
 } from './dto/general.dto';
 
 @Injectable()
@@ -24,8 +25,55 @@ export class DetectionService {
     private readonly userService: UserService,
   ) {}
 
-  async getPlaysDashboardData(){
+  async getPlaysDashboardData(filter: Record<any, any>) {
+    const top5RadioStations = await this.findTopRadioStations(filter, 5);
+  }
 
+  async topRecentListPlays(queryDto: ParsedQueryDto){
+    const {
+      limit=10,
+      skip,
+      sort,
+      page,
+      filter,
+      select,
+      populate,
+      aggregateSearch,
+      includeGroupData,
+    } = queryDto;
+      return this.detectionModel.aggregate([
+        {
+          $match: {
+            ...filter,
+          },
+        },
+        {
+          $sort: {
+            detectedAt: -1
+          }
+        },
+        {
+          $lookup: {
+            //populate radioStation from its relational table
+            from: 'SonicKey',
+            localField: 'sonicKey',
+            foreignField: '_id',
+            as: 'sonicKey',
+          },
+        },
+        {
+          $lookup: {
+            //populate radioStation from its relational table
+            from: 'RadioStation',
+            localField: 'radioStation',
+            foreignField: '_id',
+            as: 'radioStation',
+          },
+        },
+        {
+          $limit:limit
+        }  
+      ])
   }
 
   async findAll(
@@ -122,25 +170,34 @@ export class DetectionService {
       .exec();
   }
 
-
   /**
-   * db.collection.aggregate([
+   *db.collection.aggregate([
+  {
+    $sort: {
+      detectedAt: 1
+    }
+  },
   {
     $group: {
       "_id": null,
       "sonicKeys": {
         $push: "$sonicKey"
+      },
+      "initialResults": {
+        $push: "$$ROOT"
       }
     }
   },
   //Since Reduce function starts with its initial Value, we have to add some dummy data at the end of array
   {
     $project: {
-      sonicKeys: {
+      initialResults: {
         $concatArrays: [
-          "$sonicKeys",
+          "$initialResults",
           [
-            "Unknown"
+            {
+              "sonicKey": "Unknown"
+            }
           ]
         ]
       },
@@ -167,12 +224,17 @@ export class DetectionService {
   {
     $project: {
       uniqueSonicKeys: 1,
-      keys: {
+      sonicKeysWithCount: {
         $reduce: {
-          input: "$sonicKeys",
+          input: "$initialResults",
           initialValue: {
             item: null,
             count: 1,
+            dates: [
+              {
+                $first: "$initialResults.detectedAt"
+              }
+            ],
             results: []
           },
           in: {
@@ -182,7 +244,7 @@ export class DetectionService {
                   {
                     $strcasecmp: [
                       "$$value.item",
-                      "$$this"
+                      "$$this.sonicKey"
                     ]
                   },
                   0
@@ -190,11 +252,19 @@ export class DetectionService {
               },
               {
                 results: "$$value.results",
-                item: "$$this",
+                item: "$$this.sonicKey",
                 count: {
                   $add: [
                     "$$value.count",
                     1
+                  ]
+                },
+                dates: {
+                  $concatArrays: [
+                    "$$value.dates",
+                    [
+                      "$$this.detectedAt"
+                    ]
                   ]
                 }
               },
@@ -205,13 +275,17 @@ export class DetectionService {
                     [
                       {
                         item: "$$value.item",
-                        count: "$$value.count"
+                        count: "$$value.count",
+                        dates: "$$value.dates"
                       }
                     ]
                   ]
                 },
-                item: "$$this",
-                count: 1
+                item: "$$this.sonicKey",
+                count: 1,
+                dates: [
+                  "$$this.detectedAt"
+                ]
               }
             ]
           }
@@ -223,12 +297,12 @@ export class DetectionService {
   {
     $project: {
       uniqueSonicKeys: 1,
-      sonicKeys: {
+      sonicKeysWithCount: {
         $slice: [
-          "$keys.results",
+          "$sonicKeysWithCount.results",
           1,
           {
-            $size: "$keys.results"
+            $size: "$sonicKeysWithCount.results"
           }
         ]
       },
@@ -238,10 +312,32 @@ export class DetectionService {
   {
     $addFields: {
       playsCount: {
-        $size: "$sonicKeys"
+        $size: "$sonicKeysWithCount"
       },
       uniquePlaysCount: {
         $size: "$uniqueSonicKeys"
+      },
+      sonicKeysWithCount: {
+        $map: {
+          input: "$sonicKeysWithCount",
+          as: "data",
+          in: {
+            item: "$$data.item",
+            count: "$$data.count",
+            dates: "$$data.dates",
+            duration: {
+              $dateDiff: {
+                startDate: {
+                  $first: "$$data.dates"
+                },
+                endDate: {
+                  $last: "$$data.dates"
+                },
+                unit: "second"
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -249,35 +345,146 @@ export class DetectionService {
    * @param queryDto 
    * @returns 
    */
-  async getTotalPlaysCount(queryDto: ParsedQueryDto) {
-    const { filter} = queryDto;
-    const playsDetails = await this.detectionModel.aggregate(
-      [
-        {
-          $match: filter,
+  async getTotalPlaysCount(queryDto: ParsedQueryDto):Promise<PlaysCountResponseDto> {
+    const { filter } = queryDto;
+    const playsCountDetails = await this.detectionModel.aggregate([
+      {
+        $match: filter,
+      },
+      {
+        $sort: {
+          detectedAt: -1, //Desending Order
         },
-        { $sort: { detectedAt: -1 } }, //sort in decending order
-        { $group: { _id: '$radioStation', totalKeysDetected: { $sum: 1 } } }, //group by radioStation to get duplicates counts
-        {
-          $lookup: {
-            //populate radioStation from its relational table
-            from: 'RadioStation',
-            localField: '_id',
-            foreignField: '_id',
-            as: 'radioStation',
+      },
+      {
+        $group: {
+          _id: null,
+          sonicKeys: {
+            $push: '$sonicKey',
+          },
+          initialResults: {
+            $push: '$$ROOT',
           },
         },
-        {
-          $project: {
-            radioStation: { $first: '$radioStation' },
-            totalKeysDetected: 1,
-            otherField: 1,
-          }, //lookup will return array so always tale first index elememt
+      },
+      //Since Reduce function starts with its initial Value, we have to add some dummy data at the end of array
+      {
+        $project: {
+          initialResults: {
+            $concatArrays: [
+              '$initialResults',
+              [
+                {
+                  sonicKey: 'Unknown',
+                },
+              ],
+            ],
+          },
+          uniqueSonicKeys: {
+            $setUnion: {
+              $reduce: {
+                input: '$sonicKeys',
+                initialValue: [],
+                in: {
+                  $concatArrays: ['$$value', ['$$this']],
+                },
+              },
+            },
+          },
         },
-        { $sort: { totalKeysDetected: -1 } }, //sort in decending order
-      ],
-    );
-    return playsDetails
+      },
+      {
+        $project: {
+          uniqueSonicKeys: 1,
+          sonicKeysWithCount: {
+            $reduce: {
+              input: '$initialResults',
+              initialValue: {
+                item: null,
+                count: 1,
+                dates: [
+                  {
+                    $first: '$initialResults.detectedAt',
+                  },
+                ],
+                results: [],
+              },
+              in: {
+                $cond: [
+                  {
+                    $eq: [
+                      {
+                        $strcasecmp: ['$$value.item', '$$this.sonicKey'],
+                      },
+                      0,
+                    ],
+                  },
+                  {
+                    results: '$$value.results',
+                    item: '$$this.sonicKey',
+                    count: {
+                      $add: ['$$value.count', 1],
+                    },
+                    dates: {
+                      $concatArrays: ['$$value.dates', ['$$this.detectedAt']],
+                    },
+                  },
+                  {
+                    results: {
+                      $concatArrays: [
+                        '$$value.results',
+                        [
+                          {
+                            item: '$$value.item',
+                            count: '$$value.count',
+                            dates: '$$value.dates',
+                          },
+                        ],
+                      ],
+                    },
+                    item: '$$this.sonicKey',
+                    count: 1,
+                    dates: ['$$this.detectedAt'],
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      //Since Reduce function add dummy data in the begning of array which we dont need, lets remove it
+      {
+        $project: {
+          uniqueSonicKeys: 1,
+          sonicKeysWithCount: {
+            $slice: [
+              '$sonicKeysWithCount.results',
+              1,
+              {
+                $size: '$sonicKeysWithCount.results',
+              },
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          playsCount: {
+            $size: '$sonicKeysWithCount',
+          },
+          uniquePlaysCount: {
+            $size: '$uniqueSonicKeys',
+          },
+        },
+      },
+      {
+        $project: {
+          playsCount: 1,
+          uniquePlaysCount: 1,
+        },
+      },
+    ]);
+    return playsCountDetails[0]
   }
 
   // perfect example==> https://stackoverflow.com/questions/22932364/mongodb-group-values-by-multiple-fields

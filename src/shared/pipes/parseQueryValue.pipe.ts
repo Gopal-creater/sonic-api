@@ -66,6 +66,7 @@ export class ParseQueryValue implements PipeTransform {
       }
       // Cast to ObjectId
       if(parsed?.filter){
+        console.log("filter",parsed?.filter)
         parsed.filter=this.castToObjectId(parsed?.filter)
       }
       console.log('parsed', JSON.stringify(parsed));
@@ -81,6 +82,7 @@ export class ParseQueryValue implements PipeTransform {
     const res = {}
       for (const key in filter) {
         var value = filter[key]
+        console.log(`IsObjectId ${isObjectId(value)} :${value}`)
         if(isObjectId(value)){
           res[key] = toObjectId(value)
         }
