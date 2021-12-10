@@ -70,5 +70,9 @@ __decorate([
     swagger_1.ApiHideProperty(),
     __metadata("design:type", String)
 ], ParsedQueryDto.prototype, "groupByTime", void 0);
+__decorate([
+    swagger_1.ApiHideProperty(),
+    __metadata("design:type", Object)
+], ParsedQueryDto.prototype, "relationalFilter", void 0);
 exports.ParsedQueryDto = ParsedQueryDto;
 //# sourceMappingURL=parsedquery.dto.js.map

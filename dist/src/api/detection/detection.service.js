@@ -34,26 +34,30 @@ let DetectionService = class DetectionService {
         this.userService = userService;
     }
     async getPlaysDashboardData(filter) {
-        const top5RadioStations = await this.findTopRadioStations(filter, 5);
-    }
-    async topRecentListPlays(queryDto) {
-        const { limit = 10, skip, sort, page, filter, select, populate, aggregateSearch, includeGroupData, } = queryDto;
-        return this.detectionModel.aggregate([
+        const playsCount = await this.getTotalPlaysCount({ filter: filter });
+        const radioStationsCount = await this.detectionModel.aggregate([
             {
                 $match: Object.assign({}, filter),
             },
             {
-                $sort: {
-                    detectedAt: -1
-                }
+                $group: {
+                    _id: '$radioStation',
+                },
             },
             {
-                $lookup: {
-                    from: 'SonicKey',
-                    localField: 'sonicKey',
-                    foreignField: '_id',
-                    as: 'sonicKey',
+                $match: {
+                    _id: { $exists: true, $ne: null },
                 },
+            },
+            {
+                $match: {
+                    _id: { $exists: true, $ne: "" },
+                },
+            },
+        ]);
+        const countriesCount = await this.detectionModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
             },
             {
                 $lookup: {
@@ -63,10 +67,202 @@ let DetectionService = class DetectionService {
                     as: 'radioStation',
                 },
             },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
             {
-                $limit: limit
-            }
+                $group: {
+                    _id: '$radioStation.country',
+                },
+            },
+            {
+                $match: {
+                    _id: { $exists: true, $ne: null },
+                },
+            },
+            {
+                $match: {
+                    _id: { $exists: true, $ne: "" },
+                },
+            },
         ]);
+        return {
+            playsCount: playsCount.playsCount,
+            radioStationsCount: radioStationsCount.length,
+            countriesCount: countriesCount.length,
+        };
+    }
+    async getPlaysDashboardGraphData(filter) {
+        const playsCountryWise = await this.detectionModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $group: {
+                    _id: '$radioStation.country',
+                    total: { $sum: 1 }
+                },
+            },
+            {
+                $match: {
+                    _id: { $exists: true, $ne: null },
+                },
+            },
+            {
+                $match: {
+                    _id: { $exists: true, $ne: "" },
+                },
+            },
+        ]);
+        const playsStationWise = await this.detectionModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $group: {
+                    _id: '$radioStation.name',
+                    total: { $sum: 1 }
+                },
+            },
+            {
+                $match: {
+                    _id: { $exists: true, $ne: null },
+                },
+            },
+            {
+                $match: {
+                    _id: { $exists: true, $ne: "" },
+                },
+            },
+        ]);
+        const playsSongWise = await this.detectionModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $group: {
+                    _id: '$sonicKey.contentName',
+                    total: { $sum: 1 }
+                },
+            },
+            {
+                $match: {
+                    _id: { $exists: true, $ne: null },
+                },
+            },
+            {
+                $match: {
+                    _id: { $exists: true, $ne: "" },
+                },
+            },
+        ]);
+        const playsArtistWise = await this.detectionModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $group: {
+                    _id: '$sonicKey.contentOwner',
+                    total: { $sum: 1 }
+                },
+            },
+            {
+                $match: {
+                    _id: { $exists: true, $ne: null },
+                },
+            },
+            {
+                $match: {
+                    _id: { $exists: true, $ne: "" },
+                },
+            },
+        ]);
+        return {
+            playsCountryWise,
+            playsSongWise,
+            playsStationWise,
+            playsArtistWise
+        };
+    }
+    async listPlays(queryDto, pagination = true) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        const aggregate = this.detectionModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ detectedAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $limit: limit,
+            },
+        ]);
+        if (!pagination) {
+            return aggregate;
+        }
+        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
     }
     async findAll(queryDto, aggregateQuery) {
         const { limit, skip, sort, page, filter, select, populate, aggregateSearch, includeGroupData, } = queryDto;
@@ -252,15 +448,17 @@ let DetectionService = class DetectionService {
         ]);
         return playsCountDetails[0];
     }
-    async findTopRadioStationsWithSonicKeysForOwner(ownerId, topLimit, filter = {}) {
+    async findTopRadioStationsWithPlaysCountForOwner(ownerId, topLimit, filter = {}) {
         var e_1, _a;
         const topStations = await this.findTopRadioStations(Object.assign(Object.assign({}, filter), { owner: ownerId }), topLimit);
         var topStationsWithTopKeys = [];
         try {
             for (var topStations_1 = __asyncValues(topStations), topStations_1_1; topStations_1_1 = await topStations_1.next(), !topStations_1_1.done;) {
                 const station = topStations_1_1.value;
-                const sonicKeys = await this.findTopSonicKeysForRadioStation(station._id, topLimit, filter);
-                station['sonicKeys'] = sonicKeys;
+                const playsCount = await this.getTotalPlaysCount({
+                    filter: Object.assign(Object.assign({}, filter), { owner: ownerId, radioStation: station._id }),
+                });
+                station['playsCount'] = playsCount;
                 topStationsWithTopKeys.push(station);
             }
         }
@@ -273,6 +471,27 @@ let DetectionService = class DetectionService {
         }
         return topStationsWithTopKeys;
     }
+    async findTopRadioStationsWithSonicKeysForOwner(ownerId, topLimit, filter = {}) {
+        var e_2, _a;
+        const topStations = await this.findTopRadioStations(Object.assign(Object.assign({}, filter), { owner: ownerId }), topLimit);
+        var topStationsWithTopKeys = [];
+        try {
+            for (var topStations_2 = __asyncValues(topStations), topStations_2_1; topStations_2_1 = await topStations_2.next(), !topStations_2_1.done;) {
+                const station = topStations_2_1.value;
+                const sonicKeys = await this.findTopSonicKeysForRadioStation(station._id, topLimit, filter);
+                station['sonicKeys'] = sonicKeys;
+                topStationsWithTopKeys.push(station);
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (topStations_2_1 && !topStations_2_1.done && (_a = topStations_2.return)) await _a.call(topStations_2);
+            }
+            finally { if (e_2) throw e_2.error; }
+        }
+        return topStationsWithTopKeys;
+    }
     async findTopRadioStations(filter, topLimit) {
         filter['channel'] = Enums_1.ChannelEnums.STREAMREADER;
         const topRadioStations = await this.detectionModel.aggregate([
@@ -280,6 +499,8 @@ let DetectionService = class DetectionService {
                 $match: filter,
             },
             { $group: { _id: '$radioStation', totalKeysDetected: { $sum: 1 } } },
+            { $sort: { totalKeysDetected: -1 } },
+            { $limit: topLimit },
             {
                 $lookup: {
                     from: 'RadioStation',
@@ -295,8 +516,6 @@ let DetectionService = class DetectionService {
                     otherField: 1,
                 },
             },
-            { $sort: { totalKeysDetected: -1 } },
-            { $limit: topLimit },
         ]);
         return topRadioStations;
     }

@@ -32,11 +32,24 @@ let ParseQueryValue = class ParseQueryValue {
     transform(queries = {}, metadata) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
         try {
-            const { aggregateSearch } = queries, query = __rest(queries, ["aggregateSearch"]);
+            const { aggregateSearch, relation_filter = JSON.stringify({}) } = queries, query = __rest(queries, ["aggregateSearch", "relation_filter"]);
             const parser = new mongoose_query_parser_1.MongooseQueryParser();
+            const relationPrefix = 'relation_';
             const queryToParse = Object.assign({ page: 1 }, query);
             var parsed = parser.parse(queryToParse);
             parsed = Object.assign({ limit: 50, skip: 0 }, parsed);
+            const relationalFilter = JSON.parse(relation_filter) || {};
+            const objKeysArr = Object.keys(parsed.filter);
+            for (let index = 0; index < objKeysArr.length; index++) {
+                const filterFiled = objKeysArr[index];
+                console.log('filterFiled', filterFiled);
+                if (filterFiled.includes(relationPrefix)) {
+                    relationalFilter[filterFiled.split(relationPrefix)[1]] =
+                        parsed.filter[filterFiled];
+                    delete parsed.filter[filterFiled];
+                }
+            }
+            parsed['relationalFilter'] = relationalFilter;
             if ((_a = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _a === void 0 ? void 0 : _a.page) {
                 parsed['page'] = (_b = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _b === void 0 ? void 0 : _b.page;
                 (_c = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _c === void 0 ? true : delete _c.page;
@@ -44,11 +57,11 @@ let ParseQueryValue = class ParseQueryValue {
             if (aggregateSearch) {
                 const parsedAggregate = JSON.parse(aggregateSearch);
                 if (!lodash_1.isArray(parsedAggregate)) {
-                    throw new common_1.BadRequestException("aggregateSearch params must be an array of object type in stringify format");
+                    throw new common_1.BadRequestException('aggregateSearch params must be an array of object type in stringify format');
                 }
-                console.log("passed========>");
-                if (parsedAggregate.some(e => typeof (e) != 'object')) {
-                    throw new common_1.BadRequestException("aggregateSearch params must be an array of object type in stringify format");
+                console.log('passed========>');
+                if (parsedAggregate.some(e => typeof e != 'object')) {
+                    throw new common_1.BadRequestException('aggregateSearch params must be an array of object type in stringify format');
                 }
                 parsed['aggregateSearch'] = parsedAggregate;
             }
@@ -56,11 +69,13 @@ let ParseQueryValue = class ParseQueryValue {
                 parsed['topLimit'] = (_e = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _e === void 0 ? void 0 : _e.topLimit;
                 (_f = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _f === void 0 ? true : delete _f.topLimit;
             }
-            if (((_g = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _g === void 0 ? void 0 : _g.includeGraph) !== null || ((_h = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _h === void 0 ? void 0 : _h.includeGraph) !== undefined) {
+            if (((_g = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _g === void 0 ? void 0 : _g.includeGraph) !== null ||
+                ((_h = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _h === void 0 ? void 0 : _h.includeGraph) !== undefined) {
                 parsed['includeGraph'] = (_j = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _j === void 0 ? void 0 : _j.includeGraph;
                 (_k = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _k === void 0 ? true : delete _k.includeGraph;
             }
-            if (((_l = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _l === void 0 ? void 0 : _l.includeGroupData) !== null || ((_m = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _m === void 0 ? void 0 : _m.includeGroupData) !== undefined) {
+            if (((_l = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _l === void 0 ? void 0 : _l.includeGroupData) !== null ||
+                ((_m = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _m === void 0 ? void 0 : _m.includeGroupData) !== undefined) {
                 parsed['includeGroupData'] = (_o = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _o === void 0 ? void 0 : _o.includeGroupData;
                 (_p = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _p === void 0 ? true : delete _p.includeGroupData;
             }
@@ -69,11 +84,14 @@ let ParseQueryValue = class ParseQueryValue {
                 (_s = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _s === void 0 ? true : delete _s.groupByTime;
             }
             if (parsed === null || parsed === void 0 ? void 0 : parsed.filter) {
-                console.log("filter", parsed === null || parsed === void 0 ? void 0 : parsed.filter);
                 parsed.filter = this.castToObjectId(parsed === null || parsed === void 0 ? void 0 : parsed.filter);
+            }
+            if (parsed === null || parsed === void 0 ? void 0 : parsed['relationalFilter']) {
+                parsed['relationalFilter'] = this.castToObjectId(parsed['relationalFilter']);
             }
             console.log('parsed', JSON.stringify(parsed));
             console.log('parsed filter', parsed.filter);
+            console.log('parsed relation filter', parsed['relationalFilter']);
             return parsed;
         }
         catch (error) {

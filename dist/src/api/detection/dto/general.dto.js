@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TopRadioStationWithTopSonicKey = exports.GraphData = exports.PlaysCountResponseDto = exports.TopSonicKey = exports.TopRadioStation = void 0;
+exports.TopRadioStationWithPlaysDetails = exports.TopRadioStationWithTopSonicKey = exports.GraphData = exports.PlaysCountResponseDto = exports.TopSonicKey = exports.TopRadioStation = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const sonickey_schema_1 = require("../../sonickey/schemas/sonickey.schema");
@@ -111,4 +111,14 @@ __decorate([
     __metadata("design:type", Array)
 ], TopRadioStationWithTopSonicKey.prototype, "graphsData", void 0);
 exports.TopRadioStationWithTopSonicKey = TopRadioStationWithTopSonicKey;
+class TopRadioStationWithPlaysDetails extends TopRadioStation {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { playsCount: { required: true, type: () => require("./general.dto").PlaysCountResponseDto } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", PlaysCountResponseDto)
+], TopRadioStationWithPlaysDetails.prototype, "playsCount", void 0);
+exports.TopRadioStationWithPlaysDetails = TopRadioStationWithPlaysDetails;
 //# sourceMappingURL=general.dto.js.map

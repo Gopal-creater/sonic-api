@@ -42,4 +42,7 @@ export class ParsedQueryDto implements QueryOptions {
 
   @ApiHideProperty()
   groupByTime?:groupByTime;
+
+  @ApiHideProperty()
+  relationalFilter?:Record<any,any>;
 }

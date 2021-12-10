@@ -60,3 +60,8 @@ export class TopRadioStation{
     @ApiProperty()
     graphsData?:GraphData[]
   } 
+
+  export class TopRadioStationWithPlaysDetails extends TopRadioStation {
+    @ApiProperty()
+    playsCount:PlaysCountResponseDto
+  }

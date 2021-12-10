@@ -14,6 +14,7 @@ import {
   GraphData,
   TopSonicKey,
   PlaysCountResponseDto,
+  TopRadioStationWithPlaysDetails,
 } from './dto/general.dto';
 
 @Injectable()
@@ -26,54 +27,279 @@ export class DetectionService {
   ) {}
 
   async getPlaysDashboardData(filter: Record<any, any>) {
-    const top5RadioStations = await this.findTopRadioStations(filter, 5);
+    const playsCount = await this.getTotalPlaysCount({ filter: filter });
+    const radioStationsCount = await this.detectionModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $group: {
+          _id: '$radioStation',
+        },
+      },
+      {
+        $match: {
+          _id: { $exists: true, $ne: null },
+        },
+      },
+      {
+        $match: {
+          _id: { $exists: true, $ne: "" },
+        },
+      },
+    ]);
+    const countriesCount = await this.detectionModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'RadioStation',
+          localField: 'radioStation',
+          foreignField: '_id',
+          as: 'radioStation',
+        },
+      },
+      { $addFields: { radioStation: { $first: '$radioStation' } } },
+      {
+        $group: {
+          _id: '$radioStation.country',
+        },
+      },
+      {
+        $match: {
+          _id: { $exists: true, $ne: null },
+        },
+      },
+      {
+        $match: {
+          _id: { $exists: true, $ne: "" },
+        },
+      },
+    ]);
+
+    return {
+      playsCount: playsCount.playsCount,
+      radioStationsCount: radioStationsCount.length,
+      countriesCount: countriesCount.length,
+    };
   }
 
-  async topRecentListPlays(queryDto: ParsedQueryDto){
+  async getPlaysDashboardGraphData(filter: Record<any, any>) {
+    const playsCountryWise = await this.detectionModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'RadioStation',
+          localField: 'radioStation',
+          foreignField: '_id',
+          as: 'radioStation',
+        },
+      },
+      { $addFields: { radioStation: { $first: '$radioStation' } } },
+      {
+        $group: {
+          _id: '$radioStation.country',
+          total:{$sum:1}
+        },
+      },
+      {
+        $match: {
+          _id: { $exists: true, $ne: null },
+        },
+      },
+      {
+        $match: {
+          _id: { $exists: true, $ne: "" },
+        },
+      },
+    ]);
+
+    const playsStationWise = await this.detectionModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'RadioStation',
+          localField: 'radioStation',
+          foreignField: '_id',
+          as: 'radioStation',
+        },
+      },
+      { $addFields: { radioStation: { $first: '$radioStation' } } },
+      {
+        $group: {
+          _id: '$radioStation.name',
+          total:{$sum:1}
+        },
+      },
+      {
+        $match: {
+          _id: { $exists: true, $ne: null },
+        },
+      },
+      {
+        $match: {
+          _id: { $exists: true, $ne: "" },
+        },
+      },
+    ]);
+
+    const playsSongWise = await this.detectionModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'SonicKey',
+          localField: 'sonicKey',
+          foreignField: '_id',
+          as: 'sonicKey',
+        },
+      },
+      { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $group: {
+          _id: '$sonicKey.contentName',
+          total:{$sum:1}
+        },
+      },
+      {
+        $match: {
+          _id: { $exists: true, $ne: null },
+        },
+      },
+      {
+        $match: {
+          _id: { $exists: true, $ne: "" },
+        },
+      },
+    ]);
+
+    const playsArtistWise = await this.detectionModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'SonicKey',
+          localField: 'sonicKey',
+          foreignField: '_id',
+          as: 'sonicKey',
+        },
+      },
+      { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $group: {
+          _id: '$sonicKey.contentOwner',
+          total:{$sum:1}
+        },
+      },
+      {
+        $match: {
+          _id: { $exists: true, $ne: null },
+        },
+      },
+      {
+        $match: {
+          _id: { $exists: true, $ne: "" },
+        },
+      },
+    ]);
+
+
+
+    return {
+      playsCountryWise,
+      playsSongWise,
+      playsStationWise,
+      playsArtistWise
+    }
+  }
+
+  async listPlays(queryDto: ParsedQueryDto, pagination: boolean = true) {
     const {
-      limit=10,
+      limit,
       skip,
       sort,
       page,
       filter,
       select,
       populate,
-      aggregateSearch,
-      includeGroupData,
+      relationalFilter,
     } = queryDto;
-      return this.detectionModel.aggregate([
-        {
-          $match: {
-            ...filter,
-          },
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    const aggregate = this.detectionModel.aggregate([
+      {
+        $match: {
+          ...filter,
         },
-        {
-          $sort: {
-            detectedAt: -1
-          }
+      },
+      {
+        $sort: {
+          detectedAt: -1,
+          ...sort,
         },
-        {
-          $lookup: {
-            //populate radioStation from its relational table
-            from: 'SonicKey',
-            localField: 'sonicKey',
-            foreignField: '_id',
-            as: 'sonicKey',
-          },
+      },
+      {
+        $lookup: {
+          //populate sonickey from its relational table
+          from: 'SonicKey',
+          localField: 'sonicKey',
+          foreignField: '_id',
+          as: 'sonicKey',
         },
-        {
-          $lookup: {
-            //populate radioStation from its relational table
-            from: 'RadioStation',
-            localField: 'radioStation',
-            foreignField: '_id',
-            as: 'radioStation',
-          },
+      },
+      { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'RadioStation',
+          localField: 'radioStation',
+          foreignField: '_id',
+          as: 'radioStation',
         },
-        {
-          $limit:limit
-        }  
-      ])
+      },
+      { $addFields: { radioStation: { $first: '$radioStation' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+      {
+        $limit: limit,
+      },
+    ]);
+    if (!pagination) {
+      return aggregate;
+    }
+    return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
   }
 
   async findAll(
@@ -345,7 +571,9 @@ export class DetectionService {
    * @param queryDto 
    * @returns 
    */
-  async getTotalPlaysCount(queryDto: ParsedQueryDto):Promise<PlaysCountResponseDto> {
+  async getTotalPlaysCount(
+    queryDto: ParsedQueryDto,
+  ): Promise<PlaysCountResponseDto> {
     const { filter } = queryDto;
     const playsCountDetails = await this.detectionModel.aggregate([
       {
@@ -484,7 +712,31 @@ export class DetectionService {
         },
       },
     ]);
-    return playsCountDetails[0]
+    return playsCountDetails[0];
+  }
+
+  async findTopRadioStationsWithPlaysCountForOwner(
+    ownerId: string,
+    topLimit: number,
+    filter: object = {},
+  ) {
+    const topStations = await this.findTopRadioStations(
+      { ...filter, owner: ownerId },
+      topLimit,
+    );
+    var topStationsWithTopKeys = [];
+    for await (const station of topStations) {
+      const playsCount = await this.getTotalPlaysCount({
+        filter: {
+          ...filter,
+          owner: ownerId,
+          radioStation: station._id,
+        },
+      });
+      station['playsCount'] = playsCount;
+      topStationsWithTopKeys.push(station);
+    }
+    return topStationsWithTopKeys as TopRadioStationWithPlaysDetails[];
   }
 
   // perfect example==> https://stackoverflow.com/questions/22932364/mongodb-group-values-by-multiple-fields
@@ -518,6 +770,8 @@ export class DetectionService {
           $match: filter,
         },
         { $group: { _id: '$radioStation', totalKeysDetected: { $sum: 1 } } }, //group by radioStation to get duplicates counts
+        { $sort: { totalKeysDetected: -1 } }, //sort in decending order
+        { $limit: topLimit }, //get the top number of results only
         {
           $lookup: {
             //populate radioStation from its relational table
@@ -527,15 +781,14 @@ export class DetectionService {
             as: 'radioStation',
           },
         },
+        //lookup will return array so always tale first index elememt
         {
           $project: {
             radioStation: { $first: '$radioStation' },
             totalKeysDetected: 1,
             otherField: 1,
-          }, //lookup will return array so always tale first index elememt
+          },
         },
-        { $sort: { totalKeysDetected: -1 } }, //sort in decending order
-        { $limit: topLimit }, //get the top number of results only
       ],
     );
     return topRadioStations;
