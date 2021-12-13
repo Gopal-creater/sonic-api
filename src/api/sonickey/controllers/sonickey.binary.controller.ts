@@ -42,14 +42,14 @@ export class SonickeyBinaryController {
     @ValidatedLicense('key') licenseKey: string
   ) {
     const channel = ChannelEnums.BINARY
-    const newSonicKey = new this.sonicKeyService.sonicKeyModel({
+    const newSonicKey = {
       ...createSonicKeyDto,
       owner:customer,
       apiKey:apiKey,
       channel:channel,
       license: licenseKey,
       _id:createSonicKeyDto.sonicKey
-    });
+    };
     const savedSonicKey = await this.sonicKeyService.createFromBinaryForUser(customer,newSonicKey)
      await this.licensekeyService.incrementUses(licenseKey,"encode", 1)
      .catch(async err=>{

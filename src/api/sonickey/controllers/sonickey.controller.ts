@@ -248,7 +248,7 @@ export class SonickeyController {
         );
         // const userRoles = await
         const channel = ChannelEnums.PORTAL;
-        const newSonicKey = new SonicKey({
+        const newSonicKey = {
           ...sonicKeyDtoWithAudioData,
           contentFilePath: s3UploadResult.Location,
           originalFileName:file?.originalname,
@@ -259,7 +259,7 @@ export class SonickeyController {
           s3FileMeta: s3UploadResult,
           _id: sonicKey,
           license: licenseId,
-        });
+        };
         return this.sonicKeyService.saveSonicKeyForUser(owner,newSonicKey)
       })
       .catch(err => {
@@ -304,7 +304,7 @@ export class SonickeyController {
         );
 
         const channel = ChannelEnums.PORTAL;
-        const newSonicKey = new this.sonicKeyService.sonicKeyModel({
+        const newSonicKey = {
           ...sonicKeyDtoWithAudioData,
           contentFilePath: s3UploadResult.Location,
           originalFileName:file?.originalname,
@@ -315,7 +315,7 @@ export class SonickeyController {
           s3FileMeta: s3UploadResult,
           _id: sonicKey,
           license: licenseId,
-        });
+        };
         return this.sonicKeyService.saveSonicKeyForUser(owner,newSonicKey)
       })
       .catch(err => {

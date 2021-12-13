@@ -51,7 +51,7 @@ let SonickeyThirdPartyController = class SonickeyThirdPartyController {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Enums_1.ChannelEnums.THIRDPARTY;
-            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId }));
+            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId });
             return this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
         })
             .catch(err => {
@@ -63,8 +63,8 @@ let SonickeyThirdPartyController = class SonickeyThirdPartyController {
     }
     async createFormBinary(createSonicKeyDto, customer, apiKey, licenseKey) {
         const channel = Enums_1.ChannelEnums.BINARY;
-        const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, createSonicKeyDto), { owner: customer, apiKey: apiKey, channel: channel, license: licenseKey, _id: createSonicKeyDto.sonicKey }));
-        const savedSonicKey = await newSonicKey.save();
+        const newSonicKey = Object.assign(Object.assign({}, createSonicKeyDto), { owner: customer, apiKey: apiKey, channel: channel, license: licenseKey, _id: createSonicKeyDto.sonicKey });
+        const savedSonicKey = await this.sonicKeyService.createFromBinaryForUser(customer, newSonicKey);
         await this.licensekeyService.incrementUses(licenseKey, "encode", 1)
             .catch(async (err) => {
             await this.sonicKeyService.sonicKeyModel.deleteOne({ _id: savedSonicKey.id });

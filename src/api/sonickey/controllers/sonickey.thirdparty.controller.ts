@@ -75,7 +75,7 @@ export class SonickeyThirdPartyController {
         );
 
         const channel = ChannelEnums.THIRDPARTY;
-        const newSonicKey = new this.sonicKeyService.sonicKeyModel({
+        const newSonicKey = {
           ...sonicKeyDtoWithAudioData,
           contentFilePath: s3UploadResult.Location,
           originalFileName:file?.originalname,
@@ -86,7 +86,7 @@ export class SonickeyThirdPartyController {
           s3FileMeta: s3UploadResult,
           _id: sonicKey,
           license: licenseId,
-        });
+        };
         return this.sonicKeyService.saveSonicKeyForUser(owner,newSonicKey)
       })
       .catch(err => {
@@ -108,15 +108,15 @@ export class SonickeyThirdPartyController {
     @ValidatedLicense('key') licenseKey: string
   ) {
     const channel = ChannelEnums.BINARY
-    const newSonicKey = new this.sonicKeyService.sonicKeyModel({
+    const newSonicKey = {
       ...createSonicKeyDto,
       owner:customer,
       apiKey:apiKey,
       channel:channel,
       license: licenseKey,
       _id:createSonicKeyDto.sonicKey
-    });
-    const savedSonicKey = await newSonicKey.save();
+    };
+    const savedSonicKey = await this.sonicKeyService.createFromBinaryForUser(customer,newSonicKey);
      await this.licensekeyService.incrementUses(licenseKey,"encode", 1)
      .catch(async err=>{
       await this.sonicKeyService.sonicKeyModel.deleteOne({_id:savedSonicKey.id})
