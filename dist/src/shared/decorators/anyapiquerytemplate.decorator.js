@@ -34,10 +34,9 @@ function AnyApiQueryTemplate(options) {
         <b>You can't test this kind of query from swagger,Please use Postman Or Thunder Client</b>
         </li><br/>
         <li>
-      <b>Eg-Aggregate-Filter:</b> 
+      <b>Eg-Relationship-Filter:</b> 
         <h5>For advanced usage ($or, $type, $elemMatch, etc.), pass any MongoDB aggregate array of object as JSON string in the aggregateSearch query parameter, ie:</h5>
-        <code>BASE_URL?aggregateSearch=[ { "$lookup": { "from": "SonicKey", "localField": "sonicKey", "foreignField": "_id", "as": "sonicKey" } }, { "$unwind": "$sonicKey" }, { "$match": { "sonicKey.contentOwner": { "$regex": "strin", "$options": "i" } } } ]</code> <br/>
-        <p><a target="_blank" href="https://docs.mongodb.com/manual/aggregation/">Learn more about mongoose aggregate</a></p>
+        <code>http://[::1]:8000/detections/owners/9ab5a58b-09e0-46ce-bb50-1321d927c382/list-plays?channel=STREAMREADER&limit=2&detectedAt>=2021-12-01&detectedAt<2021-12-11&relation_sonicKey.contentOwner=ArBa&relation_filter={"sonicKey.contentName":{ "$regex": "bo", "$options": "i" }}</code> <br/>
         <br/>
         <b>You can't test this kind of query from swagger,Please use Postman Or Thunder Client</b>
         </li>

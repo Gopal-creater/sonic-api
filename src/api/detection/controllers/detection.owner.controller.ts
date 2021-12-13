@@ -51,8 +51,8 @@ export class DetectionOwnerController {
 
   @Get('/plays-dashboard-graph-data')
   @AnyApiQueryTemplate()
-  // @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
-  // @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Plays Dashboard graph data' })
   async getPlaysDashboardGraphData(
     @Param('targetUser') targetUser: string,
@@ -178,8 +178,8 @@ export class DetectionOwnerController {
   @Get('/:channel/data')
   @ApiQuery({ name: 'radioStation', type: String, required: false })
   @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums), 'ALL'] })
-  // @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
-  // @ApiBearerAuth()
+  @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @ApiBearerAuth()
   @ApiSecurity('x-api-key')
   @ApiQuery({ name: 'includeGroupData', type: Boolean, required: false })
   @AnyApiQueryTemplate()
@@ -212,9 +212,9 @@ export class DetectionOwnerController {
     enum: [...Object.values(ChannelEnums), 'ALL'],
     required: false,
   })
-  // @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
-  // @ApiBearerAuth()
-  // @ApiSecurity('x-api-key')
+  @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Plays for specific user' })
   recentListPlays(
