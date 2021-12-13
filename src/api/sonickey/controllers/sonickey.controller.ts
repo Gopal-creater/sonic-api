@@ -248,7 +248,7 @@ export class SonickeyController {
         );
         // const userRoles = await
         const channel = ChannelEnums.PORTAL;
-        const newSonicKey = new this.sonicKeyService.sonicKeyModel({
+        const newSonicKey = new SonicKey({
           ...sonicKeyDtoWithAudioData,
           contentFilePath: s3UploadResult.Location,
           originalFileName:file?.originalname,

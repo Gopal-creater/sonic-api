@@ -29,6 +29,7 @@ const sonicKey_dto_1 = require("../dtos/sonicKey.dto");
 const jsonparse_pipe_1 = require("../../../shared/pipes/jsonparse.pipe");
 const common_1 = require("@nestjs/common");
 const sonickey_service_1 = require("../services/sonickey.service");
+const sonickey_schema_1 = require("../schemas/sonickey.schema");
 const platform_express_1 = require("@nestjs/platform-express");
 const makeDir = require("make-dir");
 const multer_1 = require("multer");
@@ -101,7 +102,7 @@ let SonickeyController = class SonickeyController {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Enums_1.ChannelEnums.PORTAL;
-            const newSonicKey = new this.sonicKeyService.sonicKeyModel(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId }));
+            const newSonicKey = new sonickey_schema_1.SonicKey(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId }));
             return this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
         })
             .catch(err => {
