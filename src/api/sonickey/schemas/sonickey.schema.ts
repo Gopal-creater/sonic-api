@@ -196,6 +196,20 @@ export class SonicKey extends Document {
   @Prop({default:false})
   isAuthorizedForEncode?:boolean
   
+  @IsOptional()
+  @ApiProperty()
+  @Prop()
+  distributor: string;
+
+  @IsOptional()
+  @ApiProperty()
+  @Prop()
+  version: string;
+
+  @IsOptional()
+  @ApiProperty()
+  @Prop()
+  label: string;
 
   @ApiProperty()
   @Prop([String])

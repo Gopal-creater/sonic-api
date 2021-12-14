@@ -218,7 +218,7 @@ let DetectionService = class DetectionService {
             playsArtistWise
         };
     }
-    async listPlays(queryDto, pagination = true) {
+    async listPlays(queryDto, recentPlays = false) {
         const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
@@ -227,7 +227,7 @@ let DetectionService = class DetectionService {
         paginateOptions['offset'] = skip;
         paginateOptions['page'] = page;
         paginateOptions['limit'] = limit;
-        const aggregate = this.detectionModel.aggregate([
+        var aggregateArray = [
             {
                 $match: Object.assign({}, filter),
             },
@@ -254,14 +254,15 @@ let DetectionService = class DetectionService {
             { $addFields: { radioStation: { $first: '$radioStation' } } },
             {
                 $match: Object.assign({}, relationalFilter),
-            },
-            {
-                $limit: limit,
-            },
-        ]);
-        if (!pagination) {
-            return aggregate;
+            }
+        ];
+        if (recentPlays) {
+            aggregateArray.push({
+                $limit: limit
+            });
+            return this.detectionModel.aggregate(aggregateArray);
         }
+        const aggregate = this.detectionModel.aggregate(aggregateArray);
         return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
     }
     async findAll(queryDto, aggregateQuery) {

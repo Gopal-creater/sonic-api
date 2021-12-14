@@ -30,7 +30,7 @@ let ParseQueryValue = class ParseQueryValue {
         this.values = values;
     }
     transform(queries = {}, metadata) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
         try {
             const { aggregateSearch, relation_filter = JSON.stringify({}) } = queries, query = __rest(queries, ["aggregateSearch", "relation_filter"]);
             const parser = new mongoose_query_parser_1.MongooseQueryParser();
@@ -74,14 +74,19 @@ let ParseQueryValue = class ParseQueryValue {
                 parsed['includeGraph'] = (_j = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _j === void 0 ? void 0 : _j.includeGraph;
                 (_k = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _k === void 0 ? true : delete _k.includeGraph;
             }
-            if (((_l = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _l === void 0 ? void 0 : _l.includeGroupData) !== null ||
-                ((_m = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _m === void 0 ? void 0 : _m.includeGroupData) !== undefined) {
-                parsed['includeGroupData'] = (_o = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _o === void 0 ? void 0 : _o.includeGroupData;
-                (_p = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _p === void 0 ? true : delete _p.includeGroupData;
+            if (((_l = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _l === void 0 ? void 0 : _l.recentPlays) !== null ||
+                ((_m = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _m === void 0 ? void 0 : _m.recentPlays) !== undefined) {
+                parsed['recentPlays'] = (_o = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _o === void 0 ? void 0 : _o.recentPlays;
+                (_p = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _p === void 0 ? true : delete _p.recentPlays;
             }
-            if ((_q = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _q === void 0 ? void 0 : _q.groupByTime) {
-                parsed['groupByTime'] = (_r = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _r === void 0 ? void 0 : _r.groupByTime;
-                (_s = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _s === void 0 ? true : delete _s.groupByTime;
+            if (((_q = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _q === void 0 ? void 0 : _q.includeGroupData) !== null ||
+                ((_r = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _r === void 0 ? void 0 : _r.includeGroupData) !== undefined) {
+                parsed['includeGroupData'] = (_s = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _s === void 0 ? void 0 : _s.includeGroupData;
+                (_t = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _t === void 0 ? true : delete _t.includeGroupData;
+            }
+            if ((_u = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _u === void 0 ? void 0 : _u.groupByTime) {
+                parsed['groupByTime'] = (_v = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _v === void 0 ? void 0 : _v.groupByTime;
+                (_w = parsed === null || parsed === void 0 ? void 0 : parsed.filter) === null || _w === void 0 ? true : delete _w.groupByTime;
             }
             if (parsed === null || parsed === void 0 ? void 0 : parsed.filter) {
                 parsed.filter = this.castToObjectId(parsed === null || parsed === void 0 ? void 0 : parsed.filter);

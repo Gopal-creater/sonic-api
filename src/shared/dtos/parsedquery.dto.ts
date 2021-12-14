@@ -35,6 +35,9 @@ export class ParsedQueryDto implements QueryOptions {
   includeGraph?:boolean;
 
   @ApiHideProperty()
+  recentPlays?:boolean;
+
+  @ApiHideProperty()
   advanceSearch?:boolean;
 
   @ApiHideProperty()

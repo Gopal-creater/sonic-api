@@ -244,6 +244,24 @@ __decorate([
     __metadata("design:type", Boolean)
 ], SonicKey.prototype, "isAuthorizedForEncode", void 0);
 __decorate([
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], SonicKey.prototype, "distributor", void 0);
+__decorate([
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], SonicKey.prototype, "version", void 0);
+__decorate([
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], SonicKey.prototype, "label", void 0);
+__decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop([String]),
     __metadata("design:type", Array)

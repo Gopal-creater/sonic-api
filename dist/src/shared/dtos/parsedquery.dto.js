@@ -61,6 +61,10 @@ __decorate([
 __decorate([
     swagger_1.ApiHideProperty(),
     __metadata("design:type", Boolean)
+], ParsedQueryDto.prototype, "recentPlays", void 0);
+__decorate([
+    swagger_1.ApiHideProperty(),
+    __metadata("design:type", Boolean)
 ], ParsedQueryDto.prototype, "advanceSearch", void 0);
 __decorate([
     swagger_1.ApiHideProperty(),

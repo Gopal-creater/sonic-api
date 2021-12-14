@@ -37,8 +37,8 @@ export class DetectionOwnerController {
 
   @Get('/plays-dashboard-data')
   @AnyApiQueryTemplate()
-  // @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
-  // @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Plays Dashboard data' })
   async getPlaysDashboardData(
     @Param('targetUser') targetUser: string,
@@ -207,6 +207,7 @@ export class DetectionOwnerController {
   @Get('/list-plays')
   @ApiQuery({ name: 'radioStation', type: String, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiQuery({ name: 'recentPlays', type: Boolean, required: false })
   @ApiQuery({
     name: 'channel',
     enum: [...Object.values(ChannelEnums), 'ALL'],
@@ -222,7 +223,7 @@ export class DetectionOwnerController {
     @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
   ) {
     queryDto.filter['owner'] = targetUser;
-    return this.detectionService.listPlays(queryDto);
+    return this.detectionService.listPlays(queryDto,queryDto.recentPlays);
   }
 
   @Get('/:channel/sonicKeys/:sonicKey/detected-details')

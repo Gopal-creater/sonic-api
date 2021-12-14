@@ -74,6 +74,13 @@ export class ParseQueryValue implements PipeTransform {
         parsed['includeGraph'] = parsed?.filter?.includeGraph;
         delete parsed?.filter?.includeGraph;
       }
+      if (
+        parsed?.filter?.recentPlays !== null ||
+        parsed?.filter?.recentPlays !== undefined
+      ) {
+        parsed['recentPlays'] = parsed?.filter?.recentPlays;
+        delete parsed?.filter?.recentPlays;
+      }
 
       if (
         parsed?.filter?.includeGroupData !== null ||

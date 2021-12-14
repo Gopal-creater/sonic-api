@@ -99,7 +99,7 @@ let DetectionOwnerController = class DetectionOwnerController {
     }
     recentListPlays(targetUser, queryDto) {
         queryDto.filter['owner'] = targetUser;
-        return this.detectionService.listPlays(queryDto);
+        return this.detectionService.listPlays(queryDto, queryDto.recentPlays);
     }
     getDetectedDetailsOfSingleSonicKey(targetUser, channel, sonicKey, queryDto) {
         if (channel !== 'ALL') {
@@ -127,6 +127,8 @@ let DetectionOwnerController = class DetectionOwnerController {
 __decorate([
     common_1.Get('/plays-dashboard-data'),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get Plays Dashboard data' }),
     openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Param('targetUser')),
@@ -244,6 +246,7 @@ __decorate([
     common_1.Get('/list-plays'),
     swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
     swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
+    swagger_1.ApiQuery({ name: 'recentPlays', type: Boolean, required: false }),
     swagger_1.ApiQuery({
         name: 'channel',
         enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'],
