@@ -173,6 +173,9 @@ __decorate([
 ], UserController.prototype, "getGroupsOfUser", null);
 __decorate([
     common_1.Post('admin-create-user'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.THIRDPARTY_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Admin create user' }),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),

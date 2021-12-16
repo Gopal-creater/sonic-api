@@ -140,9 +140,9 @@ export class UserController {
 
 
   @Post('admin-create-user')
-  // @RolesAllowed(Roles.ADMIN)
-  // @UseGuards(JwtAuthGuard,RoleBasedGuard)
-  // @ApiBearerAuth()
+  @RolesAllowed(Roles.ADMIN,Roles.THIRDPARTY_ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Admin create user' })
   async adminCreateUser(@Body() adminCreateUserDTO: AdminCreateUserDTO) {
     if(adminCreateUserDTO.group){

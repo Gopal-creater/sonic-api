@@ -41,6 +41,7 @@ var Roles;
     Roles["ADMIN"] = "Admin";
     Roles["AIM"] = "AIM";
     Roles["AFEM"] = "AFEM";
+    Roles["THIRDPARTY_ADMIN"] = "ThirdPartyAdmin";
 })(Roles = exports.Roles || (exports.Roles = {}));
 var EC2InstanceMetadata;
 (function (EC2InstanceMetadata) {

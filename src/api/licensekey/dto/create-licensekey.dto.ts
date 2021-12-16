@@ -35,6 +35,9 @@ export class CreateLicensekeyDto {
   
     @ApiProperty()
     metaData?: Map<string, any>;
+
+    @ApiProperty()
+    owners?:LKOwner[]
 }
 
 export class AdminUpdateLicensekeyDto extends CreateLicensekeyDto {

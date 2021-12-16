@@ -42,7 +42,7 @@ export class LicensekeyController {
   }
 
   @Post()
-  @RolesAllowed(Roles.ADMIN)
+  @RolesAllowed(Roles.ADMIN,Roles.THIRDPARTY_ADMIN)
   @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create License Key' })

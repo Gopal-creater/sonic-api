@@ -23,6 +23,7 @@ import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytempl
 import { User } from '../../auth/decorators/user.decorator';
 import { forEach, subtract } from 'lodash';
 import * as fs from 'fs';
+import * as appRootPath from 'app-root-path';
 
 @ApiTags('Radio Station Controller')
 @Controller('radiostations')
@@ -34,7 +35,13 @@ export class RadiostationController {
     // return this.radiostationService.exportToJson();
     // return this.radiostationService.addMonitorGroupsFromExcel()
     // return this.radiostationService.exportToExcel()
-    return "Not implemented"
+    return 'Not implemented';
+  }
+
+  @Get('/import-from-excel')
+  async importFromExcel() {
+    const excelPath = `${appRootPath.toString()}/sample_test/Radio_Stations_Sonic_Dec15_addedstations.xlsx`;
+    return this.radiostationService.importFromExcel(excelPath);
   }
 
   @Post()

@@ -25,12 +25,17 @@ const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pi
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 const user_decorator_1 = require("../../auth/decorators/user.decorator");
+const appRootPath = require("app-root-path");
 let RadiostationController = class RadiostationController {
     constructor(radiostationService) {
         this.radiostationService = radiostationService;
     }
     async genJson() {
-        return "Not implemented";
+        return 'Not implemented';
+    }
+    async importFromExcel() {
+        const excelPath = `${appRootPath.toString()}/sample_test/Radio_Stations_Sonic_Dec15_addedstations.xlsx`;
+        return this.radiostationService.importFromExcel(excelPath);
     }
     async create(createdBy, createRadiostationDto) {
         const isPresent = await this.radiostationService.radioStationModel.findOne({
@@ -107,6 +112,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], RadiostationController.prototype, "genJson", null);
+__decorate([
+    common_1.Get('/import-from-excel'),
+    openapi.ApiResponse({ status: 200 }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], RadiostationController.prototype, "importFromExcel", null);
 __decorate([
     common_1.Post(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),

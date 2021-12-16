@@ -217,8 +217,11 @@ export class RadiostationService {
       stationsToMakeExcel || (await this.radioStationModel.find());
     var stationsInJosnFormat = [];
     for await (const station of stations) {
-      const toJsonData = station.toJSON()
-      toJsonData.monitorGroups=toJsonData?.monitorGroups?.map(gr=>gr.name)?.join?.(",")?.toString?.();
+      const toJsonData = station.toJSON();
+      toJsonData.monitorGroups = toJsonData?.monitorGroups
+        ?.map(gr => gr.name)
+        ?.join?.(',')
+        ?.toString?.();
       stationsInJosnFormat.push(toJsonData);
     }
     const pathToStore = `${appRootPath.toString()}/exported_radiostations_${Date.now()}.xlsx`;
@@ -228,6 +231,138 @@ export class RadiostationService {
     xlsx.utils.book_append_sheet(file, ws);
     xlsx.writeFile(file, pathToStore);
     return 'Done';
+  }
+
+  async importFromExcel(pathToExcel: string) {
+    const stationsFromExcel = xlsx.readFile(pathToExcel);
+    const sheetsNames = stationsFromExcel.SheetNames;
+    var completedDetails={
+      completedCount:0,
+      newCount:0,
+      alreadyPresents:[],
+      newEntries:[]
+    }
+    var duplicatesByStreamingUrl = []
+    var duplicatesByName=[]
+    var excelData=[]
+    
+    for await (const sheetName of sheetsNames) {
+      console.log('sheetName', sheetName);
+      const sheetToJson: any[] = xlsx.utils.sheet_to_json(
+        stationsFromExcel.Sheets[sheetName],
+      );
+      excelData=sheetToJson
+      // excelData=sheetToJson.map(item=>{
+      //   item["_id"]=Date.now()
+      //   return item
+      // })
+      // const streamingUrlCount = excelData.
+      const resByStreamingUrl = {};
+      const resByName = {};
+      for await (const obj of sheetToJson) {
+        const key = `${obj['streamingUrl']}`;
+         if (!resByStreamingUrl[key]) {
+            resByStreamingUrl[key] = { ...obj, count: 0 };
+         };
+         resByStreamingUrl[key].count += 1
+      }
+      for await (const obj of sheetToJson) {
+        const key = `${obj['name']}`;
+         if (!resByName[key]) {
+            resByName[key] = { ...obj, count: 0 };
+         };
+         resByName[key].count += 1
+      }
+      var resByStreamingUrlArr=Object.values(resByStreamingUrl)
+      var resByNameArr=Object.values(resByName)
+      duplicatesByStreamingUrl= resByStreamingUrlArr.filter(item=>item['count']>1)
+      duplicatesByName= resByNameArr.filter(item=>item['count']>1)
+
+      break;
+      for await (const stationRow of sheetToJson) {
+        if(!stationRow['isStreamStarted']){
+          const radioStation = await this.radioStationModel.findOne({
+            $or: [
+              { name: stationRow['name'] },
+              { streamingUrl: stationRow['streamingUrl'] },
+            ],
+          });
+          if(radioStation){
+            completedDetails.newCount+=1
+            console.log("radioStation PRESENT",radioStation.name)
+            // duplicatesByStreamingUrl.push({
+            //   _id:Date.now(),
+            //   databaseId:radioStation._id,
+            //   dbStationName:radioStation.name,
+            //   excelStationName:stationRow['name'],
+            //   dbStreamingUrl:radioStation.streamingUrl,
+            //   excelStreamingUrl:stationRow['streamingUrl'],
+            // })
+          }else{
+            console.log("stationRow NOT PRESENT",stationRow['name'])
+          }
+        }
+        continue;
+        
+        const radioStation = await this.radioStationModel.findOne({
+          $or: [
+            { name: stationRow['name'] },
+            { streamingUrl: stationRow['streamingUrl'] },
+          ],
+        });
+        if (!radioStation) {
+          var formatedMonitorsGroups = [];
+          if (stationRow.monitorGroups) {
+            if (stationRow.monitorGroups.includes(',')) {
+              formatedMonitorsGroups = stationRow.monitorGroups
+                .split(',')
+                .map(groupName => {
+                  const monitorGroup = new MonitorGroup();
+                  monitorGroup.name = groupName;
+                  return monitorGroup
+                });
+            } else {
+              const newMonitorGroup = new MonitorGroup();
+              newMonitorGroup.name = stationRow.monitorGroups;
+              if(stationRow.monitorGroup) formatedMonitorsGroups = [newMonitorGroup];
+            }
+          }
+          console.log('formatedMonitorsGroups', formatedMonitorsGroups);
+          const uniqueFormatedMonitorsGroups = _.uniqBy(
+            formatedMonitorsGroups,
+            'name',
+          );
+          console.log('uniqueFormatedMonitorsGroups', uniqueFormatedMonitorsGroups);
+          const newRadio ={
+              name:stationRow['name'],
+              country:stationRow['country'],
+              streamingUrl:stationRow['streamingUrl'],
+              adminEmail:stationRow['adminEmail'],
+              website:stationRow['website'],
+              monitorGroups:formatedMonitorsGroups
+            }
+          const newRadioStation = await this.radioStationModel.create(newRadio)
+          await newRadioStation.save().then((saved)=>{
+            completedDetails.completedCount=completedDetails.completedCount+1
+            completedDetails.newEntries.push(saved)
+          }).catch(err => console.log(err));
+        }else{
+          console.log("Already Present Radio",radioStation.name)
+          completedDetails.alreadyPresents.push(radioStation)
+        }
+      }
+      //Break the loop, we only want first sheet here.
+      break;
+    }
+    return {
+      message:"Done",
+      totalExcelData:excelData.length,
+      completedDetails:completedDetails,
+      duplicatesByStreamingUrlLength:duplicatesByStreamingUrl.length,
+      duplicatesByNameLength:duplicatesByName.length,
+      duplicatesByStreamingUrl:duplicatesByStreamingUrl,
+      duplicatesByName:duplicatesByName
+    }
   }
 
   async addMonitorGroupsFromExcel() {

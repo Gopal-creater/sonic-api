@@ -46,7 +46,7 @@ export class DetectionService {
       },
       {
         $match: {
-          _id: { $exists: true, $ne: "" },
+          _id: { $exists: true, $ne: '' },
         },
       },
     ]);
@@ -78,13 +78,13 @@ export class DetectionService {
       },
       {
         $match: {
-          _id: { $exists: true, $ne: "" },
+          _id: { $exists: true, $ne: '' },
         },
       },
     ]);
 
     return {
-      playsCount: playsCount.playsCount,
+      playsCount: playsCount?.playsCount||0,
       radioStationsCount: radioStationsCount.length,
       countriesCount: countriesCount.length,
     };
@@ -110,7 +110,7 @@ export class DetectionService {
       {
         $group: {
           _id: '$radioStation.country',
-          total:{$sum:1}
+          total: { $sum: 1 },
         },
       },
       {
@@ -120,7 +120,7 @@ export class DetectionService {
       },
       {
         $match: {
-          _id: { $exists: true, $ne: "" },
+          _id: { $exists: true, $ne: '' },
         },
       },
     ]);
@@ -144,7 +144,7 @@ export class DetectionService {
       {
         $group: {
           _id: '$radioStation.name',
-          total:{$sum:1}
+          total: { $sum: 1 },
         },
       },
       {
@@ -154,7 +154,7 @@ export class DetectionService {
       },
       {
         $match: {
-          _id: { $exists: true, $ne: "" },
+          _id: { $exists: true, $ne: '' },
         },
       },
     ]);
@@ -178,7 +178,7 @@ export class DetectionService {
       {
         $group: {
           _id: '$sonicKey.contentName',
-          total:{$sum:1}
+          total: { $sum: 1 },
         },
       },
       {
@@ -188,7 +188,7 @@ export class DetectionService {
       },
       {
         $match: {
-          _id: { $exists: true, $ne: "" },
+          _id: { $exists: true, $ne: '' },
         },
       },
     ]);
@@ -212,7 +212,7 @@ export class DetectionService {
       {
         $group: {
           _id: '$sonicKey.contentOwner',
-          total:{$sum:1}
+          total: { $sum: 1 },
         },
       },
       {
@@ -222,19 +222,17 @@ export class DetectionService {
       },
       {
         $match: {
-          _id: { $exists: true, $ne: "" },
+          _id: { $exists: true, $ne: '' },
         },
       },
     ]);
-
-
 
     return {
       playsCountryWise,
       playsSongWise,
       playsStationWise,
-      playsArtistWise
-    }
+      playsArtistWise,
+    };
   }
 
   async listPlays(queryDto: ParsedQueryDto, recentPlays: boolean = false) {
@@ -255,7 +253,7 @@ export class DetectionService {
     paginateOptions['offset'] = skip;
     paginateOptions['page'] = page;
     paginateOptions['limit'] = limit;
-    var aggregateArray:any[]=[
+    var aggregateArray: any[] = [
       {
         $match: {
           ...filter,
@@ -291,12 +289,12 @@ export class DetectionService {
         $match: {
           ...relationalFilter,
         },
-      }
-    ]
+      },
+    ];
     if (recentPlays) {
       aggregateArray.push({
-        $limit: limit
-      })
+        $limit: limit,
+      });
       return this.detectionModel.aggregate(aggregateArray);
     }
     const aggregate = this.detectionModel.aggregate(aggregateArray);
@@ -699,11 +697,21 @@ export class DetectionService {
       {
         $addFields: {
           playsCount: {
-            $size: '$sonicKeysWithCount',
+            $ifNull: [
+              {
+                $size: '$sonicKeysWithCount',
+              },
+              0,
+            ],
           },
           uniquePlaysCount: {
-            $size: '$uniqueSonicKeys',
-          },
+            $ifNull: [
+              {
+                $size: '$uniqueSonicKeys',
+              },
+              0,
+            ],
+          }
         },
       },
       {

@@ -37,7 +37,8 @@ export enum MonitorGroupsEnum {
 export enum Roles {
   ADMIN = 'Admin',
   AIM='AIM',
-  AFEM='AFEM'
+  AFEM='AFEM',
+  THIRDPARTY_ADMIN='ThirdPartyAdmin'
 }
 
 export enum EC2InstanceMetadata {

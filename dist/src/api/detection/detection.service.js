@@ -51,7 +51,7 @@ let DetectionService = class DetectionService {
             },
             {
                 $match: {
-                    _id: { $exists: true, $ne: "" },
+                    _id: { $exists: true, $ne: '' },
                 },
             },
         ]);
@@ -80,12 +80,12 @@ let DetectionService = class DetectionService {
             },
             {
                 $match: {
-                    _id: { $exists: true, $ne: "" },
+                    _id: { $exists: true, $ne: '' },
                 },
             },
         ]);
         return {
-            playsCount: playsCount.playsCount,
+            playsCount: (playsCount === null || playsCount === void 0 ? void 0 : playsCount.playsCount) || 0,
             radioStationsCount: radioStationsCount.length,
             countriesCount: countriesCount.length,
         };
@@ -107,7 +107,7 @@ let DetectionService = class DetectionService {
             {
                 $group: {
                     _id: '$radioStation.country',
-                    total: { $sum: 1 }
+                    total: { $sum: 1 },
                 },
             },
             {
@@ -117,7 +117,7 @@ let DetectionService = class DetectionService {
             },
             {
                 $match: {
-                    _id: { $exists: true, $ne: "" },
+                    _id: { $exists: true, $ne: '' },
                 },
             },
         ]);
@@ -137,7 +137,7 @@ let DetectionService = class DetectionService {
             {
                 $group: {
                     _id: '$radioStation.name',
-                    total: { $sum: 1 }
+                    total: { $sum: 1 },
                 },
             },
             {
@@ -147,7 +147,7 @@ let DetectionService = class DetectionService {
             },
             {
                 $match: {
-                    _id: { $exists: true, $ne: "" },
+                    _id: { $exists: true, $ne: '' },
                 },
             },
         ]);
@@ -167,7 +167,7 @@ let DetectionService = class DetectionService {
             {
                 $group: {
                     _id: '$sonicKey.contentName',
-                    total: { $sum: 1 }
+                    total: { $sum: 1 },
                 },
             },
             {
@@ -177,7 +177,7 @@ let DetectionService = class DetectionService {
             },
             {
                 $match: {
-                    _id: { $exists: true, $ne: "" },
+                    _id: { $exists: true, $ne: '' },
                 },
             },
         ]);
@@ -197,7 +197,7 @@ let DetectionService = class DetectionService {
             {
                 $group: {
                     _id: '$sonicKey.contentOwner',
-                    total: { $sum: 1 }
+                    total: { $sum: 1 },
                 },
             },
             {
@@ -207,7 +207,7 @@ let DetectionService = class DetectionService {
             },
             {
                 $match: {
-                    _id: { $exists: true, $ne: "" },
+                    _id: { $exists: true, $ne: '' },
                 },
             },
         ]);
@@ -215,7 +215,7 @@ let DetectionService = class DetectionService {
             playsCountryWise,
             playsSongWise,
             playsStationWise,
-            playsArtistWise
+            playsArtistWise,
         };
     }
     async listPlays(queryDto, recentPlays = false) {
@@ -254,11 +254,11 @@ let DetectionService = class DetectionService {
             { $addFields: { radioStation: { $first: '$radioStation' } } },
             {
                 $match: Object.assign({}, relationalFilter),
-            }
+            },
         ];
         if (recentPlays) {
             aggregateArray.push({
-                $limit: limit
+                $limit: limit,
             });
             return this.detectionModel.aggregate(aggregateArray);
         }
@@ -433,11 +433,21 @@ let DetectionService = class DetectionService {
             {
                 $addFields: {
                     playsCount: {
-                        $size: '$sonicKeysWithCount',
+                        $ifNull: [
+                            {
+                                $size: '$sonicKeysWithCount',
+                            },
+                            0,
+                        ],
                     },
                     uniquePlaysCount: {
-                        $size: '$uniqueSonicKeys',
-                    },
+                        $ifNull: [
+                            {
+                                $size: '$uniqueSonicKeys',
+                            },
+                            0,
+                        ],
+                    }
                 },
             },
             {
