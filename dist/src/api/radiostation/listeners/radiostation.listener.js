@@ -50,7 +50,7 @@ let RadioStationListener = RadioStationListener_1 = class RadioStationListener {
     async startListeningLikeAStreamAndUpdateTable(radioStation, outputPath) {
         const intervalName = radioStation._id;
         try {
-            var ffm = children.spawn('ffmpeg', `-i ${radioStation.streamingUrl} -y -f 16_le -ar 41000 -ac 2 -f wav -t 00:00:${app_config_1.appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS} ${outputPath}`.split(' '), { shell: true });
+            var ffm = children.spawn('ffmpeg', `-i ${radioStation.streamingUrl} -y -f 16_le -ar 41000 -ac 2 -f wav -t ${app_config_1.appConfig.TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS} ${outputPath}`.split(' '), { shell: true });
             ffm.stdout.on('data', data => {
             });
             ffm.stderr.on('data', data => {
