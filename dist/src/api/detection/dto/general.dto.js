@@ -16,7 +16,7 @@ const sonickey_schema_1 = require("../../sonickey/schemas/sonickey.schema");
 const radiostation_schema_1 = require("../../radiostation/schemas/radiostation.schema");
 class TopRadioStation {
     static _OPENAPI_METADATA_FACTORY() {
-        return { _id: { required: true, type: () => String }, totalKeysDetected: { required: true, type: () => Number }, radioStation: { required: true, type: () => require("../../radiostation/schemas/radiostation.schema").RadioStation } };
+        return { _id: { required: false, type: () => String }, totalKeysDetected: { required: false, type: () => Number }, radioStation: { required: true, type: () => require("../../radiostation/schemas/radiostation.schema").RadioStation } };
     }
 }
 __decorate([
@@ -54,7 +54,7 @@ exports.TopSonicKey = TopSonicKey;
 ;
 class PlaysCountResponseDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { _id: { required: true, type: () => String }, playsCount: { required: true, type: () => Number }, uniquePlaysCount: { required: true, type: () => Number } };
+        return { _id: { required: false, type: () => String }, playsCount: { required: true, type: () => Number }, uniquePlaysCount: { required: true, type: () => Number } };
     }
 }
 __decorate([

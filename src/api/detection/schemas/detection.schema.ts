@@ -54,6 +54,10 @@ export class Detection extends Document {
 
   @ApiProperty()
   @Prop()
+  detectedDuration: number;
+
+  @ApiProperty()
+  @Prop()
   metaData?: Map<string, any>;
 
   @ApiProperty()

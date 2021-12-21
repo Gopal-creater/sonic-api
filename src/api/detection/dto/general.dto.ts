@@ -5,10 +5,10 @@ import { RadioStation } from '../../radiostation/schemas/radiostation.schema';
 export class TopRadioStation{
 
     @ApiProperty()
-    _id: string;
+    _id?: string;
   
     @ApiProperty()
-    totalKeysDetected: number;
+    totalKeysDetected?: number;
   
     @ApiProperty()
     radioStation: RadioStation;
@@ -27,7 +27,7 @@ export class TopRadioStation{
 
   export class PlaysCountResponseDto {
     @ApiProperty()
-    _id: string;
+    _id?: string;
   
     @ApiProperty()
     playsCount: number;

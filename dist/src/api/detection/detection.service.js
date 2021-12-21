@@ -37,7 +37,7 @@ let DetectionService = class DetectionService {
         const playsCount = await this.getTotalPlaysCount({ filter: filter });
         const radioStationsCount = await this.detectionModel.aggregate([
             {
-                $match: Object.assign({}, filter),
+                $match: Object.assign(Object.assign({}, filter), { channel: Enums_1.ChannelEnums.STREAMREADER }),
             },
             {
                 $group: {
@@ -57,7 +57,7 @@ let DetectionService = class DetectionService {
         ]);
         const countriesCount = await this.detectionModel.aggregate([
             {
-                $match: Object.assign({}, filter),
+                $match: Object.assign(Object.assign({}, filter), { channel: Enums_1.ChannelEnums.STREAMREADER }),
             },
             {
                 $lookup: {
@@ -314,144 +314,37 @@ let DetectionService = class DetectionService {
         const { filter } = queryDto;
         const playsCountDetails = await this.detectionModel.aggregate([
             {
-                $match: filter,
+                $match: Object.assign({}, filter)
             },
             {
-                $sort: {
-                    detectedAt: -1,
+                $group: {
+                    _id: {
+                        sonicKey: '$sonicKey',
+                    },
+                    plays: {
+                        $sum: 1,
+                    },
+                    sonicKeys: {
+                        $addToSet: '$sonicKey',
+                    },
                 },
             },
             {
                 $group: {
                     _id: null,
-                    sonicKeys: {
-                        $push: '$sonicKey',
-                    },
-                    initialResults: {
-                        $push: '$$ROOT',
-                    },
-                },
-            },
-            {
-                $project: {
-                    initialResults: {
-                        $concatArrays: [
-                            '$initialResults',
-                            [
-                                {
-                                    sonicKey: 'Unknown',
-                                },
-                            ],
-                        ],
-                    },
-                    uniqueSonicKeys: {
-                        $setUnion: {
-                            $reduce: {
-                                input: '$sonicKeys',
-                                initialValue: [],
-                                in: {
-                                    $concatArrays: ['$$value', ['$$this']],
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                $project: {
-                    uniqueSonicKeys: 1,
-                    sonicKeysWithCount: {
-                        $reduce: {
-                            input: '$initialResults',
-                            initialValue: {
-                                item: null,
-                                count: 1,
-                                dates: [
-                                    {
-                                        $first: '$initialResults.detectedAt',
-                                    },
-                                ],
-                                results: [],
-                            },
-                            in: {
-                                $cond: [
-                                    {
-                                        $eq: [
-                                            {
-                                                $strcasecmp: ['$$value.item', '$$this.sonicKey'],
-                                            },
-                                            0,
-                                        ],
-                                    },
-                                    {
-                                        results: '$$value.results',
-                                        item: '$$this.sonicKey',
-                                        count: {
-                                            $add: ['$$value.count', 1],
-                                        },
-                                        dates: {
-                                            $concatArrays: ['$$value.dates', ['$$this.detectedAt']],
-                                        },
-                                    },
-                                    {
-                                        results: {
-                                            $concatArrays: [
-                                                '$$value.results',
-                                                [
-                                                    {
-                                                        item: '$$value.item',
-                                                        count: '$$value.count',
-                                                        dates: '$$value.dates',
-                                                    },
-                                                ],
-                                            ],
-                                        },
-                                        item: '$$this.sonicKey',
-                                        count: 1,
-                                        dates: ['$$this.detectedAt'],
-                                    },
-                                ],
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                $project: {
-                    uniqueSonicKeys: 1,
-                    sonicKeysWithCount: {
-                        $slice: [
-                            '$sonicKeysWithCount.results',
-                            1,
-                            {
-                                $size: '$sonicKeysWithCount.results',
-                            },
-                        ],
-                    },
-                },
-            },
-            {
-                $addFields: {
                     playsCount: {
-                        $ifNull: [
-                            {
-                                $size: '$sonicKeysWithCount',
-                            },
-                            0,
-                        ],
+                        $sum: '$plays',
                     },
                     uniquePlaysCount: {
-                        $ifNull: [
-                            {
-                                $size: '$uniqueSonicKeys',
-                            },
-                            0,
-                        ],
-                    }
+                        $sum: {
+                            $size: '$sonicKeys',
+                        },
+                    },
                 },
             },
             {
                 $project: {
+                    _id: 0,
                     playsCount: 1,
                     uniquePlaysCount: 1,
                 },
@@ -460,16 +353,58 @@ let DetectionService = class DetectionService {
         return playsCountDetails[0];
     }
     async findTopRadioStationsWithPlaysCountForOwner(ownerId, topLimit, filter = {}) {
+        return this.detectionModel.aggregate([
+            {
+                $match: Object.assign(Object.assign({}, filter), { owner: ownerId, channel: Enums_1.ChannelEnums.STREAMREADER }),
+            },
+            {
+                $group: {
+                    _id: {
+                        radioStation: '$radioStation',
+                    },
+                    plays: {
+                        $sum: 1,
+                    },
+                    sonicKeys: {
+                        $addToSet: '$sonicKey',
+                    },
+                },
+            },
+            {
+                $sort: {
+                    plays: -1,
+                },
+            },
+            { $limit: topLimit },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: '_id.radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    radioStation: { $first: '$radioStation' },
+                    playsCount: {
+                        playsCount: "$plays",
+                        uniquePlaysCount: { $size: '$sonicKeys' }
+                    }
+                },
+            }
+        ]);
+    }
+    async findTopRadioStationsWithSonicKeysForOwner(ownerId, topLimit, filter = {}) {
         var e_1, _a;
         const topStations = await this.findTopRadioStations(Object.assign(Object.assign({}, filter), { owner: ownerId }), topLimit);
         var topStationsWithTopKeys = [];
         try {
             for (var topStations_1 = __asyncValues(topStations), topStations_1_1; topStations_1_1 = await topStations_1.next(), !topStations_1_1.done;) {
                 const station = topStations_1_1.value;
-                const playsCount = await this.getTotalPlaysCount({
-                    filter: Object.assign(Object.assign({}, filter), { owner: ownerId, radioStation: station._id }),
-                });
-                station['playsCount'] = playsCount;
+                const sonicKeys = await this.findTopSonicKeysForRadioStation(station._id, topLimit, filter);
+                station['sonicKeys'] = sonicKeys;
                 topStationsWithTopKeys.push(station);
             }
         }
@@ -479,27 +414,6 @@ let DetectionService = class DetectionService {
                 if (topStations_1_1 && !topStations_1_1.done && (_a = topStations_1.return)) await _a.call(topStations_1);
             }
             finally { if (e_1) throw e_1.error; }
-        }
-        return topStationsWithTopKeys;
-    }
-    async findTopRadioStationsWithSonicKeysForOwner(ownerId, topLimit, filter = {}) {
-        var e_2, _a;
-        const topStations = await this.findTopRadioStations(Object.assign(Object.assign({}, filter), { owner: ownerId }), topLimit);
-        var topStationsWithTopKeys = [];
-        try {
-            for (var topStations_2 = __asyncValues(topStations), topStations_2_1; topStations_2_1 = await topStations_2.next(), !topStations_2_1.done;) {
-                const station = topStations_2_1.value;
-                const sonicKeys = await this.findTopSonicKeysForRadioStation(station._id, topLimit, filter);
-                station['sonicKeys'] = sonicKeys;
-                topStationsWithTopKeys.push(station);
-            }
-        }
-        catch (e_2_1) { e_2 = { error: e_2_1 }; }
-        finally {
-            try {
-                if (topStations_2_1 && !topStations_2_1.done && (_a = topStations_2.return)) await _a.call(topStations_2);
-            }
-            finally { if (e_2) throw e_2.error; }
         }
         return topStationsWithTopKeys;
     }

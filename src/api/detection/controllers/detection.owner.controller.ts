@@ -137,7 +137,7 @@ export class DetectionOwnerController {
   async getTopRadiostationsWithPlays(
     @Param('targetUser') targetUser: string,
     @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
-  ): Promise<TopRadioStationWithPlaysDetails[]> {
+  ) {
     const { topLimit = 5, filter } = queryDto;
 
     const topStationsWithPlaysDetails = await this.detectionService.findTopRadioStationsWithPlaysCountForOwner(
