@@ -1,16 +1,16 @@
 import { SonicKeyDto } from './sonicKey.dto';
-import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
+import { ApiProperty, OmitType, PartialType,PickType } from '@nestjs/swagger';
 
 export class UpdateSonicKeyDto extends PartialType(
-  OmitType(SonicKeyDto, [
-    'encodingStrength',
-    'contentType',
-    'contentDuration',
-    'contentCreatedDate',
-    'contentEncoding',
+  PickType(SonicKeyDto, [
     'contentFileName',
-    'contentFileType',
-    'contentSamplingFrequency',
-    'contentSize',
+    'version',
+    'isrcCode',
+    'iswcCode',
+    'tuneCode',
+    'contentOwner',
+    'distributor',
+    'contentDescription',
+    'additionalMetadata'
   ] as const),
 ) {}
