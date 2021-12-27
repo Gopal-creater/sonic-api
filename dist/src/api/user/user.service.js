@@ -272,26 +272,19 @@ let UserService = class UserService {
                 await this.adminDeleteUser(userCreated.User.Username);
                 throw err;
             });
-            if (group == Enums_1.MonitorGroupsEnum.AIM || group == Enums_1.MonitorGroupsEnum.AFEM) {
-                const unlimitedLicense = await this.addUnlimitedMonitoringLicenseToUser(userCreated.User.Username).catch(async (err) => {
-                    await this.adminDeleteUser(userCreated.User.Username);
-                    throw err;
-                });
-                await this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(userCreated.User.Username, unlimitedLicense.key)
-                    .catch(async (err) => {
-                    await this.adminDeleteUser(userCreated.User.Username);
-                    throw err;
-                });
-            }
+            const defaultLicense = await this.addDefaultLicenseToUser(userCreated.User.Username).catch(async (err) => {
+                await this.adminDeleteUser(userCreated.User.Username);
+                throw err;
+            });
         }
         return userCreated;
     }
     async addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub) {
         return this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(usernameOrSub);
     }
-    async addUnlimitedMonitoringLicenseToUser(ownerIdOrUsername) {
-        const unlimitedLicense = await this.licensekeyService.findOrCreateUnlimitedMonitoringLicense();
-        return this.addNewLicense(unlimitedLicense.key, ownerIdOrUsername);
+    async addDefaultLicenseToUser(ownerIdOrUsername) {
+        const defaultLicense = await this.licensekeyService.findOrCreateDefaultLicenseToAssignUser();
+        return this.addNewLicense(defaultLicense.key, ownerIdOrUsername);
     }
 };
 UserService = __decorate([

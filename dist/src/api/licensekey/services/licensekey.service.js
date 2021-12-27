@@ -55,10 +55,23 @@ let LicensekeyService = class LicensekeyService {
         const newLicenseKey = new this.licenseKeyModel({
             _id: key,
             key: key,
-            name: `Unlimited_Monitoring_${Date.now()}`,
+            name: `7 Month Unlimited Monitoring_${Date.now()}`,
             isUnlimitedMonitor: true,
-            validity: new Date(new Date().setFullYear(new Date().getFullYear() + 5)),
-            createdBy: 'auto_generate',
+            validity: new Date(new Date().setMonth(new Date().getMonth() + 7)),
+            createdBy: 'system_generate',
+        });
+        return newLicenseKey.save();
+    }
+    createDefaultLicenseToAssignUser() {
+        const key = uuid_1.v4();
+        const newLicenseKey = new this.licenseKeyModel({
+            _id: key,
+            key: key,
+            name: `7 Month Unlimited Monitoring & Encode_${Date.now()}`,
+            isUnlimitedMonitor: true,
+            isUnlimitedEncode: true,
+            validity: new Date(new Date().setMonth(new Date().getMonth() + 7)),
+            createdBy: 'system_generate',
         });
         return newLicenseKey.save();
     }
@@ -66,7 +79,7 @@ let LicensekeyService = class LicensekeyService {
         var now = new Date();
         var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         var license = await this.licenseKeyModel.findOne({
-            createdBy: 'auto_generate',
+            $or: [{ createdBy: 'system_generate' }, { createdBy: 'auto_generate' }],
             isUnlimitedMonitor: true,
             disabled: false,
             suspended: false,
@@ -74,6 +87,22 @@ let LicensekeyService = class LicensekeyService {
         });
         if (!license) {
             license = await this.createUnlimitedMonitoringLicense();
+        }
+        return license;
+    }
+    async findOrCreateDefaultLicenseToAssignUser() {
+        var now = new Date();
+        var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var license = await this.licenseKeyModel.findOne({
+            $or: [{ createdBy: 'system_generate' }, { createdBy: 'auto_generate' }],
+            isUnlimitedMonitor: true,
+            isUnlimitedEncode: true,
+            disabled: false,
+            suspended: false,
+            validity: { $gte: startOfToday },
+        });
+        if (!license) {
+            license = await this.createDefaultLicenseToAssignUser();
         }
         return license;
     }
@@ -85,9 +114,21 @@ let LicensekeyService = class LicensekeyService {
             disabled: false,
             suspended: false,
             validity: { $gte: startOfToday },
-            $or: [{ isUnlimitedMonitor: true }, { createdBy: 'auto_generate' }],
+            $or: [{ isUnlimitedMonitor: true }, { createdBy: 'system_generate' }, { createdBy: 'auto_generate' }],
         });
         return license;
+    }
+    async findPreferedLicenseToGetRadioMonitoringListFor(userId) {
+        var now = new Date();
+        var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var validLicenseForMonitor = await this.licenseKeyModel.findOne({
+            'owners.ownerId': userId,
+            disabled: false,
+            suspended: false,
+            validity: { $gte: startOfToday },
+            $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }]
+        });
+        return validLicenseForMonitor;
     }
     async findAll(queryDto) {
         const { limit, skip, sort, page, filter, select, populate } = queryDto;

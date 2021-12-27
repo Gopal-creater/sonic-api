@@ -35,8 +35,8 @@ let RadioMonitorService = class RadioMonitorService {
         this.licensekeyService = licensekeyService;
         this.userService = userService;
     }
-    async findAll(queryDto) {
-        const { limit, skip, sort, page, filter, select, populate, includeGroupData } = queryDto;
+    async findAll(queryDto, documentLimit) {
+        const { limit, skip, sort, page, filter, select, populate, includeGroupData, } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
         paginateOptions['select'] = select;
@@ -44,10 +44,23 @@ let RadioMonitorService = class RadioMonitorService {
         paginateOptions['offset'] = skip;
         paginateOptions['page'] = page;
         paginateOptions['limit'] = limit;
-        return this.radioMonitorModel['paginate'](filter, paginateOptions);
+        if (!documentLimit) {
+            return this.radioMonitorModel['paginate'](filter, paginateOptions);
+        }
+        else {
+            const aggregate = this.radioMonitorModel.aggregate([
+                {
+                    $match: Object.assign({}, filter),
+                },
+                {
+                    $limit: documentLimit,
+                },
+            ]);
+            return this.radioMonitorModel['aggregatePaginate'](aggregate, paginateOptions);
+        }
     }
     async getCount(queryDto) {
-        const { filter, includeGroupData, } = queryDto;
+        const { filter, includeGroupData } = queryDto;
         return this.radioMonitorModel
             .find(filter || {})
             .countDocuments()
@@ -269,7 +282,7 @@ let RadioMonitorService = class RadioMonitorService {
                                 isListeningStarted: true,
                                 startedAt: new Date(),
                                 createdAt: new Date(),
-                                updatedAt: new Date()
+                                updatedAt: new Date(),
                             };
                         });
                         aimSaveDataResult.insertedResult = await this.subscribeRadioToMonitorBulkWithInsertManyOperation(radioMonitors, user.sub, unlimitedMonitoringLicense);
@@ -301,7 +314,7 @@ let RadioMonitorService = class RadioMonitorService {
                                 isListeningStarted: true,
                                 startedAt: new Date(),
                                 createdAt: new Date(),
-                                updatedAt: new Date()
+                                updatedAt: new Date(),
                             };
                         });
                         afemSaveDataResult.insertedResult = await this.subscribeRadioToMonitorBulkWithInsertManyOperation(radioMonitors, user.sub, unlimitedMonitoringLicense);

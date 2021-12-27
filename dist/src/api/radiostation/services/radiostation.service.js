@@ -32,6 +32,8 @@ const xlsx = require("xlsx");
 const _ = require("lodash");
 const appRootPath = require("app-root-path");
 const Enums_1 = require("../../../constants/Enums");
+const makeDir = require("make-dir");
+const app_config_1 = require("../../../config/app.config");
 let RadiostationService = class RadiostationService {
     constructor(radioStationModel, sonickeyService, eventEmitter) {
         this.radioStationModel = radioStationModel;
@@ -148,30 +150,41 @@ let RadiostationService = class RadiostationService {
             };
         });
     }
-    async exportToJson() {
+    async exportToJson(queryDto, destination, fileName) {
         var obj = {
             stations: [],
         };
-        const stations = await this.radioStationModel.find();
+        const results = await this.findAll(queryDto);
+        const stations = results.docs;
         stations.forEach((station, index) => {
             station.toObject();
             const newObj = Object.assign({ sn: index + 1 }, station.toObject());
             obj.stations.push(newObj);
         });
         var json = JSON.stringify(obj);
-        fs.writeFileSync('exported_radiostations.json', json, 'utf8');
-        return 'Done';
+        destination = await makeDir(destination || app_config_1.appConfig.MULTER_EXPORT_DEST);
+        const filePath = `${destination}/${fileName || `radiostations_${Date.now()}`}_${results.limit}By${results.totalDocs}.json`;
+        fs.writeFileSync(filePath, json, 'utf8');
+        return filePath;
     }
-    async exportToExcel(stationsToMakeExcel = null) {
+    async exportToExcel(queryDto, destination, fileName, stationsToMakeExcel = null) {
         var e_1, _a;
         var _b, _c, _d, _e, _f;
-        const stations = stationsToMakeExcel || (await this.radioStationModel.find());
+        var results;
+        var stations;
+        if (stationsToMakeExcel) {
+            stations = stationsToMakeExcel;
+        }
+        else {
+            results = await this.findAll(queryDto);
+            stations = results.docs;
+        }
         var stationsInJosnFormat = [];
         try {
             for (var stations_1 = __asyncValues(stations), stations_1_1; stations_1_1 = await stations_1.next(), !stations_1_1.done;) {
                 const station = stations_1_1.value;
                 const toJsonData = station.toJSON();
-                toJsonData.monitorGroups = (_f = (_e = (_d = (_c = (_b = toJsonData === null || toJsonData === void 0 ? void 0 : toJsonData.monitorGroups) === null || _b === void 0 ? void 0 : _b.map(gr => gr.name)) === null || _c === void 0 ? void 0 : _c.join) === null || _d === void 0 ? void 0 : _d.call(_c, ',')) === null || _e === void 0 ? void 0 : _e.toString) === null || _f === void 0 ? void 0 : _f.call(_e);
+                toJsonData['monitorGroups'] = (_f = (_e = (_d = (_c = (_b = toJsonData === null || toJsonData === void 0 ? void 0 : toJsonData.monitorGroups) === null || _b === void 0 ? void 0 : _b.map(gr => gr.name)) === null || _c === void 0 ? void 0 : _c.join) === null || _d === void 0 ? void 0 : _d.call(_c, ',')) === null || _e === void 0 ? void 0 : _e.toString) === null || _f === void 0 ? void 0 : _f.call(_e);
                 stationsInJosnFormat.push(toJsonData);
             }
         }
@@ -182,26 +195,26 @@ let RadiostationService = class RadiostationService {
             }
             finally { if (e_1) throw e_1.error; }
         }
-        const pathToStore = `${appRootPath.toString()}/exported_radiostations_${Date.now()}.xlsx`;
-        const fd = fs.openSync(pathToStore, 'w');
-        const file = xlsx.readFile(pathToStore);
+        destination = await makeDir(destination || app_config_1.appConfig.MULTER_EXPORT_DEST);
+        const filePath = `${destination}/${fileName || `radiostations_${Date.now()}`}_${results === null || results === void 0 ? void 0 : results.limit}By${results === null || results === void 0 ? void 0 : results.totalDocs}.xlsx`;
+        const fd = fs.openSync(filePath, 'w');
+        const file = xlsx.readFile(filePath);
         const ws = xlsx.utils.json_to_sheet(stationsInJosnFormat);
         xlsx.utils.book_append_sheet(file, ws);
-        xlsx.writeFile(file, pathToStore);
-        return 'Done';
+        xlsx.writeFile(file, filePath);
+        return filePath;
     }
     async importFromExcel(pathToExcel) {
-        var e_2, _a, e_3, _b, e_4, _c, e_5, _d;
+        var e_2, _a, e_3, _b, e_4, _c;
         const stationsFromExcel = xlsx.readFile(pathToExcel);
         const sheetsNames = stationsFromExcel.SheetNames;
         var completedDetails = {
             completedCount: 0,
-            newCount: 0,
-            alreadyPresents: [],
-            newEntries: []
+            duplicatesCount: 0,
+            alreadyPresentsInDb: [],
+            newEntries: [],
         };
         var duplicatesByStreamingUrl = [];
-        var duplicatesByName = [];
         var excelData = [];
         try {
             for (var sheetsNames_1 = __asyncValues(sheetsNames), sheetsNames_1_1; sheetsNames_1_1 = await sheetsNames_1.next(), !sheetsNames_1_1.done;) {
@@ -210,7 +223,6 @@ let RadiostationService = class RadiostationService {
                 const sheetToJson = xlsx.utils.sheet_to_json(stationsFromExcel.Sheets[sheetName]);
                 excelData = sheetToJson;
                 const resByStreamingUrl = {};
-                const resByName = {};
                 try {
                     for (var sheetToJson_1 = (e_3 = void 0, __asyncValues(sheetToJson)), sheetToJson_1_1; sheetToJson_1_1 = await sheetToJson_1.next(), !sheetToJson_1_1.done;) {
                         const obj = sheetToJson_1_1.value;
@@ -218,7 +230,6 @@ let RadiostationService = class RadiostationService {
                         if (!resByStreamingUrl[key]) {
                             resByStreamingUrl[key] = Object.assign(Object.assign({}, obj), { count: 0 });
                         }
-                        ;
                         resByStreamingUrl[key].count += 1;
                     }
                 }
@@ -229,53 +240,13 @@ let RadiostationService = class RadiostationService {
                     }
                     finally { if (e_3) throw e_3.error; }
                 }
+                var resByStreamingUrlArr = Object.values(resByStreamingUrl);
+                duplicatesByStreamingUrl = resByStreamingUrlArr.filter(item => item['count'] > 1);
                 try {
                     for (var sheetToJson_2 = (e_4 = void 0, __asyncValues(sheetToJson)), sheetToJson_2_1; sheetToJson_2_1 = await sheetToJson_2.next(), !sheetToJson_2_1.done;) {
-                        const obj = sheetToJson_2_1.value;
-                        const key = `${obj['name']}`;
-                        if (!resByName[key]) {
-                            resByName[key] = Object.assign(Object.assign({}, obj), { count: 0 });
-                        }
-                        ;
-                        resByName[key].count += 1;
-                    }
-                }
-                catch (e_4_1) { e_4 = { error: e_4_1 }; }
-                finally {
-                    try {
-                        if (sheetToJson_2_1 && !sheetToJson_2_1.done && (_c = sheetToJson_2.return)) await _c.call(sheetToJson_2);
-                    }
-                    finally { if (e_4) throw e_4.error; }
-                }
-                var resByStreamingUrlArr = Object.values(resByStreamingUrl);
-                var resByNameArr = Object.values(resByName);
-                duplicatesByStreamingUrl = resByStreamingUrlArr.filter(item => item['count'] > 1);
-                duplicatesByName = resByNameArr.filter(item => item['count'] > 1);
-                break;
-                try {
-                    for (var sheetToJson_3 = (e_5 = void 0, __asyncValues(sheetToJson)), sheetToJson_3_1; sheetToJson_3_1 = await sheetToJson_3.next(), !sheetToJson_3_1.done;) {
-                        const stationRow = sheetToJson_3_1.value;
-                        if (!stationRow['isStreamStarted']) {
-                            const radioStation = await this.radioStationModel.findOne({
-                                $or: [
-                                    { name: stationRow['name'] },
-                                    { streamingUrl: stationRow['streamingUrl'] },
-                                ],
-                            });
-                            if (radioStation) {
-                                completedDetails.newCount += 1;
-                                console.log("radioStation PRESENT", radioStation.name);
-                            }
-                            else {
-                                console.log("stationRow NOT PRESENT", stationRow['name']);
-                            }
-                        }
-                        continue;
+                        const stationRow = sheetToJson_2_1.value;
                         const radioStation = await this.radioStationModel.findOne({
-                            $or: [
-                                { name: stationRow['name'] },
-                                { streamingUrl: stationRow['streamingUrl'] },
-                            ],
+                            streamingUrl: stationRow['streamingUrl'],
                         });
                         if (!radioStation) {
                             var formatedMonitorsGroups = [];
@@ -305,26 +276,31 @@ let RadiostationService = class RadiostationService {
                                 streamingUrl: stationRow['streamingUrl'],
                                 adminEmail: stationRow['adminEmail'],
                                 website: stationRow['website'],
-                                monitorGroups: formatedMonitorsGroups
+                                monitorGroups: formatedMonitorsGroups,
                             };
                             const newRadioStation = await this.radioStationModel.create(newRadio);
-                            await newRadioStation.save().then((saved) => {
-                                completedDetails.completedCount = completedDetails.completedCount + 1;
+                            await newRadioStation
+                                .save()
+                                .then(saved => {
+                                completedDetails.completedCount =
+                                    completedDetails.completedCount + 1;
                                 completedDetails.newEntries.push(saved);
-                            }).catch(err => console.log(err));
+                            })
+                                .catch(err => console.log(err));
                         }
                         else {
-                            console.log("Already Present Radio", radioStation.name);
-                            completedDetails.alreadyPresents.push(radioStation);
+                            console.log('Already Present Radio', radioStation.name);
+                            completedDetails.duplicatesCount += 1;
+                            completedDetails.alreadyPresentsInDb.push(radioStation);
                         }
                     }
                 }
-                catch (e_5_1) { e_5 = { error: e_5_1 }; }
+                catch (e_4_1) { e_4 = { error: e_4_1 }; }
                 finally {
                     try {
-                        if (sheetToJson_3_1 && !sheetToJson_3_1.done && (_d = sheetToJson_3.return)) await _d.call(sheetToJson_3);
+                        if (sheetToJson_2_1 && !sheetToJson_2_1.done && (_c = sheetToJson_2.return)) await _c.call(sheetToJson_2);
                     }
-                    finally { if (e_5) throw e_5.error; }
+                    finally { if (e_4) throw e_4.error; }
                 }
                 break;
             }
@@ -337,17 +313,15 @@ let RadiostationService = class RadiostationService {
             finally { if (e_2) throw e_2.error; }
         }
         return {
-            message: "Done",
+            message: 'Done',
             totalExcelData: excelData.length,
             completedDetails: completedDetails,
-            duplicatesByStreamingUrlLength: duplicatesByStreamingUrl.length,
-            duplicatesByNameLength: duplicatesByName.length,
-            duplicatesByStreamingUrl: duplicatesByStreamingUrl,
-            duplicatesByName: duplicatesByName
+            duplicatesByStreamingUrlLength_InExcel: duplicatesByStreamingUrl.length,
+            duplicatesByStreamingUrl_InExcel: duplicatesByStreamingUrl,
         };
     }
     async addMonitorGroupsFromExcel() {
-        var e_6, _a, e_7, _b, e_8, _c, e_9, _d;
+        var e_5, _a, e_6, _b, e_7, _c, e_8, _d;
         const europestationsAIM = xlsx.readFile(`${appRootPath.toString()}/sample_test/Europe 500 Stations_Working_list_AIM.xlsx`);
         const radiodancestationsAFEM = xlsx.readFile(`${appRootPath.toString()}/sample_test/Radio - Dance. Multi Territory_AFEM.xlsx`);
         const sheetsNameAIM = europestationsAIM.SheetNames;
@@ -359,7 +333,7 @@ let RadiostationService = class RadiostationService {
                 const aimJson = xlsx.utils.sheet_to_json(europestationsAIM.Sheets[sheetNameAIM]);
                 console.log(aimJson);
                 try {
-                    for (var aimJson_1 = (e_7 = void 0, __asyncValues(aimJson)), aimJson_1_1; aimJson_1_1 = await aimJson_1.next(), !aimJson_1_1.done;) {
+                    for (var aimJson_1 = (e_6 = void 0, __asyncValues(aimJson)), aimJson_1_1; aimJson_1_1 = await aimJson_1.next(), !aimJson_1_1.done;) {
                         const data = aimJson_1_1.value;
                         const monitorGroup = new radiostation_schema_1.MonitorGroup();
                         monitorGroup.name = Enums_1.MonitorGroupsEnum.AIM;
@@ -376,21 +350,21 @@ let RadiostationService = class RadiostationService {
                         }
                     }
                 }
-                catch (e_7_1) { e_7 = { error: e_7_1 }; }
+                catch (e_6_1) { e_6 = { error: e_6_1 }; }
                 finally {
                     try {
                         if (aimJson_1_1 && !aimJson_1_1.done && (_b = aimJson_1.return)) await _b.call(aimJson_1);
                     }
-                    finally { if (e_7) throw e_7.error; }
+                    finally { if (e_6) throw e_6.error; }
                 }
             }
         }
-        catch (e_6_1) { e_6 = { error: e_6_1 }; }
+        catch (e_5_1) { e_5 = { error: e_5_1 }; }
         finally {
             try {
                 if (sheetsNameAIM_1_1 && !sheetsNameAIM_1_1.done && (_a = sheetsNameAIM_1.return)) await _a.call(sheetsNameAIM_1);
             }
-            finally { if (e_6) throw e_6.error; }
+            finally { if (e_5) throw e_5.error; }
         }
         try {
             for (var sheetsNameAFEM_1 = __asyncValues(sheetsNameAFEM), sheetsNameAFEM_1_1; sheetsNameAFEM_1_1 = await sheetsNameAFEM_1.next(), !sheetsNameAFEM_1_1.done;) {
@@ -398,7 +372,7 @@ let RadiostationService = class RadiostationService {
                 const afemJson = xlsx.utils.sheet_to_json(radiodancestationsAFEM.Sheets[sheetNameAFEM]);
                 console.log(afemJson);
                 try {
-                    for (var afemJson_1 = (e_9 = void 0, __asyncValues(afemJson)), afemJson_1_1; afemJson_1_1 = await afemJson_1.next(), !afemJson_1_1.done;) {
+                    for (var afemJson_1 = (e_8 = void 0, __asyncValues(afemJson)), afemJson_1_1; afemJson_1_1 = await afemJson_1.next(), !afemJson_1_1.done;) {
                         const data = afemJson_1_1.value;
                         const monitorGroup = new radiostation_schema_1.MonitorGroup();
                         monitorGroup.name = Enums_1.MonitorGroupsEnum.AFEM;
@@ -415,27 +389,34 @@ let RadiostationService = class RadiostationService {
                         }
                     }
                 }
-                catch (e_9_1) { e_9 = { error: e_9_1 }; }
+                catch (e_8_1) { e_8 = { error: e_8_1 }; }
                 finally {
                     try {
                         if (afemJson_1_1 && !afemJson_1_1.done && (_d = afemJson_1.return)) await _d.call(afemJson_1);
                     }
-                    finally { if (e_9) throw e_9.error; }
+                    finally { if (e_8) throw e_8.error; }
                 }
             }
         }
-        catch (e_8_1) { e_8 = { error: e_8_1 }; }
+        catch (e_7_1) { e_7 = { error: e_7_1 }; }
         finally {
             try {
                 if (sheetsNameAFEM_1_1 && !sheetsNameAFEM_1_1.done && (_c = sheetsNameAFEM_1.return)) await _c.call(sheetsNameAFEM_1);
             }
-            finally { if (e_8) throw e_8.error; }
+            finally { if (e_7) throw e_7.error; }
         }
         const undonRadios = await this.radioStationModel.find({
             monitorGroups: null,
         });
-        await this.exportToExcel(undonRadios);
+        await this.exportToExcel({ filter: {}, limit: 1000 }, null, null, undonRadios);
         return 'Done';
+    }
+    async getCount(queryDto) {
+        const { filter, includeGroupData } = queryDto;
+        return this.radioStationModel
+            .find(filter || {})
+            .countDocuments()
+            .exec();
     }
     async updateFromJson() {
         await this.radioStationModel.updateMany({}, { $unset: { owner: '' } });

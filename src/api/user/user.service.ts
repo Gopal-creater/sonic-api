@@ -347,21 +347,21 @@ export class UserService {
           throw err;
         },
       );
-      if (group == MonitorGroupsEnum.AIM || group == MonitorGroupsEnum.AFEM) {
-       const unlimitedLicense = await this.addUnlimitedMonitoringLicenseToUser(
+      // if (group == MonitorGroupsEnum.AIM || group == MonitorGroupsEnum.AFEM) {
+       const defaultLicense = await this.addDefaultLicenseToUser(
           userCreated.User.Username,
         ).catch(async err => {
           await this.adminDeleteUser(userCreated.User.Username);
           throw err;
         });
 
-        await this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(userCreated.User.Username,unlimitedLicense.key)
-        .catch(async err => {
-          await this.adminDeleteUser(userCreated.User.Username);
-          throw err;
-        });
+        // await this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(userCreated.User.Username,unlimitedLicense.key)
+        // .catch(async err => {
+        //   await this.adminDeleteUser(userCreated.User.Username);
+        //   throw err;
+        // });
 
-      }
+      // }
     }
     return userCreated;
   }
@@ -370,8 +370,8 @@ export class UserService {
     return this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(usernameOrSub)
   }
 
-  async addUnlimitedMonitoringLicenseToUser(ownerIdOrUsername: string) {
-    const unlimitedLicense = await this.licensekeyService.findOrCreateUnlimitedMonitoringLicense();
-    return this.addNewLicense(unlimitedLicense.key, ownerIdOrUsername);
+  async addDefaultLicenseToUser(ownerIdOrUsername: string) {
+    const defaultLicense = await this.licensekeyService.findOrCreateDefaultLicenseToAssignUser();
+    return this.addNewLicense(defaultLicense.key, ownerIdOrUsername);
   }
 }

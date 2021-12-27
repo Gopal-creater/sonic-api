@@ -19,23 +19,51 @@ const radiostation_service_1 = require("../services/radiostation.service");
 const create_radiostation_dto_1 = require("../dto/create-radiostation.dto");
 const update_radiostation_dto_1 = require("../dto/update-radiostation.dto");
 const swagger_1 = require("@nestjs/swagger");
+const multer_1 = require("multer");
+const makeDir = require("make-dir");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const bulk_radiostation_dto_1 = require("../dto/bulk-radiostation.dto");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 const user_decorator_1 = require("../../auth/decorators/user.decorator");
-const appRootPath = require("app-root-path");
+const fs = require("fs");
+const upath = require("upath");
+const platform_express_1 = require("@nestjs/platform-express");
+const app_config_1 = require("../../../config/app.config");
+const decorators_1 = require("../../auth/decorators");
+const Enums_1 = require("../../../constants/Enums");
+const guards_1 = require("../../auth/guards");
 let RadiostationController = class RadiostationController {
     constructor(radiostationService) {
         this.radiostationService = radiostationService;
     }
-    async genJson() {
-        return 'Not implemented';
+    async export(res, format, queryDto) {
+        var filePath = '';
+        switch (format) {
+            case 'JSON':
+                filePath = await this.radiostationService.exportToJson(queryDto);
+                break;
+            case 'EXCEL':
+                filePath = await this.radiostationService.exportToExcel(queryDto);
+                break;
+            default:
+                filePath = await this.radiostationService.exportToExcel(queryDto);
+                break;
+        }
+        res.download(filePath, err => {
+            if (err) {
+                fs.unlinkSync(filePath);
+                res.send(err);
+            }
+            fs.unlinkSync(filePath);
+        });
     }
-    async importFromExcel() {
-        const excelPath = `${appRootPath.toString()}/sample_test/Radio_Stations_Sonic_Dec15_addedstations.xlsx`;
-        return this.radiostationService.importFromExcel(excelPath);
+    async importFromExcel(file) {
+        const excelPath = upath.toUnix(file.path);
+        return this.radiostationService.importFromExcel(excelPath).finally(() => {
+            fs.unlinkSync(excelPath);
+        });
     }
     async create(createdBy, createRadiostationDto) {
         const isPresent = await this.radiostationService.radioStationModel.findOne({
@@ -106,22 +134,70 @@ let RadiostationController = class RadiostationController {
     }
 };
 __decorate([
-    common_1.Get('/generate-json'),
-    openapi.ApiResponse({ status: 200, type: String }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], RadiostationController.prototype, "genJson", null);
-__decorate([
-    common_1.Get('/import-from-excel'),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiParam({ name: 'format', enum: ['JSON', 'EXCEL'] }),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({ summary: 'Export Radio Stations' }),
+    common_1.Get('/export/:format'),
     openapi.ApiResponse({ status: 200 }),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Param('format')),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object, String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], RadiostationController.prototype, "export", null);
+__decorate([
+    common_1.UseInterceptors(platform_express_1.FileInterceptor('importFile', {
+        fileFilter: (req, file, cb) => {
+            var _a, _b;
+            if ((_b = (_a = file === null || file === void 0 ? void 0 : file.originalname) === null || _a === void 0 ? void 0 : _a.match) === null || _b === void 0 ? void 0 : _b.call(_a, /\.(xlsx|xlsb|xls|xlsm)$/)) {
+                cb(null, true);
+            }
+            else {
+                cb(new common_1.BadRequestException('Unsupported file type, only support excel for now'), false);
+            }
+        },
+        storage: multer_1.diskStorage({
+            destination: async (req, file, cb) => {
+                const filePath = await makeDir(`${app_config_1.appConfig.MULTER_IMPORT_DEST}`);
+                cb(null, filePath);
+            },
+            filename: (req, file, cb) => {
+                let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+                cb(null, `${Date.now()}_${orgName}`);
+            },
+        }),
+    })),
+    swagger_1.ApiConsumes('multipart/form-data'),
+    swagger_1.ApiOperation({ summary: 'Import Radio Stations From Excel' }),
+    swagger_1.ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                importFile: {
+                    type: 'string',
+                    format: 'binary',
+                },
+            },
+        },
+    }),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Post('/import-from-excel'),
+    openapi.ApiResponse({ status: 201 }),
+    __param(0, common_1.UploadedFile()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], RadiostationController.prototype, "importFromExcel", null);
 __decorate([
     common_1.Post(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, guards_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create Radio Station' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/radiostation.schema").RadioStation }),
@@ -169,7 +245,8 @@ __decorate([
 ], RadiostationController.prototype, "findOne", null);
 __decorate([
     common_1.Put(':id/stop-listening-stream'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, guards_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'stop listening stream' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/radiostation.schema").RadioStation }),
@@ -180,7 +257,8 @@ __decorate([
 ], RadiostationController.prototype, "stopListeningStream", null);
 __decorate([
     common_1.Put(':id/start-listening-stream'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, guards_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'start listening stream' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/radiostation.schema").RadioStation }),
@@ -191,7 +269,8 @@ __decorate([
 ], RadiostationController.prototype, "startListeningStream", null);
 __decorate([
     common_1.Put('start-listening-stream/bulk'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, guards_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'stop listening stream' }),
     openapi.ApiResponse({ status: 200 }),
@@ -202,7 +281,8 @@ __decorate([
 ], RadiostationController.prototype, "bulkStartListeningStream", null);
 __decorate([
     common_1.Put('stop-listening-stream/bulk'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, guards_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'stop listening stream' }),
     openapi.ApiResponse({ status: 200 }),
@@ -213,7 +293,8 @@ __decorate([
 ], RadiostationController.prototype, "bulkStopListeningStream", null);
 __decorate([
     common_1.Put(':id'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, guards_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update Single Radio Station' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/radiostation.schema").RadioStation }),
@@ -226,7 +307,8 @@ __decorate([
 ], RadiostationController.prototype, "update", null);
 __decorate([
     common_1.Delete('delete/bulk'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, guards_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Delete Radio Station in bulk' }),
     openapi.ApiResponse({ status: 200 }),
@@ -237,7 +319,8 @@ __decorate([
 ], RadiostationController.prototype, "removeBulk", null);
 __decorate([
     common_1.Delete(':id'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, guards_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Delete Radio Station' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/radiostation.schema").RadioStation }),

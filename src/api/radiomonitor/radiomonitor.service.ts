@@ -28,8 +28,18 @@ export class RadioMonitorService {
 
   async findAll(
     queryDto: ParsedQueryDto,
+    documentLimit?: number,
   ): Promise<MongoosePaginateRadioMonitorDto> {
-    const { limit, skip, sort, page, filter, select, populate,includeGroupData } = queryDto;
+    const {
+      limit,
+      skip,
+      sort,
+      page,
+      filter,
+      select,
+      populate,
+      includeGroupData,
+    } = queryDto;
     var paginateOptions = {};
     paginateOptions['sort'] = sort;
     paginateOptions['select'] = select;
@@ -37,27 +47,28 @@ export class RadioMonitorService {
     paginateOptions['offset'] = skip;
     paginateOptions['page'] = page;
     paginateOptions['limit'] = limit;
-    // if (includeGroupData && filter.owner) {
-    //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
-    //   const usergroups = await this.userService.adminListGroupsForUser(
-    //     filter.owner,
-    //   );
-    //   if (usergroups.groupNames.length > 0) {
-    //     filter['$or'] = [
-    //       { groups: { $all: usergroups.groupNames } },
-    //       { owner: filter.owner },
-    //     ];
-    //     delete filter.owner;
-    //   }
-    // }
-    return this.radioMonitorModel['paginate'](filter, paginateOptions);
+    if (!documentLimit) {
+      return this.radioMonitorModel['paginate'](filter, paginateOptions);
+    } else {
+      const aggregate = this.radioMonitorModel.aggregate([
+        {
+          $match: {
+            ...filter,
+          },
+        },
+        {
+          $limit: documentLimit,
+        },
+      ]);
+      return this.radioMonitorModel['aggregatePaginate'](
+        aggregate,
+        paginateOptions,
+      );
+    }
   }
 
   async getCount(queryDto: ParsedQueryDto) {
-    const {
-      filter,
-      includeGroupData,
-    } = queryDto;
+    const { filter, includeGroupData } = queryDto;
     // if (includeGroupData && filter.owner) {
     //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
     //   const usergroups = await this.userService.adminListGroupsForUser(
@@ -426,9 +437,9 @@ export class RadioMonitorService {
               license: unlimitedMonitoringLicense,
               radioSearch: rd,
               isListeningStarted: true,
-              startedAt:new Date(),
+              startedAt: new Date(),
               createdAt: new Date(),
-              updatedAt:new Date()
+              updatedAt: new Date(),
             };
           });
           aimSaveDataResult.insertedResult = await this.subscribeRadioToMonitorBulkWithInsertManyOperation(
@@ -473,9 +484,9 @@ export class RadioMonitorService {
               license: unlimitedMonitoringLicense,
               radioSearch: rd,
               isListeningStarted: true,
-              startedAt:new Date(),
+              startedAt: new Date(),
               createdAt: new Date(),
-              updatedAt:new Date()
+              updatedAt: new Date(),
             };
           });
 

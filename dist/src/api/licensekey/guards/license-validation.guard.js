@@ -16,7 +16,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SubscribeRadioMonitorLicenseValidationGuard = exports.LicenseValidationGuard = void 0;
+exports.SubscribeRadioMonitorLicenseValidationGuard = exports.GetSubscribedRadioMonitorListLicenseValidationGuard = exports.LicenseValidationGuard = void 0;
 const common_1 = require("@nestjs/common");
 const licensekey_schema_1 = require("../schemas/licensekey.schema");
 const licensekey_service_1 = require("../services/licensekey.service");
@@ -29,9 +29,11 @@ let LicenseValidationGuard = class LicenseValidationGuard {
         var e_1, _a;
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        const licenses = await this.licensekeyService.licenseKeyModel.find({ "owners.ownerId": user.sub });
+        const licenses = await this.licensekeyService.licenseKeyModel.find({
+            'owners.ownerId': user.sub,
+        });
         if (!licenses || licenses.length <= 0) {
-            throw new common_1.UnprocessableEntityException("No License keys present. Please add a license key to subscribe for encode.");
+            throw new common_1.UnprocessableEntityException('No License keys present. Please add a license key to subscribe for encode.');
         }
         var currentValidLicense;
         var valid;
@@ -53,10 +55,11 @@ let LicenseValidationGuard = class LicenseValidationGuard {
                 }
                 valid = false;
                 statusCode = validationResults.statusCode || 422;
-                message = validationResults.message || "License validation failded";
+                message = validationResults.message || 'License validation failded';
                 remainingUses = validationResults.remainingUses;
                 reservedLicenceCount = validationResults.reservedLicenceCount;
-                remaniningUsesAfterReservedCount = validationResults.remaniningUsesAfterReservedCount;
+                remaniningUsesAfterReservedCount =
+                    validationResults.remaniningUsesAfterReservedCount;
                 usesToBeUsed = validationResults.usesToBeUsed;
                 maxEncodeUses = validationResults.maxEncodeUses;
             }
@@ -76,25 +79,25 @@ let LicenseValidationGuard = class LicenseValidationGuard {
                 reservedLicenceCount: reservedLicenceCount,
                 remaniningUsesAfterReservedCount: remaniningUsesAfterReservedCount,
                 usesToBeUsed: usesToBeUsed,
-                maxEncodeUses: maxEncodeUses
+                maxEncodeUses: maxEncodeUses,
             }, statusCode);
         }
         request.validLicense = currentValidLicense;
         return Boolean(currentValidLicense);
     }
     async isValidLicenseForEncode(id) {
-        const { validationResult, licenseKey } = await this.licensekeyService.validateLicence(id);
+        const { validationResult, licenseKey, } = await this.licensekeyService.validateLicence(id);
         if (!validationResult.valid) {
             return {
                 valid: false,
                 message: validationResult.message,
                 statusCode: 422,
-                usesExceeded: false
+                usesExceeded: false,
             };
         }
         if (licenseKey.isUnlimitedEncode) {
             return {
-                valid: true
+                valid: true,
             };
         }
         var reservedLicenceCount = 0;
@@ -116,11 +119,11 @@ let LicenseValidationGuard = class LicenseValidationGuard {
                 reservedLicenceCount: reservedLicenceCount,
                 remaniningUsesAfterReservedCount: remaniningUsesAfterReservedCount,
                 usesToBeUsed: usesToBeUsed,
-                maxEncodeUses: maxUses
+                maxEncodeUses: maxUses,
             };
         }
         return {
-            valid: true
+            valid: true,
         };
     }
 };
@@ -129,6 +132,26 @@ LicenseValidationGuard = __decorate([
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], LicenseValidationGuard);
 exports.LicenseValidationGuard = LicenseValidationGuard;
+let GetSubscribedRadioMonitorListLicenseValidationGuard = class GetSubscribedRadioMonitorListLicenseValidationGuard {
+    constructor(licensekeyService) {
+        this.licensekeyService = licensekeyService;
+    }
+    async canActivate(context) {
+        const request = context.switchToHttp().getRequest();
+        const user = request.user;
+        const validLicenseForMonitor = await this.licensekeyService.findPreferedLicenseToGetRadioMonitoringListFor(user.sub);
+        if (!validLicenseForMonitor) {
+            throw new common_1.UnprocessableEntityException('No valid monitoring license found!');
+        }
+        request.validLicense = validLicenseForMonitor;
+        return Boolean(validLicenseForMonitor);
+    }
+};
+GetSubscribedRadioMonitorListLicenseValidationGuard = __decorate([
+    common_1.Injectable(),
+    __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
+], GetSubscribedRadioMonitorListLicenseValidationGuard);
+exports.GetSubscribedRadioMonitorListLicenseValidationGuard = GetSubscribedRadioMonitorListLicenseValidationGuard;
 let SubscribeRadioMonitorLicenseValidationGuard = class SubscribeRadioMonitorLicenseValidationGuard {
     constructor(licensekeyService) {
         this.licensekeyService = licensekeyService;
@@ -137,9 +160,11 @@ let SubscribeRadioMonitorLicenseValidationGuard = class SubscribeRadioMonitorLic
         var e_2, _a;
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        const licenses = await this.licensekeyService.licenseKeyModel.find({ "owners.ownerId": user.sub });
+        const licenses = await this.licensekeyService.licenseKeyModel.find({
+            'owners.ownerId': user.sub,
+        });
         if (!licenses || licenses.length <= 0) {
-            throw new common_1.UnprocessableEntityException("No License keys present. Please add a license key to subscribe for monitor.");
+            throw new common_1.UnprocessableEntityException('No License keys present. Please add a license key to subscribe for monitor.');
         }
         var currentValidLicense;
         var valid;
@@ -159,7 +184,7 @@ let SubscribeRadioMonitorLicenseValidationGuard = class SubscribeRadioMonitorLic
                 }
                 valid = false;
                 statusCode = validationResults.statusCode || 422;
-                message = validationResults.message || "License validation failded";
+                message = validationResults.message || 'License validation failded';
                 remainingUses = validationResults.remainingUses;
                 usesToBeUsed = validationResults.usesToBeUsed;
                 maxMonitoringUses = validationResults.maxMonitoringUses;
@@ -178,25 +203,25 @@ let SubscribeRadioMonitorLicenseValidationGuard = class SubscribeRadioMonitorLic
                 message: message,
                 remainingUses: remainingUses,
                 usesToBeUsed: usesToBeUsed,
-                maxMonitoringUses: maxMonitoringUses
+                maxMonitoringUses: maxMonitoringUses,
             }, statusCode);
         }
         request.validLicense = currentValidLicense;
         return Boolean(currentValidLicense);
     }
     async isValidLicenseForMonitor(id, body) {
-        const { validationResult, licenseKey } = await this.licensekeyService.validateLicence(id);
+        const { validationResult, licenseKey, } = await this.licensekeyService.validateLicence(id);
         if (!validationResult.valid) {
             return {
                 valid: false,
                 message: validationResult.message,
                 statusCode: 422,
-                usesExceeded: false
+                usesExceeded: false,
             };
         }
         if (licenseKey.isUnlimitedMonitor) {
             return {
-                valid: true
+                valid: true,
             };
         }
         const uses = licenseKey.monitoringUses;
@@ -211,11 +236,11 @@ let SubscribeRadioMonitorLicenseValidationGuard = class SubscribeRadioMonitorLic
                 usesExceeded: true,
                 remainingUses: remainingUses,
                 usesToBeUsed: usesToBeUsed,
-                maxMonitoringUses: maxUses
+                maxMonitoringUses: maxUses,
             };
         }
         return {
-            valid: true
+            valid: true,
         };
     }
 };

@@ -5,6 +5,8 @@ const appRootPath = require("app-root-path");
 exports.appConfig = {
     PORT: parseInt(process.env.PORT),
     MULTER_DEST: `${appRootPath.toString()}/storage/uploads`,
+    MULTER_EXPORT_DEST: `${appRootPath.toString()}/storage/exports`,
+    MULTER_IMPORT_DEST: `${appRootPath.toString()}/storage/uploads/imports`,
     CONTAINER_DEST: `${appRootPath.toString()}/storage/containers`,
     ENCODER_EXE_PATH: `${appRootPath.toString()}/bin/encode.sh`,
     DECODER_EXE_PATH: `${appRootPath.toString()}/bin/decode.sh`,

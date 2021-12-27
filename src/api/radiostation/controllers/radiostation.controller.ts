@@ -6,15 +6,29 @@ import {
   Put,
   Param,
   Delete,
+  Res,
   UseGuards,
   NotFoundException,
   BadRequestException,
   Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { RadiostationService } from '../services/radiostation.service';
 import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
 import { UpdateRadiostationDto } from '../dto/update-radiostation.dto';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiTags,
+  ApiQuery,
+  ApiParam,
+  ApiConsumes,
+  ApiBody,
+} from '@nestjs/swagger';
+import { Response } from 'express';
+import { diskStorage } from 'multer';
+import * as makeDir from 'make-dir';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { BulkRadiostationDto } from '../dto/bulk-radiostation.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
@@ -23,29 +37,112 @@ import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytempl
 import { User } from '../../auth/decorators/user.decorator';
 import { forEach, subtract } from 'lodash';
 import * as fs from 'fs';
+import * as upath from 'upath';
 import * as appRootPath from 'app-root-path';
-
+import { FileInterceptor } from '@nestjs/platform-express';
+import { appConfig } from '../../../config/app.config';
+import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
+import { RolesAllowed } from 'src/api/auth/decorators';
+import { Roles } from 'src/constants/Enums';
+import { RoleBasedGuard } from 'src/api/auth/guards';
+      
 @ApiTags('Radio Station Controller')
 @Controller('radiostations')
 export class RadiostationController {
   constructor(private readonly radiostationService: RadiostationService) {}
 
-  @Get('/generate-json')
-  async genJson() {
-    // return this.radiostationService.exportToJson();
-    // return this.radiostationService.addMonitorGroupsFromExcel()
-    // return this.radiostationService.exportToExcel()
-    return 'Not implemented';
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'format', enum: ['JSON', 'EXCEL'] })
+  @AnyApiQueryTemplate()
+  @ApiOperation({ summary: 'Export Radio Stations' })
+  @Get('/export/:format')
+  async export(
+    @Res() res: Response,
+    @Param('format') format: string,
+    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+  ) {
+    var filePath: string = '';
+    switch (format) {
+      case 'JSON':
+        filePath = await this.radiostationService.exportToJson(queryDto);
+        break;
+
+      case 'EXCEL':
+        filePath = await this.radiostationService.exportToExcel(queryDto);
+        break;
+
+      default:
+        filePath = await this.radiostationService.exportToExcel(queryDto);
+        break;
+    }
+
+    res.download(filePath, err => {
+      if (err) {
+        fs.unlinkSync(filePath);
+        res.send(err);
+      }
+      fs.unlinkSync(filePath);
+    });
   }
 
-  @Get('/import-from-excel')
-  async importFromExcel() {
-    const excelPath = `${appRootPath.toString()}/sample_test/Radio_Stations_Sonic_Dec15_addedstations.xlsx`;
-    return this.radiostationService.importFromExcel(excelPath);
+  @UseInterceptors(
+    FileInterceptor('importFile', {
+      // Check the mimetypes to allow for upload
+      fileFilter: (req: any, file: any, cb: any) => {
+        if (file?.originalname?.match?.(/\.(xlsx|xlsb|xls|xlsm)$/)) {
+          // Allow storage of file
+          cb(null, true);
+        } else {
+          // Reject file
+          cb(
+            new BadRequestException(
+              'Unsupported file type, only support excel for now',
+            ),
+            false,
+          );
+        }
+      },
+      storage: diskStorage({
+        destination: async (req, file, cb) => {
+          const filePath = await makeDir(`${appConfig.MULTER_IMPORT_DEST}`);
+          cb(null, filePath);
+        },
+        filename: (req, file, cb) => {
+          let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+          cb(null, `${Date.now()}_${orgName}`);
+        },
+      }),
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Import Radio Stations From Excel' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        importFile: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
+  @Post('/import-from-excel')
+  async importFromExcel(@UploadedFile() file: IUploadedFile) {
+    const excelPath = upath.toUnix(file.path);
+    return this.radiostationService.importFromExcel(excelPath).finally(() => {
+      fs.unlinkSync(excelPath);
+    });
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Radio Station' })
   async create(
@@ -106,7 +203,8 @@ export class RadiostationController {
   }
 
   @Put(':id/stop-listening-stream')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'stop listening stream' })
   stopListeningStream(@Param('id') id: string) {
@@ -119,7 +217,8 @@ export class RadiostationController {
   }
 
   @Put(':id/start-listening-stream')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'start listening stream' })
   startListeningStream(@Param('id') id: string) {
@@ -132,7 +231,8 @@ export class RadiostationController {
   }
 
   @Put('start-listening-stream/bulk')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'stop listening stream' })
   bulkStartListeningStream(@Body() bulkDto: BulkRadiostationDto) {
@@ -140,7 +240,8 @@ export class RadiostationController {
   }
 
   @Put('stop-listening-stream/bulk')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'stop listening stream' })
   bulkStopListeningStream(@Body() bulkDto: BulkRadiostationDto) {
@@ -148,7 +249,8 @@ export class RadiostationController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Single Radio Station' })
   async update(
@@ -168,7 +270,8 @@ export class RadiostationController {
   }
 
   @Delete('delete/bulk')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete Radio Station in bulk' })
   removeBulk(@Body() bulkDto: BulkRadiostationDto) {
@@ -176,7 +279,8 @@ export class RadiostationController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete Radio Station' })
   remove(@Param('id') id: string) {

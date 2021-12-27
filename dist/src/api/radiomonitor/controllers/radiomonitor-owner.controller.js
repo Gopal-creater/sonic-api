@@ -28,6 +28,8 @@ const license_validation_guard_1 = require("../../licensekey/guards/license-vali
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
+const isTargetUserLoggedIn_guard_1 = require("../../auth/guards/isTargetUserLoggedIn.guard");
+const licensekey_schema_1 = require("../../licensekey/schemas/licensekey.schema");
 let RadioMonitorOwnerController = class RadioMonitorOwnerController {
     constructor(radiomonitorService, radiostationService) {
         this.radiomonitorService = radiomonitorService;
@@ -36,6 +38,9 @@ let RadioMonitorOwnerController = class RadioMonitorOwnerController {
     async getSubscriberedStations(owner, ownerId, queryDto) {
         queryDto.filter['owner'] = ownerId;
         return this.radiomonitorService.findAll(queryDto);
+    }
+    async getSubscriberedStationsList(owner, ownerId, license, queryDto) {
+        return this.radiostationService.findAll(queryDto);
     }
     async subscribe(createRadiomonitorDto, ownerId, owner, license) {
         const { radio } = createRadiomonitorDto;
@@ -65,6 +70,9 @@ let RadioMonitorOwnerController = class RadioMonitorOwnerController {
         queryDto.filter['owner'] = ownerId;
         return this.radiomonitorService.getCount(queryDto);
     }
+    async getSubscribedStationsCount(owner, ownerId, queryDto) {
+        return this.radiostationService.getCount(queryDto);
+    }
     async unsubscribe(id, ownerId) {
         await this.radiomonitorService.findByIdOrFail(id);
         return this.radiomonitorService.unsubscribeById(id);
@@ -80,7 +88,7 @@ __decorate([
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
+    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
     swagger_1.ApiOperation({ summary: 'Get all subscribed radio stations' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiomonitordto").MongoosePaginateRadioMonitorDto }),
     __param(0, decorators_1.User('sub')),
@@ -90,6 +98,22 @@ __decorate([
     __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], RadioMonitorOwnerController.prototype, "getSubscriberedStations", null);
+__decorate([
+    common_1.Get('owners/:ownerId/subscribed-stations-list'),
+    common_1.UseGuards(guards_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param', 'ownerId'), license_validation_guard_1.GetSubscribedRadioMonitorListLicenseValidationGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get all subscribed radio stations' }),
+    openapi.ApiResponse({ status: 200, type: require("../../radiostation/dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto }),
+    __param(0, decorators_1.User('sub')),
+    __param(1, common_1.Param('ownerId')),
+    __param(2, validatedlicense_decorator_1.ValidatedLicense()),
+    __param(3, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, licensekey_schema_1.LicenseKey,
+        parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], RadioMonitorOwnerController.prototype, "getSubscriberedStationsList", null);
 __decorate([
     common_1.Post('/owners/:ownerId/subscribe'),
     common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.SubscribeRadioMonitorLicenseValidationGuard),
@@ -170,9 +194,11 @@ __decorate([
 __decorate([
     common_1.Get('owners/:ownerId/subscriber-count'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
-    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
+    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get counts with filter eg: ?isListeningStarted=true OR ?isError=true etc..' }),
+    swagger_1.ApiOperation({
+        summary: 'Get counts with filter eg: ?isListeningStarted=true OR ?isError=true etc..',
+    }),
     openapi.ApiResponse({ status: 200, type: Number }),
     __param(0, decorators_1.User('sub')),
     __param(1, common_1.Param('ownerId')),
@@ -181,6 +207,19 @@ __decorate([
     __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], RadioMonitorOwnerController.prototype, "getSubscriberCount", null);
+__decorate([
+    common_1.Get('owners/:ownerId/subscribed-stations-count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param', 'ownerId'), license_validation_guard_1.GetSubscribedRadioMonitorListLicenseValidationGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get counts of subscribed stations.' }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, decorators_1.User('sub')),
+    __param(1, common_1.Param('ownerId')),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], RadioMonitorOwnerController.prototype, "getSubscribedStationsCount", null);
 __decorate([
     common_1.Delete(':id/owners/:ownerId/unsubscribe'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
