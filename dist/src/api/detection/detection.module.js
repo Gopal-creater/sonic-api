@@ -18,6 +18,7 @@ const sonickey_module_1 = require("../sonickey/sonickey.module");
 const user_module_1 = require("../user/user.module");
 const detection_thirdparty_controller_1 = require("./controllers/detection.thirdparty.controller");
 const auth_module_1 = require("../auth/auth.module");
+const file_handler_service_1 = require("../../shared/services/file-handler.service");
 let DetectionModule = class DetectionModule {
 };
 DetectionModule = __decorate([
@@ -32,11 +33,15 @@ DetectionModule = __decorate([
             common_1.forwardRef(() => api_key_module_1.ApiKeyModule),
             common_1.forwardRef(() => user_module_1.UserModule),
             common_1.forwardRef(() => auth_module_1.AuthModule),
-            common_1.forwardRef(() => sonickey_module_1.SonickeyModule)
+            common_1.forwardRef(() => sonickey_module_1.SonickeyModule),
         ],
-        controllers: [detection_controller_1.DetectionController, detection_owner_controller_1.DetectionOwnerController, detection_thirdparty_controller_1.DetectionThirdPartyController],
-        providers: [detection_service_1.DetectionService],
-        exports: [detection_service_1.DetectionService]
+        controllers: [
+            detection_controller_1.DetectionController,
+            detection_owner_controller_1.DetectionOwnerController,
+            detection_thirdparty_controller_1.DetectionThirdPartyController,
+        ],
+        providers: [detection_service_1.DetectionService, file_handler_service_1.FileHandlerService],
+        exports: [detection_service_1.DetectionService],
     })
 ], DetectionModule);
 exports.DetectionModule = DetectionModule;

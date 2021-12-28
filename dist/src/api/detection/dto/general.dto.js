@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TopRadioStationWithPlaysDetails = exports.TopRadioStationWithTopSonicKey = exports.GraphData = exports.PlaysCountResponseDto = exports.TopSonicKey = exports.TopRadioStation = void 0;
+exports.TopRadioStationWithPlaysDetails = exports.TopRadioStationWithTopSonicKey = exports.GraphData = exports.PlaysListResponseDto = exports.PlaysGraphResponseDto = exports.PlaysGraphSingleResponseDto = exports.PlaysCountResponseDto = exports.TopSonicKey = exports.TopRadioStation = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const sonickey_schema_1 = require("../../sonickey/schemas/sonickey.schema");
@@ -70,6 +70,87 @@ __decorate([
     __metadata("design:type", Number)
 ], PlaysCountResponseDto.prototype, "uniquePlaysCount", void 0);
 exports.PlaysCountResponseDto = PlaysCountResponseDto;
+;
+class PlaysGraphSingleResponseDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { _id: { required: true, type: () => String }, total: { required: true, type: () => Number } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], PlaysGraphSingleResponseDto.prototype, "_id", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysGraphSingleResponseDto.prototype, "total", void 0);
+exports.PlaysGraphSingleResponseDto = PlaysGraphSingleResponseDto;
+;
+class PlaysGraphResponseDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { playsArtistWise: { required: false, type: () => [require("./general.dto").PlaysGraphSingleResponseDto] }, playsCountryWise: { required: false, type: () => [require("./general.dto").PlaysGraphSingleResponseDto] }, playsSongWise: { required: false, type: () => [require("./general.dto").PlaysGraphSingleResponseDto] }, playsStationWise: { required: false, type: () => [require("./general.dto").PlaysGraphSingleResponseDto] } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Array)
+], PlaysGraphResponseDto.prototype, "playsArtistWise", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Array)
+], PlaysGraphResponseDto.prototype, "playsCountryWise", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Array)
+], PlaysGraphResponseDto.prototype, "playsSongWise", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Array)
+], PlaysGraphResponseDto.prototype, "playsStationWise", void 0);
+exports.PlaysGraphResponseDto = PlaysGraphResponseDto;
+;
+class PlaysListResponseDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { _id: { required: false, type: () => String }, detectedAt: { required: false, type: () => Date }, owner: { required: false, type: () => String }, channel: { required: false, type: () => String }, detectedDuration: { required: false, type: () => Number }, radioStation: { required: true, type: () => require("../../radiostation/schemas/radiostation.schema").RadioStation }, sonicKey: { required: true, type: () => require("../../sonickey/schemas/sonickey.schema").SonicKey }, createdAt: { required: false, type: () => Date }, updatedAt: { required: false, type: () => Date } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], PlaysListResponseDto.prototype, "_id", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Date)
+], PlaysListResponseDto.prototype, "detectedAt", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], PlaysListResponseDto.prototype, "owner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], PlaysListResponseDto.prototype, "channel", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysListResponseDto.prototype, "detectedDuration", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", radiostation_schema_1.RadioStation)
+], PlaysListResponseDto.prototype, "radioStation", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", sonickey_schema_1.SonicKey)
+], PlaysListResponseDto.prototype, "sonicKey", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Date)
+], PlaysListResponseDto.prototype, "createdAt", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Date)
+], PlaysListResponseDto.prototype, "updatedAt", void 0);
+exports.PlaysListResponseDto = PlaysListResponseDto;
 ;
 class GraphData {
     static _OPENAPI_METADATA_FACTORY() {

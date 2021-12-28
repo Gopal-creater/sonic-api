@@ -3,19 +3,34 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Detection } from './schemas/detection.schema';
 import { Aggregate, Model } from 'mongoose';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
-import { MongoosePaginateDeectionDto } from './dto/mongoosepaginate-radiostationsonickey.dto';
+import {
+  MongoosePaginateDeectionDto,
+  MongoosePaginatePlaysDto,
+} from './dto/mongoosepaginate-radiostationsonickey.dto';
 import { ChannelEnums } from 'src/constants/Enums';
 import { toObjectId } from 'src/shared/utils/mongoose.utils';
 import { groupByTime } from 'src/shared/types';
 import { UserService } from '../user/user.service';
+import * as makeDir from 'make-dir';
+import * as appRootPath from 'app-root-path';
+import * as fs from 'fs';
+import * as xlsx from 'xlsx';
+import * as XLSXChart from 'xlsx-chart';
+import * as moment from 'moment';
 import {
   TopRadioStation,
   TopRadioStationWithTopSonicKey,
   GraphData,
+  PlaysGraphResponseDto,
   TopSonicKey,
   PlaysCountResponseDto,
   TopRadioStationWithPlaysDetails,
+  PlaysListResponseDto,
 } from './dto/general.dto';
+import { appConfig } from '../../config/app.config';
+import { FileHandlerService } from '../../shared/services/file-handler.service';
+import * as AdmZip from 'adm-zip';
+import * as utils from 'util'
 
 @Injectable()
 export class DetectionService {
@@ -24,6 +39,7 @@ export class DetectionService {
     public readonly detectionModel: Model<Detection>,
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
+    private readonly fileHandlerService: FileHandlerService,
   ) {}
 
   async getPlaysDashboardData(filter: Record<any, any>) {
@@ -32,7 +48,7 @@ export class DetectionService {
       {
         $match: {
           ...filter,
-          channel:ChannelEnums.STREAMREADER
+          channel: ChannelEnums.STREAMREADER,
         },
       },
       {
@@ -55,7 +71,7 @@ export class DetectionService {
       {
         $match: {
           ...filter,
-          channel:ChannelEnums.STREAMREADER
+          channel: ChannelEnums.STREAMREADER,
         },
       },
       {
@@ -234,10 +250,327 @@ export class DetectionService {
       playsSongWise,
       playsStationWise,
       playsArtistWise,
-    };
+    } as PlaysGraphResponseDto;
   }
 
-  async listPlays(queryDto: ParsedQueryDto, recentPlays: boolean = false) {
+  async exportDashboardPlaysView(
+    queryDto: ParsedQueryDto,
+    ownerId: string,
+    format: string,
+  ):Promise<string> {
+    const{filter,limit}=queryDto
+    return new Promise(async (resolve,reject)=>{
+      const playsLists = (await this.listPlays(
+        queryDto,
+        true,
+      )) as PlaysListResponseDto[];
+      const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(
+        ownerId,
+        queryDto.limit,
+        queryDto.filter,
+      );
+      const chartsData = await this.getPlaysDashboardGraphData(queryDto.filter);
+      var playsListInJsonFormat = [];
+      var topRadioStationsWithPlaysCountInJsonFormat = [];
+      var chartsDataInJsonFormat = [];
+      for await (const plays of playsLists) {
+        var playsExcelData = {
+          SonicKey: plays?.sonicKey?._id,
+          'Radio Station': plays?.radioStation?.name,
+          Date: moment(plays?.detectedAt || plays?.createdAt)
+            .utc()
+            .format('DD/MM/YYYY'),
+          Time: moment(plays?.detectedAt || plays?.createdAt)
+            .utc()
+            .format('HH:mm'),
+          Duration: moment
+            .utc((plays?.detectedDuration || plays?.sonicKey?.contentDuration) * 1000)
+            .format('HH:mm:ss'),
+          'Track File Name': plays?.sonicKey?.originalFileName,
+          Artist: plays?.sonicKey?.contentOwner,
+          Country: plays?.radioStation?.country,
+        };
+        playsListInJsonFormat.push(playsExcelData);
+      }
+      if (playsListInJsonFormat.length <= 0) {
+        playsListInJsonFormat.push({
+          SonicKey: '',
+          'Radio Station': '',
+          Date: '',
+          Time: '',
+          Duration: '',
+          'Track File Name': '',
+          Artist: '',
+          Country: '',
+        });
+      }
+  
+      for await (const topRadioStation of topRadioStationsWithPlaysCount) {
+        var topRadioStationExcelData = {
+          'Radio Station': topRadioStation?.radioStation?.name,
+          Country: topRadioStation?.radioStation?.country,
+          Plays: topRadioStation?.playsCount.playsCount,
+          'Unique Track Played': topRadioStation?.playsCount.uniquePlaysCount,
+        };
+        topRadioStationsWithPlaysCountInJsonFormat.push(topRadioStationExcelData);
+      }
+  
+      if (topRadioStationsWithPlaysCountInJsonFormat.length <= 0) {
+        topRadioStationsWithPlaysCountInJsonFormat.push({
+          'Radio Station': '',
+          Country: '',
+          Plays: '',
+          'Unique Track Played': '',
+        });
+      }
+
+      const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
+      var finalFilePath:string=`${destination}/plays_view_${Date.now()}.zip`
+
+      var zip = new AdmZip();
+      try {
+        const file = xlsx.utils.book_new()
+        const wsPlaysListInJsonFormat = xlsx.utils.json_to_sheet(
+          playsListInJsonFormat,
+        );
+        const wsTopRadioStationsWithPlaysCountInJsonFormat = xlsx.utils.json_to_sheet(
+          topRadioStationsWithPlaysCountInJsonFormat,
+        );
+        xlsx.utils.book_append_sheet(file, wsPlaysListInJsonFormat, 'Sheet1');
+        xlsx.utils.book_append_sheet(
+          file,
+          wsTopRadioStationsWithPlaysCountInJsonFormat,
+          'Sheet2',
+        );
+        if (format == 'xlsx') {
+          const nonChartsFilePath = `${destination}/${`plays_view_${Date.now()}`}.xlsx`;
+          const chartsFilePath = `${destination}/${`charts_${Date.now()}`}.xlsx`;
+          xlsx.writeFile(file, nonChartsFilePath);
+          await this.addChartsToExcel(chartsFilePath, chartsData);
+          zip.addLocalFile(nonChartsFilePath,'','plays_view.xlsx');
+          zip.addLocalFile(chartsFilePath,'','chart_view.xlsx');
+          zip.writeZip(finalFilePath,(err=>{
+            this.fileHandlerService.deleteFileAtPath(nonChartsFilePath);
+            this.fileHandlerService.deleteFileAtPath(chartsFilePath);
+            if(err){
+              reject(err)
+            }
+            resolve(finalFilePath)
+          }));
+        } else if (format == 'csv') {
+          const playsCsvPath = `${destination}/${`plays_view_${Date.now()}`}.csv`;
+          const topStationsCsvPath = `${destination}/${`topStations_${Date.now()}`}.csv`;
+          xlsx.writeFile(file, playsCsvPath,{bookType:'csv',sheet:"Sheet1"});
+          xlsx.writeFile(file, topStationsCsvPath,{bookType:'csv',sheet:"Sheet2"});
+          zip.addLocalFile(playsCsvPath,'','plays_view.csv');
+          zip.addLocalFile(topStationsCsvPath,'','top_station_view.csv');
+          zip.writeZip(finalFilePath,(err=>{
+            this.fileHandlerService.deleteFileAtPath(playsCsvPath);
+            this.fileHandlerService.deleteFileAtPath(topStationsCsvPath);
+            if(err){
+              reject(err)
+            }
+            resolve(finalFilePath)
+          }));
+        }
+      } catch (error) {
+        reject(error);
+      }
+    })
+    
+  }
+
+  async addChartsToExcel(
+    filePath: string,
+    chartsData: PlaysGraphResponseDto,
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let xlsxChart = new XLSXChart();
+
+      let opts = {
+        charts: [
+          {
+            chart: 'column',
+            titles: ['Plays-Country-Wise'],
+            fields: chartsData.playsCountryWise.map(item => item._id),
+            data: {
+              'Plays-Country-Wise': chartsData.playsCountryWise.reduce(
+                (obj, item) => Object.assign(obj, { [item._id]: item.total }),
+                {},
+              ),
+            },
+            chartTitle: 'Plays-Country-Wise',
+          },
+          {
+            chart: 'column',
+            titles: ['Plays-Song-Wise'],
+            fields: chartsData.playsSongWise.map(item => item._id),
+            data: {
+              'Plays-Song-Wise': chartsData.playsSongWise.reduce(
+                (obj, item) => Object.assign(obj, { [item._id]: item.total }),
+                {},
+              ),
+            },
+            chartTitle: 'Plays-Song-Wise',
+          },
+          {
+            chart: 'column',
+            titles: ['Plays-Station-Wise'],
+            fields: chartsData.playsStationWise.map(item => item._id),
+            data: {
+              'Plays-Station-Wise': chartsData.playsStationWise.reduce(
+                (obj, item) => Object.assign(obj, { [item._id]: item.total }),
+                {},
+              ),
+            },
+            chartTitle: 'Plays-Station-Wise',
+          },
+          {
+            chart: 'column',
+            titles: ['Plays-Artist-Wise'],
+            fields: chartsData.playsArtistWise.map(item => item._id),
+            data: {
+              'Plays-Artist-Wise': chartsData.playsArtistWise.reduce(
+                (obj, item) => Object.assign(obj, { [item._id]: item.total }),
+                {},
+              ),
+            },
+            chartTitle: 'Plays-Artist-Wise',
+          },
+        ],
+      };
+
+      xlsxChart.generate(opts, function(err, data) {
+        if (err) {
+          reject(err);
+        }
+        fs.writeFileSync(filePath, data);
+        resolve(filePath);
+      });
+    });
+  }
+
+  async exportHistoryOfSonicKeyPlays(
+    queryDto: ParsedQueryDto,
+    ownerId: string,
+    sonickey: string,
+    format: string,
+  ):Promise<string> {
+    return new Promise(async (resolve,reject)=>{
+      queryDto.filter['sonicKey'] = sonickey;
+      const playsLists = (await this.listPlays(
+        queryDto,
+        true,
+      )) as PlaysListResponseDto[];
+      const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(
+        ownerId,
+        queryDto.limit,
+        queryDto.filter,
+      );
+      var playsListInJsonFormat = [];
+      var topRadioStationsWithPlaysCountInJsonFormat = [];
+      for await (const plays of playsLists) {
+        var playsExcelData = {
+          SonicKey: plays?.sonicKey?._id,
+          'Radio Station': plays?.radioStation?.name,
+          Date: moment(plays?.detectedAt || plays?.createdAt)
+            .utc()
+            .format('DD/MM/YYYY'),
+          Time: moment(plays?.detectedAt || plays?.createdAt)
+            .utc()
+            .format('HH:mm'),
+          Duration: moment
+            .utc((plays?.detectedDuration || plays?.sonicKey?.contentDuration) * 1000)
+            .format('HH:mm:ss'),
+          'Track File Name': plays?.sonicKey?.originalFileName,
+          Artist: plays?.sonicKey?.contentOwner,
+          Country: plays?.radioStation?.country,
+        };
+        playsListInJsonFormat.push(playsExcelData);
+      }
+      if (playsListInJsonFormat.length <= 0) {
+        playsListInJsonFormat.push({
+          SonicKey: '',
+          'Radio Station': '',
+          Date: '',
+          Time: '',
+          Duration: '',
+          'Track File Name': '',
+          Artist: '',
+          Country: '',
+        });
+      }
+  
+      for await (const topRadioStation of topRadioStationsWithPlaysCount) {
+        var topRadioStationExcelData = {
+          'Radio Station': topRadioStation?.radioStation?.name,
+          Country: topRadioStation?.radioStation?.country,
+          Plays: topRadioStation?.playsCount.playsCount,
+          'Unique Track Played': topRadioStation?.playsCount.uniquePlaysCount,
+        };
+        topRadioStationsWithPlaysCountInJsonFormat.push(topRadioStationExcelData);
+      }
+  
+      if (topRadioStationsWithPlaysCountInJsonFormat.length <= 0) {
+        topRadioStationsWithPlaysCountInJsonFormat.push({
+          'Radio Station': '',
+          Country: '',
+          Plays: '',
+          'Unique Track Played': '',
+        });
+      }
+  
+      const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
+      var finalFilePath:string=''
+      var zip = new AdmZip();
+      try {
+        const file = xlsx.utils.book_new()
+        const wsPlaysListInJsonFormat = xlsx.utils.json_to_sheet(
+          playsListInJsonFormat,
+        );
+        const wsTopRadioStationsWithPlaysCountInJsonFormat = xlsx.utils.json_to_sheet(
+          topRadioStationsWithPlaysCountInJsonFormat,
+        );
+        xlsx.utils.book_append_sheet(file, wsPlaysListInJsonFormat, 'Sheet1');
+        xlsx.utils.book_append_sheet(
+          file,
+          wsTopRadioStationsWithPlaysCountInJsonFormat,
+          'Sheet2',
+        );
+        if(format=="xlsx"){
+          const excelFilePath =`${destination}/${`history_of_sonickey${Date.now()}`}.xlsx`;
+          xlsx.writeFile(file, excelFilePath);
+          finalFilePath=excelFilePath
+          resolve(excelFilePath)
+        }else if (format == 'csv') {
+          const historyOfSonicKeyCsvPath = `${destination}/${`history_of_sonickey${Date.now()}`}.csv`;
+          const topStationsCsvPath = `${destination}/${`topStations_${Date.now()}`}.csv`;
+          xlsx.writeFile(file, historyOfSonicKeyCsvPath,{bookType:'csv',sheet:"Sheet1"});
+          xlsx.writeFile(file, topStationsCsvPath,{bookType:'csv',sheet:"Sheet2"});
+          zip.addLocalFile(historyOfSonicKeyCsvPath,'','history_of_sonickey.csv');
+          zip.addLocalFile(topStationsCsvPath,'','top_station_view.csv');
+          const zipFilePath =`${destination}/${`history_of_sonickey${Date.now()}`}.zip`;
+          finalFilePath=zipFilePath
+          zip.writeZip(zipFilePath,(err=>{
+            this.fileHandlerService.deleteFileAtPath(historyOfSonicKeyCsvPath);
+            this.fileHandlerService.deleteFileAtPath(topStationsCsvPath);
+            if(err){
+              reject(err)
+            }
+            resolve(zipFilePath)
+          }));
+        }
+      } catch (error) {
+        return reject(error);
+      }
+    })
+   
+  }
+
+  async listPlays(
+    queryDto: ParsedQueryDto,
+    recentPlays: boolean = false,
+  ): Promise<MongoosePaginatePlaysDto | PlaysListResponseDto[]> {
     const {
       limit,
       skip,
@@ -297,6 +630,11 @@ export class DetectionService {
       aggregateArray.push({
         $limit: limit,
       });
+      if (select) {
+        aggregateArray.push({
+          $project: select,
+        });
+      }
       return this.detectionModel.aggregate(aggregateArray);
     }
     const aggregate = this.detectionModel.aggregate(aggregateArray);
@@ -398,8 +736,8 @@ export class DetectionService {
   }
 
   /*
-   * @param queryDto 
-   * @returns 
+   * @param queryDto
+   * @returns
    */
   async getTotalPlaysCount(
     queryDto: ParsedQueryDto,
@@ -407,7 +745,7 @@ export class DetectionService {
     const { filter } = queryDto;
     const playsCountDetails = await this.detectionModel.aggregate([
       {
-        $match:{...filter}
+        $match: { ...filter },
       },
       {
         $group: {
@@ -450,7 +788,7 @@ export class DetectionService {
     ownerId: string,
     topLimit: number,
     filter: object = {},
-  ):Promise<TopRadioStationWithPlaysDetails[]> {
+  ): Promise<TopRadioStationWithPlaysDetails[]> {
     return this.detectionModel.aggregate([
       {
         $match: {
@@ -492,11 +830,11 @@ export class DetectionService {
           _id: 0,
           radioStation: { $first: '$radioStation' },
           playsCount: {
-            playsCount:"$plays",
-            uniquePlaysCount:{$size: '$sonicKeys'}
-           }
+            playsCount: '$plays',
+            uniquePlaysCount: { $size: '$sonicKeys' },
+          },
         },
-      }
+      },
     ]);
   }
 

@@ -33,10 +33,13 @@ const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anya
 const isTargetUserLoggedIn_guard_1 = require("../../auth/guards/isTargetUserLoggedIn.guard");
 const types_1 = require("../../../shared/types");
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
+const file_handler_service_1 = require("../../../shared/services/file-handler.service");
+const utils_1 = require("../../../shared/utils");
 let DetectionOwnerController = class DetectionOwnerController {
-    constructor(detectionService, sonickeyServive) {
+    constructor(detectionService, sonickeyServive, fileHandlerService) {
         this.detectionService = detectionService;
         this.sonickeyServive = sonickeyServive;
+        this.fileHandlerService = fileHandlerService;
     }
     async getPlaysDashboardData(targetUser, queryDto) {
         var { filter } = queryDto;
@@ -97,6 +100,35 @@ let DetectionOwnerController = class DetectionOwnerController {
         queryDto.filter['owner'] = targetUser;
         return this.detectionService.findAll(queryDto, true);
     }
+    async exportDashboardPlaysView(res, targetUser, format, queryDto) {
+        if (!['xlsx', 'csv'].includes(format))
+            throw new common_1.BadRequestException("unsupported format");
+        queryDto.filter['owner'] = targetUser;
+        queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
+        const filePath = await this.detectionService.exportDashboardPlaysView(queryDto, targetUser, format);
+        const fileName = utils_1.extractFileName(filePath);
+        res.download(filePath, `exported_dashboard_plays_view_${format}.${fileName.split('.')[1]}`, err => {
+            if (err) {
+                this.fileHandlerService.deleteFileAtPath(filePath);
+                res.send(err);
+            }
+            this.fileHandlerService.deleteFileAtPath(filePath);
+        });
+    }
+    async exportHistoryOfSonicKeyView(res, targetUser, sonicKey, format, queryDto) {
+        queryDto.filter['owner'] = targetUser;
+        queryDto.filter['sonicKey'] = sonicKey;
+        queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
+        const filePath = await this.detectionService.exportHistoryOfSonicKeyPlays(queryDto, targetUser, sonicKey, format);
+        const fileName = utils_1.extractFileName(filePath);
+        res.download(filePath, `exported_history_of_sonickey_${format}.${fileName.split('.')[1]}`, err => {
+            if (err) {
+                this.fileHandlerService.deleteFileAtPath(filePath);
+                res.send(err);
+            }
+            this.fileHandlerService.deleteFileAtPath(filePath);
+        });
+    }
     recentListPlays(targetUser, queryDto) {
         queryDto.filter['owner'] = targetUser;
         return this.detectionService.listPlays(queryDto, queryDto.recentPlays);
@@ -143,7 +175,7 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get Plays Dashboard graph data' }),
-    openapi.ApiResponse({ status: 200 }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/general.dto").PlaysGraphResponseDto }),
     __param(0, common_1.Param('targetUser')),
     __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
@@ -242,6 +274,41 @@ __decorate([
     __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], DetectionOwnerController.prototype, "findAll", null);
+__decorate([
+    common_1.Get('/export/dashboard-plays-view/:format'),
+    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({ summary: 'Export Dashboard Plays View' }),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Param('targetUser')),
+    __param(2, common_1.Param('format')),
+    __param(3, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], DetectionOwnerController.prototype, "exportDashboardPlaysView", null);
+__decorate([
+    common_1.Get('/export/history-of-sonickey/:sonicKey/:format'),
+    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({ summary: 'Export History Of Sonickey View' }),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Param('targetUser')),
+    __param(2, common_1.Param('sonicKey')),
+    __param(3, common_1.Param('format')),
+    __param(4, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String, String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], DetectionOwnerController.prototype, "exportHistoryOfSonicKeyView", null);
 __decorate([
     common_1.Get('/list-plays'),
     swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
@@ -344,7 +411,8 @@ DetectionOwnerController = __decorate([
     swagger_1.ApiTags('Detection Controller'),
     common_1.Controller('detections/owners/:targetUser'),
     __metadata("design:paramtypes", [detection_service_1.DetectionService,
-        sonickey_service_1.SonickeyService])
+        sonickey_service_1.SonickeyService,
+        file_handler_service_1.FileHandlerService])
 ], DetectionOwnerController);
 exports.DetectionOwnerController = DetectionOwnerController;
 //# sourceMappingURL=detection.owner.controller.js.map

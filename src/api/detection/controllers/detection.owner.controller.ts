@@ -2,13 +2,17 @@ import {
   Controller,
   Get,
   Param,
+  Res,
   UseGuards,
   Query,
   BadRequestException,
 } from '@nestjs/common';
 import { DetectionService } from '../detection.service';
-import { TopRadioStationWithPlaysDetails, TopRadioStationWithTopSonicKey } from '../dto/general.dto';
-
+import {
+  TopRadioStationWithPlaysDetails,
+  TopRadioStationWithTopSonicKey,
+} from '../dto/general.dto';
+import { Response } from 'express';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import {
   ApiBearerAuth,
@@ -26,6 +30,8 @@ import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytempl
 import { IsTargetUserLoggedInGuard } from 'src/api/auth/guards/isTargetUserLoggedIn.guard';
 import { groupByTime } from 'src/shared/types';
 import { ConditionalAuthGuard } from '../../auth/guards/conditional-auth.guard';
+import { FileHandlerService } from '../../../shared/services/file-handler.service';
+import { extractFileName } from 'src/shared/utils';
 
 @ApiTags('Detection Controller')
 @Controller('detections/owners/:targetUser')
@@ -33,6 +39,7 @@ export class DetectionOwnerController {
   constructor(
     private readonly detectionService: DetectionService,
     private readonly sonickeyServive: SonickeyService,
+    private readonly fileHandlerService: FileHandlerService,
   ) {}
 
   @Get('/plays-dashboard-data')
@@ -45,8 +52,8 @@ export class DetectionOwnerController {
     @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
   ) {
     var { filter } = queryDto;
-    filter['owner']=targetUser;
-    return this.detectionService.getPlaysDashboardData(filter)
+    filter['owner'] = targetUser;
+    return this.detectionService.getPlaysDashboardData(filter);
   }
 
   @Get('/plays-dashboard-graph-data')
@@ -59,8 +66,8 @@ export class DetectionOwnerController {
     @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
   ) {
     var { filter } = queryDto;
-    filter['owner']=targetUser;
-    return this.detectionService.getPlaysDashboardGraphData(filter)
+    filter['owner'] = targetUser;
+    return this.detectionService.getPlaysDashboardGraphData(filter);
   }
 
   @Get(`/radioStations/top-radiostations-with-top-sonickeys`)
@@ -199,10 +206,74 @@ export class DetectionOwnerController {
   }
 
   /**
+   * @param targetUser
+   * @param queryDto
+   * @returns
+   */
+  @Get('/export/dashboard-plays-view/:format')
+  @ApiParam({ name: 'format', enum: ['xlsx','csv'] })
+  @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
+  @AnyApiQueryTemplate()
+  @ApiOperation({ summary: 'Export Dashboard Plays View' })
+  async exportDashboardPlaysView(
+    @Res() res: Response,
+    @Param('targetUser') targetUser: string,
+    @Param('format') format: string,
+    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+  ) {
+    if(!['xlsx','csv'].includes(format)) throw new BadRequestException("unsupported format")
+    queryDto.filter['owner'] = targetUser;
+    queryDto.limit=queryDto?.limit<=2000?queryDto?.limit:2000
+    const filePath = await this.detectionService.exportDashboardPlaysView(queryDto, targetUser,format);
+    const fileName = extractFileName(filePath)
+    res.download(filePath,`exported_dashboard_plays_view_${format}.${fileName.split('.')[1]}`, err => {
+      if (err) {
+        this.fileHandlerService.deleteFileAtPath(filePath);
+        res.send(err);
+      }
+      this.fileHandlerService.deleteFileAtPath(filePath);
+    });
+  }
+
+  /**
+   * @param targetUser
+   * @param queryDto
+   * @returns
+   */
+   @Get('/export/history-of-sonickey/:sonicKey/:format')
+   @ApiParam({ name: 'format', enum: ['xlsx','csv'] })
+   @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+   @ApiBearerAuth()
+   @ApiSecurity('x-api-key')
+   @AnyApiQueryTemplate()
+   @ApiOperation({ summary: 'Export History Of Sonickey View' })
+   async exportHistoryOfSonicKeyView(
+     @Res() res: Response,
+     @Param('targetUser') targetUser: string,
+     @Param('sonicKey') sonicKey: string,
+     @Param('format') format: string,
+     @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+   ) {
+     queryDto.filter['owner'] = targetUser;
+     queryDto.filter['sonicKey'] = sonicKey;
+     queryDto.limit=queryDto?.limit<=2000?queryDto?.limit:2000
+     const filePath = await this.detectionService.exportHistoryOfSonicKeyPlays(queryDto, targetUser,sonicKey,format);
+     const fileName = extractFileName(filePath)
+     res.download(filePath,`exported_history_of_sonickey_${format}.${fileName.split('.')[1]}`, err => {
+       if (err) {
+         this.fileHandlerService.deleteFileAtPath(filePath);
+         res.send(err);
+       }
+       this.fileHandlerService.deleteFileAtPath(filePath);
+     });
+   }
+  /**
    * Eg: http://[::1]:8000/detections/owners/9ab5a58b-09e0-46ce-bb50-1321d927c382/list-plays?channel=STREAMREADER&limit=2&detectedAt%3E=2021-12-01&detectedAt%3C2021-12-11&relation_sonicKey.contentOwner=ArBa&relation_filter={%22sonicKey.contentName%22:{%20%22$regex%22:%20%22bo%22,%20%22$options%22:%20%22i%22%20}}
-   * @param targetUser 
-   * @param queryDto 
-   * @returns 
+   * @param targetUser
+   * @param queryDto
+   * @returns
    */
   @Get('/list-plays')
   @ApiQuery({ name: 'radioStation', type: String, required: false })
@@ -223,7 +294,7 @@ export class DetectionOwnerController {
     @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
   ) {
     queryDto.filter['owner'] = targetUser;
-    return this.detectionService.listPlays(queryDto,queryDto.recentPlays);
+    return this.detectionService.listPlays(queryDto, queryDto.recentPlays);
   }
 
   @Get('/:channel/sonicKeys/:sonicKey/detected-details')

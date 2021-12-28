@@ -35,6 +35,57 @@ export class TopRadioStation{
     @ApiProperty()
     uniquePlaysCount: number;
   };
+
+  export class PlaysGraphSingleResponseDto {
+    @ApiProperty()
+    _id: string;
+  
+    @ApiProperty()
+    total: number;
+  };
+
+  export class PlaysGraphResponseDto {
+    @ApiProperty()
+    playsArtistWise?: PlaysGraphSingleResponseDto[];
+  
+    @ApiProperty()
+    playsCountryWise?: PlaysGraphSingleResponseDto[];
+
+    @ApiProperty()
+    playsSongWise?: PlaysGraphSingleResponseDto[];
+  
+    @ApiProperty()
+    playsStationWise?: PlaysGraphSingleResponseDto[];
+  };
+
+  export class PlaysListResponseDto {
+    @ApiProperty()
+    _id?: string;
+
+    @ApiProperty()
+    detectedAt?: Date;
+
+    @ApiProperty()
+    owner?: string;
+
+    @ApiProperty()
+    channel?: string;
+
+    @ApiProperty()
+    detectedDuration?: number;
+  
+    @ApiProperty()
+    radioStation: RadioStation;
+  
+    @ApiProperty()
+    sonicKey: SonicKey;
+
+    @ApiProperty()
+    createdAt?: Date;
+
+    @ApiProperty()
+    updatedAt?: Date;
+  };
   
   export class GraphData{
     @ApiProperty()
