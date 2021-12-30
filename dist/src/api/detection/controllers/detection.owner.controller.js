@@ -115,11 +115,10 @@ let DetectionOwnerController = class DetectionOwnerController {
             this.fileHandlerService.deleteFileAtPath(filePath);
         });
     }
-    async exportHistoryOfSonicKeyView(res, targetUser, sonicKey, format, queryDto) {
+    async exportHistoryOfSonicKeyView(res, targetUser, format, queryDto) {
         queryDto.filter['owner'] = targetUser;
-        queryDto.filter['sonicKey'] = sonicKey;
         queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
-        const filePath = await this.detectionService.exportHistoryOfSonicKeyPlays(queryDto, targetUser, sonicKey, format);
+        const filePath = await this.detectionService.exportHistoryOfSonicKeyPlays(queryDto, targetUser, format);
         const fileName = utils_1.extractFileName(filePath);
         res.download(filePath, `exported_history_of_sonickey_${format}.${fileName.split('.')[1]}`, err => {
             if (err) {
@@ -292,8 +291,16 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "exportDashboardPlaysView", null);
 __decorate([
-    common_1.Get('/export/history-of-sonickey/:sonicKey/:format'),
+    common_1.Get('/export/history-of-sonickey/:format'),
     swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
+    swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
+    swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
+    swagger_1.ApiQuery({ name: 'sonicKey', type: String, required: false }),
+    swagger_1.ApiQuery({
+        name: 'channel',
+        enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'],
+        required: false,
+    }),
     common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiSecurity('x-api-key'),
@@ -302,11 +309,10 @@ __decorate([
     openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Res()),
     __param(1, common_1.Param('targetUser')),
-    __param(2, common_1.Param('sonicKey')),
-    __param(3, common_1.Param('format')),
-    __param(4, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(2, common_1.Param('format')),
+    __param(3, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, String, String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:paramtypes", [Object, String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "exportHistoryOfSonicKeyView", null);
 __decorate([

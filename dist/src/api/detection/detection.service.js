@@ -405,11 +405,10 @@ let DetectionService = class DetectionService {
             });
         });
     }
-    async exportHistoryOfSonicKeyPlays(queryDto, ownerId, sonickey, format) {
+    async exportHistoryOfSonicKeyPlays(queryDto, ownerId, format) {
         return new Promise(async (resolve, reject) => {
             var e_3, _a, e_4, _b;
             var _c, _d, _e, _f, _g, _h, _j, _k;
-            queryDto.filter['sonicKey'] = sonickey;
             const playsLists = (await this.listPlays(queryDto, true));
             const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(ownerId, queryDto.limit, queryDto.filter);
             var playsListInJsonFormat = [];

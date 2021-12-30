@@ -453,11 +453,9 @@ export class DetectionService {
   async exportHistoryOfSonicKeyPlays(
     queryDto: ParsedQueryDto,
     ownerId: string,
-    sonickey: string,
     format: string,
   ):Promise<string> {
     return new Promise(async (resolve,reject)=>{
-      queryDto.filter['sonicKey'] = sonickey;
       const playsLists = (await this.listPlays(
         queryDto,
         true,

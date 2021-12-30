@@ -242,8 +242,16 @@ export class DetectionOwnerController {
    * @param queryDto
    * @returns
    */
-   @Get('/export/history-of-sonickey/:sonicKey/:format')
+   @Get('/export/history-of-sonickey/:format')
    @ApiParam({ name: 'format', enum: ['xlsx','csv'] })
+   @ApiQuery({ name: 'radioStation', type: String, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiQuery({ name: 'sonicKey', type: String, required: false })
+  @ApiQuery({
+    name: 'channel',
+    enum: [...Object.values(ChannelEnums), 'ALL'],
+    required: false,
+  })
    @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
    @ApiBearerAuth()
    @ApiSecurity('x-api-key')
@@ -252,14 +260,12 @@ export class DetectionOwnerController {
    async exportHistoryOfSonicKeyView(
      @Res() res: Response,
      @Param('targetUser') targetUser: string,
-     @Param('sonicKey') sonicKey: string,
      @Param('format') format: string,
      @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
    ) {
      queryDto.filter['owner'] = targetUser;
-     queryDto.filter['sonicKey'] = sonicKey;
      queryDto.limit=queryDto?.limit<=2000?queryDto?.limit:2000
-     const filePath = await this.detectionService.exportHistoryOfSonicKeyPlays(queryDto, targetUser,sonicKey,format);
+     const filePath = await this.detectionService.exportHistoryOfSonicKeyPlays(queryDto, targetUser,format);
      const fileName = extractFileName(filePath)
      res.download(filePath,`exported_history_of_sonickey_${format}.${fileName.split('.')[1]}`, err => {
        if (err) {
