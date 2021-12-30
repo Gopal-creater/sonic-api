@@ -313,15 +313,15 @@ let DetectionService = class DetectionService {
                 const file = xlsx.utils.book_new();
                 const wsPlaysListInJsonFormat = xlsx.utils.json_to_sheet(playsListInJsonFormat);
                 const wsTopRadioStationsWithPlaysCountInJsonFormat = xlsx.utils.json_to_sheet(topRadioStationsWithPlaysCountInJsonFormat);
-                xlsx.utils.book_append_sheet(file, wsPlaysListInJsonFormat, 'Sheet1');
-                xlsx.utils.book_append_sheet(file, wsTopRadioStationsWithPlaysCountInJsonFormat, 'Sheet2');
+                xlsx.utils.book_append_sheet(file, wsPlaysListInJsonFormat, 'Plays');
+                xlsx.utils.book_append_sheet(file, wsTopRadioStationsWithPlaysCountInJsonFormat, 'Radio Plays');
                 if (format == 'xlsx') {
                     const nonChartsFilePath = `${destination}/${`plays_view_${Date.now()}`}.xlsx`;
                     const chartsFilePath = `${destination}/${`charts_${Date.now()}`}.xlsx`;
                     xlsx.writeFile(file, nonChartsFilePath);
                     await this.addChartsToExcel(chartsFilePath, chartsData);
-                    zip.addLocalFile(nonChartsFilePath, '', 'plays_view.xlsx');
-                    zip.addLocalFile(chartsFilePath, '', 'chart_view.xlsx');
+                    zip.addLocalFile(nonChartsFilePath, '', 'Plays.xlsx');
+                    zip.addLocalFile(chartsFilePath, '', 'Radio Plays.xlsx');
                     zip.writeZip(finalFilePath, (err => {
                         this.fileHandlerService.deleteFileAtPath(nonChartsFilePath);
                         this.fileHandlerService.deleteFileAtPath(chartsFilePath);
@@ -334,10 +334,10 @@ let DetectionService = class DetectionService {
                 else if (format == 'csv') {
                     const playsCsvPath = `${destination}/${`plays_view_${Date.now()}`}.csv`;
                     const topStationsCsvPath = `${destination}/${`topStations_${Date.now()}`}.csv`;
-                    xlsx.writeFile(file, playsCsvPath, { bookType: 'csv', sheet: "Sheet1" });
-                    xlsx.writeFile(file, topStationsCsvPath, { bookType: 'csv', sheet: "Sheet2" });
-                    zip.addLocalFile(playsCsvPath, '', 'plays_view.csv');
-                    zip.addLocalFile(topStationsCsvPath, '', 'top_station_view.csv');
+                    xlsx.writeFile(file, playsCsvPath, { bookType: 'csv', sheet: "Plays" });
+                    xlsx.writeFile(file, topStationsCsvPath, { bookType: 'csv', sheet: "Radio Plays" });
+                    zip.addLocalFile(playsCsvPath, '', 'Plays.csv');
+                    zip.addLocalFile(topStationsCsvPath, '', 'Radio Plays.csv');
                     zip.writeZip(finalFilePath, (err => {
                         this.fileHandlerService.deleteFileAtPath(playsCsvPath);
                         this.fileHandlerService.deleteFileAtPath(topStationsCsvPath);
@@ -488,8 +488,8 @@ let DetectionService = class DetectionService {
                 const file = xlsx.utils.book_new();
                 const wsPlaysListInJsonFormat = xlsx.utils.json_to_sheet(playsListInJsonFormat);
                 const wsTopRadioStationsWithPlaysCountInJsonFormat = xlsx.utils.json_to_sheet(topRadioStationsWithPlaysCountInJsonFormat);
-                xlsx.utils.book_append_sheet(file, wsPlaysListInJsonFormat, 'Sheet1');
-                xlsx.utils.book_append_sheet(file, wsTopRadioStationsWithPlaysCountInJsonFormat, 'Sheet2');
+                xlsx.utils.book_append_sheet(file, wsPlaysListInJsonFormat, 'SonicKey Plays');
+                xlsx.utils.book_append_sheet(file, wsTopRadioStationsWithPlaysCountInJsonFormat, 'SonicKey Plays on Radio');
                 if (format == "xlsx") {
                     const excelFilePath = `${destination}/${`history_of_sonickey${Date.now()}`}.xlsx`;
                     xlsx.writeFile(file, excelFilePath);
@@ -499,10 +499,10 @@ let DetectionService = class DetectionService {
                 else if (format == 'csv') {
                     const historyOfSonicKeyCsvPath = `${destination}/${`history_of_sonickey${Date.now()}`}.csv`;
                     const topStationsCsvPath = `${destination}/${`topStations_${Date.now()}`}.csv`;
-                    xlsx.writeFile(file, historyOfSonicKeyCsvPath, { bookType: 'csv', sheet: "Sheet1" });
-                    xlsx.writeFile(file, topStationsCsvPath, { bookType: 'csv', sheet: "Sheet2" });
-                    zip.addLocalFile(historyOfSonicKeyCsvPath, '', 'history_of_sonickey.csv');
-                    zip.addLocalFile(topStationsCsvPath, '', 'top_station_view.csv');
+                    xlsx.writeFile(file, historyOfSonicKeyCsvPath, { bookType: 'csv', sheet: "SonicKey Plays" });
+                    xlsx.writeFile(file, topStationsCsvPath, { bookType: 'csv', sheet: "SonicKey Plays on Radio" });
+                    zip.addLocalFile(historyOfSonicKeyCsvPath, '', 'SonicKey Plays.csv');
+                    zip.addLocalFile(topStationsCsvPath, '', 'SonicKey Plays on Radio.csv');
                     const zipFilePath = `${destination}/${`history_of_sonickey${Date.now()}`}.zip`;
                     finalFilePath = zipFilePath;
                     zip.writeZip(zipFilePath, (err => {
@@ -677,6 +677,7 @@ let DetectionService = class DetectionService {
                     },
                 },
             },
+            { $match: { plays: { $gt: 0 } } },
             {
                 $sort: {
                     plays: -1,
