@@ -85,8 +85,8 @@ let DetectionOwnerController = class DetectionOwnerController {
         return topStationsWithSonicKeys;
     }
     async getTopRadiostationsWithPlays(targetUser, queryDto) {
-        const { topLimit = 5, filter } = queryDto;
-        const topStationsWithPlaysDetails = await this.detectionService.findTopRadioStationsWithPlaysCountForOwner(targetUser, topLimit, filter);
+        const { topLimit = 5 } = queryDto;
+        const topStationsWithPlaysDetails = await this.detectionService.findTopRadioStationsWithPlaysCountForOwner(targetUser, topLimit, queryDto);
         return topStationsWithPlaysDetails;
     }
     async getSonicKeyGraphs(targetUser, radioStation, time, queryDto) {

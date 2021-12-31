@@ -267,7 +267,7 @@ export class DetectionService {
       const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(
         ownerId,
         queryDto.limit,
-        queryDto.filter,
+        queryDto,
       );
       const chartsData = await this.getPlaysDashboardGraphData(queryDto.filter);
       var playsListInJsonFormat = [];
@@ -463,7 +463,7 @@ export class DetectionService {
       const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(
         ownerId,
         queryDto.limit,
-        queryDto.filter,
+        queryDto,
       );
       var playsListInJsonFormat = [];
       var topRadioStationsWithPlaysCountInJsonFormat = [];
@@ -785,8 +785,9 @@ export class DetectionService {
   async findTopRadioStationsWithPlaysCountForOwner(
     ownerId: string,
     topLimit: number,
-    filter: object = {},
+    queryDto: ParsedQueryDto,
   ): Promise<TopRadioStationWithPlaysDetails[]> {
+    const {filter,relationalFilter}=queryDto;
     return this.detectionModel.aggregate([
       {
         $match: {
@@ -796,15 +797,40 @@ export class DetectionService {
         },
       },
       {
+        $lookup: {
+          //populate sonickey from its relational table
+          from: 'SonicKey',
+          localField: 'sonicKey',
+          foreignField: '_id',
+          as: 'sonicKey',
+        },
+      },
+      { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'RadioStation',
+          localField: 'radioStation',
+          foreignField: '_id',
+          as: 'radioStation',
+        },
+      },
+      { $addFields: { radioStation: { $first: '$radioStation' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+      {
         $group: {
           _id: {
-            radioStation: '$radioStation',
+            radioStation: '$radioStation._id',
           },
           plays: {
             $sum: 1,
           },
           sonicKeys: {
-            $addToSet: '$sonicKey',
+            $addToSet: '$sonicKey.sonicKey',
           },
         },
       },

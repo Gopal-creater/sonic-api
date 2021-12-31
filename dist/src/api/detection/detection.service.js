@@ -233,7 +233,7 @@ let DetectionService = class DetectionService {
             var e_1, _a, e_2, _b;
             var _c, _d, _e, _f, _g, _h, _j, _k;
             const playsLists = (await this.listPlays(queryDto, true));
-            const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(ownerId, queryDto.limit, queryDto.filter);
+            const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(ownerId, queryDto.limit, queryDto);
             const chartsData = await this.getPlaysDashboardGraphData(queryDto.filter);
             var playsListInJsonFormat = [];
             var topRadioStationsWithPlaysCountInJsonFormat = [];
@@ -410,7 +410,7 @@ let DetectionService = class DetectionService {
             var e_3, _a, e_4, _b;
             var _c, _d, _e, _f, _g, _h, _j, _k;
             const playsLists = (await this.listPlays(queryDto, true));
-            const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(ownerId, queryDto.limit, queryDto.filter);
+            const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(ownerId, queryDto.limit, queryDto);
             var playsListInJsonFormat = [];
             var topRadioStationsWithPlaysCountInJsonFormat = [];
             try {
@@ -659,21 +659,43 @@ let DetectionService = class DetectionService {
         ]);
         return playsCountDetails[0];
     }
-    async findTopRadioStationsWithPlaysCountForOwner(ownerId, topLimit, filter = {}) {
+    async findTopRadioStationsWithPlaysCountForOwner(ownerId, topLimit, queryDto) {
+        const { filter, relationalFilter } = queryDto;
         return this.detectionModel.aggregate([
             {
                 $match: Object.assign(Object.assign({}, filter), { owner: ownerId, channel: Enums_1.ChannelEnums.STREAMREADER }),
             },
             {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
                 $group: {
                     _id: {
-                        radioStation: '$radioStation',
+                        radioStation: '$radioStation._id',
                     },
                     plays: {
                         $sum: 1,
                     },
                     sonicKeys: {
-                        $addToSet: '$sonicKey',
+                        $addToSet: '$sonicKey.sonicKey',
                     },
                 },
             },

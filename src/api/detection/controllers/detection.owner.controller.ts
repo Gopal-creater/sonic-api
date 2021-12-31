@@ -145,12 +145,12 @@ export class DetectionOwnerController {
     @Param('targetUser') targetUser: string,
     @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
   ) {
-    const { topLimit = 5, filter } = queryDto;
+    const { topLimit = 5 } = queryDto;
 
     const topStationsWithPlaysDetails = await this.detectionService.findTopRadioStationsWithPlaysCountForOwner(
       targetUser,
       topLimit,
-      filter,
+      queryDto,
     );
     return topStationsWithPlaysDetails;
   }
