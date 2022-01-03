@@ -276,7 +276,7 @@ export class DetectionService {
       for await (const plays of playsLists) {
         var playsExcelData = {
           SonicKey: plays?.sonicKey?._id,
-          'Radio Station': plays?.radioStation?.name,
+          'Radio Station': plays?.radioStation?.name || "--",
           Date: moment(plays?.detectedAt || plays?.createdAt)
             .utc()
             .format('DD/MM/YYYY'),
@@ -286,9 +286,18 @@ export class DetectionService {
           Duration: moment
             .utc((plays?.detectedDuration || plays?.sonicKey?.contentDuration) * 1000)
             .format('HH:mm:ss'),
-          'Track File Name': plays?.sonicKey?.originalFileName,
-          Artist: plays?.sonicKey?.contentOwner,
-          Country: plays?.radioStation?.country,
+          'Track File Name': plays?.sonicKey?.originalFileName || "--",
+          Artist: plays?.sonicKey?.contentOwner || "--",
+          Country: plays?.radioStation?.country || "--",
+          ISRC: plays?.sonicKey?.isrcCode || "Not Applicable",
+          ISWC: plays?.sonicKey?.iswcCode || "Not Applicable",
+          "Tune Code": plays?.sonicKey?.tuneCode || "Not Applicable",
+          "Quality Grade": plays?.sonicKey?.contentQuality || "--",
+          Desciption: plays?.sonicKey?.contentDescription || "--",
+          Distributor: plays?.sonicKey?.distributor || "--",
+          Version: plays?.sonicKey?.version || "--",
+          Label: plays?.sonicKey?.label || "--",
+          "Additional Metadata": plays?.sonicKey?.additionalMetadata?.['message'] || "--",
         };
         playsListInJsonFormat.push(playsExcelData);
       }
@@ -302,6 +311,15 @@ export class DetectionService {
           'Track File Name': '',
           Artist: '',
           Country: '',
+          ISRC: '',
+          ISWC: '',
+          "Tune Code": '',
+          "Quality Grade": '',
+          Desciption: '',
+          Distributor: '',
+          Version: '',
+          Label: '',
+          "Additional Metadata": '',
         });
       }
   
@@ -470,7 +488,7 @@ export class DetectionService {
       for await (const plays of playsLists) {
         var playsExcelData = {
           SonicKey: plays?.sonicKey?._id,
-          'Radio Station': plays?.radioStation?.name,
+          'Radio Station': plays?.radioStation?.name || "--",
           Date: moment(plays?.detectedAt || plays?.createdAt)
             .utc()
             .format('DD/MM/YYYY'),
@@ -480,9 +498,18 @@ export class DetectionService {
           Duration: moment
             .utc((plays?.detectedDuration || plays?.sonicKey?.contentDuration) * 1000)
             .format('HH:mm:ss'),
-          'Track File Name': plays?.sonicKey?.originalFileName,
+          'Track File Name': plays?.sonicKey?.originalFileName || "--",
           Artist: plays?.sonicKey?.contentOwner,
           Country: plays?.radioStation?.country,
+          ISRC: plays?.sonicKey?.isrcCode || "Not Applicable",
+          ISWC: plays?.sonicKey?.iswcCode || "Not Applicable",
+          "Tune Code": plays?.sonicKey?.tuneCode || "Not Applicable",
+          "Quality Grade": plays?.sonicKey?.contentQuality || "--",
+          Desciption: plays?.sonicKey?.contentDescription || "--",
+          Distributor: plays?.sonicKey?.distributor || "--",
+          Version: plays?.sonicKey?.version || "--",
+          Label: plays?.sonicKey?.label || "--",
+          "Additional Metadata": plays?.sonicKey?.additionalMetadata?.['message'] || "--",
         };
         playsListInJsonFormat.push(playsExcelData);
       }
@@ -496,6 +523,15 @@ export class DetectionService {
           'Track File Name': '',
           Artist: '',
           Country: '',
+          ISRC: '',
+          ISWC: '',
+          "Tune Code": '',
+          "Quality Grade": '',
+          Desciption: '',
+          Distributor: '',
+          Version: '',
+          Label: '',
+          "Additional Metadata": '',
         });
       }
   

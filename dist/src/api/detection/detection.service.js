@@ -231,7 +231,7 @@ let DetectionService = class DetectionService {
         const { filter, limit } = queryDto;
         return new Promise(async (resolve, reject) => {
             var e_1, _a, e_2, _b;
-            var _c, _d, _e, _f, _g, _h, _j, _k;
+            var _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
             const playsLists = (await this.listPlays(queryDto, true));
             const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(ownerId, queryDto.limit, queryDto);
             const chartsData = await this.getPlaysDashboardGraphData(queryDto.filter);
@@ -243,7 +243,7 @@ let DetectionService = class DetectionService {
                     const plays = playsLists_1_1.value;
                     var playsExcelData = {
                         SonicKey: (_c = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _c === void 0 ? void 0 : _c._id,
-                        'Radio Station': (_d = plays === null || plays === void 0 ? void 0 : plays.radioStation) === null || _d === void 0 ? void 0 : _d.name,
+                        'Radio Station': ((_d = plays === null || plays === void 0 ? void 0 : plays.radioStation) === null || _d === void 0 ? void 0 : _d.name) || "--",
                         Date: moment((plays === null || plays === void 0 ? void 0 : plays.detectedAt) || (plays === null || plays === void 0 ? void 0 : plays.createdAt))
                             .utc()
                             .format('DD/MM/YYYY'),
@@ -253,9 +253,18 @@ let DetectionService = class DetectionService {
                         Duration: moment
                             .utc(((plays === null || plays === void 0 ? void 0 : plays.detectedDuration) || ((_e = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _e === void 0 ? void 0 : _e.contentDuration)) * 1000)
                             .format('HH:mm:ss'),
-                        'Track File Name': (_f = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _f === void 0 ? void 0 : _f.originalFileName,
-                        Artist: (_g = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _g === void 0 ? void 0 : _g.contentOwner,
-                        Country: (_h = plays === null || plays === void 0 ? void 0 : plays.radioStation) === null || _h === void 0 ? void 0 : _h.country,
+                        'Track File Name': ((_f = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _f === void 0 ? void 0 : _f.originalFileName) || "--",
+                        Artist: ((_g = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _g === void 0 ? void 0 : _g.contentOwner) || "--",
+                        Country: ((_h = plays === null || plays === void 0 ? void 0 : plays.radioStation) === null || _h === void 0 ? void 0 : _h.country) || "--",
+                        ISRC: ((_j = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _j === void 0 ? void 0 : _j.isrcCode) || "Not Applicable",
+                        ISWC: ((_k = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _k === void 0 ? void 0 : _k.iswcCode) || "Not Applicable",
+                        "Tune Code": ((_l = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _l === void 0 ? void 0 : _l.tuneCode) || "Not Applicable",
+                        "Quality Grade": ((_m = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _m === void 0 ? void 0 : _m.contentQuality) || "--",
+                        Desciption: ((_o = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _o === void 0 ? void 0 : _o.contentDescription) || "--",
+                        Distributor: ((_p = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _p === void 0 ? void 0 : _p.distributor) || "--",
+                        Version: ((_q = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _q === void 0 ? void 0 : _q.version) || "--",
+                        Label: ((_r = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _r === void 0 ? void 0 : _r.label) || "--",
+                        "Additional Metadata": ((_t = (_s = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _s === void 0 ? void 0 : _s.additionalMetadata) === null || _t === void 0 ? void 0 : _t['message']) || "--",
                     };
                     playsListInJsonFormat.push(playsExcelData);
                 }
@@ -277,14 +286,23 @@ let DetectionService = class DetectionService {
                     'Track File Name': '',
                     Artist: '',
                     Country: '',
+                    ISRC: '',
+                    ISWC: '',
+                    "Tune Code": '',
+                    "Quality Grade": '',
+                    Desciption: '',
+                    Distributor: '',
+                    Version: '',
+                    Label: '',
+                    "Additional Metadata": '',
                 });
             }
             try {
                 for (var topRadioStationsWithPlaysCount_1 = __asyncValues(topRadioStationsWithPlaysCount), topRadioStationsWithPlaysCount_1_1; topRadioStationsWithPlaysCount_1_1 = await topRadioStationsWithPlaysCount_1.next(), !topRadioStationsWithPlaysCount_1_1.done;) {
                     const topRadioStation = topRadioStationsWithPlaysCount_1_1.value;
                     var topRadioStationExcelData = {
-                        'Radio Station': (_j = topRadioStation === null || topRadioStation === void 0 ? void 0 : topRadioStation.radioStation) === null || _j === void 0 ? void 0 : _j.name,
-                        Country: (_k = topRadioStation === null || topRadioStation === void 0 ? void 0 : topRadioStation.radioStation) === null || _k === void 0 ? void 0 : _k.country,
+                        'Radio Station': (_u = topRadioStation === null || topRadioStation === void 0 ? void 0 : topRadioStation.radioStation) === null || _u === void 0 ? void 0 : _u.name,
+                        Country: (_v = topRadioStation === null || topRadioStation === void 0 ? void 0 : topRadioStation.radioStation) === null || _v === void 0 ? void 0 : _v.country,
                         Plays: topRadioStation === null || topRadioStation === void 0 ? void 0 : topRadioStation.playsCount.playsCount,
                         'Unique Track Played': topRadioStation === null || topRadioStation === void 0 ? void 0 : topRadioStation.playsCount.uniquePlaysCount,
                     };
@@ -408,7 +426,7 @@ let DetectionService = class DetectionService {
     async exportHistoryOfSonicKeyPlays(queryDto, ownerId, format) {
         return new Promise(async (resolve, reject) => {
             var e_3, _a, e_4, _b;
-            var _c, _d, _e, _f, _g, _h, _j, _k;
+            var _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
             const playsLists = (await this.listPlays(queryDto, true));
             const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(ownerId, queryDto.limit, queryDto);
             var playsListInJsonFormat = [];
@@ -418,7 +436,7 @@ let DetectionService = class DetectionService {
                     const plays = playsLists_2_1.value;
                     var playsExcelData = {
                         SonicKey: (_c = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _c === void 0 ? void 0 : _c._id,
-                        'Radio Station': (_d = plays === null || plays === void 0 ? void 0 : plays.radioStation) === null || _d === void 0 ? void 0 : _d.name,
+                        'Radio Station': ((_d = plays === null || plays === void 0 ? void 0 : plays.radioStation) === null || _d === void 0 ? void 0 : _d.name) || "--",
                         Date: moment((plays === null || plays === void 0 ? void 0 : plays.detectedAt) || (plays === null || plays === void 0 ? void 0 : plays.createdAt))
                             .utc()
                             .format('DD/MM/YYYY'),
@@ -428,9 +446,18 @@ let DetectionService = class DetectionService {
                         Duration: moment
                             .utc(((plays === null || plays === void 0 ? void 0 : plays.detectedDuration) || ((_e = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _e === void 0 ? void 0 : _e.contentDuration)) * 1000)
                             .format('HH:mm:ss'),
-                        'Track File Name': (_f = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _f === void 0 ? void 0 : _f.originalFileName,
+                        'Track File Name': ((_f = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _f === void 0 ? void 0 : _f.originalFileName) || "--",
                         Artist: (_g = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _g === void 0 ? void 0 : _g.contentOwner,
                         Country: (_h = plays === null || plays === void 0 ? void 0 : plays.radioStation) === null || _h === void 0 ? void 0 : _h.country,
+                        ISRC: ((_j = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _j === void 0 ? void 0 : _j.isrcCode) || "Not Applicable",
+                        ISWC: ((_k = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _k === void 0 ? void 0 : _k.iswcCode) || "Not Applicable",
+                        "Tune Code": ((_l = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _l === void 0 ? void 0 : _l.tuneCode) || "Not Applicable",
+                        "Quality Grade": ((_m = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _m === void 0 ? void 0 : _m.contentQuality) || "--",
+                        Desciption: ((_o = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _o === void 0 ? void 0 : _o.contentDescription) || "--",
+                        Distributor: ((_p = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _p === void 0 ? void 0 : _p.distributor) || "--",
+                        Version: ((_q = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _q === void 0 ? void 0 : _q.version) || "--",
+                        Label: ((_r = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _r === void 0 ? void 0 : _r.label) || "--",
+                        "Additional Metadata": ((_t = (_s = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _s === void 0 ? void 0 : _s.additionalMetadata) === null || _t === void 0 ? void 0 : _t['message']) || "--",
                     };
                     playsListInJsonFormat.push(playsExcelData);
                 }
@@ -452,14 +479,23 @@ let DetectionService = class DetectionService {
                     'Track File Name': '',
                     Artist: '',
                     Country: '',
+                    ISRC: '',
+                    ISWC: '',
+                    "Tune Code": '',
+                    "Quality Grade": '',
+                    Desciption: '',
+                    Distributor: '',
+                    Version: '',
+                    Label: '',
+                    "Additional Metadata": '',
                 });
             }
             try {
                 for (var topRadioStationsWithPlaysCount_2 = __asyncValues(topRadioStationsWithPlaysCount), topRadioStationsWithPlaysCount_2_1; topRadioStationsWithPlaysCount_2_1 = await topRadioStationsWithPlaysCount_2.next(), !topRadioStationsWithPlaysCount_2_1.done;) {
                     const topRadioStation = topRadioStationsWithPlaysCount_2_1.value;
                     var topRadioStationExcelData = {
-                        'Radio Station': (_j = topRadioStation === null || topRadioStation === void 0 ? void 0 : topRadioStation.radioStation) === null || _j === void 0 ? void 0 : _j.name,
-                        Country: (_k = topRadioStation === null || topRadioStation === void 0 ? void 0 : topRadioStation.radioStation) === null || _k === void 0 ? void 0 : _k.country,
+                        'Radio Station': (_u = topRadioStation === null || topRadioStation === void 0 ? void 0 : topRadioStation.radioStation) === null || _u === void 0 ? void 0 : _u.name,
+                        Country: (_v = topRadioStation === null || topRadioStation === void 0 ? void 0 : topRadioStation.radioStation) === null || _v === void 0 ? void 0 : _v.country,
                         Plays: topRadioStation === null || topRadioStation === void 0 ? void 0 : topRadioStation.playsCount.playsCount,
                         'Unique Track Played': topRadioStation === null || topRadioStation === void 0 ? void 0 : topRadioStation.playsCount.uniquePlaysCount,
                     };
