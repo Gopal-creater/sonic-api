@@ -216,19 +216,20 @@ let SonickeyController = class SonickeyController {
             throw new common_1.BadRequestException(err);
         });
     }
-    async updateMeta(sonickey, updateSonicKeyDto) {
-        const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate({ sonicKey: sonickey }, updateSonicKeyDto, { new: true });
+    async updateMeta(sonickey, updateSonicKeyDto, owner) {
+        const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate({ sonicKey: sonickey, owner: owner }, updateSonicKeyDto, { new: true });
         if (!updatedSonickey) {
-            throw new common_1.NotFoundException();
+            throw new common_1.NotFoundException("Given sonickey is either not present or doest not belongs to you");
         }
         return updatedSonickey;
     }
-    async delete(sonickey) {
+    async delete(sonickey, owner) {
         const deletedSonickey = await this.sonicKeyService.sonicKeyModel.deleteOne({
             sonicKey: sonickey,
+            owner: owner
         });
         if (!deletedSonickey) {
-            throw new common_1.NotFoundException();
+            throw new common_1.NotFoundException("Given sonickey is either not present or doest not belongs to you");
         }
         return deletedSonickey;
     }
@@ -469,8 +470,9 @@ __decorate([
     openapi.ApiResponse({ status: 200, type: require("../schemas/sonickey.schema").SonicKey }),
     __param(0, common_1.Param('sonickey')),
     __param(1, common_1.Body()),
+    __param(2, decorators_1.User('sub')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_sonickey_dto_1.UpdateSonicKeyDto]),
+    __metadata("design:paramtypes", [String, update_sonickey_dto_1.UpdateSonicKeyDto, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "updateMeta", null);
 __decorate([
@@ -480,8 +482,9 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Delete Sonic Key data' }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('sonickey')),
+    __param(1, decorators_1.User('sub')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "delete", null);
 __decorate([

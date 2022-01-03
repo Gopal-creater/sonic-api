@@ -487,14 +487,15 @@ export class SonickeyController {
   async updateMeta(
     @Param('sonickey') sonickey: string,
     @Body() updateSonicKeyDto: UpdateSonicKeyDto,
+    @User('sub') owner: string,
   ) {
     const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate(
-      { sonicKey: sonickey },
+      { sonicKey: sonickey,owner:owner },
       updateSonicKeyDto,
       { new: true },
     );
     if (!updatedSonickey) {
-      throw new NotFoundException();
+      throw new NotFoundException("Given sonickey is either not present or doest not belongs to you");
     }
     return updatedSonickey;
   }
@@ -503,12 +504,13 @@ export class SonickeyController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete Sonic Key data' })
-  async delete(@Param('sonickey') sonickey: string) {
+  async delete(@Param('sonickey') sonickey: string,@User('sub') owner: string,) {
     const deletedSonickey = await this.sonicKeyService.sonicKeyModel.deleteOne({
       sonicKey: sonickey,
+      owner:owner
     });
     if (!deletedSonickey) {
-      throw new NotFoundException();
+      throw new NotFoundException("Given sonickey is either not present or doest not belongs to you");
     }
     return deletedSonickey;
   }
