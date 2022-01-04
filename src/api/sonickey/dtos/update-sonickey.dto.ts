@@ -3,7 +3,7 @@ import { ApiProperty, OmitType, PartialType,PickType } from '@nestjs/swagger';
 
 export class UpdateSonicKeyDto extends PartialType(
   PickType(SonicKeyDto, [
-    'contentFileName',
+    'contentName',
     'version',
     'isrcCode',
     'iswcCode',

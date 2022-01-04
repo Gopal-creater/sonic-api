@@ -5,7 +5,7 @@ const openapi = require("@nestjs/swagger");
 const sonicKey_dto_1 = require("./sonicKey.dto");
 const swagger_1 = require("@nestjs/swagger");
 class UpdateSonicKeyDto extends swagger_1.PartialType(swagger_1.PickType(sonicKey_dto_1.SonicKeyDto, [
-    'contentFileName',
+    'contentName',
     'version',
     'isrcCode',
     'iswcCode',
