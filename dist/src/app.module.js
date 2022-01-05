@@ -44,6 +44,7 @@ mongoosePaginate.paginate.options = {
     limit: 50,
 };
 console.log('Node_env', process.env.NODE_ENV);
+var connectionNo = 0;
 let AppModule = class AppModule {
     constructor() { }
 };
@@ -56,7 +57,10 @@ AppModule = __decorate([
             event_emitter_1.EventEmitterModule.forRoot(),
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
-                envFilePath: ['.env.override', process.env.NODE_ENV == 'production' ? '.env' : '.env.staging'],
+                envFilePath: [
+                    '.env.override',
+                    process.env.NODE_ENV == 'production' ? '.env' : '.env.staging',
+                ],
                 load: [app_config_1.default],
             }),
             mongoose_1.MongooseModule.forRootAsync({
@@ -71,6 +75,17 @@ AppModule = __decorate([
                         connection === null || connection === void 0 ? void 0 : connection.plugin(aggregatePaginate);
                         connection === null || connection === void 0 ? void 0 : connection.plugin(require('mongoose-autopopulate'));
                         connection === null || connection === void 0 ? void 0 : connection.plugin(require('mongoose-lean-virtuals'));
+                        connection.on('connected', () => {
+                            connectionNo += 1;
+                            console.log('DB connected, current connectionNo', connectionNo);
+                        });
+                        connection.on('disconnected', () => {
+                            connectionNo -= 1;
+                            console.log('DB disconnected, current connectionNo', connectionNo);
+                        });
+                        connection.on('error', error => {
+                            console.log('DB connection failed! for error: ', error);
+                        });
                         return connection;
                     },
                 }),

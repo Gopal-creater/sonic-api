@@ -34,7 +34,7 @@ mongoosePaginate.paginate.options = {
   limit: 50,
 };
 console.log('Node_env', process.env.NODE_ENV);
-
+var connectionNo=0
 @Module({
   imports: [
     HttpModule,
@@ -43,7 +43,10 @@ console.log('Node_env', process.env.NODE_ENV);
     EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.override',process.env.NODE_ENV == 'production' ? '.env' : '.env.staging'],
+      envFilePath: [
+        '.env.override',
+        process.env.NODE_ENV == 'production' ? '.env' : '.env.staging',
+      ],
       load: [appConfiguration],
     }),
     MongooseModule.forRootAsync({
@@ -58,6 +61,17 @@ console.log('Node_env', process.env.NODE_ENV);
           connection?.plugin(aggregatePaginate);
           connection?.plugin(require('mongoose-autopopulate'));
           connection?.plugin(require('mongoose-lean-virtuals'));
+          connection.on('connected', () => {
+            connectionNo+=1
+            console.log('DB connected, current connectionNo',connectionNo);
+          });
+          connection.on('disconnected', () => {
+            connectionNo-=1
+            console.log('DB disconnected, current connectionNo',connectionNo);
+          });
+          connection.on('error', error => {
+            console.log('DB connection failed! for error: ', error);
+          });
           return connection;
         },
       }),
@@ -86,7 +100,7 @@ console.log('Node_env', process.env.NODE_ENV);
     PaymentModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AppGateway,Ec2InstanceService],
+  providers: [AppService, AppGateway, Ec2InstanceService],
 })
 export class AppModule {
   constructor() {}
