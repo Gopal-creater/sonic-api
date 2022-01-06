@@ -247,6 +247,7 @@ export class RadiostationService {
 
   async importFromExcel(pathToExcel: string) {
     const stationsFromExcel = xlsx.readFile(pathToExcel);
+    var count=0
     const sheetsNames = stationsFromExcel.SheetNames;
     var completedDetails = {
       completedCount: 0,
@@ -296,6 +297,8 @@ export class RadiostationService {
         //     { streamingUrl: stationRow['streamingUrl'] },
         //   ],
         // });
+        count+=1
+        console.log(`Current row no: ${count}/${sheetToJson?.length}`)
         const radioStation = await this.radioStationModel.findOne({
           streamingUrl: stationRow['streamingUrl'],
         });
@@ -352,6 +355,7 @@ export class RadiostationService {
       //Break the loop, we only want first sheet here.
       break;
     }
+    console.log("Completed Import")
     return {
       message: 'Done',
       totalExcelData: excelData.length,

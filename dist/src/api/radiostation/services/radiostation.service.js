@@ -207,6 +207,7 @@ let RadiostationService = class RadiostationService {
     async importFromExcel(pathToExcel) {
         var e_2, _a, e_3, _b, e_4, _c;
         const stationsFromExcel = xlsx.readFile(pathToExcel);
+        var count = 0;
         const sheetsNames = stationsFromExcel.SheetNames;
         var completedDetails = {
             completedCount: 0,
@@ -245,6 +246,8 @@ let RadiostationService = class RadiostationService {
                 try {
                     for (var sheetToJson_2 = (e_4 = void 0, __asyncValues(sheetToJson)), sheetToJson_2_1; sheetToJson_2_1 = await sheetToJson_2.next(), !sheetToJson_2_1.done;) {
                         const stationRow = sheetToJson_2_1.value;
+                        count += 1;
+                        console.log(`Current row no: ${count}/${sheetToJson === null || sheetToJson === void 0 ? void 0 : sheetToJson.length}`);
                         const radioStation = await this.radioStationModel.findOne({
                             streamingUrl: stationRow['streamingUrl'],
                         });
@@ -312,6 +315,7 @@ let RadiostationService = class RadiostationService {
             }
             finally { if (e_2) throw e_2.error; }
         }
+        console.log("Completed Import");
         return {
             message: 'Done',
             totalExcelData: excelData.length,
