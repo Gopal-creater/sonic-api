@@ -8,7 +8,6 @@ import {
 } from './schemas/radiostation.schema';
 import { SonickeyModule } from '../sonickey/sonickey.module';
 import { DetectionModule } from '../detection/detection.module';
-import { RadioStationListener } from './listeners/radiostation.listener';
 import { RadiomonitorModule } from '../radiomonitor/radiomonitor.module';
 @Module({
   imports: [
@@ -21,8 +20,7 @@ import { RadiomonitorModule } from '../radiomonitor/radiomonitor.module';
   ],
   controllers: [RadiostationController],
   providers: [
-    RadiostationService,
-    RadioStationListener,
+    RadiostationService
   ],
   exports:[RadiostationService]
 })

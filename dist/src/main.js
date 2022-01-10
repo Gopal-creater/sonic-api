@@ -19,6 +19,7 @@ async function bootstrap() {
             swaggeruser: 'swaggeruser@2021',
         },
     }));
+    app.enableVersioning();
     const configService = app.get(config_1.ConfigService);
     app.enableCors({
         origin: [

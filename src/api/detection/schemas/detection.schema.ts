@@ -8,6 +8,16 @@ import { ChannelEnums } from 'src/constants/Enums';
 
 export const DetectionSchemaName="Detection"
 
+@Schema()
+export class DetectedTimeStamp{
+  @ApiProperty()
+  @Prop()
+  start: number;
+
+  @ApiProperty()
+  @Prop()
+  end: number;
+}
 
 @Schema({ timestamps: true,collection:DetectionSchemaName})
 export class Detection extends Document {
@@ -51,6 +61,10 @@ export class Detection extends Document {
   @ApiProperty()
   @Prop({default:Date.now()})
   detectedAt: Date;
+
+  @ApiProperty()
+  @Prop([DetectedTimeStamp])
+  detectedTimestamps: DetectedTimeStamp[];
 
   @ApiProperty()
   @Prop()

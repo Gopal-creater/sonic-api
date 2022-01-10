@@ -13,6 +13,9 @@ import { appConfig } from './config';
 import appConfiguration from './config/app.config';
 import { JobModule } from './api/job/job.module';
 import * as uniqid from 'uniqid';
+import * as appRootPath from 'app-root-path';
+import * as fs from 'fs';
+import * as path from 'path';
 
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppGateway } from './app.gateway';
@@ -34,7 +37,7 @@ mongoosePaginate.paginate.options = {
   limit: 50,
 };
 console.log('Node_env', process.env.NODE_ENV);
-var connectionNo=0
+var connectionNo = 0;
 @Module({
   imports: [
     HttpModule,
@@ -62,12 +65,12 @@ var connectionNo=0
           connection?.plugin(require('mongoose-autopopulate'));
           connection?.plugin(require('mongoose-lean-virtuals'));
           connection.on('connected', () => {
-            connectionNo+=1
-            console.log('DB connected, current connectionNo',connectionNo);
+            connectionNo += 1;
+            console.log('DB connected, current connectionNo', connectionNo);
           });
           connection.on('disconnected', () => {
-            connectionNo-=1
-            console.log('DB disconnected, current connectionNo',connectionNo);
+            connectionNo -= 1;
+            console.log('DB disconnected, current connectionNo', connectionNo);
           });
           connection.on('error', error => {
             console.log('DB connection failed! for error: ', error);
@@ -103,5 +106,13 @@ var connectionNo=0
   providers: [AppService, AppGateway, Ec2InstanceService],
 })
 export class AppModule {
-  constructor() {}
+  constructor() {
+    let rawdata = fs.readFileSync(
+      path.join(appRootPath.toString(), 'app.log'),
+      { encoding: 'utf8' },
+    );
+    let student = JSON.parse(rawdata);
+    console.log(student);
+    console.log(student[0].timestamps);
+  }
 }

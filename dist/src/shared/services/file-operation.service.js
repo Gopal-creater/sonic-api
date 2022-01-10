@@ -10,8 +10,8 @@ exports.FileOperationService = void 0;
 const common_1 = require("@nestjs/common");
 const child_process_1 = require("child_process");
 const fs = require("fs");
+const _ = require("lodash");
 const readline = require("line-reader");
-const readlineByline = require("readline");
 let FileOperationService = class FileOperationService {
     encodeFile(sonicEncodeCmd, outFilePath) {
         return new Promise((resolve, reject) => {
@@ -58,27 +58,15 @@ let FileOperationService = class FileOperationService {
             try {
                 child_process_1.execSync('bash ' + sonicDecodeCmd);
                 var sonicKeys = [];
-                var lineReader = readlineByline.createInterface({
-                    input: fs.createReadStream(logFilePath)
-                });
-                lineReader.on('line', function (line) {
-                    var _a;
-                    console.log('Line from file:', line);
-                    const sonicKey = (_a = line === null || line === void 0 ? void 0 : line.split(': ')[1]) === null || _a === void 0 ? void 0 : _a.trim();
-                    const isPresent = sonicKeys.find(key => key == sonicKey);
-                    if (sonicKey && !isPresent) {
-                        sonicKeys.push(sonicKey);
-                    }
-                });
-                lineReader.on('close', function (line) {
-                    console.log("Finished");
-                    resolve({ sonicKeys: sonicKeys });
-                });
+                let rawdata = fs.readFileSync(logFilePath, { encoding: 'utf8' });
+                var decodeResponses = JSON.parse(rawdata);
+                decodeResponses = _.unionBy(decodeResponses, 'sonicKey');
+                resolve({ sonicKeys: decodeResponses });
             }
             catch (err) {
                 console.error('Caught error while decodibng:', err);
                 reject({
-                    message: 'Error while decoding'
+                    message: (err === null || err === void 0 ? void 0 : err.message) || 'Error while decoding'
                 });
             }
         });

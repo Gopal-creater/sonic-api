@@ -36,6 +36,7 @@ const public_encode_dto_1 = require("../dtos/public-encode.dto");
 const public_decode_dto_1 = require("../dtos/public-decode.dto");
 const Enums_1 = require("../../../constants/Enums");
 const detection_service_1 = require("../../detection/detection.service");
+const detection_schema_1 = require("../../detection/schemas/detection.schema");
 let SonickeyGuestController = class SonickeyGuestController {
     constructor(sonicKeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
@@ -69,16 +70,17 @@ let SonickeyGuestController = class SonickeyGuestController {
             try {
                 for (var sonicKeys_1 = __asyncValues(sonicKeys), sonicKeys_1_1; sonicKeys_1_1 = await sonicKeys_1.next(), !sonicKeys_1_1.done;) {
                     const sonicKey = sonicKeys_1_1.value;
-                    const validSonicKey = await this.sonicKeyService.findBySonicKey(sonicKey);
+                    const validSonicKey = await this.sonicKeyService.findBySonicKey(sonicKey.sonicKey);
                     if (!validSonicKey) {
                         continue;
                     }
                     const newDetection = await this.detectionService.detectionModel.create({
-                        sonicKey: sonicKey,
+                        sonicKey: sonicKey.sonicKey,
                         owner: validSonicKey.owner,
                         sonicKeyOwnerId: validSonicKey.owner,
                         sonicKeyOwnerName: validSonicKey.contentOwner,
                         channel: Enums_1.ChannelEnums.MOBILEAPP,
+                        detectedTimestamps: sonicKey.timestamps,
                         detectedAt: new Date(),
                     });
                     await newDetection.save().catch((err) => {
@@ -93,6 +95,44 @@ let SonickeyGuestController = class SonickeyGuestController {
                     if (sonicKeys_1_1 && !sonicKeys_1_1.done && (_a = sonicKeys_1.return)) await _a.call(sonicKeys_1);
                 }
                 finally { if (e_1) throw e_1.error; }
+            }
+            return sonicKeysMetadata;
+        });
+    }
+    async decodeV2(file) {
+        return this.sonicKeyService
+            .decodeAllKeys(file)
+            .then(async ({ sonicKeys }) => {
+            var e_2, _a;
+            console.log('Detected keys from Decode', sonicKeys);
+            var sonicKeysMetadata = [];
+            try {
+                for (var sonicKeys_2 = __asyncValues(sonicKeys), sonicKeys_2_1; sonicKeys_2_1 = await sonicKeys_2.next(), !sonicKeys_2_1.done;) {
+                    const sonicKey = sonicKeys_2_1.value;
+                    const validSonicKey = await this.sonicKeyService.findBySonicKey(sonicKey.sonicKey);
+                    if (!validSonicKey) {
+                        continue;
+                    }
+                    const newDetection = await this.detectionService.detectionModel.create({
+                        sonicKey: sonicKey.sonicKey,
+                        owner: validSonicKey.owner,
+                        sonicKeyOwnerId: validSonicKey.owner,
+                        sonicKeyOwnerName: validSonicKey.contentOwner,
+                        channel: Enums_1.ChannelEnums.MOBILEAPP,
+                        detectedTimestamps: sonicKey.timestamps,
+                        detectedAt: new Date(),
+                    });
+                    const savedDetection = await newDetection.save();
+                    savedDetection.sonicKey = validSonicKey;
+                    sonicKeysMetadata.push(savedDetection);
+                }
+            }
+            catch (e_2_1) { e_2 = { error: e_2_1 }; }
+            finally {
+                try {
+                    if (sonicKeys_2_1 && !sonicKeys_2_1.done && (_a = sonicKeys_2.return)) await _a.call(sonicKeys_2);
+                }
+                finally { if (e_2) throw e_2.error; }
             }
             return sonicKeysMetadata;
         });
@@ -160,6 +200,37 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SonickeyGuestController.prototype, "decode", null);
+__decorate([
+    swagger_1.ApiExcludeEndpoint(true),
+    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
+        storage: multer_1.diskStorage({
+            destination: async (req, file, cb) => {
+                const currentUserId = 'guest';
+                const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
+                cb(null, imagePath);
+            },
+            filename: (req, file, cb) => {
+                let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+                const randomName = uniqid();
+                cb(null, `${randomName}-${orgName}`);
+            },
+        }),
+    })),
+    swagger_1.ApiConsumes('multipart/form-data'),
+    swagger_1.ApiBody({
+        description: 'File To Decode',
+        type: public_decode_dto_1.PublicDecodeDto,
+    }),
+    common_1.Version('2'),
+    common_1.Post('/decode'),
+    common_1.UseInterceptors(common_1.ClassSerializerInterceptor),
+    swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
+    openapi.ApiResponse({ status: 201, type: [require("../../detection/schemas/detection.schema").Detection] }),
+    __param(0, common_1.UploadedFile()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SonickeyGuestController.prototype, "decodeV2", null);
 SonickeyGuestController = __decorate([
     swagger_1.ApiTags('Public Controller'),
     common_1.Controller('sonic-keys-guest'),

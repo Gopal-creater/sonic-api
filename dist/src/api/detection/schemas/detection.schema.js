@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DetectionSchema = exports.Detection = exports.DetectionSchemaName = void 0;
+exports.DetectionSchema = exports.Detection = exports.DetectedTimeStamp = exports.DetectionSchemaName = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
@@ -17,6 +17,22 @@ const radiostation_schema_1 = require("../../radiostation/schemas/radiostation.s
 const sonickey_schema_1 = require("../../sonickey/schemas/sonickey.schema");
 const Enums_1 = require("../../../constants/Enums");
 exports.DetectionSchemaName = "Detection";
+let DetectedTimeStamp = class DetectedTimeStamp {
+};
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", Number)
+], DetectedTimeStamp.prototype, "start", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", Number)
+], DetectedTimeStamp.prototype, "end", void 0);
+DetectedTimeStamp = __decorate([
+    mongoose_1.Schema()
+], DetectedTimeStamp);
+exports.DetectedTimeStamp = DetectedTimeStamp;
 let Detection = class Detection extends mongoose_2.Document {
 };
 __decorate([
@@ -69,6 +85,11 @@ __decorate([
     mongoose_1.Prop({ default: Date.now() }),
     __metadata("design:type", Date)
 ], Detection.prototype, "detectedAt", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop([DetectedTimeStamp]),
+    __metadata("design:type", Array)
+], Detection.prototype, "detectedTimestamps", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),

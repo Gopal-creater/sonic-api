@@ -14,7 +14,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const radiostation_schema_1 = require("./schemas/radiostation.schema");
 const sonickey_module_1 = require("../sonickey/sonickey.module");
 const detection_module_1 = require("../detection/detection.module");
-const radiostation_listener_1 = require("./listeners/radiostation.listener");
 const radiomonitor_module_1 = require("../radiomonitor/radiomonitor.module");
 let RadiostationModule = class RadiostationModule {
 };
@@ -30,8 +29,7 @@ RadiostationModule = __decorate([
         ],
         controllers: [radiostation_controller_1.RadiostationController],
         providers: [
-            radiostation_service_1.RadiostationService,
-            radiostation_listener_1.RadioStationListener,
+            radiostation_service_1.RadiostationService
         ],
         exports: [radiostation_service_1.RadiostationService]
     })

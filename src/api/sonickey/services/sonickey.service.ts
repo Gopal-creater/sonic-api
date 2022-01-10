@@ -331,18 +331,6 @@ export class SonickeyService {
     const argList = ' ' + inFilePath + ' ' + logFilePath;
 
     const sonicDecodeCmd = `${appConfig.DECODER_EXE_PATH}` + argList;
-    if (appConfig.DEBUG) {
-      // Only for testing
-      var validkeys = ['VctJ2KQyBj1', 'nC7c3ZyOJGe', 'xIbt68PcTGF'];
-      var invalidkeys = ['jdjhjdhsjdhsj', 'sdskdjksdjk', 'jdskdksdj'];
-      var dummykeys = [...validkeys, ...invalidkeys];
-      return Promise.resolve({
-        sonicKeys: [dummykeys[Math.floor(Math.random() * dummykeys.length)]],
-      }).finally(() => {
-        this.fileHandlerService.deleteFileAtPath(inFilePath);
-      });
-    }
-
     //Prabin:Dont wait file to decode. just return Promise itself
     return this.fileOperationService
       .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)

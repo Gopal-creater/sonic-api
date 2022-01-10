@@ -24,6 +24,9 @@ const config_2 = require("./config");
 const app_config_1 = require("./config/app.config");
 const job_module_1 = require("./api/job/job.module");
 const uniqid = require("uniqid");
+const appRootPath = require("app-root-path");
+const fs = require("fs");
+const path = require("path");
 const schedule_1 = require("@nestjs/schedule");
 const app_gateway_1 = require("./app.gateway");
 const radiostation_module_1 = require("./api/radiostation/radiostation.module");
@@ -46,7 +49,12 @@ mongoosePaginate.paginate.options = {
 console.log('Node_env', process.env.NODE_ENV);
 var connectionNo = 0;
 let AppModule = class AppModule {
-    constructor() { }
+    constructor() {
+        let rawdata = fs.readFileSync(path.join(appRootPath.toString(), 'app.log'), { encoding: 'utf8' });
+        let student = JSON.parse(rawdata);
+        console.log(student);
+        console.log(student[0].timestamps);
+    }
 };
 AppModule = __decorate([
     common_1.Module({

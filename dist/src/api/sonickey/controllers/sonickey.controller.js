@@ -50,6 +50,7 @@ const FileFromUrl_interceptor_1 = require("../../../shared/interceptors/FileFrom
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
+const detection_schema_1 = require("../../detection/schemas/detection.schema");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
@@ -146,16 +147,17 @@ let SonickeyController = class SonickeyController {
             try {
                 for (var sonicKeys_1 = __asyncValues(sonicKeys), sonicKeys_1_1; sonicKeys_1_1 = await sonicKeys_1.next(), !sonicKeys_1_1.done;) {
                     const sonicKey = sonicKeys_1_1.value;
-                    const validSonicKey = await this.sonicKeyService.findBySonicKey(sonicKey);
+                    const validSonicKey = await this.sonicKeyService.findBySonicKey(sonicKey.sonicKey);
                     if (!validSonicKey) {
                         continue;
                     }
                     const newDetection = await this.detectionService.detectionModel.create({
-                        sonicKey: sonicKey,
+                        sonicKey: sonicKey.sonicKey,
                         owner: validSonicKey.owner,
                         sonicKeyOwnerId: validSonicKey.owner,
                         sonicKeyOwnerName: validSonicKey.contentOwner,
                         channel: Enums_1.ChannelEnums.PORTAL,
+                        detectedTimestamps: sonicKey.timestamps,
                         detectedAt: new Date(),
                     });
                     await newDetection.save();
@@ -176,7 +178,7 @@ let SonickeyController = class SonickeyController {
             throw new common_1.BadRequestException(err);
         });
     }
-    async decodeFromChannel(file, channel) {
+    async decodeV2(file) {
         return this.sonicKeyService
             .decodeAllKeys(file)
             .then(async ({ sonicKeys }) => {
@@ -186,20 +188,22 @@ let SonickeyController = class SonickeyController {
             try {
                 for (var sonicKeys_2 = __asyncValues(sonicKeys), sonicKeys_2_1; sonicKeys_2_1 = await sonicKeys_2.next(), !sonicKeys_2_1.done;) {
                     const sonicKey = sonicKeys_2_1.value;
-                    const validSonicKey = await this.sonicKeyService.findBySonicKey(sonicKey);
+                    const validSonicKey = await this.sonicKeyService.findBySonicKey(sonicKey.sonicKey);
                     if (!validSonicKey) {
                         continue;
                     }
                     const newDetection = await this.detectionService.detectionModel.create({
-                        sonicKey: sonicKey,
+                        sonicKey: sonicKey.sonicKey,
                         owner: validSonicKey.owner,
                         sonicKeyOwnerId: validSonicKey.owner,
                         sonicKeyOwnerName: validSonicKey.contentOwner,
-                        channel: channel,
+                        channel: Enums_1.ChannelEnums.PORTAL,
+                        detectedTimestamps: sonicKey.timestamps,
                         detectedAt: new Date(),
                     });
-                    await newDetection.save();
-                    sonicKeysMetadata.push(validSonicKey);
+                    const savedDetection = await newDetection.save();
+                    savedDetection.sonicKey = validSonicKey;
+                    sonicKeysMetadata.push(savedDetection);
                 }
             }
             catch (e_2_1) { e_2 = { error: e_2_1 }; }
@@ -216,20 +220,103 @@ let SonickeyController = class SonickeyController {
             throw new common_1.BadRequestException(err);
         });
     }
+    async decodeFromChannel(file, channel) {
+        return this.sonicKeyService
+            .decodeAllKeys(file)
+            .then(async ({ sonicKeys }) => {
+            var e_3, _a;
+            console.log('Detected keys from Decode', sonicKeys);
+            var sonicKeysMetadata = [];
+            try {
+                for (var sonicKeys_3 = __asyncValues(sonicKeys), sonicKeys_3_1; sonicKeys_3_1 = await sonicKeys_3.next(), !sonicKeys_3_1.done;) {
+                    const sonicKey = sonicKeys_3_1.value;
+                    const validSonicKey = await this.sonicKeyService.findBySonicKey(sonicKey.sonicKey);
+                    if (!validSonicKey) {
+                        continue;
+                    }
+                    const newDetection = await this.detectionService.detectionModel.create({
+                        sonicKey: sonicKey,
+                        owner: validSonicKey.owner,
+                        sonicKeyOwnerId: validSonicKey.owner,
+                        sonicKeyOwnerName: validSonicKey.contentOwner,
+                        channel: channel,
+                        detectedAt: new Date(),
+                        detectedTimestamps: sonicKey.timestamps,
+                    });
+                    await newDetection.save();
+                    sonicKeysMetadata.push(validSonicKey);
+                }
+            }
+            catch (e_3_1) { e_3 = { error: e_3_1 }; }
+            finally {
+                try {
+                    if (sonicKeys_3_1 && !sonicKeys_3_1.done && (_a = sonicKeys_3.return)) await _a.call(sonicKeys_3);
+                }
+                finally { if (e_3) throw e_3.error; }
+            }
+            return sonicKeysMetadata;
+        })
+            .catch(err => {
+            this.fileHandlerService.deleteFileAtPath(file.path);
+            throw new common_1.BadRequestException(err);
+        });
+    }
+    async decodeFromChannelV2(file, channel) {
+        return this.sonicKeyService
+            .decodeAllKeys(file)
+            .then(async ({ sonicKeys }) => {
+            var e_4, _a;
+            console.log('Detected keys from Decode', sonicKeys);
+            var sonicKeysMetadata = [];
+            try {
+                for (var sonicKeys_4 = __asyncValues(sonicKeys), sonicKeys_4_1; sonicKeys_4_1 = await sonicKeys_4.next(), !sonicKeys_4_1.done;) {
+                    const sonicKey = sonicKeys_4_1.value;
+                    const validSonicKey = await this.sonicKeyService.findBySonicKey(sonicKey.sonicKey);
+                    if (!validSonicKey) {
+                        continue;
+                    }
+                    const newDetection = await this.detectionService.detectionModel.create({
+                        sonicKey: sonicKey,
+                        owner: validSonicKey.owner,
+                        sonicKeyOwnerId: validSonicKey.owner,
+                        sonicKeyOwnerName: validSonicKey.contentOwner,
+                        channel: channel,
+                        detectedAt: new Date(),
+                        detectedTimestamps: sonicKey.timestamps,
+                    });
+                    const savedDetection = await newDetection.save();
+                    savedDetection.sonicKey = validSonicKey;
+                    sonicKeysMetadata.push(savedDetection);
+                }
+            }
+            catch (e_4_1) { e_4 = { error: e_4_1 }; }
+            finally {
+                try {
+                    if (sonicKeys_4_1 && !sonicKeys_4_1.done && (_a = sonicKeys_4.return)) await _a.call(sonicKeys_4);
+                }
+                finally { if (e_4) throw e_4.error; }
+            }
+            return sonicKeysMetadata;
+        })
+            .catch(err => {
+            this.fileHandlerService.deleteFileAtPath(file.path);
+            throw new common_1.BadRequestException(err);
+        });
+    }
     async updateMeta(sonickey, updateSonicKeyDto, owner) {
         const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate({ sonicKey: sonickey, owner: owner }, updateSonicKeyDto, { new: true });
         if (!updatedSonickey) {
-            throw new common_1.NotFoundException("Given sonickey is either not present or doest not belongs to you");
+            throw new common_1.NotFoundException('Given sonickey is either not present or doest not belongs to you');
         }
         return updatedSonickey;
     }
     async delete(sonickey, owner) {
         const deletedSonickey = await this.sonicKeyService.sonicKeyModel.deleteOne({
             sonicKey: sonickey,
-            owner: owner
+            owner: owner,
         });
         if (!deletedSonickey) {
-            throw new common_1.NotFoundException("Given sonickey is either not present or doest not belongs to you");
+            throw new common_1.NotFoundException('Given sonickey is either not present or doest not belongs to you');
         }
         return deletedSonickey;
     }
@@ -257,7 +344,7 @@ __decorate([
     common_1.Get('/'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
+    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys' }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
@@ -298,7 +385,7 @@ __decorate([
     common_1.Get('/owners/:ownerId'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
+    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
@@ -324,7 +411,7 @@ __decorate([
 __decorate([
     common_1.Get('/count'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
-    swagger_1.ApiQuery({ name: "includeGroupData", type: Boolean, required: false }),
+    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({
         summary: 'Get count of all sonickeys also accept filter as query params',
@@ -450,6 +537,37 @@ __decorate([
         description: 'File To Decode',
         type: decode_dto_1.DecodeDto,
     }),
+    common_1.Version('2'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    common_1.Post('/decode'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
+    openapi.ApiResponse({ status: 201, type: [require("../../detection/schemas/detection.schema").Detection] }),
+    __param(0, common_1.UploadedFile()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "decodeV2", null);
+__decorate([
+    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
+        storage: multer_1.diskStorage({
+            destination: async (req, file, cb) => {
+                const currentUserId = req['user']['sub'];
+                const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
+                cb(null, imagePath);
+            },
+            filename: (req, file, cb) => {
+                let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+                const randomName = uniqid();
+                cb(null, `${randomName}-${orgName}`);
+            },
+        }),
+    })),
+    swagger_1.ApiConsumes('multipart/form-data'),
+    swagger_1.ApiBody({
+        description: 'File To Decode',
+        type: decode_dto_1.DecodeDto,
+    }),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     common_1.Post(':channel/decode'),
     swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums)] }),
@@ -462,6 +580,39 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "decodeFromChannel", null);
+__decorate([
+    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
+        storage: multer_1.diskStorage({
+            destination: async (req, file, cb) => {
+                const currentUserId = req['user']['sub'];
+                const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
+                cb(null, imagePath);
+            },
+            filename: (req, file, cb) => {
+                let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+                const randomName = uniqid();
+                cb(null, `${randomName}-${orgName}`);
+            },
+        }),
+    })),
+    swagger_1.ApiConsumes('multipart/form-data'),
+    swagger_1.ApiBody({
+        description: 'File To Decode',
+        type: decode_dto_1.DecodeDto,
+    }),
+    common_1.Version('2'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    common_1.Post(':channel/decode'),
+    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums)] }),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
+    openapi.ApiResponse({ status: 201, type: [require("../../detection/schemas/detection.schema").Detection] }),
+    __param(0, common_1.UploadedFile()),
+    __param(1, common_1.Param('channel')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "decodeFromChannelV2", null);
 __decorate([
     common_1.Patch('/:sonickey'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
