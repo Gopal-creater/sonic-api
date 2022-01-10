@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { Roles } from 'src/constants/Enums';
 import { ForbiddenException } from '@nestjs/common';
-import { UserSession } from '../../user/schemas/user.schema';
+import { CognitoUserSession } from '../../user/schemas/user.aws.schema';
 
 @Injectable()
 export class RoleBasedGuard implements CanActivate {
@@ -25,7 +25,7 @@ export class RoleBasedGuard implements CanActivate {
       return true;
     }
     const request = context.switchToHttp().getRequest();
-    const currentUser = request?.user as UserSession
+    const currentUser = request?.user as CognitoUserSession
     const userRoles = currentUser['cognito:groups'] || [];
     const isAllowed = this.matchRoles(roles, userRoles);
     if(!isAllowed){

@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import { GlobalAwsService } from './../../shared/modules/global-aws/global-aws.service';
+import { GlobalAwsService } from '../../../shared/modules/global-aws/global-aws.service';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
 import {
   Injectable,
@@ -7,19 +7,22 @@ import {
   forwardRef,
   Inject,
 } from '@nestjs/common';
-import { LicensekeyService } from '../licensekey/services/licensekey.service';
-import { LKOwner } from '../licensekey/schemas/licensekey.schema';
-import { isValidUUID } from '../../shared/utils/index';
+import { LicensekeyService } from '../../licensekey/services/licensekey.service';
+import { LKOwner } from '../../licensekey/schemas/licensekey.schema';
+import { isValidUUID } from '../../../shared/utils/index';
 import {
   AdminGetUserResponse,
   UserType,
   AttributeType,
 } from 'aws-sdk/clients/cognitoidentityserviceprovider';
-import { UserProfile, UserAttributesObj } from './schemas/user.schema';
-import { AdminCreateUserDTO } from './dtos';
+import { UserProfile, UserAttributesObj } from '../schemas/user.aws.schema';
+import { AdminCreateUserDTO } from '../dtos';
 import { MonitorGroupsEnum } from 'src/constants/Enums';
-import { RadiomonitorModule } from '../radiomonitor/radiomonitor.module';
-import { RadioMonitorService } from '../radiomonitor/radiomonitor.service';
+import { RadiomonitorModule } from '../../radiomonitor/radiomonitor.module';
+import { RadioMonitorService } from '../../radiomonitor/radiomonitor.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { UserDB, UserSchemaName } from '../schemas/user.db.schema';
 
 @Injectable()
 export class UserService {
@@ -29,6 +32,8 @@ export class UserService {
     @Inject(forwardRef(() => LicensekeyService))
     private readonly licensekeyService: LicensekeyService,
     private readonly globalAwsService: GlobalAwsService,
+    @InjectModel(UserSchemaName)
+    public readonly userModel: Model<UserDB>,
     private readonly configService: ConfigService,
     @Inject(forwardRef(() => RadioMonitorService))
     private readonly radioMonitorService: RadioMonitorService,

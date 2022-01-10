@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateApiKeyDto } from './dto/mongoosepaginate-apikey.dto';
-import { UserService } from '../user/user.service';
+import { UserService } from '../user/services/user.service';
 
 @Injectable()
 export class ApiKeyService {

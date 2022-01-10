@@ -19,7 +19,7 @@ const common_1 = require("@nestjs/common");
 const licensekey_service_1 = require("../licensekey/services/licensekey.service");
 const licensekey_schema_1 = require("../licensekey/schemas/licensekey.schema");
 const index_1 = require("../../shared/utils/index");
-const user_schema_1 = require("./schemas/user.schema");
+const user_aws_schema_1 = require("./schemas/user.aws.schema");
 const Enums_1 = require("../../constants/Enums");
 const radiomonitor_service_1 = require("../radiomonitor/radiomonitor.service");
 let UserService = class UserService {
@@ -103,7 +103,7 @@ let UserService = class UserService {
             return Promise.resolve(null);
         }
         const userAttributeObj = this.convertUserAttributesToObj(profile.UserAttributes);
-        const finalProfile = new user_schema_1.UserProfile({
+        const finalProfile = new user_aws_schema_1.UserProfile({
             username: profile.Username,
             sub: userAttributeObj.sub,
             userAttributes: profile.UserAttributes,

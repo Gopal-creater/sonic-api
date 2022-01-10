@@ -1,4 +1,4 @@
-import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import {
   ApiTags,
   ApiBearerAuth,
@@ -10,8 +10,8 @@ import {
   AddBulkNewLicensesDto,
   UpdateProfileDto,
   AdminCreateUserDTO,
-} from './dtos/index';
-import { UserService } from './user.service';
+} from '../dtos/index';
+import { UserService } from '../services/user.service';
 import {
   Controller,
   Get,
@@ -24,14 +24,14 @@ import {
   UseGuards,
   NotFoundException,
 } from '@nestjs/common';
-import { ParseQueryValue } from '../../shared/pipes/parseQueryValue.pipe';
-import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
-import { LicensekeyService } from '../licensekey/services/licensekey.service';
-import { RolesAllowed } from '../auth/decorators/roles.decorator';
+import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
+import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
+import { LicensekeyService } from '../../licensekey/services/licensekey.service';
+import { RolesAllowed } from '../../auth/decorators/roles.decorator';
 import { Roles } from 'src/constants/Enums';
-import { RoleBasedGuard } from '../auth/guards/role-based.guard';
-import { User } from '../auth/decorators';
-import { UserSession } from './schemas/user.schema';
+import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
+import { User } from '../../auth/decorators';
+import { CognitoUserSession } from '../schemas/user.aws.schema';
 
 @ApiTags('User Controller')
 @Controller('users')
@@ -57,7 +57,7 @@ export class UserController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'authorize user with their token' })
   @Get('/authorize')
-  async checkAuthorization(@User() user:UserSession) {
+  async checkAuthorization(@User() user:CognitoUserSession) {
     return {
       ok:true,
       user:user

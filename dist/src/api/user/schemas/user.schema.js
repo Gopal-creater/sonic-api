@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserProfile = exports.UserSession = exports.UserAttributesObj = void 0;
+exports.UserProfile = exports.CognitoUserSession = exports.UserAttributesObj = void 0;
 const swagger_1 = require("@nestjs/swagger");
 class UserAttributesObj {
 }
@@ -38,9 +38,9 @@ __decorate([
     __metadata("design:type", String)
 ], UserAttributesObj.prototype, "email", void 0);
 exports.UserAttributesObj = UserAttributesObj;
-class UserSession {
+class CognitoUserSession {
 }
-exports.UserSession = UserSession;
+exports.CognitoUserSession = CognitoUserSession;
 class UserProfile {
     constructor(params) {
         Object.assign(this, params);

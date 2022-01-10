@@ -14,7 +14,7 @@ import * as _ from 'lodash';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateLicensekeyDto } from '../dto/mongoosepaginate-licensekey.dto';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
-import { UserService } from '../../user/user.service';
+import { UserService } from '../../user/services/user.service';
 
 type usesFor = 'encode' | 'decode' | 'monitor';
 

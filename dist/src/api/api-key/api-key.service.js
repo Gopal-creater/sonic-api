@@ -17,7 +17,7 @@ const common_1 = require("@nestjs/common");
 const api_key_schema_1 = require("./schemas/api-key.schema");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const user_service_1 = require("../user/user.service");
+const user_service_1 = require("../user/services/user.service");
 let ApiKeyService = class ApiKeyService {
     constructor(apiKeyModel, userService) {
         this.apiKeyModel = apiKeyModel;

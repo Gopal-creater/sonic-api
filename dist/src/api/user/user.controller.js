@@ -26,7 +26,7 @@ const roles_decorator_1 = require("../auth/decorators/roles.decorator");
 const Enums_1 = require("../../constants/Enums");
 const role_based_guard_1 = require("../auth/guards/role-based.guard");
 const decorators_1 = require("../auth/decorators");
-const user_schema_1 = require("./schemas/user.schema");
+const user_aws_schema_1 = require("./schemas/user.aws.schema");
 let UserController = class UserController {
     constructor(userServices, licensekeyService) {
         this.userServices = userServices;
@@ -102,7 +102,7 @@ __decorate([
     openapi.ApiResponse({ status: 200 }),
     __param(0, decorators_1.User()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_schema_1.UserSession]),
+    __metadata("design:paramtypes", [user_aws_schema_1.CognitoUserSession]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "checkAuthorization", null);
 __decorate([
@@ -134,7 +134,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get User profile by username or sub id' }),
     common_1.Get('/:username/profile'),
-    openapi.ApiResponse({ status: 200, type: require("./schemas/user.schema").UserProfile }),
+    openapi.ApiResponse({ status: 200, type: require("./schemas/user.aws.schema").UserProfile }),
     __param(0, common_1.Param('username')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

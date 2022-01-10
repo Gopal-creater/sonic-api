@@ -38,7 +38,7 @@ const mongoose_2 = require("mongoose");
 const uuid_1 = require("uuid");
 const _ = require("lodash");
 const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
-const user_service_1 = require("../../user/user.service");
+const user_service_1 = require("../../user/services/user.service");
 let LicensekeyService = class LicensekeyService {
     constructor(licenseKeyModel, keygenService, userService) {
         this.licenseKeyModel = licenseKeyModel;

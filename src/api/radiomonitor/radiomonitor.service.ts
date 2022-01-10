@@ -13,7 +13,7 @@ import { LicensekeyService } from '../licensekey/services/licensekey.service';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateRadioMonitorDto } from './dto/mongoosepaginate-radiomonitordto';
 import { MonitorGroupsEnum } from 'src/constants/Enums';
-import { UserService } from '../user/user.service';
+import { UserService } from '../user/services/user.service';
 
 @Injectable()
 export class RadioMonitorService {
