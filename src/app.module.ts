@@ -13,9 +13,6 @@ import { appConfig } from './config';
 import appConfiguration from './config/app.config';
 import { JobModule } from './api/job/job.module';
 import * as uniqid from 'uniqid';
-import * as appRootPath from 'app-root-path';
-import * as fs from 'fs';
-import * as path from 'path';
 
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppGateway } from './app.gateway';
@@ -107,12 +104,5 @@ var connectionNo = 0;
 })
 export class AppModule {
   constructor() {
-    let rawdata = fs.readFileSync(
-      path.join(appRootPath.toString(), 'app.log'),
-      { encoding: 'utf8' },
-    );
-    let student = JSON.parse(rawdata);
-    console.log(student);
-    console.log(student[0].timestamps);
   }
 }

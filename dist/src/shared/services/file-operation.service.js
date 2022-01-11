@@ -21,7 +21,7 @@ let FileOperationService = class FileOperationService {
             }
             catch (_a) {
                 reject({
-                    message: 'Error encountered during encoding!'
+                    message: 'Error encountered during encoding!',
                 });
             }
         });
@@ -34,7 +34,7 @@ let FileOperationService = class FileOperationService {
                 if (fileSizeInBytes <= 0) {
                     console.error('empty logfile while decoding. no key found!');
                     reject({
-                        message: 'Key not found'
+                        message: 'Key not found',
                     });
                 }
                 readline.eachLine(logFilePath, function (line) {
@@ -48,7 +48,7 @@ let FileOperationService = class FileOperationService {
             catch (err) {
                 console.error('Caught error while decodibng:', err);
                 reject({
-                    message: 'Error while decoding'
+                    message: 'Error while decoding',
                 });
             }
         });
@@ -57,16 +57,23 @@ let FileOperationService = class FileOperationService {
         return new Promise((resolve, reject) => {
             try {
                 child_process_1.execSync('bash ' + sonicDecodeCmd);
-                var sonicKeys = [];
+                var decodeResponses = [];
                 let rawdata = fs.readFileSync(logFilePath, { encoding: 'utf8' });
-                var decodeResponses = JSON.parse(rawdata);
+                console.log('rawdata', rawdata);
+                try {
+                    decodeResponses = JSON.parse(rawdata);
+                }
+                catch (error) {
+                    console.log('error parsing decoded data', error);
+                }
+                console.log('decodeResponses', decodeResponses);
                 decodeResponses = _.unionBy(decodeResponses, 'sonicKey');
                 resolve({ sonicKeys: decodeResponses });
             }
             catch (err) {
                 console.error('Caught error while decodibng:', err);
                 reject({
-                    message: (err === null || err === void 0 ? void 0 : err.message) || 'Error while decoding'
+                    message: (err === null || err === void 0 ? void 0 : err.message) || 'Error while decoding',
                 });
             }
         });
