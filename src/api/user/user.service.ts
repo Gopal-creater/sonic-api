@@ -348,13 +348,6 @@ export class UserService {
         },
       );
       // if (group == MonitorGroupsEnum.AIM || group == MonitorGroupsEnum.AFEM) {
-       const defaultLicense = await this.addDefaultLicenseToUser(
-          userCreated.User.Username,
-        ).catch(async err => {
-          await this.adminDeleteUser(userCreated.User.Username);
-          throw err;
-        });
-
         // await this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(userCreated.User.Username,unlimitedLicense.key)
         // .catch(async err => {
         //   await this.adminDeleteUser(userCreated.User.Username);
@@ -363,6 +356,12 @@ export class UserService {
 
       // }
     }
+    const defaultLicense = await this.addDefaultLicenseToUser(
+      userCreated.User.Username,
+    ).catch(async err => {
+      await this.adminDeleteUser(userCreated.User.Username);
+      throw err;
+    });
     return userCreated;
   }
 

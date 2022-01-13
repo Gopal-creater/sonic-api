@@ -272,11 +272,11 @@ let UserService = class UserService {
                 await this.adminDeleteUser(userCreated.User.Username);
                 throw err;
             });
-            const defaultLicense = await this.addDefaultLicenseToUser(userCreated.User.Username).catch(async (err) => {
-                await this.adminDeleteUser(userCreated.User.Username);
-                throw err;
-            });
         }
+        const defaultLicense = await this.addDefaultLicenseToUser(userCreated.User.Username).catch(async (err) => {
+            await this.adminDeleteUser(userCreated.User.Username);
+            throw err;
+        });
         return userCreated;
     }
     async addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub) {
