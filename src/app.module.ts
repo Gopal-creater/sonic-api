@@ -31,11 +31,12 @@ import { HttpModule } from '@nestjs/axios';
 import { Ec2InstanceService } from './shared/services/ec2instance.service';
 import { PaymentModule } from './api/payment/payment.module';
 import { CompanyModule } from './api/company/company.module';
+import { GroupModule } from './api/group/group.module';
 mongoosePaginate.paginate.options = {
   limit: 50,
 };
 console.log('Node_env', process.env.NODE_ENV);
-var connectionNo=0
+var connectionNo = 0;
 @Module({
   imports: [
     HttpModule,
@@ -63,12 +64,12 @@ var connectionNo=0
           connection?.plugin(require('mongoose-autopopulate'));
           connection?.plugin(require('mongoose-lean-virtuals'));
           connection.on('connected', () => {
-            connectionNo+=1
-            console.log('DB connected, current connectionNo',connectionNo);
+            connectionNo += 1;
+            console.log('DB connected, current connectionNo', connectionNo);
           });
           connection.on('disconnected', () => {
-            connectionNo-=1
-            console.log('DB disconnected, current connectionNo',connectionNo);
+            connectionNo -= 1;
+            console.log('DB disconnected, current connectionNo', connectionNo);
           });
           connection.on('error', error => {
             console.log('DB connection failed! for error: ', error);
@@ -100,6 +101,7 @@ var connectionNo=0
     RadiomonitorModule,
     PaymentModule,
     CompanyModule,
+    GroupModule
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway, Ec2InstanceService],

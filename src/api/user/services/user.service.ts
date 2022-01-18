@@ -11,18 +11,21 @@ import { LicensekeyService } from '../../licensekey/services/licensekey.service'
 import { LKOwner } from '../../licensekey/schemas/licensekey.schema';
 import { isValidUUID } from '../../../shared/utils/index';
 import {
-  AdminGetUserResponse,
-  UserType,
   AttributeType,
+  UserType,
 } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 import { UserProfile, UserAttributesObj } from '../schemas/user.aws.schema';
-import { AdminCreateUserDTO } from '../dtos';
-import { MonitorGroupsEnum } from 'src/constants/Enums';
-import { RadiomonitorModule } from '../../radiomonitor/radiomonitor.module';
+import { CognitoCreateUserDTO } from '../dtos';
 import { RadioMonitorService } from '../../radiomonitor/radiomonitor.service';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, FilterQuery } from 'mongoose';
 import { UserDB, UserSchemaName } from '../schemas/user.db.schema';
+import { CreateUserDto } from '../dtos/create-user.dto';
+import { UpdateUserDto } from '../dtos/update-user.dto';
+import { UserGroupService } from './user-group.service';
+import { UserCompanyService } from './user-company.service';
+import { GroupService } from '../../group/group.service';
+import { CompanyService } from '../../company/company.service';
 
 @Injectable()
 export class UserService {
@@ -32,9 +35,14 @@ export class UserService {
     @Inject(forwardRef(() => LicensekeyService))
     private readonly licensekeyService: LicensekeyService,
     private readonly globalAwsService: GlobalAwsService,
+    private readonly groupService: GroupService,
+    private readonly companyService: CompanyService,
     @InjectModel(UserSchemaName)
     public readonly userModel: Model<UserDB>,
     private readonly configService: ConfigService,
+    private readonly userGroupService: UserGroupService,
+    private readonly userCompanyService: UserCompanyService,
+
     @Inject(forwardRef(() => RadioMonitorService))
     private readonly radioMonitorService: RadioMonitorService,
   ) {
@@ -118,7 +126,7 @@ export class UserService {
       Username: usernameOrSub,
     };
     if (isValidUUID(usernameOrSub)) {
-      const userDetails = await this.getUserFromSub(usernameOrSub);
+      const userDetails = await this.getCognitoUserFromSub(usernameOrSub);
       if (!userDetails) {
         return Promise.resolve(null);
       }
@@ -162,7 +170,7 @@ export class UserService {
       Username: usernameOrSub,
     };
     if (isValidUUID(usernameOrSub)) {
-      const { username } = await this.getUserFromSub(usernameOrSub);
+      const { username } = await this.getCognitoUserFromSub(usernameOrSub);
       params.Username = username;
     }
     const adminListGroupsForUserResponse = await this.cognitoIdentityServiceProvider
@@ -177,10 +185,39 @@ export class UserService {
     };
   }
 
+  async cognitoCreateGroup(groupName: string) {
+    const params = {
+      UserPoolId: this.cognitoUserPoolId,
+      Description: groupName,
+      GroupName: groupName,
+    };
+    const cognitoCreateGroupResponse = await this.cognitoIdentityServiceProvider
+      .createGroup(params)
+      .promise();
+    return {
+      cognitoCreateGroup: cognitoCreateGroupResponse,
+      groupName: groupName,
+    };
+  }
+
+  async cognitoDeleteGroup(groupName: string) {
+    const params = {
+      UserPoolId: this.cognitoUserPoolId,
+      GroupName: groupName,
+    };
+    const cognitoDeleteGroupResponse = await this.cognitoIdentityServiceProvider
+      .deleteGroup(params)
+      .promise();
+    return {
+      cognitoDeleteGroup: cognitoDeleteGroupResponse,
+      groupName: groupName,
+    };
+  }
+
   /**
    * @param groupName
    */
-  async getGroup(groupName: string) {
+  async cognitoGetGroup(groupName: string) {
     const params = {
       UserPoolId: this.cognitoUserPoolId,
       GroupName: groupName,
@@ -199,11 +236,28 @@ export class UserService {
       Username: usernameOrSub,
     };
     if (isValidUUID(usernameOrSub)) {
-      const { username } = await this.getUserFromSub(usernameOrSub);
+      const { username } = await this.getCognitoUserFromSub(usernameOrSub);
       params.Username = username;
     }
     const group = await this.cognitoIdentityServiceProvider
       .adminAddUserToGroup(params)
+      .promise();
+
+    return group;
+  }
+
+  async adminRemoveUserFromGroup(usernameOrSub: string, groupName: string) {
+    const params = {
+      UserPoolId: this.cognitoUserPoolId,
+      GroupName: groupName,
+      Username: usernameOrSub,
+    };
+    if (isValidUUID(usernameOrSub)) {
+      const { username } = await this.getCognitoUserFromSub(usernameOrSub);
+      params.Username = username;
+    }
+    const group = await this.cognitoIdentityServiceProvider
+      .adminRemoveUserFromGroup(params)
       .promise();
 
     return group;
@@ -215,7 +269,7 @@ export class UserService {
       Username: usernameOrSub,
     };
     if (isValidUUID(usernameOrSub)) {
-      const { username } = await this.getUserFromSub(usernameOrSub);
+      const { username } = await this.getCognitoUserFromSub(usernameOrSub);
       params.Username = username;
     }
     const deleted = await this.cognitoIdentityServiceProvider
@@ -237,32 +291,145 @@ export class UserService {
     return attributesObj;
   }
 
-  async exportFromLic() {
-    const params = {
-      UserPoolId: this.cognitoUserPoolId,
-    };
-    this.cognitoIdentityServiceProvider.listUsers(params, (err, data) => {
-      console.log('users', data);
-      console.log('users count', data.Users.length);
-      for (let index = 0; index < data.Users.length; index++) {
-        const user = data.Users[index];
-        const licencesInString = user.Attributes.find(
-          attr => attr.Name == 'custom:licenseKey',
-        )?.Value;
-        if (licencesInString) {
-          const licenceIds = JSON.parse(licencesInString);
-          const ownerId = user.Attributes.find(att => att.Name == 'sub').Value;
-          // console.log("ownerId",ownerId);
-          console.log(
-            `licences for user ${user.Username} id ${ownerId}`,
-            licenceIds,
-          );
-        }
-      }
+  /**
+   * Sync cognito user with our database, if usernameOrSub given,
+   * it will sync only single user
+   * @param usernameOrSub
+   * @returns
+   */
+  async syncUserFromCognitoToMongooDb(usernameOrSub: string) {
+    const userFromCognito = await this.getCognitoUser(usernameOrSub);
+    const username = userFromCognito.Username;
+    const userStatus = userFromCognito.UserStatus;
+    const enabled = userFromCognito.Enabled;
+    const mfaOptions = userFromCognito.MFAOptions as any[];
+    const sub = userFromCognito.Attributes.find(attr => attr.Name == 'sub')
+      ?.Value;
+    const email = userFromCognito.Attributes.find(attr => attr.Name == 'email')
+      ?.Value;
+    const email_verified = userFromCognito.Attributes.find(
+      attr => attr.Name == 'email_verified',
+    )?.Value;
+    const phone_number = userFromCognito.Attributes.find(
+      attr => attr.Name == 'phone_number',
+    )?.Value;
+    const phone_number_verified = userFromCognito.Attributes.find(
+      attr => attr.Name == 'phone_number_verified',
+    )?.Value;
+    const userToSaveInDb = new CreateUserDto({
+      _id: sub,
+      sub: sub,
+      username: username,
+      email: email,
+      email_verified: email_verified == 'true',
+      phone_number: phone_number,
+      user_status: userStatus,
+      enabled: enabled,
+      mfa_options: mfaOptions,
+      phone_number_verified: phone_number_verified == 'true',
     });
+    var userFromDb = await this.userModel.findOneAndUpdate(
+      {
+        _id: userToSaveInDb.sub,
+      },
+      userToSaveInDb,
+      { upsert: true, new: true },
+    );
+
+    var userGroups = await this.adminListGroupsForUser(username);
+    const userGroupsToDbGroups = await this.groupService.groupModel.find({
+      name: { $in: userGroups.groupNames },
+    });
+    userFromDb = await this.userGroupService.addUserToGroups(
+      userFromDb,
+      userGroupsToDbGroups,
+    );
+    return userFromDb;
   }
 
-  async getUserFromSub(sub: string) {
+  /**
+   * Sync all cognito user with our database
+   * @returns
+   */
+  async syncUsersFromCognitoToMongooDb() {
+    const params = {
+      UserPoolId: this.cognitoUserPoolId,
+      Limit: 60,
+    };
+    const listUsersRes = await this.cognitoIdentityServiceProvider
+      .listUsers(params)
+      .promise();
+    console.log('users count', listUsersRes.Users.length);
+    for await (const user of listUsersRes.Users) {
+      const username = user.Username;
+      const userStatus = user.UserStatus;
+      const enabled = user.Enabled;
+      const mfaOptions = user.MFAOptions as any;
+      const sub = user.Attributes.find(attr => attr.Name == 'sub')?.Value;
+      const email = user.Attributes.find(attr => attr.Name == 'email')?.Value;
+      const email_verified = user.Attributes.find(
+        attr => attr.Name == 'email_verified',
+      )?.Value;
+      const phone_number = user.Attributes.find(
+        attr => attr.Name == 'phone_number',
+      )?.Value;
+      const phone_number_verified = user.Attributes.find(
+        attr => attr.Name == 'phone_number_verified',
+      )?.Value;
+      const userToSaveInDb = new CreateUserDto({
+        _id: sub,
+        sub: sub,
+        username: username,
+        email: email,
+        email_verified: email_verified == 'true',
+        phone_number: phone_number,
+        user_status: userStatus,
+        enabled: enabled,
+        mfa_options: mfaOptions,
+        phone_number_verified: phone_number_verified == 'true',
+      });
+      const userFromDb = await this.userModel.findOneAndUpdate(
+        {
+          _id: userToSaveInDb.sub,
+        },
+        userToSaveInDb,
+        { upsert: true,new:true },
+      );
+      const userGroups = await this.adminListGroupsForUser(username);
+      const userGroupsToDbGroups = await this.groupService.groupModel.find({
+        name: { $in: userGroups.groupNames },
+      });
+      await this.userGroupService.addUserToGroups(
+        userFromDb,
+        userGroupsToDbGroups,
+      );
+    }
+  }
+
+  async getCognitoUser(usernameOrSub: string) {
+    var user: UserType;
+    if (isValidUUID(usernameOrSub)) {
+      const users = await this.cognitoIdentityServiceProvider
+        .listUsers({
+          UserPoolId: this.cognitoUserPoolId,
+          Filter: `sub=\"${usernameOrSub}\"`,
+        })
+        .promise();
+      user = users?.Users?.[0];
+    } else {
+      const adminGetUser = await this.cognitoIdentityServiceProvider
+        .adminGetUser({
+          UserPoolId: this.cognitoUserPoolId,
+          Username: usernameOrSub,
+        })
+        .promise();
+      user = adminGetUser;
+      user.Attributes = adminGetUser.UserAttributes;
+    }
+    return user;
+  }
+
+  async getCognitoUserFromSub(sub: string) {
     const users = await this.cognitoIdentityServiceProvider
       .listUsers({
         UserPoolId: this.cognitoUserPoolId,
@@ -303,17 +470,23 @@ export class UserService {
     });
   }
 
-  async adminCreateUser(adminCreateUserDTO: AdminCreateUserDTO) {
+  /**
+   * Create cognito user to also save user to our database
+   * @param cognitoCreateUserDTO
+   * @returns
+   */
+  async cognitoCreateUser(cognitoCreateUserDTO: CognitoCreateUserDTO) {
     const {
       userName,
       email,
       group,
+      company,
       password,
       phoneNumber,
       isEmailVerified,
       isPhoneNumberVerified,
       sendInvitationByEmail,
-    } = adminCreateUserDTO;
+    } = cognitoCreateUserDTO;
     var registerNewUserParams = {
       UserPoolId: this.cognitoUserPoolId,
       Username: userName,
@@ -337,46 +510,81 @@ export class UserService {
         },
       ],
     };
-    if(sendInvitationByEmail){
-      registerNewUserParams["DesiredDeliveryMediums"]=['EMAIL']
-    }else{
-      registerNewUserParams["MessageAction"]="SUPPRESS"
+    if (sendInvitationByEmail) {
+      registerNewUserParams['DesiredDeliveryMediums'] = ['EMAIL'];
+    } else {
+      registerNewUserParams['MessageAction'] = 'SUPPRESS';
     }
-    const userCreated = await this.cognitoIdentityServiceProvider
+    const cognitoUserCreated = await this.cognitoIdentityServiceProvider
       .adminCreateUser(registerNewUserParams)
       .promise();
+    // Once user created in cognito save it to our database too
+    const username = cognitoUserCreated.User.Username;
+    var userDb = await this.syncUserFromCognitoToMongooDb(username);
     if (group) {
-      await this.adminAddUserToGroup(userCreated.User.Username, group).catch(
-        async err => {
-          await this.adminDeleteUser(userCreated.User.Username);
-          throw err;
+      const groupDb = await this.groupService.findById(group);
+      await this.adminAddUserToGroup(userName, groupDb.name).catch(err => {
+        console.warn('Warning: error adding user to group in cognito', err);
+      });
+      // Once We add user to cognito group, also add it to our db group too
+      userDb = await this.userGroupService.addUserToGroup(userDb, groupDb);
+    }
+    if (company) {
+      const companyDb = await this.companyService.findById(company);
+      await this.adminAddUserToGroup(userName, `COM_${companyDb.name}`).catch(
+        err => {
+          console.warn(
+            'Warning: error adding user to group company in cognito',
+            err,
+          );
         },
       );
-      // if (group == MonitorGroupsEnum.AIM || group == MonitorGroupsEnum.AFEM) {
-
-        // await this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(userCreated.User.Username,unlimitedLicense.key)
-        // .catch(async err => {
-        //   await this.adminDeleteUser(userCreated.User.Username);
-        //   throw err;
-        // });
-
-      // }
+      // Once We add user to cognito group company, also add it to our db company too
+      userDb = await this.userCompanyService.addUserToCompany(
+        userDb,
+        companyDb,
+      );
     }
-    const defaultLicense = await this.addDefaultLicenseToUser(
-      userCreated.User.Username,
-    ).catch(async err => {
-      await this.adminDeleteUser(userCreated.User.Username);
-      throw err;
-    });
-    return userCreated;
+    await this.addDefaultLicenseToUser(userName);
+    return {
+      cognitoUserCreated: cognitoUserCreated,
+      userDb: userDb,
+    };
   }
 
-  async addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub:string){
-    return this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(usernameOrSub)
+  async addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub: string) {
+    return this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(
+      usernameOrSub,
+    );
   }
 
   async addDefaultLicenseToUser(ownerIdOrUsername: string) {
     const defaultLicense = await this.licensekeyService.findOrCreateDefaultLicenseToAssignUser();
     return this.addNewLicense(defaultLicense.key, ownerIdOrUsername);
+  }
+
+  async create(createUserDto: CreateUserDto) {
+    const newUser = await this.userModel.create(createUserDto);
+    return newUser.save();
+  }
+
+  findAll() {
+    return this.userModel.find();
+  }
+
+  findOne(filter: FilterQuery<UserDB>) {
+    return this.userModel.findOne(filter);
+  }
+
+  findById(id: string) {
+    return this.userModel.findById(id);
+  }
+
+  update(id: string, updateUserDto: UpdateUserDto) {
+    return this.userModel.findByIdAndUpdate(id, updateUserDto);
+  }
+
+  removeById(id: string) {
+    return this.userModel.findByIdAndRemove(id);
   }
 }

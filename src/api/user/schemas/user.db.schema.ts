@@ -1,10 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
-import { SystemGroup } from 'src/constants/Enums';
+import { GroupSchemaName } from '../../group/schemas/group.schema';
 import { CompanySchemaName } from '../../company/schemas/company.schema';
 
 export const UserSchemaName = 'User';
+
+export class MFAOption{
+  @ApiProperty()
+  AttributeName:string
+
+  @ApiProperty()
+  DeliveryMedium:string
+}
 
 @Schema({ timestamps: true, collection: UserSchemaName })
 export class UserDB extends Document {
@@ -33,11 +41,14 @@ export class UserDB extends Document {
   sub: string;
 
   @ApiProperty()
-  @Prop({
-    type: [String],
-    enum: SystemGroup,
-  })
-  groups: string[];
+  @Prop([
+    {
+      type: MogSchema.Types.ObjectId,
+      ref: GroupSchemaName,
+      autopopulate: true,
+    },
+  ])
+  groups: any[];
 
   @ApiProperty()
   @Prop()
@@ -56,12 +67,32 @@ export class UserDB extends Document {
   email: string;
 
   @ApiProperty()
+  @Prop()
+  user_status: string;
+
+  @ApiProperty()
+  @Prop()
+  enabled: boolean;
+
+  @ApiProperty()
+  @Prop([MFAOption])
+  mfa_options: MFAOption[];
+
+  @ApiProperty()
+  @Prop([{
+    type: MogSchema.Types.ObjectId,
+    ref: CompanySchemaName,
+    autopopulate: true,
+  }])
+  companies: any[];
+
+  @ApiProperty()
   @Prop({
     type: MogSchema.Types.ObjectId,
     ref: CompanySchemaName,
     autopopulate: true,
   })
-  belongsToCompany: any;
+  adminCompany: any;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDB);

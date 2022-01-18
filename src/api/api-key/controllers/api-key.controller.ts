@@ -35,7 +35,7 @@ export class ApiKeyController {
       if(!user) throw new NotFoundException("Unknown user")
       createApiKeyDto.customer=user?.sub
     }else if(createApiKeyDto.type==ApiKeyType.GROUP){
-      const group = await this.apiKeyService.userService.getGroup(createApiKeyDto.groups?.[0])
+      const group = await this.apiKeyService.userService.cognitoGetGroup(createApiKeyDto.groups?.[0])
       if(!group) throw new NotFoundException("Unknown group")
     }
     return this.apiKeyService.create(createApiKeyDto);

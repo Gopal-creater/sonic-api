@@ -46,8 +46,7 @@ export enum SystemGroup {
   PORTAL_USER='PortalUser',
   AIM='AIM',
   AFEM='AFEM',
-  WPMS_USER='WPMSUser',
-  COMPANY_ADMIN='CompanyAdmin'
+  WPMS_USER='WPMSUser'
 }
 
 export enum EC2InstanceMetadata {

@@ -1,9 +1,23 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserSchemaName } from '../../user/schemas/user.db.schema';
 
 export const CompanySchemaName = 'Company';
+
+@Schema()
+export class Address {
+  @ApiProperty()
+  country: string;
+
+  @ApiProperty()
+  city: string;
+
+  @ApiProperty()
+  line1: string;
+
+  @ApiProperty()
+  line2: string;
+}
 
 @Schema({ timestamps: true, collection: CompanySchemaName })
 export class Company extends Document {
@@ -20,12 +34,19 @@ export class Company extends Document {
 
   @ApiProperty()
   @Prop()
-  contactNo: string;
+  email: string;
 
   @ApiProperty()
   @Prop()
-  address: string;
+  contactNo: string;
 
+
+  @ApiProperty()
+  @Prop({ type: Address })
+  address: Address;
+
+  @ApiProperty()
+  @Prop()
   owner: string;
   
 }
