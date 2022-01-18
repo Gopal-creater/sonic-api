@@ -11,9 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApiKeyAuthGuard = void 0;
 const common_1 = require("@nestjs/common");
-const user_schema_1 = require("../../user/schemas/user.schema");
+const user_aws_schema_1 = require("../../user/schemas/user.aws.schema");
 const api_key_service_1 = require("../api-key.service");
-const user_service_1 = require("../../user/user.service");
+const user_service_1 = require("../../user/services/user.service");
 let ApiKeyAuthGuard = class ApiKeyAuthGuard {
     constructor(apiKeyService, userService) {
         this.apiKeyService = apiKeyService;

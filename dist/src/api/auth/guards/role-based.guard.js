@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const Enums_1 = require("../../../constants/Enums");
 const common_2 = require("@nestjs/common");
+const group_schema_1 = require("../../group/schemas/group.schema");
 let RoleBasedGuard = class RoleBasedGuard {
     constructor(reflector) {
         this.reflector = reflector;
@@ -32,7 +33,7 @@ let RoleBasedGuard = class RoleBasedGuard {
         }
         const request = context.switchToHttp().getRequest();
         const currentUser = request === null || request === void 0 ? void 0 : request.user;
-        const userRoles = currentUser['cognito:groups'] || [];
+        const userRoles = currentUser['groups'] || [];
         const isAllowed = this.matchRoles(roles, userRoles);
         if (!isAllowed) {
             throw new common_2.ForbiddenException("You dont have permission to do this.");
@@ -40,7 +41,7 @@ let RoleBasedGuard = class RoleBasedGuard {
         return true;
     }
     matchRoles(definedRoles, userRoles) {
-        return userRoles.some((role) => definedRoles.includes(role));
+        return userRoles.some((role) => definedRoles.includes(role.name));
     }
 };
 RoleBasedGuard = __decorate([

@@ -9,9 +9,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AdminCreateUserDTO = exports.UpdateProfileDto = exports.AddBulkNewLicensesDto = exports.AddNewLicenseDto = void 0;
+exports.CognitoCreateUserDTO = exports.UpdateProfileDto = exports.AddBulkNewLicensesDto = exports.RemoveUserFromCompanyDto = exports.MakeAdminCompanyDto = exports.AddUserToCompanyDto = exports.RemoveUserFromGroupDto = exports.AddUserToGroupDto = exports.AddNewLicenseDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
-const register_dto_1 = require("../../auth/dto/register.dto");
+const class_validator_1 = require("class-validator");
 class AddNewLicenseDto {
 }
 __decorate([
@@ -19,6 +19,71 @@ __decorate([
     __metadata("design:type", String)
 ], AddNewLicenseDto.prototype, "licenseKey", void 0);
 exports.AddNewLicenseDto = AddNewLicenseDto;
+class AddUserToGroupDto {
+}
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], AddUserToGroupDto.prototype, "user", void 0);
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], AddUserToGroupDto.prototype, "group", void 0);
+exports.AddUserToGroupDto = AddUserToGroupDto;
+class RemoveUserFromGroupDto {
+}
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], RemoveUserFromGroupDto.prototype, "user", void 0);
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], RemoveUserFromGroupDto.prototype, "group", void 0);
+exports.RemoveUserFromGroupDto = RemoveUserFromGroupDto;
+class AddUserToCompanyDto {
+}
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], AddUserToCompanyDto.prototype, "user", void 0);
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], AddUserToCompanyDto.prototype, "company", void 0);
+exports.AddUserToCompanyDto = AddUserToCompanyDto;
+class MakeAdminCompanyDto {
+}
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], MakeAdminCompanyDto.prototype, "user", void 0);
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], MakeAdminCompanyDto.prototype, "company", void 0);
+exports.MakeAdminCompanyDto = MakeAdminCompanyDto;
+class RemoveUserFromCompanyDto {
+}
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], RemoveUserFromCompanyDto.prototype, "user", void 0);
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], RemoveUserFromCompanyDto.prototype, "company", void 0);
+exports.RemoveUserFromCompanyDto = RemoveUserFromCompanyDto;
 class AddBulkNewLicensesDto {
 }
 __decorate([
@@ -33,23 +98,46 @@ __decorate([
     __metadata("design:type", Array)
 ], UpdateProfileDto.prototype, "attributes", void 0);
 exports.UpdateProfileDto = UpdateProfileDto;
-class AdminCreateUserDTO extends register_dto_1.RegisterDTO {
+class CognitoCreateUserDTO {
 }
 __decorate([
     swagger_1.ApiProperty(),
-    __metadata("design:type", Boolean)
-], AdminCreateUserDTO.prototype, "isEmailVerified", void 0);
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], CognitoCreateUserDTO.prototype, "userName", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    __metadata("design:type", Boolean)
-], AdminCreateUserDTO.prototype, "isPhoneNumberVerified", void 0);
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], CognitoCreateUserDTO.prototype, "password", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
-], AdminCreateUserDTO.prototype, "group", void 0);
+], CognitoCreateUserDTO.prototype, "phoneNumber", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], CognitoCreateUserDTO.prototype, "email", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Boolean)
-], AdminCreateUserDTO.prototype, "sendInvitationByEmail", void 0);
-exports.AdminCreateUserDTO = AdminCreateUserDTO;
+], CognitoCreateUserDTO.prototype, "isEmailVerified", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Boolean)
+], CognitoCreateUserDTO.prototype, "isPhoneNumberVerified", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CognitoCreateUserDTO.prototype, "group", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CognitoCreateUserDTO.prototype, "company", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Boolean)
+], CognitoCreateUserDTO.prototype, "sendInvitationByEmail", void 0);
+exports.CognitoCreateUserDTO = CognitoCreateUserDTO;
 //# sourceMappingURL=index.js.map

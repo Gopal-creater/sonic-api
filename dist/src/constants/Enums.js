@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EC2InstanceMetadata = exports.Roles = exports.MonitorGroupsEnum = exports.S3ACL = exports.ApiKeyType = exports.Permissions = exports.ChannelEnums = void 0;
+exports.EC2InstanceMetadata = exports.SystemGroup = exports.Roles = exports.MonitorGroupsEnum = exports.S3ACL = exports.ApiKeyType = exports.Permissions = exports.ChannelEnums = void 0;
 var ChannelEnums;
 (function (ChannelEnums) {
     ChannelEnums["JOB"] = "JOB";
@@ -43,6 +43,14 @@ var Roles;
     Roles["AFEM"] = "AFEM";
     Roles["THIRDPARTY_ADMIN"] = "ThirdPartyAdmin";
 })(Roles = exports.Roles || (exports.Roles = {}));
+var SystemGroup;
+(function (SystemGroup) {
+    SystemGroup["ADMIN"] = "Admin";
+    SystemGroup["PORTAL_USER"] = "PortalUser";
+    SystemGroup["AIM"] = "AIM";
+    SystemGroup["AFEM"] = "AFEM";
+    SystemGroup["WPMS_USER"] = "WPMSUser";
+})(SystemGroup = exports.SystemGroup || (exports.SystemGroup = {}));
 var EC2InstanceMetadata;
 (function (EC2InstanceMetadata) {
     EC2InstanceMetadata["ami_id"] = "ami-id";

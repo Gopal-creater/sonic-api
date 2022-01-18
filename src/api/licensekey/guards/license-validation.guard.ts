@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { LicenseKey } from 'src/api/licensekey/schemas/licensekey.schema';
 import { LicensekeyService } from '../services/licensekey.service';
-import { UserSession } from '../../user/schemas/user.schema';
+import { CognitoUserSession } from '../../user/schemas/user.aws.schema';
 import { HttpException } from '@nestjs/common';
 
 /**
@@ -21,7 +21,7 @@ export class LicenseValidationGuard implements CanActivate {
   constructor(private readonly licensekeyService: LicensekeyService) {}
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const user = request.user as UserSession;
+    const user = request.user as CognitoUserSession;
     const licenses = await this.licensekeyService.licenseKeyModel.find({
       'owners.ownerId': user.sub,
     });
@@ -130,7 +130,7 @@ export class GetSubscribedRadioMonitorListLicenseValidationGuard
   constructor(private readonly licensekeyService: LicensekeyService) {}
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const user = request.user as UserSession;
+    const user = request.user as CognitoUserSession;
     const validLicenseForMonitor = await this.licensekeyService.findPreferedLicenseToGetRadioMonitoringListFor(
       user.sub,
     );
@@ -150,7 +150,7 @@ export class SubscribeRadioMonitorLicenseValidationGuard
   constructor(private readonly licensekeyService: LicensekeyService) {}
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const user = request.user as UserSession;
+    const user = request.user as CognitoUserSession;
     const licenses = await this.licensekeyService.licenseKeyModel.find({
       'owners.ownerId': user.sub,
     });

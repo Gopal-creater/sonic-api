@@ -9,42 +9,36 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserProfile = exports.UserSession = exports.UserAttributesObj = void 0;
+exports.CreateCompanyDto = void 0;
+const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
-class UserAttributesObj {
-}
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], UserAttributesObj.prototype, "sub", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", Array)
-], UserAttributesObj.prototype, "cognito:groups", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", Boolean)
-], UserAttributesObj.prototype, "email_verified", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", Boolean)
-], UserAttributesObj.prototype, "phone_number_verified", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], UserAttributesObj.prototype, "phone_number", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], UserAttributesObj.prototype, "email", void 0);
-exports.UserAttributesObj = UserAttributesObj;
-class UserSession {
-}
-exports.UserSession = UserSession;
-class UserProfile {
-    constructor(params) {
-        Object.assign(this, params);
+const class_validator_1 = require("class-validator");
+const company_schema_1 = require("../schemas/company.schema");
+class CreateCompanyDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { name: { required: true, type: () => String }, description: { required: true, type: () => String }, email: { required: true, type: () => String }, contactNo: { required: true, type: () => String }, address: { required: true, type: () => require("../schemas/company.schema").Address } };
     }
 }
-exports.UserProfile = UserProfile;
-//# sourceMappingURL=user.schema.js.map
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "name", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "description", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "email", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "contactNo", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", company_schema_1.Address)
+], CreateCompanyDto.prototype, "address", void 0);
+exports.CreateCompanyDto = CreateCompanyDto;
+//# sourceMappingURL=create-company.dto.js.map

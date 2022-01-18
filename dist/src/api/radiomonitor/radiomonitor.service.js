@@ -27,7 +27,7 @@ const mongoose_2 = require("mongoose");
 const radiostation_service_1 = require("../radiostation/services/radiostation.service");
 const licensekey_service_1 = require("../licensekey/services/licensekey.service");
 const Enums_1 = require("../../constants/Enums");
-const user_service_1 = require("../user/user.service");
+const user_service_1 = require("../user/services/user.service");
 let RadioMonitorService = class RadioMonitorService {
     constructor(radioMonitorModel, radiostationService, licensekeyService, userService) {
         this.radioMonitorModel = radioMonitorModel;

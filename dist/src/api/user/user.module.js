@@ -8,18 +8,32 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModule = void 0;
 const common_1 = require("@nestjs/common");
-const user_controller_1 = require("./user.controller");
-const user_service_1 = require("./user.service");
+const user_controller_1 = require("./controllers/user.controller");
+const user_service_1 = require("./services/user.service");
 const licensekey_module_1 = require("../licensekey/licensekey.module");
 const radiomonitor_module_1 = require("../radiomonitor/radiomonitor.module");
+const mongoose_1 = require("@nestjs/mongoose");
+const user_db_schema_1 = require("./schemas/user.db.schema");
+const user_group_service_1 = require("./services/user-group.service");
+const user_company_service_1 = require("./services/user-company.service");
+const group_module_1 = require("../group/group.module");
+const company_module_1 = require("../company/company.module");
+const user_group_controller_1 = require("./controllers/user-group.controller");
+const user_company_controller_1 = require("./controllers/user-company.controller");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
     common_1.Module({
-        imports: [common_1.forwardRef(() => licensekey_module_1.LicensekeyModule), common_1.forwardRef(() => radiomonitor_module_1.RadiomonitorModule)],
-        controllers: [user_controller_1.UserController],
-        providers: [user_service_1.UserService],
-        exports: [user_service_1.UserService],
+        imports: [
+            common_1.forwardRef(() => licensekey_module_1.LicensekeyModule),
+            common_1.forwardRef(() => radiomonitor_module_1.RadiomonitorModule),
+            mongoose_1.MongooseModule.forFeature([{ name: user_db_schema_1.UserSchemaName, schema: user_db_schema_1.UserSchema }]),
+            group_module_1.GroupModule,
+            company_module_1.CompanyModule,
+        ],
+        controllers: [user_controller_1.UserController, user_group_controller_1.UserGroupController, user_company_controller_1.UserCompanyController],
+        providers: [user_group_service_1.UserGroupService, user_company_service_1.UserCompanyService, user_service_1.UserService],
+        exports: [user_group_service_1.UserGroupService, user_company_service_1.UserCompanyService, user_service_1.UserService],
     })
 ], UserModule);
 exports.UserModule = UserModule;

@@ -14,7 +14,7 @@ const global_aws_service_1 = require("../../shared/modules/global-aws/global-aws
 const auth_config_1 = require("./config/auth.config");
 const common_1 = require("@nestjs/common");
 const amazon_cognito_identity_js_1 = require("amazon-cognito-identity-js");
-const user_service_1 = require("../user/user.service");
+const user_service_1 = require("../user/services/user.service");
 let AuthService = class AuthService {
     constructor(authConfig, globalAwsService, userService) {
         this.authConfig = authConfig;

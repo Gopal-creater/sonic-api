@@ -16,8 +16,9 @@ const common_1 = require("@nestjs/common");
 const auth_service_1 = require("../auth.service");
 const jwks_rsa_1 = require("jwks-rsa");
 const auth_config_1 = require("../config/auth.config");
+const user_service_1 = require("../../user/services/user.service");
 let JwtStrategy = class JwtStrategy extends passport_1.PassportStrategy(passport_jwt_1.Strategy) {
-    constructor(authService, authConfig) {
+    constructor(authService, userService, authConfig) {
         super({
             secretOrKeyProvider: jwks_rsa_1.passportJwtSecret({
                 cache: true,
@@ -32,19 +33,23 @@ let JwtStrategy = class JwtStrategy extends passport_1.PassportStrategy(passport
             passReqToCallback: true,
         });
         this.authService = authService;
+        this.userService = userService;
         this.authConfig = authConfig;
     }
     async validate(request, payload) {
-        var _a;
-        var token = (_a = request.headers['authorization']) === null || _a === void 0 ? void 0 : _a.split(" ")[1];
-        console.log("payload", payload);
-        payload.token = token;
-        return payload;
+        console.log("cognito user", payload);
+        var validUser = await this.userService.findById(payload.sub);
+        if (!validUser) {
+            validUser = await this.userService.syncUserFromCognitoToMongooDb(payload === null || payload === void 0 ? void 0 : payload['cognito:username']);
+        }
+        console.log("db user", validUser);
+        return validUser;
     }
 };
 JwtStrategy = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [auth_service_1.AuthService,
+        user_service_1.UserService,
         auth_config_1.AuthConfig])
 ], JwtStrategy);
 exports.JwtStrategy = JwtStrategy;

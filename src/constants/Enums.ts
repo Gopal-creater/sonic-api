@@ -41,6 +41,14 @@ export enum Roles {
   THIRDPARTY_ADMIN='ThirdPartyAdmin'
 }
 
+export enum SystemGroup {
+  ADMIN = 'Admin',
+  PORTAL_USER='PortalUser',
+  AIM='AIM',
+  AFEM='AFEM',
+  WPMS_USER='WPMSUser'
+}
+
 export enum EC2InstanceMetadata {
   'ami_id' = 'ami-id',
   'hostname' = 'hostname',

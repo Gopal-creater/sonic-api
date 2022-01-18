@@ -1,8 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  UserType,
-  UserStatusType,
-  MFAOptionType,
   AttributeType,
 } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 
@@ -26,7 +23,7 @@ export class UserAttributesObj {
   email?: string;
 }
 
-export class UserSession {
+export class CognitoUserSession {
   sub: string;
   'cognito:groups'?: string[];
   email_verified: boolean;

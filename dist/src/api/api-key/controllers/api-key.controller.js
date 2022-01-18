@@ -40,7 +40,7 @@ let ApiKeyController = class ApiKeyController {
             createApiKeyDto.customer = user === null || user === void 0 ? void 0 : user.sub;
         }
         else if (createApiKeyDto.type == Enums_1.ApiKeyType.GROUP) {
-            const group = await this.apiKeyService.userService.getGroup((_a = createApiKeyDto.groups) === null || _a === void 0 ? void 0 : _a[0]);
+            const group = await this.apiKeyService.userService.cognitoGetGroup((_a = createApiKeyDto.groups) === null || _a === void 0 ? void 0 : _a[0]);
             if (!group)
                 throw new common_1.NotFoundException("Unknown group");
         }

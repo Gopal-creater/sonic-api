@@ -34,7 +34,7 @@ const Enums_1 = require("../../../constants/Enums");
 const s3fileupload_service_1 = require("../../s3fileupload/s3fileupload.service");
 const detection_service_1 = require("../../detection/detection.service");
 const detection_schema_1 = require("../../detection/schemas/detection.schema");
-const user_service_1 = require("../../user/user.service");
+const user_service_1 = require("../../user/services/user.service");
 let SonickeyService = class SonickeyService {
     constructor(sonicKeyModel, fileOperationService, fileHandlerService, s3FileUploadService, detectionService, userService) {
         this.sonicKeyModel = sonicKeyModel;

@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { UserSession } from 'src/api/user/schemas/user.schema';
+import { CognitoUserSession } from 'src/api/user/schemas/user.aws.schema';
 import { ApiKeyService } from '../api-key.service';
-import { UserService } from '../../user/user.service';
+import { UserService } from '../../user/services/user.service';
 
 @Injectable()
 export class ApiKeyAuthGuard implements CanActivate {
@@ -29,7 +29,7 @@ export class ApiKeyAuthGuard implements CanActivate {
    
     const userProfile = await this.userService.getUserProfile(apikeyFromDb.customer,true)
     if(!userProfile) throw new ForbiddenException("User not found for this apikey")
-    const userSession:UserSession = {
+    const userSession:CognitoUserSession = {
       sub:userProfile.sub,
       email_verified:userProfile.userAttributeObj.email_verified,
       phone_number_verified:userProfile.userAttributeObj.phone_number_verified,
