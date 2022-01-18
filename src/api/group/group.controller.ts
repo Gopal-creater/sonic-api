@@ -30,7 +30,8 @@ export class GroupController {
     return this.groupService.create(createGroupDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Groups' })
   @Get()

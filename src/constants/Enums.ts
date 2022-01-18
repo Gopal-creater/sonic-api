@@ -38,6 +38,8 @@ export enum Roles {
   ADMIN = 'Admin',
   AIM='AIM',
   AFEM='AFEM',
+  PORTAL_USER='PortalUser',
+  WPMS_USER='WPMSUser',
   THIRDPARTY_ADMIN='ThirdPartyAdmin'
 }
 

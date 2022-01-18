@@ -55,7 +55,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], GroupController.prototype, "create", null);
 __decorate([
-    common_1.UseGuards(guards_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get Groups' }),
     common_1.Get(),

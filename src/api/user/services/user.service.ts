@@ -26,6 +26,7 @@ import { UserGroupService } from './user-group.service';
 import { UserCompanyService } from './user-company.service';
 import { GroupService } from '../../group/group.service';
 import { CompanyService } from '../../company/company.service';
+import { Roles } from 'src/constants/Enums';
 
 @Injectable()
 export class UserService {
@@ -337,6 +338,9 @@ export class UserService {
     );
 
     var userGroups = await this.adminListGroupsForUser(username);
+    if(!userGroups.groupNames.includes(Roles.PORTAL_USER)&&!userGroups.groupNames.includes(Roles.WPMS_USER)){
+      userGroups.groupNames=[...userGroups.groupNames,Roles.PORTAL_USER]
+    }
     const userGroupsToDbGroups = await this.groupService.groupModel.find({
       name: { $in: userGroups.groupNames },
     });

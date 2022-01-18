@@ -36,6 +36,7 @@ const user_group_service_1 = require("./user-group.service");
 const user_company_service_1 = require("./user-company.service");
 const group_service_1 = require("../../group/group.service");
 const company_service_1 = require("../../company/company.service");
+const Enums_1 = require("../../../constants/Enums");
 let UserService = class UserService {
     constructor(licensekeyService, globalAwsService, groupService, companyService, userModel, configService, userGroupService, userCompanyService, radioMonitorService) {
         this.licensekeyService = licensekeyService;
@@ -271,6 +272,9 @@ let UserService = class UserService {
             _id: userToSaveInDb.sub,
         }, userToSaveInDb, { upsert: true, new: true });
         var userGroups = await this.adminListGroupsForUser(username);
+        if (!userGroups.groupNames.includes(Enums_1.Roles.PORTAL_USER) && !userGroups.groupNames.includes(Enums_1.Roles.WPMS_USER)) {
+            userGroups.groupNames = [...userGroups.groupNames, Enums_1.Roles.PORTAL_USER];
+        }
         const userGroupsToDbGroups = await this.groupService.groupModel.find({
             name: { $in: userGroups.groupNames },
         });

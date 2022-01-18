@@ -41,6 +41,8 @@ var Roles;
     Roles["ADMIN"] = "Admin";
     Roles["AIM"] = "AIM";
     Roles["AFEM"] = "AFEM";
+    Roles["PORTAL_USER"] = "PortalUser";
+    Roles["WPMS_USER"] = "WPMSUser";
     Roles["THIRDPARTY_ADMIN"] = "ThirdPartyAdmin";
 })(Roles = exports.Roles || (exports.Roles = {}));
 var SystemGroup;
