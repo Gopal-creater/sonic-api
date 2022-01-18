@@ -348,7 +348,10 @@ export class UserService {
         },
       );
       // if (group == MonitorGroupsEnum.AIM || group == MonitorGroupsEnum.AFEM) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> json_encode_res_from_binary
         // await this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(userCreated.User.Username,unlimitedLicense.key)
         // .catch(async err => {
         //   await this.adminDeleteUser(userCreated.User.Username);

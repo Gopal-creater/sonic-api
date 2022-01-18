@@ -13,6 +13,7 @@ import {
   Query,
   Param,
   BadRequestException,
+  Version,
 } from '@nestjs/common';
 import { SonickeyService } from '../services/sonickey.service';
 import { SonicKey } from '../schemas/sonickey.schema';
@@ -35,6 +36,7 @@ import { PublicEncodeDto } from '../dtos/public-encode.dto';
 import { PublicDecodeDto } from '../dtos/public-decode.dto';
 import { ChannelEnums, S3ACL } from '../../../constants/Enums';
 import { DetectionService } from '../../detection/detection.service';
+import { Detection } from 'src/api/detection/schemas/detection.schema';
 
 /**
  * Prabin:
@@ -130,17 +132,6 @@ export class SonickeyGuestController {
   @ApiExcludeEndpoint(true)
   @UseInterceptors(
     FileInterceptor('mediaFile', {
-      // Check the mimetypes to allow for upload
-      // fileFilter: (req: any, file: any, cb: any) => {
-      //   const mimetype = file.mimetype as string;
-      //   if (mimetype.includes('audio')) {
-      //     // Allow storage of file
-      //     cb(null, true);
-      //   } else {
-      //     // Reject file
-      //     cb(new BadRequestException('Unsupported file type'), false);
-      //   }
-      // },
       storage: diskStorage({
         destination: async (req, file, cb) => {
           const currentUserId = 'guest';
@@ -176,18 +167,19 @@ export class SonickeyGuestController {
         var sonicKeysMetadata: SonicKey[] = [];
         for await (const sonicKey of sonicKeys) {
           const validSonicKey = await this.sonicKeyService.findBySonicKey(
-            sonicKey,
+            sonicKey.sonicKey,
           );
           if (!validSonicKey) {
             continue;
           }
           const newDetection = await this.detectionService.detectionModel.create(
             {
-              sonicKey: sonicKey,
+              sonicKey: sonicKey.sonicKey,
               owner: validSonicKey.owner,
               sonicKeyOwnerId: validSonicKey.owner,
               sonicKeyOwnerName: validSonicKey.contentOwner,
               channel: ChannelEnums.MOBILEAPP,
+              detectedTimestamps: sonicKey.timestamps,
               detectedAt: new Date(),
             },
           );
@@ -195,6 +187,69 @@ export class SonickeyGuestController {
             console.log("error",err)
           });
           sonicKeysMetadata.push(validSonicKey);
+        }
+        return sonicKeysMetadata;
+      });
+  }
+
+  @ApiExcludeEndpoint(true)
+  @UseInterceptors(
+    FileInterceptor('mediaFile', {
+      storage: diskStorage({
+        destination: async (req, file, cb) => {
+          const currentUserId = 'guest';
+          const imagePath = await makeDir(
+            `${appConfig.MULTER_DEST}/${currentUserId}`,
+          );
+          cb(null, imagePath);
+        },
+        filename: (req, file, cb) => {
+          let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+          const randomName = uniqid();
+          cb(null, `${randomName}-${orgName}`);
+        },
+      }),
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'File To Decode',
+    type: PublicDecodeDto,
+  })
+  @Version('2')
+  @Post('/decode')
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiOperation({ summary: 'Decode File and retrive key information' })
+  async decodeV2(
+    @UploadedFile() file: IUploadedFile,
+  ) {
+    return this.sonicKeyService
+      .decodeAllKeys(file)
+      .then(async ({ sonicKeys }) => {
+        console.log('Detected keys from Decode', sonicKeys);
+        //iterate all the sonicKeys from decode function in order to get metadata
+        var sonicKeysMetadata: Detection[] = [];
+        for await (const sonicKey of sonicKeys) {
+          const validSonicKey = await this.sonicKeyService.findBySonicKey(
+            sonicKey.sonicKey,
+          );
+          if (!validSonicKey) {
+            continue;
+          }
+          const newDetection = await this.detectionService.detectionModel.create(
+            {
+              sonicKey: sonicKey.sonicKey,
+              owner: validSonicKey.owner,
+              sonicKeyOwnerId: validSonicKey.owner,
+              sonicKeyOwnerName: validSonicKey.contentOwner,
+              channel: ChannelEnums.MOBILEAPP,
+              detectedTimestamps: sonicKey.timestamps,
+              detectedAt: new Date(),
+            },
+          );
+          const savedDetection = await newDetection.save();
+          savedDetection.sonicKey = validSonicKey;
+          sonicKeysMetadata.push(savedDetection);
         }
         return sonicKeysMetadata;
       });

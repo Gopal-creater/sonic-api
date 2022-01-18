@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { exec, execSync } from 'child_process';
+import * as appRootPath from 'app-root-path';
 import * as fs from 'fs';
+import * as _ from 'lodash';
+import * as path from 'path';
 import * as readline from 'line-reader';
 import * as readlineByline from 'readline';
-import * as es from 'event-stream';
-
+import { IDecodeResponse } from '../interfaces/DecodeResponse.interface';
 
 @Injectable()
 export class FileOperationService {
@@ -15,52 +17,58 @@ export class FileOperationService {
         resolve(outFilePath);
       } catch {
         reject({
-          message:'Error encountered during encoding!'
+          message: 'Error encountered during encoding!',
         });
       }
     });
   }
 
-  decodeFile(sonicDecodeCmd: string, logFilePath: string) {
+  decodeFile(
+    sonicDecodeCmd: string,
+    logFilePath: string,
+  ): Promise<{ sonicKey: string }> {
     return new Promise((resolve, reject) => {
       try {
         // the result of this decoder binary invokation using a shellscript will be
         // in the log file (given as part of the commandline).
         execSync('bash ' + sonicDecodeCmd);
-        
+
         // see if there is anything in the logile.
         var fileSizeInBytes = fs.statSync(logFilePath).size;
         if (fileSizeInBytes <= 0) {
           console.error('empty logfile while decoding. no key found!');
           reject({
-            message:'Key not found'
+            message: 'Key not found',
           });
         }
 
         // read lines from the logfile. each line will be a detected key.
         readline.eachLine(logFilePath, function(line) {
           console.log('Decoder output line: ', line);
-          const sonicKey = line?.split(': ')[1]?.trim()
-          resolve({ sonicKey: sonicKey });          
+          const sonicKey = line?.split(': ')[1]?.trim();
+          resolve({ sonicKey: sonicKey });
           // we need only the first line from logfile. returning false stops further reading.
-          return false; 
+          return false;
         });
-      } catch(err) {
+      } catch (err) {
         console.error('Caught error while decodibng:', err);
         reject({
-          message:'Error while decoding'
+          message: 'Error while decoding',
         });
-      }      
-    });    
+      }
+    });
   }
 
-  decodeFileForMultipleKeys(sonicDecodeCmd: string, logFilePath: string):Promise<{sonicKeys:string[]}> {
+  decodeFileForMultipleKeys(
+    sonicDecodeCmd: string,
+    logFilePath: string,
+  ): Promise<{ sonicKeys: IDecodeResponse[] }> {
     return new Promise((resolve, reject) => {
       try {
         // the result of this decoder binary invokation using a shellscript will be
         // in the log file (given as part of the commandline).
         execSync('bash ' + sonicDecodeCmd);
-        
+
         // see if there is anything in the logfile.
         // var fileSizeInBytes = fs.statSync(logFilePath).size;
         // if (fileSizeInBytes <= 0) {
@@ -69,24 +77,16 @@ export class FileOperationService {
         //     message:'Key not found'
         //   });
         // }
-        var sonicKeys:string[] = [];
-        var lineReader = readlineByline.createInterface({
-          input: fs.createReadStream(logFilePath)
-        });
-        
-        lineReader.on('line', function (line) {
-          console.log('Line from file:', line);
-          const sonicKey = line?.split(': ')[1]?.trim()
-          const isPresent = sonicKeys.find(key=>key==sonicKey)
-          if(sonicKey && !isPresent){
-            sonicKeys.push(sonicKey); //push each line in the file into the lineArray
-          }
-        });
-        lineReader.on('close', function (line) {
-          console.log("Finished");
-          
-          resolve({ sonicKeys: sonicKeys });
-        });
+        var decodeResponses: IDecodeResponse[] = [];
+        let rawdata = fs.readFileSync(logFilePath, { encoding: 'utf8' });
+        console.log('rawdata', rawdata);
+        try {
+          decodeResponses = JSON.parse(rawdata);
+        } catch (error) {
+          console.log('error parsing decoded data', error);
+        }
+        console.log('decodeResponses', decodeResponses);
+        decodeResponses = _.unionBy(decodeResponses, 'sonicKey');
         // // read each line in the logfile in order to return all the sonicKeys
         // var sonicKeys = [];
         // // create read stream for the output log file
@@ -98,7 +98,7 @@ export class FileOperationService {
         //   }
         //   stream.resume();//resume the readstream
         // })
-        //   // return if there is an error 
+        //   // return if there is an error
         //   .on('error', function (err) {
         //     console.log('Error:', err);
         //   })
@@ -106,12 +106,13 @@ export class FileOperationService {
         //     resolve({ sonicKey: sonicKeys });
         //   })
         // );
-      } catch(err) {
+        resolve({ sonicKeys: decodeResponses });
+      } catch (err) {
         console.error('Caught error while decodibng:', err);
         reject({
-          message:'Error while decoding'
+          message: err?.message || 'Error while decoding',
         });
-      }      
-    });    
+      }
+    });
   }
 }

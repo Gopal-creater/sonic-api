@@ -26,7 +26,7 @@ async function bootstrap() {
     }),
 );
   // app.use(multer)
-  // app.enableVersioning()
+  app.enableVersioning()
   const configService = app.get(ConfigService);
   // app.enableCors()
   app.enableCors({
