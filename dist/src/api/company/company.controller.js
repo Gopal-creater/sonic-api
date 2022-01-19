@@ -22,6 +22,9 @@ const swagger_1 = require("@nestjs/swagger");
 const decorators_1 = require("../auth/decorators");
 const guards_1 = require("../auth/guards");
 const Enums_1 = require("../../constants/Enums");
+const anyapiquerytemplate_decorator_1 = require("../../shared/decorators/anyapiquerytemplate.decorator");
+const parseQueryValue_pipe_1 = require("../../shared/pipes/parseQueryValue.pipe");
+const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 let CompanyController = class CompanyController {
     constructor(companyService) {
         this.companyService = companyService;
@@ -37,6 +40,12 @@ let CompanyController = class CompanyController {
     }
     update(id, updateCompanyDto) {
         return this.companyService.update(id, updateCompanyDto);
+    }
+    async getCount(queryDto) {
+        return this.companyService.getCount(queryDto);
+    }
+    async getEstimateCount() {
+        return this.companyService.getEstimateCount();
     }
     remove(id) {
         return this.companyService.removeById(id);
@@ -82,6 +91,32 @@ __decorate([
     __metadata("design:paramtypes", [String, update_company_dto_1.UpdateCompanyDto]),
     __metadata("design:returntype", void 0)
 ], CompanyController.prototype, "update", null);
+__decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get count of all companies also accept filter as query params',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], CompanyController.prototype, "getCount", null);
+__decorate([
+    common_1.Get('/estimate-count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get all count of all sonickeys',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], CompanyController.prototype, "getEstimateCount", null);
 __decorate([
     common_1.Delete(':id'),
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),

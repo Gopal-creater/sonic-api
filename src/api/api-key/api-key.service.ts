@@ -59,6 +59,17 @@ export class ApiKeyService {
     //   .exec();
   }
 
+  async getCount(queryDto: ParsedQueryDto) {
+    const { filter, includeGroupData } = queryDto;
+    return this.apiKeyModel
+      .find(filter || {})
+      .count()
+  }
+
+  async getEstimateCount() {
+    return this.apiKeyModel.estimatedDocumentCount()
+  }
+
   async removeById(id: string) {
     const apiKey = await this.apiKeyModel.findById(id);
     if (!apiKey) {

@@ -18,6 +18,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const company_schema_1 = require("./schemas/company.schema");
 const user_service_1 = require("../user/services/user.service");
+const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 let CompanyService = class CompanyService {
     constructor(companyModel, userService) {
         this.companyModel = companyModel;
@@ -41,6 +42,15 @@ let CompanyService = class CompanyService {
     }
     update(id, updateCompanyDto) {
         return this.companyModel.findByIdAndUpdate(id, updateCompanyDto);
+    }
+    async getCount(queryDto) {
+        const { filter, includeGroupData } = queryDto;
+        return this.companyModel
+            .find(filter || {})
+            .count();
+    }
+    async getEstimateCount() {
+        return this.companyModel.estimatedDocumentCount();
     }
     async removeById(id) {
         const company = await this.findById(id);

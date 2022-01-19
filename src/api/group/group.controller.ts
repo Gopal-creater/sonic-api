@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dtos/create-group.dto';
@@ -15,6 +16,9 @@ import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { RolesAllowed } from 'src/api/auth/decorators';
 import { Roles } from 'src/constants/Enums';
 import { JwtAuthGuard, RoleBasedGuard } from 'src/api/auth/guards';
+import { AnyApiQueryTemplate } from '../../shared/decorators/anyapiquerytemplate.decorator';
+import { ParseQueryValue } from '../../shared/pipes/parseQueryValue.pipe';
+import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
 
 @ApiTags('Group Controller')
 @Controller('groups')
@@ -54,6 +58,27 @@ export class GroupController {
   @Put(':id')
   update(@Param('id') id: string, @Body() updateGroupDto: UpdateGroupDto) {
     return this.groupService.update(id, updateGroupDto);
+  }
+
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @AnyApiQueryTemplate()
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get count of all groups also accept filter as query params',
+  })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
+    return this.groupService.getCount(queryDto);
+  }
+
+  @Get('/estimate-count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get all count of all groups',
+  })
+  async getEstimateCount() {
+    return this.groupService.getEstimateCount();
   }
 
   @RolesAllowed(Roles.ADMIN)

@@ -37,6 +37,7 @@ const user_company_service_1 = require("./user-company.service");
 const group_service_1 = require("../../group/group.service");
 const company_service_1 = require("../../company/company.service");
 const Enums_1 = require("../../../constants/Enums");
+const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 let UserService = class UserService {
     constructor(licensekeyService, globalAwsService, groupService, companyService, userModel, configService, userGroupService, userCompanyService, radioMonitorService) {
         this.licensekeyService = licensekeyService;
@@ -334,6 +335,41 @@ let UserService = class UserService {
             finally { if (e_1) throw e_1.error; }
         }
     }
+    async listUsers(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        const userAggregate = this.userModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $lookup: {
+                    from: 'Group',
+                    localField: 'groups',
+                    foreignField: '_id',
+                    as: 'groups',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'companies',
+                    foreignField: '_id',
+                    as: 'companies',
+                },
+            },
+            {
+                $match: Object.assign({}, relationalFilter),
+            }
+        ]);
+        return this.userModel['aggregatePaginate'](userAggregate, paginateOptions);
+    }
     async getCognitoUser(usernameOrSub) {
         var _a;
         var user;
@@ -471,6 +507,15 @@ let UserService = class UserService {
     }
     removeById(id) {
         return this.userModel.findByIdAndRemove(id);
+    }
+    async getCount(queryDto) {
+        const { filter, includeGroupData } = queryDto;
+        return this.userModel
+            .find(filter || {})
+            .count();
+    }
+    async getEstimateCount() {
+        return this.userModel.estimatedDocumentCount();
     }
 };
 UserService = __decorate([

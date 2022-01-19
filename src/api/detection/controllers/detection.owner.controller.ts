@@ -293,7 +293,12 @@ export class DetectionOwnerController {
   @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
   @ApiSecurity('x-api-key')
-  @AnyApiQueryTemplate()
+  @AnyApiQueryTemplate({
+    additionalHtmlDescription:`<div>
+      To Get plays for specific company ?relation_owner.companies=companyId <br/>
+      To Get plays for specific user ?relation_owner.id=ownerId
+    <div>`
+  })
   @ApiOperation({ summary: 'Get All Plays for specific user' })
   recentListPlays(
     @Param('targetUser') targetUser: string,

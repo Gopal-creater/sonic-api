@@ -142,23 +142,13 @@ export class SonickeyService {
 
   async getCount(queryDto: ParsedQueryDto) {
     const { filter, includeGroupData } = queryDto;
-    // if (includeGroupData && filter.owner) {
-    //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
-    //   const usergroups = await this.userService.adminListGroupsForUser(
-    //     filter.owner,
-    //   );
-    //   if (usergroups.groupNames.length > 0) {
-    //     filter['$or'] = [
-    //       { groups: { $all: usergroups.groupNames } },
-    //       { owner: filter.owner },
-    //     ];
-    //     delete filter.owner;
-    //   }
-    // }
     return this.sonicKeyModel
       .find(filter || {})
-      .countDocuments()
-      .exec();
+      .count()
+  }
+
+  async getEstimateCount() {
+    return this.sonicKeyModel.estimatedDocumentCount()
   }
 
   /**

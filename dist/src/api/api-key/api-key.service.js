@@ -54,6 +54,15 @@ let ApiKeyService = class ApiKeyService {
         paginateOptions['limit'] = limit;
         return await this.apiKeyModel["paginate"](filter, paginateOptions);
     }
+    async getCount(queryDto) {
+        const { filter, includeGroupData } = queryDto;
+        return this.apiKeyModel
+            .find(filter || {})
+            .count();
+    }
+    async getEstimateCount() {
+        return this.apiKeyModel.estimatedDocumentCount();
+    }
     async removeById(id) {
         const apiKey = await this.apiKeyModel.findById(id);
         if (!apiKey) {

@@ -27,6 +27,8 @@ import { UserCompanyService } from './user-company.service';
 import { GroupService } from '../../group/group.service';
 import { CompanyService } from '../../company/company.service';
 import { Roles } from 'src/constants/Enums';
+import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
+import { MongoosePaginateUserDto } from '../dtos/mongoosepaginate-user.dto';
 
 @Injectable()
 export class UserService {
@@ -410,6 +412,58 @@ export class UserService {
     }
   }
 
+  async listUsers(queryDto: ParsedQueryDto):Promise<MongoosePaginateUserDto>{
+    const {
+      limit,
+      skip,
+      sort,
+      page,
+      filter,
+      select,
+      populate,
+      relationalFilter,
+    } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    const userAggregate = this.userModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'Group',
+          localField: 'groups',
+          foreignField: '_id',
+          as: 'groups',
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'Company',
+          localField: 'companies',
+          foreignField: '_id',
+          as: 'companies',
+        },
+      },
+      {
+        $match: {
+          ...relationalFilter
+        },
+      }
+    ]);
+
+    return this.userModel['aggregatePaginate'](userAggregate,paginateOptions)
+  }
+
   async getCognitoUser(usernameOrSub: string) {
     var user: UserType;
     if (isValidUUID(usernameOrSub)) {
@@ -590,5 +644,16 @@ export class UserService {
 
   removeById(id: string) {
     return this.userModel.findByIdAndRemove(id);
+  }
+
+  async getCount(queryDto: ParsedQueryDto) {
+    const { filter, includeGroupData } = queryDto;
+    return this.userModel
+      .find(filter || {})
+      .count()
+  }
+
+  async getEstimateCount() {
+    return this.userModel.estimatedDocumentCount()
   }
 }

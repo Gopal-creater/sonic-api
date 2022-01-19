@@ -36,6 +36,7 @@ import { CognitoUserSession } from '../schemas/user.aws.schema';
 import { GroupService } from '../../group/group.service';
 import { CompanyService } from '../../company/company.service';
 import { UserDB } from '../schemas/user.db.schema';
+import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 
 @ApiTags('User Controller')
 @Controller('users')
@@ -57,6 +58,37 @@ export class UserController {
   ) {
     queryDto.filter['owners.ownerId'] = userId;
     return this.licensekeyService.findAll(queryDto);
+  }
+
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @AnyApiQueryTemplate()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'list users' })
+  @Get('/list-users')
+  async listUsers( @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
+    return this.userServices.listUsers(queryDto)
+  }
+
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @AnyApiQueryTemplate()
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get count of all users also accept filter as query params',
+  })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
+    return this.userServices.getCount(queryDto);
+  }
+
+  @Get('/estimate-count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get all count of all users',
+  })
+  async getEstimateCount() {
+    return this.userServices.getEstimateCount();
   }
 
   @UseGuards(JwtAuthGuard)

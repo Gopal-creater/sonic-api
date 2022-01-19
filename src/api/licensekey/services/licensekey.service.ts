@@ -340,6 +340,17 @@ export class LicensekeyService {
     return true
   }
 
+  async getCount(queryDto: ParsedQueryDto) {
+    const { filter, includeGroupData } = queryDto;
+    return this.licenseKeyModel
+      .find(filter || {})
+      .count()
+  }
+
+  async getEstimateCount() {
+    return this.licenseKeyModel.estimatedDocumentCount()
+  }
+
   async resetUses(id: string, usesFor: usesFor | 'both') {
     const licenseKey = await this.licenseKeyModel.findById(id);
     if (!licenseKey) throw new NotFoundException();

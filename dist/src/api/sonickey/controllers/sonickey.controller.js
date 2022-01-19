@@ -82,6 +82,9 @@ let SonickeyController = class SonickeyController {
     async getCount(queryDto) {
         return this.sonicKeyService.getCount(queryDto);
     }
+    async getEstimateCount() {
+        return this.sonicKeyService.getEstimateCount();
+    }
     async getOne(sonickey) {
         return this.sonicKeyService.findBySonicKeyOrFail(sonickey);
     }
@@ -411,6 +414,7 @@ __decorate([
 __decorate([
     common_1.Get('/count'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({
@@ -422,6 +426,18 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getCount", null);
+__decorate([
+    common_1.Get('/estimate-count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get all count of all sonickeys',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "getEstimateCount", null);
 __decorate([
     common_1.Get('/:sonickey'),
     common_1.UseGuards(guards_1.JwtAuthGuard),

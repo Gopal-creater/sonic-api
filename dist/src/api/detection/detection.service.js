@@ -591,6 +591,15 @@ let DetectionService = class DetectionService {
             },
             { $addFields: { radioStation: { $first: '$radioStation' } } },
             {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
                 $match: Object.assign({}, relationalFilter),
             },
         ];
@@ -652,6 +661,15 @@ let DetectionService = class DetectionService {
             .find(filter || {})
             .countDocuments()
             .exec();
+    }
+    async getCount(queryDto) {
+        const { filter, includeGroupData } = queryDto;
+        return this.detectionModel
+            .find(filter || {})
+            .count();
+    }
+    async getEstimateCount() {
+        return this.detectionModel.estimatedDocumentCount();
     }
     async getTotalPlaysCount(queryDto) {
         const { filter } = queryDto;

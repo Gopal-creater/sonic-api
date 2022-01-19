@@ -30,6 +30,7 @@ const user_aws_schema_1 = require("../schemas/user.aws.schema");
 const group_service_1 = require("../../group/group.service");
 const company_service_1 = require("../../company/company.service");
 const user_db_schema_1 = require("../schemas/user.db.schema");
+const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 let UserController = class UserController {
     constructor(userServices, groupService, companyService, licensekeyService) {
         this.userServices = userServices;
@@ -40,6 +41,15 @@ let UserController = class UserController {
     async getUserLicenses(userId, queryDto) {
         queryDto.filter['owners.ownerId'] = userId;
         return this.licensekeyService.findAll(queryDto);
+    }
+    async listUsers(queryDto) {
+        return this.userServices.listUsers(queryDto);
+    }
+    async getCount(queryDto) {
+        return this.userServices.getCount(queryDto);
+    }
+    async getEstimateCount() {
+        return this.userServices.getEstimateCount();
     }
     async checkAuthorization(user) {
         return {
@@ -112,6 +122,45 @@ __decorate([
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserLicenses", null);
+__decorate([
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'list users' }),
+    common_1.Get('/list-users'),
+    openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-user.dto").MongoosePaginateUserDto }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "listUsers", null);
+__decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get count of all users also accept filter as query params',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getCount", null);
+__decorate([
+    common_1.Get('/estimate-count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get all count of all users',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getEstimateCount", null);
 __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),

@@ -422,6 +422,9 @@ let RadiostationService = class RadiostationService {
             .countDocuments()
             .exec();
     }
+    async getEstimateCount() {
+        return this.radioStationModel.estimatedDocumentCount();
+    }
     async updateFromJson() {
         await this.radioStationModel.updateMany({}, { $unset: { owner: '' } });
         return 'Done';

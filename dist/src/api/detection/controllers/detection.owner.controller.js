@@ -328,7 +328,12 @@ __decorate([
     common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiSecurity('x-api-key'),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+        additionalHtmlDescription: `<div>
+      To Get plays for specific company ?relation_owner.companies=companyId <br/>
+      To Get plays for specific user ?relation_owner.id=ownerId
+    <div>`
+    }),
     swagger_1.ApiOperation({ summary: 'Get All Plays for specific user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('targetUser')),

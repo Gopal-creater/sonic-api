@@ -23,12 +23,18 @@ const Enums_1 = require("../../../constants/Enums");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
+const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 const apikey_auth_guard_1 = require("../../api-key/guards/apikey-auth.guard");
 const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
+const role_based_guard_1 = require("../../auth/guards/role-based.guard");
+const decorators_1 = require("../../auth/decorators");
 let DetectionController = class DetectionController {
     constructor(detectionService, sonickeyServive) {
         this.detectionService = detectionService;
         this.sonickeyServive = sonickeyServive;
+    }
+    listPlays(queryDto) {
+        return this.detectionService.listPlays(queryDto);
     }
     async createFromBinary(createDetectionFromBinaryDto, customer, apiKey) {
         const keyFound = await this.sonickeyServive.findBySonicKey(createDetectionFromBinaryDto.sonicKey);
@@ -52,10 +58,39 @@ let DetectionController = class DetectionController {
         const newDetection = new this.detectionService.detectionModel(Object.assign(Object.assign({}, createDetectionFromHardwareDto), { apiKey: apiKey, owner: customer, sonicKeyOwnerId: keyFound.owner, sonicKeyOwnerName: keyFound.contentOwner, channel: Enums_1.ChannelEnums.HARDWARE }));
         return newDetection.save();
     }
-    async getCount(queryDto) {
+    async getTotalHitsCount(queryDto) {
         return this.detectionService.getTotalHitsCount(queryDto);
     }
+    async getCount(queryDto) {
+        return this.detectionService.getCount(queryDto);
+    }
+    async getEstimateCount() {
+        return this.detectionService.getEstimateCount();
+    }
 };
+__decorate([
+    common_1.Get('/list-plays'),
+    swagger_1.ApiQuery({
+        name: 'channel',
+        enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'],
+        required: false,
+    }),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+        additionalHtmlDescription: `<div>
+      To Get plays for specific company ?relation_owner.companies=companyId <br/>
+      To Get plays for specific user ?relation_owner.id=ownerId
+    <div>`
+    }),
+    swagger_1.ApiOperation({ summary: 'Get All Plays' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", void 0)
+], DetectionController.prototype, "listPlays", null);
 __decorate([
     swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiOperation({
@@ -98,7 +133,33 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
+], DetectionController.prototype, "getTotalHitsCount", null);
+__decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get count of all detections also accept filter as query params',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "getCount", null);
+__decorate([
+    common_1.Get('/estimate-count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get all count of all detections',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], DetectionController.prototype, "getEstimateCount", null);
 DetectionController = __decorate([
     swagger_1.ApiTags('Detection Controller'),
     common_1.Controller('detections'),

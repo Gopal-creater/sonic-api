@@ -65,6 +65,12 @@ let RadiostationController = class RadiostationController {
             fs.unlinkSync(excelPath);
         });
     }
+    async getCount(queryDto) {
+        return this.radiostationService.getCount(queryDto);
+    }
+    async getEstimateCount() {
+        return this.radiostationService.getEstimateCount();
+    }
     async create(createdBy, createRadiostationDto) {
         const isPresent = await this.radiostationService.radioStationModel.findOne({
             streamingUrl: createRadiostationDto.streamingUrl,
@@ -78,12 +84,6 @@ let RadiostationController = class RadiostationController {
     }
     findAll(queryDto) {
         return this.radiostationService.findAll(queryDto);
-    }
-    async getCount(queryDto) {
-        const filter = queryDto.filter || {};
-        return this.radiostationService.radioStationModel
-            .where(filter)
-            .countDocuments();
     }
     async findOne(id) {
         const radioStation = await this.radiostationService.radioStationModel.findById(id);
@@ -195,6 +195,32 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], RadiostationController.prototype, "importFromExcel", null);
 __decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get count of all radiostations also accept filter as query params',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], RadiostationController.prototype, "getCount", null);
+__decorate([
+    common_1.Get('/estimate-count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get all count of all radiostations',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], RadiostationController.prototype, "getEstimateCount", null);
+__decorate([
     common_1.Post(),
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, guards_1.RoleBasedGuard),
@@ -219,19 +245,6 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], RadiostationController.prototype, "findAll", null);
-__decorate([
-    common_1.Get('/count'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({
-        summary: 'Get count of all radiostations also accept filter as query params',
-    }),
-    openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
-    __metadata("design:returntype", Promise)
-], RadiostationController.prototype, "getCount", null);
 __decorate([
     common_1.Get(':id'),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),

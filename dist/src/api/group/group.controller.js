@@ -22,6 +22,9 @@ const swagger_1 = require("@nestjs/swagger");
 const decorators_1 = require("../auth/decorators");
 const Enums_1 = require("../../constants/Enums");
 const guards_1 = require("../auth/guards");
+const anyapiquerytemplate_decorator_1 = require("../../shared/decorators/anyapiquerytemplate.decorator");
+const parseQueryValue_pipe_1 = require("../../shared/pipes/parseQueryValue.pipe");
+const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 let GroupController = class GroupController {
     constructor(groupService) {
         this.groupService = groupService;
@@ -37,6 +40,12 @@ let GroupController = class GroupController {
     }
     update(id, updateGroupDto) {
         return this.groupService.update(id, updateGroupDto);
+    }
+    async getCount(queryDto) {
+        return this.groupService.getCount(queryDto);
+    }
+    async getEstimateCount() {
+        return this.groupService.getEstimateCount();
     }
     remove(id) {
         return this.groupService.removeById(id);
@@ -89,6 +98,32 @@ __decorate([
     __metadata("design:paramtypes", [String, update_group_dto_1.UpdateGroupDto]),
     __metadata("design:returntype", void 0)
 ], GroupController.prototype, "update", null);
+__decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get count of all groups also accept filter as query params',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], GroupController.prototype, "getCount", null);
+__decorate([
+    common_1.Get('/estimate-count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get all count of all groups',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], GroupController.prototype, "getEstimateCount", null);
 __decorate([
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),

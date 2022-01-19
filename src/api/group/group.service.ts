@@ -6,6 +6,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { Group } from './schemas/group.schema';
 import { SystemGroup } from 'src/constants/Enums';
 import { UserService } from '../user/services/user.service';
+import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
 
 @Injectable()
 export class GroupService {
@@ -35,6 +36,17 @@ export class GroupService {
 
   findById(id:string) {
     return this.groupModel.findById(id);
+  }
+
+  async getCount(queryDto: ParsedQueryDto) {
+    const { filter, includeGroupData } = queryDto;
+    return this.groupModel
+      .find(filter || {})
+      .count()
+  }
+
+  async getEstimateCount() {
+    return this.groupModel.estimatedDocumentCount()
   }
 
   update(id: string, updateGroupDto: UpdateGroupDto) {

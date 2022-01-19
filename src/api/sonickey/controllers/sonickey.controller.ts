@@ -169,6 +169,7 @@ export class SonickeyController {
 
   @Get('/count')
   @UseGuards(JwtAuthGuard)
+  @AnyApiQueryTemplate()
   @ApiQuery({ name: 'includeGroupData', type: Boolean, required: false })
   @ApiBearerAuth()
   @ApiOperation({
@@ -176,6 +177,16 @@ export class SonickeyController {
   })
   async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
     return this.sonicKeyService.getCount(queryDto);
+  }
+
+  @Get('/estimate-count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get all count of all sonickeys',
+  })
+  async getEstimateCount() {
+    return this.sonicKeyService.getEstimateCount();
   }
 
   @Get('/:sonickey')

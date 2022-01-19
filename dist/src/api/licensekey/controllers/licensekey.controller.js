@@ -41,10 +41,10 @@ let LicensekeyController = class LicensekeyController {
         return this.licensekeyService.findAll(queryDto);
     }
     async getCount(queryDto) {
-        const filter = queryDto.filter || {};
-        return this.licensekeyService.licenseKeyModel
-            .where(filter)
-            .countDocuments();
+        return this.licensekeyService.getCount(queryDto);
+    }
+    async getEstimateCount() {
+        return this.licensekeyService.getEstimateCount();
     }
     async findOne(id) {
         const licenseKey = await this.licensekeyService.licenseKeyModel.findById(id);
@@ -101,11 +101,12 @@ __decorate([
 ], LicensekeyController.prototype, "findAll", null);
 __decorate([
     common_1.Get('/count'),
-    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({
-        summary: 'Get count of all license-keys also accept filter as query params',
+        summary: 'Get count of all licenskeys also accept filter as query params',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
@@ -113,6 +114,18 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], LicensekeyController.prototype, "getCount", null);
+__decorate([
+    common_1.Get('/estimate-count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get all count of all licenskeys',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], LicensekeyController.prototype, "getEstimateCount", null);
 __decorate([
     common_1.Get(':id'),
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),

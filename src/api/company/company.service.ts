@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, FilterQuery } from 'mongoose';
 import { Company } from './schemas/company.schema';
 import { UserService } from '../user/services/user.service';
+import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
 
 @Injectable()
 export class CompanyService {
@@ -38,6 +39,17 @@ export class CompanyService {
 
   update(id: string, updateCompanyDto: UpdateCompanyDto) {
     return this.companyModel.findByIdAndUpdate(id, updateCompanyDto);
+  }
+
+  async getCount(queryDto: ParsedQueryDto) {
+    const { filter, includeGroupData } = queryDto;
+    return this.companyModel
+      .find(filter || {})
+      .count()
+  }
+
+  async getEstimateCount() {
+    return this.companyModel.estimatedDocumentCount()
   }
 
   async removeById(id: string) {

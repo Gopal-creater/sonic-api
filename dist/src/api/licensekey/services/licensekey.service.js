@@ -308,6 +308,15 @@ let LicensekeyService = class LicensekeyService {
         }
         return true;
     }
+    async getCount(queryDto) {
+        const { filter, includeGroupData } = queryDto;
+        return this.licenseKeyModel
+            .find(filter || {})
+            .count();
+    }
+    async getEstimateCount() {
+        return this.licenseKeyModel.estimatedDocumentCount();
+    }
     async resetUses(id, usesFor) {
         const licenseKey = await this.licenseKeyModel.findById(id);
         if (!licenseKey)

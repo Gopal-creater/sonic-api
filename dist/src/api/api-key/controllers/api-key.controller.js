@@ -50,10 +50,6 @@ let ApiKeyController = class ApiKeyController {
         console.log("Query", queryDto);
         return this.apiKeyService.findAll(queryDto);
     }
-    async getCount(queryDto) {
-        const filter = queryDto.filter || {};
-        return this.apiKeyService.apiKeyModel.where(filter).countDocuments();
-    }
     async findOne(id) {
         const apiKey = await this.apiKeyService.apiKeyModel.findById(id);
         if (!apiKey) {
@@ -67,6 +63,12 @@ let ApiKeyController = class ApiKeyController {
             throw new common_1.NotFoundException();
         }
         return updatedApiKey;
+    }
+    async getCount(queryDto) {
+        return this.apiKeyService.getCount(queryDto);
+    }
+    async getEstimateCount() {
+        return this.apiKeyService.getEstimateCount();
     }
     async remove(id) {
         return this.apiKeyService.removeById(id).catch(err => {
@@ -103,18 +105,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ApiKeyController.prototype, "findAll", null);
 __decorate([
-    common_1.Get('/count'),
-    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get count of all api-keys also accept filter as query params' }),
-    openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
-    __metadata("design:returntype", Promise)
-], ApiKeyController.prototype, "getCount", null);
-__decorate([
     common_1.Get(':id'),
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
@@ -139,6 +129,32 @@ __decorate([
     __metadata("design:paramtypes", [String, update_api_key_dto_1.UpdateApiKeyDto]),
     __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "update", null);
+__decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get count of all apikeys also accept filter as query params',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], ApiKeyController.prototype, "getCount", null);
+__decorate([
+    common_1.Get('/estimate-count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get all count of all apikeys',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], ApiKeyController.prototype, "getEstimateCount", null);
 __decorate([
     common_1.Delete(':id'),
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),

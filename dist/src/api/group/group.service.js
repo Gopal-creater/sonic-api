@@ -26,6 +26,7 @@ const mongoose_2 = require("mongoose");
 const group_schema_1 = require("./schemas/group.schema");
 const Enums_1 = require("../../constants/Enums");
 const user_service_1 = require("../user/services/user.service");
+const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 let GroupService = class GroupService {
     constructor(groupModel, userService) {
         this.groupModel = groupModel;
@@ -46,6 +47,15 @@ let GroupService = class GroupService {
     }
     findById(id) {
         return this.groupModel.findById(id);
+    }
+    async getCount(queryDto) {
+        const { filter, includeGroupData } = queryDto;
+        return this.groupModel
+            .find(filter || {})
+            .count();
+    }
+    async getEstimateCount() {
+        return this.groupModel.estimatedDocumentCount();
     }
     update(id, updateGroupDto) {
         return this.groupModel.findByIdAndUpdate(id, updateGroupDto);

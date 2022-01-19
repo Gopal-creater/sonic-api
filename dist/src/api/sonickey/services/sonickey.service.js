@@ -90,8 +90,10 @@ let SonickeyService = class SonickeyService {
         const { filter, includeGroupData } = queryDto;
         return this.sonicKeyModel
             .find(filter || {})
-            .countDocuments()
-            .exec();
+            .count();
+    }
+    async getEstimateCount() {
+        return this.sonicKeyModel.estimatedDocumentCount();
     }
     async encode(file, encodingStrength = 15) {
         const random11CharKey = this.generateUniqueSonicKey();

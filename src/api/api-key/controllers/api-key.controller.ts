@@ -53,15 +53,6 @@ export class ApiKeyController {
     return this.apiKeyService.findAll(queryDto);
   }
 
-  @Get('/count')
-  @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get count of all api-keys also accept filter as query params' })
-  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
-    const filter = queryDto.filter || {}
-    return this.apiKeyService.apiKeyModel.where(filter).countDocuments();
-}
 
   @Get(':id')
   @RolesAllowed(Roles.ADMIN)
@@ -90,6 +81,27 @@ export class ApiKeyController {
       throw new NotFoundException()
     }
     return updatedApiKey
+  }
+
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @AnyApiQueryTemplate()
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get count of all apikeys also accept filter as query params',
+  })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
+    return this.apiKeyService.getCount(queryDto);
+  }
+
+  @Get('/estimate-count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get all count of all apikeys',
+  })
+  async getEstimateCount() {
+    return this.apiKeyService.getEstimateCount();
   }
 
   @Delete(':id')

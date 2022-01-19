@@ -65,7 +65,10 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        required: true
+        required: true,
+        type: String,
+        ref: 'User',
+        autopopulate: false
     }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "owner", void 0);
