@@ -15,7 +15,7 @@ import {
 } from '@nestjs/swagger';
 import { ChannelEnums } from '../../../constants/Enums';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
-import { ApiKeyAuthGuard } from '../../api-key/guards/apikey-auth.guard';
+import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
 import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';

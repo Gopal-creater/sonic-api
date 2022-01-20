@@ -27,9 +27,12 @@ const user_db_schema_1 = require("../schemas/user.db.schema");
 const company_schema_1 = require("../../company/schemas/company.schema");
 const company_service_1 = require("../../company/company.service");
 const user_service_1 = require("./user.service");
+const user_group_service_1 = require("./user-group.service");
+const Enums_1 = require("../../../constants/Enums");
 let UserCompanyService = class UserCompanyService {
-    constructor(userService, companyService, userModel) {
+    constructor(userService, userGroupService, companyService, userModel) {
         this.userService = userService;
+        this.userGroupService = userGroupService;
         this.companyService = companyService;
         this.userModel = userModel;
     }
@@ -98,8 +101,14 @@ let UserCompanyService = class UserCompanyService {
         }
         return updatedUser;
     }
-    async makeAdminCompany(user, company) {
-        return this.userModel.findOneAndUpdate({ _id: user.id }, {
+    async makeCompanyAdmin(user, company) {
+        await this.companyService.update(company._id, {
+            owner: user._id,
+        });
+        await this.addUserToCompany(user, company);
+        const companyAdminGroup = await this.userGroupService.groupService.findOne({ name: Enums_1.SystemGroup.COMPANY_ADMIN });
+        await this.userGroupService.addUserToGroup(user, companyAdminGroup);
+        return this.userModel.findOneAndUpdate({ _id: user._id }, {
             adminCompany: company.id,
         }, {
             new: true,
@@ -107,9 +116,12 @@ let UserCompanyService = class UserCompanyService {
     }
     async listAllCompaniesForUser(user) {
         const userWithCompanies = await this.userModel.findById(user.id);
-        return userWithCompanies.companies;
+        return {
+            companies: userWithCompanies.companies,
+            adminCompany: userWithCompanies.adminCompany
+        };
     }
-    async getAdminCompany(user) {
+    async getCompanyAdmin(user) {
         const userWithAdminCompany = await this.userModel.findById(user.id);
         return userWithAdminCompany.adminCompany;
     }
@@ -117,8 +129,10 @@ let UserCompanyService = class UserCompanyService {
 UserCompanyService = __decorate([
     common_1.Injectable(),
     __param(0, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
-    __param(2, mongoose_1.InjectModel(user_db_schema_1.UserSchemaName)),
+    __param(1, common_1.Inject(common_1.forwardRef(() => user_group_service_1.UserGroupService))),
+    __param(3, mongoose_1.InjectModel(user_db_schema_1.UserSchemaName)),
     __metadata("design:paramtypes", [user_service_1.UserService,
+        user_group_service_1.UserGroupService,
         company_service_1.CompanyService,
         mongoose_2.Model])
 ], UserCompanyService);

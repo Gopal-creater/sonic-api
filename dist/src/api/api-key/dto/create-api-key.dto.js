@@ -15,7 +15,7 @@ const swagger_1 = require("@nestjs/swagger");
 const Enums_1 = require("../../../constants/Enums");
 class CreateApiKeyDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { customer: { required: true, type: () => String }, groups: { required: true }, validity: { required: false, type: () => Date }, disabled: { required: false, type: () => Boolean }, type: { required: false, type: () => String }, suspended: { required: false, type: () => Boolean }, revoked: { required: false, type: () => Boolean }, metaData: { required: false } };
+        return { customer: { required: true, type: () => String }, groups: { required: true }, company: { required: true, type: () => String }, validity: { required: false, type: () => Date }, disabled: { required: false, type: () => Boolean }, type: { required: false, type: () => String }, suspended: { required: false, type: () => Boolean }, revoked: { required: false, type: () => Boolean }, metaData: { required: false } };
     }
 }
 __decorate([
@@ -26,6 +26,10 @@ __decorate([
     swagger_1.ApiProperty({ type: String, isArray: true }),
     __metadata("design:type", Array)
 ], CreateApiKeyDto.prototype, "groups", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateApiKeyDto.prototype, "company", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Date)
@@ -53,7 +57,7 @@ __decorate([
 exports.CreateApiKeyDto = CreateApiKeyDto;
 class AdminCreateApiKeyDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { customer: { required: true, type: () => String }, groups: { required: true }, validity: { required: false, type: () => Date }, disabled: { required: false, type: () => Boolean }, type: { required: false, type: () => String }, suspended: { required: false, type: () => Boolean }, revoked: { required: false, type: () => Boolean }, metaData: { required: false } };
+        return { customer: { required: true, type: () => String }, groups: { required: true }, company: { required: true, type: () => String }, validity: { required: false, type: () => Date }, disabled: { required: false, type: () => Boolean }, type: { required: false, type: () => String }, suspended: { required: false, type: () => Boolean }, revoked: { required: false, type: () => Boolean }, metaData: { required: false } };
     }
 }
 __decorate([
@@ -64,6 +68,10 @@ __decorate([
     swagger_1.ApiProperty({ type: String, isArray: true }),
     __metadata("design:type", Array)
 ], AdminCreateApiKeyDto.prototype, "groups", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], AdminCreateApiKeyDto.prototype, "company", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Date)

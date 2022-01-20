@@ -423,7 +423,7 @@ export class LicensekeyService {
           const lkOwner = new LKOwner();
           lkOwner.ownerId = ownerId;
           lkOwner.username = user.username;
-          lkOwner.email = user.userAttributeObj.email;
+          lkOwner.email = user.email;
           lkOwner.name = user.username;
           newOwners.push(lkOwner);
         }

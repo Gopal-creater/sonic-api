@@ -19,16 +19,19 @@ let ApiKey = class ApiKey extends mongoose_2.Document {
 };
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({
-        required: true
-    }),
-    __metadata("design:type", String)
+    mongoose_1.Prop({ type: String, ref: 'User', required: true, autopopulate: true }),
+    __metadata("design:type", Object)
 ], ApiKey.prototype, "customer", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop([String]),
     __metadata("design:type", Array)
 ], ApiKey.prototype, "groups", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Company', autopopulate: true }),
+    __metadata("design:type", Object)
+], ApiKey.prototype, "company", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ type: Date, default: new Date(new Date().setFullYear(new Date().getFullYear() + 1)) }),

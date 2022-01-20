@@ -14,6 +14,7 @@ const api_key_controller_1 = require("./controllers/api-key.controller");
 const api_key_customer_controller_1 = require("./controllers/api-key-customer.controller");
 const api_key_schema_1 = require("./schemas/api-key.schema");
 const user_module_1 = require("../user/user.module");
+const company_module_1 = require("../company/company.module");
 let ApiKeyModule = class ApiKeyModule {
 };
 ApiKeyModule = __decorate([
@@ -26,6 +27,7 @@ ApiKeyModule = __decorate([
                     schema: api_key_schema_1.ApiKeySchema,
                 },
             ]),
+            common_1.forwardRef(() => company_module_1.CompanyModule),
         ],
         controllers: [api_key_controller_1.ApiKeyController, api_key_customer_controller_1.ApiKeyCustomerController],
         providers: [api_key_service_1.ApiKeyService],

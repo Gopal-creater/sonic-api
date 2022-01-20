@@ -67,8 +67,12 @@ __decorate([
 ], Company.prototype, "address", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
-    __metadata("design:type", String)
+    mongoose_1.Prop({
+        type: String,
+        ref: 'User',
+        autopopulate: true,
+    }),
+    __metadata("design:type", Object)
 ], Company.prototype, "owner", void 0);
 Company = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.CompanySchemaName })

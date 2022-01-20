@@ -28,7 +28,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
-import { ApiKeyAuthGuard } from '../../api-key/guards/apikey-auth.guard';
+import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
 import { RolesAllowed } from 'src/api/auth/decorators';

@@ -20,7 +20,7 @@ var Permissions;
 var ApiKeyType;
 (function (ApiKeyType) {
     ApiKeyType["INDIVIDUAL"] = "Individual";
-    ApiKeyType["GROUP"] = "Group";
+    ApiKeyType["COMPANY"] = "Company";
 })(ApiKeyType = exports.ApiKeyType || (exports.ApiKeyType = {}));
 var S3ACL;
 (function (S3ACL) {
@@ -52,6 +52,7 @@ var SystemGroup;
     SystemGroup["AIM"] = "AIM";
     SystemGroup["AFEM"] = "AFEM";
     SystemGroup["WPMS_USER"] = "WPMSUser";
+    SystemGroup["COMPANY_ADMIN"] = "CompanyAdmin";
 })(SystemGroup = exports.SystemGroup || (exports.SystemGroup = {}));
 var EC2InstanceMetadata;
 (function (EC2InstanceMetadata) {

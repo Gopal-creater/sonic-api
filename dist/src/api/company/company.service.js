@@ -19,17 +19,24 @@ const mongoose_2 = require("mongoose");
 const company_schema_1 = require("./schemas/company.schema");
 const user_service_1 = require("../user/services/user.service");
 const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
+const user_company_service_1 = require("../user/services/user-company.service");
 let CompanyService = class CompanyService {
-    constructor(companyModel, userService) {
+    constructor(companyModel, userService, userCompanyService) {
         this.companyModel = companyModel;
         this.userService = userService;
+        this.userCompanyService = userCompanyService;
     }
     async create(createCompanyDto) {
-        const { name } = createCompanyDto;
+        const { name, owner } = createCompanyDto;
         const newCompany = await this.companyModel.create(createCompanyDto);
+        const createdCompany = await newCompany.save();
         const cognitoGroupName = `COM_${name}`;
-        await this.userService.cognitoCreateGroup(cognitoGroupName).catch(err => console.warn("Warning: Error creating cognito group", err));
-        return newCompany.save();
+        await this.userService
+            .cognitoCreateGroup(cognitoGroupName)
+            .catch(err => console.warn('Warning: Error creating cognito group', err));
+        const userfromDb = await this.userService.findById(owner);
+        await this.userCompanyService.makeCompanyAdmin(userfromDb, createdCompany);
+        return createdCompany;
     }
     findAll() {
         return this.companyModel.find();
@@ -41,13 +48,13 @@ let CompanyService = class CompanyService {
         return this.companyModel.findById(id);
     }
     update(id, updateCompanyDto) {
-        return this.companyModel.findByIdAndUpdate(id, updateCompanyDto);
+        return this.companyModel.findByIdAndUpdate(id, updateCompanyDto, {
+            new: true,
+        });
     }
     async getCount(queryDto) {
         const { filter, includeGroupData } = queryDto;
-        return this.companyModel
-            .find(filter || {})
-            .count();
+        return this.companyModel.find(filter || {}).count();
     }
     async getEstimateCount() {
         return this.companyModel.estimatedDocumentCount();
@@ -55,7 +62,9 @@ let CompanyService = class CompanyService {
     async removeById(id) {
         const company = await this.findById(id);
         const deletedCompany = await this.companyModel.findByIdAndRemove(id);
-        await this.userService.cognitoDeleteGroup(company.name).catch(err => console.warn("Warning: Error deleting cognito group", err));
+        await this.userService
+            .cognitoDeleteGroup(company.name)
+            .catch(err => console.warn('Warning: Error deleting cognito group', err));
         return deletedCompany;
     }
 };
@@ -63,8 +72,10 @@ CompanyService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(company_schema_1.Company.name)),
     __param(1, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
+    __param(2, common_1.Inject(common_1.forwardRef(() => user_company_service_1.UserCompanyService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        user_service_1.UserService])
+        user_service_1.UserService,
+        user_company_service_1.UserCompanyService])
 ], CompanyService);
 exports.CompanyService = CompanyService;
 //# sourceMappingURL=company.service.js.map

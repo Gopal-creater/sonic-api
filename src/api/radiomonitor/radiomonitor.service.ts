@@ -359,13 +359,14 @@ export class RadioMonitorService {
     usernameOrSub: string,
     unlimitedMonitoringLicense?: string,
   ) {
-    const user = await this.userService.getUserProfile(usernameOrSub, true);
+    const user = await this.userService.getUserProfile(usernameOrSub);
     if (!user) {
       return Promise.reject({
         status: 404,
         message: 'User not found',
       });
     }
+    user.groups=user.groups.map(grp=>grp.name)
     if (
       !(
         user?.groups?.includes(MonitorGroupsEnum.AIM) ||

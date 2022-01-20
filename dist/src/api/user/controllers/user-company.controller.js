@@ -34,11 +34,11 @@ let UserCompanyController = class UserCompanyController {
         const { user, company } = addUserToCompanyDto;
         const validUser = await this.userServices.findById(user);
         if (!validUser) {
-            throw new common_1.BadRequestException("Invalid user");
+            throw new common_1.NotFoundException("Invalid user");
         }
         const validCompany = await this.companyService.findById(company);
         if (!validCompany) {
-            throw new common_1.BadRequestException("Invalid company");
+            throw new common_1.NotFoundException("Invalid company");
         }
         return this.userCompanyService.addUserToCompany(validUser, validCompany);
     }
@@ -46,11 +46,11 @@ let UserCompanyController = class UserCompanyController {
         const { user, company } = removeUserFromCompanyDto;
         const validUser = await this.userServices.findById(user);
         if (!validUser) {
-            throw new common_1.BadRequestException("Invalid user");
+            throw new common_1.NotFoundException("Invalid user");
         }
         const validCompany = await this.companyService.findById(company);
         if (!validCompany) {
-            throw new common_1.BadRequestException("Invalid company");
+            throw new common_1.NotFoundException("Invalid company");
         }
         return this.userCompanyService.removeUserFromCompany(validUser, validCompany);
     }
@@ -60,25 +60,22 @@ let UserCompanyController = class UserCompanyController {
     }
     async makeAdminCompany(makeAdminCompanyDto) {
         const { user, company } = makeAdminCompanyDto;
-        const validUser = await this.userServices.findOne({
-            _id: user,
-            'companies._id': company
-        });
+        const validUser = await this.userServices.findById(user);
         if (!validUser) {
-            throw new common_1.BadRequestException("You must be part of given company before making you as a admin");
+            throw new common_1.NotFoundException("Invalid user");
         }
         const validCompany = await this.companyService.findById(company);
         if (!validCompany) {
-            throw new common_1.BadRequestException("Invalid company");
+            throw new common_1.NotFoundException("Invalid company");
         }
-        return this.userCompanyService.makeAdminCompany(validUser, validCompany);
+        return this.userCompanyService.makeCompanyAdmin(validUser, validCompany);
     }
     async getAdminCompany(user) {
         const validUser = await this.userServices.findById(user);
         if (!validUser) {
-            throw new common_1.BadRequestException("Invalid user");
+            throw new common_1.NotFoundException("Invalid user");
         }
-        return this.userCompanyService.getAdminCompany(validUser);
+        return this.userCompanyService.getCompanyAdmin(validUser);
     }
 };
 __decorate([
@@ -110,7 +107,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'get company of particular user' }),
     common_1.Get('/companies/list-companies/:user'),
-    openapi.ApiResponse({ status: 200, type: [require("../../company/schemas/company.schema").Company] }),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Param('user')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

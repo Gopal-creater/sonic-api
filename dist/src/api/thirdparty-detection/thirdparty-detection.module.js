@@ -16,6 +16,7 @@ const api_key_module_1 = require("../api-key/api-key.module");
 const sonickey_module_1 = require("../sonickey/sonickey.module");
 const detection_module_1 = require("../detection/detection.module");
 const user_module_1 = require("../user/user.module");
+const company_module_1 = require("../company/company.module");
 let ThirdpartyDetectionModule = class ThirdpartyDetectionModule {
 };
 ThirdpartyDetectionModule = __decorate([
@@ -31,6 +32,7 @@ ThirdpartyDetectionModule = __decorate([
             sonickey_module_1.SonickeyModule,
             detection_module_1.DetectionModule,
             user_module_1.UserModule,
+            company_module_1.CompanyModule
         ],
         controllers: [
             thirdparty_detection_from_binary_controller_1.ThirdpartyDetectionFromBinaryController,

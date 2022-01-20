@@ -20,7 +20,7 @@ import {
   UseGuards,
   Delete,
   Put,
-  BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { RolesAllowed } from '../../auth/decorators/roles.decorator';
 import { Roles } from 'src/constants/Enums';
@@ -46,11 +46,11 @@ export class UserCompanyController {
     const { user, company } = addUserToCompanyDto;
     const validUser = await this.userServices.findById(user)
     if(!validUser){
-      throw new BadRequestException("Invalid user")
+      throw new NotFoundException("Invalid user")
     }
     const validCompany = await this.companyService.findById(company)
     if(!validCompany){
-      throw new BadRequestException("Invalid company")
+      throw new NotFoundException("Invalid company")
     }
     return this.userCompanyService.addUserToCompany(validUser, validCompany);
   }
@@ -66,11 +66,11 @@ export class UserCompanyController {
     const { user, company } = removeUserFromCompanyDto;
     const validUser = await this.userServices.findById(user)
     if(!validUser){
-      throw new BadRequestException("Invalid user")
+      throw new NotFoundException("Invalid user")
     }
     const validCompany = await this.companyService.findById(company)
     if(!validCompany){
-      throw new BadRequestException("Invalid company")
+      throw new NotFoundException("Invalid company")
     }
     return this.userCompanyService.removeUserFromCompany(validUser,validCompany);
   }
@@ -90,18 +90,15 @@ export class UserCompanyController {
   @Post('/companies/make-admin-company')
   async makeAdminCompany(@Body() makeAdminCompanyDto: MakeAdminCompanyDto) {
     const { user, company } = makeAdminCompanyDto;
-    const validUser = await this.userServices.findOne({
-      _id:user,
-      'companies._id':company
-    })
+    const validUser = await this.userServices.findById(user)
     if(!validUser){
-      throw new BadRequestException("You must be part of given company before making you as a admin")
+      throw new NotFoundException("Invalid user")
     }
     const validCompany = await this.companyService.findById(company)
     if(!validCompany){
-      throw new BadRequestException("Invalid company")
+      throw new NotFoundException("Invalid company")
     }
-    return this.userCompanyService.makeAdminCompany(validUser,validCompany);
+    return this.userCompanyService.makeCompanyAdmin(validUser,validCompany);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -111,8 +108,8 @@ export class UserCompanyController {
   async getAdminCompany(@Param('user') user: string) {
     const validUser = await this.userServices.findById(user)
     if(!validUser){
-      throw new BadRequestException("Invalid user")
+      throw new NotFoundException("Invalid user")
     }
-    return this.userCompanyService.getAdminCompany(validUser);
+    return this.userCompanyService.getCompanyAdmin(validUser);
   }
 }

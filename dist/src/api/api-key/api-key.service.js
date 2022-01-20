@@ -18,13 +18,15 @@ const api_key_schema_1 = require("./schemas/api-key.schema");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const user_service_1 = require("../user/services/user.service");
+const company_service_1 = require("../company/company.service");
 let ApiKeyService = class ApiKeyService {
-    constructor(apiKeyModel, userService) {
+    constructor(apiKeyModel, userService, companyService) {
         this.apiKeyModel = apiKeyModel;
         this.userService = userService;
+        this.companyService = companyService;
     }
-    create(createApiKeyDto) {
-        const newApiKey = new this.apiKeyModel(createApiKeyDto);
+    async create(createApiKeyDto) {
+        const newApiKey = await this.apiKeyModel.create(createApiKeyDto);
         return newApiKey.save();
     }
     async makeEnableDisable(id, disabled) {
@@ -60,6 +62,15 @@ let ApiKeyService = class ApiKeyService {
             .find(filter || {})
             .count();
     }
+    findOne(filter) {
+        return this.apiKeyModel.findOne(filter);
+    }
+    findById(id) {
+        return this.apiKeyModel.findById(id);
+    }
+    update(id, updateUserDto) {
+        return this.apiKeyModel.findByIdAndUpdate(id, updateUserDto, { new: true });
+    }
     async getEstimateCount() {
         return this.apiKeyModel.estimatedDocumentCount();
     }
@@ -79,7 +90,8 @@ ApiKeyService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(api_key_schema_1.ApiKey.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        user_service_1.UserService])
+        user_service_1.UserService,
+        company_service_1.CompanyService])
 ], ApiKeyService);
 exports.ApiKeyService = ApiKeyService;
 //# sourceMappingURL=api-key.service.js.map

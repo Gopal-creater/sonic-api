@@ -26,7 +26,6 @@ const common_1 = require("@nestjs/common");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 const licensekey_schema_1 = require("../../licensekey/schemas/licensekey.schema");
 const index_1 = require("../../../shared/utils/index");
-const user_aws_schema_1 = require("../schemas/user.aws.schema");
 const radiomonitor_service_1 = require("../../radiomonitor/radiomonitor.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
@@ -70,9 +69,9 @@ let UserService = class UserService {
             });
         }
         const newLKOwner = new licensekey_schema_1.LKOwner();
-        newLKOwner.ownerId = user.userAttributeObj.sub;
+        newLKOwner.ownerId = user.sub;
         newLKOwner.username = user.username;
-        newLKOwner.email = user.userAttributeObj.email;
+        newLKOwner.email = user.email;
         newLKOwner.name = user.username;
         return this.licensekeyService.addOwnerToLicense(licenseId, newLKOwner);
     }
@@ -85,9 +84,9 @@ let UserService = class UserService {
         });
         const promises = licenseIds.map(async (licenseId) => {
             const newLKOwner = new licensekey_schema_1.LKOwner();
-            newLKOwner.ownerId = user.userAttributeObj.sub;
+            newLKOwner.ownerId = user.sub;
             newLKOwner.username = user.username;
-            newLKOwner.email = user.userAttributeObj.email;
+            newLKOwner.email = user.email;
             newLKOwner.name = user.username;
             return this.licensekeyService
                 .addOwnerToLicense(licenseId, newLKOwner)
@@ -105,38 +104,13 @@ let UserService = class UserService {
             };
         });
     }
-    async getUserProfile(usernameOrSub, includeGroups = false) {
-        const params = {
-            UserPoolId: this.cognitoUserPoolId,
-            Username: usernameOrSub,
-        };
+    async getUserProfile(usernameOrSub) {
         if (index_1.isValidUUID(usernameOrSub)) {
-            const userDetails = await this.getCognitoUserFromSub(usernameOrSub);
-            if (!userDetails) {
-                return Promise.resolve(null);
-            }
-            params.Username = userDetails.username;
+            return this.findById(usernameOrSub);
         }
-        const profile = await this.cognitoIdentityServiceProvider
-            .adminGetUser(params)
-            .promise();
-        if (!profile) {
-            return Promise.resolve(null);
+        else {
+            return this.findOne({ username: usernameOrSub });
         }
-        const userAttributeObj = this.convertUserAttributesToObj(profile.UserAttributes);
-        const finalProfile = new user_aws_schema_1.UserProfile({
-            username: profile.Username,
-            sub: userAttributeObj.sub,
-            userAttributes: profile.UserAttributes,
-            userAttributeObj: userAttributeObj,
-            enabled: profile.Enabled,
-            userStatus: profile.UserStatus,
-        });
-        if (includeGroups) {
-            const groupsResult = await this.adminListGroupsForUser(params.Username);
-            finalProfile.groups = groupsResult.groupNames;
-        }
-        return finalProfile;
     }
     async adminListGroupsForUser(usernameOrSub) {
         const params = {
@@ -273,7 +247,8 @@ let UserService = class UserService {
             _id: userToSaveInDb.sub,
         }, userToSaveInDb, { upsert: true, new: true });
         var userGroups = await this.adminListGroupsForUser(username);
-        if (!userGroups.groupNames.includes(Enums_1.Roles.PORTAL_USER) && !userGroups.groupNames.includes(Enums_1.Roles.WPMS_USER)) {
+        if (!userGroups.groupNames.includes(Enums_1.Roles.PORTAL_USER) &&
+            !userGroups.groupNames.includes(Enums_1.Roles.WPMS_USER)) {
             userGroups.groupNames = [...userGroups.groupNames, Enums_1.Roles.PORTAL_USER];
         }
         const userGroupsToDbGroups = await this.groupService.groupModel.find({
@@ -282,20 +257,24 @@ let UserService = class UserService {
         userFromDb = await this.userGroupService.addUserToGroups(userFromDb, userGroupsToDbGroups);
         return userFromDb;
     }
-    async syncUsersFromCognitoToMongooDb() {
+    async syncUsersFromCognitoToMongooDb(limit = 50, paginationToken = '', itritation = 1, usersCount = 0) {
         var e_1, _a;
         var _b, _c, _d, _e, _f;
+        console.log('Itritation', itritation, 'limit', limit, 'paginationToken', paginationToken);
         const params = {
             UserPoolId: this.cognitoUserPoolId,
-            Limit: 60,
+            Limit: limit,
         };
-        const listUsersRes = await this.cognitoIdentityServiceProvider
-            .listUsers(params)
-            .promise();
-        console.log('users count', listUsersRes.Users.length);
+        if (paginationToken) {
+            params['PaginationToken'] = paginationToken;
+        }
+        var { Users, PaginationToken, } = await this.cognitoIdentityServiceProvider.listUsers(params).promise();
+        usersCount = usersCount + Users.length;
+        console.log('users count', usersCount);
+        console.log('Next PaginationToken', PaginationToken);
         try {
-            for (var _g = __asyncValues(listUsersRes.Users), _h; _h = await _g.next(), !_h.done;) {
-                const user = _h.value;
+            for (var Users_1 = __asyncValues(Users), Users_1_1; Users_1_1 = await Users_1.next(), !Users_1_1.done;) {
+                const user = Users_1_1.value;
                 const username = user.Username;
                 const userStatus = user.UserStatus;
                 const enabled = user.Enabled;
@@ -321,6 +300,10 @@ let UserService = class UserService {
                     _id: userToSaveInDb.sub,
                 }, userToSaveInDb, { upsert: true, new: true });
                 const userGroups = await this.adminListGroupsForUser(username);
+                if (!userGroups.groupNames.includes(Enums_1.Roles.PORTAL_USER) &&
+                    !userGroups.groupNames.includes(Enums_1.Roles.WPMS_USER)) {
+                    userGroups.groupNames = [...userGroups.groupNames, Enums_1.Roles.PORTAL_USER];
+                }
                 const userGroupsToDbGroups = await this.groupService.groupModel.find({
                     name: { $in: userGroups.groupNames },
                 });
@@ -330,9 +313,16 @@ let UserService = class UserService {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (_h && !_h.done && (_a = _g.return)) await _a.call(_g);
+                if (Users_1_1 && !Users_1_1.done && (_a = Users_1.return)) await _a.call(Users_1);
             }
             finally { if (e_1) throw e_1.error; }
+        }
+        if (!PaginationToken) {
+            console.log('Finishaed Get Users, Total Users are', usersCount);
+            return;
+        }
+        else {
+            await this.syncUsersFromCognitoToMongooDb(limit, PaginationToken, itritation + 1, usersCount);
         }
     }
     async listUsers(queryDto) {
@@ -366,7 +356,7 @@ let UserService = class UserService {
             },
             {
                 $match: Object.assign({}, relationalFilter),
-            }
+            },
         ]);
         return this.userModel['aggregatePaginate'](userAggregate, paginateOptions);
     }
@@ -510,9 +500,7 @@ let UserService = class UserService {
     }
     async getCount(queryDto) {
         const { filter, includeGroupData } = queryDto;
-        return this.userModel
-            .find(filter || {})
-            .count();
+        return this.userModel.find(filter || {}).count();
     }
     async getEstimateCount() {
         return this.userModel.estimatedDocumentCount();

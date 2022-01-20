@@ -21,7 +21,7 @@ import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { DetectionService } from '../../detection/detection.service';
 import { ChannelEnums } from 'src/constants/Enums';
 import { CreateDetectionFromBinaryDto, CreateDetectionFromHardwareDto } from '../dto/create-detection.dto';
-import { ApiKeyAuthGuard } from '../../api-key/guards/apikey-auth.guard';
+import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
 
 @ApiTags('ThirdParty Integration Controller, Protected By XAPI-Key')

@@ -12,10 +12,11 @@ import { ApiKeyModule } from '../api-key/api-key.module';
 import { SonickeyModule } from '../sonickey/sonickey.module';
 import { DetectionModule } from '../detection/detection.module';
 import { UserModule } from '../user/user.module';
+import { CompanyModule } from '../company/company.module';
 
 @Module({
   imports: [
-  MongooseModule.forFeature([
+MongooseModule.forFeature([
       {
         name: ThirdpartyDetection.name,
         schema: ThirdpartyDetectionSchema,
@@ -25,6 +26,7 @@ import { UserModule } from '../user/user.module';
     SonickeyModule,
     DetectionModule,
     UserModule,
+    CompanyModule
   ],
   controllers: [
     // ThirdpartyDetectionController,

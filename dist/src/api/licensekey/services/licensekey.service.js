@@ -385,7 +385,7 @@ let LicensekeyService = class LicensekeyService {
                             const lkOwner = new licensekey_schema_1.LKOwner();
                             lkOwner.ownerId = ownerId;
                             lkOwner.username = user.username;
-                            lkOwner.email = user.userAttributeObj.email;
+                            lkOwner.email = user.email;
                             lkOwner.name = user.username;
                             newOwners.push(lkOwner);
                         }

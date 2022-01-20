@@ -29,7 +29,10 @@ let CompanyController = class CompanyController {
     constructor(companyService) {
         this.companyService = companyService;
     }
-    create(createCompanyDto) {
+    async create(createCompanyDto) {
+        const user = await this.companyService.userService.getUserProfile(createCompanyDto.owner);
+        if (!user)
+            throw new common_1.NotFoundException('Unknown user');
         return this.companyService.create(createCompanyDto);
     }
     findAll() {
@@ -61,7 +64,7 @@ __decorate([
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_company_dto_1.CreateCompanyDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "create", null);
 __decorate([
     common_1.Get(),

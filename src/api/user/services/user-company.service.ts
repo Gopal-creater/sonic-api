@@ -5,13 +5,16 @@ import { UserDB, UserSchemaName } from '../schemas/user.db.schema';
 import { Company } from 'src/api/company/schemas/company.schema';
 import { CompanyService } from '../../company/company.service';
 import { UserService } from './user.service';
+import { UserGroupService } from './user-group.service';
+import { SystemGroup } from 'src/constants/Enums';
 
 @Injectable()
 export class UserCompanyService {
   constructor(
     @Inject(forwardRef(()=>UserService))
     public readonly userService: UserService,
-
+    @Inject(forwardRef(()=>UserGroupService))
+    public readonly userGroupService: UserGroupService,
     public readonly companyService: CompanyService,
     @InjectModel(UserSchemaName)
     public readonly userModel: Model<UserDB>,
@@ -77,9 +80,18 @@ export class UserCompanyService {
     return updatedUser;
   }
 
-  async makeAdminCompany(user: UserDB,company:Company) {
+  async makeCompanyAdmin(user: UserDB,company:Company) {
+    await this.companyService.update(
+      company._id,
+      {
+        owner: user._id,
+      }
+    );
+    await this.addUserToCompany(user,company)
+    const companyAdminGroup = await this.userGroupService.groupService.findOne({name:SystemGroup.COMPANY_ADMIN})
+    await this.userGroupService.addUserToGroup(user,companyAdminGroup)
     return this.userModel.findOneAndUpdate(
-      { _id: user.id },
+      { _id: user._id },
       {
         adminCompany: company.id,
       },
@@ -89,12 +101,15 @@ export class UserCompanyService {
     );
   }
 
-  async listAllCompaniesForUser(user: UserDB):Promise<Company[]>{
+  async listAllCompaniesForUser(user: UserDB):Promise<{companies:Company[],adminCompany:Company}>{
     const userWithCompanies = await this.userModel.findById(user.id)
-    return userWithCompanies.companies
+    return {
+      companies:userWithCompanies.companies,
+      adminCompany:userWithCompanies.adminCompany
+    }
   }
 
-  async getAdminCompany(user: UserDB):Promise<Company>{
+  async getCompanyAdmin(user: UserDB):Promise<Company>{
     const userWithAdminCompany = await this.userModel.findById(user.id)
     return userWithAdminCompany.adminCompany
   }

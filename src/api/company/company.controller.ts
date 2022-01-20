@@ -1,8 +1,24 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+  NotFoundException,
+} from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { CreateCompanyDto } from './dtos/create-company.dto';
 import { UpdateCompanyDto } from './dtos/update-company.dto';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { RolesAllowed } from 'src/api/auth/decorators';
 import { JwtAuthGuard, RoleBasedGuard } from 'src/api/auth/guards';
 import { Roles } from 'src/constants/Enums';
@@ -14,13 +30,17 @@ import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
 @Controller('companies')
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
-  
+
   @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create company' })
   @Post()
-  create(@Body() createCompanyDto: CreateCompanyDto) {
+  async create(@Body() createCompanyDto: CreateCompanyDto) {
+    const user = await this.companyService.userService.getUserProfile(
+      createCompanyDto.owner,
+    );
+    if (!user) throw new NotFoundException('Unknown user');
     return this.companyService.create(createCompanyDto);
   }
 
@@ -36,7 +56,7 @@ export class CompanyController {
 
   @Put(':id')
   @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update company' })
   update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
@@ -66,7 +86,7 @@ export class CompanyController {
 
   @Delete(':id')
   @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Remove company' })
   remove(@Param('id') id: string) {

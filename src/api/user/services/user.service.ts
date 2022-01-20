@@ -75,9 +75,9 @@ export class UserService {
       });
     }
     const newLKOwner = new LKOwner();
-    newLKOwner.ownerId = user.userAttributeObj.sub;
+    newLKOwner.ownerId = user.sub;
     newLKOwner.username = user.username;
-    newLKOwner.email = user.userAttributeObj.email;
+    newLKOwner.email = user.email;
     newLKOwner.name = user.username;
     return this.licensekeyService.addOwnerToLicense(licenseId, newLKOwner);
   }
@@ -92,9 +92,9 @@ export class UserService {
 
     const promises = licenseIds.map(async licenseId => {
       const newLKOwner = new LKOwner();
-      newLKOwner.ownerId = user.userAttributeObj.sub;
+      newLKOwner.ownerId = user.sub;
       newLKOwner.username = user.username;
-      newLKOwner.email = user.userAttributeObj.email;
+      newLKOwner.email = user.email;
       newLKOwner.name = user.username;
       return this.licensekeyService
         .addOwnerToLicense(licenseId, newLKOwner)
@@ -120,47 +120,12 @@ export class UserService {
    * Get User profile by username or sub
    * @param usernameOrSub this can be username or sub
    */
-  async getUserProfile(
-    usernameOrSub: string,
-    includeGroups: boolean = false,
-  ): Promise<UserProfile> {
-    const params = {
-      UserPoolId: this.cognitoUserPoolId,
-      Username: usernameOrSub,
-    };
+  async getUserProfile(usernameOrSub: string) {
     if (isValidUUID(usernameOrSub)) {
-      const userDetails = await this.getCognitoUserFromSub(usernameOrSub);
-      if (!userDetails) {
-        return Promise.resolve(null);
-      }
-      params.Username = userDetails.username;
+      return this.findById(usernameOrSub);
+    } else {
+      return this.findOne({ username: usernameOrSub });
     }
-    const profile = await this.cognitoIdentityServiceProvider
-      .adminGetUser(params)
-      .promise();
-
-    if (!profile) {
-      return Promise.resolve(null);
-    }
-    const userAttributeObj = this.convertUserAttributesToObj(
-      profile.UserAttributes,
-    );
-
-    const finalProfile = new UserProfile({
-      username: profile.Username,
-      sub: userAttributeObj.sub,
-      userAttributes: profile.UserAttributes,
-      userAttributeObj: userAttributeObj,
-      enabled: profile.Enabled,
-      userStatus: profile.UserStatus,
-    });
-
-    if (includeGroups) {
-      const groupsResult = await this.adminListGroupsForUser(params.Username);
-      finalProfile.groups = groupsResult.groupNames;
-    }
-
-    return finalProfile;
   }
 
   /**
@@ -301,6 +266,7 @@ export class UserService {
    * @returns
    */
   async syncUserFromCognitoToMongooDb(usernameOrSub: string) {
+    // Get user from cognito
     const userFromCognito = await this.getCognitoUser(usernameOrSub);
     const username = userFromCognito.Username;
     const userStatus = userFromCognito.UserStatus;
@@ -331,6 +297,7 @@ export class UserService {
       mfa_options: mfaOptions,
       phone_number_verified: phone_number_verified == 'true',
     });
+    //Insert or update the user in our database
     var userFromDb = await this.userModel.findOneAndUpdate(
       {
         _id: userToSaveInDb.sub,
@@ -339,13 +306,20 @@ export class UserService {
       { upsert: true, new: true },
     );
 
+    //Get users groups from cognito
     var userGroups = await this.adminListGroupsForUser(username);
-    if(!userGroups.groupNames.includes(Roles.PORTAL_USER)&&!userGroups.groupNames.includes(Roles.WPMS_USER)){
-      userGroups.groupNames=[...userGroups.groupNames,Roles.PORTAL_USER]
+    if (
+      !userGroups.groupNames.includes(Roles.PORTAL_USER) &&
+      !userGroups.groupNames.includes(Roles.WPMS_USER)
+    ) {
+      //If user doesnot have any Roles or Groups like Poraluser or WpmsUser just add Portal user as default role
+      userGroups.groupNames = [...userGroups.groupNames, Roles.PORTAL_USER];
     }
+    //Verify user roles are present in our database
     const userGroupsToDbGroups = await this.groupService.groupModel.find({
       name: { $in: userGroups.groupNames },
     });
+    //Finally add user to groups
     userFromDb = await this.userGroupService.addUserToGroups(
       userFromDb,
       userGroupsToDbGroups,
@@ -354,19 +328,38 @@ export class UserService {
   }
 
   /**
-   * Sync all cognito user with our database
+   * Sync all cognito user with our database 60
    * @returns
    */
-  async syncUsersFromCognitoToMongooDb() {
+  async syncUsersFromCognitoToMongooDb(
+    limit: number = 50,
+    paginationToken: string = '',
+    itritation: number = 1,
+    usersCount: number = 0,
+  ) {
+    console.log(
+      'Itritation',
+      itritation,
+      'limit',
+      limit,
+      'paginationToken',
+      paginationToken,
+    );
     const params = {
       UserPoolId: this.cognitoUserPoolId,
-      Limit: 60,
+      Limit: limit,
     };
-    const listUsersRes = await this.cognitoIdentityServiceProvider
-      .listUsers(params)
-      .promise();
-    console.log('users count', listUsersRes.Users.length);
-    for await (const user of listUsersRes.Users) {
+    if (paginationToken) {
+      params['PaginationToken'] = paginationToken;
+    }
+    var {
+      Users,
+      PaginationToken,
+    } = await this.cognitoIdentityServiceProvider.listUsers(params).promise();
+    usersCount = usersCount + Users.length;
+    console.log('users count', usersCount);
+    console.log('Next PaginationToken', PaginationToken);
+    for await (const user of Users) {
       const username = user.Username;
       const userStatus = user.UserStatus;
       const enabled = user.Enabled;
@@ -394,25 +387,47 @@ export class UserService {
         mfa_options: mfaOptions,
         phone_number_verified: phone_number_verified == 'true',
       });
+      //Insert or update the user in our database
       const userFromDb = await this.userModel.findOneAndUpdate(
         {
           _id: userToSaveInDb.sub,
         },
         userToSaveInDb,
-        { upsert: true,new:true },
+        { upsert: true, new: true },
       );
+      //Get users groups from cognito
       const userGroups = await this.adminListGroupsForUser(username);
+      if (
+        !userGroups.groupNames.includes(Roles.PORTAL_USER) &&
+        !userGroups.groupNames.includes(Roles.WPMS_USER)
+      ) {
+        //If user doesnot have any Roles or Groups like Poraluser or WpmsUser just add Portal user as default role
+        userGroups.groupNames = [...userGroups.groupNames, Roles.PORTAL_USER];
+      }
+      //Verify user roles are present in our database
       const userGroupsToDbGroups = await this.groupService.groupModel.find({
         name: { $in: userGroups.groupNames },
       });
+      //Finally add user to groups
       await this.userGroupService.addUserToGroups(
         userFromDb,
         userGroupsToDbGroups,
       );
     }
+    if (!PaginationToken) {
+      console.log('Finishaed Get Users, Total Users are', usersCount);
+      return;
+    } else {
+      await this.syncUsersFromCognitoToMongooDb(
+        limit,
+        PaginationToken,
+        itritation + 1,
+        usersCount,
+      );
+    }
   }
 
-  async listUsers(queryDto: ParsedQueryDto):Promise<MongoosePaginateUserDto>{
+  async listUsers(queryDto: ParsedQueryDto): Promise<MongoosePaginateUserDto> {
     const {
       limit,
       skip,
@@ -456,12 +471,12 @@ export class UserService {
       },
       {
         $match: {
-          ...relationalFilter
+          ...relationalFilter,
         },
-      }
+      },
     ]);
 
-    return this.userModel['aggregatePaginate'](userAggregate,paginateOptions)
+    return this.userModel['aggregatePaginate'](userAggregate, paginateOptions);
   }
 
   async getCognitoUser(usernameOrSub: string) {
@@ -648,12 +663,10 @@ export class UserService {
 
   async getCount(queryDto: ParsedQueryDto) {
     const { filter, includeGroupData } = queryDto;
-    return this.userModel
-      .find(filter || {})
-      .count()
+    return this.userModel.find(filter || {}).count();
   }
 
   async getEstimateCount() {
-    return this.userModel.estimatedDocumentCount()
+    return this.userModel.estimatedDocumentCount();
   }
 }

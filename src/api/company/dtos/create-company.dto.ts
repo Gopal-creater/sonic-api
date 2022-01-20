@@ -18,4 +18,8 @@ export class CreateCompanyDto {
 
   @ApiProperty()
   address: Address;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  owner: string;
 }

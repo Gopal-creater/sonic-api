@@ -32,37 +32,55 @@ let ApiKeyController = class ApiKeyController {
     }
     async create(createApiKeyDto) {
         var _a;
-        console.log("createApiKeyDto", createApiKeyDto);
         if (createApiKeyDto.type == Enums_1.ApiKeyType.INDIVIDUAL) {
             const user = await this.apiKeyService.userService.getUserProfile(createApiKeyDto.customer);
             if (!user)
-                throw new common_1.NotFoundException("Unknown user");
+                throw new common_1.NotFoundException('Unknown user');
             createApiKeyDto.customer = user === null || user === void 0 ? void 0 : user.sub;
         }
-        else if (createApiKeyDto.type == Enums_1.ApiKeyType.GROUP) {
-            const group = await this.apiKeyService.userService.cognitoGetGroup((_a = createApiKeyDto.groups) === null || _a === void 0 ? void 0 : _a[0]);
-            if (!group)
-                throw new common_1.NotFoundException("Unknown group");
+        else if (createApiKeyDto.type == Enums_1.ApiKeyType.COMPANY) {
+            const company = await this.apiKeyService.companyService.findById(createApiKeyDto.company);
+            if (!company)
+                throw new common_1.NotFoundException('Unknown company');
+            if (!((_a = company === null || company === void 0 ? void 0 : company.owner) === null || _a === void 0 ? void 0 : _a.sub))
+                throw new common_1.NotFoundException('The given company doesnot have any valid admin user');
+            createApiKeyDto.customer = company.owner.sub;
         }
         return this.apiKeyService.create(createApiKeyDto);
     }
     findAll(queryDto) {
-        console.log("Query", queryDto);
         return this.apiKeyService.findAll(queryDto);
     }
     async findOne(id) {
-        const apiKey = await this.apiKeyService.apiKeyModel.findById(id);
+        const apiKey = await this.apiKeyService.findById(id);
         if (!apiKey) {
             throw new common_1.NotFoundException();
         }
         return apiKey;
     }
     async update(id, updateApiKeyDto) {
-        const updatedApiKey = await this.apiKeyService.apiKeyModel.findOneAndUpdate({ _id: id }, updateApiKeyDto, { new: true });
-        if (!updatedApiKey) {
+        var _a;
+        const apiKey = await this.apiKeyService.findById(id);
+        if (!apiKey) {
             throw new common_1.NotFoundException();
         }
-        return updatedApiKey;
+        if (updateApiKeyDto.type == Enums_1.ApiKeyType.INDIVIDUAL &&
+            updateApiKeyDto.customer) {
+            const user = await this.apiKeyService.userService.getUserProfile(updateApiKeyDto.customer);
+            if (!user)
+                throw new common_1.NotFoundException('Unknown user');
+            updateApiKeyDto.customer = user === null || user === void 0 ? void 0 : user.sub;
+        }
+        else if (updateApiKeyDto.type == Enums_1.ApiKeyType.COMPANY &&
+            updateApiKeyDto.company) {
+            const company = await this.apiKeyService.companyService.findById(updateApiKeyDto.company);
+            if (!company)
+                throw new common_1.NotFoundException('Unknown company');
+            if (!((_a = company === null || company === void 0 ? void 0 : company.owner) === null || _a === void 0 ? void 0 : _a.sub))
+                throw new common_1.NotFoundException('The given company doesnot have any valid admin user');
+            updateApiKeyDto.customer = company.owner.sub;
+        }
+        return this.apiKeyService.update(id, updateApiKeyDto);
     }
     async getCount(queryDto) {
         return this.apiKeyService.getCount(queryDto);
@@ -71,12 +89,11 @@ let ApiKeyController = class ApiKeyController {
         return this.apiKeyService.getEstimateCount();
     }
     async remove(id) {
-        return this.apiKeyService.removeById(id).catch(err => {
-            if (err.status == 404) {
-                throw new common_1.NotFoundException();
-            }
-            throw err;
-        });
+        const apiKey = await this.apiKeyService.findById(id);
+        if (!apiKey) {
+            throw new common_1.NotFoundException();
+        }
+        return this.apiKeyService.removeById(id);
     }
 };
 __decorate([
@@ -170,7 +187,7 @@ __decorate([
 ApiKeyController = __decorate([
     swagger_1.ApiTags('Apikey Management Controller'),
     common_1.Controller({
-        path: 'api-keys'
+        path: 'api-keys',
     }),
     __metadata("design:paramtypes", [api_key_service_1.ApiKeyService])
 ], ApiKeyController);

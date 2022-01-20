@@ -10,10 +10,11 @@ import { UserModule } from '../user/user.module';
 import { DetectionThirdPartyController } from './controllers/detection.thirdparty.controller';
 import { AuthModule } from '../auth/auth.module';
 import { FileHandlerService } from '../../shared/services/file-handler.service';
+import { CompanyModule } from '../company/company.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
+  MongooseModule.forFeature([
       {
         name: Detection.name,
         schema: DetectionSchema,
@@ -21,6 +22,7 @@ import { FileHandlerService } from '../../shared/services/file-handler.service';
     ]),
     forwardRef(() => ApiKeyModule),
     forwardRef(() => UserModule),
+    forwardRef(() => CompanyModule),
     forwardRef(() => AuthModule),
     forwardRef(() => SonickeyModule),
   ],

@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import { ApiKeyAuthGuard } from '../../api-key/guards/apikey-auth.guard';
+import { ApiKeyAuthGuard } from './apikey-auth.guard';
 
 @Injectable()
 export class ConditionalAuthGuard implements CanActivate {

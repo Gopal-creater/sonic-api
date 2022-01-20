@@ -21,7 +21,7 @@ const swagger_1 = require("@nestjs/swagger");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const detection_service_1 = require("../../detection/detection.service");
 const Enums_1 = require("../../../constants/Enums");
-const apikey_auth_guard_1 = require("../../api-key/guards/apikey-auth.guard");
+const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
 let ThirdpartyDetectionFromBinaryController = class ThirdpartyDetectionFromBinaryController {
     constructor(thirdpartyDetectionService, sonickeyServive, detectionService) {

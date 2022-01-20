@@ -17,7 +17,8 @@ const api_key_module_1 = require("../api-key/api-key.module");
 const licensekey_module_1 = require("../licensekey/licensekey.module");
 const user_module_1 = require("../user/user.module");
 const jwt_auth_guard_1 = require("./guards/jwt-auth.guard");
-const apikey_auth_guard_1 = require("../api-key/guards/apikey-auth.guard");
+const apikey_auth_guard_1 = require("./guards/apikey-auth.guard");
+const company_module_1 = require("../company/company.module");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -27,6 +28,7 @@ AuthModule = __decorate([
             api_key_module_1.ApiKeyModule,
             licensekey_module_1.LicensekeyModule,
             user_module_1.UserModule,
+            company_module_1.CompanyModule
         ],
         providers: [
             auth_config_1.AuthConfig,
@@ -36,7 +38,7 @@ AuthModule = __decorate([
             apikey_auth_guard_1.ApiKeyAuthGuard,
         ],
         controllers: [auth_controller_1.AuthController],
-        exports: [jwt_auth_guard_1.JwtAuthGuard, apikey_auth_guard_1.ApiKeyAuthGuard],
+        exports: [jwt_auth_guard_1.JwtAuthGuard, apikey_auth_guard_1.ApiKeyAuthGuard, company_module_1.CompanyModule],
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;

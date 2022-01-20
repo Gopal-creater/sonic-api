@@ -1,12 +1,13 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { CreateApiKeyDto } from './dto/create-api-key.dto';
-import { UpdateApiKeyDto } from './dto/update-api-key.dto';
+import { AdminCreateApiKeyDto } from './dto/create-api-key.dto';
+import { AdminUpdateApiKeyDto } from './dto/update-api-key.dto';
 import { ApiKey } from './schemas/api-key.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateApiKeyDto } from './dto/mongoosepaginate-apikey.dto';
 import { UserService } from '../user/services/user.service';
+import { CompanyService } from '../company/company.service';
 
 @Injectable()
 export class ApiKeyService {
@@ -14,11 +15,12 @@ export class ApiKeyService {
     @InjectModel(ApiKey.name)
     public readonly apiKeyModel: Model<ApiKey>,
 
-    public readonly userService: UserService
+    public readonly userService: UserService,
+    public readonly companyService: CompanyService
   ) {}
 
-  create(createApiKeyDto: CreateApiKeyDto) {
-    const newApiKey = new this.apiKeyModel(createApiKeyDto);
+  async create(createApiKeyDto: AdminCreateApiKeyDto) {
+    const newApiKey = await this.apiKeyModel.create(createApiKeyDto);
     return newApiKey.save();
   }
 
@@ -51,12 +53,6 @@ export class ApiKeyService {
 
 
     return await this.apiKeyModel["paginate"](filter,paginateOptions)
-    // return this.apiKeyModel
-    //   .find(query || {})
-    //   .skip(_offset)
-    //   .limit(_limit)
-    //   .sort(sort)
-    //   .exec();
   }
 
   async getCount(queryDto: ParsedQueryDto) {
@@ -64,6 +60,18 @@ export class ApiKeyService {
     return this.apiKeyModel
       .find(filter || {})
       .count()
+  }
+
+  findOne(filter: FilterQuery<ApiKey>) {
+    return this.apiKeyModel.findOne(filter);
+  }
+
+  findById(id: string) {
+    return this.apiKeyModel.findById(id);
+  }
+
+  update(id: string, updateUserDto: AdminUpdateApiKeyDto) {
+    return this.apiKeyModel.findByIdAndUpdate(id, updateUserDto,{new:true});
   }
 
   async getEstimateCount() {

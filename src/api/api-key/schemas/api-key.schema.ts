@@ -10,14 +10,16 @@ export const ApiKeySchemaName = 'ApiKey';
 export class ApiKey extends Document { //_id or id will be apikey here, which is always unique
 
   @ApiProperty()
-  @Prop({
-    required:true
-  })
-  customer: string;
+  @Prop({ type: String, ref: 'User',required:true,autopopulate: true})
+  customer: any;
 
   @ApiProperty()
   @Prop([String])
   groups: [string];
+
+  @ApiProperty()
+  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Company',autopopulate: true})
+  company: any;
 
   @ApiProperty()
   @Prop({type:Date,default:new Date(new Date().setFullYear(new Date().getFullYear() + 1))})

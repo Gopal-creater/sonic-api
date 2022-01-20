@@ -44,10 +44,14 @@ export class Company extends Document {
   @ApiProperty()
   @Prop({ type: Address })
   address: Address;
-
+  
   @ApiProperty()
-  @Prop()
-  owner: string;
+  @Prop({
+    type: String,
+    ref: 'User',
+    autopopulate: true,
+  })
+  owner: any;
   
 }
 

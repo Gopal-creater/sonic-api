@@ -219,13 +219,14 @@ let RadioMonitorService = class RadioMonitorService {
     async addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(usernameOrSub, unlimitedMonitoringLicense) {
         var e_1, _a;
         var _b, _c;
-        const user = await this.userService.getUserProfile(usernameOrSub, true);
+        const user = await this.userService.getUserProfile(usernameOrSub);
         if (!user) {
             return Promise.reject({
                 status: 404,
                 message: 'User not found',
             });
         }
+        user.groups = user.groups.map(grp => grp.name);
         if (!(((_b = user === null || user === void 0 ? void 0 : user.groups) === null || _b === void 0 ? void 0 : _b.includes(Enums_1.MonitorGroupsEnum.AIM)) ||
             ((_c = user === null || user === void 0 ? void 0 : user.groups) === null || _c === void 0 ? void 0 : _c.includes(Enums_1.MonitorGroupsEnum.AFEM)))) {
             return Promise.reject({

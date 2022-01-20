@@ -14,7 +14,8 @@
 # !!! IMPORANT: Change BIN_PATH according to the installation folder. 
 # -----------------------------------------------------------------------------------------
 
-# BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/web/linux/build/
+#BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/testing/linux/build/
+#BIN_DETECT=decode
 BIN_PATH="$BINARY_PATH"
 BIN_DETECT="$BINARY_DETECT"
 

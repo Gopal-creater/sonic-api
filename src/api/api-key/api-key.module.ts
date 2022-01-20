@@ -8,15 +8,18 @@ import {
   ApiKeySchema,
 } from './schemas/api-key.schema';
 import { UserModule } from '../user/user.module';
+import { CompanyModule } from '../company/company.module';
+
 @Module({
   imports: [
-  forwardRef(() => UserModule),
+forwardRef(() => UserModule),
     MongooseModule.forFeature([
       {
         name: ApiKeySchemaName,
         schema: ApiKeySchema,
       },
     ]),
+    forwardRef(() => CompanyModule),
   ],
   controllers: [ApiKeyController,ApiKeyCustomerController],
   providers: [ApiKeyService],

@@ -18,8 +18,8 @@ let LKOwner = class LKOwner {
 };
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ required: true }),
-    __metadata("design:type", String)
+    mongoose_1.Prop({ type: String, ref: 'User', required: true, autopopulate: true }),
+    __metadata("design:type", Object)
 ], LKOwner.prototype, "ownerId", void 0);
 __decorate([
     swagger_1.ApiProperty(),
