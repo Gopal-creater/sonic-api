@@ -41,6 +41,8 @@ export class CompanyController {
       createCompanyDto.owner,
     );
     if (!user) throw new NotFoundException('Unknown user');
+    const isalreadyOwnCompany = await this.companyService.findOne({owner:createCompanyDto.owner})
+    if (isalreadyOwnCompany) throw new NotFoundException('Given user already own the company, please choose different user');
     return this.companyService.create(createCompanyDto);
   }
 
