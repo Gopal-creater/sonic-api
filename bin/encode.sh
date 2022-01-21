@@ -17,8 +17,8 @@
 # !!! IMPORANT: Change BIN_PATH according to the installation folder.
 # -----------------------------------------------------------------------------------------
 
-# BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/web/linux/build/
-# BIN_WATERMARK=encode
+#BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/web/linux/build/
+#BIN_WATERMARK=encode
 BIN_PATH="$BINARY_PATH"
 BIN_WATERMARK="$BINARY_WATERMARK"
 
@@ -94,8 +94,21 @@ else
       ENC_STRENGTH=20
       echo "MP3 processing using encoding strength: $ENC_STRENGTH"
 
-      BITRATE=`mediainfo $3 | grep "Bit rate" | grep "kb/s" | cut -d ":" -f 2 | cut -d " " -f 2`k
+      BITRATE=`mediainfo $3 | grep "Bit rate" | grep "kb/s" | cut -d ":" -f 2 | cut -d " " -f 2`
+      if [ -z $BITRATE ]; then
+        echo "Could not fnd bit rate. forcing 128"
+        BITRATE="128"
+      else
+        echo "Got bit rate: $BITRATE"
+      fi
 
+      BITRATE+='k'
+
+      if test $BITRATE = "128k"; then
+        echo "Increasing encoding strength to 25 for 128k mp3"
+        ENC_STRENGTH=25
+      fi
+    
       MEDIA_SPECIFIC_FFMMPEG_PARAMS=" -c:a libmp3lame -b:a $BITRATE "
       AVOID_SG_HACK_05DB="yes"
     fi
