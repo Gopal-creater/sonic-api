@@ -39,8 +39,9 @@ let GroupService = class GroupService {
         await this.userService.cognitoCreateGroup(name).catch(err => console.warn("Warning: Error creating cognito group", err));
         return groupDb;
     }
-    findAll() {
-        return this.groupModel.find();
+    findAll(queryDto) {
+        const { filter } = queryDto;
+        return this.groupModel.find(Object.assign({}, filter));
     }
     findOne(filter) {
         return this.groupModel.findOne(filter);

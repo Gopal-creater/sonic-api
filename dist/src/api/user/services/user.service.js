@@ -304,9 +304,11 @@ let UserService = class UserService {
                     !userGroups.groupNames.includes(Enums_1.Roles.WPMS_USER)) {
                     userGroups.groupNames = [...userGroups.groupNames, Enums_1.Roles.PORTAL_USER];
                 }
+                console.log("userGroups.groupNames", userGroups.groupNames);
                 const userGroupsToDbGroups = await this.groupService.groupModel.find({
                     name: { $in: userGroups.groupNames },
                 });
+                console.log("userGroupsToDbGroups", userGroupsToDbGroups);
                 await this.userGroupService.addUserToGroups(userFromDb, userGroupsToDbGroups);
             }
         }

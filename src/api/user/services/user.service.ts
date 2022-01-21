@@ -404,10 +404,12 @@ export class UserService {
         //If user doesnot have any Roles or Groups like Poraluser or WpmsUser just add Portal user as default role
         userGroups.groupNames = [...userGroups.groupNames, Roles.PORTAL_USER];
       }
+      console.log("userGroups.groupNames",userGroups.groupNames)
       //Verify user roles are present in our database
       const userGroupsToDbGroups = await this.groupService.groupModel.find({
         name: { $in: userGroups.groupNames },
       });
+      console.log("userGroupsToDbGroups",userGroupsToDbGroups)
       //Finally add user to groups
       await this.userGroupService.addUserToGroups(
         userFromDb,

@@ -32,8 +32,8 @@ let GroupController = class GroupController {
     create(createGroupDto) {
         return this.groupService.create(createGroupDto);
     }
-    findAll() {
-        return this.groupService.findAll();
+    findAll(parsedQueryDto) {
+        return this.groupService.findAll(parsedQueryDto);
     }
     findOne(id) {
         return this.groupService.findById(id);
@@ -70,8 +70,9 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Get Groups' }),
     common_1.Get(),
     openapi.ApiResponse({ status: 200 }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], GroupController.prototype, "findAll", null);
 __decorate([

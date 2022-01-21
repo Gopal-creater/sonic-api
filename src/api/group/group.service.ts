@@ -26,8 +26,9 @@ export class GroupService {
     return groupDb
   }
 
-  findAll() {
-    return this.groupModel.find();
+  findAll(queryDto: ParsedQueryDto) {
+    const{filter}=queryDto
+    return this.groupModel.find({...filter});
   }
 
   findOne(filter:FilterQuery<Group>) {

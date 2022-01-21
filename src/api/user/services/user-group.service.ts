@@ -24,6 +24,7 @@ export class UserGroupService {
       _id: user.id,
       groups: {$in:[group._id]},
     });
+    console.log("alreadyInGroup",alreadyInGroup)
     if (alreadyInGroup) {
       return alreadyInGroup;
     }

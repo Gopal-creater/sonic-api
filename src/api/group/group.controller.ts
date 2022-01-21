@@ -39,8 +39,8 @@ export class GroupController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Groups' })
   @Get()
-  findAll() {
-    return this.groupService.findAll();
+  findAll(@Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto) {
+    return this.groupService.findAll(parsedQueryDto);
   }
 
   @UseGuards(JwtAuthGuard)
