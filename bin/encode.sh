@@ -17,10 +17,10 @@
 # !!! IMPORANT: Change BIN_PATH according to the installation folder.
 # -----------------------------------------------------------------------------------------
 
-#BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/testing/linux/build/
-#BIN_WATERMARK=encode
-BIN_PATH="$BINARY_PATH"
-BIN_WATERMARK="$BINARY_WATERMARK"
+BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/web/linux/build/
+BIN_WATERMARK=encode
+#BIN_PATH="$BINARY_PATH"
+#BIN_WATERMARK="$BINARY_WATERMARK"
 
 WATERMARK=$BIN_PATH/$BIN_WATERMARK
 if [[ -f "$WATERMARK" && -x "$WATERMARK" ]]
@@ -94,7 +94,9 @@ else
       ENC_STRENGTH=20
       echo "MP3 processing using encoding strength: $ENC_STRENGTH"
 
-      MEDIA_SPECIFIC_FFMMPEG_PARAMS=" -c:a libmp3lame -b:a 320k "
+      BITRATE=`mediainfo $3 | grep "Bit rate" | grep "kb/s" | cut -d ":" -f 2 | cut -d " " -f 2`k
+
+      MEDIA_SPECIFIC_FFMMPEG_PARAMS=" -c:a libmp3lame -b:a $BITRATE "
       AVOID_SG_HACK_05DB="yes"
     fi
 
