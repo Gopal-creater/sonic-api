@@ -46,7 +46,7 @@ import {
 } from '@nestjs/swagger';
 import * as uniqid from 'uniqid';
 import { JwtAuthGuard } from '../../auth/guards';
-import { User } from '../../auth/decorators';
+import { RolesAllowed, User } from '../../auth/decorators';
 import { FileHandlerService } from '../../../shared/services/file-handler.service';
 import { DownloadDto } from '../dtos/download.dto';
 import * as appRootPath from 'app-root-path';
@@ -54,7 +54,7 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { Response } from 'express';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
-import { ChannelEnums } from '../../../constants/Enums';
+import { ChannelEnums, Roles } from '../../../constants/Enums';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 import { DetectionService } from '../../detection/detection.service';
 import {
@@ -65,6 +65,7 @@ import { LicenseValidationGuard } from '../../licensekey/guards/license-validati
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
 import { ConditionalAuthGuard } from '../../auth/guards/conditional-auth.guard';
 import { Detection } from 'src/api/detection/schemas/detection.schema';
+import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
 
 /**
  * Prabin:
@@ -138,6 +139,18 @@ export class SonickeyController {
   ) {
     createSonicKeyDto.owner = owner;
     return this.sonicKeyService.createFromJob(createSonicKeyDto);
+  }
+
+  @RolesAllowed(Roles.ADMIN)
+  @Get('/list-sonickeys')
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @ApiBearerAuth()
+  @AnyApiQueryTemplate()
+  @ApiOperation({ summary: 'List Sonic Keys' })
+  async listSonickeys(
+    @Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto,
+  ) {
+    return this.sonicKeyService.getAll(parsedQueryDto);
   }
 
   @Get('/owners/:ownerId')

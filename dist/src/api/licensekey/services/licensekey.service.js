@@ -114,7 +114,11 @@ let LicensekeyService = class LicensekeyService {
             disabled: false,
             suspended: false,
             validity: { $gte: startOfToday },
-            $or: [{ isUnlimitedMonitor: true }, { createdBy: 'system_generate' }, { createdBy: 'auto_generate' }],
+            $or: [
+                { isUnlimitedMonitor: true },
+                { createdBy: 'system_generate' },
+                { createdBy: 'auto_generate' },
+            ],
         });
         return license;
     }
@@ -126,12 +130,46 @@ let LicensekeyService = class LicensekeyService {
             disabled: false,
             suspended: false,
             validity: { $gte: startOfToday },
-            $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }]
+            $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }],
         });
         return validLicenseForMonitor;
     }
+    async findValidLicesesForUser(user, filter) {
+        var now = new Date();
+        var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var validLicenses;
+        var userFromDb = await this.userService.userModel.findById(user);
+        userFromDb = userFromDb.depopulate('companies');
+        var validLicenseForUser = await this.licenseKeyModel.find(Object.assign({ disabled: false, suspended: false, validity: { $gte: startOfToday }, 'owners.ownerId': user }, filter));
+        if (validLicenseForUser.length > 0) {
+            validLicenses = validLicenseForUser;
+        }
+        else {
+            var validLicenseForUserWithInCompany = await this.licenseKeyModel.aggregate([
+                {
+                    $match: Object.assign({ disabled: false, suspended: false, validity: { $gte: startOfToday } }, filter),
+                },
+                {
+                    $lookup: {
+                        from: 'User',
+                        localField: 'owners.ownerId',
+                        foreignField: '_id',
+                        as: 'owners.ownerId',
+                    },
+                },
+                { $addFields: { 'owners.ownerId': { $first: '$owners.ownerId' } } },
+                {
+                    $match: {
+                        'owners.ownerId.companies': { $in: userFromDb.companies }
+                    },
+                },
+            ]);
+            validLicenses = validLicenseForUserWithInCompany;
+        }
+        return validLicenseForUser;
+    }
     async findAll(queryDto) {
-        const { limit, skip, sort, page, filter, select, populate } = queryDto;
+        const { limit, skip, sort, page, filter, relationalFilter, select, populate } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
         paginateOptions['select'] = select;
@@ -139,7 +177,24 @@ let LicensekeyService = class LicensekeyService {
         paginateOptions['offset'] = skip;
         paginateOptions['page'] = page;
         paginateOptions['limit'] = limit;
-        return await this.licenseKeyModel['paginate'](filter, paginateOptions);
+        const aggregate = this.licenseKeyModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owners.ownerId',
+                    foreignField: '_id',
+                    as: 'owners.ownerId',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+        ]);
+        return await this.licenseKeyModel['aggregatePaginate'](aggregate, paginateOptions);
     }
     async validateLicence(id) {
         var validationResult = {
@@ -310,9 +365,7 @@ let LicensekeyService = class LicensekeyService {
     }
     async getCount(queryDto) {
         const { filter, includeGroupData } = queryDto;
-        return this.licenseKeyModel
-            .find(filter || {})
-            .count();
+        return this.licenseKeyModel.find(filter || {}).count();
     }
     async getEstimateCount() {
         return this.licenseKeyModel.estimatedDocumentCount();

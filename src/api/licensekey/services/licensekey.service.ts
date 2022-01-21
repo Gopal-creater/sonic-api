@@ -8,13 +8,14 @@ import {
 import { CreateLicensekeyDto } from '../dto/create-licensekey.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { LicenseKey, LKOwner, LKReserve } from '../schemas/licensekey.schema';
-import { Model } from 'mongoose';
+import { Model, FilterQuery } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import * as _ from 'lodash';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateLicensekeyDto } from '../dto/mongoosepaginate-licensekey.dto';
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { UserService } from '../../user/services/user.service';
+import { UserDB } from '../../user/schemas/user.db.schema';
 
 type usesFor = 'encode' | 'decode' | 'monitor';
 
@@ -42,7 +43,7 @@ export class LicensekeyService {
 
   /**
    * This will give them unlimited encodes and Monitoring for 7 months.
-   * @returns 
+   * @returns
    */
   createUnlimitedMonitoringLicense() {
     const key = uuidv4();
@@ -57,23 +58,23 @@ export class LicensekeyService {
     return newLicenseKey.save();
   }
 
-   /**
+  /**
    * This will give them unlimited encodes and Monitoring for 7 months.
-   * @returns 
+   * @returns
    */
-    createDefaultLicenseToAssignUser() {
-      const key = uuidv4();
-      const newLicenseKey = new this.licenseKeyModel({
-        _id: key,
-        key: key,
-        name: `7 Month Unlimited Monitoring & Encode_${Date.now()}`,
-        isUnlimitedMonitor: true,
-        isUnlimitedEncode: true,
-        validity: new Date(new Date().setMonth(new Date().getMonth() + 7)),
-        createdBy: 'system_generate',
-      });
-      return newLicenseKey.save();
-    }
+  createDefaultLicenseToAssignUser() {
+    const key = uuidv4();
+    const newLicenseKey = new this.licenseKeyModel({
+      _id: key,
+      key: key,
+      name: `7 Month Unlimited Monitoring & Encode_${Date.now()}`,
+      isUnlimitedMonitor: true,
+      isUnlimitedEncode: true,
+      validity: new Date(new Date().setMonth(new Date().getMonth() + 7)),
+      createdBy: 'system_generate',
+    });
+    return newLicenseKey.save();
+  }
 
   async findOrCreateUnlimitedMonitoringLicense() {
     var now = new Date();
@@ -83,7 +84,7 @@ export class LicensekeyService {
       now.getDate(),
     );
     var license = await this.licenseKeyModel.findOne({
-      $or:[{createdBy: 'system_generate'},{createdBy: 'auto_generate'}],
+      $or: [{ createdBy: 'system_generate' }, { createdBy: 'auto_generate' }],
       isUnlimitedMonitor: true,
       disabled: false,
       suspended: false,
@@ -103,7 +104,7 @@ export class LicensekeyService {
       now.getDate(),
     );
     var license = await this.licenseKeyModel.findOne({
-      $or:[{createdBy: 'system_generate'},{createdBy: 'auto_generate'}],
+      $or: [{ createdBy: 'system_generate' }, { createdBy: 'auto_generate' }],
       isUnlimitedMonitor: true,
       isUnlimitedEncode: true,
       disabled: false,
@@ -128,7 +129,11 @@ export class LicensekeyService {
       disabled: false,
       suspended: false,
       validity: { $gte: startOfToday },
-      $or: [{ isUnlimitedMonitor: true },{ createdBy: 'system_generate' }, { createdBy: 'auto_generate' }],
+      $or: [
+        { isUnlimitedMonitor: true },
+        { createdBy: 'system_generate' },
+        { createdBy: 'auto_generate' },
+      ],
     });
     return license;
   }
@@ -140,20 +145,71 @@ export class LicensekeyService {
       now.getMonth(),
       now.getDate(),
     );
-    var validLicenseForMonitor =await this.licenseKeyModel.findOne({
+    var validLicenseForMonitor = await this.licenseKeyModel.findOne({
       'owners.ownerId': userId,
       disabled: false,
       suspended: false,
       validity: { $gte: startOfToday },
-      $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0} }]
-    })
-    return validLicenseForMonitor
+      $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }],
+    });
+    return validLicenseForMonitor;
+  }
+
+  async findValidLicesesForUser(user: string, filter: FilterQuery<LicenseKey>) {
+    var now = new Date();
+    var startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+    var validLicenses: LicenseKey[];
+    var userFromDb= await this.userService.userModel.findById(user)
+    userFromDb = userFromDb.depopulate('companies')
+
+    var validLicenseForUser = await this.licenseKeyModel.find({
+      disabled: false,
+      suspended: false,
+      validity: { $gte: startOfToday },
+      'owners.ownerId': user,
+      ...filter,
+    });
+    if (validLicenseForUser.length>0) {
+      validLicenses = validLicenseForUser;
+    } else {
+      var validLicenseForUserWithInCompany:LicenseKey[] = await this.licenseKeyModel.aggregate([
+        {
+          $match: {
+            disabled: false,
+            suspended: false,
+            validity: { $gte: startOfToday },
+            ...filter
+          },
+        },
+        {
+          $lookup: {
+            //populate radioStation from its relational table
+            from: 'User',
+            localField: 'owners.ownerId',
+            foreignField: '_id',
+            as: 'owners.ownerId',
+          },
+        },
+        { $addFields: { 'owners.ownerId': { $first: '$owners.ownerId' } } },
+        {
+          $match: {
+            'owners.ownerId.companies':{$in:userFromDb.companies}
+          },
+        },
+      ])
+      validLicenses=validLicenseForUserWithInCompany
+    }
+    return validLicenseForUser;
   }
 
   async findAll(
     queryDto: ParsedQueryDto,
   ): Promise<MongoosePaginateLicensekeyDto> {
-    const { limit, skip, sort, page, filter, select, populate } = queryDto;
+    const { limit, skip, sort, page, filter,relationalFilter, select, populate } = queryDto;
     var paginateOptions = {};
     paginateOptions['sort'] = sort;
     paginateOptions['select'] = select;
@@ -162,7 +218,29 @@ export class LicensekeyService {
     paginateOptions['page'] = page;
     paginateOptions['limit'] = limit;
 
-    return await this.licenseKeyModel['paginate'](filter, paginateOptions);
+    const aggregate = this.licenseKeyModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'User',
+          localField: 'owners.ownerId',
+          foreignField: '_id',
+          as: 'owners.ownerId',
+        },
+      },
+      { $addFields: { owner: { $first: '$owner' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+    ])
+    return await this.licenseKeyModel['aggregatePaginate'](aggregate, paginateOptions);
   }
 
   async validateLicence(id: string) {
@@ -250,32 +328,36 @@ export class LicensekeyService {
     return licenseKey.save();
   }
 
-  async allowedForIncrementUses(id: string, usesFor: usesFor, incrementBy: number = 1) {
+  async allowedForIncrementUses(
+    id: string,
+    usesFor: usesFor,
+    incrementBy: number = 1,
+  ) {
     const licenseKey = await this.licenseKeyModel.findById(id);
-    if (!licenseKey) return false
+    if (!licenseKey) return false;
     if (usesFor == 'decode') {
       if (!licenseKey.isUnlimitedDecode) {
         licenseKey.decodeUses = licenseKey.decodeUses + incrementBy;
         if (licenseKey.decodeUses > licenseKey.maxDecodeUses) {
-          return false
+          return false;
         }
       }
     } else if (usesFor == 'encode') {
       if (!licenseKey.isUnlimitedEncode) {
         licenseKey.encodeUses = licenseKey.encodeUses + incrementBy;
         if (licenseKey.encodeUses > licenseKey.maxEncodeUses) {
-          return false
+          return false;
         }
       }
     } else if (usesFor == 'monitor') {
       if (!licenseKey.isUnlimitedMonitor) {
         licenseKey.monitoringUses = licenseKey.monitoringUses + incrementBy;
         if (licenseKey.monitoringUses > licenseKey.maxMonitoringUses) {
-          return false
+          return false;
         }
       }
     }
-    return true
+    return true;
   }
 
   async decrementUses(id: string, usesFor: usesFor, decrementBy: number = 1) {
@@ -312,43 +394,45 @@ export class LicensekeyService {
     return licenseKey.save();
   }
 
-  async allowedForDecrementUses(id: string, usesFor: usesFor, decrementBy: number = 1) {
+  async allowedForDecrementUses(
+    id: string,
+    usesFor: usesFor,
+    decrementBy: number = 1,
+  ) {
     const licenseKey = await this.licenseKeyModel.findById(id);
-    if (!licenseKey) return false
+    if (!licenseKey) return false;
     if (usesFor == 'decode') {
       if (!licenseKey.isUnlimitedDecode) {
         licenseKey.decodeUses = licenseKey.decodeUses - decrementBy;
         if (licenseKey.decodeUses < 0) {
-          return false
+          return false;
         }
       }
     } else if (usesFor == 'encode') {
       if (!licenseKey.isUnlimitedEncode) {
         licenseKey.encodeUses = licenseKey.encodeUses - decrementBy;
         if (licenseKey.encodeUses < 0) {
-          return false
+          return false;
         }
       }
     } else if (usesFor == 'monitor') {
       if (!licenseKey.isUnlimitedMonitor) {
         licenseKey.monitoringUses = licenseKey.monitoringUses - decrementBy;
         if (licenseKey.monitoringUses < 0) {
-          return false
+          return false;
         }
       }
     }
-    return true
+    return true;
   }
 
   async getCount(queryDto: ParsedQueryDto) {
     const { filter, includeGroupData } = queryDto;
-    return this.licenseKeyModel
-      .find(filter || {})
-      .count()
+    return this.licenseKeyModel.find(filter || {}).count();
   }
 
   async getEstimateCount() {
-    return this.licenseKeyModel.estimatedDocumentCount()
+    return this.licenseKeyModel.estimatedDocumentCount();
   }
 
   async resetUses(id: string, usesFor: usesFor | 'both') {

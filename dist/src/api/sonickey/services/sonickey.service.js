@@ -76,7 +76,7 @@ let SonickeyService = class SonickeyService {
         return newSonicKey.save();
     }
     async getAll(queryDto) {
-        const { limit, skip, sort, page, filter, select, populate, includeGroupData, } = queryDto;
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
         paginateOptions['select'] = select;
@@ -84,7 +84,27 @@ let SonickeyService = class SonickeyService {
         paginateOptions['offset'] = skip;
         paginateOptions['page'] = page;
         paginateOptions['limit'] = limit;
-        return await this.sonicKeyModel['paginate'](filter, paginateOptions);
+        const aggregate = this.sonicKeyModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ createdAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+        ]);
+        return await this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
     }
     async getCount(queryDto) {
         const { filter, includeGroupData } = queryDto;

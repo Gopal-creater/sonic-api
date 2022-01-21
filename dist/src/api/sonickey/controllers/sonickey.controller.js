@@ -51,6 +51,7 @@ const license_validation_guard_1 = require("../../licensekey/guards/license-vali
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
 const detection_schema_1 = require("../../detection/schemas/detection.schema");
+const role_based_guard_1 = require("../../auth/guards/role-based.guard");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
@@ -70,6 +71,9 @@ let SonickeyController = class SonickeyController {
     async createForJob(createSonicKeyDto, owner, req) {
         createSonicKeyDto.owner = owner;
         return this.sonicKeyService.createFromJob(createSonicKeyDto);
+    }
+    async listSonickeys(parsedQueryDto) {
+        return this.sonicKeyService.getAll(parsedQueryDto);
     }
     async getOwnersKeys(ownerId, parsedQueryDto) {
         parsedQueryDto.filter['owner'] = ownerId;
@@ -349,7 +353,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys' }),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
@@ -385,13 +389,26 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "createForJob", null);
 __decorate([
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.Get('/list-sonickeys'),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({ summary: 'List Sonic Keys' }),
+    openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "listSonickeys", null);
+__decorate([
     common_1.Get('/owners/:ownerId'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user' }),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
     __param(0, common_1.Param('ownerId')),
     __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
@@ -404,7 +421,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular job' }),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
     __param(0, common_1.Param('jobId')),
     __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
