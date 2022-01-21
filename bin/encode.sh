@@ -17,10 +17,10 @@
 # !!! IMPORANT: Change BIN_PATH according to the installation folder.
 # -----------------------------------------------------------------------------------------
 
-BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/web/linux/build/
-BIN_WATERMARK=encode
-#BIN_PATH="$BINARY_PATH"
-#BIN_WATERMARK="$BINARY_WATERMARK"
+# BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/web/linux/build/
+# BIN_WATERMARK=encode
+BIN_PATH="$BINARY_PATH"
+BIN_WATERMARK="$BINARY_WATERMARK"
 
 WATERMARK=$BIN_PATH/$BIN_WATERMARK
 if [[ -f "$WATERMARK" && -x "$WATERMARK" ]]
