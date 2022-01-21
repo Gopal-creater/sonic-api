@@ -549,7 +549,7 @@ export class UserService {
    * @returns
    */
   async cognitoCreateUser(cognitoCreateUserDTO: CognitoCreateUserDTO) {
-    const {
+    var {
       userName,
       email,
       group,
@@ -592,8 +592,8 @@ export class UserService {
       .adminCreateUser(registerNewUserParams)
       .promise();
     // Once user created in cognito save it to our database too
-    const username = cognitoUserCreated.User.Username;
-    var userDb = await this.syncUserFromCognitoToMongooDb(username);
+    userName = cognitoUserCreated.User.Username;
+    var userDb = await this.syncUserFromCognitoToMongooDb(userName);
     if (group) {
       const groupDb = await this.groupService.findById(group);
       await this.adminAddUserToGroup(userName, groupDb.name).catch(err => {

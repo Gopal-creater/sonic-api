@@ -417,7 +417,7 @@ let UserService = class UserService {
         });
     }
     async cognitoCreateUser(cognitoCreateUserDTO) {
-        const { userName, email, group, company, password, phoneNumber, isEmailVerified, isPhoneNumberVerified, sendInvitationByEmail, } = cognitoCreateUserDTO;
+        var { userName, email, group, company, password, phoneNumber, isEmailVerified, isPhoneNumberVerified, sendInvitationByEmail, } = cognitoCreateUserDTO;
         var registerNewUserParams = {
             UserPoolId: this.cognitoUserPoolId,
             Username: userName,
@@ -450,8 +450,8 @@ let UserService = class UserService {
         const cognitoUserCreated = await this.cognitoIdentityServiceProvider
             .adminCreateUser(registerNewUserParams)
             .promise();
-        const username = cognitoUserCreated.User.Username;
-        var userDb = await this.syncUserFromCognitoToMongooDb(username);
+        userName = cognitoUserCreated.User.Username;
+        var userDb = await this.syncUserFromCognitoToMongooDb(userName);
         if (group) {
             const groupDb = await this.groupService.findById(group);
             await this.adminAddUserToGroup(userName, groupDb.name).catch(err => {
