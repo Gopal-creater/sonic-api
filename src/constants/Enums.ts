@@ -52,3 +52,9 @@ export enum EC2InstanceMetadata {
   'public_hostname' = 'public-hostname',
   'public_ipv4' = 'public-ipv4',
 }
+
+export enum Platform {
+  'Apple' = 'Apple',
+  'Windows' = 'Windows',
+  'Linux' = 'Linux'
+}

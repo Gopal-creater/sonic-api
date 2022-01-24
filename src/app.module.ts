@@ -30,6 +30,8 @@ import { RadiomonitorModule } from './api/radiomonitor/radiomonitor.module';
 import { HttpModule } from '@nestjs/axios';
 import { Ec2InstanceService } from './shared/services/ec2instance.service';
 import { PaymentModule } from './api/payment/payment.module';
+import { AppVersionModule } from './api/appversions/appversions.module';
+
 mongoosePaginate.paginate.options = {
   limit: 50,
 };
@@ -98,6 +100,7 @@ var connectionNo=0
     S3FileUploadModule,
     RadiomonitorModule,
     PaymentModule,
+    AppVersionModule
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway, Ec2InstanceService],
