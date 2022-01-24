@@ -140,6 +140,27 @@ export class RadiostationController {
     });
   }
 
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @AnyApiQueryTemplate()
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get count of all radiostations also accept filter as query params',
+  })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
+    return this.radiostationService.getCount(queryDto);
+  }
+
+  @Get('/estimate-count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get all count of all radiostations',
+  })
+  async getEstimateCount() {
+    return this.radiostationService.getEstimateCount();
+  }
+
   @Post()
   @RolesAllowed(Roles.ADMIN)
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
@@ -172,20 +193,6 @@ export class RadiostationController {
   @ApiOperation({ summary: 'Get All Radio Stations' })
   findAll(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto) {
     return this.radiostationService.findAll(queryDto);
-  }
-
-  @Get('/count')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary:
-      'Get count of all radiostations also accept filter as query params',
-  })
-  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
-    const filter = queryDto.filter || {};
-    return this.radiostationService.radioStationModel
-      .where(filter)
-      .countDocuments();
   }
 
   @Get(':id')

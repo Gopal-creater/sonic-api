@@ -27,7 +27,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from 'src/api/auth/decorators';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 import { CreateSonicKeyFromBinaryDto } from '../dtos/create-sonickey.dto';
-import { ApiKeyAuthGuard } from '../../api-key/guards/apikey-auth.guard';
+import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';

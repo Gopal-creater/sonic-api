@@ -13,7 +13,7 @@ import { LicensekeyService } from '../licensekey/services/licensekey.service';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateRadioMonitorDto } from './dto/mongoosepaginate-radiomonitordto';
 import { MonitorGroupsEnum } from 'src/constants/Enums';
-import { UserService } from '../user/user.service';
+import { UserService } from '../user/services/user.service';
 
 @Injectable()
 export class RadioMonitorService {
@@ -359,13 +359,14 @@ export class RadioMonitorService {
     usernameOrSub: string,
     unlimitedMonitoringLicense?: string,
   ) {
-    const user = await this.userService.getUserProfile(usernameOrSub, true);
+    const user = await this.userService.getUserProfile(usernameOrSub);
     if (!user) {
       return Promise.reject({
         status: 404,
         message: 'User not found',
       });
     }
+    user.groups=user.groups.map(grp=>grp.name)
     if (
       !(
         user?.groups?.includes(MonitorGroupsEnum.AIM) ||

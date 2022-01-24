@@ -12,7 +12,7 @@ import {
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
-import { UserService } from '../user/user.service';
+import { UserService } from '../user/services/user.service';
 
 @Injectable()
 export class AuthService {

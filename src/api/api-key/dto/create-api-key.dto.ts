@@ -1,14 +1,6 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { ApiKey } from '../schemas/api-key.schema';
 import { ApiKeyType } from 'src/constants/Enums';
-// export class CreateApiKeyDto extends OmitType(ApiKey, [
-//     'disabled',
-//     'customer',
-//     'suspended',
-//     'validity',
-//     'groups',
-//     'type'
-//   ]) {}
 
   export class CreateApiKeyDto{
     @ApiProperty()
@@ -16,6 +8,9 @@ import { ApiKeyType } from 'src/constants/Enums';
   
     @ApiProperty({type:String,isArray:true})
     groups: [string];
+
+    @ApiProperty()
+    company: string;
   
     @ApiProperty()
     validity?: Date;
@@ -42,6 +37,9 @@ import { ApiKeyType } from 'src/constants/Enums';
   
     @ApiProperty({type:String,isArray:true})
     groups: [string];
+
+    @ApiProperty()
+    company: string;
   
     @ApiProperty()
     validity?: Date;

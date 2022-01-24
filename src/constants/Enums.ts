@@ -17,7 +17,7 @@ export enum Permissions {
 
 export enum ApiKeyType {
   INDIVIDUAL = 'Individual',
-  GROUP = 'Group',
+  COMPANY = 'Company',
 }
 
 export enum S3ACL {
@@ -38,7 +38,19 @@ export enum Roles {
   ADMIN = 'Admin',
   AIM='AIM',
   AFEM='AFEM',
+  PORTAL_USER='PortalUser',
+  WPMS_USER='WPMSUser',
+  COMPANY_ADMIN='CompanyAdmin',
   THIRDPARTY_ADMIN='ThirdPartyAdmin'
+}
+
+export enum SystemGroup {
+  ADMIN = 'Admin',
+  PORTAL_USER='PortalUser',
+  AIM='AIM',
+  AFEM='AFEM',
+  WPMS_USER='WPMSUser',
+  COMPANY_ADMIN='CompanyAdmin'
 }
 
 export enum EC2InstanceMetadata {

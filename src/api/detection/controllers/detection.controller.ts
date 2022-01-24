@@ -23,13 +23,15 @@ import {
   ApiTags,
   ApiQuery,
 } from '@nestjs/swagger';
-import { ChannelEnums } from 'src/constants/Enums';
+import { ChannelEnums, Roles } from 'src/constants/Enums';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
-import { ApiKeyAuthGuard } from '../../api-key/guards/apikey-auth.guard';
+import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
+import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
+import { RolesAllowed } from 'src/api/auth/decorators';
 
 @ApiTags('Detection Controller')
 @Controller('detections')
@@ -39,49 +41,27 @@ export class DetectionController {
     private readonly sonickeyServive: SonickeyService,
   ) {}
 
-  // @Get('/test-add')
-  // async addDummy() {
-  //   return this.detectionService.findGraphOfSonicKeysForRadioStationInSpecificTime(
-  //     '609d86cc81fe3a1573217507',
-  //     'month',
-  //     {
-  //       detectedAt: { $gte: new Date('2021/1/1'), $lt: new Date('2022/1/1') },
-  //       owner:"5728f50d-146b-47d2-aa7b-a50bc37d641d"
-  //     },
-  //   );
-  // }
-
-  // @Get('/test-add-data')
-  // async addDum() {
-  //   const sonicKey = {
-  //     key: 'SctBt6A7eMZ',
-  //     owner: '5728f50d-146b-47d2-aa7b-a50bc37d641d',
-  //     contentOwner: 'ArBa owner details with spaces',
-  //   };
-  //   const radio = {
-  //     id: '609d86cc81fe3a1573217507',
-  //     owner: '5728f50d-146b-47d2-aa7b-a50bc37d641d',
-  //   };
-  //   const newDetection = await this.detectionService.detectionModel.create({
-  //     radioStation: radio.id,
-  //     sonicKey: sonicKey.key,
-  //     owner: radio.owner,
-  //     sonicKeyOwnerId: sonicKey.owner,
-  //     sonicKeyOwnerName: sonicKey.contentOwner,
-  //     channel: ChannelEnums.RADIOSTATION,
-  //     detectedAt: new Date('2021/8/1'),
-  //   });
-  //   await newDetection.save();
-  // }
-
-  // @Get()
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
-  // @AnyApiQueryTemplate()
-  // @ApiOperation({ summary: 'Get All Detections' })
-  // findAll(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto) {
-  //   return this.detectionService.findAll(queryDto);
-  // }
+  @Get('/list-plays')
+  @ApiQuery({
+    name: 'channel',
+    enum: [...Object.values(ChannelEnums), 'ALL'],
+    required: false,
+  })
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @ApiBearerAuth()
+  @AnyApiQueryTemplate({
+    additionalHtmlDescription:`<div>
+      To Get plays for specific company ?relation_owner.companies=companyId <br/>
+      To Get plays for specific user ?relation_owner.id=ownerId
+    <div>`
+  })
+  @ApiOperation({ summary: 'Get All Plays' })
+  listPlays(
+    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+  ) {
+    return this.detectionService.listPlays(queryDto);
+  }
 
   @ApiSecurity('x-api-key')
   @ApiOperation({
@@ -155,7 +135,28 @@ export class DetectionController {
   @ApiOperation({
     summary: 'Get count of all detection also accept filter as query params',
   })
-  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
+  async getTotalHitsCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
     return this.detectionService.getTotalHitsCount(queryDto)
+  }
+
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @AnyApiQueryTemplate()
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get count of all detections also accept filter as query params',
+  })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
+    return this.detectionService.getCount(queryDto);
+  }
+
+  @Get('/estimate-count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get all count of all detections',
+  })
+  async getEstimateCount() {
+    return this.detectionService.getEstimateCount();
   }
 }

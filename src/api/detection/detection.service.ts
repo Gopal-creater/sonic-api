@@ -10,7 +10,7 @@ import {
 import { ChannelEnums } from 'src/constants/Enums';
 import { toObjectId } from 'src/shared/utils/mongoose.utils';
 import { groupByTime } from 'src/shared/types';
-import { UserService } from '../user/user.service';
+import { UserService } from '../user/services/user.service';
 import * as makeDir from 'make-dir';
 import * as appRootPath from 'app-root-path';
 import * as fs from 'fs';
@@ -655,6 +655,34 @@ export class DetectionService {
       },
       { $addFields: { radioStation: { $first: '$radioStation' } } },
       {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'User',
+          localField: 'owner',
+          foreignField: '_id',
+          as: 'owner',
+        },
+      },
+      { $addFields: { owner: { $first: '$owner' } } },
+      // {
+      //   $lookup: {
+      //     //populate radioStation from its relational table
+      //     from: 'Company',
+      //     localField: 'owner.companies',
+      //     foreignField: '_id',
+      //     as: 'owner.companies',
+      //   },
+      // },
+      // {
+      //   $lookup: {
+      //     //populate radioStation from its relational table
+      //     from: 'Group',
+      //     localField: 'owner.groups',
+      //     foreignField: '_id',
+      //     as: 'owner.groups',
+      //   },
+      // },
+      {
         $match: {
           ...relationalFilter,
         },
@@ -750,23 +778,21 @@ export class DetectionService {
 
   async getTotalHitsCount(queryDto: ParsedQueryDto) {
     const { filter, includeGroupData } = queryDto;
-    // if (includeGroupData && filter.owner) {
-    //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
-    //   const usergroups = await this.userService.adminListGroupsForUser(
-    //     filter.owner,
-    //   );
-    //   if (usergroups.groupNames.length > 0) {
-    //     filter['$or'] = [
-    //       { groups: { $all: usergroups.groupNames } },
-    //       { owner: filter.owner },
-    //     ];
-    //     delete filter.owner;
-    //   }
-    // }
     return this.detectionModel
       .find(filter || {})
       .countDocuments()
       .exec();
+  }
+
+  async getCount(queryDto: ParsedQueryDto) {
+    const { filter, includeGroupData } = queryDto;
+    return this.detectionModel
+      .find(filter || {})
+      .count()
+  }
+
+  async getEstimateCount() {
+    return this.detectionModel.estimatedDocumentCount()
   }
 
   /*

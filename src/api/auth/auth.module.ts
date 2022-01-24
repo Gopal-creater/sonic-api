@@ -8,13 +8,16 @@ import { ApiKeyModule } from '../api-key/api-key.module';
 import { LicensekeyModule } from '../licensekey/licensekey.module';
 import { UserModule } from '../user/user.module';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { ApiKeyAuthGuard } from '../api-key/guards/apikey-auth.guard';
+import { ApiKeyAuthGuard } from './guards/apikey-auth.guard';
+import { CompanyModule } from '../company/company.module';
+
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+  PassportModule.register({ defaultStrategy: 'jwt' }),
     ApiKeyModule,
     LicensekeyModule,
     UserModule,
+    CompanyModule
   ],
   providers: [
     AuthConfig,
@@ -24,6 +27,6 @@ import { ApiKeyAuthGuard } from '../api-key/guards/apikey-auth.guard';
     ApiKeyAuthGuard,
   ],
   controllers: [AuthController],
-  exports: [JwtAuthGuard, ApiKeyAuthGuard],
+  exports: [JwtAuthGuard, ApiKeyAuthGuard,CompanyModule,ApiKeyModule],
 })
 export class AuthModule {}

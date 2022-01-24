@@ -26,7 +26,7 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { DetectionService } from '../../detection/detection.service';
 import { ChannelEnums } from 'src/constants/Enums';
-import { ApiKeyAuthGuard } from '../../api-key/guards/apikey-auth.guard';
+import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
 
 @ApiTags('ThirdParty-Binary Controller (protected by x-api-key)')

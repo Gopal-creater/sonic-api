@@ -3,7 +3,8 @@ import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { Roles } from 'src/constants/Enums';
 import { ForbiddenException } from '@nestjs/common';
-import { UserSession } from '../../user/schemas/user.schema';
+import { UserDB } from '../../user/schemas/user.db.schema';
+import { Group } from 'src/api/group/schemas/group.schema';
 
 @Injectable()
 export class RoleBasedGuard implements CanActivate {
@@ -25,8 +26,8 @@ export class RoleBasedGuard implements CanActivate {
       return true;
     }
     const request = context.switchToHttp().getRequest();
-    const currentUser = request?.user as UserSession
-    const userRoles = currentUser['cognito:groups'] || [];
+    const currentUser = request?.user as UserDB
+    const userRoles:Group[] = currentUser['groups'] || [];
     const isAllowed = this.matchRoles(roles, userRoles);
     if(!isAllowed){
       throw new ForbiddenException("You dont have permission to do this.")
@@ -34,7 +35,7 @@ export class RoleBasedGuard implements CanActivate {
     return true
   }
 
-  matchRoles(definedRoles: string[], userRoles: string[]): boolean {
-    return userRoles.some((role: string) => definedRoles.includes(role));
+  matchRoles(definedRoles: string[], userRoles: Group[]): boolean {
+    return userRoles.some((role) => definedRoles.includes(role.name));
   }
 }

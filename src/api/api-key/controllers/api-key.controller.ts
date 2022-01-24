@@ -1,9 +1,27 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards, Query, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+  NotFoundException,
+} from '@nestjs/common';
 import { ApiKeyService } from '../api-key.service';
-import { AdminCreateApiKeyDto, CreateApiKeyDto } from '../dto/create-api-key.dto';
+import {
+  AdminCreateApiKeyDto
+} from '../dto/create-api-key.dto';
 import { UpdateApiKeyDto } from '../dto/update-api-key.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { IsTargetUserLoggedInGuard } from '../../auth/guards/isTargetUserLoggedIn.guard';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
@@ -18,91 +36,130 @@ import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
  */
 @ApiTags('Apikey Management Controller')
 @Controller({
-  path:'api-keys'
+  path: 'api-keys',
 })
 export class ApiKeyController {
   constructor(private readonly apiKeyService: ApiKeyService) {}
-  
+
   @Post()
   @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Api Key' })
   async create(@Body() createApiKeyDto: AdminCreateApiKeyDto) {
-    console.log("createApiKeyDto",createApiKeyDto)
-    if(createApiKeyDto.type==ApiKeyType.INDIVIDUAL){
-      const user = await this.apiKeyService.userService.getUserProfile(createApiKeyDto.customer)
-      if(!user) throw new NotFoundException("Unknown user")
-      createApiKeyDto.customer=user?.sub
-    }else if(createApiKeyDto.type==ApiKeyType.GROUP){
-      const group = await this.apiKeyService.userService.getGroup(createApiKeyDto.groups?.[0])
-      if(!group) throw new NotFoundException("Unknown group")
+    if (createApiKeyDto.type == ApiKeyType.INDIVIDUAL) {
+      const user = await this.apiKeyService.userService.getUserProfile(
+        createApiKeyDto.customer,
+      );
+      if (!user) throw new NotFoundException('Unknown user');
+      createApiKeyDto.customer = user?.sub;
+    } else if (createApiKeyDto.type == ApiKeyType.COMPANY) {
+      const company = await this.apiKeyService.companyService.findById(
+        createApiKeyDto.company,
+      );
+      if (!company) throw new NotFoundException('Unknown company');
+      if (!company?.owner?.sub)
+        throw new NotFoundException(
+          'The given company doesnot have any valid admin user',
+        );
+      createApiKeyDto.customer = company.owner.sub
     }
     return this.apiKeyService.create(createApiKeyDto);
   }
 
   @Get()
   @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All ApiKeys' })
-  findAll(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,) {
-    console.log("Query",queryDto);
-    
+  findAll(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto) {
     return this.apiKeyService.findAll(queryDto);
   }
 
-  @Get('/count')
-  @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get count of all api-keys also accept filter as query params' })
-  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto,) {
-    const filter = queryDto.filter || {}
-    return this.apiKeyService.apiKeyModel.where(filter).countDocuments();
-}
-
   @Get(':id')
   @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Single Api key' })
   async findOne(@Param('id') id: string) {
-    const apiKey = await this.apiKeyService.apiKeyModel.findById(id)
-    if(!apiKey){
-      throw new NotFoundException()
+    const apiKey = await this.apiKeyService.findById(id);
+    if (!apiKey) {
+      throw new NotFoundException();
     }
-    return apiKey
+    return apiKey;
   }
 
   @Put(':id')
   @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Single Api key' })
   async update(
     @Param('id') id: string,
     @Body() updateApiKeyDto: UpdateApiKeyDto,
   ) {
-    const updatedApiKey = await this.apiKeyService.apiKeyModel.findOneAndUpdate({_id:id},updateApiKeyDto,{new:true})
-    if(!updatedApiKey){
-      throw new NotFoundException()
+    const apiKey = await this.apiKeyService.findById(id);
+    if (!apiKey) {
+      throw new NotFoundException();
     }
-    return updatedApiKey
+    if (
+      updateApiKeyDto.type == ApiKeyType.INDIVIDUAL &&
+      updateApiKeyDto.customer
+    ) {
+      const user = await this.apiKeyService.userService.getUserProfile(
+        updateApiKeyDto.customer,
+      );
+      if (!user) throw new NotFoundException('Unknown user');
+      updateApiKeyDto.customer = user?.sub;
+    } else if (
+      updateApiKeyDto.type == ApiKeyType.COMPANY &&
+      updateApiKeyDto.company
+    ) {
+      const company = await this.apiKeyService.companyService.findById(
+        updateApiKeyDto.company,
+      );
+      if (!company) throw new NotFoundException('Unknown company');
+      if (!company?.owner?.sub)
+        throw new NotFoundException(
+          'The given company doesnot have any valid admin user',
+        );
+      updateApiKeyDto.customer = company.owner.sub;
+    }
+    return this.apiKeyService.update(id, updateApiKeyDto);
+  }
+
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @AnyApiQueryTemplate()
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get count of all apikeys also accept filter as query params',
+  })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
+    return this.apiKeyService.getCount(queryDto);
+  }
+
+  @Get('/estimate-count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get all count of all apikeys',
+  })
+  async getEstimateCount() {
+    return this.apiKeyService.getEstimateCount();
   }
 
   @Delete(':id')
   @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete Api key' })
   async remove(@Param('id') id: string) {
-    return this.apiKeyService.removeById(id).catch(err=>{
-      if(err.status==404){
-        throw new NotFoundException()
-      }
-      throw err
-    })
+    const apiKey = await this.apiKeyService.findById(id);
+    if (!apiKey) {
+      throw new NotFoundException();
+    }
+    return this.apiKeyService.removeById(id);
   }
 }

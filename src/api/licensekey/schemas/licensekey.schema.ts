@@ -8,8 +8,8 @@ export const LicenseKeySchemaName = 'LicenseKey';
 @Schema()
 export class LKOwner{
   @ApiProperty()
-  @Prop({required:true})
-  ownerId: string;
+  @Prop({ type: String, ref: 'User',required:true,autopopulate: true})
+  ownerId: any;
 
   @ApiProperty()
   @Prop({required:true})

@@ -22,7 +22,7 @@ import { ChannelEnums, S3ACL } from '../../../constants/Enums';
 import { S3FileUploadService } from '../../s3fileupload/s3fileupload.service';
 import { DetectionService } from '../../detection/detection.service';
 import { Detection } from 'src/api/detection/schemas/detection.schema';
-import { UserService } from '../../user/user.service';
+import { UserService } from '../../user/services/user.service';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -99,7 +99,7 @@ export class SonickeyService {
     return newSonicKey.save();
   }
 
-  async getAll(queryDto: ParsedQueryDto) {
+  async getAll(queryDto: ParsedQueryDto):Promise<MongoosePaginateSonicKeyDto> {
     const {
       limit,
       skip,
@@ -108,7 +108,7 @@ export class SonickeyService {
       filter,
       select,
       populate,
-      includeGroupData,
+      relationalFilter
     } = queryDto;
     var paginateOptions = {};
     paginateOptions['sort'] = sort;
@@ -117,48 +117,46 @@ export class SonickeyService {
     paginateOptions['offset'] = skip;
     paginateOptions['page'] = page;
     paginateOptions['limit'] = limit;
-    // if (includeGroupData && filter.owner) {
-    //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
-    //   const usergroups = await this.userService.adminListGroupsForUser(
-    //     filter.owner,
-    //   );
-    //   if (usergroups.groupNames.length > 0) {
-    //     filter['$or'] = [
-    //       { groups: { $all: usergroups.groupNames } },
-    //       { owner: filter.owner },
-    //     ];
-    //     delete filter.owner;
-    //   }
-    // }
-    // return this.sonicKeyModel
-    //   .find(filter || {})
-    //   .skip(skip)
-    //   .limit(limit)
-    //   .sort(sort)
-    //   .count()
-    //   .exec();
-    return await this.sonicKeyModel['paginate'](filter, paginateOptions);
+    const aggregate=this.sonicKeyModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+          ...sort,
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'User',
+          localField: 'owner',
+          foreignField: '_id',
+          as: 'owner',
+        },
+      },
+      { $addFields: { owner: { $first: '$owner' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+    ])
+    return await this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
   }
 
   async getCount(queryDto: ParsedQueryDto) {
     const { filter, includeGroupData } = queryDto;
-    // if (includeGroupData && filter.owner) {
-    //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
-    //   const usergroups = await this.userService.adminListGroupsForUser(
-    //     filter.owner,
-    //   );
-    //   if (usergroups.groupNames.length > 0) {
-    //     filter['$or'] = [
-    //       { groups: { $all: usergroups.groupNames } },
-    //       { owner: filter.owner },
-    //     ];
-    //     delete filter.owner;
-    //   }
-    // }
     return this.sonicKeyModel
       .find(filter || {})
-      .countDocuments()
-      .exec();
+      .count()
+  }
+
+  async getEstimateCount() {
+    return this.sonicKeyModel.estimatedDocumentCount()
   }
 
   /**

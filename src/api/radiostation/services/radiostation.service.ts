@@ -452,6 +452,10 @@ export class RadiostationService {
       .exec();
   }
 
+  async getEstimateCount() {
+    return this.radioStationModel.estimatedDocumentCount()
+  }
+
   async updateFromJson() {
     // const stationsArr = stationslist.stations;
     // for await (const station of stationsArr) {

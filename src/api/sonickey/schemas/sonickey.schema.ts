@@ -46,7 +46,10 @@ export class SonicKey extends Document {
 
   @ApiProperty()
   @Prop({
-    required: true
+    required: true,
+    type:String,
+    ref:'User',
+    autopopulate: false
   })
   owner: string;
 

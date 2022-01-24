@@ -1,12 +1,14 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { CreateApiKeyDto } from './dto/create-api-key.dto';
-import { UpdateApiKeyDto } from './dto/update-api-key.dto';
+import { Injectable, UnprocessableEntityException,Inject, forwardRef } from '@nestjs/common';
+import { AdminCreateApiKeyDto } from './dto/create-api-key.dto';
+import { AdminUpdateApiKeyDto } from './dto/update-api-key.dto';
 import { ApiKey } from './schemas/api-key.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateApiKeyDto } from './dto/mongoosepaginate-apikey.dto';
-import { UserService } from '../user/user.service';
+import { UserService } from '../user/services/user.service';
+import { CompanyService } from '../company/company.service';
+import { ApiKeyType } from 'src/constants/Enums';
 
 @Injectable()
 export class ApiKeyService {
@@ -14,12 +16,80 @@ export class ApiKeyService {
     @InjectModel(ApiKey.name)
     public readonly apiKeyModel: Model<ApiKey>,
 
-    public readonly userService: UserService
+    @Inject(forwardRef(()=>UserService))
+    public readonly userService: UserService,
+    public readonly companyService: CompanyService
   ) {}
 
-  create(createApiKeyDto: CreateApiKeyDto) {
-    const newApiKey = new this.apiKeyModel(createApiKeyDto);
+  async create(createApiKeyDto: AdminCreateApiKeyDto) {
+    const newApiKey = await this.apiKeyModel.create(createApiKeyDto);
     return newApiKey.save();
+  }
+
+  async findOrCreateApiKeyForCompanyUser(user:string,company:string){
+    var now = new Date();
+    var startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+    var apiKey = await this.apiKeyModel.findOne({
+      customer:user,
+      type:ApiKeyType.INDIVIDUAL,
+      disabled: false,
+      revoked:false,
+      suspended: false,
+      validity: { $gte: startOfToday },
+    });
+    if(!apiKey){
+      apiKey = await this.createDefaultApiKeyForCompanyUser(user,company)
+    }
+    return apiKey
+  }
+
+  async findOrCreateApiKeyForCompany(user:string,company:string){
+    var now = new Date();
+    var startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+    var apiKey = await this.apiKeyModel.findOne({
+      company:company,
+      type:ApiKeyType.COMPANY,
+      disabled: false,
+      revoked:false,
+      suspended: false,
+      validity: { $gte: startOfToday },
+    });
+    if(!apiKey){
+      apiKey = await this.createDefaultApiKeyForCompany(user,company)
+    }
+    return apiKey
+  }
+
+  async createDefaultApiKeyForCompanyUser(user:string,company:string){
+    const newLicenseKey =  await this.apiKeyModel.create({
+      customer: user,
+      type: ApiKeyType.INDIVIDUAL,
+      validity: new Date(new Date().setMonth(new Date().getMonth() + 7)),
+      createdBy: 'system_generate',
+      metaData:{
+        proceedByCompany:company
+      }
+    });
+    return newLicenseKey.save()
+  }
+
+  async createDefaultApiKeyForCompany(user:string,company:string){
+    const newLicenseKey =  await this.apiKeyModel.create({
+      customer: user,
+      company:company,
+      type: ApiKeyType.COMPANY,
+      validity: new Date(new Date().setMonth(new Date().getMonth() + 7)),
+      createdBy: 'system_generate'
+    });
+    return newLicenseKey.save()
   }
 
   async makeEnableDisable(id:string,disabled:boolean){
@@ -51,12 +121,29 @@ export class ApiKeyService {
 
 
     return await this.apiKeyModel["paginate"](filter,paginateOptions)
-    // return this.apiKeyModel
-    //   .find(query || {})
-    //   .skip(_offset)
-    //   .limit(_limit)
-    //   .sort(sort)
-    //   .exec();
+  }
+
+  async getCount(queryDto: ParsedQueryDto) {
+    const { filter, includeGroupData } = queryDto;
+    return this.apiKeyModel
+      .find(filter || {})
+      .count()
+  }
+
+  findOne(filter: FilterQuery<ApiKey>) {
+    return this.apiKeyModel.findOne(filter);
+  }
+
+  findById(id: string) {
+    return this.apiKeyModel.findById(id);
+  }
+
+  update(id: string, updateUserDto: AdminUpdateApiKeyDto) {
+    return this.apiKeyModel.findByIdAndUpdate(id, updateUserDto,{new:true});
+  }
+
+  async getEstimateCount() {
+    return this.apiKeyModel.estimatedDocumentCount()
   }
 
   async removeById(id: string) {

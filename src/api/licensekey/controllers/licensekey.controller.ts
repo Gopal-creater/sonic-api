@@ -64,18 +64,27 @@ export class LicensekeyController {
   }
 
   @Get('/count')
-  @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard)
+  @AnyApiQueryTemplate()
+  @ApiQuery({ name: 'includeGroupData', type: Boolean, required: false })
   @ApiBearerAuth()
   @ApiOperation({
-    summary: 'Get count of all license-keys also accept filter as query params',
+    summary: 'Get count of all licenskeys also accept filter as query params',
   })
   async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
-    const filter = queryDto.filter || {};
-    return this.licensekeyService.licenseKeyModel
-      .where(filter)
-      .countDocuments();
+    return this.licensekeyService.getCount(queryDto);
   }
+
+  @Get('/estimate-count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get all count of all licenskeys',
+  })
+  async getEstimateCount() {
+    return this.licensekeyService.getEstimateCount();
+  }
+  
 
   @Get(':id')
   @RolesAllowed(Roles.ADMIN)
