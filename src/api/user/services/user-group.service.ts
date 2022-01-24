@@ -29,7 +29,7 @@ export class UserGroupService {
       return alreadyInGroup;
     }
     return this.userModel.findOneAndUpdate(
-      { _id: user.id },
+      { _id: user._id },
       {
         $push: {
           groups: group,

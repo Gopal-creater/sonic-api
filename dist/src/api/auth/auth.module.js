@@ -38,7 +38,7 @@ AuthModule = __decorate([
             apikey_auth_guard_1.ApiKeyAuthGuard,
         ],
         controllers: [auth_controller_1.AuthController],
-        exports: [jwt_auth_guard_1.JwtAuthGuard, apikey_auth_guard_1.ApiKeyAuthGuard, company_module_1.CompanyModule],
+        exports: [jwt_auth_guard_1.JwtAuthGuard, apikey_auth_guard_1.ApiKeyAuthGuard, company_module_1.CompanyModule, api_key_module_1.ApiKeyModule],
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;

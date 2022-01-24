@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException,Inject, forwardRef } from '@nestjs/common';
 import { AdminCreateApiKeyDto } from './dto/create-api-key.dto';
 import { AdminUpdateApiKeyDto } from './dto/update-api-key.dto';
 import { ApiKey } from './schemas/api-key.schema';
@@ -8,6 +8,7 @@ import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateApiKeyDto } from './dto/mongoosepaginate-apikey.dto';
 import { UserService } from '../user/services/user.service';
 import { CompanyService } from '../company/company.service';
+import { ApiKeyType } from 'src/constants/Enums';
 
 @Injectable()
 export class ApiKeyService {
@@ -15,6 +16,7 @@ export class ApiKeyService {
     @InjectModel(ApiKey.name)
     public readonly apiKeyModel: Model<ApiKey>,
 
+    @Inject(forwardRef(()=>UserService))
     public readonly userService: UserService,
     public readonly companyService: CompanyService
   ) {}
@@ -22,6 +24,72 @@ export class ApiKeyService {
   async create(createApiKeyDto: AdminCreateApiKeyDto) {
     const newApiKey = await this.apiKeyModel.create(createApiKeyDto);
     return newApiKey.save();
+  }
+
+  async findOrCreateApiKeyForCompanyUser(user:string,company:string){
+    var now = new Date();
+    var startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+    var apiKey = await this.apiKeyModel.findOne({
+      customer:user,
+      type:ApiKeyType.INDIVIDUAL,
+      disabled: false,
+      revoked:false,
+      suspended: false,
+      validity: { $gte: startOfToday },
+    });
+    if(!apiKey){
+      apiKey = await this.createDefaultApiKeyForCompanyUser(user,company)
+    }
+    return apiKey
+  }
+
+  async findOrCreateApiKeyForCompany(user:string,company:string){
+    var now = new Date();
+    var startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+    var apiKey = await this.apiKeyModel.findOne({
+      company:company,
+      type:ApiKeyType.COMPANY,
+      disabled: false,
+      revoked:false,
+      suspended: false,
+      validity: { $gte: startOfToday },
+    });
+    if(!apiKey){
+      apiKey = await this.createDefaultApiKeyForCompany(user,company)
+    }
+    return apiKey
+  }
+
+  async createDefaultApiKeyForCompanyUser(user:string,company:string){
+    const newLicenseKey =  await this.apiKeyModel.create({
+      customer: user,
+      type: ApiKeyType.INDIVIDUAL,
+      validity: new Date(new Date().setMonth(new Date().getMonth() + 7)),
+      createdBy: 'system_generate',
+      metaData:{
+        proceedByCompany:company
+      }
+    });
+    return newLicenseKey.save()
+  }
+
+  async createDefaultApiKeyForCompany(user:string,company:string){
+    const newLicenseKey =  await this.apiKeyModel.create({
+      customer: user,
+      company:company,
+      type: ApiKeyType.COMPANY,
+      validity: new Date(new Date().setMonth(new Date().getMonth() + 7)),
+      createdBy: 'system_generate'
+    });
+    return newLicenseKey.save()
   }
 
   async makeEnableDisable(id:string,disabled:boolean){

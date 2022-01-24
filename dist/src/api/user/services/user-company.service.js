@@ -40,7 +40,7 @@ let UserCompanyService = class UserCompanyService {
         await this.userService.adminAddUserToGroup(user.username, `COM_${company.name}`)
             .catch(err => console.warn("Warning: Error adding user to cognito group", err));
         const alreadyInCompany = await this.userModel.findOne({
-            _id: user.id,
+            _id: user._id,
             companies: { $in: [company._id] },
         });
         if (alreadyInCompany) {

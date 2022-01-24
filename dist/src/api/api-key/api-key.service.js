@@ -19,6 +19,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const user_service_1 = require("../user/services/user.service");
 const company_service_1 = require("../company/company.service");
+const Enums_1 = require("../../constants/Enums");
 let ApiKeyService = class ApiKeyService {
     constructor(apiKeyModel, userService, companyService) {
         this.apiKeyModel = apiKeyModel;
@@ -28,6 +29,60 @@ let ApiKeyService = class ApiKeyService {
     async create(createApiKeyDto) {
         const newApiKey = await this.apiKeyModel.create(createApiKeyDto);
         return newApiKey.save();
+    }
+    async findOrCreateApiKeyForCompanyUser(user, company) {
+        var now = new Date();
+        var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var apiKey = await this.apiKeyModel.findOne({
+            customer: user,
+            type: Enums_1.ApiKeyType.INDIVIDUAL,
+            disabled: false,
+            revoked: false,
+            suspended: false,
+            validity: { $gte: startOfToday },
+        });
+        if (!apiKey) {
+            apiKey = await this.createDefaultApiKeyForCompanyUser(user, company);
+        }
+        return apiKey;
+    }
+    async findOrCreateApiKeyForCompany(user, company) {
+        var now = new Date();
+        var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var apiKey = await this.apiKeyModel.findOne({
+            company: company,
+            type: Enums_1.ApiKeyType.COMPANY,
+            disabled: false,
+            revoked: false,
+            suspended: false,
+            validity: { $gte: startOfToday },
+        });
+        if (!apiKey) {
+            apiKey = await this.createDefaultApiKeyForCompany(user, company);
+        }
+        return apiKey;
+    }
+    async createDefaultApiKeyForCompanyUser(user, company) {
+        const newLicenseKey = await this.apiKeyModel.create({
+            customer: user,
+            type: Enums_1.ApiKeyType.INDIVIDUAL,
+            validity: new Date(new Date().setMonth(new Date().getMonth() + 7)),
+            createdBy: 'system_generate',
+            metaData: {
+                proceedByCompany: company
+            }
+        });
+        return newLicenseKey.save();
+    }
+    async createDefaultApiKeyForCompany(user, company) {
+        const newLicenseKey = await this.apiKeyModel.create({
+            customer: user,
+            company: company,
+            type: Enums_1.ApiKeyType.COMPANY,
+            validity: new Date(new Date().setMonth(new Date().getMonth() + 7)),
+            createdBy: 'system_generate'
+        });
+        return newLicenseKey.save();
     }
     async makeEnableDisable(id, disabled) {
         const oldApiKey = await this.apiKeyModel.findById(id);
@@ -89,6 +144,7 @@ let ApiKeyService = class ApiKeyService {
 ApiKeyService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(api_key_schema_1.ApiKey.name)),
+    __param(1, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         user_service_1.UserService,
         company_service_1.CompanyService])

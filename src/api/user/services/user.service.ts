@@ -29,6 +29,7 @@ import { CompanyService } from '../../company/company.service';
 import { Roles } from 'src/constants/Enums';
 import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
 import { MongoosePaginateUserDto } from '../dtos/mongoosepaginate-user.dto';
+import { ApiKeyService } from '../../api-key/api-key.service';
 
 @Injectable()
 export class UserService {
@@ -37,14 +38,16 @@ export class UserService {
   constructor(
     @Inject(forwardRef(() => LicensekeyService))
     private readonly licensekeyService: LicensekeyService,
+    @Inject(forwardRef(() => ApiKeyService))
+    public readonly apiKeyService: ApiKeyService,
     private readonly globalAwsService: GlobalAwsService,
     private readonly groupService: GroupService,
     private readonly companyService: CompanyService,
     @InjectModel(UserSchemaName)
     public readonly userModel: Model<UserDB>,
     private readonly configService: ConfigService,
-    private readonly userGroupService: UserGroupService,
-    private readonly userCompanyService: UserCompanyService,
+    public readonly userGroupService: UserGroupService,
+    public readonly userCompanyService: UserCompanyService,
 
     @Inject(forwardRef(() => RadioMonitorService))
     private readonly radioMonitorService: RadioMonitorService,
@@ -557,10 +560,10 @@ export class UserService {
       group,
       company,
       password,
-      phoneNumber,
-      isEmailVerified,
-      isPhoneNumberVerified,
-      sendInvitationByEmail,
+      phoneNumber="",
+      isEmailVerified=false,
+      isPhoneNumberVerified=false,
+      sendInvitationByEmail=false,
     } = cognitoCreateUserDTO;
     var registerNewUserParams = {
       UserPoolId: this.cognitoUserPoolId,
@@ -573,7 +576,7 @@ export class UserService {
         },
         {
           Name: 'email_verified',
-          Value: isEmailVerified.toString(),
+          Value: isEmailVerified?.toString?.(),
         },
         {
           Name: 'phone_number',
@@ -581,10 +584,16 @@ export class UserService {
         },
         {
           Name: 'phone_number_verified',
-          Value: isPhoneNumberVerified.toString(),
+          Value: isPhoneNumberVerified?.toString?.(),
         },
       ],
     };
+    // if(phoneNumber){
+    //   registerNewUserParams.UserAttributes.push({
+    //     Name: 'phone_number',
+    //     Value: phoneNumber,
+    //   })
+    // }
     if (sendInvitationByEmail) {
       registerNewUserParams['DesiredDeliveryMediums'] = ['EMAIL'];
     } else {
@@ -653,6 +662,14 @@ export class UserService {
 
   findById(id: string) {
     return this.userModel.findById(id);
+  }
+
+  findByEmail(email: string) {
+    return this.userModel.findOne({email:email});
+  }
+
+  findByUsername(username: string) {
+    return this.userModel.findOne({username:username});
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {

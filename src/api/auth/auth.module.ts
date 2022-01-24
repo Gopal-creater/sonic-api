@@ -27,6 +27,6 @@ import { CompanyModule } from '../company/company.module';
     ApiKeyAuthGuard,
   ],
   controllers: [AuthController],
-  exports: [JwtAuthGuard, ApiKeyAuthGuard,CompanyModule],
+  exports: [JwtAuthGuard, ApiKeyAuthGuard,CompanyModule,ApiKeyModule],
 })
 export class AuthModule {}

@@ -31,6 +31,7 @@ const group_service_1 = require("../../group/group.service");
 const company_service_1 = require("../../company/company.service");
 const user_db_schema_1 = require("../schemas/user.db.schema");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
+const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
 let UserController = class UserController {
     constructor(userServices, groupService, companyService, licensekeyService) {
         this.userServices = userServices;
@@ -73,6 +74,28 @@ let UserController = class UserController {
     async getUserProfile(user) {
         return user;
     }
+    async companyFindOrCreateUser(loggedInUser, companyFindOrCreateUser) {
+        const cognitoCreateUser = Object.assign({}, companyFindOrCreateUser, new index_1.CognitoCreateUserDTO());
+        const adminCompany = await this.companyService
+            .findById(loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany._id)
+            .catch(err => {
+            throw new common_1.ForbiddenException(err.message || 'Autenticated User must be an admin of valid company');
+        });
+        cognitoCreateUser.company = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany._id;
+        cognitoCreateUser.group = Enums_1.SystemGroup.PORTAL_USER;
+        const { email, userName } = cognitoCreateUser;
+        var userInDb = await this.userServices.findByEmail(email);
+        if (userInDb) {
+            userInDb = await this.userServices.userCompanyService.addUserToCompany(userInDb, adminCompany);
+        }
+        else {
+            const userCreated = await this.userServices.cognitoCreateUser(cognitoCreateUser);
+            userInDb = userCreated.userDb;
+        }
+        return {
+            user: userInDb,
+        };
+    }
     async cognitoCreateUser(cognitoCreateUserDto) {
         if (cognitoCreateUserDto.group) {
             await this.groupService
@@ -92,12 +115,13 @@ let UserController = class UserController {
     }
     async syncUsers(user) {
         if (user) {
-            const cognitoUser = await this.userServices.getCognitoUser(user)
+            const cognitoUser = await this.userServices
+                .getCognitoUser(user)
                 .catch(err => {
-                throw new common_1.NotFoundException("Invalid user");
+                throw new common_1.NotFoundException('Invalid user');
             });
             if (!cognitoUser)
-                throw new common_1.NotFoundException("User not found in cognito");
+                throw new common_1.NotFoundException('User not found in cognito');
             return this.userServices.syncUserFromCognitoToMongooDb(user);
         }
         return this.userServices.syncUsersFromCognitoToMongooDb();
@@ -208,6 +232,21 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserProfile", null);
 __decorate([
+    common_1.Post('/company-find-or-create-user'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.COMPANY_ADMIN),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Company find or create user' }),
+    openapi.ApiResponse({ status: 201 }),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB,
+        index_1.CompanyFindOrCreateUser]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "companyFindOrCreateUser", null);
+__decorate([
     common_1.Post('admin-create-user'),
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.THIRDPARTY_ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
@@ -222,7 +261,7 @@ __decorate([
     common_1.Get('sync-with-cognito'),
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.THIRDPARTY_ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiQuery({ name: "user", type: String, required: false }),
+    swagger_1.ApiQuery({ name: 'user', type: String, required: false }),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Sync user from cognito to our database' }),
     openapi.ApiResponse({ status: 200, type: Object }),

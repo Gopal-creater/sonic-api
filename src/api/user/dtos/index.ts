@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { RegisterDTO } from '../../auth/dto/register.dto';
 import { IsNotEmpty } from 'class-validator';
 export class AddNewLicenseDto {
@@ -66,6 +66,7 @@ export class UpdateProfileDto {
   attributes: [{ Name: string; Value: any }];
 }
 
+
 export class CognitoCreateUserDTO {
   @ApiProperty()
   @IsNotEmpty()
@@ -97,3 +98,5 @@ export class CognitoCreateUserDTO {
   @ApiProperty()
   sendInvitationByEmail: boolean;
 }
+
+export class CompanyFindOrCreateUser extends OmitType(CognitoCreateUserDTO,['company','group']){}

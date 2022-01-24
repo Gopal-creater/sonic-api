@@ -11,16 +11,21 @@ import { GroupModule } from '../group/group.module';
 import { CompanyModule } from '../company/company.module';
 import { UserGroupController } from './controllers/user-group.controller';
 import { UserCompanyController } from './controllers/user-company.controller';
+import { AuthModule } from '../auth/auth.module';
+import { ApiKeyModule } from '../api-key/api-key.module';
+
 @Module({
   imports: [
     forwardRef(() => LicensekeyModule),
     forwardRef(() => RadiomonitorModule),
     MongooseModule.forFeature([{ name: UserSchemaName, schema: UserSchema }]),
     GroupModule,
+    forwardRef(() => ApiKeyModule),
     CompanyModule,
+    forwardRef(() => AuthModule),
   ],
   controllers: [UserController, UserGroupController, UserCompanyController],
-  providers: [UserGroupService, UserCompanyService,UserService],
-  exports: [UserGroupService, UserCompanyService,UserService],
+  providers: [UserGroupService, UserCompanyService, UserService],
+  exports: [UserGroupService, UserCompanyService, UserService],
 })
 export class UserModule {}

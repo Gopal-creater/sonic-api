@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CognitoCreateUserDTO = exports.UpdateProfileDto = exports.AddBulkNewLicensesDto = exports.RemoveUserFromCompanyDto = exports.MakeAdminCompanyDto = exports.AddUserToCompanyDto = exports.RemoveUserFromGroupDto = exports.AddUserToGroupDto = exports.AddNewLicenseDto = void 0;
+exports.CompanyFindOrCreateUser = exports.CognitoCreateUserDTO = exports.UpdateProfileDto = exports.AddBulkNewLicensesDto = exports.RemoveUserFromCompanyDto = exports.MakeAdminCompanyDto = exports.AddUserToCompanyDto = exports.RemoveUserFromGroupDto = exports.AddUserToGroupDto = exports.AddNewLicenseDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class AddNewLicenseDto {
@@ -140,4 +140,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], CognitoCreateUserDTO.prototype, "sendInvitationByEmail", void 0);
 exports.CognitoCreateUserDTO = CognitoCreateUserDTO;
+class CompanyFindOrCreateUser extends swagger_1.OmitType(CognitoCreateUserDTO, ['company', 'group']) {
+}
+exports.CompanyFindOrCreateUser = CompanyFindOrCreateUser;
 //# sourceMappingURL=index.js.map

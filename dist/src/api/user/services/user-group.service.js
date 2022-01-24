@@ -44,7 +44,7 @@ let UserGroupService = class UserGroupService {
         if (alreadyInGroup) {
             return alreadyInGroup;
         }
-        return this.userModel.findOneAndUpdate({ _id: user.id }, {
+        return this.userModel.findOneAndUpdate({ _id: user._id }, {
             $push: {
                 groups: group,
             },

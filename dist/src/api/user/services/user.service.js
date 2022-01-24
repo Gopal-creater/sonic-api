@@ -37,9 +37,11 @@ const group_service_1 = require("../../group/group.service");
 const company_service_1 = require("../../company/company.service");
 const Enums_1 = require("../../../constants/Enums");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
+const api_key_service_1 = require("../../api-key/api-key.service");
 let UserService = class UserService {
-    constructor(licensekeyService, globalAwsService, groupService, companyService, userModel, configService, userGroupService, userCompanyService, radioMonitorService) {
+    constructor(licensekeyService, apiKeyService, globalAwsService, groupService, companyService, userModel, configService, userGroupService, userCompanyService, radioMonitorService) {
         this.licensekeyService = licensekeyService;
+        this.apiKeyService = apiKeyService;
         this.globalAwsService = globalAwsService;
         this.groupService = groupService;
         this.companyService = companyService;
@@ -419,7 +421,8 @@ let UserService = class UserService {
         });
     }
     async cognitoCreateUser(cognitoCreateUserDTO) {
-        var { userName, email, group, company, password, phoneNumber, isEmailVerified, isPhoneNumberVerified, sendInvitationByEmail, } = cognitoCreateUserDTO;
+        var _a, _b;
+        var { userName, email, group, company, password, phoneNumber = "", isEmailVerified = false, isPhoneNumberVerified = false, sendInvitationByEmail = false, } = cognitoCreateUserDTO;
         var registerNewUserParams = {
             UserPoolId: this.cognitoUserPoolId,
             Username: userName,
@@ -431,7 +434,7 @@ let UserService = class UserService {
                 },
                 {
                     Name: 'email_verified',
-                    Value: isEmailVerified.toString(),
+                    Value: (_a = isEmailVerified === null || isEmailVerified === void 0 ? void 0 : isEmailVerified.toString) === null || _a === void 0 ? void 0 : _a.call(isEmailVerified),
                 },
                 {
                     Name: 'phone_number',
@@ -439,7 +442,7 @@ let UserService = class UserService {
                 },
                 {
                     Name: 'phone_number_verified',
-                    Value: isPhoneNumberVerified.toString(),
+                    Value: (_b = isPhoneNumberVerified === null || isPhoneNumberVerified === void 0 ? void 0 : isPhoneNumberVerified.toString) === null || _b === void 0 ? void 0 : _b.call(isPhoneNumberVerified),
                 },
             ],
         };
@@ -494,6 +497,12 @@ let UserService = class UserService {
     findById(id) {
         return this.userModel.findById(id);
     }
+    findByEmail(email) {
+        return this.userModel.findOne({ email: email });
+    }
+    findByUsername(username) {
+        return this.userModel.findOne({ username: username });
+    }
     update(id, updateUserDto) {
         return this.userModel.findByIdAndUpdate(id, updateUserDto);
     }
@@ -511,9 +520,11 @@ let UserService = class UserService {
 UserService = __decorate([
     common_1.Injectable(),
     __param(0, common_1.Inject(common_1.forwardRef(() => licensekey_service_1.LicensekeyService))),
-    __param(4, mongoose_1.InjectModel(user_db_schema_1.UserSchemaName)),
-    __param(8, common_1.Inject(common_1.forwardRef(() => radiomonitor_service_1.RadioMonitorService))),
+    __param(1, common_1.Inject(common_1.forwardRef(() => api_key_service_1.ApiKeyService))),
+    __param(5, mongoose_1.InjectModel(user_db_schema_1.UserSchemaName)),
+    __param(9, common_1.Inject(common_1.forwardRef(() => radiomonitor_service_1.RadioMonitorService))),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService,
+        api_key_service_1.ApiKeyService,
         global_aws_service_1.GlobalAwsService,
         group_service_1.GroupService,
         company_service_1.CompanyService,
