@@ -52,6 +52,14 @@ export class Company extends Document {
     autopopulate: true,
   })
   owner: any;
+
+  @ApiProperty()
+  @Prop()
+  createdBy: string;
+
+  @ApiProperty()
+  @Prop()
+  updatedBy: string;
   
 }
 

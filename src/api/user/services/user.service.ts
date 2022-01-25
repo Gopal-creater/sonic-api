@@ -637,7 +637,7 @@ export class UserService {
   }
 
   async addDefaultLicenseToUser(ownerIdOrUsername: string) {
-    const defaultLicense = await this.licensekeyService.findOrCreateDefaultLicenseToAssignUser();
+    const defaultLicense = await this.licensekeyService.createDefaultLicenseToAssignUser();
     return this.addNewLicense(defaultLicense.key, ownerIdOrUsername);
   }
 

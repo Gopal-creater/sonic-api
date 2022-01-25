@@ -481,7 +481,7 @@ let UserService = class UserService {
         return this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(usernameOrSub);
     }
     async addDefaultLicenseToUser(ownerIdOrUsername) {
-        const defaultLicense = await this.licensekeyService.findOrCreateDefaultLicenseToAssignUser();
+        const defaultLicense = await this.licensekeyService.createDefaultLicenseToAssignUser();
         return this.addNewLicense(defaultLicense.key, ownerIdOrUsername);
     }
     async create(createUserDto) {

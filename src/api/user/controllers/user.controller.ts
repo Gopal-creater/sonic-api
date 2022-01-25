@@ -162,36 +162,29 @@ export class UserController {
       new CognitoCreateUserDTO(),
     );
 
-    const adminCompany = await this.companyService
-      .findById(loggedInUser?.adminCompany._id)
-      .catch(err => {
-        throw new ForbiddenException(
-          err.message || 'Autenticated User must be an admin of valid company',
-        );
-      });
-    cognitoCreateUser.company = loggedInUser?.adminCompany._id;
+    // const adminCompany = await this.companyService
+    //   .findById(loggedInUser?.adminCompany._id)
+    //   .catch(err => {
+    //     throw new ForbiddenException(
+    //       err.message || 'Autenticated User must be an admin of valid company',
+    //     );
+    //   });
+    // cognitoCreateUser.company = loggedInUser?.adminCompany._id;
 
-    //Add Default Group for newly created user
-    cognitoCreateUser.group = SystemGroup.PORTAL_USER;
     const { email, userName } = cognitoCreateUser;
     //Check if user already present if preseent return existing user orelse create new user
     var userInDb = await this.userServices.findByEmail(email);
-    if (userInDb) {
-      userInDb = await this.userServices.userCompanyService.addUserToCompany(
-        userInDb,
-        adminCompany,
-      );
-    } else {
+    if (!userInDb) {
       const userCreated = await this.userServices.cognitoCreateUser(
         cognitoCreateUser,
       );
       userInDb = userCreated.userDb;
     }
-    // const apiKey = await this.userServices.apiKeyService.findOrCreateApiKeyForCompanyUser(userInDb._id,adminCompany._id)
+    const apiKey = await this.userServices.apiKeyService.findOrCreateApiKeyForCompanyUser(userInDb._id,loggedInUser._id)
 
     return {
-      user:userInDb,
-      // apiKey:apiKey
+      user: userInDb,
+      apiKey:apiKey
     };
   }
 

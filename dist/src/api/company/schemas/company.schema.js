@@ -74,6 +74,16 @@ __decorate([
     }),
     __metadata("design:type", Object)
 ], Company.prototype, "owner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], Company.prototype, "createdBy", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], Company.prototype, "updatedBy", void 0);
 Company = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.CompanySchemaName })
 ], Company);

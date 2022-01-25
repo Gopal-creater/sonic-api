@@ -29,6 +29,7 @@ import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytempl
 import { RolesAllowed } from '../../auth/decorators/roles.decorator';
 import { Roles, ApiKeyType } from 'src/constants/Enums';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
+import { User } from 'src/api/auth/decorators';
 
 /**
  * Accept this key asa x-api-key header from client side
@@ -46,7 +47,7 @@ export class ApiKeyController {
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Api Key' })
-  async create(@Body() createApiKeyDto: AdminCreateApiKeyDto) {
+  async create(@User('sub') creatorId: string ,@Body() createApiKeyDto: AdminCreateApiKeyDto) {
     if (createApiKeyDto.type == ApiKeyType.INDIVIDUAL) {
       const user = await this.apiKeyService.userService.getUserProfile(
         createApiKeyDto.customer,
@@ -64,7 +65,7 @@ export class ApiKeyController {
         );
       createApiKeyDto.customer = company.owner.sub
     }
-    return this.apiKeyService.create(createApiKeyDto);
+    return this.apiKeyService.create(createApiKeyDto,creatorId);
   }
 
   @Get()

@@ -76,24 +76,16 @@ let UserController = class UserController {
     }
     async companyFindOrCreateUser(loggedInUser, companyFindOrCreateUser) {
         const cognitoCreateUser = Object.assign({}, companyFindOrCreateUser, new index_1.CognitoCreateUserDTO());
-        const adminCompany = await this.companyService
-            .findById(loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany._id)
-            .catch(err => {
-            throw new common_1.ForbiddenException(err.message || 'Autenticated User must be an admin of valid company');
-        });
-        cognitoCreateUser.company = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany._id;
-        cognitoCreateUser.group = Enums_1.SystemGroup.PORTAL_USER;
         const { email, userName } = cognitoCreateUser;
         var userInDb = await this.userServices.findByEmail(email);
-        if (userInDb) {
-            userInDb = await this.userServices.userCompanyService.addUserToCompany(userInDb, adminCompany);
-        }
-        else {
+        if (!userInDb) {
             const userCreated = await this.userServices.cognitoCreateUser(cognitoCreateUser);
             userInDb = userCreated.userDb;
         }
+        const apiKey = await this.userServices.apiKeyService.findOrCreateApiKeyForCompanyUser(userInDb._id, loggedInUser._id);
         return {
             user: userInDb,
+            apiKey: apiKey
         };
     }
     async cognitoCreateUser(cognitoCreateUserDto) {

@@ -26,11 +26,12 @@ const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anya
 const roles_decorator_1 = require("../../auth/decorators/roles.decorator");
 const Enums_1 = require("../../../constants/Enums");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
+const decorators_1 = require("../../auth/decorators");
 let ApiKeyController = class ApiKeyController {
     constructor(apiKeyService) {
         this.apiKeyService = apiKeyService;
     }
-    async create(createApiKeyDto) {
+    async create(creatorId, createApiKeyDto) {
         var _a;
         if (createApiKeyDto.type == Enums_1.ApiKeyType.INDIVIDUAL) {
             const user = await this.apiKeyService.userService.getUserProfile(createApiKeyDto.customer);
@@ -46,7 +47,7 @@ let ApiKeyController = class ApiKeyController {
                 throw new common_1.NotFoundException('The given company doesnot have any valid admin user');
             createApiKeyDto.customer = company.owner.sub;
         }
-        return this.apiKeyService.create(createApiKeyDto);
+        return this.apiKeyService.create(createApiKeyDto, creatorId);
     }
     findAll(queryDto) {
         return this.apiKeyService.findAll(queryDto);
@@ -103,9 +104,10 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create Api Key' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/api-key.schema").ApiKey }),
-    __param(0, common_1.Body()),
+    __param(0, decorators_1.User('sub')),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_api_key_dto_1.AdminCreateApiKeyDto]),
+    __metadata("design:paramtypes", [String, create_api_key_dto_1.AdminCreateApiKeyDto]),
     __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "create", null);
 __decorate([

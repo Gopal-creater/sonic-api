@@ -65,6 +65,11 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
+    __metadata("design:type", String)
+], ApiKey.prototype, "updatedBy", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", Map)
 ], ApiKey.prototype, "metaData", void 0);
 ApiKey = __decorate([

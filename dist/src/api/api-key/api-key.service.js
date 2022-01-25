@@ -26,11 +26,11 @@ let ApiKeyService = class ApiKeyService {
         this.userService = userService;
         this.companyService = companyService;
     }
-    async create(createApiKeyDto) {
-        const newApiKey = await this.apiKeyModel.create(createApiKeyDto);
+    async create(createApiKeyDto, createdBy) {
+        const newApiKey = await this.apiKeyModel.create(Object.assign(Object.assign({}, createApiKeyDto), { createdBy: createdBy }));
         return newApiKey.save();
     }
-    async findOrCreateApiKeyForCompanyUser(user, company) {
+    async findOrCreateApiKeyForCompanyUser(user, createdBy) {
         var now = new Date();
         var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         var apiKey = await this.apiKeyModel.findOne({
@@ -42,11 +42,11 @@ let ApiKeyService = class ApiKeyService {
             validity: { $gte: startOfToday },
         });
         if (!apiKey) {
-            apiKey = await this.createDefaultApiKeyForCompanyUser(user, company);
+            apiKey = await this.createDefaultApiKeyForCompanyUser(user, createdBy);
         }
         return apiKey;
     }
-    async findOrCreateApiKeyForCompany(user, company) {
+    async findOrCreateApiKeyForCompany(user, company, createdBy) {
         var now = new Date();
         var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         var apiKey = await this.apiKeyModel.findOne({
@@ -58,29 +58,26 @@ let ApiKeyService = class ApiKeyService {
             validity: { $gte: startOfToday },
         });
         if (!apiKey) {
-            apiKey = await this.createDefaultApiKeyForCompany(user, company);
+            apiKey = await this.createDefaultApiKeyForCompany(user, company, createdBy);
         }
         return apiKey;
     }
-    async createDefaultApiKeyForCompanyUser(user, company) {
+    async createDefaultApiKeyForCompanyUser(user, createdBy) {
         const newLicenseKey = await this.apiKeyModel.create({
             customer: user,
             type: Enums_1.ApiKeyType.INDIVIDUAL,
             validity: new Date(new Date().setMonth(new Date().getMonth() + 7)),
-            createdBy: 'system_generate',
-            metaData: {
-                proceedByCompany: company
-            }
+            createdBy: createdBy || 'system_generate'
         });
         return newLicenseKey.save();
     }
-    async createDefaultApiKeyForCompany(user, company) {
+    async createDefaultApiKeyForCompany(user, company, createdBy) {
         const newLicenseKey = await this.apiKeyModel.create({
             customer: user,
             company: company,
             type: Enums_1.ApiKeyType.COMPANY,
             validity: new Date(new Date().setMonth(new Date().getMonth() + 7)),
-            createdBy: 'system_generate'
+            createdBy: createdBy || 'system_generate'
         });
         return newLicenseKey.save();
     }

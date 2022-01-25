@@ -47,6 +47,10 @@ export class ApiKey extends Document { //_id or id will be apikey here, which is
 
   @ApiProperty()
   @Prop()
+  updatedBy?: string;
+
+  @ApiProperty()
+  @Prop()
   metaData?: Map<string, any>;
 }
 
