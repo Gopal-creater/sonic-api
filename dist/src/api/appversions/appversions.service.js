@@ -17,7 +17,6 @@ const file_handler_service_1 = require("../../shared/services/file-handler.servi
 const file_operation_service_1 = require("../../shared/services/file-operation.service");
 const common_1 = require("@nestjs/common");
 const appversions_schema_1 = require("./schemas/appversions.schema");
-const upath = require("upath");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const s3fileupload_service_1 = require("../s3fileupload/s3fileupload.service");
@@ -29,23 +28,20 @@ let AppVersionService = class AppVersionService {
         this.s3FileUploadService = s3FileUploadService;
     }
     async uploadVersionToS3(file, s3Acl) {
-        file.path = upath.toUnix(file.path);
-        file.destination = upath.toUnix(file.destination);
-        const inFilePath = file.path;
-        return this.s3FileUploadService.uploadFromPath(inFilePath, `versions`, s3Acl)
+        return this.s3FileUploadService.upload(file, `versions`, s3Acl)
             .then(s3UploadResult => {
             return {
                 downloadFileUrl: s3UploadResult.Location,
                 s3UploadResult: s3UploadResult
             };
-        })
-            .finally(() => {
-            this.fileHandlerService.deleteFileAtPath(inFilePath);
+        }).catch(err => {
+            throw new common_1.InternalServerErrorException(err);
         });
     }
     async saveVersion(version) {
-        var newVersion = new this.versionModel(Object.assign({}, version));
-        return newVersion.save();
+        const newVersion = new this.versionModel(version);
+        const res = await newVersion.save();
+        return res;
     }
     async findOne(id) {
         return this.versionModel.findOne({ _id: id });
@@ -53,18 +49,33 @@ let AppVersionService = class AppVersionService {
     async getAllVersions() {
         return this.versionModel.find();
     }
-    async downloadLatest(platform) {
-        const response = await this.versionModel.findOne({ latest: true, platform: platform });
-        return this.getFile(response.s3FileMeta.key);
+    async downloadFromVersionCode(versionCode, platform, res) {
+        return this.versionModel.findOne({ versionCode: versionCode, platform: platform })
+            .then(VersionFromCode => {
+            if (!VersionFromCode)
+                throw new common_1.NotFoundException("verson with this version code not found.");
+            return this.s3FileUploadService.downloadFile(VersionFromCode.s3FileMeta.Key, res);
+        }).catch(err => {
+            console.log(err);
+            throw new common_1.InternalServerErrorException(err);
+        });
     }
-    async makeLatest(id) {
-        var res = await this.versionModel.findOne({ 'latest': true });
-        if (res) {
-            return this.versionModel.findByIdAndUpdate(res._id, { latest: false })
-                .then(result => {
+    async downloadLatest(platform, res) {
+        return this.versionModel.findOne({ latest: true, platform: platform })
+            .then(latestVersion => {
+            return this.s3FileUploadService.downloadFile(latestVersion.s3FileMeta.Key, res);
+        });
+    }
+    async makeLatest(id, platform) {
+        let dbResponse = await this.versionModel.findOne({ latest: true, platform: platform });
+        if (dbResponse) {
+            return this.versionModel.findByIdAndUpdate(dbResponse._id, { latest: false })
+                .then(async (result) => {
                 return this.versionModel.findByIdAndUpdate(id, { latest: true }, { new: true })
                     .then(updateRes => {
                     return updateRes;
+                }).catch(err => {
+                    throw new common_1.InternalServerErrorException();
                 });
             });
         }
@@ -72,14 +83,30 @@ let AppVersionService = class AppVersionService {
             return this.versionModel.findByIdAndUpdate(id, { latest: true }, { new: true })
                 .then(updateRes => {
                 return updateRes;
+            }).catch(err => {
+                throw new common_1.InternalServerErrorException(err);
             });
         }
     }
-    async getFile(key) {
-        return this.s3FileUploadService.getFile(key);
+    async getFile(key, res) {
+        console.log("in the service");
+        return this.s3FileUploadService.downloadFile(key, res);
     }
-    async deleteFile(key) {
-        return this.s3FileUploadService.deleteFile(key);
+    async deleteRecordWithFile(id) {
+        let keyToDeleteFromS3;
+        return this.findOne(id)
+            .then(async (toDeleteRecord) => {
+            if (!toDeleteRecord)
+                throw new common_1.NotFoundException("Record not found associated with the passed Id.");
+            keyToDeleteFromS3 = toDeleteRecord.s3FileMeta.Key;
+            return this.s3FileUploadService.deleteFile(keyToDeleteFromS3)
+                .then(async (deleteRecord) => {
+                await this.versionModel.deleteOne({ _id: id });
+                return ({ "message": "record successfully deleted fom db as well as s3." });
+            });
+        }).catch(err => {
+            throw new common_1.InternalServerErrorException(err);
+        });
     }
 };
 AppVersionService = __decorate([

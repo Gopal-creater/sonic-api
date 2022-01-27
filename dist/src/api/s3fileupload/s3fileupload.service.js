@@ -54,6 +54,14 @@ let S3FileUploadService = class S3FileUploadService {
         };
         return this.s3.getObject(params).promise();
     }
+    downloadFile(key, res) {
+        const params = {
+            Bucket: this.bucketName,
+            Key: key,
+        };
+        let s3Data = this.s3.getObject(params).createReadStream();
+        return s3Data.pipe(res);
+    }
     getFiles() {
         const params = {
             Bucket: this.bucketName,

@@ -5,6 +5,7 @@ import { Version } from './dto/version.dto';
 import {
   Controller,
   Post,
+  Res,
   Get,
   Body,
   Delete,
@@ -15,6 +16,7 @@ import {
   InternalServerErrorException,
   Param,
   Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { AppVersionService } from './appversions.service';
 import { AppVersion, S3FileMeta } from './schemas/appversions.schema';
@@ -32,15 +34,12 @@ import {
   ApiConsumes,
   ApiBody,
 } from '@nestjs/swagger';
-import * as uniqid from 'uniqid';
 import { JwtAuthGuard } from '../auth/guards';
-import { User } from '../auth/decorators';
 import { JsonParsePipe } from '../../shared/pipes/jsonparse.pipe';
-import { get } from 'lodash';
-
+import { versionFileFilter } from 'src/shared/filters/version-file-filter';
 
 @ApiTags('AppVersion Controller')
-@Controller('appVersion')
+@Controller('app-version')
 export class AppVersionController {
   constructor(
     private readonly appVersionService: AppVersionService,
@@ -48,20 +47,9 @@ export class AppVersionController {
 
   @UseInterceptors(
     FileInterceptor('mediaFile', {
-      storage: diskStorage({
-        destination: async (req, file, cb) => {
-          const filePath = await makeDir(
-            `${appConfig.MULTER_DEST}/versions`,
-          );
-          cb(null, filePath);
-        },
-        filename: (req, file, cb) => {
-          let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-          const randomName = uniqid();
-          cb(null, `${randomName}-${orgName}`);
-        },
-      }),
-    }),
+      fileFilter: versionFileFilter,
+    }
+    ),
   )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -69,9 +57,9 @@ export class AppVersionController {
     type: UploadAppVersionDto,
   })
   @RolesAllowed(Roles.ADMIN)
- @UseGuards(JwtAuthGuard, RoleBasedGuard) 
-  @Post('/apiVersion/upload')
- @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard) 
+  @Post('/upload')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'upload  version File And save to database' })
   uploadVersion(
    @Body('data', JsonParsePipe) versionDto: Version,
@@ -81,23 +69,43 @@ export class AppVersionController {
     var s3UploadResult: S3FileMeta;
     return this.appVersionService
       .uploadVersionToS3(file)
-      .then(async data => {
+      .then(data => {
         s3UploadResult = data.s3UploadResult as S3FileMeta;
         const newVersion = {
         versionCode: versionDto.versionCode,
         releaseNote: versionDto.releaseNote,
-        latest: versionDto.latest,
-        s3FileMeta: s3UploadResult,
-        platform: versionDto.platform
+        platform: versionDto.platform,
+        contentVersionFilePath:s3UploadResult.Location,
+        originalVersionFileName: file?.originalname,
+        s3FileMeta: s3UploadResult
         };
         return this.appVersionService.saveVersion(newVersion)
-        
+      })
+      .then(saveResult => {
+        if(versionDto.latest){
+          return this.appVersionService.makeLatest(saveResult._id, saveResult.platform)
+        }else{
+          return saveResult;
+        }
       })
       .catch(err => {
         throw new InternalServerErrorException(err);
       })
-      .finally(() => {
-      });
+  }
+
+  @Get('/download-file')
+  downloadVersionFileFromS3(@Query('key') key: string, @Res() res:any){
+   return this.appVersionService.getFile(key, res)
+  }
+
+  @Get('/download-file-from-version-code')
+  downloadFromVersionCode(@Query('versioncode') versionCode:string, @Query('platform') platform:string,  @Res() res:any){
+    return this.appVersionService.downloadFromVersionCode(versionCode, platform, res)
+  }
+
+  @Get('/download-file/latest/:platform')
+  downloadLatest(@Param('platform') platform:string, @Res() res:any){
+    return this.appVersionService.downloadLatest(platform, res)
   }
 
   @Get('/:id')
@@ -114,25 +122,27 @@ export class AppVersionController {
 
   }
 
-  @Get('/downloadFile')
-  downloadVersionFileFromS3(@Query('key') key: string){
-    return this.appVersionService.getFile(key)
-    //versions/1he4rteemkyjxzah0-1he4rteemkyjxzagk-zapsplat_bells_church_bell_ring_12_ext_med_close_43634.mp3
-  }
-
-  @Get('/downloadFile/latest/:platform')
-  downloadLatest(@Param('platform') platform:string){
-    return this.appVersionService.downloadLatest(platform)
-  }
-
   @Post('/markLatest/:id')
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
    makeLatest(@Param('id') id: string){
-     return this.appVersionService.makeLatest(id)
+     return this.appVersionService.findOne(id)
+     .then(responseObj => {
+       if(!responseObj){
+         throw new NotFoundException("Record not found with the given ID.")
+       }else{
+         return this.appVersionService.makeLatest(id, responseObj.platform)
+       }
+     })
    }
 
-  @Delete()
-  deleteFile(@Query('key') key: string){
-    return  this.appVersionService.deleteFile(key)
+  @Delete('/:id')
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
+  deleteFile(@Param('id') id: string){
+    return  this.appVersionService.deleteRecordWithFile(id)
   }
 
 }

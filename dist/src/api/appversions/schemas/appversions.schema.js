@@ -53,8 +53,16 @@ __decorate([
 ], AppVersion.prototype, "versionCode", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    class_validator_1.IsOptional(),
     __metadata("design:type", String)
-], AppVersion.prototype, "contentFilePath", void 0);
+], AppVersion.prototype, "contentVersionFilePath", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    class_validator_1.IsOptional(),
+    __metadata("design:type", String)
+], AppVersion.prototype, "originalVersionFileName", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
@@ -85,4 +93,5 @@ AppVersion = __decorate([
 ], AppVersion);
 exports.AppVersion = AppVersion;
 exports.AppVersionSchema = mongoose_1.SchemaFactory.createForClass(AppVersion);
+exports.AppVersionSchema.index({ versionCode: 1, platform: 1 }, { unique: true });
 //# sourceMappingURL=appversions.schema.js.map

@@ -6,5 +6,6 @@ export interface VUploadedFile {
     filename?: string;
     path?: string;
     size?: number;
+    buffer?: string;
   }
   

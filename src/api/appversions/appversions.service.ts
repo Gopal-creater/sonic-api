@@ -4,11 +4,11 @@ import { FileOperationService } from '../../shared/services/file-operation.servi
 import {
   Injectable,
   NotFoundException,
+  InternalServerErrorException,
   Inject,
   forwardRef,
 } from '@nestjs/common';
 import { AppVersion } from './schemas/appversions.schema';
-import * as upath from 'upath';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { S3FileUploadService } from '../s3fileupload/s3fileupload.service';
@@ -28,31 +28,20 @@ export class AppVersionService {
     file: VUploadedFile,
     s3Acl?: S3ACL,
   ) {
-    
-    file.path = upath.toUnix(file.path); //Convert windows path to unix path
-    file.destination = upath.toUnix(file.destination);
-    const inFilePath = file.path;
-    
-        return this.s3FileUploadService.uploadFromPath(
-          inFilePath,
-          `versions`,
-          s3Acl,
-        )
+   return this.s3FileUploadService.upload(file, `versions`, s3Acl)  
       .then(s3UploadResult => {
         return {
           downloadFileUrl: s3UploadResult.Location,
           s3UploadResult: s3UploadResult
         };
-      })
-      .finally(() => {
-        this.fileHandlerService.deleteFileAtPath(inFilePath); //delete in callig side
-      });
+      }).catch(err => {
+        throw new InternalServerErrorException(err);
+      })  
   }
   async saveVersion(version: Record<any,any>) {
-    var newVersion = new this.versionModel({
-      ...version
-    });
-    return newVersion.save();
+    const newVersion = new this.versionModel(version);
+    const res = await newVersion.save();
+    return res;
   }
 
   async findOne(id:string) {
@@ -63,37 +52,67 @@ export class AppVersionService {
     return this.versionModel.find();
   }
 
-  async downloadLatest(platform:string){
-    const response = await this.versionModel.findOne({latest: true, platform:platform})
-    return this.getFile(response.s3FileMeta.key)
-
+  async downloadFromVersionCode(versionCode:string, platform:string, res:any){
+    return this.versionModel.findOne({versionCode:versionCode, platform:platform})
+    .then(VersionFromCode => {
+      if(!VersionFromCode)
+      throw new NotFoundException("verson with this version code not found.")
+      return this.s3FileUploadService.downloadFile(VersionFromCode.s3FileMeta.Key, res)
+    }).catch(err => {
+      console.log(err)
+      throw new InternalServerErrorException(err);
+      
+    })
   }
 
-  
-  
-  async makeLatest(id: string) {
-  var res =   await this.versionModel.findOne({'latest':true})
-  if(res){
-    return this.versionModel.findByIdAndUpdate(res._id, {latest: false})
-    .then(result => {
+  async downloadLatest(platform:string, res:any){
+    return this.versionModel.findOne({latest: true, platform:platform})
+    .then(latestVersion => {
+      return this.s3FileUploadService.downloadFile(latestVersion.s3FileMeta.Key, res)
+    })
+  }
+
+  async makeLatest(id: string, platform: string) {
+  let dbResponse = await this.versionModel.findOne({latest:true, platform:platform})
+  if(dbResponse){
+    return this.versionModel.findByIdAndUpdate(dbResponse._id, {latest: false})
+    .then(async result => {
       return this.versionModel.findByIdAndUpdate(id, {latest: true}, {new : true})
       .then(updateRes => {
         return updateRes;
-      })
+      }).catch(err => {
+        throw new InternalServerErrorException();
+      })  
     })
   }else{
     return this.versionModel.findByIdAndUpdate(id, {latest: true}, {new : true})
       .then(updateRes => {
         return updateRes;
+      }).catch(err => {
+        throw new InternalServerErrorException(err);
+      })  
+  }
+
+  }
+  async getFile(key:string, res: any){
+    console.log("in the service")
+    return  this.s3FileUploadService.downloadFile(key, res)
+  }
+
+  async deleteRecordWithFile(id:string){
+    let keyToDeleteFromS3:string;
+     return this.findOne(id)
+    .then(async toDeleteRecord => {
+      if(!toDeleteRecord)
+      throw new NotFoundException("Record not found associated with the passed Id.");
+      keyToDeleteFromS3 = toDeleteRecord.s3FileMeta.Key
+      return this.s3FileUploadService.deleteFile(keyToDeleteFromS3)
+      .then (async deleteRecord => {
+        await this.versionModel.deleteOne({_id: id})
+        return ({"message": "record successfully deleted fom db as well as s3."})
       })
-  }
-
-  }
-  async getFile(key:string){
-    return  this.s3FileUploadService.getFile(key)
-  }
-
-  async deleteFile(key:string){
-    return  this.s3FileUploadService.deleteFile(key)
+    }).catch(err => {
+      throw new InternalServerErrorException(err);
+    })  
   }
 }

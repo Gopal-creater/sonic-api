@@ -1,4 +1,4 @@
-import { Controller, Get, Param, StreamableFile, UseGuards, ForbiddenException, Body, Post, Delete } from '@nestjs/common';
+import { Controller, Get, Res, Param, Query, StreamableFile, UseGuards, ForbiddenException, Body, Post, Delete } from '@nestjs/common';
 import { S3FileUploadService } from './s3fileupload.service';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiSecurity, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -49,6 +49,11 @@ export class S3FileUploadController {
       }
     const file = await this.s3FileUploadService.getFile(key);
     return new StreamableFile(Buffer.from(file.Body))
+  }
+
+  @Get('/:key')
+  async downloadFile(@Param('key') key: string, @Res() res: any) {
+    return this.s3FileUploadService.downloadFile(key, res);
   }
 
   @Delete(':key')

@@ -1,11 +1,12 @@
 import { GlobalAwsService } from '../../shared/modules/global-aws/global-aws.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Res } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import * as fs from 'fs';
 import * as uniqid from 'uniqid';
 import { S3ACL } from 'src/constants/Enums';
 import { extractFileName } from 'src/shared/utils';
+import { response } from 'express';
 
 // https://dev.to/vjnvisakh/uploading-to-s3-using-nestjs-4037
 // https://flaviocopes.com/node-upload-files-s3/
@@ -65,6 +66,16 @@ export class S3FileUploadService {
     // return this.s3ClientV2.send(getObjectCommand)
     return this.s3.getObject(params).promise();
   }
+
+    public downloadFile(key: string, res) {
+      const params: AWS.S3.GetObjectRequest = {
+        Bucket: this.bucketName,
+        Key: key,
+      };
+      let s3Data =  this.s3.getObject(params).createReadStream()
+     return s3Data.pipe(res)
+    }
+
 
   //Method to get all the files in S3 bucket
   public getFiles() {

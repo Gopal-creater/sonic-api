@@ -38,7 +38,14 @@ export class AppVersion extends Document {
   versionCode: string;
 
   @ApiProperty()
-  contentFilePath: string;
+  @Prop()
+  @IsOptional()
+  contentVersionFilePath: string;
+
+  @ApiProperty()
+  @Prop()
+  @IsOptional()
+  originalVersionFileName: string;
 
   
   @ApiProperty()
@@ -57,12 +64,11 @@ export class AppVersion extends Document {
   @Prop({ type: String, enum: Platform})
   platform: string;
 
-
-
   @IsOptional()
   @ApiProperty()
   @Prop({type:S3FileMeta})
   s3FileMeta?: S3FileMeta;
 }
-
-export const AppVersionSchema = SchemaFactory.createForClass(AppVersion);
+export const AppVersionSchema = SchemaFactory.createForClass(AppVersion)
+AppVersionSchema.index({versionCode:1, platform:1}, {unique:true});
+ 
