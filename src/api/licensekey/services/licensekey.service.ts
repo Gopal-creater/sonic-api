@@ -225,16 +225,6 @@ export class LicensekeyService {
         },
       },
       {
-        $lookup: {
-          //populate radioStation from its relational table
-          from: 'User',
-          localField: 'owners.ownerId',
-          foreignField: '_id',
-          as: 'owners.ownerId',
-        },
-      },
-      { $addFields: { owner: { $first: '$owner' } } },
-      {
         $match: {
           ...relationalFilter,
         },

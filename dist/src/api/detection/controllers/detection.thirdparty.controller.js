@@ -48,8 +48,8 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
         });
         return newDetection.save();
     }
-    async createThirdPartyRadioDetectionFromBinary(createThirdPartyRadioDetectionFromBinaryDto, customer, apiKey) {
-        var { sonicKey, detectedAt, metaData, thirdpartyRadioDetection } = createThirdPartyRadioDetectionFromBinaryDto;
+    async createThirdPartyRadioDetectionFromBinary(createThirdPartyStreamReaderDetectionFromBinaryDto, customer, apiKey) {
+        var { sonicKey, detectedAt, metaData, thirdpartyStreamReaderDetection } = createThirdPartyStreamReaderDetectionFromBinaryDto;
         const isKeyFound = await this.sonickeyServive.findBySonicKey(sonicKey);
         if (!isKeyFound) {
             throw new common_1.NotFoundException('Provided sonickey is not found on our database.');
@@ -66,7 +66,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
             sonicKeyOwnerId: isKeyFound.owner,
             sonicKeyOwnerName: isKeyFound.contentOwner,
             channel: Enums_1.ChannelEnums.THIRDPARTY_STREAMREADER,
-            thirdpartyRadioDetection: thirdpartyRadioDetection
+            thirdpartyRadioDetection: thirdpartyStreamReaderDetection
         });
         return newDetection.save();
     }
@@ -106,13 +106,13 @@ __decorate([
 __decorate([
     swagger_1.ApiOperation({ summary: 'Create Radio Detection From Binary' }),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
-    common_1.Post('radio-detection-from-binary'),
+    common_1.Post('stream-detection-from-binary'),
     openapi.ApiResponse({ status: 201, type: require("../schemas/detection.schema").Detection }),
     __param(0, common_1.Body()),
     __param(1, user_decorator_1.User('sub')),
     __param(2, apikey_decorator_1.ApiKey('_id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_detection_dto_1.CreateThirdPartyRadioDetectionFromBinaryDto, String, String]),
+    __metadata("design:paramtypes", [create_detection_dto_1.CreateThirdPartyStreamReaderDetectionFromBinaryDto, String, String]),
     __metadata("design:returntype", Promise)
 ], DetectionThirdPartyController.prototype, "createThirdPartyRadioDetectionFromBinary", null);
 __decorate([

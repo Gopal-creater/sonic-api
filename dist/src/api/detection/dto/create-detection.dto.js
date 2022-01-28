@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateDetectionFromHardwareDto = exports.CreateThirdPartyRadioDetectionFromBinaryDto = exports.ThirdPartyRadioDetectionDto = exports.CreateDetectionFromBinaryDto = exports.CreateDetectionDto = void 0;
+exports.CreateDetectionFromHardwareDto = exports.CreateThirdPartyStreamReaderDetectionFromBinaryDto = exports.ThirdPartyStreamReaderDetectionDto = exports.CreateDetectionFromBinaryDto = exports.CreateDetectionDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const Enums_1 = require("../../../constants/Enums");
@@ -77,7 +77,7 @@ __decorate([
     __metadata("design:type", Map)
 ], CreateDetectionFromBinaryDto.prototype, "metaData", void 0);
 exports.CreateDetectionFromBinaryDto = CreateDetectionFromBinaryDto;
-class ThirdPartyRadioDetectionDto {
+class ThirdPartyStreamReaderDetectionDto {
     static _OPENAPI_METADATA_FACTORY() {
         return { country: { required: true, type: () => String }, name: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date } };
     }
@@ -86,47 +86,47 @@ __decorate([
     class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
-], ThirdPartyRadioDetectionDto.prototype, "country", void 0);
+], ThirdPartyStreamReaderDetectionDto.prototype, "country", void 0);
 __decorate([
     class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
-], ThirdPartyRadioDetectionDto.prototype, "name", void 0);
+], ThirdPartyStreamReaderDetectionDto.prototype, "name", void 0);
 __decorate([
     class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", Date)
-], ThirdPartyRadioDetectionDto.prototype, "detectedAt", void 0);
-exports.ThirdPartyRadioDetectionDto = ThirdPartyRadioDetectionDto;
-class CreateThirdPartyRadioDetectionFromBinaryDto {
+], ThirdPartyStreamReaderDetectionDto.prototype, "detectedAt", void 0);
+exports.ThirdPartyStreamReaderDetectionDto = ThirdPartyStreamReaderDetectionDto;
+class CreateThirdPartyStreamReaderDetectionFromBinaryDto {
     constructor() {
         this.detectedAt = new Date();
     }
     static _OPENAPI_METADATA_FACTORY() {
-        return { sonicKey: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date, default: new Date() }, metaData: { required: true }, thirdpartyRadioDetection: { required: true, type: () => require("./create-detection.dto").ThirdPartyRadioDetectionDto } };
+        return { sonicKey: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date, default: new Date() }, metaData: { required: true }, thirdpartyStreamReaderDetection: { required: true, type: () => require("./create-detection.dto").ThirdPartyStreamReaderDetectionDto } };
     }
 }
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
-], CreateThirdPartyRadioDetectionFromBinaryDto.prototype, "sonicKey", void 0);
+], CreateThirdPartyStreamReaderDetectionFromBinaryDto.prototype, "sonicKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsOptional(),
     __metadata("design:type", Date)
-], CreateThirdPartyRadioDetectionFromBinaryDto.prototype, "detectedAt", void 0);
+], CreateThirdPartyStreamReaderDetectionFromBinaryDto.prototype, "detectedAt", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsOptional(),
     __metadata("design:type", Map)
-], CreateThirdPartyRadioDetectionFromBinaryDto.prototype, "metaData", void 0);
+], CreateThirdPartyStreamReaderDetectionFromBinaryDto.prototype, "metaData", void 0);
 __decorate([
     class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
-    __metadata("design:type", ThirdPartyRadioDetectionDto)
-], CreateThirdPartyRadioDetectionFromBinaryDto.prototype, "thirdpartyRadioDetection", void 0);
-exports.CreateThirdPartyRadioDetectionFromBinaryDto = CreateThirdPartyRadioDetectionFromBinaryDto;
+    __metadata("design:type", ThirdPartyStreamReaderDetectionDto)
+], CreateThirdPartyStreamReaderDetectionFromBinaryDto.prototype, "thirdpartyStreamReaderDetection", void 0);
+exports.CreateThirdPartyStreamReaderDetectionFromBinaryDto = CreateThirdPartyStreamReaderDetectionFromBinaryDto;
 class CreateDetectionFromHardwareDto {
     constructor() {
         this.detectedAt = new Date();

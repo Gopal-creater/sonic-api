@@ -182,15 +182,6 @@ let LicensekeyService = class LicensekeyService {
                 $match: Object.assign({}, filter),
             },
             {
-                $lookup: {
-                    from: 'User',
-                    localField: 'owners.ownerId',
-                    foreignField: '_id',
-                    as: 'owners.ownerId',
-                },
-            },
-            { $addFields: { owner: { $first: '$owner' } } },
-            {
                 $match: Object.assign({}, relationalFilter),
             },
         ]);

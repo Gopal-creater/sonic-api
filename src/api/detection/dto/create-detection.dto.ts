@@ -42,7 +42,7 @@ export class CreateDetectionFromBinaryDto {
   metaData: Map<string, any>;
 }
 
-export class ThirdPartyRadioDetectionDto {
+export class ThirdPartyStreamReaderDetectionDto {
   @IsNotEmpty()
   @ApiProperty()
   country: string;
@@ -56,7 +56,7 @@ export class ThirdPartyRadioDetectionDto {
   detectedAt: Date;
 }
 
-export class CreateThirdPartyRadioDetectionFromBinaryDto {
+export class CreateThirdPartyStreamReaderDetectionFromBinaryDto {
   @ApiProperty()
   @IsNotEmpty()
   sonicKey: string;
@@ -71,7 +71,7 @@ export class CreateThirdPartyRadioDetectionFromBinaryDto {
 
   @IsNotEmpty()
   @ApiProperty()
-  thirdpartyRadioDetection: ThirdPartyRadioDetectionDto;
+  thirdpartyStreamReaderDetection: ThirdPartyStreamReaderDetectionDto;
 }
 
 export class CreateDetectionFromHardwareDto {

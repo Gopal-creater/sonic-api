@@ -20,7 +20,7 @@ import {
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { DetectionService } from '../../detection/detection.service';
 import { ChannelEnums } from 'src/constants/Enums';
-import { CreateDetectionFromBinaryDto,CreateThirdPartyRadioDetectionFromBinaryDto, CreateDetectionFromHardwareDto } from '../dto/create-detection.dto';
+import { CreateDetectionFromBinaryDto,CreateThirdPartyStreamReaderDetectionFromBinaryDto, CreateDetectionFromHardwareDto } from '../dto/create-detection.dto';
 import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
 import { User } from '../../auth/decorators/user.decorator';
@@ -69,13 +69,13 @@ export class DetectionThirdPartyController {
 
   @ApiOperation({ summary: 'Create Radio Detection From Binary' })
   @UseGuards(ApiKeyAuthGuard)
-  @Post('radio-detection-from-binary')
+  @Post('stream-detection-from-binary')
   async createThirdPartyRadioDetectionFromBinary(
-    @Body() createThirdPartyRadioDetectionFromBinaryDto: CreateThirdPartyRadioDetectionFromBinaryDto,
+    @Body() createThirdPartyStreamReaderDetectionFromBinaryDto: CreateThirdPartyStreamReaderDetectionFromBinaryDto,
     @User('sub') customer: string,
     @ApiKey('_id') apiKey: string,
   ) {
-    var{sonicKey,detectedAt,metaData,thirdpartyRadioDetection}=createThirdPartyRadioDetectionFromBinaryDto
+    var{sonicKey,detectedAt,metaData,thirdpartyStreamReaderDetection}=createThirdPartyStreamReaderDetectionFromBinaryDto
     const isKeyFound = await this.sonickeyServive.findBySonicKey(
       sonicKey,
     );
@@ -97,7 +97,7 @@ export class DetectionThirdPartyController {
       sonicKeyOwnerId: isKeyFound.owner,
       sonicKeyOwnerName: isKeyFound.contentOwner,
       channel: ChannelEnums.THIRDPARTY_STREAMREADER,
-      thirdpartyRadioDetection:thirdpartyRadioDetection
+      thirdpartyRadioDetection:thirdpartyStreamReaderDetection
     });
     return newDetection.save();
   }
