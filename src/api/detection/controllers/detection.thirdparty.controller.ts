@@ -20,9 +20,10 @@ import {
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { DetectionService } from '../../detection/detection.service';
 import { ChannelEnums } from 'src/constants/Enums';
-import { CreateDetectionFromBinaryDto, CreateDetectionFromHardwareDto } from '../dto/create-detection.dto';
+import { CreateDetectionFromBinaryDto,CreateThirdPartyRadioDetectionFromBinaryDto, CreateDetectionFromHardwareDto } from '../dto/create-detection.dto';
 import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
+import { User } from '../../auth/decorators/user.decorator';
 
 @ApiTags('ThirdParty Integration Controller, Protected By XAPI-Key')
 @ApiSecurity('x-api-key')
@@ -38,7 +39,7 @@ export class DetectionThirdPartyController {
   @Post('detection-from-binary')
   async create(
     @Body() createDetectionFromBinaryDto: CreateDetectionFromBinaryDto,
-    @ApiKey('customer') customer: string,
+    @User('sub') customer: string,
     @ApiKey('_id') apiKey: string,
   ) {
     const isKeyFound = await this.sonickeyServive.findBySonicKey(
@@ -58,10 +59,45 @@ export class DetectionThirdPartyController {
       detectedAt: createDetectionFromBinaryDto.detectedAt,
       metadata: createDetectionFromBinaryDto.metaData,
       apiKey: apiKey,
-      owner: customer,
+      owner: isKeyFound.owner,
       sonicKeyOwnerId: isKeyFound.owner,
       sonicKeyOwnerName: isKeyFound.contentOwner,
       channel: ChannelEnums.BINARY,
+    });
+    return newDetection.save();
+  }
+
+  @ApiOperation({ summary: 'Create Radio Detection From Binary' })
+  @UseGuards(ApiKeyAuthGuard)
+  @Post('radio-detection-from-binary')
+  async createThirdPartyRadioDetectionFromBinary(
+    @Body() createThirdPartyRadioDetectionFromBinaryDto: CreateThirdPartyRadioDetectionFromBinaryDto,
+    @User('sub') customer: string,
+    @ApiKey('_id') apiKey: string,
+  ) {
+    var{sonicKey,detectedAt,metaData,thirdpartyRadioDetection}=createThirdPartyRadioDetectionFromBinaryDto
+    const isKeyFound = await this.sonickeyServive.findBySonicKey(
+      sonicKey,
+    );
+    if (!isKeyFound) {
+      throw new NotFoundException(
+        'Provided sonickey is not found on our database.',
+      );
+    }
+    if (!detectedAt) {
+      detectedAt = new Date();
+    }
+
+    const newDetection = new this.detectionService.detectionModel({
+      sonicKey: sonicKey,
+      detectedAt: detectedAt,
+      metadata: metaData,
+      apiKey: apiKey,
+      owner: isKeyFound.owner,
+      sonicKeyOwnerId: isKeyFound.owner,
+      sonicKeyOwnerName: isKeyFound.contentOwner,
+      channel: ChannelEnums.THIRDPARTY_STREAMREADER,
+      thirdpartyRadioDetection:thirdpartyRadioDetection
     });
     return newDetection.save();
   }
@@ -71,7 +107,7 @@ export class DetectionThirdPartyController {
   @Post('detection-from-hardware')
   async createFromHardware(
     @Body() createDetectionFromHardwareDto: CreateDetectionFromHardwareDto,
-    @ApiKey('customer') customer: string,
+    @User('sub') customer: string,
     @ApiKey('_id') apiKey: string,
   ) {
     const isKeyFound = await this.sonickeyServive.findBySonicKey(
@@ -91,7 +127,7 @@ export class DetectionThirdPartyController {
       detectedAt: createDetectionFromHardwareDto.detectedAt,
       metadata: createDetectionFromHardwareDto.metaData,
       apiKey: apiKey,
-      owner: customer,
+      owner: isKeyFound.owner,
       sonicKeyOwnerId: isKeyFound.owner,
       sonicKeyOwnerName: isKeyFound.contentOwner,
       channel: ChannelEnums.HARDWARE,

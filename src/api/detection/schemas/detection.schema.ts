@@ -19,6 +19,18 @@ export class DetectedTimeStamp{
   end: number;
 }
 
+@Schema()
+export class ThirdPartyRadioDetection{
+  @ApiProperty()
+  country: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  detectedAt: Date;
+}
+
 @Schema({ timestamps: true,collection:DetectionSchemaName})
 export class Detection extends Document {
 
@@ -73,6 +85,10 @@ export class Detection extends Document {
   @ApiProperty()
   @Prop()
   metaData?: Map<string, any>;
+
+  @ApiProperty()
+  @Prop({ type: ThirdPartyRadioDetection })
+  thirdpartyRadioDetection: ThirdPartyRadioDetection;
 
   @ApiProperty()
   @Prop([String])

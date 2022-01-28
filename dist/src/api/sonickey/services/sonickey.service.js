@@ -66,13 +66,11 @@ let SonickeyService = class SonickeyService {
         return newSonicKey.save();
     }
     async createFromBinaryForUser(ownerId, sonickey) {
-        const userGroups = await this.userService.adminListGroupsForUser(ownerId);
-        const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, sonickey), { owner: ownerId, groups: userGroups.groupNames }));
+        const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, sonickey), { owner: ownerId }));
         return newSonicKey.save();
     }
     async saveSonicKeyForUser(ownerId, sonickey) {
-        const userGroups = await this.userService.adminListGroupsForUser(ownerId);
-        const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, sonickey), { owner: ownerId, groups: userGroups.groupNames }));
+        const newSonicKey = new this.sonicKeyModel(Object.assign(Object.assign({}, sonickey), { owner: ownerId }));
         return newSonicKey.save();
     }
     async getAll(queryDto) {

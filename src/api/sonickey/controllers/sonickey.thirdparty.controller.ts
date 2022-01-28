@@ -103,7 +103,7 @@ export class SonickeyThirdPartyController {
   @ApiOperation({ summary: 'Save to database after local encode from binary.' })
   async createFormBinary(
     @Body() createSonicKeyDto: CreateSonicKeyFromBinaryDto,
-    @ApiKey('customer') customer: string,
+    @User('sub') customer: string,
     @ApiKey('_id') apiKey: string,
     @ValidatedLicense('key') licenseKey: string
   ) {

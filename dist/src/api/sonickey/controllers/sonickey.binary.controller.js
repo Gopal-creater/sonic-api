@@ -24,6 +24,7 @@ const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
+const user_decorator_1 = require("../../auth/decorators/user.decorator");
 let SonickeyBinaryController = class SonickeyBinaryController {
     constructor(sonicKeyService, licensekeyService) {
         this.sonicKeyService = sonicKeyService;
@@ -48,7 +49,7 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Save to database after local encode from binary.' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/sonickey.schema").SonicKey }),
     __param(0, common_1.Body()),
-    __param(1, apikey_decorator_1.ApiKey('customer')),
+    __param(1, user_decorator_1.User('sub')),
     __param(2, apikey_decorator_1.ApiKey('_id')),
     __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
     __metadata("design:type", Function),

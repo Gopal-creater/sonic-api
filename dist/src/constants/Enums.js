@@ -11,6 +11,7 @@ var ChannelEnums;
     ChannelEnums["HARDWARE"] = "HARDWARE";
     ChannelEnums["RADIOSTATION"] = "RADIOSTATION";
     ChannelEnums["STREAMREADER"] = "STREAMREADER";
+    ChannelEnums["THIRDPARTY_STREAMREADER"] = "THIRDPARTY_STREAMREADER";
     ChannelEnums["THIRDPARTY"] = "THIRDPARTY";
 })(ChannelEnums = exports.ChannelEnums || (exports.ChannelEnums = {}));
 var Permissions;

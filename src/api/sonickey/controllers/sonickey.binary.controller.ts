@@ -19,6 +19,7 @@ import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
 import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
+import { User } from '../../auth/decorators/user.decorator';
 
 //REMOVABLE:  Added on thirdparty-controller
 
@@ -37,7 +38,7 @@ export class SonickeyBinaryController {
   @ApiOperation({ summary: 'Save to database after local encode from binary.' })
   async createFormBinary(
     @Body() createSonicKeyDto: CreateSonicKeyFromBinaryDto,
-    @ApiKey('customer') customer: string,
+    @User('sub') customer: string,
     @ApiKey('_id') apiKey: string,
     @ValidatedLicense('key') licenseKey: string
   ) {

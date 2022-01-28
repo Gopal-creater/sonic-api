@@ -98,7 +98,7 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Save to database after local encode from binary.' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/sonickey.schema").SonicKey }),
     __param(0, common_1.Body()),
-    __param(1, apikey_decorator_1.ApiKey('customer')),
+    __param(1, decorators_1.User('sub')),
     __param(2, apikey_decorator_1.ApiKey('_id')),
     __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
     __metadata("design:type", Function),

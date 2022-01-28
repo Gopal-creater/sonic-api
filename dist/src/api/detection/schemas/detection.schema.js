@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DetectionSchema = exports.Detection = exports.DetectedTimeStamp = exports.DetectionSchemaName = void 0;
+exports.DetectionSchema = exports.Detection = exports.ThirdPartyRadioDetection = exports.DetectedTimeStamp = exports.DetectionSchemaName = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
@@ -33,6 +33,24 @@ DetectedTimeStamp = __decorate([
     mongoose_1.Schema()
 ], DetectedTimeStamp);
 exports.DetectedTimeStamp = DetectedTimeStamp;
+let ThirdPartyRadioDetection = class ThirdPartyRadioDetection {
+};
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], ThirdPartyRadioDetection.prototype, "country", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], ThirdPartyRadioDetection.prototype, "name", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Date)
+], ThirdPartyRadioDetection.prototype, "detectedAt", void 0);
+ThirdPartyRadioDetection = __decorate([
+    mongoose_1.Schema()
+], ThirdPartyRadioDetection);
+exports.ThirdPartyRadioDetection = ThirdPartyRadioDetection;
 let Detection = class Detection extends mongoose_2.Document {
 };
 __decorate([
@@ -100,6 +118,11 @@ __decorate([
     mongoose_1.Prop(),
     __metadata("design:type", Map)
 ], Detection.prototype, "metaData", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: ThirdPartyRadioDetection }),
+    __metadata("design:type", ThirdPartyRadioDetection)
+], Detection.prototype, "thirdpartyRadioDetection", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop([String]),
