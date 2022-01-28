@@ -70,8 +70,8 @@ let AppVersionController = class AppVersionController {
     getVersionById(id) {
         return this.appVersionService.findOne(id);
     }
-    getAllVersions() {
-        return this.appVersionService.getAllVersions();
+    getAllVersions(platform) {
+        return this.appVersionService.getAllVersions(platform);
     }
     makeLatest(id) {
         return this.appVersionService.findOne(id)
@@ -147,13 +147,14 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "getVersionById", null);
 __decorate([
-    common_1.Get(),
+    common_1.Get('all/:platform'),
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     openapi.ApiResponse({ status: 200, type: [require("./schemas/appversions.schema").AppVersion] }),
+    __param(0, common_1.Param('platform')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "getAllVersions", null);
 __decorate([

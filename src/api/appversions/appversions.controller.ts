@@ -113,12 +113,12 @@ export class AppVersionController {
     return this.appVersionService.findOne(id)
   }
 
-  @Get()
+  @Get('all/:platform')
   @RolesAllowed(Roles.ADMIN)
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
-  getAllVersions(){
-    return this.appVersionService.getAllVersions()
+  getAllVersions(@Param('platform') platform:string){
+    return this.appVersionService.getAllVersions(platform)
 
   }
 

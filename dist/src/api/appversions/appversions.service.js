@@ -46,8 +46,8 @@ let AppVersionService = class AppVersionService {
     async findOne(id) {
         return this.versionModel.findOne({ _id: id });
     }
-    async getAllVersions() {
-        return this.versionModel.find();
+    async getAllVersions(platform) {
+        return this.versionModel.find({ platform: platform });
     }
     async downloadFromVersionCode(versionCode, platform, res) {
         return this.versionModel.findOne({ versionCode: versionCode, platform: platform })
@@ -69,13 +69,13 @@ let AppVersionService = class AppVersionService {
     async makeLatest(id, platform) {
         let dbResponse = await this.versionModel.findOne({ latest: true, platform: platform });
         if (dbResponse) {
-            return this.versionModel.findByIdAndUpdate(dbResponse._id, { latest: false })
+            return this.versionModel.findByIdAndUpdate(id, { latest: true }, { new: true })
                 .then(async (result) => {
-                return this.versionModel.findByIdAndUpdate(id, { latest: true }, { new: true })
+                return this.versionModel.findByIdAndUpdate(dbResponse._id, { latest: false })
                     .then(updateRes => {
-                    return updateRes;
+                    return result;
                 }).catch(err => {
-                    throw new common_1.InternalServerErrorException();
+                    throw new common_1.InternalServerErrorException(err);
                 });
             });
         }
