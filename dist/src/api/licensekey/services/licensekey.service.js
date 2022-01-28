@@ -140,36 +140,36 @@ let LicensekeyService = class LicensekeyService {
         var validLicenses;
         var userFromDb = await this.userService.userModel.findById(user);
         userFromDb = userFromDb.depopulate('companies');
-        var validLicenseForUser = await this.licenseKeyModel.find(Object.assign({ disabled: false, suspended: false, validity: { $gte: startOfToday }, 'owners.ownerId': user }, filter));
-        if (validLicenseForUser.length > 0) {
-            validLicenses = validLicenseForUser;
-        }
-        else {
-            var validLicenseForUserWithInCompany = await this.licenseKeyModel.aggregate([
-                {
-                    $match: Object.assign({ disabled: false, suspended: false, validity: { $gte: startOfToday } }, filter),
+        var validLicenseForUserWithInCompany = await this.licenseKeyModel.aggregate([
+            {
+                $match: Object.assign({ disabled: false, suspended: false, validity: { $gte: startOfToday } }, filter),
+            },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owners.ownerId',
+                    foreignField: '_id',
+                    as: 'owners.ownerId',
                 },
-                {
-                    $lookup: {
-                        from: 'User',
-                        localField: 'owners.ownerId',
-                        foreignField: '_id',
-                        as: 'owners.ownerId',
-                    },
+            },
+            { $addFields: { 'owners.ownerId': { $first: '$owners.ownerId' } } },
+            {
+                $match: {
+                    'owners.ownerId.companies': { $in: userFromDb.companies },
                 },
-                { $addFields: { 'owners.ownerId': { $first: '$owners.ownerId' } } },
-                {
-                    $match: {
-                        'owners.ownerId.companies': { $in: userFromDb.companies }
-                    },
-                },
-            ]);
+            },
+        ]);
+        if (validLicenseForUserWithInCompany.length > 0) {
             validLicenses = validLicenseForUserWithInCompany;
         }
-        return validLicenseForUser;
+        else {
+            var validLicenseForUser = await this.licenseKeyModel.find(Object.assign({ disabled: false, suspended: false, validity: { $gte: startOfToday }, 'owners.ownerId': user }, filter));
+            validLicenses = validLicenseForUser;
+        }
+        return validLicenses;
     }
     async findAll(queryDto) {
-        const { limit, skip, sort, page, filter, relationalFilter, select, populate } = queryDto;
+        const { limit, skip, sort, page, filter, relationalFilter, select, populate, } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
         paginateOptions['select'] = select;

@@ -62,7 +62,7 @@ export class ApiKeyAuthGuard implements CanActivate {
       });
     }
     if (!ownerUser)
-      throw new ForbiddenException('User not found for this apikey');
+      throw new ForbiddenException('Admin user not found for this apikey');
     request.user = ownerUser;
     request.apikey = apikeyFromDb;
     return true;

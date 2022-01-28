@@ -22,9 +22,7 @@ export class LicenseValidationGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const user = request.user as CognitoUserSession;
-    const licenses = await this.licensekeyService.licenseKeyModel.find({
-      'owners.ownerId': user.sub,
-    });
+    const licenses = await this.licensekeyService.findValidLicesesForUser(user.sub)
     if (!licenses || licenses.length <= 0) {
       throw new UnprocessableEntityException(
         'No License keys present. Please add a license key to subscribe for encode.',

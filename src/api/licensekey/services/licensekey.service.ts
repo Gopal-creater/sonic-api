@@ -155,7 +155,7 @@ export class LicensekeyService {
     return validLicenseForMonitor;
   }
 
-  async findValidLicesesForUser(user: string, filter: FilterQuery<LicenseKey>) {
+  async findValidLicesesForUser(user: string, filter?: FilterQuery<LicenseKey>) {
     var now = new Date();
     var startOfToday = new Date(
       now.getFullYear(),
@@ -163,26 +163,17 @@ export class LicensekeyService {
       now.getDate(),
     );
     var validLicenses: LicenseKey[];
-    var userFromDb= await this.userService.userModel.findById(user)
-    userFromDb = userFromDb.depopulate('companies')
+    var userFromDb = await this.userService.userModel.findById(user);
+    userFromDb = userFromDb.depopulate('companies');
 
-    var validLicenseForUser = await this.licenseKeyModel.find({
-      disabled: false,
-      suspended: false,
-      validity: { $gte: startOfToday },
-      'owners.ownerId': user,
-      ...filter,
-    });
-    if (validLicenseForUser.length>0) {
-      validLicenses = validLicenseForUser;
-    } else {
-      var validLicenseForUserWithInCompany:LicenseKey[] = await this.licenseKeyModel.aggregate([
+    var validLicenseForUserWithInCompany: LicenseKey[] = await this.licenseKeyModel.aggregate(
+      [
         {
           $match: {
             disabled: false,
             suspended: false,
             validity: { $gte: startOfToday },
-            ...filter
+            ...filter,
           },
         },
         {
@@ -197,19 +188,39 @@ export class LicensekeyService {
         { $addFields: { 'owners.ownerId': { $first: '$owners.ownerId' } } },
         {
           $match: {
-            'owners.ownerId.companies':{$in:userFromDb.companies}
+            'owners.ownerId.companies': { $in: userFromDb.companies },
           },
         },
-      ])
-      validLicenses=validLicenseForUserWithInCompany
+      ],
+    );
+    if (validLicenseForUserWithInCompany.length > 0) {
+      validLicenses = validLicenseForUserWithInCompany;
+    } else {
+      var validLicenseForUser = await this.licenseKeyModel.find({
+        disabled: false,
+        suspended: false,
+        validity: { $gte: startOfToday },
+        'owners.ownerId': user,
+        ...filter,
+      });
+      validLicenses = validLicenseForUser;
     }
-    return validLicenseForUser;
+    return validLicenses;
   }
 
   async findAll(
     queryDto: ParsedQueryDto,
   ): Promise<MongoosePaginateLicensekeyDto> {
-    const { limit, skip, sort, page, filter,relationalFilter, select, populate } = queryDto;
+    const {
+      limit,
+      skip,
+      sort,
+      page,
+      filter,
+      relationalFilter,
+      select,
+      populate,
+    } = queryDto;
     var paginateOptions = {};
     paginateOptions['sort'] = sort;
     paginateOptions['select'] = select;
@@ -229,8 +240,11 @@ export class LicensekeyService {
           ...relationalFilter,
         },
       },
-    ])
-    return await this.licenseKeyModel['aggregatePaginate'](aggregate, paginateOptions);
+    ]);
+    return await this.licenseKeyModel['aggregatePaginate'](
+      aggregate,
+      paginateOptions,
+    );
   }
 
   async validateLicence(id: string) {

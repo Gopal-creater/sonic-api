@@ -53,7 +53,7 @@ let ApiKeyAuthGuard = class ApiKeyAuthGuard {
             });
         }
         if (!ownerUser)
-            throw new common_1.ForbiddenException('User not found for this apikey');
+            throw new common_1.ForbiddenException('Admin user not found for this apikey');
         request.user = ownerUser;
         request.apikey = apikeyFromDb;
         return true;
