@@ -16,6 +16,7 @@ import { MongoosePaginateLicensekeyDto } from '../dto/mongoosepaginate-licenseke
 import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { UserService } from '../../user/services/user.service';
 import { UserDB } from '../../user/schemas/user.db.schema';
+import { CompanyService } from '../../company/company.service';
 
 type usesFor = 'encode' | 'decode' | 'monitor';
 
@@ -25,12 +26,13 @@ export class LicensekeyService {
     @InjectModel(LicenseKey.name)
     public readonly licenseKeyModel: Model<LicenseKey>,
     public readonly keygenService: KeygenService,
+    public readonly companyService: CompanyService,
 
     @Inject(forwardRef(() => UserService))
     public readonly userService: UserService,
   ) {}
 
-  create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
+async create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
     const key = uuidv4();
     const newLicenseKey = new this.licenseKeyModel({
       ...createLicensekeyDto,

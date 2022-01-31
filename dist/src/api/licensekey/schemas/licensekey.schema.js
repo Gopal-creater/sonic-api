@@ -13,6 +13,7 @@ exports.LicenseKeySchema = exports.LicenseKey = exports.LKReserve = exports.LKOw
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
+const Enums_1 = require("../../../constants/Enums");
 exports.LicenseKeySchemaName = 'LicenseKey';
 let LKOwner = class LKOwner {
 };
@@ -158,6 +159,16 @@ __decorate([
     mongoose_1.Prop([LKOwner]),
     __metadata("design:type", Array)
 ], LicenseKey.prototype, "owners", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Company', autopopulate: true }),
+    __metadata("design:type", Object)
+], LicenseKey.prototype, "company", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: String, enum: Enums_1.ApiKeyType, default: "Individual" }),
+    __metadata("design:type", String)
+], LicenseKey.prototype, "type", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop([LKReserve]),

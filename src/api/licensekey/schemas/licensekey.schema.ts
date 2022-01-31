@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
+import { ApiKeyType } from 'src/constants/Enums';
 
 
 export const LicenseKeySchemaName = 'LicenseKey';
@@ -124,6 +125,14 @@ export class LicenseKey extends Document {
   @ApiProperty()
   @Prop([LKOwner])
   owners?:LKOwner[]
+
+  @ApiProperty()
+  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Company',autopopulate: true})
+  company: any;
+
+  @ApiProperty()
+  @Prop({type:String,enum:ApiKeyType,default:"Individual"})
+  type: string;
 
   @ApiProperty()
   @Prop([LKReserve])

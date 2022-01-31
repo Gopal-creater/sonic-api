@@ -15,6 +15,7 @@ const licensekey_schema_1 = require("./schemas/licensekey.schema");
 const keygen_module_1 = require("../../shared/modules/keygen/keygen.module");
 const user_module_1 = require("../user/user.module");
 const licensekey_owner_controller_1 = require("./controllers/licensekey-owner.controller");
+const company_module_1 = require("../company/company.module");
 let LicensekeyModule = class LicensekeyModule {
 };
 LicensekeyModule = __decorate([
@@ -22,6 +23,7 @@ LicensekeyModule = __decorate([
         imports: [
             common_1.forwardRef(() => user_module_1.UserModule),
             keygen_module_1.KeygenModule,
+            company_module_1.CompanyModule,
             mongoose_1.MongooseModule.forFeature([
                 {
                     name: licensekey_schema_1.LicenseKeySchemaName,

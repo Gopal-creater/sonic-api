@@ -39,13 +39,15 @@ const uuid_1 = require("uuid");
 const _ = require("lodash");
 const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
 const user_service_1 = require("../../user/services/user.service");
+const company_service_1 = require("../../company/company.service");
 let LicensekeyService = class LicensekeyService {
-    constructor(licenseKeyModel, keygenService, userService) {
+    constructor(licenseKeyModel, keygenService, companyService, userService) {
         this.licenseKeyModel = licenseKeyModel;
         this.keygenService = keygenService;
+        this.companyService = companyService;
         this.userService = userService;
     }
-    create(createLicensekeyDto, createdBy) {
+    async create(createLicensekeyDto, createdBy) {
         const key = uuid_1.v4();
         const newLicenseKey = new this.licenseKeyModel(Object.assign(Object.assign({}, createLicensekeyDto), { _id: key, key: key, createdBy: createdBy }));
         return newLicenseKey.save();
@@ -478,9 +480,10 @@ let LicensekeyService = class LicensekeyService {
 LicensekeyService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(licensekey_schema_1.LicenseKey.name)),
-    __param(2, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
+    __param(3, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         keygen_service_1.KeygenService,
+        company_service_1.CompanyService,
         user_service_1.UserService])
 ], LicensekeyService);
 exports.LicensekeyService = LicensekeyService;
