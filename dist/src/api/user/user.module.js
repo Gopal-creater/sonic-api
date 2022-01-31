@@ -32,7 +32,7 @@ UserModule = __decorate([
             mongoose_1.MongooseModule.forFeature([{ name: user_db_schema_1.UserSchemaName, schema: user_db_schema_1.UserSchema }]),
             group_module_1.GroupModule,
             common_1.forwardRef(() => api_key_module_1.ApiKeyModule),
-            company_module_1.CompanyModule,
+            common_1.forwardRef(() => company_module_1.CompanyModule),
             common_1.forwardRef(() => auth_module_1.AuthModule),
         ],
         controllers: [user_controller_1.UserController, user_group_controller_1.UserGroupController, user_company_controller_1.UserCompanyController],

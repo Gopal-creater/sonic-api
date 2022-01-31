@@ -21,7 +21,7 @@ import { ApiKeyModule } from '../api-key/api-key.module';
     MongooseModule.forFeature([{ name: UserSchemaName, schema: UserSchema }]),
     GroupModule,
     forwardRef(() => ApiKeyModule),
-    CompanyModule,
+    forwardRef(() => CompanyModule),
     forwardRef(() => AuthModule),
   ],
   controllers: [UserController, UserGroupController, UserCompanyController],

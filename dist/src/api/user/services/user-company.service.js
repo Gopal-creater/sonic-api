@@ -130,6 +130,7 @@ UserCompanyService = __decorate([
     common_1.Injectable(),
     __param(0, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __param(1, common_1.Inject(common_1.forwardRef(() => user_group_service_1.UserGroupService))),
+    __param(2, common_1.Inject(common_1.forwardRef(() => company_service_1.CompanyService))),
     __param(3, mongoose_1.InjectModel(user_db_schema_1.UserSchemaName)),
     __metadata("design:paramtypes", [user_service_1.UserService,
         user_group_service_1.UserGroupService,

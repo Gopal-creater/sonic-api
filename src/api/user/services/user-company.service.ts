@@ -15,6 +15,7 @@ export class UserCompanyService {
     public readonly userService: UserService,
     @Inject(forwardRef(()=>UserGroupService))
     public readonly userGroupService: UserGroupService,
+    @Inject(forwardRef(()=>CompanyService))
     public readonly companyService: CompanyService,
     @InjectModel(UserSchemaName)
     public readonly userModel: Model<UserDB>,
