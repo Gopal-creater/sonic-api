@@ -9,6 +9,7 @@ import { LicenseKey } from 'src/api/licensekey/schemas/licensekey.schema';
 import { LicensekeyService } from '../services/licensekey.service';
 import { CognitoUserSession } from '../../user/schemas/user.aws.schema';
 import { HttpException } from '@nestjs/common';
+import { UserDB } from '../../user/schemas/user.db.schema';
 
 /**
  * This Guard is responsible for checking valid license from user and add the validLicense field to the request object
@@ -21,7 +22,7 @@ export class LicenseValidationGuard implements CanActivate {
   constructor(private readonly licensekeyService: LicensekeyService) {}
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const user = request.user as CognitoUserSession;
+    const user = request.user as UserDB;
     const licenses = await this.licensekeyService.findValidLicesesForUser(user.sub)
     if (!licenses || licenses.length <= 0) {
       throw new UnprocessableEntityException(
@@ -128,7 +129,7 @@ export class GetSubscribedRadioMonitorListLicenseValidationGuard
   constructor(private readonly licensekeyService: LicensekeyService) {}
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const user = request.user as CognitoUserSession;
+    const user = request.user as UserDB;
     const validLicenseForMonitor = await this.licensekeyService.findPreferedLicenseToGetRadioMonitoringListFor(
       user.sub,
     );
@@ -148,9 +149,9 @@ export class SubscribeRadioMonitorLicenseValidationGuard
   constructor(private readonly licensekeyService: LicensekeyService) {}
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const user = request.user as CognitoUserSession;
+    const user = request.user as UserDB;
     const licenses = await this.licensekeyService.licenseKeyModel.find({
-      'owners.ownerId': user.sub,
+      'users': user.sub,
     });
     if (!licenses || licenses.length <= 0) {
       throw new UnprocessableEntityException(

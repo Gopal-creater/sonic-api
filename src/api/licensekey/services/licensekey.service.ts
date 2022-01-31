@@ -32,10 +32,12 @@ export class LicensekeyService {
     public readonly userService: UserService,
   ) {}
 
-async create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
+  async create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
+    const { user, ...dtos } = createLicensekeyDto;
     const key = uuidv4();
-    const newLicenseKey = new this.licenseKeyModel({
-      ...createLicensekeyDto,
+    const newLicenseKey = await this.licenseKeyModel.create({
+      ...dtos,
+      users: [user],
       _id: key,
       key: key,
       createdBy: createdBy,
@@ -127,7 +129,7 @@ async create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
       now.getDate(),
     );
     var license = await this.licenseKeyModel.findOne({
-      'owners.ownerId': userId,
+      users: userId,
       disabled: false,
       suspended: false,
       validity: { $gte: startOfToday },
@@ -148,7 +150,7 @@ async create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
       now.getDate(),
     );
     var validLicenseForMonitor = await this.licenseKeyModel.findOne({
-      'owners.ownerId': userId,
+      users: userId,
       disabled: false,
       suspended: false,
       validity: { $gte: startOfToday },
@@ -157,7 +159,10 @@ async create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
     return validLicenseForMonitor;
   }
 
-  async findValidLicesesForUser(user: string, filter?: FilterQuery<LicenseKey>) {
+  async findValidLicesesForUser(
+    user: string,
+    filter?: FilterQuery<LicenseKey>,
+  ) {
     var now = new Date();
     var startOfToday = new Date(
       now.getFullYear(),
@@ -182,15 +187,14 @@ async create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
           $lookup: {
             //populate radioStation from its relational table
             from: 'User',
-            localField: 'owners.ownerId',
+            localField: 'users',
             foreignField: '_id',
-            as: 'owners.ownerId',
+            as: 'users',
           },
         },
-        { $addFields: { 'owners.ownerId': { $first: '$owners.ownerId' } } },
         {
           $match: {
-            'owners.ownerId.companies': { $in: userFromDb.companies },
+            'users.companies': { $in: userFromDb.companies },
           },
         },
       ],
@@ -202,7 +206,7 @@ async create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
         disabled: false,
         suspended: false,
         validity: { $gte: startOfToday },
-        'owners.ownerId': user,
+        users: user,
         ...filter,
       });
       validLicenses = validLicenseForUser;
@@ -238,6 +242,15 @@ async create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
         },
       },
       {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'User',
+          localField: 'users',
+          foreignField: '_id',
+          as: 'users',
+        },
+      },
+      {
         $match: {
           ...relationalFilter,
         },
@@ -269,35 +282,60 @@ async create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
     return { validationResult, licenseKey };
   }
 
-  async addOwnersToLicense(id: string, owners: LKOwner[]) {
-    const licenseKey = await this.licenseKeyModel.findById(id);
-    licenseKey.owners.push(...owners);
-    licenseKey.owners = _.uniqBy(licenseKey.owners, 'ownerId');
-    return licenseKey.save();
+  async addOwnersToLicense(id: string, users: string[]) {
+    return this.licenseKeyModel.findOneAndUpdate(
+      { _id: id },
+      {
+        $addToSet: {
+          users: { $each: users },
+        },
+      },
+      {
+        new: true,
+      },
+    );
   }
 
-  async addOwnerToLicense(id: string, lKOwner: LKOwner) {
-    const licenseKey = await this.licenseKeyModel.findById(id);
-    licenseKey.owners.push(lKOwner);
-    licenseKey.owners = _.uniqBy(licenseKey.owners, 'ownerId');
-    return licenseKey.save();
+  async addOwnerToLicense(id: string, user: string) {
+    return this.licenseKeyModel.findOneAndUpdate(
+      { _id: id },
+      {
+        $addToSet: {
+          users: user,
+        },
+      },
+      {
+        new: true,
+      },
+    );
   }
 
-  async removeOwnerFromLicense(id: string, ownerId: string) {
-    const licenseKey = await this.licenseKeyModel.findById(id);
-    licenseKey.owners = licenseKey.owners.filter(ow => ow.ownerId !== ownerId);
-    return licenseKey.save();
+  async removeOwnerFromLicense(id: string, user: string) {
+    return this.licenseKeyModel.findOneAndUpdate(
+      { _id: id },
+      {
+        $pull: {
+          users: user,
+        },
+      },
+      {
+        new: true,
+      },
+    );
   }
 
-  async removeOwnersFromLicense(id: string, ownerIds: string[]) {
-    const licenseKey = await this.licenseKeyModel.findById(id);
-    var oldOwners = licenseKey.owners;
-    for (let index = 0; index < ownerIds.length; index++) {
-      const owner = ownerIds[index];
-      _.remove(oldOwners, ow => ow.ownerId == owner);
-    }
-    licenseKey.owners = oldOwners;
-    return licenseKey.save();
+  async removeOwnersFromLicense(id: string, users: string[]) {
+    return this.licenseKeyModel.findOneAndUpdate(
+      { _id: id },
+      {
+        $pull: {
+          users: { $in: users },
+        },
+      },
+      {
+        new: true,
+      },
+    );
   }
 
   async incrementUses(id: string, usesFor: usesFor, incrementBy: number = 1) {
@@ -496,53 +534,5 @@ async create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
     });
     license.reserves = updatedReserves;
     return license.save();
-  }
-
-  async migrateKeyFromKeygenToDB() {
-    const { data, error } = await this.keygenService.getAllLicenses('limit=90');
-    for await (const license of data) {
-      const oldLicense = license?.attributes;
-      const { reserves, ...oldOwners } = oldLicense?.metadata || {};
-      console.log('Name', oldLicense?.name);
-      const oldOwnersArr = Object.values(oldOwners || {}) as string[];
-      console.log('oldOwners', oldOwnersArr);
-      var newOwners: LKOwner[] = [];
-      for await (const ownerId of oldOwnersArr) {
-        const user = await this.userService.getUserProfile(ownerId);
-        if (user) {
-          const lkOwner = new LKOwner();
-          lkOwner.ownerId = ownerId;
-          lkOwner.username = user.username;
-          lkOwner.email = user.email;
-          lkOwner.name = user.username;
-          newOwners.push(lkOwner);
-        }
-      }
-      newOwners = _.uniqBy(newOwners, 'ownerId');
-
-      console.log('newOwners', newOwners);
-      const newLicense = new this.licenseKeyModel({
-        _id: license.id,
-        key: license.id,
-        name: oldLicense.name,
-        disabled: false,
-        suspended: oldLicense.suspended,
-        maxEncodeUses: oldLicense.maxUses,
-        encodeUses: oldLicense.uses,
-        maxDecodeUses: 0,
-        decodeUses: 0,
-        validity: oldLicense.expiry,
-        createdBy:
-          process.env.NODE_ENV == 'production'
-            ? '9ab5a58b-09e0-46ce-bb50-1321d927c382'
-            : '5728f50d-146b-47d2-aa7b-a50bc37d641d',
-        owners: newOwners,
-      });
-
-      await newLicense.save().catch(err => {
-        console.log(`Error saving license ${oldLicense.name}`, err);
-      });
-    }
-    return data.length || 0;
   }
 }

@@ -131,6 +131,10 @@ export class LicenseKey extends Document {
   company: any;
 
   @ApiProperty()
+  @Prop([{ type: String, ref: 'User',autopopulate: true,default:[]}])
+  users: any[];
+
+  @ApiProperty()
   @Prop({type:String,enum:ApiKeyType,default:"Individual"})
   type: string;
 

@@ -48,14 +48,9 @@ export class LicensekeyOwnerController {
     );
     if (!user) throw new NotFoundException('User not found');
     
-    const newLKOwner = new LKOwner();
-    newLKOwner.ownerId = user.sub
-    newLKOwner.username = user.username;
-    newLKOwner.email = user.email
-    newLKOwner.name = user.username;
     const updatedLicense = await this.licensekeyService.addOwnerToLicense(
       licenseId,
-      newLKOwner,
+      user.sub,
     );
     await this.licensekeyService.licenseKeyModel.findOneAndUpdate(
       { _id: licenseId },

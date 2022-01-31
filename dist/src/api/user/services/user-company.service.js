@@ -77,7 +77,7 @@ let UserCompanyService = class UserCompanyService {
             .catch(err => console.warn("Warning: Error removing user from cognito group", err));
         return this.userModel.findOneAndUpdate({ _id: user.id }, {
             $pull: {
-                companies: company
+                companies: company._id
             },
         }, {
             new: true,

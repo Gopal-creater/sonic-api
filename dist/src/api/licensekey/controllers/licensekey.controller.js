@@ -11,6 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LicensekeyController = void 0;
 const openapi = require("@nestjs/swagger");
@@ -26,15 +33,51 @@ const decorators_1 = require("../../auth/decorators");
 const roles_decorator_1 = require("../../auth/decorators/roles.decorator");
 const Enums_1 = require("../../../constants/Enums");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
-const failedAlways_guard_1 = require("../../auth/guards/failedAlways.guard");
+const _ = require("lodash");
 let LicensekeyController = class LicensekeyController {
     constructor(licensekeyService) {
         this.licensekeyService = licensekeyService;
     }
-    migrate() {
-        return this.licensekeyService.migrateKeyFromKeygenToDB();
+    async migrate() {
+        var e_1, _a;
+        var licenses = await this.licensekeyService.licenseKeyModel.find();
+        try {
+            for (var licenses_1 = __asyncValues(licenses), licenses_1_1; licenses_1_1 = await licenses_1.next(), !licenses_1_1.done;) {
+                var license = licenses_1_1.value;
+                license = license.depopulate('users');
+                const users = license.owners.map(o => { var _a; return (_a = o === null || o === void 0 ? void 0 : o.ownerId) === null || _a === void 0 ? void 0 : _a._id; }).filter(Boolean);
+                console.log("users", users);
+                var newUsers = license.users || [];
+                newUsers.push(...users);
+                newUsers = _.uniq(newUsers);
+                await this.licensekeyService.licenseKeyModel.findByIdAndUpdate(license._id, { users: newUsers });
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (licenses_1_1 && !licenses_1_1.done && (_a = licenses_1.return)) await _a.call(licenses_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return "Done";
     }
-    create(createLicensekeyDto, createdBy) {
+    async create(createLicensekeyDto, createdBy) {
+        var _a;
+        if (createLicensekeyDto.type == Enums_1.ApiKeyType.INDIVIDUAL) {
+            const user = await this.licensekeyService.userService.getUserProfile(createLicensekeyDto.user);
+            if (!user)
+                throw new common_1.NotFoundException('Unknown user');
+            createLicensekeyDto.user = user === null || user === void 0 ? void 0 : user.sub;
+        }
+        else if (createLicensekeyDto.type == Enums_1.ApiKeyType.COMPANY) {
+            const company = await this.licensekeyService.companyService.findById(createLicensekeyDto.company);
+            if (!company)
+                throw new common_1.NotFoundException('Unknown company');
+            if (!((_a = company === null || company === void 0 ? void 0 : company.owner) === null || _a === void 0 ? void 0 : _a.sub))
+                throw new common_1.NotFoundException('The given company doesnot have any valid admin user');
+            createLicensekeyDto.user = company.owner.sub;
+        }
         return this.licensekeyService.create(createLicensekeyDto, createdBy);
     }
     findAll(queryDto) {
@@ -65,13 +108,11 @@ let LicensekeyController = class LicensekeyController {
     }
 };
 __decorate([
-    common_1.Get('/migrate-from-keygen'),
-    common_1.UseGuards(failedAlways_guard_1.FailedAlwaysGuard),
-    swagger_1.ApiBearerAuth(),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    common_1.Get('/convert-owners-to-users'),
+    openapi.ApiResponse({ status: 200, type: String }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], LicensekeyController.prototype, "migrate", null);
 __decorate([
     common_1.Post(),
@@ -84,7 +125,7 @@ __decorate([
     __param(1, decorators_1.User('sub')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_licensekey_dto_1.CreateLicensekeyDto, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], LicensekeyController.prototype, "create", null);
 __decorate([
     common_1.Get(),

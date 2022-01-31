@@ -24,7 +24,6 @@ const config_1 = require("@nestjs/config");
 const global_aws_service_1 = require("../../../shared/modules/global-aws/global-aws.service");
 const common_1 = require("@nestjs/common");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
-const licensekey_schema_1 = require("../../licensekey/schemas/licensekey.schema");
 const index_1 = require("../../../shared/utils/index");
 const radiomonitor_service_1 = require("../../radiomonitor/radiomonitor.service");
 const mongoose_1 = require("@nestjs/mongoose");
@@ -70,12 +69,7 @@ let UserService = class UserService {
                 message: 'User not found',
             });
         }
-        const newLKOwner = new licensekey_schema_1.LKOwner();
-        newLKOwner.ownerId = user.sub;
-        newLKOwner.username = user.username;
-        newLKOwner.email = user.email;
-        newLKOwner.name = user.username;
-        return this.licensekeyService.addOwnerToLicense(licenseId, newLKOwner);
+        return this.licensekeyService.addOwnerToLicense(licenseId, user.sub);
     }
     async addBulkNewLicenses(licenseIds, ownerIdOrUsername) {
         const user = await this.getUserProfile(ownerIdOrUsername).catch(err => {
@@ -85,13 +79,8 @@ let UserService = class UserService {
             throw err;
         });
         const promises = licenseIds.map(async (licenseId) => {
-            const newLKOwner = new licensekey_schema_1.LKOwner();
-            newLKOwner.ownerId = user.sub;
-            newLKOwner.username = user.username;
-            newLKOwner.email = user.email;
-            newLKOwner.name = user.username;
             return this.licensekeyService
-                .addOwnerToLicense(licenseId, newLKOwner)
+                .addOwnerToLicense(licenseId, user.sub)
                 .catch(err => ({
                 promiseError: err,
                 data: licenseId,

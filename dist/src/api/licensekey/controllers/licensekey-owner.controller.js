@@ -23,7 +23,6 @@ const roles_decorator_1 = require("../../auth/decorators/roles.decorator");
 const Enums_1 = require("../../../constants/Enums");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
 const owner_dto_1 = require("../dto/owner/owner.dto");
-const licensekey_schema_1 = require("../schemas/licensekey.schema");
 let LicensekeyOwnerController = class LicensekeyOwnerController {
     constructor(licensekeyService) {
         this.licensekeyService = licensekeyService;
@@ -35,12 +34,7 @@ let LicensekeyOwnerController = class LicensekeyOwnerController {
         const user = await this.licensekeyService.userService.getUserProfile(addOwnerDto.usernameOrSub);
         if (!user)
             throw new common_1.NotFoundException('User not found');
-        const newLKOwner = new licensekey_schema_1.LKOwner();
-        newLKOwner.ownerId = user.sub;
-        newLKOwner.username = user.username;
-        newLKOwner.email = user.email;
-        newLKOwner.name = user.username;
-        const updatedLicense = await this.licensekeyService.addOwnerToLicense(licenseId, newLKOwner);
+        const updatedLicense = await this.licensekeyService.addOwnerToLicense(licenseId, user.sub);
         await this.licensekeyService.licenseKeyModel.findOneAndUpdate({ _id: licenseId }, { updatedBy: updatedBy }, { new: true });
         return updatedLicense;
     }

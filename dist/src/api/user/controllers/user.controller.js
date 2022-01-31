@@ -40,7 +40,7 @@ let UserController = class UserController {
         this.licensekeyService = licensekeyService;
     }
     async getUserLicenses(userId, queryDto) {
-        queryDto.filter['owners.ownerId'] = userId;
+        queryDto.filter['users'] = userId;
         return this.licensekeyService.findAll(queryDto);
     }
     async listUsers(queryDto) {

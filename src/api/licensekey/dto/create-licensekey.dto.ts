@@ -36,7 +36,7 @@ export class CreateLicensekeyDto {
   metaData?: Map<string, any>;
 
   @ApiProperty()
-  owners?: LKOwner[];
+  user?: string;
 
   @ApiProperty()
   company: string;
@@ -46,10 +46,11 @@ export class CreateLicensekeyDto {
 }
 
 export class AdminUpdateLicensekeyDto extends PartialType(
-  OmitType(CreateLicensekeyDto, ['company']),
+  OmitType(CreateLicensekeyDto, ['company','type']),
 ) {
+
   @ApiProperty()
-  owners?: LKOwner[];
+  users?: string[];
 
   @ApiProperty()
   reserves?: LKReserve[];

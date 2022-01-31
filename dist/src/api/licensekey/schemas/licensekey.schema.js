@@ -166,6 +166,11 @@ __decorate([
 ], LicenseKey.prototype, "company", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop([{ type: String, ref: 'User', autopopulate: true, default: [] }]),
+    __metadata("design:type", Array)
+], LicenseKey.prototype, "users", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop({ type: String, enum: Enums_1.ApiKeyType, default: "Individual" }),
     __metadata("design:type", String)
 ], LicenseKey.prototype, "type", void 0);

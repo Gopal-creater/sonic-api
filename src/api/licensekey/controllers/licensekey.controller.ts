@@ -25,20 +25,32 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { User } from 'src/api/auth/decorators';
 import { RolesAllowed } from '../../auth/decorators/roles.decorator';
-import { Roles } from 'src/constants/Enums';
+import { ApiKeyType, Roles } from 'src/constants/Enums';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
 import { FailedAlwaysGuard } from '../../auth/guards/failedAlways.guard';
+import * as _ from 'lodash';
 
 @ApiTags('License Keys Management Controller')
 @Controller('license-keys')
 export class LicensekeyController {
   constructor(private readonly licensekeyService: LicensekeyService) {}
 
-  @Get('/migrate-from-keygen')
-  @UseGuards(FailedAlwaysGuard)
-  @ApiBearerAuth()
-  migrate() {
-    return this.licensekeyService.migrateKeyFromKeygenToDB();
+  @Get('/convert-owners-to-users')
+  // @UseGuards(FailedAlwaysGuard)
+  // @ApiBearerAuth()
+ async migrate() {
+   var licenses = await this.licensekeyService.licenseKeyModel.find()
+
+   for await (var license of licenses) {
+    license = license.depopulate('users')
+     const users = license.owners.map(o=>o?.ownerId?._id).filter(Boolean)
+     console.log("users",users)
+     var newUsers = license.users||[]
+     newUsers.push(...users)
+     newUsers=_.uniq(newUsers)
+     await this.licensekeyService.licenseKeyModel.findByIdAndUpdate(license._id,{users:newUsers})
+   }
+   return "Done"
   }
 
   @Post()
@@ -46,10 +58,27 @@ export class LicensekeyController {
   @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create License Key' })
-  create(
+  async create(
     @Body() createLicensekeyDto: CreateLicensekeyDto,
     @User('sub') createdBy: string,
   ) {
+    if (createLicensekeyDto.type == ApiKeyType.INDIVIDUAL) {
+      const user = await this.licensekeyService.userService.getUserProfile(
+        createLicensekeyDto.user,
+      );
+      if (!user) throw new NotFoundException('Unknown user');
+      createLicensekeyDto.user = user?.sub;
+    } else if (createLicensekeyDto.type == ApiKeyType.COMPANY) {
+      const company = await this.licensekeyService.companyService.findById(
+        createLicensekeyDto.company,
+      );
+      if (!company) throw new NotFoundException('Unknown company');
+      if (!company?.owner?.sub)
+        throw new NotFoundException(
+          'The given company doesnot have any valid admin user',
+        );
+        createLicensekeyDto.user = company.owner.sub
+    }
     return this.licensekeyService.create(createLicensekeyDto, createdBy);
   }
 

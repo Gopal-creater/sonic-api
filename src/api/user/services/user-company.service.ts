@@ -64,7 +64,7 @@ export class UserCompanyService {
       { _id: user.id },
       {
         $pull: {
-          companies:company
+          companies:company._id
         },
       },
       {

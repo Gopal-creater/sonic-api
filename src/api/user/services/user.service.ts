@@ -77,12 +77,7 @@ export class UserService {
         message: 'User not found',
       });
     }
-    const newLKOwner = new LKOwner();
-    newLKOwner.ownerId = user.sub;
-    newLKOwner.username = user.username;
-    newLKOwner.email = user.email;
-    newLKOwner.name = user.username;
-    return this.licensekeyService.addOwnerToLicense(licenseId, newLKOwner);
+    return this.licensekeyService.addOwnerToLicense(licenseId, user.sub);
   }
 
   async addBulkNewLicenses(licenseIds: [string], ownerIdOrUsername: string) {
@@ -94,13 +89,8 @@ export class UserService {
     });
 
     const promises = licenseIds.map(async licenseId => {
-      const newLKOwner = new LKOwner();
-      newLKOwner.ownerId = user.sub;
-      newLKOwner.username = user.username;
-      newLKOwner.email = user.email;
-      newLKOwner.name = user.username;
       return this.licensekeyService
-        .addOwnerToLicense(licenseId, newLKOwner)
+        .addOwnerToLicense(licenseId, user.sub)
         .catch(err => ({
           promiseError: err,
           data: licenseId,

@@ -60,7 +60,7 @@ export class UserController {
     @Param('userId') userId: string,
     @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
   ) {
-    queryDto.filter['owners.ownerId'] = userId;
+    queryDto.filter['users'] = userId;
     return this.licensekeyService.findAll(queryDto);
   }
 
