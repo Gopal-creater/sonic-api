@@ -256,7 +256,7 @@ export class LicensekeyService {
         },
       },
     ]);
-    return await this.licenseKeyModel['aggregatePaginate'](
+    return  this.licenseKeyModel['aggregatePaginate'](
       aggregate,
       paginateOptions,
     );

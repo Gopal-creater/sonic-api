@@ -53,10 +53,10 @@ export class UserController {
     private readonly licensekeyService: LicensekeyService,
   ) {}
 
-  // @Post('/test-validation')
-  // async testVali(@Body() dto: ValidationTestDto) {
-  //   return dto;
-  // }
+  @Post('/test-validation')
+  async testVali(@Body() dto: ValidationTestDto) {
+    return dto;
+  }
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

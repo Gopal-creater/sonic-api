@@ -32,12 +32,16 @@ const company_service_1 = require("../../company/company.service");
 const user_db_schema_1 = require("../schemas/user.db.schema");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
+const create_user_dto_1 = require("../dtos/create-user.dto");
 let UserController = class UserController {
     constructor(userServices, groupService, companyService, licensekeyService) {
         this.userServices = userServices;
         this.groupService = groupService;
         this.companyService = companyService;
         this.licensekeyService = licensekeyService;
+    }
+    async testVali(dto) {
+        return dto;
     }
     async getUserLicenses(userId, queryDto) {
         queryDto.filter['users'] = userId;
@@ -126,6 +130,14 @@ let UserController = class UserController {
         return this.userServices.addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub);
     }
 };
+__decorate([
+    common_1.Post('/test-validation'),
+    openapi.ApiResponse({ status: 201, type: require("../dtos/create-user.dto").ValidationTestDto }),
+    __param(0, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_user_dto_1.ValidationTestDto]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "testVali", null);
 __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),

@@ -187,7 +187,7 @@ let LicensekeyService = class LicensekeyService {
                 $match: Object.assign({}, relationalFilter),
             },
         ]);
-        return await this.licenseKeyModel['aggregatePaginate'](aggregate, paginateOptions);
+        return this.licenseKeyModel['aggregatePaginate'](aggregate, paginateOptions);
     }
     async validateLicence(id) {
         var validationResult = {

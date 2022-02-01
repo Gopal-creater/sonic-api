@@ -35,23 +35,23 @@ import * as _ from 'lodash';
 export class LicensekeyController {
   constructor(private readonly licensekeyService: LicensekeyService) {}
 
-//   @Get('/convert-owners-to-users')
-//   // @UseGuards(FailedAlwaysGuard)
-//   // @ApiBearerAuth()
-//  async migrate() {
-//    var licenses = await this.licensekeyService.licenseKeyModel.find()
+  @Get('/convert-owners-to-users')
+  // @UseGuards(FailedAlwaysGuard)
+  // @ApiBearerAuth()
+ async migrate() {
+   var licenses = await this.licensekeyService.licenseKeyModel.find()
 
-//    for await (var license of licenses) {
-//     license = license.depopulate('users')
-//      const users = license.owners.map(o=>o?.ownerId?._id).filter(Boolean)
-//      console.log("users",users)
-//      var newUsers = license.users||[]
-//      newUsers.push(...users)
-//      newUsers=_.uniq(newUsers)
-//      await this.licensekeyService.licenseKeyModel.findByIdAndUpdate(license._id,{users:newUsers})
-//    }
-//    return "Done"
-//   }
+   for await (var license of licenses) {
+    license = license.depopulate('users')
+     const users = license.owners.map(o=>o?.ownerId?._id).filter(Boolean)
+     console.log("users",users)
+     var newUsers = license.users||[]
+     newUsers.push(...users)
+     newUsers=_.uniq(newUsers)
+     await this.licensekeyService.licenseKeyModel.findByIdAndUpdate(license._id,{users:newUsers})
+   }
+   return "Done"
+  }
 
   @Post()
   @RolesAllowed(Roles.ADMIN,Roles.THIRDPARTY_ADMIN)
