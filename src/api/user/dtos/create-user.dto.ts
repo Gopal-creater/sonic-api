@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, Validate } from 'class-validator';
 import { MFAOption } from '../schemas/user.db.schema';
+import { UserExists,UserExistsRule } from '../validations/userexists.validation';
 
 export class CreateUserDto {
   constructor(data: CreateUserDto) {
@@ -38,4 +39,15 @@ export class CreateUserDto {
 
   @ApiProperty()
   mfa_options?: any[];
+}
+
+export class ValidationTestDto{
+
+  @ApiProperty()
+  // @UserExists()
+  @Validate(UserExistsRule)
+  user:string
+
+  @ApiProperty()
+  param1: string
 }

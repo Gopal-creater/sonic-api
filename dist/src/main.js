@@ -8,11 +8,13 @@ const app_module_1 = require("./app.module");
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const basicAuth = require("express-basic-auth");
+const class_validator_1 = require("class-validator");
 global['fetch'] = require('node-fetch');
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, {
         bodyParser: true,
     });
+    class_validator_1.useContainer(app.select(app_module_1.AppModule), { fallbackOnErrors: true });
     app.use(['/swagger-api/*', '/swagger-api-json'], basicAuth({
         challenge: true,
         users: {

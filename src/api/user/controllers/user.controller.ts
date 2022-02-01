@@ -41,6 +41,7 @@ import { CompanyService } from '../../company/company.service';
 import { UserDB } from '../schemas/user.db.schema';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { ConditionalAuthGuard } from '../../auth/guards/conditional-auth.guard';
+import { ValidationTestDto } from '../dtos/create-user.dto';
 
 @ApiTags('User Controller')
 @Controller('users')
@@ -51,6 +52,11 @@ export class UserController {
     private readonly companyService: CompanyService,
     private readonly licensekeyService: LicensekeyService,
   ) {}
+
+  // @Post('/test-validation')
+  // async testVali(@Body() dto: ValidationTestDto) {
+  //   return dto;
+  // }
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -180,11 +186,14 @@ export class UserController {
       );
       userInDb = userCreated.userDb;
     }
-    const apiKey = await this.userServices.apiKeyService.findOrCreateApiKeyForCompanyUser(userInDb._id,loggedInUser._id)
+    const apiKey = await this.userServices.apiKeyService.findOrCreateApiKeyForCompanyUser(
+      userInDb._id,
+      loggedInUser._id,
+    );
 
     return {
       user: userInDb,
-      apiKey:apiKey
+      apiKey: apiKey,
     };
   }
 

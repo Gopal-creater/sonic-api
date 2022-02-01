@@ -8,6 +8,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as multer from 'multer'
 import * as basicAuth from 'express-basic-auth';
+import {useContainer, Validator} from "class-validator";
 
 global['fetch'] = require('node-fetch');
 
@@ -16,6 +17,7 @@ async function bootstrap() {
     bodyParser: true,
     
   });
+  useContainer(app.select(AppModule), { fallbackOnErrors: true })
   app.use(
     ['/swagger-api/*', '/swagger-api-json'],
     basicAuth({

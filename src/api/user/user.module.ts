@@ -13,10 +13,11 @@ import { UserGroupController } from './controllers/user-group.controller';
 import { UserCompanyController } from './controllers/user-company.controller';
 import { AuthModule } from '../auth/auth.module';
 import { ApiKeyModule } from '../api-key/api-key.module';
+import { UserExistsRule } from './validations/userexists.validation';
 
 @Module({
   imports: [
-    forwardRef(() => LicensekeyModule),
+  forwardRef(() => LicensekeyModule),
     forwardRef(() => RadiomonitorModule),
     MongooseModule.forFeature([{ name: UserSchemaName, schema: UserSchema }]),
     GroupModule,
@@ -25,7 +26,7 @@ import { ApiKeyModule } from '../api-key/api-key.module';
     forwardRef(() => AuthModule),
   ],
   controllers: [UserController, UserGroupController, UserCompanyController],
-  providers: [UserGroupService, UserCompanyService, UserService],
+  providers: [UserGroupService, UserCompanyService, UserService,UserExistsRule],
   exports: [UserGroupService, UserCompanyService, UserService],
 })
 export class UserModule {}

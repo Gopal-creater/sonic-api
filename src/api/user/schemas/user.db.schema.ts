@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MogSchema } from 'mongoose';
+import { Document, Schema as MogSchema,model } from 'mongoose';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { GroupSchemaName } from '../../group/schemas/group.schema';
 import { CompanySchemaName } from '../../company/schemas/company.schema';
@@ -96,3 +96,5 @@ export class UserDB extends Document {
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDB);
+
+export const RawUserModel = model<UserDB>('User',UserSchema)

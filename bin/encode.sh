@@ -17,8 +17,8 @@
 # !!! IMPORANT: Change BIN_PATH according to the installation folder.
 # -----------------------------------------------------------------------------------------
 
-# BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/web/linux/build/
-# BIN_WATERMARK=encode
+#BIN_PATH=/home/arun/Work/Sonic/Core/sonic-core-modular/web/linux/build/
+#BIN_WATERMARK=encode
 BIN_PATH="$BINARY_PATH"
 BIN_WATERMARK="$BINARY_WATERMARK"
 
@@ -41,11 +41,6 @@ outfilename="${outfilename%.*}"
 
 in_tmpfile_path=$3-in-tmp.wav
 out_tmpfile_path=$3-out-tmp.wav
-
-out_tmpfile_path4albart=$3-out-tmp2.$outext
-
-mp3albumartfilename=$3-albumart.png
-processalbumart="no"
 
 echo "Encoding strength: $2"
 echo "Input: filename: $infilename. Extension: $inext"
@@ -116,16 +111,6 @@ else
     
       MEDIA_SPECIFIC_FFMMPEG_PARAMS=" -c:a libmp3lame -b:a $BITRATE "
       AVOID_SG_HACK_05DB="yes"
-
-      # album art      
-      rm -f $mp3albumartfilename
-      ffmpeg -hide_banner -loglevel error -i $3 -an -vcodec copy $mp3albumartfilename     
-      if [ -f $mp3albumartfilename ]; then
-        echo "mp3 album art found and saved to: $mp3albumartfilename"
-        processalbumart="yes"
-      else 
-        echo "No album art file found."
-      fi
     fi
 
     echo "Media specific conversion params: $MEDIA_SPECIFIC_FFMMPEG_PARAMS"
@@ -159,7 +144,7 @@ else
 
     echo "Transcoding output to $outext using ffmpeg..."
     ffmpeg -hide_banner -loglevel error -y -i $out_tmpfile_path $MEDIA_SPECIFIC_FFMMPEG_PARAMS $4 
-    RESULT=$?
+        RESULT=$?
     if [ $RESULT -eq 0 ]; then
       echo "Transcoding output: ffmpeg succeeded"
     else
@@ -167,24 +152,7 @@ else
       exit $RESULT
     fi
 
-    # Mux album art if needed
-    if [ $processalbumart == "yes" ]; then
-      ffmpeg -hide_banner -loglevel error -i $4 -i $mp3albumartfilename -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (front)" $out_tmpfile_path4albart
-      RESULT=$?
-
-      if [ $RESULT -eq 0 ]; then
-        echo "Muxing album art: ffmpeg succeeded"
-        rm -f $4
-        mv $out_tmpfile_path4albart $4
-      else
-        echo "Muxing album art: ffmpeg reported error: $RESULT"
-        rm -f $mp3albumartfilename $out_tmpfile_path4albart
-        exit $RESULT
-      fi
-    fi
-
-    rm -f $in_tmpfile_path $out_tmpfile_path $out_tmpfile_path4albart $mp3albumartfilename
+    rm -f $in_tmpfile_path $out_tmpfile_path
 fi
 
 exit 0
-

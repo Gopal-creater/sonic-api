@@ -9,10 +9,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateUserDto = void 0;
+exports.ValidationTestDto = exports.CreateUserDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
+const userexists_validation_1 = require("../validations/userexists.validation");
 class CreateUserDto {
     constructor(data) {
         Object.assign(this, data);
@@ -65,4 +66,19 @@ __decorate([
     __metadata("design:type", Array)
 ], CreateUserDto.prototype, "mfa_options", void 0);
 exports.CreateUserDto = CreateUserDto;
+class ValidationTestDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { user: { required: true, type: () => String }, param1: { required: true, type: () => String } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.Validate(userexists_validation_1.UserExistsRule),
+    __metadata("design:type", String)
+], ValidationTestDto.prototype, "user", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], ValidationTestDto.prototype, "param1", void 0);
+exports.ValidationTestDto = ValidationTestDto;
 //# sourceMappingURL=create-user.dto.js.map

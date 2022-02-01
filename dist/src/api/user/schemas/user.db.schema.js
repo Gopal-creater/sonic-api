@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserSchema = exports.UserDB = exports.MFAOption = exports.UserSchemaName = void 0;
+exports.RawUserModel = exports.UserSchema = exports.UserDB = exports.MFAOption = exports.UserSchemaName = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
@@ -122,4 +122,5 @@ UserDB = __decorate([
 ], UserDB);
 exports.UserDB = UserDB;
 exports.UserSchema = mongoose_1.SchemaFactory.createForClass(UserDB);
+exports.RawUserModel = mongoose_2.model('User', exports.UserSchema);
 //# sourceMappingURL=user.db.schema.js.map

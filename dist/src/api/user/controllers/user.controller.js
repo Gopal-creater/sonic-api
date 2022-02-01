@@ -85,7 +85,7 @@ let UserController = class UserController {
         const apiKey = await this.userServices.apiKeyService.findOrCreateApiKeyForCompanyUser(userInDb._id, loggedInUser._id);
         return {
             user: userInDb,
-            apiKey: apiKey
+            apiKey: apiKey,
         };
     }
     async cognitoCreateUser(cognitoCreateUserDto) {
