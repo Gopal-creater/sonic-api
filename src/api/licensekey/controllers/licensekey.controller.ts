@@ -68,6 +68,7 @@ export class LicensekeyController {
       );
       if (!user) throw new NotFoundException('Unknown user');
       createLicensekeyDto.user = user?.sub;
+      delete createLicensekeyDto.company
     } else if (createLicensekeyDto.type == ApiKeyType.COMPANY) {
       const company = await this.licensekeyService.companyService.findById(
         createLicensekeyDto.company,

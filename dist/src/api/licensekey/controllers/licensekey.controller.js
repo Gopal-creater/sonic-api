@@ -69,6 +69,7 @@ let LicensekeyController = class LicensekeyController {
             if (!user)
                 throw new common_1.NotFoundException('Unknown user');
             createLicensekeyDto.user = user === null || user === void 0 ? void 0 : user.sub;
+            delete createLicensekeyDto.company;
         }
         else if (createLicensekeyDto.type == Enums_1.ApiKeyType.COMPANY) {
             const company = await this.licensekeyService.companyService.findById(createLicensekeyDto.company);
