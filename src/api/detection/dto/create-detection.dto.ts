@@ -54,6 +54,9 @@ export class ThirdPartyStreamReaderDetectionDto {
   @IsNotEmpty()
   @ApiProperty()
   detectedAt: Date;
+
+  @ApiProperty()
+  metaData: Map<string, any>;
 }
 
 export class CreateThirdPartyStreamReaderDetectionFromBinaryDto {

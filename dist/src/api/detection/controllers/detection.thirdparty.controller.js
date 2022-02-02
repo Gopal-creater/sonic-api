@@ -60,13 +60,13 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
         const newDetection = new this.detectionService.detectionModel({
             sonicKey: sonicKey,
             detectedAt: detectedAt,
-            metadata: metaData,
+            metaData: metaData,
             apiKey: apiKey,
             owner: isKeyFound.owner,
             sonicKeyOwnerId: isKeyFound.owner,
             sonicKeyOwnerName: isKeyFound.contentOwner,
             channel: Enums_1.ChannelEnums.THIRDPARTY_STREAMREADER,
-            thirdpartyRadioDetection: thirdpartyStreamReaderDetection
+            thirdpartyStreamReaderDetection: thirdpartyStreamReaderDetection
         });
         return newDetection.save();
     }

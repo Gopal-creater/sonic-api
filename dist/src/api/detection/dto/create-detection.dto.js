@@ -79,7 +79,7 @@ __decorate([
 exports.CreateDetectionFromBinaryDto = CreateDetectionFromBinaryDto;
 class ThirdPartyStreamReaderDetectionDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { country: { required: true, type: () => String }, name: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date } };
+        return { country: { required: true, type: () => String }, name: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date }, metaData: { required: true } };
     }
 }
 __decorate([
@@ -97,6 +97,10 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Date)
 ], ThirdPartyStreamReaderDetectionDto.prototype, "detectedAt", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Map)
+], ThirdPartyStreamReaderDetectionDto.prototype, "metaData", void 0);
 exports.ThirdPartyStreamReaderDetectionDto = ThirdPartyStreamReaderDetectionDto;
 class CreateThirdPartyStreamReaderDetectionFromBinaryDto {
     constructor() {
