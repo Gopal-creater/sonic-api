@@ -14,7 +14,7 @@ const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 class CreateLicensekeyDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, disabled: { required: false, type: () => Boolean }, suspended: { required: false, type: () => Boolean }, maxEncodeUses: { required: true, type: () => Number }, encodeUses: { required: true, type: () => Number }, maxDecodeUses: { required: true, type: () => Number }, decodeUses: { required: true, type: () => Number }, maxMonitoringUses: { required: true, type: () => Number }, monitoringUses: { required: true, type: () => Number }, validity: { required: true, type: () => Date }, metaData: { required: false }, user: { required: false, type: () => String }, company: { required: true, type: () => String }, type: { required: true, type: () => String } };
+        return { name: { required: true, type: () => String }, disabled: { required: false, type: () => Boolean }, suspended: { required: false, type: () => Boolean }, maxEncodeUses: { required: true, type: () => Number }, isUnlimitedEncode: { required: true, type: () => Boolean }, encodeUses: { required: true, type: () => Number }, isUnlimitedDecode: { required: true, type: () => Boolean }, maxDecodeUses: { required: true, type: () => Number }, decodeUses: { required: true, type: () => Number }, maxMonitoringUses: { required: true, type: () => Number }, isUnlimitedMonitor: { required: true, type: () => Boolean }, monitoringUses: { required: true, type: () => Number }, validity: { required: true, type: () => Date }, metaData: { required: false }, user: { required: false, type: () => String }, company: { required: true, type: () => String }, type: { required: true, type: () => String } };
     }
 }
 __decorate([
@@ -34,9 +34,17 @@ __decorate([
     __metadata("design:type", Number)
 ], CreateLicensekeyDto.prototype, "maxEncodeUses", void 0);
 __decorate([
+    swagger_1.ApiProperty({ default: false }),
+    __metadata("design:type", Boolean)
+], CreateLicensekeyDto.prototype, "isUnlimitedEncode", void 0);
+__decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], CreateLicensekeyDto.prototype, "encodeUses", void 0);
+__decorate([
+    swagger_1.ApiProperty({ default: false }),
+    __metadata("design:type", Boolean)
+], CreateLicensekeyDto.prototype, "isUnlimitedDecode", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Number)
@@ -49,6 +57,10 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], CreateLicensekeyDto.prototype, "maxMonitoringUses", void 0);
+__decorate([
+    swagger_1.ApiProperty({ default: false }),
+    __metadata("design:type", Boolean)
+], CreateLicensekeyDto.prototype, "isUnlimitedMonitor", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Number)

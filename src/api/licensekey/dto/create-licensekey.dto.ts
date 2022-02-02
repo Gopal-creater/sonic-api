@@ -14,8 +14,14 @@ export class CreateLicensekeyDto {
   @ApiProperty()
   maxEncodeUses: number;
 
+  @ApiProperty({ default: false })
+  isUnlimitedEncode: boolean;
+
   @ApiProperty()
   encodeUses: number;
+
+  @ApiProperty({ default: false })
+  isUnlimitedDecode: boolean;
 
   @ApiProperty()
   maxDecodeUses: number;
@@ -25,6 +31,9 @@ export class CreateLicensekeyDto {
 
   @ApiProperty()
   maxMonitoringUses: number;
+
+  @ApiProperty({ default: false })
+  isUnlimitedMonitor: boolean;
 
   @ApiProperty()
   monitoringUses: number;
