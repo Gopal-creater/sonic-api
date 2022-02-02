@@ -49,7 +49,7 @@ export class Company extends Document {
   @Prop({
     type: String,
     ref: 'User',
-    autopopulate: true,
+    autopopulate: { maxDepth: 2 },
   })
   owner: any;
 

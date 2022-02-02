@@ -70,7 +70,7 @@ __decorate([
     mongoose_1.Prop({
         type: String,
         ref: 'User',
-        autopopulate: true,
+        autopopulate: { maxDepth: 2 },
     }),
     __metadata("design:type", Object)
 ], Company.prototype, "owner", void 0);

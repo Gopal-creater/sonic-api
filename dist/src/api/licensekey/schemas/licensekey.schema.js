@@ -161,7 +161,7 @@ __decorate([
 ], LicenseKey.prototype, "owners", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Company', autopopulate: true }),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Company', autopopulate: { maxDepth: 2 } }),
     __metadata("design:type", Object)
 ], LicenseKey.prototype, "company", void 0);
 __decorate([

@@ -127,7 +127,7 @@ export class LicenseKey extends Document {
   owners?:LKOwner[]
 
   @ApiProperty()
-  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Company',autopopulate: true})
+  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Company',autopopulate: { maxDepth: 2 }})
   company: any;
 
   @ApiProperty()
