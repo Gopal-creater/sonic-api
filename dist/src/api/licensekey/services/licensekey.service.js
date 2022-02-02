@@ -184,6 +184,14 @@ let LicensekeyService = class LicensekeyService {
                 },
             },
             {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'company',
+                    foreignField: '_id',
+                    as: 'company',
+                },
+            },
+            {
                 $match: Object.assign({}, relationalFilter),
             },
         ]);
