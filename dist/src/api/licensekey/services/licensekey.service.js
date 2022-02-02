@@ -191,6 +191,7 @@ let LicensekeyService = class LicensekeyService {
                     as: 'company',
                 },
             },
+            { $addFields: { company: { $first: '$company' } } },
             {
                 $match: Object.assign({}, relationalFilter),
             },

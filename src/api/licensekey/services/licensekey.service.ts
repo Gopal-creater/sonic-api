@@ -259,6 +259,7 @@ export class LicensekeyService {
           as: 'company',
         },
       },
+      { $addFields: { company: { $first: '$company' } } },
       {
         $match: {
           ...relationalFilter,
