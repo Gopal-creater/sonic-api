@@ -13,7 +13,7 @@ export class RadioMonitor extends Document {
     type: MogSchema.Types.ObjectId,
     ref: RadioStationSchemaName,
     required: true,
-    autopopulate: true,
+    autopopulate: { maxDepth: 2 },
   })
   radio: any;
 
@@ -26,7 +26,7 @@ export class RadioMonitor extends Document {
     type: MogSchema.Types.String,
     ref: LicenseKeySchemaName,
     required: true,
-    autopopulate: false,
+    autopopulate: { maxDepth: 2 },
   })
   license: any;
 

@@ -90,7 +90,7 @@ export class UserDB extends Document {
   @Prop({
     type: MogSchema.Types.ObjectId,
     ref: CompanySchemaName,
-    autopopulate: true,
+    autopopulate: { maxDepth: 2 },
   })
   adminCompany: any;
 }

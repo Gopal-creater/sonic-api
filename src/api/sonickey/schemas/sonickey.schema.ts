@@ -49,7 +49,7 @@ export class SonicKey extends Document {
     required: true,
     type:String,
     ref:'User',
-    autopopulate: false
+    autopopulate: { maxDepth: 2 }
   })
   owner: string;
 

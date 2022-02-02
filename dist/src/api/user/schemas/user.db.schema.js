@@ -113,7 +113,7 @@ __decorate([
     mongoose_1.Prop({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: company_schema_1.CompanySchemaName,
-        autopopulate: true,
+        autopopulate: { maxDepth: 2 },
     }),
     __metadata("design:type", Object)
 ], UserDB.prototype, "adminCompany", void 0);

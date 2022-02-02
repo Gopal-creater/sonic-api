@@ -17,7 +17,7 @@ export class ThirdpartyDetection extends Document {
   apiKey: string;
 
   @ApiProperty()
-  @Prop({ type: String, ref: SonicKeySchemaName,required:true,autopopulate: true})
+  @Prop({ type: String, ref: SonicKeySchemaName,required:true,autopopulate: { maxDepth: 2 }})
   sonicKey: any;
 
   @ApiProperty()

@@ -38,7 +38,7 @@ export class Job extends Document {
   isComplete: boolean;
 
   @ApiProperty()
-  @Prop({ type: [{ type: MogSchema.Types.ObjectId, ref: 'JobFile',autopopulate: true }] })
+  @Prop({ type: [{ type: MogSchema.Types.ObjectId, ref: 'JobFile',autopopulate: { maxDepth: 2 } }] })
   jobFiles: any[];
 }
 

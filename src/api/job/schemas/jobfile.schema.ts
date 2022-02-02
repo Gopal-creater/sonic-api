@@ -16,7 +16,7 @@ export class JobFile extends Document {
 
   @ApiProperty({type:String})
   // @Prop({ type: String})
-  @Prop({ type: String, ref: SonicKeySchemaName,autopopulate: true})
+  @Prop({ type: String, ref: SonicKeySchemaName,autopopulate: { maxDepth: 2 }})
   sonicKey: string;
 
   @ApiProperty()

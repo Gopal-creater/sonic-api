@@ -10,7 +10,7 @@ export const ApiKeySchemaName = 'ApiKey';
 export class ApiKey extends Document { //_id or id will be apikey here, which is always unique
 
   @ApiProperty()
-  @Prop({ type: String, ref: 'User',required:true,autopopulate: true})
+  @Prop({ type: String, ref: 'User',required:true,autopopulate: { maxDepth: 2 }})
   customer: any;
 
   @ApiProperty()
@@ -18,7 +18,7 @@ export class ApiKey extends Document { //_id or id will be apikey here, which is
   groups: [string];
 
   @ApiProperty()
-  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Company',autopopulate: true})
+  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Company',autopopulate: { maxDepth: 2 }})
   company: any;
 
   @ApiProperty()

@@ -29,7 +29,7 @@ __decorate([
 ], ThirdpartyDetection.prototype, "apiKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, ref: sonickey_schema_1.SonicKeySchemaName, required: true, autopopulate: true }),
+    mongoose_1.Prop({ type: String, ref: sonickey_schema_1.SonicKeySchemaName, required: true, autopopulate: { maxDepth: 2 } }),
     __metadata("design:type", Object)
 ], ThirdpartyDetection.prototype, "sonicKey", void 0);
 __decorate([

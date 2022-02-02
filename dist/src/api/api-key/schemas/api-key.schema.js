@@ -19,7 +19,7 @@ let ApiKey = class ApiKey extends mongoose_2.Document {
 };
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, ref: 'User', required: true, autopopulate: true }),
+    mongoose_1.Prop({ type: String, ref: 'User', required: true, autopopulate: { maxDepth: 2 } }),
     __metadata("design:type", Object)
 ], ApiKey.prototype, "customer", void 0);
 __decorate([
@@ -29,7 +29,7 @@ __decorate([
 ], ApiKey.prototype, "groups", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Company', autopopulate: true }),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Company', autopopulate: { maxDepth: 2 } }),
     __metadata("design:type", Object)
 ], ApiKey.prototype, "company", void 0);
 __decorate([

@@ -68,7 +68,7 @@ __decorate([
         required: true,
         type: String,
         ref: 'User',
-        autopopulate: false
+        autopopulate: { maxDepth: 2 }
     }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "owner", void 0);

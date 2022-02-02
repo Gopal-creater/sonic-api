@@ -59,12 +59,12 @@ let Detection = class Detection extends mongoose_2.Document {
 };
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: radiostation_schema_1.RadioStationSchemaName, autopopulate: true }),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: radiostation_schema_1.RadioStationSchemaName, autopopulate: { maxDepth: 2 } }),
     __metadata("design:type", Object)
 ], Detection.prototype, "radioStation", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, ref: sonickey_schema_1.SonicKeySchemaName, required: true, autopopulate: true }),
+    mongoose_1.Prop({ type: String, ref: sonickey_schema_1.SonicKeySchemaName, required: true, autopopulate: { maxDepth: 2 } }),
     __metadata("design:type", Object)
 ], Detection.prototype, "sonicKey", void 0);
 __decorate([

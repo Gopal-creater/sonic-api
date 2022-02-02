@@ -51,7 +51,7 @@ __decorate([
 ], Job.prototype, "isComplete", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: [{ type: mongoose_2.Schema.Types.ObjectId, ref: 'JobFile', autopopulate: true }] }),
+    mongoose_1.Prop({ type: [{ type: mongoose_2.Schema.Types.ObjectId, ref: 'JobFile', autopopulate: { maxDepth: 2 } }] }),
     __metadata("design:type", Array)
 ], Job.prototype, "jobFiles", void 0);
 Job = __decorate([

@@ -25,7 +25,7 @@ __decorate([
 ], JobFile.prototype, "sonicKeyToBe", void 0);
 __decorate([
     swagger_1.ApiProperty({ type: String }),
-    mongoose_1.Prop({ type: String, ref: sonickey_schema_1.SonicKeySchemaName, autopopulate: true }),
+    mongoose_1.Prop({ type: String, ref: sonickey_schema_1.SonicKeySchemaName, autopopulate: { maxDepth: 2 } }),
     __metadata("design:type", String)
 ], JobFile.prototype, "sonicKey", void 0);
 __decorate([

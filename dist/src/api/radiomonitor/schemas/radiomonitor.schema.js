@@ -24,7 +24,7 @@ __decorate([
         type: mongoose_2.Schema.Types.ObjectId,
         ref: radiostation_schema_1.RadioStationSchemaName,
         required: true,
-        autopopulate: true,
+        autopopulate: { maxDepth: 2 },
     }),
     __metadata("design:type", Object)
 ], RadioMonitor.prototype, "radio", void 0);
@@ -39,7 +39,7 @@ __decorate([
         type: mongoose_2.Schema.Types.String,
         ref: licensekey_schema_1.LicenseKeySchemaName,
         required: true,
-        autopopulate: false,
+        autopopulate: { maxDepth: 2 },
     }),
     __metadata("design:type", Object)
 ], RadioMonitor.prototype, "license", void 0);

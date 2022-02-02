@@ -38,11 +38,11 @@ export class ThirdpartyStreamReaderDetection{
 export class Detection extends Document {
 
   @ApiProperty()
-  @Prop({ type: MogSchema.Types.ObjectId, ref: RadioStationSchemaName,autopopulate: true })
+  @Prop({ type: MogSchema.Types.ObjectId, ref: RadioStationSchemaName,autopopulate: { maxDepth: 2 } })
   radioStation: any;
 
   @ApiProperty()
-  @Prop({ type: String, ref: SonicKeySchemaName,required:true,autopopulate: true})
+  @Prop({ type: String, ref: SonicKeySchemaName,required:true,autopopulate: { maxDepth: 2 }})
   sonicKey: any;
 
   @ApiProperty()
