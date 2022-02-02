@@ -59,7 +59,7 @@ __decorate([
         {
             type: mongoose_2.Schema.Types.ObjectId,
             ref: group_schema_1.GroupSchemaName,
-            autopopulate: true,
+            autopopulate: { maxDepth: 2 },
         },
     ]),
     __metadata("design:type", Array)
@@ -104,7 +104,7 @@ __decorate([
     mongoose_1.Prop([{
             type: mongoose_2.Schema.Types.ObjectId,
             ref: company_schema_1.CompanySchemaName,
-            autopopulate: true,
+            autopopulate: { maxDepth: 2 },
         }]),
     __metadata("design:type", Array)
 ], UserDB.prototype, "companies", void 0);

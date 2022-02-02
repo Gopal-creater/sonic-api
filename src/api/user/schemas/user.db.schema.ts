@@ -45,7 +45,7 @@ export class UserDB extends Document {
     {
       type: MogSchema.Types.ObjectId,
       ref: GroupSchemaName,
-      autopopulate: true,
+      autopopulate: { maxDepth: 2 },
     },
   ])
   groups: any[];
@@ -82,7 +82,7 @@ export class UserDB extends Document {
   @Prop([{
     type: MogSchema.Types.ObjectId,
     ref: CompanySchemaName,
-    autopopulate: true,
+    autopopulate: { maxDepth: 2 },
   }])
   companies: any[];
 

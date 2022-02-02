@@ -166,7 +166,7 @@ __decorate([
 ], LicenseKey.prototype, "company", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop([{ type: String, ref: 'User', autopopulate: true, default: [] }]),
+    mongoose_1.Prop([{ type: String, ref: 'User', autopopulate: { maxDepth: 2 }, default: [] }]),
     __metadata("design:type", Array)
 ], LicenseKey.prototype, "users", void 0);
 __decorate([
