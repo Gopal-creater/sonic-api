@@ -180,23 +180,10 @@ export class LicensekeyService {
             disabled: false,
             suspended: false,
             validity: { $gte: startOfToday },
+            company:{$in:userFromDb.companies},
             ...filter,
           },
-        },
-        {
-          $lookup: {
-            //populate radioStation from its relational table
-            from: 'User',
-            localField: 'users',
-            foreignField: '_id',
-            as: 'users',
-          },
-        },
-        {
-          $match: {
-            'users.companies': { $in: userFromDb.companies },
-          },
-        },
+        }
       ],
     );
     if (validLicenseForUserWithInCompany.length > 0) {

@@ -33,6 +33,7 @@ let CompanyController = class CompanyController {
         const user = await this.companyService.userService.getUserProfile(createCompanyDto.owner);
         if (!user)
             throw new common_1.NotFoundException('Unknown user');
+        createCompanyDto.owner = user.sub;
         const isalreadyOwnCompany = await this.companyService.findOne({ owner: createCompanyDto.owner });
         if (isalreadyOwnCompany)
             throw new common_1.NotFoundException('Given user already own the company, please choose different user');
