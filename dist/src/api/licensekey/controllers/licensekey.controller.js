@@ -41,6 +41,7 @@ let LicensekeyController = class LicensekeyController {
     async migrate() {
         var e_1, _a;
         var licenses = await this.licensekeyService.licenseKeyModel.find();
+        console.log("licenses length", licenses.length);
         try {
             for (var licenses_1 = __asyncValues(licenses), licenses_1_1; licenses_1_1 = await licenses_1.next(), !licenses_1_1.done;) {
                 var license = licenses_1_1.value;

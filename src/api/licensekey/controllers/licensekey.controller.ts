@@ -40,7 +40,7 @@ export class LicensekeyController {
   // @ApiBearerAuth()
  async migrate() {
    var licenses = await this.licensekeyService.licenseKeyModel.find()
-
+  console.log("licenses length",licenses.length)
    for await (var license of licenses) {
     license = license.depopulate('users')
      const users = license.owners.map(o=>o?.ownerId?._id).filter(Boolean)
