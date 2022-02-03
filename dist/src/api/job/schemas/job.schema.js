@@ -40,7 +40,8 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        required: true
+        required: true,
+        select: false
     }),
     __metadata("design:type", String)
 ], Job.prototype, "license", void 0);

@@ -79,7 +79,7 @@ __decorate([
 ], SonicKey.prototype, "job", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: api_key_schema_1.ApiKeySchemaName }),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: api_key_schema_1.ApiKeySchemaName, select: false }),
     __metadata("design:type", Object)
 ], SonicKey.prototype, "apiKey", void 0);
 __decorate([
@@ -95,7 +95,8 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        required: true
+        required: true,
+        select: false
     }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "license", void 0);

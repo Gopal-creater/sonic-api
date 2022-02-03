@@ -58,7 +58,7 @@ export class SonicKey extends Document {
   job: any;
 
   @ApiProperty()
-  @Prop({ type: MogSchema.Types.ObjectId, ref: ApiKeySchemaName})
+  @Prop({ type: MogSchema.Types.ObjectId, ref: ApiKeySchemaName,select:false})
   apiKey: any;
 
   @ApiProperty()
@@ -71,7 +71,8 @@ export class SonicKey extends Document {
 
   @ApiProperty()
   @Prop({
-    required: true
+    required: true,
+    select:false
   })
   license: string;
 

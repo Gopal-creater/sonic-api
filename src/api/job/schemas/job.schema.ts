@@ -29,7 +29,8 @@ export class Job extends Document {
 
   @ApiProperty()
   @Prop({
-    required:true
+    required:true,
+    select:false
   })
   license: string;
 
