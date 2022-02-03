@@ -46,11 +46,11 @@ export class Detection extends Document {
   sonicKey: any;
 
   @ApiProperty()
-  @Prop()
+  @Prop({select:false})
   apiKey: string;
 
   @ApiProperty()
-  @Prop()
+  @Prop({select:false})
   licenseKey: string;
 
   @ApiProperty()

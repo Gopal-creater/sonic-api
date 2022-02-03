@@ -69,12 +69,12 @@ __decorate([
 ], Detection.prototype, "sonicKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    mongoose_1.Prop({ select: false }),
     __metadata("design:type", String)
 ], Detection.prototype, "apiKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    mongoose_1.Prop({ select: false }),
     __metadata("design:type", String)
 ], Detection.prototype, "licenseKey", void 0);
 __decorate([

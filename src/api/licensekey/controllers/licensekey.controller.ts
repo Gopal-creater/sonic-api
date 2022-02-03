@@ -39,18 +39,19 @@ export class LicensekeyController {
   // @UseGuards(FailedAlwaysGuard)
   // @ApiBearerAuth()
  async migrate() {
-   var licenses = await this.licensekeyService.licenseKeyModel.find()
-  console.log("licenses length",licenses.length)
-   for await (var license of licenses) {
-    license = license.depopulate('users')
-     const users = license.owners.map(o=>o?.ownerId?._id).filter(Boolean)
-     console.log("users",users)
-     var newUsers = license.users||[]
-     newUsers.push(...users)
-     newUsers=_.uniq(newUsers)
-     await this.licensekeyService.licenseKeyModel.findByIdAndUpdate(license._id,{users:newUsers})
-   }
-   return "Done"
+  //  var licenses = await this.licensekeyService.licenseKeyModel.find()
+  // console.log("licenses length",licenses.length)
+  //  for await (var license of licenses) {
+  //   license = license.depopulate('users')
+  //    const users = license.owners.map(o=>o?.ownerId?._id).filter(Boolean)
+  //    console.log("users",users)
+  //    var newUsers = license.users||[]
+  //    newUsers.push(...users)
+  //    newUsers=_.uniq(newUsers)
+  //    await this.licensekeyService.licenseKeyModel.findByIdAndUpdate(license._id,{users:newUsers})
+  //  }
+  // await this.licensekeyService.licenseKeyModel.updateMany({},{type:ApiKeyType.INDIVIDUAL})
+   return "Disabled"
   }
 
   @Post()

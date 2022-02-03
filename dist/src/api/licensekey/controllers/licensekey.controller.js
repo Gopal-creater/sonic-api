@@ -11,13 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var __asyncValues = (this && this.__asyncValues) || function (o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LicensekeyController = void 0;
 const openapi = require("@nestjs/swagger");
@@ -33,35 +26,12 @@ const decorators_1 = require("../../auth/decorators");
 const roles_decorator_1 = require("../../auth/decorators/roles.decorator");
 const Enums_1 = require("../../../constants/Enums");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
-const _ = require("lodash");
 let LicensekeyController = class LicensekeyController {
     constructor(licensekeyService) {
         this.licensekeyService = licensekeyService;
     }
     async migrate() {
-        var e_1, _a;
-        var licenses = await this.licensekeyService.licenseKeyModel.find();
-        console.log("licenses length", licenses.length);
-        try {
-            for (var licenses_1 = __asyncValues(licenses), licenses_1_1; licenses_1_1 = await licenses_1.next(), !licenses_1_1.done;) {
-                var license = licenses_1_1.value;
-                license = license.depopulate('users');
-                const users = license.owners.map(o => { var _a; return (_a = o === null || o === void 0 ? void 0 : o.ownerId) === null || _a === void 0 ? void 0 : _a._id; }).filter(Boolean);
-                console.log("users", users);
-                var newUsers = license.users || [];
-                newUsers.push(...users);
-                newUsers = _.uniq(newUsers);
-                await this.licensekeyService.licenseKeyModel.findByIdAndUpdate(license._id, { users: newUsers });
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (licenses_1_1 && !licenses_1_1.done && (_a = licenses_1.return)) await _a.call(licenses_1);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-        return "Done";
+        return "Disabled";
     }
     async create(createLicensekeyDto, createdBy) {
         var _a;
