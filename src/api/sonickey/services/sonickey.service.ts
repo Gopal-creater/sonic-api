@@ -23,6 +23,7 @@ import { S3FileUploadService } from '../../s3fileupload/s3fileupload.service';
 import { DetectionService } from '../../detection/detection.service';
 import { Detection } from 'src/api/detection/schemas/detection.schema';
 import { UserService } from '../../user/services/user.service';
+import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -30,6 +31,7 @@ export class SonickeyService {
   constructor(
     @InjectModel(SonicKey.name) public sonicKeyModel: Model<SonicKey>,
     private readonly fileOperationService: FileOperationService,
+    private readonly licensekeyService: LicensekeyService,
     private readonly fileHandlerService: FileHandlerService,
     private readonly s3FileUploadService: S3FileUploadService,
     private readonly detectionService: DetectionService,
