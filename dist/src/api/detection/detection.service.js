@@ -227,6 +227,12 @@ let DetectionService = class DetectionService {
             playsArtistWise,
         };
     }
+    async removeEntriesFromArBaTestRadio() {
+        const radioStationId = "618bb1f83ac8d27c53b10d66";
+        return this.detectionModel.deleteMany({
+            radioStation: radioStationId
+        });
+    }
     async exportDashboardPlaysView(queryDto, ownerId, format) {
         const { filter, limit } = queryDto;
         return new Promise(async (resolve, reject) => {

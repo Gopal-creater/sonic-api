@@ -40,7 +40,8 @@ export class DetectionService {
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     private readonly fileHandlerService: FileHandlerService,
-  ) {}
+  ) {
+  }
 
   async getPlaysDashboardData(filter: Record<any, any>) {
     const playsCount = await this.getTotalPlaysCount({ filter: filter });
@@ -251,6 +252,14 @@ export class DetectionService {
       playsStationWise,
       playsArtistWise,
     } as PlaysGraphResponseDto;
+  }
+
+  async removeEntriesFromArBaTestRadio(){
+    // const radioName="ArBa-Test-Radio";
+    const radioStationId="618bb1f83ac8d27c53b10d66"
+      return this.detectionModel.deleteMany({
+        radioStation:radioStationId
+      })
   }
 
   async exportDashboardPlaysView(
