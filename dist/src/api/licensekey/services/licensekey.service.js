@@ -246,28 +246,31 @@ let LicensekeyService = class LicensekeyService {
         if (!licenseKey)
             throw new common_1.NotFoundException();
         if (usesFor == 'decode') {
+            const decodeUsesWillBe = licenseKey.decodeUses + incrementBy;
             if (!licenseKey.isUnlimitedDecode) {
-                licenseKey.decodeUses = licenseKey.decodeUses + incrementBy;
-                if (licenseKey.decodeUses > licenseKey.maxDecodeUses) {
+                if (decodeUsesWillBe > licenseKey.maxDecodeUses) {
                     throw new common_1.UnprocessableEntityException("Can't increment uses because this increment will exceed the maxUses.");
                 }
             }
+            licenseKey.decodeUses = decodeUsesWillBe;
         }
         else if (usesFor == 'encode') {
+            const encodeUsesWillBe = licenseKey.encodeUses + incrementBy;
             if (!licenseKey.isUnlimitedEncode) {
-                licenseKey.encodeUses = licenseKey.encodeUses + incrementBy;
-                if (licenseKey.encodeUses > licenseKey.maxEncodeUses) {
+                if (encodeUsesWillBe > licenseKey.maxEncodeUses) {
                     throw new common_1.UnprocessableEntityException("Can't increment uses because this increment will exceed the maxUses.");
                 }
             }
+            licenseKey.encodeUses = encodeUsesWillBe;
         }
         else if (usesFor == 'monitor') {
+            const monitoringUsesWillBe = licenseKey.monitoringUses + incrementBy;
             if (!licenseKey.isUnlimitedMonitor) {
-                licenseKey.monitoringUses = licenseKey.monitoringUses + incrementBy;
-                if (licenseKey.monitoringUses > licenseKey.maxMonitoringUses) {
+                if (monitoringUsesWillBe > licenseKey.maxMonitoringUses) {
                     throw new common_1.UnprocessableEntityException("Can't increment uses because this increment will exceed the maxUses for monitor.");
                 }
             }
+            licenseKey.monitoringUses = monitoringUsesWillBe;
         }
         return licenseKey.save();
     }
@@ -306,28 +309,31 @@ let LicensekeyService = class LicensekeyService {
         if (!licenseKey)
             throw new common_1.NotFoundException();
         if (usesFor == 'decode') {
+            const decodeUsesWillBe = licenseKey.decodeUses - decrementBy;
             if (!licenseKey.isUnlimitedDecode) {
-                licenseKey.decodeUses = licenseKey.decodeUses - decrementBy;
-                if (licenseKey.decodeUses < 0) {
+                if (decodeUsesWillBe < 0) {
                     throw new common_1.UnprocessableEntityException("Can't decrement uses because this decrement will become less than 0.");
                 }
             }
+            licenseKey.decodeUses = decodeUsesWillBe;
         }
         else if (usesFor == 'encode') {
+            const encodeUsesWillBe = licenseKey.encodeUses - decrementBy;
             if (!licenseKey.isUnlimitedEncode) {
-                licenseKey.encodeUses = licenseKey.encodeUses - decrementBy;
-                if (licenseKey.encodeUses < 0) {
+                if (encodeUsesWillBe < 0) {
                     throw new common_1.UnprocessableEntityException("Can't decrement uses because this decrement will become less than 0.");
                 }
             }
+            licenseKey.encodeUses = encodeUsesWillBe;
         }
         else if (usesFor == 'monitor') {
+            const monitoringUsesWillBe = licenseKey.monitoringUses - decrementBy;
             if (!licenseKey.isUnlimitedMonitor) {
-                licenseKey.monitoringUses = licenseKey.monitoringUses - decrementBy;
-                if (licenseKey.monitoringUses < 0) {
+                if (monitoringUsesWillBe < 0) {
                     throw new common_1.UnprocessableEntityException("Can't decrement uses because this decrement will become less than 0 for monitor.");
                 }
             }
+            licenseKey.monitoringUses = monitoringUsesWillBe;
         }
         return licenseKey.save();
     }

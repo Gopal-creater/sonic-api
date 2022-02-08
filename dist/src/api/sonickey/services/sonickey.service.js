@@ -35,10 +35,12 @@ const s3fileupload_service_1 = require("../../s3fileupload/s3fileupload.service"
 const detection_service_1 = require("../../detection/detection.service");
 const detection_schema_1 = require("../../detection/schemas/detection.schema");
 const user_service_1 = require("../../user/services/user.service");
+const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 let SonickeyService = class SonickeyService {
-    constructor(sonicKeyModel, fileOperationService, fileHandlerService, s3FileUploadService, detectionService, userService) {
+    constructor(sonicKeyModel, fileOperationService, licensekeyService, fileHandlerService, s3FileUploadService, detectionService, userService) {
         this.sonicKeyModel = sonicKeyModel;
         this.fileOperationService = fileOperationService;
+        this.licensekeyService = licensekeyService;
         this.fileHandlerService = fileHandlerService;
         this.s3FileUploadService = s3FileUploadService;
         this.detectionService = detectionService;
@@ -260,9 +262,10 @@ let SonickeyService = class SonickeyService {
 SonickeyService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(sonickey_schema_1.SonicKey.name)),
-    __param(5, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
+    __param(6, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         file_operation_service_1.FileOperationService,
+        licensekey_service_1.LicensekeyService,
         file_handler_service_1.FileHandlerService,
         s3fileupload_service_1.S3FileUploadService,
         detection_service_1.DetectionService,
