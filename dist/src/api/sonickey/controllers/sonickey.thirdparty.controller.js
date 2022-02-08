@@ -30,6 +30,7 @@ const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
+const update_sonickey_dto_1 = require("../dtos/update-sonickey.dto");
 let SonickeyThirdPartyController = class SonickeyThirdPartyController {
     constructor(sonicKeyService, fileHandlerService, licensekeyService) {
         this.sonicKeyService = sonicKeyService;
@@ -72,6 +73,13 @@ let SonickeyThirdPartyController = class SonickeyThirdPartyController {
         });
         return savedSonicKey;
     }
+    async updateMeta(sonickey, updateSonicKeyFromBinaryDto, owner) {
+        const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate({ sonicKey: sonickey, owner: owner }, updateSonicKeyFromBinaryDto, { new: true });
+        if (!updatedSonickey) {
+            throw new common_2.NotFoundException('Given sonickey is either not present or doest not belongs to you');
+        }
+        return updatedSonickey;
+    }
 };
 __decorate([
     common_1.UseInterceptors(FileFromUrl_interceptor_1.FileFromUrlInterceptor('mediaFile')),
@@ -80,6 +88,7 @@ __decorate([
         type: encode_dto_1.EncodeFromUrlDto,
     }),
     common_2.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, license_validation_guard_1.LicenseValidationGuard),
+    swagger_1.ApiSecurity('x-api-key'),
     common_1.Post('/encode-from-url'),
     swagger_1.ApiOperation({ summary: 'Encode File From URL And save to database' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/sonickey.schema").SonicKey }),
@@ -94,7 +103,7 @@ __decorate([
 __decorate([
     common_2.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, license_validation_guard_1.LicenseValidationGuard),
     common_1.Post('/create-from-binary'),
-    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiOperation({ summary: 'Save to database after local encode from binary.' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/sonickey.schema").SonicKey }),
     __param(0, common_1.Body()),
@@ -105,6 +114,19 @@ __decorate([
     __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromBinaryDto, String, String, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyThirdPartyController.prototype, "createFormBinary", null);
+__decorate([
+    common_1.Patch('/:sonickey'),
+    common_2.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiOperation({ summary: 'Update Sonic Keys meta data from binary including s3FileMeta' }),
+    openapi.ApiResponse({ status: 200, type: require("../schemas/sonickey.schema").SonicKey }),
+    __param(0, common_2.Param('sonickey')),
+    __param(1, common_1.Body()),
+    __param(2, decorators_1.User('sub')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_sonickey_dto_1.UpdateSonicKeyFromBinaryDto, String]),
+    __metadata("design:returntype", Promise)
+], SonickeyThirdPartyController.prototype, "updateMeta", null);
 SonickeyThirdPartyController = __decorate([
     swagger_1.ApiTags('ThirdParty Integration Controller, Protected By XAPI-Key'),
     swagger_1.ApiSecurity('x-api-key'),

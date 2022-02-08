@@ -94,6 +94,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
 __decorate([
     swagger_1.ApiOperation({ summary: 'Create Detection From Binary' }),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
+    swagger_1.ApiSecurity('x-api-key'),
     common_1.Post('detection-from-binary'),
     openapi.ApiResponse({ status: 201, type: require("../schemas/detection.schema").Detection }),
     __param(0, common_1.Body()),
@@ -106,6 +107,7 @@ __decorate([
 __decorate([
     swagger_1.ApiOperation({ summary: 'Create Radio Detection From Binary' }),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
+    swagger_1.ApiSecurity('x-api-key'),
     common_1.Post('stream-detection-from-binary'),
     openapi.ApiResponse({ status: 201, type: require("../schemas/detection.schema").Detection }),
     __param(0, common_1.Body()),
@@ -118,6 +120,7 @@ __decorate([
 __decorate([
     swagger_1.ApiOperation({ summary: 'Create Detection From Hardware' }),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
+    swagger_1.ApiSecurity('x-api-key'),
     common_1.Post('detection-from-hardware'),
     openapi.ApiResponse({ status: 201, type: require("../schemas/detection.schema").Detection }),
     __param(0, common_1.Body()),

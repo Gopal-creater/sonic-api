@@ -284,7 +284,6 @@ export class DetectionOwnerController {
   @Get('/list-plays')
   @ApiQuery({ name: 'radioStation', type: String, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
-  @ApiQuery({ name: 'recentPlays', type: Boolean, required: false })
   @ApiQuery({
     name: 'channel',
     enum: [...Object.values(ChannelEnums), 'ALL'],
@@ -306,6 +305,32 @@ export class DetectionOwnerController {
   ) {
     queryDto.filter['owner'] = targetUser;
     return this.detectionService.listPlays(queryDto, queryDto.recentPlays);
+  }
+
+  @Get('/list-plays-by')
+  @ApiQuery({ name: 'radioStation', type: String, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiQuery({
+    name: 'channel',
+    enum: [...Object.values(ChannelEnums), 'ALL'],
+    required: false,
+  })
+  @UseGuards(ConditionalAuthGuard, new IsTargetUserLoggedInGuard('Param'))
+  @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
+  @AnyApiQueryTemplate({
+    additionalHtmlDescription:`<div>
+      To Get plays for specific company ?relation_owner.companies=companyId <br/>
+      To Get plays for specific user ?relation_owner.id=ownerId
+    <div>`
+  })
+  @ApiOperation({ summary: 'Get All Plays for specific user by specific groupBy Aggregation' })
+  listPlaysBy(
+    @Param('targetUser') targetUser: string,
+    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+  ) {
+    queryDto.filter['owner'] = targetUser;
+    return this.detectionService.listPlaysByTracks(queryDto);
   }
 
   @Get('/:channel/sonicKeys/:sonicKey/detected-details')

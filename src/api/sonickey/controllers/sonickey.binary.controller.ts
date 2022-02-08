@@ -34,7 +34,7 @@ export class SonickeyBinaryController {
 
   @UseGuards(ApiKeyAuthGuard, LicenseValidationGuard)
   @Post('/create-from-binary')
-  @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
   @ApiOperation({ summary: 'Save to database after local encode from binary.' })
   async createFormBinary(
     @Body() createSonicKeyDto: CreateSonicKeyFromBinaryDto,

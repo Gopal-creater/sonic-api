@@ -29,14 +29,17 @@ __decorate([
     __metadata("design:type", String)
 ], S3FileMeta.prototype, "Location", void 0);
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], S3FileMeta.prototype, "key", void 0);
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], S3FileMeta.prototype, "Key", void 0);
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], S3FileMeta.prototype, "Bucket", void 0);
@@ -68,7 +71,7 @@ __decorate([
         required: true,
         type: String,
         ref: 'User',
-        autopopulate: { maxDepth: 2 }
+        autopopulate: { maxDepth: 2 },
     }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "owner", void 0);
@@ -79,7 +82,11 @@ __decorate([
 ], SonicKey.prototype, "job", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: api_key_schema_1.ApiKeySchemaName, select: false }),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: api_key_schema_1.ApiKeySchemaName,
+        select: false,
+    }),
     __metadata("design:type", Object)
 ], SonicKey.prototype, "apiKey", void 0);
 __decorate([
@@ -96,7 +103,7 @@ __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
         required: true,
-        select: false
+        select: false,
     }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "license", void 0);

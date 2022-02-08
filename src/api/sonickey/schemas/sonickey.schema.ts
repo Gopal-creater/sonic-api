@@ -10,23 +10,24 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 export const SonicKeySchemaName = 'SonicKey';
 @Schema()
 export class S3FileMeta implements S3FileUploadI {
-
   @ApiProperty()
   ETag: string;
 
   @ApiProperty()
   Location: string;
 
+  @IsNotEmpty()
   @ApiProperty()
   key: string;
 
+  @IsNotEmpty()
   @ApiProperty()
   Key: string;
 
+  @IsNotEmpty()
   @ApiProperty()
   Bucket: string;
 }
-
 
 @Schema({ timestamps: true, collection: SonicKeySchemaName })
 export class SonicKey extends Document {
@@ -47,9 +48,9 @@ export class SonicKey extends Document {
   @ApiProperty()
   @Prop({
     required: true,
-    type:String,
-    ref:'User',
-    autopopulate: { maxDepth: 2 }
+    type: String,
+    ref: 'User',
+    autopopulate: { maxDepth: 2 },
   })
   owner: string;
 
@@ -58,26 +59,30 @@ export class SonicKey extends Document {
   job: any;
 
   @ApiProperty()
-  @Prop({ type: MogSchema.Types.ObjectId, ref: ApiKeySchemaName,select:false})
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: ApiKeySchemaName,
+    select: false,
+  })
   apiKey: any;
 
   @ApiProperty()
-  @Prop({ type: String, enum: ChannelEnums,required:true})
+  @Prop({ type: String, enum: ChannelEnums, required: true })
   channel: string;
 
   @ApiProperty()
-  @Prop({ type: String})
+  @Prop({ type: String })
   channelUuid: string;
 
   @ApiProperty()
   @Prop({
     required: true,
-    select:false
+    select: false,
   })
   license: string;
 
   @ApiProperty()
-  @Prop({ default: false,required:true })
+  @Prop({ default: false, required: true })
   downloadable: boolean;
 
   @ApiProperty()
@@ -86,7 +91,7 @@ export class SonicKey extends Document {
 
   @IsOptional()
   @ApiProperty()
-  @Prop({default:15})
+  @Prop({ default: 15 })
   encodingStrength: number;
 
   @IsOptional()
@@ -121,7 +126,7 @@ export class SonicKey extends Document {
 
   @IsOptional()
   @ApiProperty()
-  @Prop({type:S3FileMeta})
+  @Prop({ type: S3FileMeta })
   s3FileMeta?: S3FileMeta;
 
   @IsOptional()
@@ -166,7 +171,7 @@ export class SonicKey extends Document {
 
   @IsOptional()
   @ApiProperty()
-  @Prop({default:false})
+  @Prop({ default: false })
   contentValidation?: boolean;
 
   @IsOptional()
@@ -192,14 +197,14 @@ export class SonicKey extends Document {
   // client requirements
   @IsOptional()
   @ApiProperty()
-  @Prop({default:false})
-  isRightsHolderForEncode?:boolean
+  @Prop({ default: false })
+  isRightsHolderForEncode?: boolean;
 
   @IsOptional()
   @ApiProperty()
-  @Prop({default:false})
-  isAuthorizedForEncode?:boolean
-  
+  @Prop({ default: false })
+  isAuthorizedForEncode?: boolean;
+
   @IsOptional()
   @ApiProperty()
   @Prop()

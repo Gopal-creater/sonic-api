@@ -45,7 +45,7 @@ let SonickeyBinaryController = class SonickeyBinaryController {
 __decorate([
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, license_validation_guard_1.LicenseValidationGuard),
     common_1.Post('/create-from-binary'),
-    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiOperation({ summary: 'Save to database after local encode from binary.' }),
     openapi.ApiResponse({ status: 201, type: require("../schemas/sonickey.schema").SonicKey }),
     __param(0, common_1.Body()),

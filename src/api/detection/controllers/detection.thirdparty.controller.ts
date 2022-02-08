@@ -36,6 +36,7 @@ export class DetectionThirdPartyController {
 
   @ApiOperation({ summary: 'Create Detection From Binary' })
   @UseGuards(ApiKeyAuthGuard)
+  @ApiSecurity('x-api-key')
   @Post('detection-from-binary')
   async create(
     @Body() createDetectionFromBinaryDto: CreateDetectionFromBinaryDto,
@@ -69,6 +70,7 @@ export class DetectionThirdPartyController {
 
   @ApiOperation({ summary: 'Create Radio Detection From Binary' })
   @UseGuards(ApiKeyAuthGuard)
+  @ApiSecurity('x-api-key')
   @Post('stream-detection-from-binary')
   async createThirdPartyRadioDetectionFromBinary(
     @Body() createThirdPartyStreamReaderDetectionFromBinaryDto: CreateThirdPartyStreamReaderDetectionFromBinaryDto,
@@ -104,6 +106,7 @@ export class DetectionThirdPartyController {
 
   @ApiOperation({ summary: 'Create Detection From Hardware' })
   @UseGuards(ApiKeyAuthGuard)
+  @ApiSecurity('x-api-key')
   @Post('detection-from-hardware')
   async createFromHardware(
     @Body() createDetectionFromHardwareDto: CreateDetectionFromHardwareDto,

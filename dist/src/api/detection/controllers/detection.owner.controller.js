@@ -132,6 +132,10 @@ let DetectionOwnerController = class DetectionOwnerController {
         queryDto.filter['owner'] = targetUser;
         return this.detectionService.listPlays(queryDto, queryDto.recentPlays);
     }
+    listPlaysBy(targetUser, queryDto) {
+        queryDto.filter['owner'] = targetUser;
+        return this.detectionService.listPlaysByTracks(queryDto);
+    }
     getDetectedDetailsOfSingleSonicKey(targetUser, channel, sonicKey, queryDto) {
         if (channel !== 'ALL') {
             queryDto.filter['channel'] = channel;
@@ -319,7 +323,6 @@ __decorate([
     common_1.Get('/list-plays'),
     swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
     swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
-    swagger_1.ApiQuery({ name: 'recentPlays', type: Boolean, required: false }),
     swagger_1.ApiQuery({
         name: 'channel',
         enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'],
@@ -342,6 +345,32 @@ __decorate([
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], DetectionOwnerController.prototype, "recentListPlays", null);
+__decorate([
+    common_1.Get('/list-plays-by'),
+    swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
+    swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
+    swagger_1.ApiQuery({
+        name: 'channel',
+        enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'],
+        required: false,
+    }),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+        additionalHtmlDescription: `<div>
+      To Get plays for specific company ?relation_owner.companies=companyId <br/>
+      To Get plays for specific user ?relation_owner.id=ownerId
+    <div>`
+    }),
+    swagger_1.ApiOperation({ summary: 'Get All Plays for specific user by specific groupBy Aggregation' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", void 0)
+], DetectionOwnerController.prototype, "listPlaysBy", null);
 __decorate([
     common_1.Get('/:channel/sonicKeys/:sonicKey/detected-details'),
     swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),

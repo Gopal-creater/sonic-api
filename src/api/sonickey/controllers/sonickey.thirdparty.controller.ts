@@ -6,6 +6,7 @@ import {
   Body,
   UseInterceptors,
   InternalServerErrorException,
+  Patch,
 } from '@nestjs/common';
 import { SonickeyService } from '../services/sonickey.service';
 import { S3FileMeta, SonicKey } from '../schemas/sonickey.schema';
@@ -22,7 +23,7 @@ import { FileHandlerService } from '../../../shared/services/file-handler.servic
 import { ChannelEnums } from '../../../constants/Enums';
 import { FileFromUrlInterceptor, UploadedFileFromUrl } from '../../../shared/interceptors/FileFromUrl.interceptor';
 import { EncodeFromUrlDto } from '../dtos/encode.dto';
-import { UseGuards, BadRequestException } from '@nestjs/common';
+import { UseGuards, BadRequestException, Param, NotFoundException } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from 'src/api/auth/decorators';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
@@ -31,6 +32,7 @@ import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
+import { UpdateSonicKeyFromBinaryDto } from '../dtos/update-sonickey.dto';
 
 
 @ApiTags('ThirdParty Integration Controller, Protected By XAPI-Key')
@@ -49,6 +51,7 @@ export class SonickeyThirdPartyController {
     type: EncodeFromUrlDto,
   })
   @UseGuards(ApiKeyAuthGuard, LicenseValidationGuard)
+  @ApiSecurity('x-api-key')
   @Post('/encode-from-url')
   @ApiOperation({ summary: 'Encode File From URL And save to database' })
   encodeFromUrl(
@@ -99,7 +102,7 @@ export class SonickeyThirdPartyController {
 
   @UseGuards(ApiKeyAuthGuard, LicenseValidationGuard)
   @Post('/create-from-binary')
-  @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
   @ApiOperation({ summary: 'Save to database after local encode from binary.' })
   async createFormBinary(
     @Body() createSonicKeyDto: CreateSonicKeyFromBinaryDto,
@@ -125,6 +128,28 @@ export class SonickeyThirdPartyController {
       );
      })
     return savedSonicKey
+  }
+
+  @Patch('/:sonickey')
+  @UseGuards(ApiKeyAuthGuard)
+  @ApiSecurity('x-api-key')
+  @ApiOperation({ summary: 'Update Sonic Keys meta data from binary including s3FileMeta' })
+  async updateMeta(
+    @Param('sonickey') sonickey: string,
+    @Body() updateSonicKeyFromBinaryDto: UpdateSonicKeyFromBinaryDto,
+    @User('sub') owner: string,
+  ) {
+    const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate(
+      { sonicKey: sonickey, owner: owner },
+      updateSonicKeyFromBinaryDto,
+      { new: true },
+    );
+    if (!updatedSonickey) {
+      throw new NotFoundException(
+        'Given sonickey is either not present or doest not belongs to you',
+      );
+    }
+    return updatedSonickey;
   }
 
 }

@@ -623,6 +623,350 @@ let DetectionService = class DetectionService {
         const aggregate = this.detectionModel.aggregate(aggregateArray);
         return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
     }
+    async listPlaysByArtists(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ detectedAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $group: {
+                    _id: {
+                        artist: '$sonicKey.contentOwner'
+                    },
+                    plays: {
+                        $sum: 1
+                    },
+                    sonicKeys: {
+                        $addToSet: '$sonicKey.sonicKey',
+                    },
+                    radioStations: {
+                        $addToSet: '$radioStation._id',
+                    },
+                    countries: {
+                        $addToSet: '$radioStation.country',
+                    },
+                }
+            },
+            {
+                $sort: {
+                    plays: -1,
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    artist: '$_id.artist',
+                    playsCount: '$plays',
+                    uniquePlaysCount: { $size: '$sonicKeys' },
+                    radioStationCount: { $size: '$radioStations' },
+                    countriesCount: { $size: '$countries' }
+                },
+            },
+        ];
+        const aggregate = this.detectionModel.aggregate(aggregateArray);
+        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+    }
+    async listPlaysByCountries(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ detectedAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $group: {
+                    _id: {
+                        country: '$radioStation.country'
+                    },
+                    plays: {
+                        $sum: 1
+                    },
+                    sonicKeys: {
+                        $addToSet: '$sonicKey.sonicKey',
+                    },
+                    radioStations: {
+                        $addToSet: '$radioStation._id',
+                    },
+                    artists: {
+                        $addToSet: '$sonicKey.contentOwner',
+                    },
+                }
+            },
+            {
+                $sort: {
+                    plays: -1,
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    country: '$_id.country',
+                    playsCount: '$plays',
+                    uniquePlaysCount: { $size: '$sonicKeys' },
+                    radioStationCount: { $size: '$radioStations' },
+                    artistsCount: { $size: '$artists' }
+                },
+            },
+        ];
+        const aggregate = this.detectionModel.aggregate(aggregateArray);
+        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+    }
+    async listPlaysByTracks(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ detectedAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $group: {
+                    _id: {
+                        trackName: '$sonicKey.contentName'
+                    },
+                    plays: {
+                        $sum: 1
+                    },
+                    sonicKeys: {
+                        $addToSet: '$sonicKey.sonicKey',
+                    },
+                    radioStations: {
+                        $addToSet: '$radioStation._id',
+                    },
+                    countries: {
+                        $addToSet: '$radioStation.country',
+                    },
+                }
+            },
+            {
+                $sort: {
+                    plays: -1,
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    trackName: '$_id.trackName',
+                    playsCount: '$plays',
+                    uniquePlaysCount: { $size: '$sonicKeys' },
+                    radioStationCount: { $size: '$radioStations' },
+                    countriesCount: { $size: '$countries' }
+                },
+            },
+        ];
+        const aggregate = this.detectionModel.aggregate(aggregateArray);
+        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+    }
+    async listPlaysByRadioStations(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ detectedAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $group: {
+                    _id: {
+                        radioStation: '$radioStation._id'
+                    },
+                    plays: {
+                        $sum: 1
+                    },
+                    sonicKeys: {
+                        $addToSet: '$sonicKey.sonicKey',
+                    },
+                    artists: {
+                        $addToSet: '$sonicKey.contentOwner',
+                    },
+                    countries: {
+                        $addToSet: '$radioStation.country',
+                    },
+                }
+            },
+            {
+                $sort: {
+                    plays: -1,
+                },
+            },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: '_id.radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    radioStation: { $first: '$radioStation' },
+                    playsCount: '$plays',
+                    uniquePlaysCount: { $size: '$sonicKeys' },
+                    artistsCount: { $size: '$artists' },
+                    countriesCount: { $size: '$countries' }
+                },
+            },
+        ];
+        const aggregate = this.detectionModel.aggregate(aggregateArray);
+        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+    }
     async findAll(queryDto, aggregateQuery) {
         const { limit, skip, sort, page, filter, select, populate, aggregateSearch, includeGroupData, } = queryDto;
         var paginateOptions = {};
