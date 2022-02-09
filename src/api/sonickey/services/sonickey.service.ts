@@ -143,7 +143,7 @@ export class SonickeyService {
         },
       },
     ])
-    return await this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
+    return this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
   }
 
   async getCount(queryDto: ParsedQueryDto) {

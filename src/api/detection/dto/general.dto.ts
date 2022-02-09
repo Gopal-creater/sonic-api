@@ -86,6 +86,74 @@ export class TopRadioStation{
     @ApiProperty()
     updatedAt?: Date;
   };
+
+  export class PlaysByArtistDto{
+    @ApiProperty()
+    artist:string;
+
+    @ApiProperty()
+    playsCount:number
+
+    @ApiProperty()
+    uniquePlaysCount:number
+
+    @ApiProperty()
+    radioStationCount:number
+
+    @ApiProperty()
+    countriesCount:number
+  }
+
+  export class PlaysByCountryDto{
+    @ApiProperty()
+    country:string;
+
+    @ApiProperty()
+    playsCount:number
+
+    @ApiProperty()
+    uniquePlaysCount:number
+
+    @ApiProperty()
+    radioStationCount:number
+
+    @ApiProperty()
+    artistsCount:number
+  }
+
+  export class PlaysByTrackDto{
+    @ApiProperty()
+    trackName:string;
+
+    @ApiProperty()
+    playsCount:number
+
+    @ApiProperty()
+    uniquePlaysCount:number
+
+    @ApiProperty()
+    radioStationCount:number
+
+    @ApiProperty()
+    countriesCount:number
+  }
+
+  export class PlaysByRadioStationDto{
+    @ApiProperty()
+    radioStation:RadioStation;
+
+    @ApiProperty()
+    playsCount:number
+
+    @ApiProperty()
+    uniquePlaysCount:number
+
+    @ApiProperty()
+    artistsCount:number
+
+    @ApiProperty()
+    countriesCount:number
+  }
   
   export class GraphData{
     @ApiProperty()

@@ -35,6 +35,10 @@ const types_1 = require("../../../shared/types");
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
 const file_handler_service_1 = require("../../../shared/services/file-handler.service");
 const utils_1 = require("../../../shared/utils");
+const _ = require("lodash");
+const user_decorator_1 = require("../../auth/decorators/user.decorator");
+const user_db_schema_1 = require("../../user/schemas/user.db.schema");
+const mongoose_utils_1 = require("../../../shared/utils/mongoose.utils");
 let DetectionOwnerController = class DetectionOwnerController {
     constructor(detectionService, sonickeyServive, fileHandlerService) {
         this.detectionService = detectionService;
@@ -45,6 +49,25 @@ let DetectionOwnerController = class DetectionOwnerController {
         var { filter } = queryDto;
         filter['owner'] = targetUser;
         return this.detectionService.getPlaysDashboardData(filter);
+    }
+    async getMonitorDashboardData(targetUser, user, queryDto) {
+        var includeCompanies = queryDto.filter['includeCompanies'];
+        delete queryDto.filter['includeCompanies'];
+        const userCompaniesIds = user.companies.map(com => mongoose_utils_1.toObjectId(com._id));
+        if (includeCompanies == false) {
+            queryDto.relationalFilter = _.merge({}, queryDto.relationalFilter, {
+                $or: [{ 'owner._id': user._id }],
+            });
+        }
+        else {
+            queryDto.relationalFilter = _.merge({}, queryDto.relationalFilter, {
+                $or: [
+                    { 'owner._id': user._id },
+                    { 'owner.companies': { $in: userCompaniesIds } },
+                ],
+            });
+        }
+        return this.detectionService.getMonitorDashboardData(queryDto);
     }
     async getPlaysDashboardGraphData(targetUser, queryDto) {
         var { filter } = queryDto;
@@ -102,7 +125,7 @@ let DetectionOwnerController = class DetectionOwnerController {
     }
     async exportDashboardPlaysView(res, targetUser, format, queryDto) {
         if (!['xlsx', 'csv'].includes(format))
-            throw new common_1.BadRequestException("unsupported format");
+            throw new common_1.BadRequestException('unsupported format');
         queryDto.filter['owner'] = targetUser;
         queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
         const filePath = await this.detectionService.exportDashboardPlaysView(queryDto, targetUser, format);
@@ -128,13 +151,118 @@ let DetectionOwnerController = class DetectionOwnerController {
             this.fileHandlerService.deleteFileAtPath(filePath);
         });
     }
-    recentListPlays(targetUser, queryDto) {
-        queryDto.filter['owner'] = targetUser;
-        return this.detectionService.listPlays(queryDto, queryDto.recentPlays);
+    listPlays(targetUser, user, queryDto) {
+        const playsBy = queryDto.filter['playsBy'];
+        var includeCompanies = queryDto.filter['includeCompanies'];
+        delete queryDto.filter['playsBy'];
+        delete queryDto.filter['includeCompanies'];
+        const userCompaniesIds = user.companies.map(com => mongoose_utils_1.toObjectId(com._id));
+        if (includeCompanies == false) {
+            queryDto.relationalFilter = _.merge({}, queryDto.relationalFilter, {
+                $or: [{ 'owner._id': user._id }],
+            });
+        }
+        else {
+            queryDto.relationalFilter = _.merge({}, queryDto.relationalFilter, {
+                $or: [
+                    { 'owner._id': user._id },
+                    { 'owner.companies': { $in: userCompaniesIds } },
+                ],
+            });
+        }
+        switch (playsBy) {
+            case 'ARTISTS':
+                return this.detectionService.listPlaysByArtists(queryDto);
+            case 'COUNTRIES':
+                return this.detectionService.listPlaysByCountries(queryDto);
+            case 'TRACKS':
+                return this.detectionService.listPlaysByTracks(queryDto);
+            case 'RADIOSTATIONS':
+                return this.detectionService.listPlaysByRadioStations(queryDto);
+            default:
+                return this.detectionService.listPlays(queryDto, queryDto.recentPlays);
+        }
     }
-    listPlaysBy(targetUser, queryDto) {
-        queryDto.filter['owner'] = targetUser;
-        return this.detectionService.listPlaysByTracks(queryDto);
+    getPlaysCountBy(targetUser, user, queryDto) {
+        const playsBy = queryDto.filter['playsBy'];
+        var includeCompanies = queryDto.filter['includeCompanies'];
+        delete queryDto.filter['playsBy'];
+        delete queryDto.filter['includeCompanies'];
+        const userCompaniesIds = user.companies.map(com => mongoose_utils_1.toObjectId(com._id));
+        if (includeCompanies == false) {
+            queryDto.relationalFilter = _.merge({}, queryDto.relationalFilter, {
+                $or: [{ 'owner._id': user._id }],
+            });
+        }
+        else {
+            queryDto.relationalFilter = _.merge({}, queryDto.relationalFilter, {
+                $or: [
+                    { 'owner._id': user._id },
+                    { 'owner.companies': { $in: userCompaniesIds } },
+                ],
+            });
+        }
+        switch (playsBy) {
+            case 'ARTISTS':
+                return this.detectionService.countPlaysByArtists(queryDto);
+            case 'COUNTRIES':
+                return this.detectionService.countPlaysByCountries(queryDto);
+            case 'TRACKS':
+                return this.detectionService.countPlaysByTracks(queryDto);
+            case 'RADIOSTATIONS':
+                return this.detectionService.countPlaysByRadioStations(queryDto);
+            default:
+                return this.detectionService.countPlays(queryDto);
+        }
+    }
+    async exportPlaysBy(res, targetUser, user, format, queryDto) {
+        if (!['xlsx', 'csv'].includes(format))
+            throw new common_1.BadRequestException('unsupported format');
+        queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
+        const playsBy = queryDto.filter['playsBy'];
+        var includeCompanies = queryDto.filter['includeCompanies'];
+        delete queryDto.filter['playsBy'];
+        delete queryDto.filter['includeCompanies'];
+        const userCompaniesIds = user.companies.map(com => mongoose_utils_1.toObjectId(com._id));
+        if (includeCompanies == false) {
+            queryDto.relationalFilter = _.merge({}, queryDto.relationalFilter, {
+                $or: [{ 'owner._id': user._id }],
+            });
+        }
+        else {
+            queryDto.relationalFilter = _.merge({}, queryDto.relationalFilter, {
+                $or: [
+                    { 'owner._id': user._id },
+                    { 'owner.companies': { $in: userCompaniesIds } },
+                ],
+            });
+        }
+        var exportedFilePath;
+        switch (playsBy) {
+            case 'ARTISTS':
+                exportedFilePath = await this.detectionService.exportPlaysByArtists(queryDto, format);
+                break;
+            case 'COUNTRIES':
+                exportedFilePath = await this.detectionService.exportPlaysByCountries(queryDto, format);
+                break;
+            case 'TRACKS':
+                exportedFilePath = await this.detectionService.exportPlaysByTracks(queryDto, format);
+                break;
+            case 'RADIOSTATIONS':
+                exportedFilePath = await this.detectionService.exportPlaysByRadioStations(queryDto, format);
+                break;
+            default:
+                exportedFilePath = await this.detectionService.exportPlays(queryDto, format);
+                break;
+        }
+        const fileName = utils_1.extractFileName(exportedFilePath);
+        res.download(exportedFilePath, `${fileName.split('_nameseperator_')[1]}`, err => {
+            if (err) {
+                this.fileHandlerService.deleteFileAtPath(exportedFilePath);
+                res.send(err);
+            }
+            this.fileHandlerService.deleteFileAtPath(exportedFilePath);
+        });
     }
     getDetectedDetailsOfSingleSonicKey(targetUser, channel, sonicKey, queryDto) {
         if (channel !== 'ALL') {
@@ -172,6 +300,21 @@ __decorate([
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "getPlaysDashboardData", null);
+__decorate([
+    common_1.Get('/get-monitor-dashboard-data'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get Monitor Dashboard data' }),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, common_1.Param('targetUser')),
+    __param(1, user_decorator_1.User()),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
+        parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], DetectionOwnerController.prototype, "getMonitorDashboardData", null);
 __decorate([
     common_1.Get('/plays-dashboard-graph-data'),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
@@ -269,7 +412,7 @@ __decorate([
     swagger_1.ApiOperation({
         summary: 'Get All Detections for specific channel and specific user',
     }),
-    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDeectionDto }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDetectionDto }),
     __param(0, common_1.Param('targetUser')),
     __param(1, common_1.Param('channel')),
     __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
@@ -321,6 +464,12 @@ __decorate([
 ], DetectionOwnerController.prototype, "exportHistoryOfSonicKeyView", null);
 __decorate([
     common_1.Get('/list-plays'),
+    swagger_1.ApiQuery({
+        name: 'playsBy',
+        enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS'],
+        required: false,
+    }),
+    swagger_1.ApiQuery({ name: 'includeCompanies', type: Boolean, required: false }),
     swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
     swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
     swagger_1.ApiQuery({
@@ -331,22 +480,26 @@ __decorate([
     common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiSecurity('x-api-key'),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
-        additionalHtmlDescription: `<div>
-      To Get plays for specific company ?relation_owner.companies=companyId <br/>
-      To Get plays for specific user ?relation_owner.id=ownerId
-    <div>`
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({
+        summary: 'Get All Plays for specific user by specific groupBy Aggregation',
     }),
-    swagger_1.ApiOperation({ summary: 'Get All Plays for specific user' }),
-    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(1, user_decorator_1.User()),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
+        parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
-], DetectionOwnerController.prototype, "recentListPlays", null);
+], DetectionOwnerController.prototype, "listPlays", null);
 __decorate([
-    common_1.Get('/list-plays-by'),
+    common_1.Get('/get-plays-count-by'),
+    swagger_1.ApiQuery({
+        name: 'playsBy',
+        enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS'],
+        required: false,
+    }),
+    swagger_1.ApiQuery({ name: 'includeCompanies', type: Boolean, required: false }),
     swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
     swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
     swagger_1.ApiQuery({
@@ -357,20 +510,42 @@ __decorate([
     common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiSecurity('x-api-key'),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
-        additionalHtmlDescription: `<div>
-      To Get plays for specific company ?relation_owner.companies=companyId <br/>
-      To Get plays for specific user ?relation_owner.id=ownerId
-    <div>`
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({
+        summary: 'Get  Plays count for specific user by specific groupBy Aggregation',
     }),
-    swagger_1.ApiOperation({ summary: 'Get All Plays for specific user by specific groupBy Aggregation' }),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    openapi.ApiResponse({ status: 200, type: Number }),
     __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(1, user_decorator_1.User()),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
+        parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
-], DetectionOwnerController.prototype, "listPlaysBy", null);
+], DetectionOwnerController.prototype, "getPlaysCountBy", null);
+__decorate([
+    common_1.Get('/export-plays-by/:format'),
+    swagger_1.ApiQuery({
+        name: 'playsBy',
+        enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS'],
+        required: false,
+    }),
+    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({ summary: 'Export Plays View' }),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Param('targetUser')),
+    __param(2, user_decorator_1.User()),
+    __param(3, common_1.Param('format')),
+    __param(4, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, user_db_schema_1.UserDB, String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], DetectionOwnerController.prototype, "exportPlaysBy", null);
 __decorate([
     common_1.Get('/:channel/sonicKeys/:sonicKey/detected-details'),
     swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
@@ -383,7 +558,7 @@ __decorate([
     swagger_1.ApiOperation({
         summary: 'Get Detected Details for specific channel and specific sonickey',
     }),
-    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDeectionDto }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDetectionDto }),
     __param(0, common_1.Param('targetUser')),
     __param(1, common_1.Param('channel')),
     __param(2, common_1.Param('sonicKey')),

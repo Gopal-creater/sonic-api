@@ -66,6 +66,9 @@ import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.d
 import { ConditionalAuthGuard } from '../../auth/guards/conditional-auth.guard';
 import { Detection } from 'src/api/detection/schemas/detection.schema';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
+import { UserDB } from '../../user/schemas/user.db.schema';
+import { toObjectId } from 'src/shared/utils/mongoose.utils';
+import * as _ from 'lodash';
 
 /**
  * Prabin:
@@ -154,16 +157,32 @@ export class SonickeyController {
   }
 
   @Get('/owners/:ownerId')
+  @ApiQuery({ name: 'includeCompanies', type: Boolean, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiQuery({ name: 'includeGroupData', type: Boolean, required: false })
   @AnyApiQueryTemplate()
-  @ApiOperation({ summary: 'Get All Sonic Keys of particular user' })
+  @ApiOperation({ summary: 'Get All Sonic Keys of particular user or its companies' })
   async getOwnersKeys(
     @Param('ownerId') ownerId: string,
+    @User() user:UserDB,
     @Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto,
   ) {
-    parsedQueryDto.filter['owner'] = ownerId;
+    var includeCompanies = parsedQueryDto.filter['includeCompanies'] as boolean;
+    delete parsedQueryDto.filter['includeCompanies'];
+    if (includeCompanies == false) {
+      parsedQueryDto.relationalFilter = _.merge({}, parsedQueryDto.relationalFilter, {
+        $or: [{ 'owner._id': user._id }],
+      });
+    } else {
+      const userCompaniesIds = user.companies.map(com => toObjectId(com._id));
+      parsedQueryDto.relationalFilter = _.merge({}, parsedQueryDto.relationalFilter, {
+        $or: [
+          { 'owner._id': user._id },
+          { 'owner.companies': { $in: userCompaniesIds } },
+        ],
+      });
+    }
     return this.sonicKeyService.getAll(parsedQueryDto);
   }
 

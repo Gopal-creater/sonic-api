@@ -1,8 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { Detection } from '../schemas/detection.schema';
-import { PlaysListResponseDto } from './general.dto';
+import { PlaysByArtistDto, PlaysByCountryDto, PlaysListResponseDto, PlaysByTrackDto, PlaysByRadioStationDto } from './general.dto';
 
-export class MongoosePaginateDeectionDto {
+export class MongoosePaginateDetectionDto {
   @ApiProperty({isArray:true,type:Detection})
   docs: [Detection];
 
@@ -71,4 +71,21 @@ export class MongoosePaginatePlaysDto {
 
   @ApiProperty()
   nextPage: number;
+}
+
+export class MongoosePaginatePlaysByArtistDto extends OmitType(MongoosePaginatePlaysDto,['docs']) {
+  @ApiProperty({isArray:true,type:PlaysByArtistDto})
+  docs: [PlaysByArtistDto];
+}
+export class MongoosePaginatePlaysByCountryDto extends OmitType(MongoosePaginatePlaysDto,['docs']) {
+  @ApiProperty({isArray:true,type:PlaysByCountryDto})
+  docs: [PlaysByCountryDto];
+}
+export class MongoosePaginatePlaysByTrackDto extends OmitType(MongoosePaginatePlaysDto,['docs']) {
+  @ApiProperty({isArray:true,type:PlaysByTrackDto})
+  docs: [PlaysByTrackDto];
+}
+export class MongoosePaginatePlaysByRadioStationDto extends OmitType(MongoosePaginatePlaysDto,['docs']) {
+  @ApiProperty({isArray:true,type:PlaysByRadioStationDto})
+  docs: [PlaysByRadioStationDto];
 }

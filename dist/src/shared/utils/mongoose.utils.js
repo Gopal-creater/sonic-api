@@ -7,6 +7,13 @@ const isObjectId = (id) => {
     return checkForHexRegExp.test(id);
 };
 exports.isObjectId = isObjectId;
-const toObjectId = (id) => mongoose_1.Types.ObjectId(id);
+const toObjectId = (id) => {
+    if (exports.isObjectId(id)) {
+        return mongoose_1.Types.ObjectId(id);
+    }
+    else {
+        return id;
+    }
+};
 exports.toObjectId = toObjectId;
 //# sourceMappingURL=mongoose.utils.js.map

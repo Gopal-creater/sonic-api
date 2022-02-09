@@ -52,6 +52,9 @@ const validatedlicense_decorator_1 = require("../../licensekey/decorators/valida
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
 const detection_schema_1 = require("../../detection/schemas/detection.schema");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
+const user_db_schema_1 = require("../../user/schemas/user.db.schema");
+const mongoose_utils_1 = require("../../../shared/utils/mongoose.utils");
+const _ = require("lodash");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
@@ -75,8 +78,23 @@ let SonickeyController = class SonickeyController {
     async listSonickeys(parsedQueryDto) {
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
-    async getOwnersKeys(ownerId, parsedQueryDto) {
-        parsedQueryDto.filter['owner'] = ownerId;
+    async getOwnersKeys(ownerId, user, parsedQueryDto) {
+        var includeCompanies = parsedQueryDto.filter['includeCompanies'];
+        delete parsedQueryDto.filter['includeCompanies'];
+        if (includeCompanies == false) {
+            parsedQueryDto.relationalFilter = _.merge({}, parsedQueryDto.relationalFilter, {
+                $or: [{ 'owner._id': user._id }],
+            });
+        }
+        else {
+            const userCompaniesIds = user.companies.map(com => mongoose_utils_1.toObjectId(com._id));
+            parsedQueryDto.relationalFilter = _.merge({}, parsedQueryDto.relationalFilter, {
+                $or: [
+                    { 'owner._id': user._id },
+                    { 'owner.companies': { $in: userCompaniesIds } },
+                ],
+            });
+        }
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
     async getKeysByJob(jobId, parsedQueryDto) {
@@ -403,16 +421,19 @@ __decorate([
 ], SonickeyController.prototype, "listSonickeys", null);
 __decorate([
     common_1.Get('/owners/:ownerId'),
+    swagger_1.ApiQuery({ name: 'includeCompanies', type: Boolean, required: false }),
+    swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user' }),
+    swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user or its companies' }),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
     __param(0, common_1.Param('ownerId')),
-    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(1, decorators_1.User()),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
+        parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getOwnersKeys", null);
 __decorate([

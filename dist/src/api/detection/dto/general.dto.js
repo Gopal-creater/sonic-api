@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TopRadioStationWithPlaysDetails = exports.TopRadioStationWithTopSonicKey = exports.GraphData = exports.PlaysListResponseDto = exports.PlaysGraphResponseDto = exports.PlaysGraphSingleResponseDto = exports.PlaysCountResponseDto = exports.TopSonicKey = exports.TopRadioStation = void 0;
+exports.TopRadioStationWithPlaysDetails = exports.TopRadioStationWithTopSonicKey = exports.GraphData = exports.PlaysByRadioStationDto = exports.PlaysByTrackDto = exports.PlaysByCountryDto = exports.PlaysByArtistDto = exports.PlaysListResponseDto = exports.PlaysGraphResponseDto = exports.PlaysGraphSingleResponseDto = exports.PlaysCountResponseDto = exports.TopSonicKey = exports.TopRadioStation = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const sonickey_schema_1 = require("../../sonickey/schemas/sonickey.schema");
@@ -152,6 +152,110 @@ __decorate([
 ], PlaysListResponseDto.prototype, "updatedAt", void 0);
 exports.PlaysListResponseDto = PlaysListResponseDto;
 ;
+class PlaysByArtistDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { artist: { required: true, type: () => String }, playsCount: { required: true, type: () => Number }, uniquePlaysCount: { required: true, type: () => Number }, radioStationCount: { required: true, type: () => Number }, countriesCount: { required: true, type: () => Number } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], PlaysByArtistDto.prototype, "artist", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByArtistDto.prototype, "playsCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByArtistDto.prototype, "uniquePlaysCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByArtistDto.prototype, "radioStationCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByArtistDto.prototype, "countriesCount", void 0);
+exports.PlaysByArtistDto = PlaysByArtistDto;
+class PlaysByCountryDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { country: { required: true, type: () => String }, playsCount: { required: true, type: () => Number }, uniquePlaysCount: { required: true, type: () => Number }, radioStationCount: { required: true, type: () => Number }, artistsCount: { required: true, type: () => Number } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], PlaysByCountryDto.prototype, "country", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByCountryDto.prototype, "playsCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByCountryDto.prototype, "uniquePlaysCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByCountryDto.prototype, "radioStationCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByCountryDto.prototype, "artistsCount", void 0);
+exports.PlaysByCountryDto = PlaysByCountryDto;
+class PlaysByTrackDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { trackName: { required: true, type: () => String }, playsCount: { required: true, type: () => Number }, uniquePlaysCount: { required: true, type: () => Number }, radioStationCount: { required: true, type: () => Number }, countriesCount: { required: true, type: () => Number } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], PlaysByTrackDto.prototype, "trackName", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByTrackDto.prototype, "playsCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByTrackDto.prototype, "uniquePlaysCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByTrackDto.prototype, "radioStationCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByTrackDto.prototype, "countriesCount", void 0);
+exports.PlaysByTrackDto = PlaysByTrackDto;
+class PlaysByRadioStationDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { radioStation: { required: true, type: () => require("../../radiostation/schemas/radiostation.schema").RadioStation }, playsCount: { required: true, type: () => Number }, uniquePlaysCount: { required: true, type: () => Number }, artistsCount: { required: true, type: () => Number }, countriesCount: { required: true, type: () => Number } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", radiostation_schema_1.RadioStation)
+], PlaysByRadioStationDto.prototype, "radioStation", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByRadioStationDto.prototype, "playsCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByRadioStationDto.prototype, "uniquePlaysCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByRadioStationDto.prototype, "artistsCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByRadioStationDto.prototype, "countriesCount", void 0);
+exports.PlaysByRadioStationDto = PlaysByRadioStationDto;
 class GraphData {
     static _OPENAPI_METADATA_FACTORY() {
         return { _id: { required: true, type: () => Object }, year: { required: true, type: () => Number }, month: { required: true, type: () => Number }, day: { required: true, type: () => Number }, hits: { required: true, type: () => Number } };

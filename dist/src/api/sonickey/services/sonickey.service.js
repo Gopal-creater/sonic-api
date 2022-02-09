@@ -104,7 +104,7 @@ let SonickeyService = class SonickeyService {
                 $match: Object.assign({}, relationalFilter),
             },
         ]);
-        return await this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
+        return this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
     }
     async getCount(queryDto) {
         const { filter, includeGroupData } = queryDto;

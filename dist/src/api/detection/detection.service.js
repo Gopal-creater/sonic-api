@@ -42,6 +42,22 @@ let DetectionService = class DetectionService {
         this.userService = userService;
         this.fileHandlerService = fileHandlerService;
     }
+    async getMonitorDashboardData(queryDto) {
+        const myPlaysCount = await this.countPlays(queryDto);
+        const myTracksCount = await this.countPlaysByTracks(queryDto);
+        const myArtistsCount = await this.countPlaysByArtists(queryDto);
+        const myRadioStationCount = await this.countPlaysByRadioStations(queryDto);
+        const myCountriesCount = await this.countPlaysByCountries(queryDto);
+        const mostRecentPlays = await this.listPlays(queryDto, true);
+        return {
+            myPlaysCount,
+            myTracksCount,
+            myArtistsCount,
+            myRadioStationCount,
+            myCountriesCount,
+            mostRecentPlays
+        };
+    }
     async getPlaysDashboardData(filter) {
         const playsCount = await this.getTotalPlaysCount({ filter: filter });
         const radioStationsCount = await this.detectionModel.aggregate([
@@ -562,7 +578,8 @@ let DetectionService = class DetectionService {
             }
         });
     }
-    async listPlays(queryDto, recentPlays = false) {
+    async countPlays(queryDto) {
+        var _a;
         const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
@@ -608,23 +625,16 @@ let DetectionService = class DetectionService {
             {
                 $match: Object.assign({}, relationalFilter),
             },
-        ];
-        if (recentPlays) {
-            aggregateArray.push({
-                $limit: limit,
-            });
-            if (select) {
-                aggregateArray.push({
-                    $project: select,
-                });
+            {
+                $count: "count"
             }
-            return this.detectionModel.aggregate(aggregateArray);
-        }
-        const aggregate = this.detectionModel.aggregate(aggregateArray);
-        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+        ];
+        const aggregate = await this.detectionModel.aggregate(aggregateArray);
+        return ((_a = aggregate[0]) === null || _a === void 0 ? void 0 : _a.count) || 0;
     }
-    async listPlaysByArtists(queryDto) {
-        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+    async countPlaysByArtists(queryDto) {
+        var _a;
+        const { limit, skip, sort = { playsCount: -1 }, page, filter, select, populate, relationalFilter, } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
         paginateOptions['select'] = select;
@@ -689,26 +699,20 @@ let DetectionService = class DetectionService {
                 }
             },
             {
-                $sort: {
-                    plays: -1,
+                $match: {
+                    '_id.artist': { $exists: true, $ne: null },
                 },
             },
             {
-                $project: {
-                    _id: 0,
-                    artist: '$_id.artist',
-                    playsCount: '$plays',
-                    uniquePlaysCount: { $size: '$sonicKeys' },
-                    radioStationCount: { $size: '$radioStations' },
-                    countriesCount: { $size: '$countries' }
-                },
-            },
+                $count: "count"
+            }
         ];
-        const aggregate = this.detectionModel.aggregate(aggregateArray);
-        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+        const aggregate = await this.detectionModel.aggregate(aggregateArray);
+        return ((_a = aggregate[0]) === null || _a === void 0 ? void 0 : _a.count) || 0;
     }
-    async listPlaysByCountries(queryDto) {
-        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+    async countPlaysByCountries(queryDto) {
+        var _a;
+        const { limit, skip, sort = { playsCount: -1 }, page, filter, select, populate, relationalFilter, } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
         paginateOptions['select'] = select;
@@ -773,26 +777,20 @@ let DetectionService = class DetectionService {
                 }
             },
             {
-                $sort: {
-                    plays: -1,
+                $match: {
+                    '_id.country': { $exists: true, $ne: null },
                 },
             },
             {
-                $project: {
-                    _id: 0,
-                    country: '$_id.country',
-                    playsCount: '$plays',
-                    uniquePlaysCount: { $size: '$sonicKeys' },
-                    radioStationCount: { $size: '$radioStations' },
-                    artistsCount: { $size: '$artists' }
-                },
-            },
+                $count: "count"
+            }
         ];
-        const aggregate = this.detectionModel.aggregate(aggregateArray);
-        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+        const aggregate = await this.detectionModel.aggregate(aggregateArray);
+        return ((_a = aggregate[0]) === null || _a === void 0 ? void 0 : _a.count) || 0;
     }
-    async listPlaysByTracks(queryDto) {
-        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+    async countPlaysByTracks(queryDto) {
+        var _a;
+        const { limit, skip, sort = { playsCount: -1 }, page, filter, select, populate, relationalFilter, } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
         paginateOptions['select'] = select;
@@ -857,26 +855,20 @@ let DetectionService = class DetectionService {
                 }
             },
             {
-                $sort: {
-                    plays: -1,
+                $match: {
+                    '_id.trackName': { $exists: true, $ne: null },
                 },
             },
             {
-                $project: {
-                    _id: 0,
-                    trackName: '$_id.trackName',
-                    playsCount: '$plays',
-                    uniquePlaysCount: { $size: '$sonicKeys' },
-                    radioStationCount: { $size: '$radioStations' },
-                    countriesCount: { $size: '$countries' }
-                },
-            },
+                $count: "count"
+            }
         ];
-        const aggregate = this.detectionModel.aggregate(aggregateArray);
-        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+        const aggregate = await this.detectionModel.aggregate(aggregateArray);
+        return ((_a = aggregate[0]) === null || _a === void 0 ? void 0 : _a.count) || 0;
     }
-    async listPlaysByRadioStations(queryDto) {
-        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+    async countPlaysByRadioStations(queryDto) {
+        var _a;
+        const { limit, skip, sort = { playsCount: -1 }, page, filter, select, populate, relationalFilter, } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
         paginateOptions['select'] = select;
@@ -941,8 +933,670 @@ let DetectionService = class DetectionService {
                 }
             },
             {
-                $sort: {
-                    plays: -1,
+                $match: {
+                    '_id.radioStation': { $exists: true, $ne: null },
+                },
+            },
+            {
+                $count: "count"
+            }
+        ];
+        const aggregate = await this.detectionModel.aggregate(aggregateArray);
+        return ((_a = aggregate[0]) === null || _a === void 0 ? void 0 : _a.count) || 0;
+    }
+    async exportPlays(queryDto, format) {
+        var e_5, _a;
+        var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
+        const playsLists = (await this.listPlays(queryDto));
+        var playsListInJsonFormat = [];
+        try {
+            for (var _t = __asyncValues((playsLists === null || playsLists === void 0 ? void 0 : playsLists.docs) || []), _u; _u = await _t.next(), !_u.done;) {
+                const plays = _u.value;
+                var playsExcelData = {
+                    Artist: ((_b = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _b === void 0 ? void 0 : _b.contentOwner) || "--",
+                    Title: ((_c = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _c === void 0 ? void 0 : _c.contentName) || "--",
+                    'Radio Station': ((_d = plays === null || plays === void 0 ? void 0 : plays.radioStation) === null || _d === void 0 ? void 0 : _d.name) || "--",
+                    Date: moment((plays === null || plays === void 0 ? void 0 : plays.detectedAt) || (plays === null || plays === void 0 ? void 0 : plays.createdAt))
+                        .utc()
+                        .format('DD/MM/YYYY'),
+                    Time: moment((plays === null || plays === void 0 ? void 0 : plays.detectedAt) || (plays === null || plays === void 0 ? void 0 : plays.createdAt))
+                        .utc()
+                        .format('HH:mm'),
+                    Duration: moment
+                        .utc(((plays === null || plays === void 0 ? void 0 : plays.detectedDuration) || ((_e = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _e === void 0 ? void 0 : _e.contentDuration)) * 1000)
+                        .format('HH:mm:ss'),
+                    Country: ((_f = plays === null || plays === void 0 ? void 0 : plays.radioStation) === null || _f === void 0 ? void 0 : _f.country) || "--",
+                    SonicKey: (_g = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _g === void 0 ? void 0 : _g._id,
+                    ISRC: ((_h = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _h === void 0 ? void 0 : _h.isrcCode) || "--",
+                    ISWC: ((_j = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _j === void 0 ? void 0 : _j.iswcCode) || "--",
+                    "Tune Code": ((_k = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _k === void 0 ? void 0 : _k.tuneCode) || "--",
+                    "Quality Grade": ((_l = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _l === void 0 ? void 0 : _l.contentQuality) || "--",
+                    Desciption: ((_m = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _m === void 0 ? void 0 : _m.contentDescription) || "--",
+                    Distributor: ((_o = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _o === void 0 ? void 0 : _o.distributor) || "--",
+                    Version: ((_p = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _p === void 0 ? void 0 : _p.version) || "--",
+                    Label: ((_q = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _q === void 0 ? void 0 : _q.label) || "--",
+                    "Additional Metadata": ((_s = (_r = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _r === void 0 ? void 0 : _r.additionalMetadata) === null || _s === void 0 ? void 0 : _s['message']) || "--",
+                };
+                playsListInJsonFormat.push(playsExcelData);
+            }
+        }
+        catch (e_5_1) { e_5 = { error: e_5_1 }; }
+        finally {
+            try {
+                if (_u && !_u.done && (_a = _t.return)) await _a.call(_t);
+            }
+            finally { if (e_5) throw e_5.error; }
+        }
+        if (playsListInJsonFormat.length <= 0) {
+            playsListInJsonFormat.push({
+                Artist: '',
+                Title: '',
+                'Radio Station': '',
+                Date: '',
+                Time: '',
+                Duration: '',
+                Country: '',
+                SonicKey: '',
+                ISRC: '',
+                ISWC: '',
+                "Tune Code": '',
+                "Quality Grade": '',
+                Desciption: '',
+                Distributor: '',
+                Version: '',
+                Label: '',
+                "Additional Metadata": '',
+            });
+        }
+        const destination = await makeDir(app_config_1.appConfig.MULTER_EXPORT_DEST);
+        var tobeStorePath = '';
+        const file = xlsx.utils.book_new();
+        const wsPlaysListInJsonFormat = xlsx.utils.json_to_sheet(playsListInJsonFormat);
+        xlsx.utils.book_append_sheet(file, wsPlaysListInJsonFormat, 'My Plays');
+        if (format == 'xlsx') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_My_Plays`}.xlsx`;
+            xlsx.writeFile(file, tobeStorePath);
+        }
+        else if (format == 'csv') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_My_Plays`}.csv`;
+            xlsx.writeFile(file, tobeStorePath, { bookType: 'csv', sheet: "My Plays" });
+        }
+        return tobeStorePath;
+    }
+    async exportPlaysByArtists(queryDto, format) {
+        var e_6, _a;
+        const playsListsByArtists = (await this.listPlaysByArtists(queryDto));
+        var jsonFormat = [];
+        try {
+            for (var _b = __asyncValues((playsListsByArtists === null || playsListsByArtists === void 0 ? void 0 : playsListsByArtists.docs) || []), _c; _c = await _b.next(), !_c.done;) {
+                const data = _c.value;
+                var excelData = {
+                    Artist: (data === null || data === void 0 ? void 0 : data.artist) || "--",
+                    Plays: (data === null || data === void 0 ? void 0 : data.playsCount) || 0,
+                    Tracks: (data === null || data === void 0 ? void 0 : data.uniquePlaysCount) || 0,
+                    'Radio Station': (data === null || data === void 0 ? void 0 : data.radioStationCount) || 0,
+                    Country: (data === null || data === void 0 ? void 0 : data.countriesCount) || 0
+                };
+                jsonFormat.push(excelData);
+            }
+        }
+        catch (e_6_1) { e_6 = { error: e_6_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
+            }
+            finally { if (e_6) throw e_6.error; }
+        }
+        if (jsonFormat.length <= 0) {
+            jsonFormat.push({
+                Artist: '',
+                Plays: '',
+                Tracks: '',
+                'Radio Station': '',
+                Country: ''
+            });
+        }
+        const destination = await makeDir(app_config_1.appConfig.MULTER_EXPORT_DEST);
+        var tobeStorePath = '';
+        const file = xlsx.utils.book_new();
+        const jsonToWorkSheet = xlsx.utils.json_to_sheet(jsonFormat);
+        xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'Artists');
+        if (format == 'xlsx') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Artists`}.xlsx`;
+            xlsx.writeFile(file, tobeStorePath);
+        }
+        else if (format == 'csv') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Artists`}.csv`;
+            xlsx.writeFile(file, tobeStorePath, { bookType: 'csv', sheet: "Artists" });
+        }
+        return tobeStorePath;
+    }
+    async exportPlaysByCountries(queryDto, format) {
+        var e_7, _a;
+        const playsListsByCountries = (await this.listPlaysByCountries(queryDto));
+        var jsonFormat = [];
+        try {
+            for (var _b = __asyncValues((playsListsByCountries === null || playsListsByCountries === void 0 ? void 0 : playsListsByCountries.docs) || []), _c; _c = await _b.next(), !_c.done;) {
+                const data = _c.value;
+                var excelData = {
+                    Country: (data === null || data === void 0 ? void 0 : data.country) || "--",
+                    Plays: (data === null || data === void 0 ? void 0 : data.playsCount) || 0,
+                    Tracks: (data === null || data === void 0 ? void 0 : data.uniquePlaysCount) || 0,
+                    Artist: (data === null || data === void 0 ? void 0 : data.artistsCount) || 0,
+                    'Radio Station': (data === null || data === void 0 ? void 0 : data.radioStationCount) || 0,
+                };
+                jsonFormat.push(excelData);
+            }
+        }
+        catch (e_7_1) { e_7 = { error: e_7_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
+            }
+            finally { if (e_7) throw e_7.error; }
+        }
+        if (jsonFormat.length <= 0) {
+            jsonFormat.push({
+                Country: '',
+                Plays: '',
+                Tracks: '',
+                Artist: '',
+                'Radio Station': '',
+            });
+        }
+        const destination = await makeDir(app_config_1.appConfig.MULTER_EXPORT_DEST);
+        var tobeStorePath = '';
+        const file = xlsx.utils.book_new();
+        const jsonToWorkSheet = xlsx.utils.json_to_sheet(jsonFormat);
+        xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'Countries');
+        if (format == 'xlsx') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Countries`}.xlsx`;
+            xlsx.writeFile(file, tobeStorePath);
+        }
+        else if (format == 'csv') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Countries`}.csv`;
+            xlsx.writeFile(file, tobeStorePath, { bookType: 'csv', sheet: "Countries" });
+        }
+        return tobeStorePath;
+    }
+    async exportPlaysByTracks(queryDto, format) {
+        var e_8, _a;
+        const playsListsByTracks = (await this.listPlaysByTracks(queryDto));
+        var jsonFormat = [];
+        try {
+            for (var _b = __asyncValues((playsListsByTracks === null || playsListsByTracks === void 0 ? void 0 : playsListsByTracks.docs) || []), _c; _c = await _b.next(), !_c.done;) {
+                const data = _c.value;
+                var excelData = {
+                    'Track Name': (data === null || data === void 0 ? void 0 : data.trackName) || "--",
+                    Plays: (data === null || data === void 0 ? void 0 : data.playsCount) || 0,
+                    Tracks: (data === null || data === void 0 ? void 0 : data.uniquePlaysCount) || 0,
+                    'Radio Station': (data === null || data === void 0 ? void 0 : data.radioStationCount) || 0,
+                    Country: (data === null || data === void 0 ? void 0 : data.countriesCount) || 0,
+                };
+                jsonFormat.push(excelData);
+            }
+        }
+        catch (e_8_1) { e_8 = { error: e_8_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
+            }
+            finally { if (e_8) throw e_8.error; }
+        }
+        if (jsonFormat.length <= 0) {
+            jsonFormat.push({
+                'Track Name': '',
+                Plays: '',
+                Tracks: '',
+                'Radio Station': '',
+                Country: ''
+            });
+        }
+        const destination = await makeDir(app_config_1.appConfig.MULTER_EXPORT_DEST);
+        var tobeStorePath = '';
+        const file = xlsx.utils.book_new();
+        const jsonToWorkSheet = xlsx.utils.json_to_sheet(jsonFormat);
+        xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'My_Tracks');
+        if (format == 'xlsx') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_My_Tracks`}.xlsx`;
+            xlsx.writeFile(file, tobeStorePath);
+        }
+        else if (format == 'csv') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_My_Tracks`}.csv`;
+            xlsx.writeFile(file, tobeStorePath, { bookType: 'csv', sheet: "My_Tracks" });
+        }
+        return tobeStorePath;
+    }
+    async exportPlaysByRadioStations(queryDto, format) {
+        var e_9, _a;
+        var _b;
+        const playsListsByRadioStations = (await this.listPlaysByRadioStations(queryDto));
+        var jsonFormat = [];
+        try {
+            for (var _c = __asyncValues((playsListsByRadioStations === null || playsListsByRadioStations === void 0 ? void 0 : playsListsByRadioStations.docs) || []), _d; _d = await _c.next(), !_d.done;) {
+                const data = _d.value;
+                var excelData = {
+                    'Radio Station': ((_b = data === null || data === void 0 ? void 0 : data.radioStation) === null || _b === void 0 ? void 0 : _b.name) || "--",
+                    Country: (data === null || data === void 0 ? void 0 : data.countriesCount) || 0,
+                    Plays: (data === null || data === void 0 ? void 0 : data.playsCount) || 0,
+                    Tracks: (data === null || data === void 0 ? void 0 : data.uniquePlaysCount) || 0,
+                    Artist: (data === null || data === void 0 ? void 0 : data.artistsCount) || 0,
+                };
+                jsonFormat.push(excelData);
+            }
+        }
+        catch (e_9_1) { e_9 = { error: e_9_1 }; }
+        finally {
+            try {
+                if (_d && !_d.done && (_a = _c.return)) await _a.call(_c);
+            }
+            finally { if (e_9) throw e_9.error; }
+        }
+        if (jsonFormat.length <= 0) {
+            jsonFormat.push({
+                'Radio Station': '',
+                Country: '',
+                Plays: '',
+                Tracks: '',
+                'Artist': ''
+            });
+        }
+        const destination = await makeDir(app_config_1.appConfig.MULTER_EXPORT_DEST);
+        var tobeStorePath = '';
+        const file = xlsx.utils.book_new();
+        const jsonToWorkSheet = xlsx.utils.json_to_sheet(jsonFormat);
+        xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'Radio_Stations');
+        if (format == 'xlsx') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Radio_Stations`}.xlsx`;
+            xlsx.writeFile(file, tobeStorePath);
+        }
+        else if (format == 'csv') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Radio_Stations`}.csv`;
+            xlsx.writeFile(file, tobeStorePath, { bookType: 'csv', sheet: "Radio_Stations" });
+        }
+        return tobeStorePath;
+    }
+    async listPlays(queryDto, recentPlays = false) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ detectedAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+        ];
+        if (recentPlays) {
+            aggregateArray.push({
+                $limit: limit || 10,
+            });
+            if (select) {
+                aggregateArray.push({
+                    $project: select,
+                });
+            }
+            return this.detectionModel.aggregate(aggregateArray);
+        }
+        const aggregate = this.detectionModel.aggregate(aggregateArray);
+        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+    }
+    async listPlaysByArtists(queryDto) {
+        const { limit, skip, sort = { playsCount: -1 }, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ detectedAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $group: {
+                    _id: {
+                        artist: '$sonicKey.contentOwner'
+                    },
+                    plays: {
+                        $sum: 1
+                    },
+                    sonicKeys: {
+                        $addToSet: '$sonicKey.sonicKey',
+                    },
+                    radioStations: {
+                        $addToSet: '$radioStation._id',
+                    },
+                    countries: {
+                        $addToSet: '$radioStation.country',
+                    },
+                }
+            },
+            {
+                $match: {
+                    '_id.artist': { $exists: true, $ne: null },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    artist: '$_id.artist',
+                    playsCount: '$plays',
+                    uniquePlaysCount: { $size: '$sonicKeys' },
+                    radioStationCount: { $size: '$radioStations' },
+                    countriesCount: { $size: '$countries' }
+                },
+            },
+        ];
+        const aggregate = this.detectionModel.aggregate(aggregateArray);
+        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+    }
+    async listPlaysByCountries(queryDto) {
+        const { limit, skip, sort = { playsCount: -1 }, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ detectedAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $group: {
+                    _id: {
+                        country: '$radioStation.country'
+                    },
+                    plays: {
+                        $sum: 1
+                    },
+                    sonicKeys: {
+                        $addToSet: '$sonicKey.sonicKey',
+                    },
+                    radioStations: {
+                        $addToSet: '$radioStation._id',
+                    },
+                    artists: {
+                        $addToSet: '$sonicKey.contentOwner',
+                    },
+                }
+            },
+            {
+                $match: {
+                    '_id.country': { $exists: true, $ne: null },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    country: '$_id.country',
+                    playsCount: '$plays',
+                    uniquePlaysCount: { $size: '$sonicKeys' },
+                    radioStationCount: { $size: '$radioStations' },
+                    artistsCount: { $size: '$artists' }
+                },
+            },
+        ];
+        const aggregate = this.detectionModel.aggregate(aggregateArray);
+        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+    }
+    async listPlaysByTracks(queryDto) {
+        const { limit, skip, sort = { playsCount: -1 }, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ detectedAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $group: {
+                    _id: {
+                        trackName: '$sonicKey.contentName'
+                    },
+                    plays: {
+                        $sum: 1
+                    },
+                    sonicKeys: {
+                        $addToSet: '$sonicKey.sonicKey',
+                    },
+                    radioStations: {
+                        $addToSet: '$radioStation._id',
+                    },
+                    countries: {
+                        $addToSet: '$radioStation.country',
+                    },
+                }
+            },
+            {
+                $match: {
+                    '_id.trackName': { $exists: true, $ne: null },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    trackName: '$_id.trackName',
+                    playsCount: '$plays',
+                    uniquePlaysCount: { $size: '$sonicKeys' },
+                    radioStationCount: { $size: '$radioStations' },
+                    countriesCount: { $size: '$countries' }
+                },
+            }
+        ];
+        const aggregate = this.detectionModel.aggregate(aggregateArray);
+        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+    }
+    async listPlaysByRadioStations(queryDto) {
+        const { limit, skip, sort = { playsCount: -1 }, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ detectedAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $group: {
+                    _id: {
+                        radioStation: '$radioStation._id'
+                    },
+                    plays: {
+                        $sum: 1
+                    },
+                    sonicKeys: {
+                        $addToSet: '$sonicKey.sonicKey',
+                    },
+                    artists: {
+                        $addToSet: '$sonicKey.contentOwner',
+                    },
+                    countries: {
+                        $addToSet: '$radioStation.country',
+                    },
+                }
+            },
+            {
+                $match: {
+                    '_id.radioStation': { $exists: true, $ne: null },
                 },
             },
             {
@@ -1131,7 +1785,7 @@ let DetectionService = class DetectionService {
         ]);
     }
     async findTopRadioStationsWithSonicKeysForOwner(ownerId, topLimit, filter = {}) {
-        var e_5, _a;
+        var e_10, _a;
         const topStations = await this.findTopRadioStations(Object.assign(Object.assign({}, filter), { owner: ownerId }), topLimit);
         var topStationsWithTopKeys = [];
         try {
@@ -1142,12 +1796,12 @@ let DetectionService = class DetectionService {
                 topStationsWithTopKeys.push(station);
             }
         }
-        catch (e_5_1) { e_5 = { error: e_5_1 }; }
+        catch (e_10_1) { e_10 = { error: e_10_1 }; }
         finally {
             try {
                 if (topStations_1_1 && !topStations_1_1.done && (_a = topStations_1.return)) await _a.call(topStations_1);
             }
-            finally { if (e_5) throw e_5.error; }
+            finally { if (e_10) throw e_10.error; }
         }
         return topStationsWithTopKeys;
     }

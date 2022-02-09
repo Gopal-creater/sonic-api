@@ -4,7 +4,11 @@ import { Detection } from './schemas/detection.schema';
 import { Aggregate, Model } from 'mongoose';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import {
-  MongoosePaginateDeectionDto,
+  MongoosePaginateDetectionDto,
+  MongoosePaginatePlaysByArtistDto,
+  MongoosePaginatePlaysByCountryDto,
+  MongoosePaginatePlaysByRadioStationDto,
+  MongoosePaginatePlaysByTrackDto,
   MongoosePaginatePlaysDto,
 } from './dto/mongoosepaginate-radiostationsonickey.dto';
 import { ChannelEnums } from 'src/constants/Enums';
@@ -41,6 +45,23 @@ export class DetectionService {
     private readonly userService: UserService,
     private readonly fileHandlerService: FileHandlerService,
   ) {
+  }
+
+  async getMonitorDashboardData(queryDto: ParsedQueryDto){
+    const myPlaysCount = await this.countPlays(queryDto)
+    const myTracksCount = await this.countPlaysByTracks(queryDto)
+    const myArtistsCount = await this.countPlaysByArtists(queryDto)
+    const myRadioStationCount = await this.countPlaysByRadioStations(queryDto)
+    const myCountriesCount = await this.countPlaysByCountries(queryDto)
+    const mostRecentPlays = await this.listPlays(queryDto,true)
+    return{
+      myPlaysCount,
+      myTracksCount,
+      myArtistsCount,
+      myRadioStationCount,
+      myCountriesCount,
+      mostRecentPlays
+    }
   }
 
   async getPlaysDashboardData(filter: Record<any, any>) {
@@ -610,10 +631,9 @@ export class DetectionService {
    
   }
 
-  async listPlays(
-    queryDto: ParsedQueryDto,
-    recentPlays: boolean = false,
-  ): Promise<MongoosePaginatePlaysDto | PlaysListResponseDto[]> {
+  async countPlays(
+    queryDto: ParsedQueryDto
+  ):Promise<number> {
     const {
       limit,
       skip,
@@ -673,52 +693,25 @@ export class DetectionService {
         },
       },
       { $addFields: { owner: { $first: '$owner' } } },
-      // {
-      //   $lookup: {
-      //     //populate radioStation from its relational table
-      //     from: 'Company',
-      //     localField: 'owner.companies',
-      //     foreignField: '_id',
-      //     as: 'owner.companies',
-      //   },
-      // },
-      // {
-      //   $lookup: {
-      //     //populate radioStation from its relational table
-      //     from: 'Group',
-      //     localField: 'owner.groups',
-      //     foreignField: '_id',
-      //     as: 'owner.groups',
-      //   },
-      // },
       {
         $match: {
           ...relationalFilter,
         },
       },
-    ];
-    if (recentPlays) {
-      aggregateArray.push({
-        $limit: limit,
-      });
-      if (select) {
-        aggregateArray.push({
-          $project: select,
-        });
+      {
+        $count:"count"
       }
-      return this.detectionModel.aggregate(aggregateArray);
-    }
-    const aggregate = this.detectionModel.aggregate(aggregateArray);
-    return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+    ];
+    const aggregate = await this.detectionModel.aggregate(aggregateArray);
+    return aggregate[0]?.count || 0
   }
-
-  async listPlaysByArtists(
+  async countPlaysByArtists(
     queryDto: ParsedQueryDto,
-  ): Promise<MongoosePaginatePlaysDto | PlaysListResponseDto[]> {
+  ):Promise<number> {
     const {
       limit,
       skip,
-      sort,
+      sort={playsCount:-1},
       page,
       filter,
       select,
@@ -799,31 +792,24 @@ export class DetectionService {
         }
       },
       {
-        $sort: {
-          plays: -1,
+        $match: {
+          '_id.artist': { $exists: true, $ne: null },
         },
       },
       {
-        $project: {
-          _id: 0,
-          artist:'$_id.artist',
-          playsCount: '$plays',
-          uniquePlaysCount: { $size: '$sonicKeys' },
-          radioStationCount: { $size: '$radioStations' },
-          countriesCount: { $size: '$countries' }
-        },
-      },
+        $count:"count"
+      }
     ];
-    const aggregate = this.detectionModel.aggregate(aggregateArray);
-    return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+    const aggregate = await this.detectionModel.aggregate(aggregateArray);
+    return aggregate[0]?.count || 0
   }
-  async listPlaysByCountries(
+  async countPlaysByCountries(
     queryDto: ParsedQueryDto,
-  ): Promise<MongoosePaginatePlaysDto | PlaysListResponseDto[]> {
+  ):Promise<number>{
     const {
       limit,
       skip,
-      sort,
+      sort={playsCount:-1},
       page,
       filter,
       select,
@@ -904,31 +890,24 @@ export class DetectionService {
         }
       },
       {
-        $sort: {
-          plays: -1,
+        $match: {
+          '_id.country': { $exists: true, $ne: null },
         },
       },
       {
-        $project: {
-          _id: 0,
-          country:'$_id.country',
-          playsCount: '$plays',
-          uniquePlaysCount: { $size: '$sonicKeys' },
-          radioStationCount: { $size: '$radioStations' },
-          artistsCount: { $size: '$artists' }
-        },
-      },
+        $count:"count"
+      }
     ];
-    const aggregate = this.detectionModel.aggregate(aggregateArray);
-    return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+    const aggregate = await this.detectionModel.aggregate(aggregateArray);
+    return aggregate[0]?.count || 0
   }
-  async listPlaysByTracks(
+  async countPlaysByTracks(
     queryDto: ParsedQueryDto,
-  ): Promise<MongoosePaginatePlaysDto | PlaysListResponseDto[]> {
+  ):Promise<number>{
     const {
       limit,
       skip,
-      sort,
+      sort={playsCount:-1},
       page,
       filter,
       select,
@@ -1009,31 +988,24 @@ export class DetectionService {
         }
       },
       {
-        $sort: {
-          plays: -1,
+        $match: {
+          '_id.trackName': { $exists: true, $ne: null },
         },
       },
       {
-        $project: {
-          _id: 0,
-          trackName:'$_id.trackName',
-          playsCount: '$plays',
-          uniquePlaysCount: { $size: '$sonicKeys' },
-          radioStationCount: { $size: '$radioStations' },
-          countriesCount: { $size: '$countries' }
-        },
-      },
+        $count:"count"
+      }
     ];
-    const aggregate = this.detectionModel.aggregate(aggregateArray);
-    return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+    const aggregate = await this.detectionModel.aggregate(aggregateArray);
+    return aggregate[0]?.count || 0
   }
-  async listPlaysByRadioStations(
+  async countPlaysByRadioStations(
     queryDto: ParsedQueryDto,
-  ): Promise<MongoosePaginatePlaysDto | PlaysListResponseDto[]> {
+  ):Promise<number>{
     const {
       limit,
       skip,
-      sort,
+      sort={playsCount:-1},
       page,
       filter,
       select,
@@ -1114,8 +1086,746 @@ export class DetectionService {
         }
       },
       {
+        $match: {
+          '_id.radioStation': { $exists: true, $ne: null },
+        },
+      },
+      {
+        $count:"count"
+      }
+    ];
+    const aggregate = await this.detectionModel.aggregate(aggregateArray);
+    return aggregate[0]?.count || 0
+  }
+
+  async exportPlays(
+    queryDto: ParsedQueryDto,
+    format: string,
+  ) {
+    const playsLists = (await this.listPlays(queryDto)) as MongoosePaginatePlaysDto
+    var playsListInJsonFormat = [];
+    for await (const plays of playsLists?.docs||[]) {
+      var playsExcelData = {
+        Artist: plays?.sonicKey?.contentOwner || "--",
+        Title: plays?.sonicKey?.contentName || "--",
+        'Radio Station': plays?.radioStation?.name || "--",
+        Date: moment(plays?.detectedAt || plays?.createdAt)
+          .utc()
+          .format('DD/MM/YYYY'),
+        Time: moment(plays?.detectedAt || plays?.createdAt)
+          .utc()
+          .format('HH:mm'),
+        Duration: moment
+          .utc((plays?.detectedDuration || plays?.sonicKey?.contentDuration) * 1000)
+          .format('HH:mm:ss'),
+        
+        Country: plays?.radioStation?.country || "--",
+        SonicKey: plays?.sonicKey?._id,
+        ISRC: plays?.sonicKey?.isrcCode || "--",
+        ISWC: plays?.sonicKey?.iswcCode || "--",
+        "Tune Code": plays?.sonicKey?.tuneCode || "--",
+        "Quality Grade": plays?.sonicKey?.contentQuality || "--",
+        Desciption: plays?.sonicKey?.contentDescription || "--",
+        Distributor: plays?.sonicKey?.distributor || "--",
+        Version: plays?.sonicKey?.version || "--",
+        Label: plays?.sonicKey?.label || "--",
+        "Additional Metadata": plays?.sonicKey?.additionalMetadata?.['message'] || "--",
+      };
+      playsListInJsonFormat.push(playsExcelData);
+    }
+    if (playsListInJsonFormat.length <= 0) {
+      playsListInJsonFormat.push({
+        Artist: '',
+        Title: '',
+        'Radio Station': '',
+        Date: '',
+        Time: '',
+        Duration: '',
+        Country: '',
+        SonicKey: '',
+        ISRC: '',
+        ISWC: '',
+        "Tune Code": '',
+        "Quality Grade": '',
+        Desciption: '',
+        Distributor: '',
+        Version: '',
+        Label: '',
+        "Additional Metadata": '',
+      });
+    }
+    const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
+    var tobeStorePath:string ='' 
+    const file = xlsx.utils.book_new()
+    const wsPlaysListInJsonFormat = xlsx.utils.json_to_sheet(
+      playsListInJsonFormat,
+    );
+    xlsx.utils.book_append_sheet(file, wsPlaysListInJsonFormat, 'My Plays');
+    if (format == 'xlsx') {
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_My_Plays`}.xlsx`;
+      xlsx.writeFile(file, tobeStorePath);
+    }else if(format=='csv'){
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_My_Plays`}.csv`;
+      xlsx.writeFile(file, tobeStorePath,{bookType:'csv',sheet:"My Plays"});
+    }
+    return tobeStorePath
+  }
+  async exportPlaysByArtists(
+    queryDto: ParsedQueryDto,
+    format:string
+  ){
+    const playsListsByArtists = (await this.listPlaysByArtists(queryDto))
+    var jsonFormat = [];
+    for await (const data of playsListsByArtists?.docs||[]) {
+      var excelData = {
+        Artist: data?.artist|| "--",
+        Plays: data?.playsCount || 0,
+        Tracks: data?.uniquePlaysCount || 0,
+        'Radio Station': data?.radioStationCount || 0,
+        Country: data?.countriesCount || 0
+      };
+      jsonFormat.push(excelData);
+    }
+    if (jsonFormat.length <= 0) {
+      jsonFormat.push({
+        Artist: '',
+        Plays: '',
+        Tracks: '',
+        'Radio Station': '',
+        Country: ''
+      });
+    }
+    const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
+    var tobeStorePath:string ='' 
+    const file = xlsx.utils.book_new()
+    const jsonToWorkSheet = xlsx.utils.json_to_sheet(
+      jsonFormat,
+    );
+    xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'Artists');
+    if (format == 'xlsx') {
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Artists`}.xlsx`;
+      xlsx.writeFile(file, tobeStorePath);
+    }else if(format=='csv'){
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Artists`}.csv`;
+      xlsx.writeFile(file, tobeStorePath,{bookType:'csv',sheet:"Artists"});
+    }
+    return tobeStorePath
+  }
+  async exportPlaysByCountries(
+    queryDto: ParsedQueryDto,
+    format:string
+  ){
+    const playsListsByCountries = (await this.listPlaysByCountries(queryDto))
+    var jsonFormat = [];
+    for await (const data of playsListsByCountries?.docs||[]) {
+      var excelData = {
+        Country: data?.country || "--",
+        Plays: data?.playsCount || 0,
+        Tracks: data?.uniquePlaysCount || 0,
+        Artist: data?.artistsCount|| 0,
+        'Radio Station': data?.radioStationCount || 0,
+      };
+      jsonFormat.push(excelData);
+    }
+    if (jsonFormat.length <= 0) {
+      jsonFormat.push({
+        Country: '',
+        Plays: '',
+        Tracks: '',
+        Artist: '',
+        'Radio Station': '',
+       
+      });
+    }
+    const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
+    var tobeStorePath:string ='' 
+    const file = xlsx.utils.book_new()
+    const jsonToWorkSheet = xlsx.utils.json_to_sheet(
+      jsonFormat,
+    );
+    xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'Countries');
+    if (format == 'xlsx') {
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Countries`}.xlsx`;
+      xlsx.writeFile(file, tobeStorePath);
+    }else if(format=='csv'){
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Countries`}.csv`;
+      xlsx.writeFile(file, tobeStorePath,{bookType:'csv',sheet:"Countries"});
+    }
+    return tobeStorePath
+  }
+  async exportPlaysByTracks(
+    queryDto: ParsedQueryDto,
+    format:string
+  ){
+    const playsListsByTracks = (await this.listPlaysByTracks(queryDto))
+    var jsonFormat = [];
+    for await (const data of playsListsByTracks?.docs||[]) {
+      var excelData = {
+        'Track Name': data?.trackName || "--",
+        Plays: data?.playsCount || 0,
+        Tracks: data?.uniquePlaysCount || 0,
+        'Radio Station': data?.radioStationCount || 0,
+        Country: data?.countriesCount|| 0,
+      };
+      jsonFormat.push(excelData);
+    }
+    if (jsonFormat.length <= 0) {
+      jsonFormat.push({
+        'Track Name': '',
+        Plays: '',
+        Tracks: '',
+        'Radio Station': '',
+        Country:''
+       
+      });
+    }
+    const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
+    var tobeStorePath:string ='' 
+    const file = xlsx.utils.book_new()
+    const jsonToWorkSheet = xlsx.utils.json_to_sheet(
+      jsonFormat,
+    );
+    xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'My_Tracks');
+    if (format == 'xlsx') {
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_My_Tracks`}.xlsx`;
+      xlsx.writeFile(file, tobeStorePath);
+    }else if(format=='csv'){
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_My_Tracks`}.csv`;
+      xlsx.writeFile(file, tobeStorePath,{bookType:'csv',sheet:"My_Tracks"});
+    }
+    return tobeStorePath
+  }
+  async exportPlaysByRadioStations(
+    queryDto: ParsedQueryDto,
+    format:string
+  ){
+    const playsListsByRadioStations = (await this.listPlaysByRadioStations(queryDto))
+    var jsonFormat = [];
+    for await (const data of playsListsByRadioStations?.docs||[]) {
+      var excelData = {
+        'Radio Station': data?.radioStation?.name || "--",
+        Country: data?.countriesCount|| 0,
+        Plays: data?.playsCount || 0,
+        Tracks: data?.uniquePlaysCount || 0,
+        Artist: data?.artistsCount|| 0,
+      };
+      jsonFormat.push(excelData);
+    }
+    if (jsonFormat.length <= 0) {
+      jsonFormat.push({
+        'Radio Station': '',
+        Country:'',
+        Plays: '',
+        Tracks: '',
+        'Artist': ''
+       
+      });
+    }
+    const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
+    var tobeStorePath:string ='' 
+    const file = xlsx.utils.book_new()
+    const jsonToWorkSheet = xlsx.utils.json_to_sheet(
+      jsonFormat,
+    );
+    xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'Radio_Stations');
+    if (format == 'xlsx') {
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Radio_Stations`}.xlsx`;
+      xlsx.writeFile(file, tobeStorePath);
+    }else if(format=='csv'){
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Radio_Stations`}.csv`;
+      xlsx.writeFile(file, tobeStorePath,{bookType:'csv',sheet:"Radio_Stations"});
+    }
+    return tobeStorePath
+  }
+
+  async listPlays(
+    queryDto: ParsedQueryDto,
+    recentPlays: boolean = false,
+  ): Promise<MongoosePaginatePlaysDto | PlaysListResponseDto[]> {
+    const {
+      limit,
+      skip,
+      sort,
+      page,
+      filter,
+      select,
+      populate,
+      relationalFilter,
+    } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    var aggregateArray: any[] = [
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
         $sort: {
-          plays: -1,
+          detectedAt: -1,
+          ...sort,
+        },
+      },
+      {
+        $lookup: {
+          //populate sonickey from its relational table
+          from: 'SonicKey',
+          localField: 'sonicKey',
+          foreignField: '_id',
+          as: 'sonicKey',
+        },
+      },
+      { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'RadioStation',
+          localField: 'radioStation',
+          foreignField: '_id',
+          as: 'radioStation',
+        },
+      },
+      { $addFields: { radioStation: { $first: '$radioStation' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'User',
+          localField: 'owner',
+          foreignField: '_id',
+          as: 'owner',
+        },
+      },
+      { $addFields: { owner: { $first: '$owner' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+    ];
+    if (recentPlays) {
+      aggregateArray.push({
+        $limit: limit||10,
+      });
+      if (select) {
+        aggregateArray.push({
+          $project: select,
+        });
+      }
+      return this.detectionModel.aggregate(aggregateArray);
+    }
+    const aggregate = this.detectionModel.aggregate(aggregateArray);
+    return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+  }
+
+  async listPlaysByArtists(
+    queryDto: ParsedQueryDto,
+  ): Promise<MongoosePaginatePlaysByArtistDto> {
+    const {
+      limit,
+      skip,
+      sort={playsCount:-1},
+      page,
+      filter,
+      select,
+      populate,
+      relationalFilter,
+    } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    var aggregateArray: any[] = [
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $sort: {
+          detectedAt: -1,
+          ...sort,
+        },
+      },
+      {
+        $lookup: {
+          //populate sonickey from its relational table
+          from: 'SonicKey',
+          localField: 'sonicKey',
+          foreignField: '_id',
+          as: 'sonicKey',
+        },
+      },
+      { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'RadioStation',
+          localField: 'radioStation',
+          foreignField: '_id',
+          as: 'radioStation',
+        },
+      },
+      { $addFields: { radioStation: { $first: '$radioStation' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'User',
+          localField: 'owner',
+          foreignField: '_id',
+          as: 'owner',
+        },
+      },
+      { $addFields: { owner: { $first: '$owner' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+      {
+        $group:{
+          _id:{
+            artist:'$sonicKey.contentOwner'
+          },
+          plays:{
+            $sum:1
+          },
+          sonicKeys: {
+            $addToSet: '$sonicKey.sonicKey',
+          },
+          radioStations: {
+            $addToSet: '$radioStation._id',
+          },
+          countries: {
+            $addToSet: '$radioStation.country',
+          },
+        }
+      },
+      {
+        $match: {
+          '_id.artist': { $exists: true, $ne: null },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          artist:'$_id.artist',
+          playsCount: '$plays',
+          uniquePlaysCount: { $size: '$sonicKeys' },
+          radioStationCount: { $size: '$radioStations' },
+          countriesCount: { $size: '$countries' }
+        },
+      },
+    ];
+    const aggregate = this.detectionModel.aggregate(aggregateArray);
+    return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+  }
+  async listPlaysByCountries(
+    queryDto: ParsedQueryDto,
+  ): Promise<MongoosePaginatePlaysByCountryDto> {
+    const {
+      limit,
+      skip,
+      sort={playsCount:-1},
+      page,
+      filter,
+      select,
+      populate,
+      relationalFilter,
+    } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    var aggregateArray: any[] = [
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $sort: {
+          detectedAt: -1,
+          ...sort,
+        },
+      },
+      {
+        $lookup: {
+          //populate sonickey from its relational table
+          from: 'SonicKey',
+          localField: 'sonicKey',
+          foreignField: '_id',
+          as: 'sonicKey',
+        },
+      },
+      { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'RadioStation',
+          localField: 'radioStation',
+          foreignField: '_id',
+          as: 'radioStation',
+        },
+      },
+      { $addFields: { radioStation: { $first: '$radioStation' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'User',
+          localField: 'owner',
+          foreignField: '_id',
+          as: 'owner',
+        },
+      },
+      { $addFields: { owner: { $first: '$owner' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+      {
+        $group:{
+          _id:{
+            country:'$radioStation.country'
+          },
+          plays:{
+            $sum:1
+          },
+          sonicKeys: {
+            $addToSet: '$sonicKey.sonicKey',
+          },
+          radioStations: {
+            $addToSet: '$radioStation._id',
+          },
+          artists: {
+            $addToSet: '$sonicKey.contentOwner',
+          },
+        }
+      },
+      {
+        $match: {
+          '_id.country': { $exists: true, $ne: null },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          country:'$_id.country',
+          playsCount: '$plays',
+          uniquePlaysCount: { $size: '$sonicKeys' },
+          radioStationCount: { $size: '$radioStations' },
+          artistsCount: { $size: '$artists' }
+        },
+      },
+    ];
+    const aggregate = this.detectionModel.aggregate(aggregateArray);
+    return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+  }
+  async listPlaysByTracks(
+    queryDto: ParsedQueryDto,
+  ): Promise<MongoosePaginatePlaysByTrackDto> {
+    const {
+      limit,
+      skip,
+      sort={playsCount:-1},
+      page,
+      filter,
+      select,
+      populate,
+      relationalFilter,
+    } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    var aggregateArray: any[] = [
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $sort: {
+          detectedAt: -1,
+          ...sort,
+        },
+      },
+      {
+        $lookup: {
+          //populate sonickey from its relational table
+          from: 'SonicKey',
+          localField: 'sonicKey',
+          foreignField: '_id',
+          as: 'sonicKey',
+        },
+      },
+      { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'RadioStation',
+          localField: 'radioStation',
+          foreignField: '_id',
+          as: 'radioStation',
+        },
+      },
+      { $addFields: { radioStation: { $first: '$radioStation' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'User',
+          localField: 'owner',
+          foreignField: '_id',
+          as: 'owner',
+        },
+      },
+      { $addFields: { owner: { $first: '$owner' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+      {
+        $group:{
+          _id:{
+            trackName:'$sonicKey.contentName'
+          },
+          plays:{
+            $sum:1
+          },
+          sonicKeys: {
+            $addToSet: '$sonicKey.sonicKey',
+          },
+          radioStations: {
+            $addToSet: '$radioStation._id',
+          },
+          countries: {
+            $addToSet: '$radioStation.country',
+          },
+        }
+      },
+      {
+        $match: {
+          '_id.trackName': { $exists: true, $ne: null },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          trackName:'$_id.trackName',
+          playsCount: '$plays',
+          uniquePlaysCount: { $size: '$sonicKeys' },
+          radioStationCount: { $size: '$radioStations' },
+          countriesCount: { $size: '$countries' }
+        },
+      }
+    ];
+    const aggregate = this.detectionModel.aggregate(aggregateArray);
+    return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+  }
+  async listPlaysByRadioStations(
+    queryDto: ParsedQueryDto,
+  ): Promise<MongoosePaginatePlaysByRadioStationDto> {
+    const {
+      limit,
+      skip,
+      sort={playsCount:-1},
+      page,
+      filter,
+      select,
+      populate,
+      relationalFilter,
+    } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    var aggregateArray: any[] = [
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $sort: {
+          detectedAt: -1,
+          ...sort,
+        },
+      },
+      {
+        $lookup: {
+          //populate sonickey from its relational table
+          from: 'SonicKey',
+          localField: 'sonicKey',
+          foreignField: '_id',
+          as: 'sonicKey',
+        },
+      },
+      { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'RadioStation',
+          localField: 'radioStation',
+          foreignField: '_id',
+          as: 'radioStation',
+        },
+      },
+      { $addFields: { radioStation: { $first: '$radioStation' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'User',
+          localField: 'owner',
+          foreignField: '_id',
+          as: 'owner',
+        },
+      },
+      { $addFields: { owner: { $first: '$owner' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+      {
+        $group:{
+          _id:{
+            radioStation:'$radioStation._id'
+          },
+          plays:{
+            $sum:1
+          },
+          sonicKeys: {
+            $addToSet: '$sonicKey.sonicKey',
+          },
+          artists: {
+            $addToSet: '$sonicKey.contentOwner',
+          },
+          countries: {
+            $addToSet: '$radioStation.country',
+          },
+        }
+      },
+      {
+        $match: {
+          '_id.radioStation': { $exists: true, $ne: null },
         },
       },
       {
@@ -1145,7 +1855,7 @@ export class DetectionService {
   async findAll(
     queryDto: ParsedQueryDto,
     aggregateQuery?: boolean,
-  ): Promise<MongoosePaginateDeectionDto> {
+  ): Promise<MongoosePaginateDetectionDto> {
     const {
       limit,
       skip,
