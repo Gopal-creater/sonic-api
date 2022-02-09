@@ -302,6 +302,7 @@ __decorate([
 ], DetectionOwnerController.prototype, "getPlaysDashboardData", null);
 __decorate([
     common_1.Get('/get-monitor-dashboard-data'),
+    swagger_1.ApiQuery({ name: 'includeCompanies', type: Boolean, required: false }),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
     swagger_1.ApiBearerAuth(),

@@ -62,6 +62,7 @@ export class DetectionOwnerController {
   }
 
   @Get('/get-monitor-dashboard-data')
+  @ApiQuery({ name: 'includeCompanies', type: Boolean, required: false })
   @AnyApiQueryTemplate()
   @UseGuards(JwtAuthGuard, new IsTargetUserLoggedInGuard('Param'))
   @ApiBearerAuth()
