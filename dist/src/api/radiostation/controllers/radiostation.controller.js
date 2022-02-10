@@ -34,6 +34,7 @@ const app_config_1 = require("../../../config/app.config");
 const decorators_1 = require("../../auth/decorators");
 const Enums_1 = require("../../../constants/Enums");
 const guards_1 = require("../../auth/guards");
+const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
 let RadiostationController = class RadiostationController {
     constructor(radiostationService) {
         this.radiostationService = radiostationService;
@@ -235,8 +236,9 @@ __decorate([
 ], RadiostationController.prototype, "create", null);
 __decorate([
     common_1.Get(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
     swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Get All Radio Stations' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostation.dto").MongoosePaginateRadioStationDto }),

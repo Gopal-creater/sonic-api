@@ -11,6 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DetectionThirdPartyController = void 0;
 const openapi = require("@nestjs/swagger");
@@ -23,10 +30,12 @@ const create_detection_dto_1 = require("../dto/create-detection.dto");
 const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
 const user_decorator_1 = require("../../auth/decorators/user.decorator");
+const radiostation_service_1 = require("../../radiostation/services/radiostation.service");
 let DetectionThirdPartyController = class DetectionThirdPartyController {
-    constructor(sonickeyServive, detectionService) {
+    constructor(sonickeyServive, detectionService, radiostationService) {
         this.sonickeyServive = sonickeyServive;
         this.detectionService = detectionService;
+        this.radiostationService = radiostationService;
     }
     async create(createDetectionFromBinaryDto, customer, apiKey) {
         const isKeyFound = await this.sonickeyServive.findBySonicKey(createDetectionFromBinaryDto.sonicKey);
@@ -49,7 +58,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
         return newDetection.save();
     }
     async createThirdPartyRadioDetectionFromBinary(createThirdPartyStreamReaderDetectionFromBinaryDto, customer, apiKey) {
-        var { sonicKey, detectedAt, metaData, thirdpartyStreamReaderDetection } = createThirdPartyStreamReaderDetectionFromBinaryDto;
+        var { sonicKey, detectedAt, metaData, thirdpartyStreamReaderDetection, } = createThirdPartyStreamReaderDetectionFromBinaryDto;
         const isKeyFound = await this.sonickeyServive.findBySonicKey(sonicKey);
         if (!isKeyFound) {
             throw new common_1.NotFoundException('Provided sonickey is not found on our database.');
@@ -66,9 +75,82 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
             sonicKeyOwnerId: isKeyFound.owner,
             sonicKeyOwnerName: isKeyFound.contentOwner,
             channel: Enums_1.ChannelEnums.THIRDPARTY_STREAMREADER,
-            thirdpartyStreamReaderDetection: thirdpartyStreamReaderDetection
+            thirdpartyStreamReaderDetection: thirdpartyStreamReaderDetection,
         });
         return newDetection.save();
+    }
+    async createThirdPartyRadioDetectionFromLamda(createThirdPartyStreamReaderDetectionFromLamdaDto, customer, apiKey) {
+        var e_1, _a;
+        var { decodeResponsesFromBinary, radioStation, detectedAt, metaData, streamDetectionInterval, } = createThirdPartyStreamReaderDetectionFromLamdaDto;
+        const isValidRadioStation = await this.radiostationService.radioStationModel.findById(radioStation);
+        if (!isValidRadioStation) {
+            throw new common_1.NotFoundException('Given radio doesnot exists in our database');
+        }
+        var savedKeys = [];
+        var errorKeys = [];
+        try {
+            for (var decodeResponsesFromBinary_1 = __asyncValues(decodeResponsesFromBinary), decodeResponsesFromBinary_1_1; decodeResponsesFromBinary_1_1 = await decodeResponsesFromBinary_1.next(), !decodeResponsesFromBinary_1_1.done;) {
+                const decodeRes = decodeResponsesFromBinary_1_1.value;
+                const isKeyPresent = await this.sonickeyServive.findBySonicKey(decodeRes.sonicKey);
+                if (isKeyPresent) {
+                    const sonicKeyContentDurationInSec = isKeyPresent.contentDuration || 60;
+                    var detection = await this.detectionService.detectionModel.findOne({
+                        radioStation: radioStation,
+                        sonicKey: decodeRes.sonicKey,
+                        detectedAt: {
+                            $gt: new Date(new Date().getTime() - 1000 * sonicKeyContentDurationInSec),
+                        },
+                    });
+                    if (detection &&
+                        detection.detectedDuration < sonicKeyContentDurationInSec) {
+                        detection.detectedDuration =
+                            detection.detectedDuration + streamDetectionInterval >
+                                sonicKeyContentDurationInSec
+                                ? sonicKeyContentDurationInSec
+                                : detection.detectedDuration + streamDetectionInterval;
+                        detection.detectedTimestamps = [
+                            ...detection.detectedTimestamps,
+                            ...decodeRes.timestamps || [],
+                        ];
+                    }
+                    else {
+                        detection = await this.detectionService.detectionModel.create({
+                            radioStation: radioStation,
+                            sonicKey: decodeRes.sonicKey,
+                            owner: isKeyPresent.owner,
+                            sonicKeyOwnerId: isKeyPresent.owner,
+                            sonicKeyOwnerName: isKeyPresent.contentOwner,
+                            channel: Enums_1.ChannelEnums.STREAMREADER,
+                            detectedDuration: streamDetectionInterval,
+                            detectedTimestamps: decodeRes.timestamps,
+                            detectedAt: detectedAt || new Date(),
+                            apiKey: apiKey,
+                            metaData: metaData,
+                        });
+                    }
+                    await detection
+                        .save()
+                        .then(() => {
+                        savedKeys.push(decodeRes.sonicKey);
+                    })
+                        .catch(err => { });
+                }
+                else {
+                    errorKeys.push(decodeRes.sonicKey);
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (decodeResponsesFromBinary_1_1 && !decodeResponsesFromBinary_1_1.done && (_a = decodeResponsesFromBinary_1.return)) await _a.call(decodeResponsesFromBinary_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return {
+            savedSonicKeys: savedKeys,
+            errorOrNotFoundSonicKeys: errorKeys
+        };
     }
     async createFromHardware(createDetectionFromHardwareDto, customer, apiKey) {
         const isKeyFound = await this.sonickeyServive.findBySonicKey(createDetectionFromHardwareDto.sonicKey);
@@ -118,6 +200,19 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], DetectionThirdPartyController.prototype, "createThirdPartyRadioDetectionFromBinary", null);
 __decorate([
+    swagger_1.ApiOperation({ summary: 'Create Stream Detection From Lamda Function' }),
+    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
+    swagger_1.ApiSecurity('x-api-key'),
+    common_1.Post('stream-detection-from-lamda'),
+    openapi.ApiResponse({ status: 201 }),
+    __param(0, common_1.Body()),
+    __param(1, user_decorator_1.User('sub')),
+    __param(2, apikey_decorator_1.ApiKey('_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_detection_dto_1.CreateThirdPartyStreamReaderDetectionFromLamdaDto, String, String]),
+    __metadata("design:returntype", Promise)
+], DetectionThirdPartyController.prototype, "createThirdPartyRadioDetectionFromLamda", null);
+__decorate([
     swagger_1.ApiOperation({ summary: 'Create Detection From Hardware' }),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
     swagger_1.ApiSecurity('x-api-key'),
@@ -135,7 +230,8 @@ DetectionThirdPartyController = __decorate([
     swagger_1.ApiSecurity('x-api-key'),
     common_1.Controller('thirdparty/detection'),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
-        detection_service_1.DetectionService])
+        detection_service_1.DetectionService,
+        radiostation_service_1.RadiostationService])
 ], DetectionThirdPartyController);
 exports.DetectionThirdPartyController = DetectionThirdPartyController;
 //# sourceMappingURL=detection.thirdparty.controller.js.map

@@ -61,6 +61,12 @@ let UserService = class UserService {
                 message: 'Invalid license key',
             });
         }
+        if (key.type == Enums_1.ApiKeyType.COMPANY) {
+            return Promise.reject({
+                status: 400,
+                message: 'You are trying to add a license that belongs to company type or a individual type.',
+            });
+        }
         const user = await this.getUserProfile(ownerIdOrUsername);
         if (!user) {
             return Promise.reject({

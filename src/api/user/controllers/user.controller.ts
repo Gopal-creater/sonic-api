@@ -14,6 +14,7 @@ import {
   CognitoCreateUserDTO,
   CompanyFindOrCreateUser,
 } from '../dtos/index';
+import * as _ from 'lodash';
 import { UserService } from '../services/user.service';
 import {
   Controller,
@@ -42,6 +43,7 @@ import { UserDB } from '../schemas/user.db.schema';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { ConditionalAuthGuard } from '../../auth/guards/conditional-auth.guard';
 import { ValidationTestDto } from '../dtos/create-user.dto';
+import { toObjectId } from 'src/shared/utils/mongoose.utils';
 
 @ApiTags('User Controller')
 @Controller('users')
@@ -60,14 +62,31 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get all licenses of particular user' })
+  @ApiOperation({ summary: 'Get all licenses of particular user or his belongs to companies' })
+  @ApiQuery({ name: 'includeCompanies', type: Boolean, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
   @Get('/:userId/licenses')
   async getUserLicenses(
     @Param('userId') userId: string,
-    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+    @User() user:UserDB,
+    @Query(new ParseQueryValue()) parsedQueryDto?: ParsedQueryDto,
   ) {
-    queryDto.filter['users'] = userId;
-    return this.licensekeyService.findAll(queryDto);
+    var includeCompanies = parsedQueryDto.filter['includeCompanies'] as boolean;
+    delete parsedQueryDto.filter['includeCompanies'];
+    if (includeCompanies == false) {
+      parsedQueryDto.filter = _.merge({}, parsedQueryDto.filter, {
+        users:user._id
+      });
+    }else{
+      const userCompaniesIds = user.companies.map(com => toObjectId(com._id));
+      parsedQueryDto.relationalFilter = _.merge({}, parsedQueryDto.relationalFilter, {
+        $or: [
+          { 'users._id': user._id },
+          { 'company': { $in: userCompaniesIds } },
+        ],
+      });
+    }
+    return this.licensekeyService.findAll(parsedQueryDto);
   }
 
   @RolesAllowed(Roles.ADMIN)

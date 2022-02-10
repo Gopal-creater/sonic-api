@@ -9,11 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TopRadioStationWithPlaysDetails = exports.TopRadioStationWithTopSonicKey = exports.GraphData = exports.PlaysByRadioStationDto = exports.PlaysByTrackDto = exports.PlaysByCountryDto = exports.PlaysByArtistDto = exports.PlaysListResponseDto = exports.PlaysGraphResponseDto = exports.PlaysGraphSingleResponseDto = exports.PlaysCountResponseDto = exports.TopSonicKey = exports.TopRadioStation = void 0;
+exports.DecodeResponseFromBinaryDto = exports.TopRadioStationWithPlaysDetails = exports.TopRadioStationWithTopSonicKey = exports.GraphData = exports.PlaysByRadioStationDto = exports.PlaysByTrackDto = exports.PlaysByCountryDto = exports.PlaysByArtistDto = exports.PlaysListResponseDto = exports.PlaysGraphResponseDto = exports.PlaysGraphSingleResponseDto = exports.PlaysCountResponseDto = exports.TopSonicKey = exports.TopRadioStation = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
+const class_validator_1 = require("class-validator");
 const sonickey_schema_1 = require("../../sonickey/schemas/sonickey.schema");
 const radiostation_schema_1 = require("../../radiostation/schemas/radiostation.schema");
+const detection_schema_1 = require("../schemas/detection.schema");
 class TopRadioStation {
     static _OPENAPI_METADATA_FACTORY() {
         return { _id: { required: false, type: () => String }, totalKeysDetected: { required: false, type: () => Number }, radioStation: { required: true, type: () => require("../../radiostation/schemas/radiostation.schema").RadioStation } };
@@ -306,4 +308,19 @@ __decorate([
     __metadata("design:type", PlaysCountResponseDto)
 ], TopRadioStationWithPlaysDetails.prototype, "playsCount", void 0);
 exports.TopRadioStationWithPlaysDetails = TopRadioStationWithPlaysDetails;
+class DecodeResponseFromBinaryDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { sonicKey: { required: true, type: () => String }, timestamps: { required: true, type: () => [require("../schemas/detection.schema").DetectedTimeStamp] } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], DecodeResponseFromBinaryDto.prototype, "sonicKey", void 0);
+__decorate([
+    swagger_1.ApiProperty({ isArray: true, type: detection_schema_1.DetectedTimeStamp }),
+    __metadata("design:type", Array)
+], DecodeResponseFromBinaryDto.prototype, "timestamps", void 0);
+exports.DecodeResponseFromBinaryDto = DecodeResponseFromBinaryDto;
 //# sourceMappingURL=general.dto.js.map

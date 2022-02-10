@@ -26,7 +26,7 @@ import { UserGroupService } from './user-group.service';
 import { UserCompanyService } from './user-company.service';
 import { GroupService } from '../../group/group.service';
 import { CompanyService } from '../../company/company.service';
-import { Roles } from 'src/constants/Enums';
+import { Roles, ApiKeyType } from 'src/constants/Enums';
 import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
 import { MongoosePaginateUserDto } from '../dtos/mongoosepaginate-user.dto';
 import { ApiKeyService } from '../../api-key/api-key.service';
@@ -66,6 +66,12 @@ export class UserService {
         notFound: true,
         status: 404,
         message: 'Invalid license key',
+      });
+    }
+    if(key.type==ApiKeyType.COMPANY){
+      return Promise.reject({
+        status: 400,
+        message: 'You are trying to add a license that belongs to company type or a individual type.',
       });
     }
 

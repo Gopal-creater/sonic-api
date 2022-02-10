@@ -17,6 +17,7 @@ const openapi = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const swagger_1 = require("@nestjs/swagger");
 const index_1 = require("../dtos/index");
+const _ = require("lodash");
 const user_service_1 = require("../services/user.service");
 const common_1 = require("@nestjs/common");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
@@ -33,6 +34,7 @@ const user_db_schema_1 = require("../schemas/user.db.schema");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
 const create_user_dto_1 = require("../dtos/create-user.dto");
+const mongoose_utils_1 = require("../../../shared/utils/mongoose.utils");
 let UserController = class UserController {
     constructor(userServices, groupService, companyService, licensekeyService) {
         this.userServices = userServices;
@@ -43,9 +45,24 @@ let UserController = class UserController {
     async testVali(dto) {
         return dto;
     }
-    async getUserLicenses(userId, queryDto) {
-        queryDto.filter['users'] = userId;
-        return this.licensekeyService.findAll(queryDto);
+    async getUserLicenses(userId, user, parsedQueryDto) {
+        var includeCompanies = parsedQueryDto.filter['includeCompanies'];
+        delete parsedQueryDto.filter['includeCompanies'];
+        if (includeCompanies == false) {
+            parsedQueryDto.filter = _.merge({}, parsedQueryDto.filter, {
+                users: user._id
+            });
+        }
+        else {
+            const userCompaniesIds = user.companies.map(com => mongoose_utils_1.toObjectId(com._id));
+            parsedQueryDto.relationalFilter = _.merge({}, parsedQueryDto.relationalFilter, {
+                $or: [
+                    { 'users._id': user._id },
+                    { 'company': { $in: userCompaniesIds } },
+                ],
+            });
+        }
+        return this.licensekeyService.findAll(parsedQueryDto);
     }
     async listUsers(queryDto) {
         return this.userServices.listUsers(queryDto);
@@ -141,13 +158,17 @@ __decorate([
 __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get all licenses of particular user' }),
+    swagger_1.ApiOperation({ summary: 'Get all licenses of particular user or his belongs to companies' }),
+    swagger_1.ApiQuery({ name: 'includeCompanies', type: Boolean, required: false }),
+    swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
     common_1.Get('/:userId/licenses'),
     openapi.ApiResponse({ status: 200, type: require("../../licensekey/dto/mongoosepaginate-licensekey.dto").MongoosePaginateLicensekeyDto }),
     __param(0, common_1.Param('userId')),
-    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(1, decorators_1.User()),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
+        parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserLicenses", null);
 __decorate([

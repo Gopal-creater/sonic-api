@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 import { SonicKey } from 'src/api/sonickey/schemas/sonickey.schema';
 import { RadioStation } from '../../radiostation/schemas/radiostation.schema';
+import { DetectedTimeStamp } from '../schemas/detection.schema';
 
 export class TopRadioStation{
 
@@ -183,4 +185,14 @@ export class TopRadioStation{
   export class TopRadioStationWithPlaysDetails extends TopRadioStation {
     @ApiProperty()
     playsCount:PlaysCountResponseDto
+  }
+
+  export class DecodeResponseFromBinaryDto {
+
+    @ApiProperty()
+    @IsNotEmpty()
+    sonicKey: string;
+
+    @ApiProperty({isArray:true,type:DetectedTimeStamp})
+    timestamps:DetectedTimeStamp[]
   }

@@ -1,6 +1,9 @@
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 import { ChannelEnums } from 'src/constants/Enums';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsArray, IsDefined, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
+import { DetectedTimeStamp } from '../schemas/detection.schema';
+import { DecodeResponseFromBinaryDto } from './general.dto';
+import { Type } from 'class-transformer';
 
 export class CreateDetectionDto {
   @ApiProperty()
@@ -75,6 +78,31 @@ export class CreateThirdPartyStreamReaderDetectionFromBinaryDto {
   @IsNotEmpty()
   @ApiProperty()
   thirdpartyStreamReaderDetection: ThirdPartyStreamReaderDetectionDto;
+}
+export class CreateThirdPartyStreamReaderDetectionFromLamdaDto {
+  @ApiProperty({isArray:true,type:DecodeResponseFromBinaryDto})
+  @IsDefined()
+  @IsNotEmpty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => DecodeResponseFromBinaryDto)
+  decodeResponsesFromBinary: DecodeResponseFromBinaryDto[];
+
+  @ApiProperty()
+  @IsNotEmpty()
+  radioStation: string;
+
+  @ApiProperty()
+  @IsOptional()
+  detectedAt: Date = new Date();
+
+  @ApiProperty()
+  @IsNotEmpty()
+  streamDetectionInterval:number
+
+  @ApiProperty()
+  @IsOptional()
+  metaData: Map<string, any>;
 }
 
 export class CreateDetectionFromHardwareDto {

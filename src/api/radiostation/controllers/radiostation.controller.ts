@@ -25,6 +25,7 @@ import {
   ApiParam,
   ApiConsumes,
   ApiBody,
+  ApiSecurity,
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import { diskStorage } from 'multer';
@@ -45,6 +46,7 @@ import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface
 import { RolesAllowed } from 'src/api/auth/decorators';
 import { Roles } from 'src/constants/Enums';
 import { RoleBasedGuard } from 'src/api/auth/guards';
+import { ConditionalAuthGuard } from '../../auth/guards/conditional-auth.guard';
       
 @ApiTags('Radio Station Controller')
 @Controller('radiostations')
@@ -137,6 +139,7 @@ export class RadiostationController {
     const excelPath = upath.toUnix(file.path);
     return this.radiostationService.importFromExcel(excelPath).finally(() => {
       fs.unlinkSync(excelPath);
+
     });
   }
 
@@ -187,8 +190,9 @@ export class RadiostationController {
    */
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ConditionalAuthGuard)
   @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Get All Radio Stations' })
   findAll(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto) {

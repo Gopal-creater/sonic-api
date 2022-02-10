@@ -20,6 +20,7 @@ const detection_thirdparty_controller_1 = require("./controllers/detection.third
 const auth_module_1 = require("../auth/auth.module");
 const file_handler_service_1 = require("../../shared/services/file-handler.service");
 const company_module_1 = require("../company/company.module");
+const radiostation_module_1 = require("../radiostation/radiostation.module");
 let DetectionModule = class DetectionModule {
 };
 DetectionModule = __decorate([
@@ -36,6 +37,7 @@ DetectionModule = __decorate([
             common_1.forwardRef(() => company_module_1.CompanyModule),
             common_1.forwardRef(() => auth_module_1.AuthModule),
             common_1.forwardRef(() => sonickey_module_1.SonickeyModule),
+            common_1.forwardRef(() => radiostation_module_1.RadiostationModule)
         ],
         controllers: [
             detection_controller_1.DetectionController,
