@@ -76,7 +76,7 @@ let SonickeyService = class SonickeyService {
         return newSonicKey.save();
     }
     async getAll(queryDto) {
-        const { limit, skip, sort, page, filter, select, populate, relationalFilter } = queryDto;
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
         var paginateOptions = {};
         paginateOptions['sort'] = sort;
         paginateOptions['select'] = select;
@@ -108,9 +108,7 @@ let SonickeyService = class SonickeyService {
     }
     async getCount(queryDto) {
         const { filter, includeGroupData } = queryDto;
-        return this.sonicKeyModel
-            .find(filter || {})
-            .count();
+        return this.sonicKeyModel.find(filter || {}).count();
     }
     async getEstimateCount() {
         return this.sonicKeyModel.estimatedDocumentCount();
@@ -161,12 +159,21 @@ let SonickeyService = class SonickeyService {
         return this.fileOperationService
             .encodeFile(sonicEncodeCmd, outFilePath)
             .then(() => {
-            return this.s3FileUploadService.uploadFromPath(outFilePath, `${user}/encodedFiles`, s3Acl);
+            const encodedFileUploadToS3 = this.s3FileUploadService
+                .uploadFromPath(outFilePath, `${user}/encodedFiles`, s3Acl)
+                .then(data => Promise.resolve(data))
+                .catch(error => Promise.resolve(error));
+            const originalFileUploadToS3 = this.s3FileUploadService
+                .uploadFromPath(inFilePath, `${user}/originalFiles`, s3Acl)
+                .then(data => Promise.resolve(data))
+                .catch(error => Promise.resolve(error));
+            return Promise.all([encodedFileUploadToS3, originalFileUploadToS3]);
         })
-            .then(s3UploadResult => {
+            .then(([s3EncodedUploadResult, s3OriginalUploadResult]) => {
             return {
-                downloadFileUrl: s3UploadResult.Location,
-                s3UploadResult: s3UploadResult,
+                downloadFileUrl: s3EncodedUploadResult.Location,
+                s3UploadResult: s3EncodedUploadResult,
+                s3OriginalFileUploadResult: s3OriginalUploadResult,
                 sonicKey: random11CharKey,
             };
         })

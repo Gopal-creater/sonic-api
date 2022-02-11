@@ -43,7 +43,7 @@ class UpdateSonicKeyFromBinaryDto extends swagger_1.PartialType(swagger_1.PickTy
     'additionalMetadata',
 ])) {
     static _OPENAPI_METADATA_FACTORY() {
-        return { s3FileMeta: { required: false, type: () => require("../schemas/sonickey.schema").S3FileMeta } };
+        return { s3FileMeta: { required: false, type: () => require("../schemas/sonickey.schema").S3FileMeta }, s3OriginalFileMeta: { required: false, type: () => require("../schemas/sonickey.schema").S3FileMeta } };
     }
 }
 __decorate([
@@ -51,5 +51,10 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", sonickey_schema_1.S3FileMeta)
 ], UpdateSonicKeyFromBinaryDto.prototype, "s3FileMeta", void 0);
+__decorate([
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", sonickey_schema_1.S3FileMeta)
+], UpdateSonicKeyFromBinaryDto.prototype, "s3OriginalFileMeta", void 0);
 exports.UpdateSonicKeyFromBinaryDto = UpdateSonicKeyFromBinaryDto;
 //# sourceMappingURL=update-sonickey.dto.js.map

@@ -115,6 +115,7 @@ export class SonickeyGuestController {
           ...sonicKeyDtoWithMeta,
           contentFilePath: data.s3UploadResult?.Location,
           s3FileMeta: data.s3UploadResult,
+          s3OriginalFileMeta:data.s3OriginalFileUploadResult,
           originalFileName:file?.originalname,
           owner: owner,
           channel: channel,

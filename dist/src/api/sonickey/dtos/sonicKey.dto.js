@@ -15,6 +15,7 @@ class SonicKeyDto extends swagger_1.OmitType(sonickey_schema_1.SonicKey, [
     'license',
     'status',
     's3FileMeta',
+    's3OriginalFileMeta',
     'groups'
 ]) {
     static _OPENAPI_METADATA_FACTORY() {

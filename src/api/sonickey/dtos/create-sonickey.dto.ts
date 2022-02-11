@@ -18,8 +18,7 @@ export class CreateSonicKeyFromJobDto extends SonicKeyDto {
     @IsNotEmpty()
     @ApiProperty()
     owner:string
-
-    
+ 
     @ApiProperty()
     license:string
 

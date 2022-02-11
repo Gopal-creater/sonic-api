@@ -34,4 +34,8 @@ export class UpdateSonicKeyFromBinaryDto extends PartialType(
   @IsOptional()
   @ApiProperty()
   s3FileMeta?: S3FileMeta;
+
+  @IsOptional()
+  @ApiProperty()
+  s3OriginalFileMeta?: S3FileMeta;
 }

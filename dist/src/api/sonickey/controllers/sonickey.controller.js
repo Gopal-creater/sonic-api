@@ -114,11 +114,13 @@ let SonickeyController = class SonickeyController {
         var _a;
         const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.key;
         var s3UploadResult;
+        var s3OriginalFileUploadResult;
         var sonicKey;
         return this.sonicKeyService
             .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
             .then(data => {
             s3UploadResult = data.s3UploadResult;
+            s3OriginalFileUploadResult = data.s3OriginalFileUploadResult;
             sonicKey = data.sonicKey;
             console.log('Increment Usages upon successfull encode');
             return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
@@ -127,7 +129,7 @@ let SonickeyController = class SonickeyController {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Enums_1.ChannelEnums.PORTAL;
-            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId });
+            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, _id: sonicKey, license: licenseId });
             return this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
         })
             .catch(err => {
@@ -139,11 +141,13 @@ let SonickeyController = class SonickeyController {
     }
     encodeFromUrl(sonicKeyDto, file, owner, licenseId) {
         var s3UploadResult;
+        var s3OriginalFileUploadResult;
         var sonicKey;
         return this.sonicKeyService
             .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
             .then(data => {
             s3UploadResult = data.s3UploadResult;
+            s3OriginalFileUploadResult = data.s3OriginalFileUploadResult;
             sonicKey = data.sonicKey;
             console.log('Increment Usages upon successfull encode');
             return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
@@ -152,7 +156,7 @@ let SonickeyController = class SonickeyController {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Enums_1.ChannelEnums.PORTAL;
-            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, _id: sonicKey, license: licenseId });
+            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, _id: sonicKey, license: licenseId });
             return this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
         })
             .catch(err => {

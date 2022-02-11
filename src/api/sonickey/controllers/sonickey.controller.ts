@@ -279,11 +279,13 @@ export class SonickeyController {
     // if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
     const licenseId = req?.validLicense?.key as string;
     var s3UploadResult: S3FileMeta;
+    var s3OriginalFileUploadResult:S3FileMeta;
     var sonicKey: string;
     return this.sonicKeyService
       .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
       .then(data => {
-        s3UploadResult = data.s3UploadResult as S3FileMeta;
+        s3UploadResult = data.s3UploadResult
+        s3OriginalFileUploadResult = data.s3OriginalFileUploadResult
         sonicKey = data.sonicKey;
         console.log('Increment Usages upon successfull encode');
         return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
@@ -305,6 +307,7 @@ export class SonickeyController {
           channel: channel,
           downloadable: true,
           s3FileMeta: s3UploadResult,
+          s3OriginalFileMeta:s3OriginalFileUploadResult,
           _id: sonicKey,
           license: licenseId,
         };
@@ -335,11 +338,13 @@ export class SonickeyController {
   ) {
     // if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
     var s3UploadResult: S3FileMeta;
+    var s3OriginalFileUploadResult:S3FileMeta;
     var sonicKey: string;
     return this.sonicKeyService
       .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
       .then(data => {
-        s3UploadResult = data.s3UploadResult as S3FileMeta;
+        s3UploadResult = data.s3UploadResult;
+        s3OriginalFileUploadResult = data.s3OriginalFileUploadResult
         sonicKey = data.sonicKey;
         console.log('Increment Usages upon successfull encode');
         return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
@@ -361,6 +366,7 @@ export class SonickeyController {
           channel: channel,
           downloadable: true,
           s3FileMeta: s3UploadResult,
+          s3OriginalFileMeta:s3OriginalFileUploadResult,
           _id: sonicKey,
           license: licenseId,
         };

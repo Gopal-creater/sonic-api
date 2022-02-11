@@ -131,6 +131,11 @@ export class SonicKey extends Document {
 
   @IsOptional()
   @ApiProperty()
+  @Prop({type:S3FileMeta})
+  s3OriginalFileMeta?:S3FileMeta;
+
+  @IsOptional()
+  @ApiProperty()
   @Prop()
   contentFileType: string;
 

@@ -69,35 +69,36 @@ export class SonickeyService {
 
   async createFromJob(createSonicKeyDto: CreateSonicKeyFromJobDto) {
     const channel = ChannelEnums.PCAPP;
-    const userGroups = await this.userService.adminListGroupsForUser(createSonicKeyDto.owner);
+    const userGroups = await this.userService.adminListGroupsForUser(
+      createSonicKeyDto.owner,
+    );
     const newSonicKey = new this.sonicKeyModel({
       ...createSonicKeyDto,
       license: createSonicKeyDto.licenseId || createSonicKeyDto.license,
       channel: channel,
-      groups:userGroups.groupNames,
+      groups: userGroups.groupNames,
       _id: createSonicKeyDto.sonicKey,
     });
     return newSonicKey.save();
   }
 
-
-  async createFromBinaryForUser(ownerId: string, sonickey: Record<any,any>) {
+  async createFromBinaryForUser(ownerId: string, sonickey: Record<any, any>) {
     const newSonicKey = new this.sonicKeyModel({
       ...sonickey,
-      owner: ownerId
+      owner: ownerId,
     });
     return newSonicKey.save();
   }
 
-  async saveSonicKeyForUser(ownerId: string, sonickey: Record<any,any>) {
+  async saveSonicKeyForUser(ownerId: string, sonickey: Record<any, any>) {
     const newSonicKey = new this.sonicKeyModel({
       ...sonickey,
-      owner: ownerId
+      owner: ownerId,
     });
     return newSonicKey.save();
   }
 
-  async getAll(queryDto: ParsedQueryDto):Promise<MongoosePaginateSonicKeyDto> {
+  async getAll(queryDto: ParsedQueryDto): Promise<MongoosePaginateSonicKeyDto> {
     const {
       limit,
       skip,
@@ -106,7 +107,7 @@ export class SonickeyService {
       filter,
       select,
       populate,
-      relationalFilter
+      relationalFilter,
     } = queryDto;
     var paginateOptions = {};
     paginateOptions['sort'] = sort;
@@ -115,7 +116,7 @@ export class SonickeyService {
     paginateOptions['offset'] = skip;
     paginateOptions['page'] = page;
     paginateOptions['limit'] = limit;
-    const aggregate=this.sonicKeyModel.aggregate([
+    const aggregate = this.sonicKeyModel.aggregate([
       {
         $match: {
           ...filter,
@@ -142,19 +143,17 @@ export class SonickeyService {
           ...relationalFilter,
         },
       },
-    ])
+    ]);
     return this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
   }
 
   async getCount(queryDto: ParsedQueryDto) {
     const { filter, includeGroupData } = queryDto;
-    return this.sonicKeyModel
-      .find(filter || {})
-      .count()
+    return this.sonicKeyModel.find(filter || {}).count();
   }
 
   async getEstimateCount() {
-    return this.sonicKeyModel.estimatedDocumentCount()
+    return this.sonicKeyModel.estimatedDocumentCount();
   }
 
   /**
@@ -238,16 +237,21 @@ export class SonickeyService {
     return this.fileOperationService
       .encodeFile(sonicEncodeCmd, outFilePath)
       .then(() => {
-        return this.s3FileUploadService.uploadFromPath(
-          outFilePath,
-          `${user}/encodedFiles`,
-          s3Acl,
-        );
+        const encodedFileUploadToS3 = this.s3FileUploadService
+          .uploadFromPath(outFilePath, `${user}/encodedFiles`, s3Acl)
+          .then(data => Promise.resolve(data))
+          .catch(error => Promise.resolve(error));
+        const originalFileUploadToS3 = this.s3FileUploadService
+          .uploadFromPath(inFilePath, `${user}/originalFiles`, s3Acl)
+          .then(data => Promise.resolve(data))
+          .catch(error => Promise.resolve(error));
+        return Promise.all([encodedFileUploadToS3,originalFileUploadToS3])
       })
-      .then(s3UploadResult => {
+      .then(([s3EncodedUploadResult,s3OriginalUploadResult]) => {
         return {
-          downloadFileUrl: s3UploadResult.Location,
-          s3UploadResult: s3UploadResult,
+          downloadFileUrl: s3EncodedUploadResult.Location,
+          s3UploadResult: s3EncodedUploadResult,
+          s3OriginalFileUploadResult:s3OriginalUploadResult,
           sonicKey: random11CharKey,
         };
       })

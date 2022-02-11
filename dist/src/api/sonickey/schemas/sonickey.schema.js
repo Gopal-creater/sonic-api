@@ -168,6 +168,12 @@ __decorate([
 __decorate([
     class_validator_1.IsOptional(),
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: S3FileMeta }),
+    __metadata("design:type", S3FileMeta)
+], SonicKey.prototype, "s3OriginalFileMeta", void 0);
+__decorate([
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "contentFileType", void 0);
