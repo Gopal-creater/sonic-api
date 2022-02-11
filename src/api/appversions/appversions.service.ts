@@ -1,6 +1,7 @@
 import { VUploadedFile } from '../../shared/interfaces/VersionUploadFile.interface';
 import { FileHandlerService } from '../../shared/services/file-handler.service';
 import { FileOperationService } from '../../shared/services/file-operation.service';
+import { UpdateAppVersionDto } from './dto/update-app-versions.dto';
 import {
   Injectable,
   NotFoundException,
@@ -48,8 +49,8 @@ export class AppVersionService {
     return this.versionModel.findOne({_id:id});
   }
 
-  async getAllVersions(platform:string) {
-    return this.versionModel.find({platform:platform});
+  async getAllVersions() {
+    return this.versionModel.find();
   }
 
   async downloadFromVersionCode(versionCode:string, platform:string, res:any){
@@ -72,8 +73,18 @@ export class AppVersionService {
     })
   }
 
+  async downloadFromVersionId(id:string, res:any){
+    return this.versionModel.findOne({_id:id})
+    .then(latestVersion => {
+      console.log("-------------------------", latestVersion)
+      return this.s3FileUploadService.downloadFile(latestVersion.s3FileMeta.Key, res)
+    })
+  }
+
+  
+
   async makeLatest(id: string, platform: string) {
-  let dbResponse = await this.versionModel.findOne({latest:true, platform:platform})
+  let dbResponse = await this.versionModel.findOne({latest:true, platform:platform})  
   if(dbResponse){
     return this.versionModel.findByIdAndUpdate(id, {latest: true}, {new : true})
     .then(async result => {
@@ -94,6 +105,40 @@ export class AppVersionService {
   }
 
   }
+
+  async update(id: string, platform: string, updateAppVersionDto:UpdateAppVersionDto) {
+    if(updateAppVersionDto.latest){
+    let dbResponse = await this.versionModel.findOne({latest:true, platform:platform})
+      
+    if(dbResponse){
+      return this.versionModel.findByIdAndUpdate(id, {latest: true}, {new : true})
+      .then(async result => {
+        return this.versionModel.findByIdAndUpdate(dbResponse._id, {latest: false})
+      .then(async updateRes => {
+        const finalVersion = await this.versionModel.findOneAndUpdate(
+          { _id: id },
+          { ...updateAppVersionDto },
+          { new: true },
+        );
+        if (!finalVersion) {
+          throw new NotFoundException();
+        }
+          return finalVersion;
+        }).catch(err => {
+          throw new InternalServerErrorException(err);
+        })  
+      })
+    }else{
+      return this.versionModel.findByIdAndUpdate(id, {latest: true}, {new : true})
+        .then(updateRes => {
+          return updateRes;
+        }).catch(err => {
+          throw new InternalServerErrorException(err);
+        })  
+    }
+  }
+  
+    }
   async getFile(key:string, res: any){
     console.log("in the service")
     return  this.s3FileUploadService.downloadFile(key, res)

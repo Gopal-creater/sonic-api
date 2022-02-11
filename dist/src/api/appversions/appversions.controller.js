@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppVersionController = void 0;
 const openapi = require("@nestjs/swagger");
 const upload_app_version_dto_1 = require("./dto/upload-app-version.dto");
+const update_app_versions_dto_1 = require("./dto/update-app-versions.dto");
 const version_dto_1 = require("./dto/version.dto");
 const common_1 = require("@nestjs/common");
 const appversions_service_1 = require("./appversions.service");
@@ -67,11 +68,14 @@ let AppVersionController = class AppVersionController {
     downloadLatest(platform, res) {
         return this.appVersionService.downloadLatest(platform, res);
     }
+    downloadFromVersionId(id, res) {
+        return this.appVersionService.downloadFromVersionId(id, res);
+    }
     getVersionById(id) {
         return this.appVersionService.findOne(id);
     }
-    getAllVersions(platform) {
-        return this.appVersionService.getAllVersions(platform);
+    getAllVersions() {
+        return this.appVersionService.getAllVersions();
     }
     makeLatest(id) {
         return this.appVersionService.findOne(id)
@@ -81,6 +85,17 @@ let AppVersionController = class AppVersionController {
             }
             else {
                 return this.appVersionService.makeLatest(id, responseObj.platform);
+            }
+        });
+    }
+    async update(id, updateAppVersionDto) {
+        return this.appVersionService.findOne(id)
+            .then(async (responseObj) => {
+            if (!responseObj) {
+                throw new common_1.NotFoundException("Record not found with the given ID.");
+            }
+            else {
+                return this.appVersionService.update(id, responseObj.platform, updateAppVersionDto);
             }
         });
     }
@@ -139,6 +154,15 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "downloadLatest", null);
 __decorate([
+    common_1.Get('/download-file/:id'),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('id')),
+    __param(1, common_1.Res()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], AppVersionController.prototype, "downloadFromVersionId", null);
+__decorate([
     common_1.Get('/:id'),
     openapi.ApiResponse({ status: 200, type: require("./schemas/appversions.schema").AppVersion }),
     __param(0, common_1.Param('id')),
@@ -147,27 +171,38 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "getVersionById", null);
 __decorate([
-    common_1.Get('all/:platform'),
+    common_1.Get(),
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     openapi.ApiResponse({ status: 200, type: [require("./schemas/appversions.schema").AppVersion] }),
-    __param(0, common_1.Param('platform')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "getAllVersions", null);
 __decorate([
-    common_1.Post('/markLatest/:id'),
+    common_1.Put('/mark-latest/:id'),
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
-    openapi.ApiResponse({ status: 201, type: require("./schemas/appversions.schema").AppVersion }),
+    openapi.ApiResponse({ status: 200, type: require("./schemas/appversions.schema").AppVersion }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "makeLatest", null);
+__decorate([
+    common_1.Put('/:id'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    openapi.ApiResponse({ status: 200, type: require("./schemas/appversions.schema").AppVersion }),
+    __param(0, common_1.Param('id')),
+    __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_app_versions_dto_1.UpdateAppVersionDto]),
+    __metadata("design:returntype", Promise)
+], AppVersionController.prototype, "update", null);
 __decorate([
     common_1.Delete('/:id'),
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),

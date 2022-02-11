@@ -54,7 +54,7 @@ export enum EC2InstanceMetadata {
 }
 
 export enum Platform {
-  'Apple' = 'Apple',
-  'Windows' = 'Windows',
-  'Linux' = 'Linux'
+  'Mac' = 'osx',
+  'Windows' = 'win',
+  'Linux' = 'linux'
 }

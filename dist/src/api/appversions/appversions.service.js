@@ -46,8 +46,8 @@ let AppVersionService = class AppVersionService {
     async findOne(id) {
         return this.versionModel.findOne({ _id: id });
     }
-    async getAllVersions(platform) {
-        return this.versionModel.find({ platform: platform });
+    async getAllVersions() {
+        return this.versionModel.find();
     }
     async downloadFromVersionCode(versionCode, platform, res) {
         return this.versionModel.findOne({ versionCode: versionCode, platform: platform })
@@ -63,6 +63,13 @@ let AppVersionService = class AppVersionService {
     async downloadLatest(platform, res) {
         return this.versionModel.findOne({ latest: true, platform: platform })
             .then(latestVersion => {
+            return this.s3FileUploadService.downloadFile(latestVersion.s3FileMeta.Key, res);
+        });
+    }
+    async downloadFromVersionId(id, res) {
+        return this.versionModel.findOne({ _id: id })
+            .then(latestVersion => {
+            console.log("-------------------------", latestVersion);
             return this.s3FileUploadService.downloadFile(latestVersion.s3FileMeta.Key, res);
         });
     }
@@ -86,6 +93,34 @@ let AppVersionService = class AppVersionService {
             }).catch(err => {
                 throw new common_1.InternalServerErrorException(err);
             });
+        }
+    }
+    async update(id, platform, updateAppVersionDto) {
+        if (updateAppVersionDto.latest) {
+            let dbResponse = await this.versionModel.findOne({ latest: true, platform: platform });
+            if (dbResponse) {
+                return this.versionModel.findByIdAndUpdate(id, { latest: true }, { new: true })
+                    .then(async (result) => {
+                    return this.versionModel.findByIdAndUpdate(dbResponse._id, { latest: false })
+                        .then(async (updateRes) => {
+                        const finalVersion = await this.versionModel.findOneAndUpdate({ _id: id }, Object.assign({}, updateAppVersionDto), { new: true });
+                        if (!finalVersion) {
+                            throw new common_1.NotFoundException();
+                        }
+                        return finalVersion;
+                    }).catch(err => {
+                        throw new common_1.InternalServerErrorException(err);
+                    });
+                });
+            }
+            else {
+                return this.versionModel.findByIdAndUpdate(id, { latest: true }, { new: true })
+                    .then(updateRes => {
+                    return updateRes;
+                }).catch(err => {
+                    throw new common_1.InternalServerErrorException(err);
+                });
+            }
         }
     }
     async getFile(key, res) {

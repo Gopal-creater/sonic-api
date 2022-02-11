@@ -1,10 +1,12 @@
 
 import { VUploadedFile } from '../../shared/interfaces/VersionUploadFile.interface';
 import { UploadAppVersionDto } from './dto/upload-app-version.dto';
+import { UpdateAppVersionDto } from './dto/update-app-versions.dto';
 import { Version } from './dto/version.dto';
 import {
   Controller,
   Post,
+  Put,
   Res,
   Get,
   Body,
@@ -27,6 +29,7 @@ import { appConfig } from '../../config';
 import { RolesAllowed } from '../auth/decorators/roles.decorator';
 import { Roles } from 'src/constants/Enums';
 import { RoleBasedGuard } from '../auth/guards/role-based.guard';
+import {versionAndPlatform} from '../../shared/middlewares/checkVersionCodeAndPlatform.middleware'
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -108,21 +111,26 @@ export class AppVersionController {
     return this.appVersionService.downloadLatest(platform, res)
   }
 
+  @Get('/download-file/:id')
+  downloadFromVersionId(@Param('id') id:string, @Res() res:any){
+    return this.appVersionService.downloadFromVersionId(id, res)
+  }
+
   @Get('/:id')
   getVersionById(@Param('id') id:string){
     return this.appVersionService.findOne(id)
   }
 
-  @Get('all/:platform')
+  @Get()
   @RolesAllowed(Roles.ADMIN)
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
-  getAllVersions(@Param('platform') platform:string){
-    return this.appVersionService.getAllVersions(platform)
+  getAllVersions(){
+    return this.appVersionService.getAllVersions()
 
   }
 
-  @Post('/markLatest/:id')
+  @Put('/mark-latest/:id')
   @RolesAllowed(Roles.ADMIN)
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
@@ -136,6 +144,24 @@ export class AppVersionController {
        }
      })
    }
+
+   @Put('/:id')
+   @RolesAllowed(Roles.ADMIN)
+   @UseGuards(JwtAuthGuard, RoleBasedGuard)
+   @ApiBearerAuth()
+    async update(
+      @Param('id') id: string,
+      @Body() updateAppVersionDto: UpdateAppVersionDto,
+      ){
+      return this.appVersionService.findOne(id)
+      .then(async responseObj => {
+        if(!responseObj){
+          throw new NotFoundException("Record not found with the given ID.")
+        }else{
+          return this.appVersionService.update(id, responseObj.platform, updateAppVersionDto)        
+        }
+      })
+    }
 
   @Delete('/:id')
   @RolesAllowed(Roles.ADMIN)

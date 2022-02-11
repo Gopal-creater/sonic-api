@@ -8,14 +8,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppVersionModule = void 0;
 const file_handler_service_1 = require("./../../shared/services/file-handler.service");
-const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const appversions_schema_1 = require("./schemas/appversions.schema");
 const s3fileupload_module_1 = require("../s3fileupload/s3fileupload.module");
 const appversions_service_1 = require("./appversions.service");
 const appversions_controller_1 = require("./appversions.controller");
+const common_1 = require("@nestjs/common");
 const file_operation_service_1 = require("../../shared/services/file-operation.service");
+const checkVersionCodeAndPlatform_middleware_1 = require("../../shared/middlewares/checkVersionCodeAndPlatform.middleware");
 let AppVersionModule = class AppVersionModule {
+    configure(consumer) {
+        consumer
+            .apply(checkVersionCodeAndPlatform_middleware_1.versionAndPlatform)
+            .forRoutes({ path: 'app-versions', method: common_1.RequestMethod.GET });
+    }
 };
 AppVersionModule = __decorate([
     common_1.Module({

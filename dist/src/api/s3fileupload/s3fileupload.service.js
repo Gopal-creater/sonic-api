@@ -33,6 +33,7 @@ let S3FileUploadService = class S3FileUploadService {
     async uploadFromPath(filePath, destinationFolder, acl = Enums_1.S3ACL.PRIVATE) {
         const fileContect = fs.createReadStream(filePath);
         const fileName = utils_1.extractFileName(filePath);
+        console.log('filename', fileName);
         const bucketS3Destination = destinationFolder
             ? `${this.bucketName}/${destinationFolder}`
             : this.bucketName;
@@ -45,6 +46,7 @@ let S3FileUploadService = class S3FileUploadService {
             Body: file,
             ACL: acl,
         };
+        console.log('name--------', name);
         return this.s3.upload(params).promise();
     }
     getFile(key) {
@@ -59,8 +61,7 @@ let S3FileUploadService = class S3FileUploadService {
             Bucket: this.bucketName,
             Key: key,
         };
-        let s3Data = this.s3.getObject(params).createReadStream();
-        return s3Data.pipe(res);
+        return this.s3.getObject(params).createReadStream().pipe(res);
     }
     getFiles() {
         const params = {

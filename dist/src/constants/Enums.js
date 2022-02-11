@@ -57,8 +57,8 @@ var EC2InstanceMetadata;
 })(EC2InstanceMetadata = exports.EC2InstanceMetadata || (exports.EC2InstanceMetadata = {}));
 var Platform;
 (function (Platform) {
-    Platform["Apple"] = "Apple";
-    Platform["Windows"] = "Windows";
-    Platform["Linux"] = "Linux";
+    Platform["Mac"] = "osx";
+    Platform["Windows"] = "win";
+    Platform["Linux"] = "linux";
 })(Platform = exports.Platform || (exports.Platform = {}));
 //# sourceMappingURL=Enums.js.map
