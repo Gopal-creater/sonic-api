@@ -73,7 +73,6 @@ AppModule = __decorate([
                     uri: configService.get('MONGODB_URI'),
                     useNewUrlParser: true,
                     useUnifiedTopology: true,
-                    useFindAndModify: false,
                     connectionFactory: connection => {
                         connection === null || connection === void 0 ? void 0 : connection.plugin(mongoosePaginate);
                         connection === null || connection === void 0 ? void 0 : connection.plugin(aggregatePaginate);

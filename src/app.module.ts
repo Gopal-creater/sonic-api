@@ -59,7 +59,6 @@ var connectionNo = 0;
         uri: configService.get<string>('MONGODB_URI'),
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        useFindAndModify: false,
         connectionFactory: connection => {
           connection?.plugin(mongoosePaginate);
           connection?.plugin(aggregatePaginate);

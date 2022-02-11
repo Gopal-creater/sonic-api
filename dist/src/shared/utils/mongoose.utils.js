@@ -9,7 +9,7 @@ const isObjectId = (id) => {
 exports.isObjectId = isObjectId;
 const toObjectId = (id) => {
     if (exports.isObjectId(id)) {
-        return mongoose_1.Types.ObjectId(id);
+        return new mongoose_1.Types.ObjectId(id);
     }
     else {
         return id;

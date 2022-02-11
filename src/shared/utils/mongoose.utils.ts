@@ -7,7 +7,7 @@ export const isObjectId = (id:any) =>{
 } 
 export const toObjectId = (id:any) => {
     if (isObjectId(id)) {
-        return Types.ObjectId(id);
+        return new Types.ObjectId(id);
       } else {
         return id;
       }
