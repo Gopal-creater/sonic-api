@@ -32,6 +32,8 @@ import { Ec2InstanceService } from './shared/services/ec2instance.service';
 import { PaymentModule } from './api/payment/payment.module';
 import { CompanyModule } from './api/company/company.module';
 import { GroupModule } from './api/group/group.module';
+import { AppVersionModule } from './api/appversions/appversions.module';
+
 mongoosePaginate.paginate.options = {
   limit: 50,
 };
@@ -101,7 +103,8 @@ var connectionNo = 0;
     RadiomonitorModule,
     PaymentModule,
     CompanyModule,
-    GroupModule
+    GroupModule,
+    AppVersionModule
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway, Ec2InstanceService],

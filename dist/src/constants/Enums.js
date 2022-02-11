@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EC2InstanceMetadata = exports.SystemGroup = exports.Roles = exports.MonitorGroupsEnum = exports.S3ACL = exports.ApiKeyType = exports.Permissions = exports.ChannelEnums = void 0;
+exports.Platform = exports.EC2InstanceMetadata = exports.SystemGroup = exports.Roles = exports.MonitorGroupsEnum = exports.S3ACL = exports.ApiKeyType = exports.Permissions = exports.ChannelEnums = void 0;
 var ChannelEnums;
 (function (ChannelEnums) {
     ChannelEnums["JOB"] = "JOB";
@@ -68,4 +68,10 @@ var EC2InstanceMetadata;
     EC2InstanceMetadata["public_hostname"] = "public-hostname";
     EC2InstanceMetadata["public_ipv4"] = "public-ipv4";
 })(EC2InstanceMetadata = exports.EC2InstanceMetadata || (exports.EC2InstanceMetadata = {}));
+var Platform;
+(function (Platform) {
+    Platform["Mac"] = "osx";
+    Platform["Windows"] = "win";
+    Platform["Linux"] = "linux";
+})(Platform = exports.Platform || (exports.Platform = {}));
 //# sourceMappingURL=Enums.js.map
