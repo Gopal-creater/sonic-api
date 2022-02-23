@@ -162,7 +162,7 @@ __decorate([
     }),
     common_1.Post('/encode'),
     swagger_1.ApiOperation({ summary: 'Encode File And save to database' }),
-    openapi.ApiResponse({ status: 201, type: require("../schemas/sonickey.schema").SonicKey }),
+    openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body('sonickey', jsonparse_pipe_1.JsonParsePipe)),
     __param(1, common_1.UploadedFile()),
     __param(2, common_1.Req()),

@@ -144,7 +144,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     common_1.Put('/job-files/:id'),
-    openapi.ApiResponse({ status: 200, type: require("../schemas/jobfile.schema").JobFile }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
