@@ -54,7 +54,7 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Create Detection' }),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
     common_1.Post(),
-    openapi.ApiResponse({ status: 201, type: Object }),
+    openapi.ApiResponse({ status: 201, type: require("../../detection/schemas/detection.schema").Detection }),
     __param(0, common_1.Body()),
     __param(1, apikey_decorator_1.ApiKey('customer')),
     __param(2, apikey_decorator_1.ApiKey('_id')),

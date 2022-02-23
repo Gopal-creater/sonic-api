@@ -33,6 +33,7 @@ import { PaymentModule } from './api/payment/payment.module';
 import { CompanyModule } from './api/company/company.module';
 import { GroupModule } from './api/group/group.module';
 import { AppVersionModule } from './api/appversions/appversions.module';
+import { NestModule, MiddlewareConsumer,RequestMethod } from '@nestjs/common';
 
 mongoosePaginate.paginate.options = {
   limit: 50,
@@ -109,6 +110,5 @@ var connectionNo = 0;
   providers: [AppService, AppGateway, Ec2InstanceService],
 })
 export class AppModule {
-  constructor() {
-  }
+
 }

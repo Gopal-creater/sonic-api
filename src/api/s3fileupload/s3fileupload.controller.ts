@@ -51,11 +51,6 @@ export class S3FileUploadController {
     return new StreamableFile(Buffer.from(file.Body))
   }
 
-  @Get('/:key')
-  async downloadFile(@Param('key') key: string, @Res() res: any) {
-    return this.s3FileUploadService.downloadFile(key, res);
-  }
-
   @Delete(':key')
   remove(@Param('key') key: string) {
     return this.s3FileUploadService.deleteFile(key);

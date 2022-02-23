@@ -3,6 +3,8 @@ import { VUploadedFile } from '../../shared/interfaces/VersionUploadFile.interfa
 import { UploadAppVersionDto } from './dto/upload-app-version.dto';
 import { UpdateAppVersionDto } from './dto/update-app-versions.dto';
 import { Version } from './dto/version.dto';
+import {BadRequestException } from '@nestjs/common';
+import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
 import {
   Controller,
   Post,
@@ -19,6 +21,7 @@ import {
   Param,
   Query,
   NotFoundException,
+  BadGatewayException,
 } from '@nestjs/common';
 import { AppVersionService } from './appversions.service';
 import { AppVersion, S3FileMeta } from './schemas/appversions.schema';
@@ -29,7 +32,7 @@ import { appConfig } from '../../config';
 import { RolesAllowed } from '../auth/decorators/roles.decorator';
 import { Roles } from 'src/constants/Enums';
 import { RoleBasedGuard } from '../auth/guards/role-based.guard';
-import {versionAndPlatform} from '../../shared/middlewares/checkVersionCodeAndPlatform.middleware'
+import { ParseQueryValue } from '../../shared/pipes/parseQueryValue.pipe';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -70,7 +73,11 @@ export class AppVersionController {
     @Req() req: any,
   ) {
     var s3UploadResult: S3FileMeta;
-    return this.appVersionService
+    return this.appVersionService.VersionAndPlatformCheck(versionDto).then(dbResult =>{
+      if(dbResult){
+        throw new BadRequestException("VersionCode with this platform already exists.")
+      }
+      return this.appVersionService
       .uploadVersionToS3(file)
       .then(data => {
         s3UploadResult = data.s3UploadResult as S3FileMeta;
@@ -91,14 +98,9 @@ export class AppVersionController {
           return saveResult;
         }
       })
-      .catch(err => {
+    }).catch(err => {
         throw new InternalServerErrorException(err);
       })
-  }
-
-  @Get('/download-file')
-  downloadVersionFileFromS3(@Query('key') key: string, @Res() res:any){
-   return this.appVersionService.getFile(key, res)
   }
 
   @Get('/download-file-from-version-code')
@@ -111,8 +113,8 @@ export class AppVersionController {
     return this.appVersionService.downloadLatest(platform, res)
   }
 
-  @Get('/download-file/:id')
-  downloadFromVersionId(@Param('id') id:string, @Res() res:any){
+  @Get('/download-file')
+  downloadFromVersionId(@Query('id') id:string, @Res() res:any){
     return this.appVersionService.downloadFromVersionId(id, res)
   }
 
@@ -125,8 +127,8 @@ export class AppVersionController {
   @RolesAllowed(Roles.ADMIN)
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
-  getAllVersions(){
-    return this.appVersionService.getAllVersions()
+  getAllVersions(@Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto){
+    return this.appVersionService.getAllVersions(parsedQueryDto)
 
   }
 

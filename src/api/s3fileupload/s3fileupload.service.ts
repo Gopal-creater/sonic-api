@@ -36,7 +36,6 @@ export class S3FileUploadService {
   ) {
     const fileContect = fs.createReadStream(filePath);
     const fileName = extractFileName(filePath);
-    console.log('filename', fileName)
     const bucketS3Destination = destinationFolder
       ? `${this.bucketName}/${destinationFolder}`
       : this.bucketName;
@@ -51,7 +50,6 @@ export class S3FileUploadService {
       Body: file,
       ACL: acl,
     };
-    console.log('name--------', name)
     return this.s3.upload(params).promise();
   }
 
@@ -69,13 +67,15 @@ export class S3FileUploadService {
     return this.s3.getObject(params).promise();
   }
 
-    public downloadFile(key: string, res) {
+    public downloadFile(key: string, res:any, originalFilename:string) {
       const params: AWS.S3.GetObjectRequest = {
         Bucket: this.bucketName,
         Key: key,
       };
+      res.setHeader('Content-Disposition', 'attachment; filename=' + originalFilename);
+      res.setHeader('Content-Transfer-Encoding', 'binary');
+      res.setHeader('Content-Type', 'application/octet-stream');
       return this.s3.getObject(params).createReadStream().pipe(res);
-    //  return this.s3.getObject(params);
     }
 
 

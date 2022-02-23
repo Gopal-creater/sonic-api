@@ -44,9 +44,6 @@ let S3FileUploadController = class S3FileUploadController {
         const file = await this.s3FileUploadService.getFile(key);
         return new common_1.StreamableFile(Buffer.from(file.Body));
     }
-    async downloadFile(key, res) {
-        return this.s3FileUploadService.downloadFile(key, res);
-    }
     remove(key) {
         return this.s3FileUploadService.deleteFile(key);
     }
@@ -90,15 +87,6 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], S3FileUploadController.prototype, "getFile", null);
-__decorate([
-    common_1.Get('/:key'),
-    openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('key')),
-    __param(1, common_1.Res()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], S3FileUploadController.prototype, "downloadFile", null);
 __decorate([
     common_1.Delete(':key'),
     __param(0, common_1.Param('key')),

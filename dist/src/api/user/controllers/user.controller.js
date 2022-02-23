@@ -226,7 +226,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Add Single License Key' }),
     common_1.Post('/:userIdOrUsername/add-new-license'),
-    openapi.ApiResponse({ status: 201, type: Object }),
+    openapi.ApiResponse({ status: 201, type: require("../../licensekey/schemas/licensekey.schema").LicenseKey }),
     __param(0, common_1.Param('userIdOrUsername')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppVersionService = void 0;
 const file_handler_service_1 = require("../../shared/services/file-handler.service");
 const file_operation_service_1 = require("../../shared/services/file-operation.service");
+const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 const common_1 = require("@nestjs/common");
 const appversions_schema_1 = require("./schemas/appversions.schema");
 const mongoose_1 = require("@nestjs/mongoose");
@@ -46,15 +47,16 @@ let AppVersionService = class AppVersionService {
     async findOne(id) {
         return this.versionModel.findOne({ _id: id });
     }
-    async getAllVersions() {
-        return this.versionModel.find();
+    getAllVersions(queryDto) {
+        const { filter, sort } = queryDto;
+        return this.versionModel.find(Object.assign({}, filter)).sort(sort);
     }
     async downloadFromVersionCode(versionCode, platform, res) {
         return this.versionModel.findOne({ versionCode: versionCode, platform: platform })
             .then(VersionFromCode => {
             if (!VersionFromCode)
                 throw new common_1.NotFoundException("verson with this version code not found.");
-            return this.s3FileUploadService.downloadFile(VersionFromCode.s3FileMeta.Key, res);
+            return this.s3FileUploadService.downloadFile(VersionFromCode.s3FileMeta.Key, res, VersionFromCode.originalVersionFileName);
         }).catch(err => {
             console.log(err);
             throw new common_1.InternalServerErrorException(err);
@@ -63,14 +65,13 @@ let AppVersionService = class AppVersionService {
     async downloadLatest(platform, res) {
         return this.versionModel.findOne({ latest: true, platform: platform })
             .then(latestVersion => {
-            return this.s3FileUploadService.downloadFile(latestVersion.s3FileMeta.Key, res);
+            return this.s3FileUploadService.downloadFile(latestVersion.s3FileMeta.Key, res, latestVersion.originalVersionFileName);
         });
     }
     async downloadFromVersionId(id, res) {
         return this.versionModel.findOne({ _id: id })
             .then(latestVersion => {
-            console.log("-------------------------", latestVersion);
-            return this.s3FileUploadService.downloadFile(latestVersion.s3FileMeta.Key, res);
+            return this.s3FileUploadService.downloadFile(latestVersion.s3FileMeta.Key, res, latestVersion.originalVersionFileName);
         });
     }
     async makeLatest(id, platform) {
@@ -122,10 +123,9 @@ let AppVersionService = class AppVersionService {
                 });
             }
         }
-    }
-    async getFile(key, res) {
-        console.log("in the service");
-        return this.s3FileUploadService.downloadFile(key, res);
+        else {
+            return this.versionModel.findOneAndUpdate({ _id: id }, Object.assign({}, updateAppVersionDto), { new: true });
+        }
     }
     async deleteRecordWithFile(id) {
         let keyToDeleteFromS3;
@@ -142,6 +142,10 @@ let AppVersionService = class AppVersionService {
         }).catch(err => {
             throw new common_1.InternalServerErrorException(err);
         });
+    }
+    async VersionAndPlatformCheck(versiondto) {
+        let dbResponse = await this.versionModel.findOne({ versionCode: versiondto.versionCode, platform: versiondto.platform });
+        return dbResponse;
     }
 };
 AppVersionService = __decorate([

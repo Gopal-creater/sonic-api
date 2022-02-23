@@ -6,16 +6,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.versionAndPlatform = void 0;
+exports.versionAndPlatformCheck = void 0;
 const common_1 = require("@nestjs/common");
-let versionAndPlatform = class versionAndPlatform {
+let versionAndPlatformCheck = class versionAndPlatformCheck {
     use(req, res, next) {
         console.log('Request...');
         next();
     }
 };
-versionAndPlatform = __decorate([
+versionAndPlatformCheck = __decorate([
     common_1.Injectable()
-], versionAndPlatform);
-exports.versionAndPlatform = versionAndPlatform;
+], versionAndPlatformCheck);
+exports.versionAndPlatformCheck = versionAndPlatformCheck;
 //# sourceMappingURL=checkVersionCodeAndPlatform.middleware.js.map
