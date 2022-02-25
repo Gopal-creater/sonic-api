@@ -104,7 +104,7 @@ export class AppVersionController {
   }
 
   @Get('/download-file-from-version-code')
-  downloadFromVersionCode(@Query('versioncode') versionCode:string, @Query('platform') platform:string,  @Res() res:any){
+  downloadFromVersionCode(@Query('versioncode') versionCode:number, @Query('platform') platform:string,  @Res() res:any){
     return this.appVersionService.downloadFromVersionCode(versionCode, platform, res)
   }
 
@@ -113,8 +113,8 @@ export class AppVersionController {
     return this.appVersionService.downloadLatest(platform, res)
   }
 
-  @Get('/download-file')
-  downloadFromVersionId(@Query('id') id:string, @Res() res:any){
+  @Get('/download-file/:id')
+  downloadFromVersionId(@Param('id') id:string, @Res() res:any){
     return this.appVersionService.downloadFromVersionId(id, res)
   }
 

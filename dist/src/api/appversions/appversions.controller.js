@@ -136,7 +136,7 @@ __decorate([
     __param(1, common_2.Query('platform')),
     __param(2, common_2.Res()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:paramtypes", [Number, String, Object]),
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "downloadFromVersionCode", null);
 __decorate([
@@ -149,9 +149,9 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "downloadLatest", null);
 __decorate([
-    common_2.Get('/download-file'),
+    common_2.Get('/download-file/:id'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_2.Query('id')),
+    __param(0, common_2.Param('id')),
     __param(1, common_2.Res()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),

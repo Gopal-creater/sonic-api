@@ -56,7 +56,7 @@ export class AppVersionService {
     return this.versionModel.find({ ...filter }).sort(sort);
   }
 
-  async downloadFromVersionCode(versionCode: string, platform: string, res: any) {
+  async downloadFromVersionCode(versionCode: number, platform: string, res: any) {
     return this.versionModel.findOne({ versionCode: versionCode, platform: platform })
       .then(VersionFromCode => {
         if (!VersionFromCode)

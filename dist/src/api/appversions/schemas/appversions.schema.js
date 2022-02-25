@@ -49,7 +49,7 @@ __decorate([
     mongoose_1.Prop({
         required: true
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], AppVersion.prototype, "versionCode", void 0);
 __decorate([
     swagger_1.ApiProperty(),

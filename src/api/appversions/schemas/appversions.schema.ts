@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MogSchema } from 'mongoose';
+import { Decimal128, Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, Validate, IsOptional } from 'class-validator';
 export const AppVersionSchemaName = 'AppVersion';
 import { S3FileUploadI } from '../../s3fileupload/interfaces';
 import {Platform} from '../../../constants/Enums'
 import { constant } from 'lodash';
+import { Float } from 'aws-sdk/clients/ec2';
 
 @Schema()
 export class S3FileMeta implements S3FileUploadI {
@@ -35,7 +36,7 @@ export class AppVersion extends Document {
   @Prop({
     required: true
   })
-  versionCode: string;
+  versionCode: Float;
 
   @ApiProperty()
   @Prop()
