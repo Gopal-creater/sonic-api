@@ -21,7 +21,45 @@ Runs the app in production environment with NODE_ENV=production.
 ### `Using pm2`
 Runs the app in specific environment with PM2 process manager.
 ```sh
-$ pm2 start npm --name "sonic stream reader" -- run "start:prod"
+$ pm2 start npm --name "sonic-api" -- run "start:prod" or "start:staging"
+```
+
+## Deployment
+To deploy this project on aws ec2 instance
+
+### Make a build
+Since build process used high CPU its better to make a build in our local system and then only upload to instance
+```bash
+$ npm run build
+```
+
+### Push to github
+Since we are using github as our code repository lets push it to github
+```bash
+$ git add .
+$ git commit "<message>"
+$ git push origin main or <anyotherbranch>
+```
+
+### SSH to instance
+Lets SSH into the ec2 instance with address and pem file given to you
+
+### Run the server
+Inorder to run ther server in the instance lets consider the followings
+#### First time
+```bash
+$ git clone <repositorypath>
+$ cd <sourcefolder>
+$ npm install
+$ pm2 start npm --name "sonic-api" -- run "start:staging" // For production use "start:prod"
+```
+
+#### Updating or Restarting
+```bash
+$ cd <sourcefolder>
+$ git pull origin <branchname>
+$ npm install //Only run if there is any new packages added
+$ pm2 restart "sonic-api"
 ```
 
 # Env Files To Override
