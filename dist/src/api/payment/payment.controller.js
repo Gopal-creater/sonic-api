@@ -16,13 +16,27 @@ exports.PaymentController = void 0;
 const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const payment_service_1 = require("./payment.service");
+const create_payment_dto_1 = require("./dto/create-payment.dto");
 const swagger_1 = require("@nestjs/swagger");
+const plan_service_1 = require("../plan/plan.service");
 let PaymentController = class PaymentController {
-    constructor(paymentService) {
+    constructor(paymentService, planService) {
         this.paymentService = paymentService;
+        this.planService = planService;
     }
     findAll(customerId) {
         return this.paymentService.generateClientToken(customerId);
+    }
+    create(createPaymentDto) {
+        return this.paymentService.create(createPaymentDto);
+    }
+    async createSubscription(createSubscriptionDto) {
+        const { plan, paymentMethodNonce, amount, deviceData } = createSubscriptionDto;
+        const planFromDb = await this.planService.findById(plan);
+        if (!planFromDb) {
+            throw new common_1.NotFoundException("Invalid plan selected, Plan not found");
+        }
+        return this.paymentService.create(createSubscriptionDto);
     }
 };
 __decorate([
@@ -34,10 +48,26 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], PaymentController.prototype, "findAll", null);
+__decorate([
+    common_1.Post('/create-transaction'),
+    openapi.ApiResponse({ status: 201 }),
+    __param(0, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_payment_dto_1.CreatePaymentDto]),
+    __metadata("design:returntype", void 0)
+], PaymentController.prototype, "create", null);
+__decorate([
+    common_1.Post('/create-subscription'),
+    openapi.ApiResponse({ status: 201 }),
+    __param(0, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_payment_dto_1.CreateSubscriptionDto]),
+    __metadata("design:returntype", Promise)
+], PaymentController.prototype, "createSubscription", null);
 PaymentController = __decorate([
     swagger_1.ApiTags("Payment Gateway Controller"),
     common_1.Controller('payments'),
-    __metadata("design:paramtypes", [payment_service_1.PaymentService])
+    __metadata("design:paramtypes", [payment_service_1.PaymentService, plan_service_1.PlanService])
 ], PaymentController);
 exports.PaymentController = PaymentController;
 //# sourceMappingURL=payment.controller.js.map

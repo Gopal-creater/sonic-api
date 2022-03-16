@@ -15,6 +15,7 @@ const auth_config_1 = require("./config/auth.config");
 const common_1 = require("@nestjs/common");
 const amazon_cognito_identity_js_1 = require("amazon-cognito-identity-js");
 const user_service_1 = require("../user/services/user.service");
+const register_dto_1 = require("./dto/register.dto");
 let AuthService = class AuthService {
     constructor(authConfig, globalAwsService, userService) {
         this.authConfig = authConfig;
@@ -47,6 +48,9 @@ let AuthService = class AuthService {
                 },
             });
         });
+    }
+    async signupWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail = false) {
+        return this.userService.registerAsWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail);
     }
 };
 AuthService = __decorate([

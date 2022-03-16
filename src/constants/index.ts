@@ -1,0 +1,1 @@
+export const COGNITO_PASSWORD_REGULAR_EXPRESSION=/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\^$*.\[\]{}\(\)?\-\"!@#%&\/,><\':;|_~`])\S{8,99}$/

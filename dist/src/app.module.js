@@ -40,6 +40,7 @@ const payment_module_1 = require("./api/payment/payment.module");
 const company_module_1 = require("./api/company/company.module");
 const group_module_1 = require("./api/group/group.module");
 const appversions_module_1 = require("./api/appversions/appversions.module");
+const plan_module_1 = require("./api/plan/plan.module");
 mongoosePaginate.paginate.options = {
     limit: 50,
 };
@@ -112,7 +113,8 @@ AppModule = __decorate([
             payment_module_1.PaymentModule,
             company_module_1.CompanyModule,
             group_module_1.GroupModule,
-            appversions_module_1.AppVersionModule
+            appversions_module_1.AppVersionModule,
+            plan_module_1.PlanModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, app_gateway_1.AppGateway, ec2instance_service_1.Ec2InstanceService],

@@ -10,10 +10,11 @@ import { KeygenModule } from '../../shared/modules/keygen/keygen.module';
 import { UserModule } from '../user/user.module';
 import { LicensekeyOwnerController } from './controllers/licensekey-owner.controller';
 import { CompanyModule } from '../company/company.module';
+import { PlanModule } from '../plan/plan.module';
 
 @Module({
   imports: [
-forwardRef(() => UserModule),
+    forwardRef(() => UserModule),
     KeygenModule,
     CompanyModule,
     MongooseModule.forFeature([
@@ -22,8 +23,9 @@ forwardRef(() => UserModule),
         schema: LicenseKeySchema,
       },
     ]),
+    forwardRef(() => PlanModule),
   ],
-  controllers: [LicensekeyController,LicensekeyOwnerController],
+  controllers: [LicensekeyController, LicensekeyOwnerController],
   providers: [LicensekeyService],
   exports: [LicensekeyService],
 })

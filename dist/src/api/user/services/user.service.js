@@ -37,6 +37,7 @@ const company_service_1 = require("../../company/company.service");
 const Enums_1 = require("../../../constants/Enums");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const api_key_service_1 = require("../../api-key/api-key.service");
+const register_dto_1 = require("../../auth/dto/register.dto");
 let UserService = class UserService {
     constructor(licensekeyService, apiKeyService, globalAwsService, groupService, companyService, userModel, configService, userGroupService, userCompanyService, radioMonitorService) {
         this.licensekeyService = licensekeyService;
@@ -194,6 +195,22 @@ let UserService = class UserService {
             .promise();
         return group;
     }
+    async adminSetUserPassword(usernameOrSub, password) {
+        const params = {
+            Password: password,
+            Permanent: true,
+            Username: usernameOrSub,
+            UserPoolId: this.cognitoUserPoolId,
+        };
+        if (index_1.isValidUUID(usernameOrSub)) {
+            const { username } = await this.getCognitoUserFromSub(usernameOrSub);
+            params.Username = username;
+        }
+        const setUserPasswordRes = await this.cognitoIdentityServiceProvider
+            .adminSetUserPassword(params)
+            .promise();
+        return setUserPasswordRes;
+    }
     async adminDeleteUser(usernameOrSub) {
         const params = {
             UserPoolId: this.cognitoUserPoolId,
@@ -301,11 +318,11 @@ let UserService = class UserService {
                     !userGroups.groupNames.includes(Enums_1.Roles.WPMS_USER)) {
                     userGroups.groupNames = [...userGroups.groupNames, Enums_1.Roles.PORTAL_USER];
                 }
-                console.log("userGroups.groupNames", userGroups.groupNames);
+                console.log('userGroups.groupNames', userGroups.groupNames);
                 const userGroupsToDbGroups = await this.groupService.groupModel.find({
                     name: { $in: userGroups.groupNames },
                 });
-                console.log("userGroupsToDbGroups", userGroupsToDbGroups);
+                console.log('userGroupsToDbGroups', userGroupsToDbGroups);
                 await this.userGroupService.addUserToGroups(userFromDb, userGroupsToDbGroups);
             }
         }
@@ -417,7 +434,7 @@ let UserService = class UserService {
     }
     async cognitoCreateUser(cognitoCreateUserDTO) {
         var _a, _b;
-        var { userName, email, group, company, password, phoneNumber = "", isEmailVerified = false, isPhoneNumberVerified = false, sendInvitationByEmail = false, } = cognitoCreateUserDTO;
+        var { userName, email, group, company, password, phoneNumber = '', isEmailVerified = false, isPhoneNumberVerified = false, sendInvitationByEmail = false, } = cognitoCreateUserDTO;
         var registerNewUserParams = {
             UserPoolId: this.cognitoUserPoolId,
             Username: userName,
@@ -452,8 +469,8 @@ let UserService = class UserService {
             .promise();
         userName = cognitoUserCreated.User.Username;
         var userDb = await this.syncUserFromCognitoToMongooDb(userName);
-        if (group) {
-            const groupDb = await this.groupService.findById(group);
+        const groupDb = await this.groupService.findById(group);
+        if (groupDb) {
             await this.adminAddUserToGroup(userName, groupDb.name).catch(err => {
                 console.warn('Warning: error adding user to group in cognito', err);
             });
@@ -466,7 +483,71 @@ let UserService = class UserService {
             });
             userDb = await this.userCompanyService.addUserToCompany(userDb, companyDb);
         }
-        await this.addDefaultLicenseToUser(userName);
+        if ((groupDb === null || groupDb === void 0 ? void 0 : groupDb.name) !== Enums_1.Roles.WPMS_USER) {
+            await this.addDefaultLicenseToUser(userName);
+        }
+        return {
+            cognitoUserCreated: cognitoUserCreated,
+            userDb: userDb,
+        };
+    }
+    async registerAsWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail = false) {
+        var _a, _b, _c;
+        var { userName, email, password, phoneNumber = '', country } = wpmsUserRegisterDTO;
+        var registerNewUserParams = {
+            UserPoolId: this.cognitoUserPoolId,
+            Username: userName,
+            TemporaryPassword: password,
+            UserAttributes: [
+                {
+                    Name: 'email',
+                    Value: email,
+                },
+                {
+                    Name: 'phone_number',
+                    Value: phoneNumber,
+                },
+            ],
+        };
+        if (sendInvitationByEmail) {
+            registerNewUserParams['DesiredDeliveryMediums'] = ['EMAIL'];
+        }
+        else {
+            registerNewUserParams['MessageAction'] = 'SUPPRESS';
+        }
+        const cognitoUserCreated = await this.cognitoIdentityServiceProvider
+            .adminCreateUser(registerNewUserParams)
+            .promise();
+        const username = cognitoUserCreated.User.Username;
+        await this.adminSetUserPassword(username, password);
+        const enabled = cognitoUserCreated.User.Enabled;
+        const mfaOptions = cognitoUserCreated.User.MFAOptions;
+        const sub = (_a = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'sub')) === null || _a === void 0 ? void 0 : _a.Value;
+        const email_verified = (_b = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'email_verified')) === null || _b === void 0 ? void 0 : _b.Value;
+        const phone_number_verified = (_c = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _c === void 0 ? void 0 : _c.Value;
+        const userToSaveInDb = await this.userModel.create({
+            _id: sub,
+            sub: sub,
+            username: username,
+            email: email,
+            email_verified: email_verified == 'true',
+            phone_number: phoneNumber,
+            phone_number_verified: phone_number_verified == 'true',
+            user_status: 'Confirmed',
+            country: country,
+            enabled: enabled,
+            mfa_options: mfaOptions,
+        });
+        var userDb = await userToSaveInDb.save();
+        const wpmsGroupDb = await this.groupService.findOne({
+            name: Enums_1.Roles.WPMS_USER,
+        });
+        if (wpmsGroupDb) {
+            await this.adminAddUserToGroup(userName, wpmsGroupDb.name).catch(err => {
+                console.warn('Warning: error adding user to group in cognito', err);
+            });
+            userDb = await this.userGroupService.addUserToGroup(userDb, wpmsGroupDb);
+        }
         return {
             cognitoUserCreated: cognitoUserCreated,
             userDb: userDb,

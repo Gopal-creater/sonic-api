@@ -34,6 +34,7 @@ import { CompanyModule } from './api/company/company.module';
 import { GroupModule } from './api/group/group.module';
 import { AppVersionModule } from './api/appversions/appversions.module';
 import { NestModule, MiddlewareConsumer,RequestMethod } from '@nestjs/common';
+import { PlanModule } from './api/plan/plan.module';
 
 mongoosePaginate.paginate.options = {
   limit: 50,
@@ -104,7 +105,8 @@ var connectionNo = 0;
     PaymentModule,
     CompanyModule,
     GroupModule,
-    AppVersionModule
+    AppVersionModule,
+    PlanModule
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway, Ec2InstanceService],

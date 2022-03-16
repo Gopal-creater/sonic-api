@@ -18,6 +18,7 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const auth_service_1 = require("./auth.service");
 const login_dto_1 = require("./dto/login.dto");
+const register_dto_1 = require("./dto/register.dto");
 const user_service_1 = require("../user/services/user.service");
 let AuthController = class AuthController {
     constructor(authService, userService) {
@@ -32,6 +33,14 @@ let AuthController = class AuthController {
             throw new common_1.BadRequestException(e.message);
         }
     }
+    async wpmsSignup(wpmsUserRegisterDTO) {
+        const { userName, email } = wpmsUserRegisterDTO;
+        const userFromUsername = await this.userService.findOne({ $or: [{ username: userName }, { email: email }] });
+        if (userFromUsername) {
+            throw new common_1.BadRequestException("User with given email or username already exists!");
+        }
+        return this.authService.signupWpmsUser(wpmsUserRegisterDTO);
+    }
 };
 __decorate([
     common_1.Post('login'),
@@ -42,6 +51,14 @@ __decorate([
     __metadata("design:paramtypes", [login_dto_1.LoginDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
+__decorate([
+    common_1.Post('/wpms/signup'),
+    swagger_1.ApiOperation({ summary: 'User Signup from WPMS website' }),
+    __param(0, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [register_dto_1.WpmsUserRegisterDTO]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "wpmsSignup", null);
 AuthController = __decorate([
     swagger_1.ApiTags('Authentication Controller'),
     common_1.Controller('auth'),

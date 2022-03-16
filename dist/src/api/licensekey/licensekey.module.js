@@ -16,6 +16,7 @@ const keygen_module_1 = require("../../shared/modules/keygen/keygen.module");
 const user_module_1 = require("../user/user.module");
 const licensekey_owner_controller_1 = require("./controllers/licensekey-owner.controller");
 const company_module_1 = require("../company/company.module");
+const plan_module_1 = require("../plan/plan.module");
 let LicensekeyModule = class LicensekeyModule {
 };
 LicensekeyModule = __decorate([
@@ -30,6 +31,7 @@ LicensekeyModule = __decorate([
                     schema: licensekey_schema_1.LicenseKeySchema,
                 },
             ]),
+            common_1.forwardRef(() => plan_module_1.PlanModule),
         ],
         controllers: [licensekey_controller_1.LicensekeyController, licensekey_owner_controller_1.LicensekeyOwnerController],
         providers: [licensekey_service_1.LicensekeyService],

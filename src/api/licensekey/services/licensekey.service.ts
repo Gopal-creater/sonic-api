@@ -17,6 +17,8 @@ import { KeygenService } from '../../../shared/modules/keygen/keygen.service';
 import { UserService } from '../../user/services/user.service';
 import { UserDB } from '../../user/schemas/user.db.schema';
 import { CompanyService } from '../../company/company.service';
+import { PlanService } from '../../plan/plan.service';
+import { PlanType, ApiKeyType } from 'src/constants/Enums';
 
 type usesFor = 'encode' | 'decode' | 'monitor';
 
@@ -27,6 +29,8 @@ export class LicensekeyService {
     public readonly licenseKeyModel: Model<LicenseKey>,
     public readonly keygenService: KeygenService,
     public readonly companyService: CompanyService,
+    @Inject(forwardRef(() => PlanService))
+    public readonly planService: PlanService,
 
     @Inject(forwardRef(() => UserService))
     public readonly userService: UserService,
@@ -43,6 +47,51 @@ export class LicensekeyService {
       createdBy: createdBy,
     });
     return newLicenseKey.save();
+  }
+
+  async createLicenseFromPlanAndAssignToUser(user:string,plan: string) {
+    const key = uuidv4();
+    const planFromDb = await this.planService.findById(plan);
+    const validity = new Date(new Date().setFullYear(new Date().getFullYear() + 90))
+    var newLicense:LicenseKey
+    if(planFromDb.type==PlanType.ENCODE){
+      newLicense = await this.licenseKeyModel.create({
+        users: [user],
+        maxEncodeUses:planFromDb.availableSonicKeys,
+        maxDecodeUses:0,
+        maxMonitoringUses:0,
+        validity:validity,
+        type:ApiKeyType.INDIVIDUAL,
+        activePlan:plan,
+        planType:planFromDb.type,
+        logs:["Created from plan selection"],
+        _id: key,
+        key: key,
+        createdBy: user,
+      });
+    }
+    return newLicense.save();
+  }
+
+  async upgradeLicenseFromPlanAndAssignToUser(licenseKey:string,user:string,plan: string) {
+    const planFromDb = await this.planService.findById(plan);
+    var keyFromDb = await this.findOne({key:licenseKey,users:user})
+    if(planFromDb.type==PlanType.ENCODE){
+      keyFromDb.maxEncodeUses=keyFromDb.maxEncodeUses+planFromDb.availableSonicKeys
+      keyFromDb.previousPlan=keyFromDb?.activePlan?._id
+      keyFromDb.activePlan=plan
+      keyFromDb.logs.push(`Upgraded from ${keyFromDb?.activePlan?.name}(${PlanType.ENCODE}) to ${planFromDb?.name}(${PlanType.ENCODE})`)
+    }
+    return keyFromDb.save();
+  }
+
+  async addExtraUsesToLicenseFromPlanAndAssignToUser(licenseKey:string,user:string,extraUses:number) {
+    var keyFromDb = await this.findOne({key:licenseKey,users:user})
+    if(keyFromDb?.activePlan?.type==PlanType.ENCODE){
+      keyFromDb.maxEncodeUses=keyFromDb.maxEncodeUses+extraUses
+      keyFromDb.logs.push(`Added ${extraUses} extra sonickeys`)
+    }
+    return keyFromDb.save();
   }
 
   /**
@@ -402,6 +451,10 @@ export class LicensekeyService {
       }
     }
     return true;
+  }
+
+  findOne(filter:FilterQuery<LicenseKey>) {
+    return this.licenseKeyModel.findOne(filter);
   }
 
   async decrementUses(id: string, usesFor: usesFor, decrementBy: number = 1) {

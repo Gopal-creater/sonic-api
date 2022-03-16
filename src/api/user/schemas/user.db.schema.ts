@@ -68,6 +68,10 @@ export class UserDB extends Document {
 
   @ApiProperty()
   @Prop()
+  country: string;
+
+  @ApiProperty()
+  @Prop()
   user_status: string;
 
   @ApiProperty()

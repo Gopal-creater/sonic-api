@@ -13,6 +13,7 @@ import { CognitoIdentityServiceProvider } from 'aws-sdk';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
 import { UserService } from '../user/services/user.service';
+import { WpmsUserRegisterDTO } from 'src/api/auth/dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -54,5 +55,9 @@ export class AuthService {
         },
       });
     });
+  }
+
+  async signupWpmsUser(wpmsUserRegisterDTO:WpmsUserRegisterDTO,sendInvitationByEmail=false){
+    return this.userService.registerAsWpmsUser(wpmsUserRegisterDTO,sendInvitationByEmail)
   }
 }

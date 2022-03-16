@@ -88,6 +88,11 @@ __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
+], UserDB.prototype, "country", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
 ], UserDB.prototype, "user_status", void 0);
 __decorate([
     swagger_1.ApiProperty(),

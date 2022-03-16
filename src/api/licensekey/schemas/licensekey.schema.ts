@@ -3,17 +3,16 @@ import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { ApiKeyType } from 'src/constants/Enums';
 
-
 export const LicenseKeySchemaName = 'LicenseKey';
 
 @Schema()
-export class LKOwner{
+export class LKOwner {
   @ApiProperty()
-  @Prop({ type: String, ref: 'User',required:true,autopopulate: true})
+  @Prop({ type: String, ref: 'User', required: true, autopopulate: true })
   ownerId: any;
 
   @ApiProperty()
-  @Prop({required:true})
+  @Prop({ required: true })
   username: string;
 
   @ApiProperty()
@@ -29,13 +28,13 @@ export class LKOwner{
  * ServiceSubscription (Id, ownerId, payment)
  */
 @Schema()
-export class LKReserve{
+export class LKReserve {
   @ApiProperty()
-  @Prop({required:true})
+  @Prop({ required: true })
   jobId: string;
 
   @ApiProperty()
-  @Prop({required:true})
+  @Prop({ required: true })
   count: number;
 }
 
@@ -68,7 +67,7 @@ export class LicenseKey extends Document {
   suspended?: boolean;
 
   @ApiProperty()
-  @Prop({ required: true,default: 0 })
+  @Prop({ required: true, default: 0 })
   maxEncodeUses: number;
 
   @ApiProperty()
@@ -76,11 +75,11 @@ export class LicenseKey extends Document {
   encodeUses: number;
 
   @ApiProperty()
-  @Prop({ required: false,default: false })
+  @Prop({ required: false, default: false })
   isUnlimitedEncode: boolean;
 
   @ApiProperty()
-  @Prop({ required: true,default: 0 })
+  @Prop({ required: true, default: 0 })
   maxDecodeUses: number;
 
   @ApiProperty()
@@ -88,11 +87,11 @@ export class LicenseKey extends Document {
   decodeUses: number;
 
   @ApiProperty()
-  @Prop({ required: false,default: false, })
+  @Prop({ required: false, default: false })
   isUnlimitedDecode: boolean;
 
   @ApiProperty()
-  @Prop({ required: true,default: 0 })
+  @Prop({ required: true, default: 0 })
   maxMonitoringUses: number;
 
   @ApiProperty()
@@ -100,7 +99,7 @@ export class LicenseKey extends Document {
   monitoringUses: number;
 
   @ApiProperty()
-  @Prop({ required: false,default: false })
+  @Prop({ required: false, default: false })
   isUnlimitedMonitor: boolean;
 
   @ApiProperty()
@@ -124,23 +123,58 @@ export class LicenseKey extends Document {
 
   @ApiProperty()
   @Prop([LKOwner])
-  owners?:LKOwner[]
+  owners?: LKOwner[];
 
   @ApiProperty()
-  @Prop({ type: MogSchema.Types.ObjectId, ref: 'Company',autopopulate: { maxDepth: 2 }})
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Company',
+    autopopulate: { maxDepth: 2 },
+  })
   company: any;
 
   @ApiProperty()
-  @Prop([{ type: String, ref: 'User',autopopulate: { maxDepth: 2 },default:[]}])
+  @Prop([
+    { type: String, ref: 'User', autopopulate: { maxDepth: 2 }, default: [] },
+  ])
   users: any[];
 
   @ApiProperty()
-  @Prop({type:String,enum:ApiKeyType,default:"Individual"})
+  @Prop({ type: String, enum: ApiKeyType, default: 'Individual' })
   type: string;
 
   @ApiProperty()
   @Prop([LKReserve])
-  reserves?:LKReserve[]
+  reserves?: LKReserve[];
+
+  //Just to identify that this license key was created from plan selection in WPMS
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Plan',
+    autopopulate: { maxDepth: 2 },
+  })
+  previousPlan: any; 
+  
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Plan',
+    autopopulate: { maxDepth: 2 },
+  })
+  activePlan: any;
+
+  @ApiProperty()
+  @Prop()
+  planType: string;
+
+  @ApiProperty()
+  @Prop()
+  notes?: string;
+
+  @ApiProperty()
+  @Prop([String])
+  logs?: string[];
 }
 
 export const LicenseKeySchema = SchemaFactory.createForClass(LicenseKey);

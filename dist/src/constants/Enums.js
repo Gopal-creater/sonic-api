@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Platform = exports.EC2InstanceMetadata = exports.SystemGroup = exports.Roles = exports.MonitorGroupsEnum = exports.S3ACL = exports.ApiKeyType = exports.Permissions = exports.ChannelEnums = void 0;
+exports.Platform = exports.EC2InstanceMetadata = exports.SystemGroup = exports.Roles = exports.MonitorGroupsEnum = exports.S3ACL = exports.PaymentInterval = exports.PlanType = exports.PlanName = exports.ApiKeyType = exports.Permissions = exports.ChannelEnums = void 0;
 var ChannelEnums;
 (function (ChannelEnums) {
     ChannelEnums["JOB"] = "JOB";
@@ -23,6 +23,22 @@ var ApiKeyType;
     ApiKeyType["INDIVIDUAL"] = "Individual";
     ApiKeyType["COMPANY"] = "Company";
 })(ApiKeyType = exports.ApiKeyType || (exports.ApiKeyType = {}));
+var PlanName;
+(function (PlanName) {
+    PlanName["BASIC"] = "Basic";
+    PlanName["STANDARD"] = "Standard";
+    PlanName["PREMIUM"] = "Premium";
+})(PlanName = exports.PlanName || (exports.PlanName = {}));
+var PlanType;
+(function (PlanType) {
+    PlanType["ENCODE"] = "Encode";
+    PlanType["DECODE"] = "Decode";
+    PlanType["MONITORING"] = "Monitoring";
+})(PlanType = exports.PlanType || (exports.PlanType = {}));
+var PaymentInterval;
+(function (PaymentInterval) {
+    PaymentInterval["ANNUAL"] = "Annual";
+})(PaymentInterval = exports.PaymentInterval || (exports.PaymentInterval = {}));
 var S3ACL;
 (function (S3ACL) {
     S3ACL["PRIVATE"] = "private";

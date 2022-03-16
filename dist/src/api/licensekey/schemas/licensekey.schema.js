@@ -113,7 +113,7 @@ __decorate([
 ], LicenseKey.prototype, "decodeUses", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ required: false, default: false, }),
+    mongoose_1.Prop({ required: false, default: false }),
     __metadata("design:type", Boolean)
 ], LicenseKey.prototype, "isUnlimitedDecode", void 0);
 __decorate([
@@ -161,17 +161,23 @@ __decorate([
 ], LicenseKey.prototype, "owners", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Company', autopopulate: { maxDepth: 2 } }),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'Company',
+        autopopulate: { maxDepth: 2 },
+    }),
     __metadata("design:type", Object)
 ], LicenseKey.prototype, "company", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop([{ type: String, ref: 'User', autopopulate: { maxDepth: 2 }, default: [] }]),
+    mongoose_1.Prop([
+        { type: String, ref: 'User', autopopulate: { maxDepth: 2 }, default: [] },
+    ]),
     __metadata("design:type", Array)
 ], LicenseKey.prototype, "users", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, enum: Enums_1.ApiKeyType, default: "Individual" }),
+    mongoose_1.Prop({ type: String, enum: Enums_1.ApiKeyType, default: 'Individual' }),
     __metadata("design:type", String)
 ], LicenseKey.prototype, "type", void 0);
 __decorate([
@@ -179,6 +185,39 @@ __decorate([
     mongoose_1.Prop([LKReserve]),
     __metadata("design:type", Array)
 ], LicenseKey.prototype, "reserves", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'Plan',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], LicenseKey.prototype, "previousPlan", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'Plan',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], LicenseKey.prototype, "activePlan", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], LicenseKey.prototype, "planType", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], LicenseKey.prototype, "notes", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop([String]),
+    __metadata("design:type", Array)
+], LicenseKey.prototype, "logs", void 0);
 LicenseKey = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.LicenseKeySchemaName })
 ], LicenseKey);

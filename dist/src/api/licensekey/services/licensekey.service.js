@@ -32,11 +32,14 @@ const uuid_1 = require("uuid");
 const keygen_service_1 = require("../../../shared/modules/keygen/keygen.service");
 const user_service_1 = require("../../user/services/user.service");
 const company_service_1 = require("../../company/company.service");
+const plan_service_1 = require("../../plan/plan.service");
+const Enums_1 = require("../../../constants/Enums");
 let LicensekeyService = class LicensekeyService {
-    constructor(licenseKeyModel, keygenService, companyService, userService) {
+    constructor(licenseKeyModel, keygenService, companyService, planService, userService) {
         this.licenseKeyModel = licenseKeyModel;
         this.keygenService = keygenService;
         this.companyService = companyService;
+        this.planService = planService;
         this.userService = userService;
     }
     async create(createLicensekeyDto, createdBy) {
@@ -44,6 +47,50 @@ let LicensekeyService = class LicensekeyService {
         const key = uuid_1.v4();
         const newLicenseKey = await this.licenseKeyModel.create(Object.assign(Object.assign({}, dtos), { users: [user], _id: key, key: key, createdBy: createdBy }));
         return newLicenseKey.save();
+    }
+    async createLicenseFromPlanAndAssignToUser(user, plan) {
+        const key = uuid_1.v4();
+        const planFromDb = await this.planService.findById(plan);
+        const validity = new Date(new Date().setFullYear(new Date().getFullYear() + 90));
+        var newLicense;
+        if (planFromDb.type == Enums_1.PlanType.ENCODE) {
+            newLicense = await this.licenseKeyModel.create({
+                users: [user],
+                maxEncodeUses: planFromDb.availableSonicKeys,
+                maxDecodeUses: 0,
+                maxMonitoringUses: 0,
+                validity: validity,
+                type: Enums_1.ApiKeyType.INDIVIDUAL,
+                activePlan: plan,
+                planType: planFromDb.type,
+                logs: ["Created from plan selection"],
+                _id: key,
+                key: key,
+                createdBy: user,
+            });
+        }
+        return newLicense.save();
+    }
+    async upgradeLicenseFromPlanAndAssignToUser(licenseKey, user, plan) {
+        var _a, _b;
+        const planFromDb = await this.planService.findById(plan);
+        var keyFromDb = await this.findOne({ key: licenseKey, users: user });
+        if (planFromDb.type == Enums_1.PlanType.ENCODE) {
+            keyFromDb.maxEncodeUses = keyFromDb.maxEncodeUses + planFromDb.availableSonicKeys;
+            keyFromDb.previousPlan = (_a = keyFromDb === null || keyFromDb === void 0 ? void 0 : keyFromDb.activePlan) === null || _a === void 0 ? void 0 : _a._id;
+            keyFromDb.activePlan = plan;
+            keyFromDb.logs.push(`Upgraded from ${(_b = keyFromDb === null || keyFromDb === void 0 ? void 0 : keyFromDb.activePlan) === null || _b === void 0 ? void 0 : _b.name}(${Enums_1.PlanType.ENCODE}) to ${planFromDb === null || planFromDb === void 0 ? void 0 : planFromDb.name}(${Enums_1.PlanType.ENCODE})`);
+        }
+        return keyFromDb.save();
+    }
+    async addExtraUsesToLicenseFromPlanAndAssignToUser(licenseKey, user, extraUses) {
+        var _a;
+        var keyFromDb = await this.findOne({ key: licenseKey, users: user });
+        if (((_a = keyFromDb === null || keyFromDb === void 0 ? void 0 : keyFromDb.activePlan) === null || _a === void 0 ? void 0 : _a.type) == Enums_1.PlanType.ENCODE) {
+            keyFromDb.maxEncodeUses = keyFromDb.maxEncodeUses + extraUses;
+            keyFromDb.logs.push(`Added ${extraUses} extra sonickeys`);
+        }
+        return keyFromDb.save();
     }
     createUnlimitedMonitoringLicense() {
         const key = uuid_1.v4();
@@ -304,6 +351,9 @@ let LicensekeyService = class LicensekeyService {
         }
         return true;
     }
+    findOne(filter) {
+        return this.licenseKeyModel.findOne(filter);
+    }
     async decrementUses(id, usesFor, decrementBy = 1) {
         const licenseKey = await this.licenseKeyModel.findById(id);
         if (!licenseKey)
@@ -426,10 +476,12 @@ let LicensekeyService = class LicensekeyService {
 LicensekeyService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(licensekey_schema_1.LicenseKey.name)),
-    __param(3, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
+    __param(3, common_1.Inject(common_1.forwardRef(() => plan_service_1.PlanService))),
+    __param(4, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         keygen_service_1.KeygenService,
         company_service_1.CompanyService,
+        plan_service_1.PlanService,
         user_service_1.UserService])
 ], LicensekeyService);
 exports.LicensekeyService = LicensekeyService;

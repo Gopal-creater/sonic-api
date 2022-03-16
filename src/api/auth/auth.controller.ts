@@ -13,7 +13,7 @@ import {
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { RegisterDTO } from './dto/register.dto';
+import { RegisterDTO,WpmsUserRegisterDTO } from './dto/register.dto';
 import { UserService } from '../user/services/user.service';
 
 @ApiTags('Authentication Controller')
@@ -29,5 +29,16 @@ export class AuthController {
     } catch (e) {
       throw new BadRequestException(e.message);
     }
+  }
+
+  @Post('/wpms/signup')
+  @ApiOperation({ summary: 'User Signup from WPMS website' })
+  async wpmsSignup(@Body() wpmsUserRegisterDTO: WpmsUserRegisterDTO) {
+    const{userName,email}=wpmsUserRegisterDTO
+    const userFromUsername = await this.userService.findOne({$or:[{username:userName},{email:email}]})
+    if(userFromUsername){
+      throw new BadRequestException("User with given email or username already exists!")
+    }
+    return this.authService.signupWpmsUser(wpmsUserRegisterDTO)
   }
 }

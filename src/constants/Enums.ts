@@ -21,6 +21,22 @@ export enum ApiKeyType {
   COMPANY = 'Company',
 }
 
+export enum PlanName {
+  BASIC = 'Basic',
+  STANDARD = 'Standard',
+  PREMIUM='Premium'
+}
+
+export enum PlanType {
+  ENCODE = 'Encode',
+  DECODE = 'Decode',
+  MONITORING='Monitoring'
+}
+
+export enum PaymentInterval {
+  ANNUAL = 'Annual'
+}
+
 export enum S3ACL {
   PRIVATE = 'private',
   PUBLIC_READ = 'public-read',
