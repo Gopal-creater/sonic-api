@@ -40,6 +40,10 @@ export class Plan extends Document {
   paymentInterval: string;
 
   @ApiProperty()
+  @Prop([String])
+  featureLists?: string[];
+
+  @ApiProperty()
   @Prop()
   notes: string;
 }

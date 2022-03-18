@@ -59,6 +59,11 @@ __decorate([
 ], Plan.prototype, "paymentInterval", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop([String]),
+    __metadata("design:type", Array)
+], Plan.prototype, "featureLists", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Plan.prototype, "notes", void 0);
