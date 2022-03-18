@@ -40,60 +40,66 @@ export class CreatePlanDto {
 }
 
 export class BuyPlanDto {
-    @ApiProperty()
-    @IsNotEmpty()
-    paymentMethodNonce:string
+  @ApiProperty()
+  paymentMethodNonce: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    amount:string
+  @ApiProperty()
+  transactionId: string;
 
-    @ApiProperty()
-    deviceData?:string
+  @ApiProperty()
+  @IsNotEmpty()
+  amount: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    plan:string
+  @ApiProperty()
+  deviceData?: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  plan: string;
 }
 
 export class UpgradePlanDto {
-    @ApiProperty()
-    @IsNotEmpty()
-    paymentMethodNonce:string
+  @ApiProperty()
+  paymentMethodNonce: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    amount:string
+  @ApiProperty()
+  transactionId: string;
 
-    @ApiProperty()
-    deviceData?:string
+  @ApiProperty()
+  @IsNotEmpty()
+  amount: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    oldPlanLicenseKey:string
+  @ApiProperty()
+  deviceData?: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    upgradedPlan:string
+  @ApiProperty()
+  @IsNotEmpty()
+  oldPlanLicenseKey: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  upgradedPlan: string;
 }
 
 export class BuyExtraKeysForExistingPlanDto {
-    @ApiProperty()
-    @IsNotEmpty()
-    paymentMethodNonce:string
+  @ApiProperty()
+  paymentMethodNonce: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    amount:string
+  @ApiProperty()
+  transactionId: string;
 
-    @ApiProperty()
-    deviceData?:string
+  @ApiProperty()
+  @IsNotEmpty()
+  amount: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    oldPlanLicenseKey:string
+  @ApiProperty()
+  deviceData?: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    extraKeys:number
+  @ApiProperty()
+  @IsNotEmpty()
+  oldPlanLicenseKey: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  extraKeys: number;
 }

@@ -58,6 +58,11 @@ let PaymentService = class PaymentService {
             },
         });
     }
+    async getTransactionById(transactionId) {
+        return this.brainTreeGateway.transaction
+            .find(transactionId)
+            .catch(err => Promise.resolve(null));
+    }
     async createCustomerInBrainTree(customer, additionalData) {
         return this.brainTreeGateway.customer.create(Object.assign(Object.assign({}, customer), additionalData));
     }

@@ -294,20 +294,28 @@ export class PaymentService {
     });
   }
 
+  async getTransactionById(
+    transactionId: string,
+  ): Promise<braintree.Transaction> {
+    return this.brainTreeGateway.transaction
+      .find(transactionId)
+      .catch(err => Promise.resolve(null));
+  }
+
   /**
-   * 
-   * @param customer 
+   *
+   * @param customer
    * @param additionalData for additional data please check their official webiste https://developer.paypal.com/braintree/docs/reference/request/customer/create
-   * @returns 
+   * @returns
    */
   async createCustomerInBrainTree(
-    customer:BrainTreeCustomerDto,
-    additionalData?:Record<string,any>
+    customer: BrainTreeCustomerDto,
+    additionalData?: Record<string, any>,
   ) {
     return this.brainTreeGateway.customer.create({
       ...customer,
-      ...additionalData
-    })
+      ...additionalData,
+    });
   }
 
   findAll(queryDto: ParsedQueryDto) {
