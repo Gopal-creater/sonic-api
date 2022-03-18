@@ -106,9 +106,9 @@ let PlanService = class PlanService {
             amount: amount,
             paymentMethodNonce: paymentMethodNonce,
             deviceData: deviceData,
-            braintreeTransactionId: '',
-            braintreeTransactionStatus: '',
-            braintreeTransactionResult: {},
+            braintreeTransactionId: brainTreeTransactionResponse.transaction.id,
+            braintreeTransactionStatus: brainTreeTransactionResponse.transaction.status,
+            braintreeTransactionResult: brainTreeTransactionResponse,
             user: user,
             plan: plan,
             notes: `Done payment for plan id ${plan} at amount ${amount}`,
@@ -125,6 +125,7 @@ let PlanService = class PlanService {
     }
     async fetchMyPlans(user, queryDto) {
         queryDto.filter = Object.assign(Object.assign({}, queryDto.filter), { users: user, type: Enums_1.ApiKeyType.INDIVIDUAL, activePlan: { $exists: true } });
+        return this.licenseKeyService.findAll(queryDto);
     }
     async upgradePlan(user, upgradePlanDto) {
         const { amount, paymentMethodNonce, deviceData, oldPlanLicenseKey, upgradedPlan, } = upgradePlanDto;
@@ -133,9 +134,9 @@ let PlanService = class PlanService {
             amount: amount,
             paymentMethodNonce: paymentMethodNonce,
             deviceData: deviceData,
-            braintreeTransactionId: '',
-            braintreeTransactionStatus: '',
-            braintreeTransactionResult: {},
+            braintreeTransactionId: brainTreeTransactionResponse.transaction.id,
+            braintreeTransactionStatus: brainTreeTransactionResponse.transaction.status,
+            braintreeTransactionResult: brainTreeTransactionResponse,
             user: user,
             plan: upgradedPlan,
             notes: `Done upgrade payment for plan id ${upgradedPlan} at amount ${amount}`,
@@ -161,9 +162,9 @@ let PlanService = class PlanService {
             amount: amount,
             paymentMethodNonce: paymentMethodNonce,
             deviceData: deviceData,
-            braintreeTransactionId: '',
-            braintreeTransactionStatus: '',
-            braintreeTransactionResult: {},
+            braintreeTransactionId: brainTreeTransactionResponse.transaction.id,
+            braintreeTransactionStatus: brainTreeTransactionResponse.transaction.status,
+            braintreeTransactionResult: brainTreeTransactionResponse,
             user: user,
             plan: (_a = oldPlanLicenseKeyFromDb === null || oldPlanLicenseKeyFromDb === void 0 ? void 0 : oldPlanLicenseKeyFromDb.activePlan) === null || _a === void 0 ? void 0 : _a._id,
             licenseKey: oldPlanLicenseKey,

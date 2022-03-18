@@ -40,6 +40,7 @@ export class PlansOwnerController {
   @Get('/my-plans')
   async myPlans(
     @User('sub') user: string,
+    @Param('ownerId') ownerId: string,
     @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
   ) {
     return this.planService.fetchMyPlans(user, queryDto);
@@ -48,7 +49,7 @@ export class PlansOwnerController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post('/buy-plan')
-  async buyPlan(@Body() buyPlanDto: BuyPlanDto, @User('sub') user: string) {
+  async buyPlan(@Body() buyPlanDto: BuyPlanDto, @User('sub') user: string,@Param('ownerId') ownerId: string,) {
     const { plan } = buyPlanDto;
     const planFromDb = await this.planService.findById(plan);
     if (!planFromDb) {
@@ -71,6 +72,7 @@ export class PlansOwnerController {
   async upgradePlan(
     @Body() upgradePlanDto: UpgradePlanDto,
     @User('sub') user: string,
+    @Param('ownerId') ownerId: string,
   ) {
     const { upgradedPlan } = upgradePlanDto;
     const planFromDb = await this.planService.findById(upgradedPlan);
@@ -94,6 +96,7 @@ export class PlansOwnerController {
   async buyExtraKeys(
     @Body() buyExtraKeysForExistingPlanDto: BuyExtraKeysForExistingPlanDto,
     @User('sub') user: string,
+    @Param('ownerId') ownerId: string,
   ) {
     const { oldPlanLicenseKey, extraKeys } = buyExtraKeysForExistingPlanDto;
     const oldPlanLicenseKeyFromDb = await this.licenseKeyService.findOne({

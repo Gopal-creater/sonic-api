@@ -20,14 +20,15 @@ import { PlanService } from '../../plan/plan.service';
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  @ApiQuery({name:'customerId',required:false})
   @Get('generate-client-token')
-  findAll(@Query('customerId') customerId: string) {
-    return this.paymentService.generateClientToken(customerId);
+  findAll() {
+    return this.paymentService.generateClientToken();
   }
 
   @Post('/create-transaction')
-  create(@Body() createPaymentDto: CreatePaymentDto) {
-    return this.paymentService.create(createPaymentDto);
+  async create(@Body() createPaymentDto: CreatePaymentDto) {
+    const paymentResponse = await this.paymentService.create(createPaymentDto);
+    console.log("paymentResponse",paymentResponse)
+    return paymentResponse
   }
 }

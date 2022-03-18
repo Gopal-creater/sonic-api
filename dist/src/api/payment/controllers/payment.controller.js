@@ -22,20 +22,20 @@ let PaymentController = class PaymentController {
     constructor(paymentService) {
         this.paymentService = paymentService;
     }
-    findAll(customerId) {
-        return this.paymentService.generateClientToken(customerId);
+    findAll() {
+        return this.paymentService.generateClientToken();
     }
-    create(createPaymentDto) {
-        return this.paymentService.create(createPaymentDto);
+    async create(createPaymentDto) {
+        const paymentResponse = await this.paymentService.create(createPaymentDto);
+        console.log("paymentResponse", paymentResponse);
+        return paymentResponse;
     }
 };
 __decorate([
-    swagger_1.ApiQuery({ name: 'customerId', required: false }),
     common_1.Get('generate-client-token'),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, common_1.Query('customerId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], PaymentController.prototype, "findAll", null);
 __decorate([
@@ -44,7 +44,7 @@ __decorate([
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_payment_dto_1.CreatePaymentDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], PaymentController.prototype, "create", null);
 PaymentController = __decorate([
     swagger_1.ApiTags("Payment Gateway Controller"),

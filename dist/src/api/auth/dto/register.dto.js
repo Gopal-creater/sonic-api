@@ -41,9 +41,14 @@ __decorate([
 exports.RegisterDTO = RegisterDTO;
 class WpmsUserRegisterDTO {
     static _OPENAPI_METADATA_FACTORY() {
-        return { userName: { required: true, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String } };
+        return { name: { required: true, type: () => String }, userName: { required: true, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String } };
     }
 }
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], WpmsUserRegisterDTO.prototype, "name", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),

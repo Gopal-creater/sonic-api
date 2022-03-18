@@ -148,9 +148,10 @@ export class PlanService {
       amount: amount,
       paymentMethodNonce: paymentMethodNonce,
       deviceData: deviceData,
-      braintreeTransactionId: '',
-      braintreeTransactionStatus: '',
-      braintreeTransactionResult: {},
+      braintreeTransactionId: brainTreeTransactionResponse.transaction.id,
+      braintreeTransactionStatus:
+        brainTreeTransactionResponse.transaction.status,
+      braintreeTransactionResult: brainTreeTransactionResponse,
       user: user,
       plan: plan,
       notes: `Done payment for plan id ${plan} at amount ${amount}`,
@@ -178,6 +179,7 @@ export class PlanService {
       type: ApiKeyType.INDIVIDUAL,
       activePlan: { $exists: true },
     };
+    return this.licenseKeyService.findAll(queryDto);
   }
 
   async upgradePlan(user: string, upgradePlanDto: UpgradePlanDto) {
@@ -199,9 +201,10 @@ export class PlanService {
       amount: amount,
       paymentMethodNonce: paymentMethodNonce,
       deviceData: deviceData,
-      braintreeTransactionId: '',
-      braintreeTransactionStatus: '',
-      braintreeTransactionResult: {},
+      braintreeTransactionId: brainTreeTransactionResponse.transaction.id,
+      braintreeTransactionStatus:
+        brainTreeTransactionResponse.transaction.status,
+      braintreeTransactionResult: brainTreeTransactionResponse,
       user: user,
       plan: upgradedPlan,
       notes: `Done upgrade payment for plan id ${upgradedPlan} at amount ${amount}`,
@@ -248,9 +251,10 @@ export class PlanService {
       amount: amount,
       paymentMethodNonce: paymentMethodNonce,
       deviceData: deviceData,
-      braintreeTransactionId: '',
-      braintreeTransactionStatus: '',
-      braintreeTransactionResult: {},
+      braintreeTransactionId: brainTreeTransactionResponse.transaction.id,
+      braintreeTransactionStatus:
+      brainTreeTransactionResponse.transaction.status,
+      braintreeTransactionResult: brainTreeTransactionResponse,
       user: user,
       plan: oldPlanLicenseKeyFromDb?.activePlan?._id,
       licenseKey: oldPlanLicenseKey,

@@ -30,10 +30,10 @@ let PlansOwnerController = class PlansOwnerController {
         this.planService = planService;
         this.licenseKeyService = licenseKeyService;
     }
-    async myPlans(user, queryDto) {
+    async myPlans(user, ownerId, queryDto) {
         return this.planService.fetchMyPlans(user, queryDto);
     }
-    async buyPlan(buyPlanDto, user) {
+    async buyPlan(buyPlanDto, user, ownerId) {
         const { plan } = buyPlanDto;
         const planFromDb = await this.planService.findById(plan);
         if (!planFromDb) {
@@ -48,7 +48,7 @@ let PlansOwnerController = class PlansOwnerController {
         }
         return this.planService.buyPlan(user, buyPlanDto);
     }
-    async upgradePlan(upgradePlanDto, user) {
+    async upgradePlan(upgradePlanDto, user, ownerId) {
         const { upgradedPlan } = upgradePlanDto;
         const planFromDb = await this.planService.findById(upgradedPlan);
         if (!planFromDb) {
@@ -63,7 +63,7 @@ let PlansOwnerController = class PlansOwnerController {
         }
         return this.planService.upgradePlan(user, upgradePlanDto);
     }
-    async buyExtraKeys(buyExtraKeysForExistingPlanDto, user) {
+    async buyExtraKeys(buyExtraKeysForExistingPlanDto, user, ownerId) {
         const { oldPlanLicenseKey, extraKeys } = buyExtraKeysForExistingPlanDto;
         const oldPlanLicenseKeyFromDb = await this.licenseKeyService.findOne({
             key: oldPlanLicenseKey,
@@ -87,11 +87,12 @@ __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     common_1.Get('/my-plans'),
-    openapi.ApiResponse({ status: 200 }),
+    openapi.ApiResponse({ status: 200, type: require("../../licensekey/dto/mongoosepaginate-licensekey.dto").MongoosePaginateLicensekeyDto }),
     __param(0, user_decorator_1.User('sub')),
-    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(1, common_1.Param('ownerId')),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], PlansOwnerController.prototype, "myPlans", null);
 __decorate([
@@ -101,8 +102,9 @@ __decorate([
     openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Body()),
     __param(1, user_decorator_1.User('sub')),
+    __param(2, common_1.Param('ownerId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_plan_dto_1.BuyPlanDto, String]),
+    __metadata("design:paramtypes", [create_plan_dto_1.BuyPlanDto, String, String]),
     __metadata("design:returntype", Promise)
 ], PlansOwnerController.prototype, "buyPlan", null);
 __decorate([
@@ -112,8 +114,9 @@ __decorate([
     openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Body()),
     __param(1, user_decorator_1.User('sub')),
+    __param(2, common_1.Param('ownerId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_plan_dto_1.UpgradePlanDto, String]),
+    __metadata("design:paramtypes", [create_plan_dto_1.UpgradePlanDto, String, String]),
     __metadata("design:returntype", Promise)
 ], PlansOwnerController.prototype, "upgradePlan", null);
 __decorate([
@@ -123,8 +126,9 @@ __decorate([
     openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Body()),
     __param(1, user_decorator_1.User('sub')),
+    __param(2, common_1.Param('ownerId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_plan_dto_1.BuyExtraKeysForExistingPlanDto, String]),
+    __metadata("design:paramtypes", [create_plan_dto_1.BuyExtraKeysForExistingPlanDto, String, String]),
     __metadata("design:returntype", Promise)
 ], PlansOwnerController.prototype, "buyExtraKeys", null);
 PlansOwnerController = __decorate([

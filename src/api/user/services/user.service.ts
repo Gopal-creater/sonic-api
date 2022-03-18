@@ -657,7 +657,7 @@ export class UserService {
     wpmsUserRegisterDTO: WpmsUserRegisterDTO,
     sendInvitationByEmail = false,
   ) {
-    var { userName, email, password, phoneNumber = '',country } = wpmsUserRegisterDTO;
+    var { userName, email, password, phoneNumber = '',country,name } = wpmsUserRegisterDTO;
     var registerNewUserParams = {
       UserPoolId: this.cognitoUserPoolId,
       Username: userName,
@@ -679,33 +679,36 @@ export class UserService {
       registerNewUserParams['MessageAction'] = 'SUPPRESS';
     }
     //Create User in cognito
-    const cognitoUserCreated = await this.cognitoIdentityServiceProvider
+    var cognitoUserCreated = await this.cognitoIdentityServiceProvider
       .adminCreateUser(registerNewUserParams)
       .promise();
     const username = cognitoUserCreated.User.Username;
-    //Make password as permanent otherwise it will be in FORCE_CHANGE_PASSWORD
+    //Make password as permanent(Confirmed) otherwise it will be in FORCE_CHANGE_PASSWORD
     await this.adminSetUserPassword(username, password);
+    const cognitoUserAfterMakingPasswordParmanent = await this.getCognitoUser(username)
     //Once user created in cognito save it to our database too
-    const enabled = cognitoUserCreated.User.Enabled;
-    const mfaOptions = cognitoUserCreated.User.MFAOptions as any[];
-    const sub = cognitoUserCreated.User.Attributes.find(
+    const enabled = cognitoUserAfterMakingPasswordParmanent.Enabled;
+    const userStatus = cognitoUserAfterMakingPasswordParmanent.UserStatus;
+    const mfaOptions = cognitoUserAfterMakingPasswordParmanent.MFAOptions as any[];
+    const sub = cognitoUserAfterMakingPasswordParmanent.Attributes.find(
       attr => attr.Name == 'sub',
     )?.Value;
-    const email_verified = cognitoUserCreated.User.Attributes.find(
+    const email_verified = cognitoUserAfterMakingPasswordParmanent.Attributes.find(
       attr => attr.Name == 'email_verified',
     )?.Value;
-    const phone_number_verified = cognitoUserCreated.User.Attributes.find(
+    const phone_number_verified = cognitoUserAfterMakingPasswordParmanent.Attributes.find(
       attr => attr.Name == 'phone_number_verified',
     )?.Value;
     const userToSaveInDb = await this.userModel.create({
       _id: sub,
       sub: sub,
+      name:name,
       username: username,
       email: email,
       email_verified: email_verified == 'true',
       phone_number: phoneNumber,
       phone_number_verified: phone_number_verified == 'true',
-      user_status: 'Confirmed',
+      user_status: userStatus,
       country:country,
       enabled: enabled,
       mfa_options: mfaOptions,
@@ -723,7 +726,7 @@ export class UserService {
       userDb = await this.userGroupService.addUserToGroup(userDb, wpmsGroupDb);
     }
     return {
-      cognitoUserCreated: cognitoUserCreated,
+      cognitoUserCreated: cognitoUserAfterMakingPasswordParmanent,
       userDb: userDb,
     };
   }

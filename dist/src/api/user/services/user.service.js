@@ -493,7 +493,7 @@ let UserService = class UserService {
     }
     async registerAsWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail = false) {
         var _a, _b, _c;
-        var { userName, email, password, phoneNumber = '', country } = wpmsUserRegisterDTO;
+        var { userName, email, password, phoneNumber = '', country, name } = wpmsUserRegisterDTO;
         var registerNewUserParams = {
             UserPoolId: this.cognitoUserPoolId,
             Username: userName,
@@ -515,25 +515,28 @@ let UserService = class UserService {
         else {
             registerNewUserParams['MessageAction'] = 'SUPPRESS';
         }
-        const cognitoUserCreated = await this.cognitoIdentityServiceProvider
+        var cognitoUserCreated = await this.cognitoIdentityServiceProvider
             .adminCreateUser(registerNewUserParams)
             .promise();
         const username = cognitoUserCreated.User.Username;
         await this.adminSetUserPassword(username, password);
-        const enabled = cognitoUserCreated.User.Enabled;
-        const mfaOptions = cognitoUserCreated.User.MFAOptions;
-        const sub = (_a = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'sub')) === null || _a === void 0 ? void 0 : _a.Value;
-        const email_verified = (_b = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'email_verified')) === null || _b === void 0 ? void 0 : _b.Value;
-        const phone_number_verified = (_c = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _c === void 0 ? void 0 : _c.Value;
+        const cognitoUserAfterMakingPasswordParmanent = await this.getCognitoUser(username);
+        const enabled = cognitoUserAfterMakingPasswordParmanent.Enabled;
+        const userStatus = cognitoUserAfterMakingPasswordParmanent.UserStatus;
+        const mfaOptions = cognitoUserAfterMakingPasswordParmanent.MFAOptions;
+        const sub = (_a = cognitoUserAfterMakingPasswordParmanent.Attributes.find(attr => attr.Name == 'sub')) === null || _a === void 0 ? void 0 : _a.Value;
+        const email_verified = (_b = cognitoUserAfterMakingPasswordParmanent.Attributes.find(attr => attr.Name == 'email_verified')) === null || _b === void 0 ? void 0 : _b.Value;
+        const phone_number_verified = (_c = cognitoUserAfterMakingPasswordParmanent.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _c === void 0 ? void 0 : _c.Value;
         const userToSaveInDb = await this.userModel.create({
             _id: sub,
             sub: sub,
+            name: name,
             username: username,
             email: email,
             email_verified: email_verified == 'true',
             phone_number: phoneNumber,
             phone_number_verified: phone_number_verified == 'true',
-            user_status: 'Confirmed',
+            user_status: userStatus,
             country: country,
             enabled: enabled,
             mfa_options: mfaOptions,
@@ -549,7 +552,7 @@ let UserService = class UserService {
             userDb = await this.userGroupService.addUserToGroup(userDb, wpmsGroupDb);
         }
         return {
-            cognitoUserCreated: cognitoUserCreated,
+            cognitoUserCreated: cognitoUserAfterMakingPasswordParmanent,
             userDb: userDb,
         };
     }

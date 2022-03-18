@@ -39,7 +39,7 @@ let PaymentService = class PaymentService {
     }
     create(createPaymentDto) {
         const { paymentMethodNonce, deviceData, amount } = createPaymentDto;
-        this.brainTreeGateway.transaction.sale({
+        return this.brainTreeGateway.transaction.sale({
             amount: amount,
             paymentMethodNonce: paymentMethodNonce,
             deviceData: deviceData,

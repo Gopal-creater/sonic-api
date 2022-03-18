@@ -20,6 +20,11 @@ export class RegisterDTO {
 }
 
 export class WpmsUserRegisterDTO {
+
+  @ApiProperty()
+  @IsNotEmpty()
+  name: string;
+
   @ApiProperty()
   @IsNotEmpty()
   userName: string;

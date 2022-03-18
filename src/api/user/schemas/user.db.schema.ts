@@ -32,6 +32,10 @@ export class UserDB extends Document {
   })
   username: string;
 
+  @ApiHideProperty()
+  @Prop()
+  name: string;
+
   //Store cognito sub value
   @ApiHideProperty()
   @Prop({
