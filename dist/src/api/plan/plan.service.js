@@ -67,6 +67,11 @@ let PlanService = class PlanService {
             cost: 9.99,
             perExtraCost: 0.99,
             paymentInterval: Enums_1.PaymentInterval.ANNUAL,
+            featureLists: [
+                "10 SonicKeys available.",
+                "€0.99 per extra SonicKey",
+                "Limited to 100 total SonicKeys"
+            ]
         }, { upsert: true });
         await this.planModel.findOneAndUpdate({
             name: Enums_1.PlanName.STANDARD,
@@ -80,6 +85,11 @@ let PlanService = class PlanService {
             cost: 39.99,
             perExtraCost: 0.99,
             paymentInterval: Enums_1.PaymentInterval.ANNUAL,
+            featureLists: [
+                "50 SonicKeys available",
+                "€0.99 per extra SonicKey",
+                "Limited to 100 total SonicKeys"
+            ]
         }, { upsert: true });
         await this.planModel.findOneAndUpdate({
             name: Enums_1.PlanName.PREMIUM,
@@ -93,6 +103,10 @@ let PlanService = class PlanService {
             cost: 69.99,
             perExtraCost: 0.99,
             paymentInterval: Enums_1.PaymentInterval.ANNUAL,
+            featureLists: [
+                "100 SonicKeys available",
+                "€0.99 per extra SonicKey"
+            ]
         }, { upsert: true });
         return {
             message: 'Created default plans',
