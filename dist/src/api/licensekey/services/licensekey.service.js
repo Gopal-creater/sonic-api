@@ -65,6 +65,7 @@ let LicensekeyService = class LicensekeyService {
                 planType: planFromDb.type,
                 logs: ["Created from plan selection"],
                 _id: key,
+                name: `${planFromDb.type}_${Date.now()}`,
                 key: key,
                 createdBy: user,
             });
