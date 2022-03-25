@@ -40,7 +40,7 @@ __decorate([
 ], Payment.prototype, "braintreeTransactionId", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId }),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.Mixed }),
     __metadata("design:type", Object)
 ], Payment.prototype, "braintreeTransactionResult", void 0);
 __decorate([

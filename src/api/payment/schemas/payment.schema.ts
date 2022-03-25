@@ -25,7 +25,7 @@ export class Payment extends Document {
   braintreeTransactionId: string;
 
   @ApiProperty()
-  @Prop({type:MogSchema.Types.ObjectId})
+  @Prop({type:MogSchema.Types.Mixed})
   braintreeTransactionResult: any;
 
   @ApiProperty()
