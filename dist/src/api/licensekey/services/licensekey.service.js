@@ -223,6 +223,14 @@ let LicensekeyService = class LicensekeyService {
             },
             {
                 $lookup: {
+                    from: 'Payment',
+                    localField: 'payments',
+                    foreignField: '_id',
+                    as: 'payments',
+                },
+            },
+            {
+                $lookup: {
                     from: 'Company',
                     localField: 'company',
                     foreignField: '_id',

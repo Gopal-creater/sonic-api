@@ -293,6 +293,15 @@ export class LicensekeyService {
       {
         $lookup: {
           //populate radioStation from its relational table
+          from: 'Payment',
+          localField: 'payments',
+          foreignField: '_id',
+          as: 'payments',
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
           from: 'Company',
           localField: 'company',
           foreignField: '_id',
