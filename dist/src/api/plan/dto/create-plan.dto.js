@@ -66,13 +66,17 @@ __decorate([
 exports.CreatePlanDto = CreatePlanDto;
 class BuyPlanDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { paymentMethodNonce: { required: true, type: () => String }, amount: { required: true, type: () => String }, deviceData: { required: false, type: () => String }, plan: { required: true, type: () => String } };
+        return { paymentMethodNonce: { required: true, type: () => String }, transactionId: { required: true, type: () => String }, amount: { required: true, type: () => String }, deviceData: { required: false, type: () => String }, plan: { required: true, type: () => String } };
     }
 }
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], BuyPlanDto.prototype, "paymentMethodNonce", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], BuyPlanDto.prototype, "transactionId", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),
@@ -90,13 +94,17 @@ __decorate([
 exports.BuyPlanDto = BuyPlanDto;
 class UpgradePlanDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { paymentMethodNonce: { required: true, type: () => String }, amount: { required: true, type: () => String }, deviceData: { required: false, type: () => String }, oldPlanLicenseKey: { required: true, type: () => String }, upgradedPlan: { required: true, type: () => String } };
+        return { paymentMethodNonce: { required: true, type: () => String }, transactionId: { required: true, type: () => String }, amount: { required: true, type: () => String }, deviceData: { required: false, type: () => String }, oldPlanLicenseKey: { required: true, type: () => String }, upgradedPlan: { required: true, type: () => String } };
     }
 }
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], UpgradePlanDto.prototype, "paymentMethodNonce", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], UpgradePlanDto.prototype, "transactionId", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),
@@ -119,13 +127,17 @@ __decorate([
 exports.UpgradePlanDto = UpgradePlanDto;
 class BuyExtraKeysForExistingPlanDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { paymentMethodNonce: { required: true, type: () => String }, amount: { required: true, type: () => String }, deviceData: { required: false, type: () => String }, oldPlanLicenseKey: { required: true, type: () => String }, extraKeys: { required: true, type: () => Number } };
+        return { paymentMethodNonce: { required: true, type: () => String }, transactionId: { required: true, type: () => String }, amount: { required: true, type: () => String }, deviceData: { required: false, type: () => String }, oldPlanLicenseKey: { required: true, type: () => String }, extraKeys: { required: true, type: () => Number } };
     }
 }
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], BuyExtraKeysForExistingPlanDto.prototype, "paymentMethodNonce", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], BuyExtraKeysForExistingPlanDto.prototype, "transactionId", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),

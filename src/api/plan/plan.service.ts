@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  Inject,
-  forwardRef,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, Inject, forwardRef, NotFoundException } from '@nestjs/common';
 import {
   CreatePlanDto,
   BuyPlanDto,
@@ -88,10 +82,10 @@ export class PlanService {
         perExtraCost: 0.99,
         paymentInterval: PaymentInterval.ANNUAL,
         featureLists: [
-          '10 SonicKeys available.',
-          '€0.99 per extra SonicKey',
-          'Limited to 100 total SonicKeys',
-        ],
+          "10 SonicKeys available.",
+          "€0.99 per extra SonicKey",
+          "Limited to 100 total SonicKeys"
+      ]
       },
       { upsert: true },
     );
@@ -110,11 +104,11 @@ export class PlanService {
         cost: 39.99,
         perExtraCost: 0.99,
         paymentInterval: PaymentInterval.ANNUAL,
-        featureLists: [
-          '50 SonicKeys available',
-          '€0.99 per extra SonicKey',
-          'Limited to 100 total SonicKeys',
-        ],
+        featureLists:[
+          "50 SonicKeys available",
+          "€0.99 per extra SonicKey",
+          "Limited to 100 total SonicKeys"
+      ]
       },
       { upsert: true },
     );
@@ -133,7 +127,10 @@ export class PlanService {
         cost: 69.99,
         perExtraCost: 0.99,
         paymentInterval: PaymentInterval.ANNUAL,
-        featureLists: ['100 SonicKeys available', '€0.99 per extra SonicKey'],
+        featureLists:[
+          "100 SonicKeys available",
+          "€0.99 per extra SonicKey"
+      ]
       },
       { upsert: true },
     );
@@ -156,21 +153,26 @@ export class PlanService {
     const {
       amount,
       paymentMethodNonce,
+      transactionId,
       deviceData,
       plan,
     } = buyPlanDto;
-    if (!paymentMethodNonce) {
-      throw new BadRequestException('paymentMethodNonce required');
+    var brainTreeTransactionResponse: braintree.Transaction;
+    if (!transactionId && paymentMethodNonce) {
+      //Braintree transaction
+      const createdSale = await this.paymentService.createTransactionSaleInBrainTree(
+        paymentMethodNonce,
+        amount,
+        deviceData,
+      );
+      brainTreeTransactionResponse = createdSale.transaction;
+    } else if (transactionId) {
+      brainTreeTransactionResponse = await this.paymentService.getTransactionById(
+        transactionId,
+      );
     }
-    //Braintree transaction
-    const createdSale = await this.paymentService.createTransactionSaleInBrainTree(
-      paymentMethodNonce,
-      amount,
-      deviceData,
-    );
-
-    if (!createdSale) {
-      throw new NotFoundException('Invalid transaction');
+    if(!brainTreeTransactionResponse){
+      throw new NotFoundException("Invalid transaction")
     }
 
     //Save  Payment info
@@ -178,9 +180,9 @@ export class PlanService {
       amount: amount,
       paymentMethodNonce: paymentMethodNonce,
       deviceData: deviceData,
-      braintreeTransactionId: createdSale.transaction.id,
-      braintreeTransactionStatus: createdSale.transaction.status,
-      braintreeTransactionResult: createdSale.transaction,
+      braintreeTransactionId: brainTreeTransactionResponse.id,
+      braintreeTransactionStatus: brainTreeTransactionResponse.status,
+      braintreeTransactionResult: brainTreeTransactionResponse,
       user: user,
       plan: plan,
       notes: `Done payment for plan id ${plan} at amount ${amount}`,
@@ -196,7 +198,7 @@ export class PlanService {
     await payment.save();
     return {
       payment: payment,
-      brainTreeTransactionResponse: createdSale.transaction,
+      brainTreeTransactionResponse: brainTreeTransactionResponse,
       licenseFromPlan: licenseFromPlan,
     };
   }
@@ -215,31 +217,37 @@ export class PlanService {
     const {
       amount,
       paymentMethodNonce,
+      transactionId,
       deviceData,
       oldPlanLicenseKey,
       upgradedPlan,
     } = upgradePlanDto;
-    if (!paymentMethodNonce) {
-      throw new BadRequestException('paymentMethodNonce required');
+    var brainTreeTransactionResponse: braintree.Transaction;
+    if (!transactionId && paymentMethodNonce) {
+      //Braintree transaction
+      const createdSale = await this.paymentService.createTransactionSaleInBrainTree(
+        paymentMethodNonce,
+        amount,
+        deviceData,
+      );
+      brainTreeTransactionResponse = createdSale.transaction;
+    } else if (transactionId) {
+      brainTreeTransactionResponse = await this.paymentService.getTransactionById(
+        transactionId,
+      );
     }
-    //Braintree transaction
-    const createdSale = await this.paymentService.createTransactionSaleInBrainTree(
-      paymentMethodNonce,
-      amount,
-      deviceData,
-    );
-
-    if (!createdSale) {
-      throw new NotFoundException('Invalid transaction');
+    if(!brainTreeTransactionResponse){
+      throw new NotFoundException("Invalid transaction")
     }
     //Save  Payment info
     const newPaymentInDb = await this.paymentService.paymentModel.create({
       amount: amount,
       paymentMethodNonce: paymentMethodNonce,
       deviceData: deviceData,
-      braintreeTransactionId: createdSale.transaction.id,
-      braintreeTransactionStatus: createdSale.transaction.status,
-      braintreeTransactionResult: createdSale.transaction,
+      braintreeTransactionId: brainTreeTransactionResponse.id,
+      braintreeTransactionStatus:
+        brainTreeTransactionResponse.status,
+      braintreeTransactionResult: brainTreeTransactionResponse,
       user: user,
       plan: upgradedPlan,
       notes: `Done upgrade payment for plan id ${upgradedPlan} at amount ${amount}`,
@@ -256,7 +264,7 @@ export class PlanService {
     await payment.save();
     return {
       payment: payment,
-      brainTreeTransactionResponse: createdSale.transaction,
+      brainTreeTransactionResponse: brainTreeTransactionResponse,
       licenseFromPlan: licenseFromPlan,
     };
   }
@@ -268,22 +276,27 @@ export class PlanService {
     const {
       amount,
       paymentMethodNonce,
+      transactionId,
       deviceData,
       oldPlanLicenseKey,
       extraKeys,
     } = buyExtraKeysForExistingPlanDto;
-    if (!paymentMethodNonce) {
-      throw new BadRequestException('paymentMethodNonce required');
+    var brainTreeTransactionResponse: braintree.Transaction;
+    if (!transactionId && paymentMethodNonce) {
+      //Braintree transaction
+      const createdSale = await this.paymentService.createTransactionSaleInBrainTree(
+        paymentMethodNonce,
+        amount,
+        deviceData,
+      );
+      brainTreeTransactionResponse = createdSale.transaction;
+    } else if (transactionId) {
+      brainTreeTransactionResponse = await this.paymentService.getTransactionById(
+        transactionId,
+      );
     }
-    //Braintree transaction
-    const createdSale = await this.paymentService.createTransactionSaleInBrainTree(
-      paymentMethodNonce,
-      amount,
-      deviceData,
-    );
-
-    if (!createdSale) {
-      throw new NotFoundException('Invalid transaction');
+    if(!brainTreeTransactionResponse){
+      throw new NotFoundException("Invalid transaction")
     }
     const oldPlanLicenseKeyFromDb = await this.licenseKeyService.findOne({
       key: oldPlanLicenseKey,
@@ -293,9 +306,10 @@ export class PlanService {
       amount: amount,
       paymentMethodNonce: paymentMethodNonce,
       deviceData: deviceData,
-      braintreeTransactionId: createdSale.transaction.id,
-      braintreeTransactionStatus: createdSale.transaction.status,
-      braintreeTransactionResult: createdSale.transaction,
+      braintreeTransactionId: brainTreeTransactionResponse.id,
+      braintreeTransactionStatus:
+        brainTreeTransactionResponse.status,
+      braintreeTransactionResult: brainTreeTransactionResponse,
       user: user,
       plan: oldPlanLicenseKeyFromDb?.activePlan?._id,
       licenseKey: oldPlanLicenseKey,
@@ -311,7 +325,7 @@ export class PlanService {
     );
     return {
       payment: payment,
-      brainTreeTransactionResponse: createdSale.transaction,
+      brainTreeTransactionResponse: brainTreeTransactionResponse,
       licenseFromPlan: licenseFromPlan,
     };
   }
