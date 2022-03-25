@@ -118,6 +118,7 @@ let PlanService = class PlanService {
         var brainTreeTransactionResponse;
         if (!transactionId && paymentMethodNonce) {
             const createdSale = await this.paymentService.createTransactionSaleInBrainTree(paymentMethodNonce, amount, deviceData);
+            console.log("createdSale", createdSale);
             brainTreeTransactionResponse = createdSale.transaction;
         }
         else if (transactionId) {

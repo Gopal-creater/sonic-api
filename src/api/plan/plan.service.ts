@@ -165,6 +165,7 @@ export class PlanService {
         amount,
         deviceData,
       );
+      console.log("createdSale",createdSale)
       brainTreeTransactionResponse = createdSale.transaction;
     } else if (transactionId) {
       brainTreeTransactionResponse = await this.paymentService.getTransactionById(
