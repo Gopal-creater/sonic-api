@@ -44,9 +44,6 @@ export class BuyPlanDto {
   paymentMethodNonce: string;
 
   @ApiProperty()
-  transactionId: string;
-
-  @ApiProperty()
   @IsNotEmpty()
   amount: string;
 
@@ -61,9 +58,6 @@ export class BuyPlanDto {
 export class UpgradePlanDto {
   @ApiProperty()
   paymentMethodNonce: string;
-
-  @ApiProperty()
-  transactionId: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -84,9 +78,6 @@ export class UpgradePlanDto {
 export class BuyExtraKeysForExistingPlanDto {
   @ApiProperty()
   paymentMethodNonce: string;
-
-  @ApiProperty()
-  transactionId: string;
 
   @ApiProperty()
   @IsNotEmpty()
