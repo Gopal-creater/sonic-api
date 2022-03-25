@@ -138,7 +138,7 @@ let PlanService = class PlanService {
             notes: `Done payment for plan id ${plan} at amount ${amount}`,
         });
         const payment = await newPaymentInDb.save();
-        const licenseFromPlan = await this.licenseKeyService.createLicenseFromPlanAndAssignToUser(user, plan);
+        const licenseFromPlan = await this.licenseKeyService.createLicenseFromPlanAndAssignToUser(user, plan, payment._id);
         payment.licenseKey = licenseFromPlan.key;
         await payment.save();
         return {
@@ -176,7 +176,7 @@ let PlanService = class PlanService {
             notes: `Done upgrade payment for plan id ${upgradedPlan} at amount ${amount}`,
         });
         const payment = await newPaymentInDb.save();
-        const licenseFromPlan = await this.licenseKeyService.upgradeLicenseFromPlanAndAssignToUser(oldPlanLicenseKey, user, upgradedPlan);
+        const licenseFromPlan = await this.licenseKeyService.upgradeLicenseFromPlanAndAssignToUser(oldPlanLicenseKey, user, upgradedPlan, payment._id);
         payment.licenseKey = licenseFromPlan.key;
         await payment.save();
         return {
@@ -215,7 +215,7 @@ let PlanService = class PlanService {
             notes: `Brought ${extraKeys} extraKeys for existing plan and existing license key ${oldPlanLicenseKey}`,
         });
         const payment = await newPaymentInDb.save();
-        const licenseFromPlan = await this.licenseKeyService.addExtraUsesToLicenseFromPlanAndAssignToUser(oldPlanLicenseKey, user, extraKeys);
+        const licenseFromPlan = await this.licenseKeyService.addExtraUsesToLicenseFromPlanAndAssignToUser(oldPlanLicenseKey, user, extraKeys, payment._id);
         return {
             payment: payment,
             brainTreeTransactionResponse: brainTreeTransactionResponse,

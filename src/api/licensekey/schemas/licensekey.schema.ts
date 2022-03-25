@@ -154,8 +154,8 @@ export class LicenseKey extends Document {
     ref: 'Plan',
     autopopulate: { maxDepth: 2 },
   })
-  previousPlan: any; 
-  
+  previousPlan: any;
+
   @ApiProperty()
   @Prop({
     type: MogSchema.Types.ObjectId,
@@ -163,6 +163,17 @@ export class LicenseKey extends Document {
     autopopulate: { maxDepth: 2 },
   })
   activePlan: any;
+
+  @ApiProperty()
+  @Prop([
+    {
+      type: MogSchema.Types.ObjectId,
+      ref: 'Plan',
+      autopopulate: { maxDepth: 2 },
+      default: [],
+    },
+  ])
+  payments: any[];
 
   @ApiProperty()
   @Prop()

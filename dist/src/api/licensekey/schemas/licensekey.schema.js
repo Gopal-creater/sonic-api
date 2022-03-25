@@ -205,6 +205,18 @@ __decorate([
 ], LicenseKey.prototype, "activePlan", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop([
+        {
+            type: mongoose_2.Schema.Types.ObjectId,
+            ref: 'Plan',
+            autopopulate: { maxDepth: 2 },
+            default: [],
+        },
+    ]),
+    __metadata("design:type", Array)
+], LicenseKey.prototype, "payments", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
 ], LicenseKey.prototype, "planType", void 0);

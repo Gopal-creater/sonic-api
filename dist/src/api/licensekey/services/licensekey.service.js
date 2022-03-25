@@ -48,7 +48,7 @@ let LicensekeyService = class LicensekeyService {
         const newLicenseKey = await this.licenseKeyModel.create(Object.assign(Object.assign({}, dtos), { users: [user], _id: key, key: key, createdBy: createdBy }));
         return newLicenseKey.save();
     }
-    async createLicenseFromPlanAndAssignToUser(user, plan) {
+    async createLicenseFromPlanAndAssignToUser(user, plan, payment) {
         const key = uuid_1.v4();
         const planFromDb = await this.planService.findById(plan);
         const validity = new Date(new Date().setFullYear(new Date().getFullYear() + 90));
@@ -68,11 +68,12 @@ let LicensekeyService = class LicensekeyService {
                 name: `${planFromDb.type}_${Date.now()}`,
                 key: key,
                 createdBy: user,
+                payments: [payment]
             });
         }
         return newLicense.save();
     }
-    async upgradeLicenseFromPlanAndAssignToUser(licenseKey, user, plan) {
+    async upgradeLicenseFromPlanAndAssignToUser(licenseKey, user, plan, payment) {
         var _a, _b;
         const planFromDb = await this.planService.findById(plan);
         var keyFromDb = await this.findOne({ key: licenseKey, users: user });
@@ -80,15 +81,17 @@ let LicensekeyService = class LicensekeyService {
             keyFromDb.maxEncodeUses = keyFromDb.maxEncodeUses + planFromDb.availableSonicKeys;
             keyFromDb.previousPlan = (_a = keyFromDb === null || keyFromDb === void 0 ? void 0 : keyFromDb.activePlan) === null || _a === void 0 ? void 0 : _a._id;
             keyFromDb.activePlan = plan;
+            keyFromDb.payments.push(payment);
             keyFromDb.logs.push(`Upgraded from ${(_b = keyFromDb === null || keyFromDb === void 0 ? void 0 : keyFromDb.activePlan) === null || _b === void 0 ? void 0 : _b.name}(${Enums_1.PlanType.ENCODE}) to ${planFromDb === null || planFromDb === void 0 ? void 0 : planFromDb.name}(${Enums_1.PlanType.ENCODE})`);
         }
         return keyFromDb.save();
     }
-    async addExtraUsesToLicenseFromPlanAndAssignToUser(licenseKey, user, extraUses) {
+    async addExtraUsesToLicenseFromPlanAndAssignToUser(licenseKey, user, extraUses, payment) {
         var _a;
         var keyFromDb = await this.findOne({ key: licenseKey, users: user });
         if (((_a = keyFromDb === null || keyFromDb === void 0 ? void 0 : keyFromDb.activePlan) === null || _a === void 0 ? void 0 : _a.type) == Enums_1.PlanType.ENCODE) {
             keyFromDb.maxEncodeUses = keyFromDb.maxEncodeUses + extraUses;
+            keyFromDb.payments.push(payment);
             keyFromDb.logs.push(`Added ${extraUses} extra sonickeys`);
         }
         return keyFromDb.save();
@@ -227,6 +230,24 @@ let LicensekeyService = class LicensekeyService {
                 },
             },
             { $addFields: { company: { $first: '$company' } } },
+            {
+                $lookup: {
+                    from: 'Plan',
+                    localField: 'previousPlan',
+                    foreignField: '_id',
+                    as: 'previousPlan',
+                },
+            },
+            { $addFields: { previousPlan: { $first: '$previousPlan' } } },
+            {
+                $lookup: {
+                    from: 'Plan',
+                    localField: 'activePlan',
+                    foreignField: '_id',
+                    as: 'activePlan',
+                },
+            },
+            { $addFields: { activePlan: { $first: '$activePlan' } } },
             {
                 $match: Object.assign({}, relationalFilter),
             },

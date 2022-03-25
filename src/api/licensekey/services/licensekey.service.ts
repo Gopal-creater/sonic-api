@@ -49,7 +49,7 @@ export class LicensekeyService {
     return newLicenseKey.save();
   }
 
-  async createLicenseFromPlanAndAssignToUser(user:string,plan: string) {
+  async createLicenseFromPlanAndAssignToUser(user:string,plan: string,payment:string) {
     const key = uuidv4();
     const planFromDb = await this.planService.findById(plan);
     const validity = new Date(new Date().setFullYear(new Date().getFullYear() + 90))
@@ -69,27 +69,30 @@ export class LicensekeyService {
         name:`${planFromDb.type}_${Date.now()}`,
         key: key,
         createdBy: user,
+        payments:[payment]
       });
     }
     return newLicense.save();
   }
 
-  async upgradeLicenseFromPlanAndAssignToUser(licenseKey:string,user:string,plan: string) {
+  async upgradeLicenseFromPlanAndAssignToUser(licenseKey:string,user:string,plan: string,payment:string) {
     const planFromDb = await this.planService.findById(plan);
     var keyFromDb = await this.findOne({key:licenseKey,users:user})
     if(planFromDb.type==PlanType.ENCODE){
       keyFromDb.maxEncodeUses=keyFromDb.maxEncodeUses+planFromDb.availableSonicKeys
       keyFromDb.previousPlan=keyFromDb?.activePlan?._id
       keyFromDb.activePlan=plan
+      keyFromDb.payments.push(payment)
       keyFromDb.logs.push(`Upgraded from ${keyFromDb?.activePlan?.name}(${PlanType.ENCODE}) to ${planFromDb?.name}(${PlanType.ENCODE})`)
     }
     return keyFromDb.save();
   }
 
-  async addExtraUsesToLicenseFromPlanAndAssignToUser(licenseKey:string,user:string,extraUses:number) {
+  async addExtraUsesToLicenseFromPlanAndAssignToUser(licenseKey:string,user:string,extraUses:number,payment:string) {
     var keyFromDb = await this.findOne({key:licenseKey,users:user})
     if(keyFromDb?.activePlan?.type==PlanType.ENCODE){
       keyFromDb.maxEncodeUses=keyFromDb.maxEncodeUses+extraUses
+      keyFromDb.payments.push(payment)
       keyFromDb.logs.push(`Added ${extraUses} extra sonickeys`)
     }
     return keyFromDb.save();
@@ -297,6 +300,26 @@ export class LicensekeyService {
         },
       },
       { $addFields: { company: { $first: '$company' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'Plan',
+          localField: 'previousPlan',
+          foreignField: '_id',
+          as: 'previousPlan',
+        },
+      },
+      { $addFields: { previousPlan: { $first: '$previousPlan' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'Plan',
+          localField: 'activePlan',
+          foreignField: '_id',
+          as: 'activePlan',
+        },
+      },
+      { $addFields: { activePlan: { $first: '$activePlan' } } },
       {
         $match: {
           ...relationalFilter,

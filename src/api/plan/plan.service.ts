@@ -192,6 +192,7 @@ export class PlanService {
     const licenseFromPlan = await this.licenseKeyService.createLicenseFromPlanAndAssignToUser(
       user,
       plan,
+      payment._id
     );
     //Update plan with licensekey details
     payment.licenseKey = licenseFromPlan.key;
@@ -258,6 +259,7 @@ export class PlanService {
       oldPlanLicenseKey,
       user,
       upgradedPlan,
+      payment._id
     );
     //Update plan with licensekey details
     payment.licenseKey = licenseFromPlan.key;
@@ -322,6 +324,7 @@ export class PlanService {
       oldPlanLicenseKey,
       user,
       extraKeys,
+      payment._id
     );
     return {
       payment: payment,
