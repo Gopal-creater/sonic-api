@@ -54,7 +54,6 @@ __decorate([
 __decorate([
     common_1.Post('/wpms/signup'),
     swagger_1.ApiOperation({ summary: 'User Signup from WPMS website' }),
-    openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [register_dto_1.WpmsUserRegisterDTO]),

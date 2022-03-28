@@ -57,10 +57,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     console.log("cognito user",payload)
     // var token = request.headers['authorization']?.split(" ")[1] as string
     var validUser = await this.userService.findById(payload.sub)
-    if(!validUser){
-      validUser = await this.userService.syncUserFromCognitoToMongooDb(payload?.['cognito:username'])
-    }
-    console.log("db user",validUser)
+    validUser = await this.userService.syncUserFromCognitoToMongooDb(payload?.['cognito:username'])
     return validUser;
   }
 }

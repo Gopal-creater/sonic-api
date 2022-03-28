@@ -58,6 +58,7 @@ export class AuthService {
   }
 
   async signupWpmsUser(wpmsUserRegisterDTO:WpmsUserRegisterDTO,sendInvitationByEmail=false){
-    return this.userService.registerAsWpmsUser(wpmsUserRegisterDTO,sendInvitationByEmail)
+    // return this.userService.registerAsWpmsUser(wpmsUserRegisterDTO,sendInvitationByEmail)
+    return this.userService.signupAsWpmsUser(wpmsUserRegisterDTO,sendInvitationByEmail)
   }
 }

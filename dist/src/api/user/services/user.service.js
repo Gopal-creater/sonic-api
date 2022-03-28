@@ -52,6 +52,7 @@ let UserService = class UserService {
         this.radioMonitorService = radioMonitorService;
         this.cognitoIdentityServiceProvider = globalAwsService.getCognitoIdentityServiceProvider();
         this.cognitoUserPoolId = this.configService.get('COGNITO_USER_POOL_ID');
+        this.clientId = this.configService.get('COGNITO_CLIENT_ID');
     }
     async addNewLicense(licenseId, ownerIdOrUsername) {
         const key = await this.licensekeyService.licenseKeyModel.findById(licenseId);
@@ -554,6 +555,64 @@ let UserService = class UserService {
         return {
             cognitoUserCreated: cognitoUserAfterMakingPasswordParmanent,
             userDb: userDb,
+        };
+    }
+    async signupAsWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail = false) {
+        var _a, _b, _c;
+        var { userName, email, password, phoneNumber = '', country, name } = wpmsUserRegisterDTO;
+        var registerNewUserParams = {
+            ClientId: this.clientId,
+            Username: userName,
+            Password: password,
+            UserAttributes: [
+                {
+                    Name: 'email',
+                    Value: email,
+                },
+                {
+                    Name: 'phone_number',
+                    Value: phoneNumber,
+                },
+            ],
+        };
+        var cognitoUserCreated = await this.cognitoIdentityServiceProvider
+            .signUp(registerNewUserParams).promise();
+        const cognitoUserAfterMakingPasswordParmanent = await this.getCognitoUser(cognitoUserCreated.UserSub);
+        const username = cognitoUserAfterMakingPasswordParmanent.Username;
+        const enabled = cognitoUserAfterMakingPasswordParmanent.Enabled;
+        const userStatus = cognitoUserAfterMakingPasswordParmanent.UserStatus;
+        const mfaOptions = cognitoUserAfterMakingPasswordParmanent.MFAOptions;
+        const sub = (_a = cognitoUserAfterMakingPasswordParmanent.Attributes.find(attr => attr.Name == 'sub')) === null || _a === void 0 ? void 0 : _a.Value;
+        const email_verified = (_b = cognitoUserAfterMakingPasswordParmanent.Attributes.find(attr => attr.Name == 'email_verified')) === null || _b === void 0 ? void 0 : _b.Value;
+        const phone_number_verified = (_c = cognitoUserAfterMakingPasswordParmanent.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _c === void 0 ? void 0 : _c.Value;
+        const userToSaveInDb = await this.userModel.create({
+            _id: sub,
+            sub: sub,
+            name: name,
+            username: username,
+            email: email,
+            email_verified: email_verified == 'true',
+            phone_number: phoneNumber,
+            phone_number_verified: phone_number_verified == 'true',
+            user_status: userStatus,
+            country: country,
+            enabled: enabled,
+            mfa_options: mfaOptions,
+        });
+        var userDb = await userToSaveInDb.save();
+        const wpmsGroupDb = await this.groupService.findOne({
+            name: Enums_1.Roles.WPMS_USER,
+        });
+        if (wpmsGroupDb) {
+            await this.adminAddUserToGroup(userName, wpmsGroupDb.name).catch(err => {
+                console.warn('Warning: error adding user to group in cognito', err);
+            });
+            userDb = await this.userGroupService.addUserToGroup(userDb, wpmsGroupDb);
+        }
+        return {
+            cognitoUserCreated: cognitoUserAfterMakingPasswordParmanent,
+            userDb: userDb,
+            cognitoUserSignuped: cognitoUserCreated
         };
     }
     async addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub) {

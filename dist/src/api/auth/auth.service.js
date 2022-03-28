@@ -50,7 +50,7 @@ let AuthService = class AuthService {
         });
     }
     async signupWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail = false) {
-        return this.userService.registerAsWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail);
+        return this.userService.signupAsWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail);
     }
 };
 AuthService = __decorate([

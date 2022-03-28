@@ -39,10 +39,7 @@ let JwtStrategy = class JwtStrategy extends passport_1.PassportStrategy(passport
     async validate(request, payload) {
         console.log("cognito user", payload);
         var validUser = await this.userService.findById(payload.sub);
-        if (!validUser) {
-            validUser = await this.userService.syncUserFromCognitoToMongooDb(payload === null || payload === void 0 ? void 0 : payload['cognito:username']);
-        }
-        console.log("db user", validUser);
+        validUser = await this.userService.syncUserFromCognitoToMongooDb(payload === null || payload === void 0 ? void 0 : payload['cognito:username']);
         return validUser;
     }
 };

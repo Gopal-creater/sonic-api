@@ -36,6 +36,7 @@ import { WpmsUserRegisterDTO } from 'src/api/auth/dto/register.dto';
 export class UserService {
   private cognitoIdentityServiceProvider: CognitoIdentityServiceProvider;
   private cognitoUserPoolId: string;
+  private clientId: string;
   constructor(
     @Inject(forwardRef(() => LicensekeyService))
     private readonly licensekeyService: LicensekeyService,
@@ -55,6 +56,7 @@ export class UserService {
   ) {
     this.cognitoIdentityServiceProvider = globalAwsService.getCognitoIdentityServiceProvider();
     this.cognitoUserPoolId = this.configService.get('COGNITO_USER_POOL_ID');
+    this.clientId = this.configService.get('COGNITO_CLIENT_ID');
   }
 
   //Add new existing license: Meaning just update the metadata field with ownerId
@@ -728,6 +730,82 @@ export class UserService {
     return {
       cognitoUserCreated: cognitoUserAfterMakingPasswordParmanent,
       userDb: userDb,
+    };
+  }
+
+  /**
+   * Create wpms user and also save user to cognito AWS
+   * @param wpmsUserRegisterDTO
+   * @returns
+   */
+   async signupAsWpmsUser(
+    wpmsUserRegisterDTO: WpmsUserRegisterDTO,
+    sendInvitationByEmail = false,
+  ) {
+    var { userName, email, password, phoneNumber = '',country,name } = wpmsUserRegisterDTO;
+    var registerNewUserParams = {
+      ClientId: this.clientId, //Client Id
+      Username: userName,
+      Password: password,
+      UserAttributes: [
+        {
+          Name: 'email',
+          Value: email,
+        },
+        {
+          Name: 'phone_number',
+          Value: phoneNumber,
+        },
+      ],
+    };
+    //Create User in cognito
+    var cognitoUserCreated = await this.cognitoIdentityServiceProvider
+    .signUp(registerNewUserParams).promise();
+    const cognitoUserAfterMakingPasswordParmanent = await this.getCognitoUser(cognitoUserCreated.UserSub)
+    const username =cognitoUserAfterMakingPasswordParmanent.Username;
+    //Once user created in cognito save it to our database too
+    const enabled = cognitoUserAfterMakingPasswordParmanent.Enabled;
+    const userStatus = cognitoUserAfterMakingPasswordParmanent.UserStatus;
+    const mfaOptions = cognitoUserAfterMakingPasswordParmanent.MFAOptions as any[];
+    const sub = cognitoUserAfterMakingPasswordParmanent.Attributes.find(
+      attr => attr.Name == 'sub',
+    )?.Value;
+    const email_verified = cognitoUserAfterMakingPasswordParmanent.Attributes.find(
+      attr => attr.Name == 'email_verified',
+    )?.Value;
+    const phone_number_verified = cognitoUserAfterMakingPasswordParmanent.Attributes.find(
+      attr => attr.Name == 'phone_number_verified',
+    )?.Value;
+    const userToSaveInDb = await this.userModel.create({
+      _id: sub,
+      sub: sub,
+      name:name,
+      username: username,
+      email: email,
+      email_verified: email_verified == 'true',
+      phone_number: phoneNumber,
+      phone_number_verified: phone_number_verified == 'true',
+      user_status: userStatus,
+      country:country,
+      enabled: enabled,
+      mfa_options: mfaOptions,
+    });
+    var userDb = await userToSaveInDb.save();
+    //Add WPMS Role/Group to user
+    const wpmsGroupDb = await this.groupService.findOne({
+      name: Roles.WPMS_USER,
+    });
+    if (wpmsGroupDb) {
+      await this.adminAddUserToGroup(userName, wpmsGroupDb.name).catch(err => {
+        console.warn('Warning: error adding user to group in cognito', err);
+      });
+      // Once We add user to cognito group, also add it to our db group too
+      userDb = await this.userGroupService.addUserToGroup(userDb, wpmsGroupDb);
+    }
+    return {
+      cognitoUserCreated: cognitoUserAfterMakingPasswordParmanent,
+      userDb: userDb,
+      cognitoUserSignuped:cognitoUserCreated
     };
   }
 
