@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsEnum, IsInt } from 'class-validator';
 import { PlanName, PlanType } from 'src/constants/Enums';
 
 export class CreatePlanDto {
@@ -21,15 +21,19 @@ export class CreatePlanDto {
   description: string;
 
   @ApiProperty()
+  @IsInt()
   availableSonicKeys: number;
 
   @ApiProperty()
+  @IsInt()
   limitedSonicKeys: number;
 
   @ApiProperty()
+  @IsInt()
   cost: number;
 
   @ApiProperty()
+  @IsInt()
   perExtraCost: number;
 
   @ApiProperty()
@@ -101,5 +105,6 @@ export class BuyExtraKeysForExistingPlanDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsInt()
   extraKeys: number;
 }

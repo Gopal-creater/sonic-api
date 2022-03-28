@@ -49,7 +49,11 @@ export class PlansOwnerController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post('/buy-plan')
-  async buyPlan(@Body() buyPlanDto: BuyPlanDto, @User('sub') user: string,@Param('ownerId') ownerId: string,) {
+  async buyPlan(
+    @Body() buyPlanDto: BuyPlanDto,
+    @User('sub') user: string,
+    @Param('ownerId') ownerId: string,
+  ) {
     const { plan } = buyPlanDto;
     const planFromDb = await this.planService.findById(plan);
     if (!planFromDb) {
@@ -114,12 +118,15 @@ export class PlansOwnerController {
       );
     }
     if (
-      oldPlanLicenseKeyFromDb.maxEncodeUses + extraKeys >
+      (oldPlanLicenseKeyFromDb.maxEncodeUses -
+        oldPlanLicenseKeyFromDb.oldMaxEncodeUses || 0) +
+        extraKeys >
       activePlan.limitedSonicKeys
     ) {
       throw new BadRequestException(
         `Maximum sonickeys limit reached on this plan,available limit value is : ${activePlan.limitedSonicKeys -
-          oldPlanLicenseKeyFromDb.maxEncodeUses}`,
+          (oldPlanLicenseKeyFromDb.maxEncodeUses -
+            oldPlanLicenseKeyFromDb.oldMaxEncodeUses || 0)}`,
       );
     }
 

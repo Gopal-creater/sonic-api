@@ -71,6 +71,10 @@ export class LicenseKey extends Document {
   maxEncodeUses: number;
 
   @ApiProperty()
+  @Prop({ required: true, default: 0 })
+  oldMaxEncodeUses: number;
+
+  @ApiProperty()
   @Prop({ default: 0 })
   encodeUses: number;
 
@@ -83,6 +87,10 @@ export class LicenseKey extends Document {
   maxDecodeUses: number;
 
   @ApiProperty()
+  @Prop({ required: true, default: 0 })
+  oldMaxDecodeUses: number;
+
+  @ApiProperty()
   @Prop({ default: 0 })
   decodeUses: number;
 
@@ -93,6 +101,10 @@ export class LicenseKey extends Document {
   @ApiProperty()
   @Prop({ required: true, default: 0 })
   maxMonitoringUses: number;
+
+  @ApiProperty()
+  @Prop({ required: true, default: 0 })
+  oldMaxMonitoringUses: number;
 
   @ApiProperty()
   @Prop({ default: 0 })

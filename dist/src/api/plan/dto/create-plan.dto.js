@@ -41,18 +41,22 @@ __decorate([
 ], CreatePlanDto.prototype, "description", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    class_validator_1.IsInt(),
     __metadata("design:type", Number)
 ], CreatePlanDto.prototype, "availableSonicKeys", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    class_validator_1.IsInt(),
     __metadata("design:type", Number)
 ], CreatePlanDto.prototype, "limitedSonicKeys", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    class_validator_1.IsInt(),
     __metadata("design:type", Number)
 ], CreatePlanDto.prototype, "cost", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    class_validator_1.IsInt(),
     __metadata("design:type", Number)
 ], CreatePlanDto.prototype, "perExtraCost", void 0);
 __decorate([
@@ -155,6 +159,7 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),
+    class_validator_1.IsInt(),
     __metadata("design:type", Number)
 ], BuyExtraKeysForExistingPlanDto.prototype, "extraKeys", void 0);
 exports.BuyExtraKeysForExistingPlanDto = BuyExtraKeysForExistingPlanDto;

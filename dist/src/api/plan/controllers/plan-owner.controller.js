@@ -75,10 +75,13 @@ let PlansOwnerController = class PlansOwnerController {
         if (activePlan.type !== Enums_1.PlanType.ENCODE) {
             throw new common_1.NotFoundException('Invalid old plan selected, Old plan not found');
         }
-        if (oldPlanLicenseKeyFromDb.maxEncodeUses + extraKeys >
+        if ((oldPlanLicenseKeyFromDb.maxEncodeUses -
+            oldPlanLicenseKeyFromDb.oldMaxEncodeUses || 0) +
+            extraKeys >
             activePlan.limitedSonicKeys) {
             throw new common_1.BadRequestException(`Maximum sonickeys limit reached on this plan,available limit value is : ${activePlan.limitedSonicKeys -
-                oldPlanLicenseKeyFromDb.maxEncodeUses}`);
+                (oldPlanLicenseKeyFromDb.maxEncodeUses -
+                    oldPlanLicenseKeyFromDb.oldMaxEncodeUses || 0)}`);
         }
         return this.planService.buyExtraKeysForPlan(user, buyExtraKeysForExistingPlanDto);
     }

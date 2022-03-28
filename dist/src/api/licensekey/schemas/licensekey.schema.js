@@ -93,6 +93,11 @@ __decorate([
 ], LicenseKey.prototype, "maxEncodeUses", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ required: true, default: 0 }),
+    __metadata("design:type", Number)
+], LicenseKey.prototype, "oldMaxEncodeUses", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop({ default: 0 }),
     __metadata("design:type", Number)
 ], LicenseKey.prototype, "encodeUses", void 0);
@@ -108,6 +113,11 @@ __decorate([
 ], LicenseKey.prototype, "maxDecodeUses", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ required: true, default: 0 }),
+    __metadata("design:type", Number)
+], LicenseKey.prototype, "oldMaxDecodeUses", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop({ default: 0 }),
     __metadata("design:type", Number)
 ], LicenseKey.prototype, "decodeUses", void 0);
@@ -121,6 +131,11 @@ __decorate([
     mongoose_1.Prop({ required: true, default: 0 }),
     __metadata("design:type", Number)
 ], LicenseKey.prototype, "maxMonitoringUses", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ required: true, default: 0 }),
+    __metadata("design:type", Number)
+], LicenseKey.prototype, "oldMaxMonitoringUses", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ default: 0 }),
