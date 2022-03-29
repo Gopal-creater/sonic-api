@@ -79,8 +79,8 @@ let LicensekeyService = class LicensekeyService {
         const planFromDb = await this.planService.findById(plan);
         var keyFromDb = await this.findOne({ key: licenseKey, users: user });
         if (planFromDb.type == Enums_1.PlanType.ENCODE) {
-            keyFromDb.maxEncodeUses = keyFromDb.maxEncodeUses + planFromDb.availableSonicKeys;
             keyFromDb.oldMaxEncodeUses = keyFromDb.maxEncodeUses;
+            keyFromDb.maxEncodeUses = keyFromDb.maxEncodeUses + planFromDb.availableSonicKeys;
             keyFromDb.previousPlan = (_a = keyFromDb === null || keyFromDb === void 0 ? void 0 : keyFromDb.activePlan) === null || _a === void 0 ? void 0 : _a._id;
             keyFromDb.activePlan = plan;
             keyFromDb.payments.push(payment);
