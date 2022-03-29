@@ -167,8 +167,8 @@ export class PlanService {
       ).catch(err=>{
         throw new BadRequestException(err)
       })
-      if(!createdSale){
-        throw new BadRequestException("Transaction Failed!")
+      if(!createdSale.success){
+        throw new BadRequestException(`Transaction Failed : ${createdSale?.transaction?.status}`)
       }
       brainTreeTransactionResponse = createdSale.transaction;
     } else if (transactionId) {
@@ -239,8 +239,8 @@ export class PlanService {
       .catch(err=>{
         throw new BadRequestException(err)
       })
-      if(!createdSale){
-        throw new BadRequestException("Transaction Failed!")
+      if(!createdSale.success){
+        throw new BadRequestException(`Transaction Failed : ${createdSale?.transaction?.status}`)
       }
       brainTreeTransactionResponse = createdSale.transaction;
     } else if (transactionId) {
@@ -305,8 +305,9 @@ export class PlanService {
       .catch(err=>{
         throw new BadRequestException(err)
       })
-      if(!createdSale){
-        throw new BadRequestException("Transaction Failed!")
+      
+      if(!createdSale.success){
+        throw new BadRequestException(`Transaction Failed : ${createdSale?.transaction?.status}`)
       }
       brainTreeTransactionResponse = createdSale.transaction;
     } else if (transactionId) {

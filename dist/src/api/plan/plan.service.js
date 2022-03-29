@@ -114,14 +114,15 @@ let PlanService = class PlanService {
         };
     }
     async buyPlan(user, buyPlanDto) {
+        var _a;
         const { amount, paymentMethodNonce, transactionId, deviceData, plan, } = buyPlanDto;
         var brainTreeTransactionResponse;
         if (!transactionId && paymentMethodNonce) {
             const createdSale = await this.paymentService.createTransactionSaleInBrainTree(paymentMethodNonce, amount, deviceData).catch(err => {
                 throw new common_1.BadRequestException(err);
             });
-            if (!createdSale) {
-                throw new common_1.BadRequestException("Transaction Failed!");
+            if (!createdSale.success) {
+                throw new common_1.BadRequestException(`Transaction Failed : ${(_a = createdSale === null || createdSale === void 0 ? void 0 : createdSale.transaction) === null || _a === void 0 ? void 0 : _a.status}`);
             }
             brainTreeTransactionResponse = createdSale.transaction;
         }
@@ -157,6 +158,7 @@ let PlanService = class PlanService {
         return this.licenseKeyService.findAll(queryDto);
     }
     async upgradePlan(user, upgradePlanDto) {
+        var _a;
         const { amount, paymentMethodNonce, transactionId, deviceData, oldPlanLicenseKey, upgradedPlan, } = upgradePlanDto;
         var brainTreeTransactionResponse;
         if (!transactionId && paymentMethodNonce) {
@@ -164,8 +166,8 @@ let PlanService = class PlanService {
                 .catch(err => {
                 throw new common_1.BadRequestException(err);
             });
-            if (!createdSale) {
-                throw new common_1.BadRequestException("Transaction Failed!");
+            if (!createdSale.success) {
+                throw new common_1.BadRequestException(`Transaction Failed : ${(_a = createdSale === null || createdSale === void 0 ? void 0 : createdSale.transaction) === null || _a === void 0 ? void 0 : _a.status}`);
             }
             brainTreeTransactionResponse = createdSale.transaction;
         }
@@ -197,7 +199,7 @@ let PlanService = class PlanService {
         };
     }
     async buyExtraKeysForPlan(user, buyExtraKeysForExistingPlanDto) {
-        var _a;
+        var _a, _b;
         const { amount, paymentMethodNonce, transactionId, deviceData, oldPlanLicenseKey, extraKeys, } = buyExtraKeysForExistingPlanDto;
         var brainTreeTransactionResponse;
         if (!transactionId && paymentMethodNonce) {
@@ -205,8 +207,8 @@ let PlanService = class PlanService {
                 .catch(err => {
                 throw new common_1.BadRequestException(err);
             });
-            if (!createdSale) {
-                throw new common_1.BadRequestException("Transaction Failed!");
+            if (!createdSale.success) {
+                throw new common_1.BadRequestException(`Transaction Failed : ${(_a = createdSale === null || createdSale === void 0 ? void 0 : createdSale.transaction) === null || _a === void 0 ? void 0 : _a.status}`);
             }
             brainTreeTransactionResponse = createdSale.transaction;
         }
@@ -227,7 +229,7 @@ let PlanService = class PlanService {
             braintreeTransactionStatus: brainTreeTransactionResponse.status,
             braintreeTransactionResult: brainTreeTransactionResponse,
             user: user,
-            plan: (_a = oldPlanLicenseKeyFromDb === null || oldPlanLicenseKeyFromDb === void 0 ? void 0 : oldPlanLicenseKeyFromDb.activePlan) === null || _a === void 0 ? void 0 : _a._id,
+            plan: (_b = oldPlanLicenseKeyFromDb === null || oldPlanLicenseKeyFromDb === void 0 ? void 0 : oldPlanLicenseKeyFromDb.activePlan) === null || _b === void 0 ? void 0 : _b._id,
             licenseKey: oldPlanLicenseKey,
             notes: `Brought ${extraKeys} extraKeys for existing plan and existing license key ${oldPlanLicenseKey}`,
         });
