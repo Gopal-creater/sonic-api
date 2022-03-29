@@ -33,7 +33,8 @@ export class PlansOwnerController {
   constructor(
     private readonly planService: PlanService,
     private readonly licenseKeyService: LicensekeyService,
-  ) {}
+  ) {
+  }
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -78,9 +79,9 @@ export class PlansOwnerController {
     @User('sub') user: string,
     @Param('ownerId') ownerId: string,
   ) {
-    const { upgradedPlan } = upgradePlanDto;
-    const planFromDb = await this.planService.findById(upgradedPlan);
-    if (!planFromDb) {
+    const { upgradedPlan,oldPlanLicenseKey } = upgradePlanDto;
+    const upgradedPlanFromDb = await this.planService.findById(upgradedPlan);
+    if (!upgradedPlanFromDb) {
       throw new NotFoundException('Invalid plan selected, Plan not found');
     }
     const isSamePlan = await this.licenseKeyService.findOne({
@@ -90,7 +91,10 @@ export class PlansOwnerController {
     if (isSamePlan) {
       throw new BadRequestException('Can not select your active plan');
     }
-
+    const planLicenseKey = await this.licenseKeyService.findOne({users:user,key:oldPlanLicenseKey})
+    if (!planLicenseKey) {
+      throw new NotFoundException(`Your current plan is not found with given id ${oldPlanLicenseKey}`);
+    }
     return this.planService.upgradePlan(user, upgradePlanDto);
   }
 

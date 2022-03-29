@@ -156,6 +156,13 @@ __decorate([
 ], LicenseKey.prototype, "validity", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: Date
+    }),
+    __metadata("design:type", Date)
+], LicenseKey.prototype, "oldValidity", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", Map)
 ], LicenseKey.prototype, "metaData", void 0);

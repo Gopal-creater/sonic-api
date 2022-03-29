@@ -52,7 +52,7 @@ export class LicensekeyService {
   async createLicenseFromPlanAndAssignToUser(user:string,plan: string,payment:string) {
     const key = uuidv4();
     const planFromDb = await this.planService.findById(plan);
-    const validity = new Date(new Date().setFullYear(new Date().getFullYear() + 90))
+    const validity = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
     var newLicense:LicenseKey
     if(planFromDb.type==PlanType.ENCODE){
       newLicense = await this.licenseKeyModel.create({
@@ -79,13 +79,16 @@ export class LicensekeyService {
   async upgradeLicenseFromPlanAndAssignToUser(licenseKey:string,user:string,plan: string,payment:string) {
     const planFromDb = await this.planService.findById(plan);
     var keyFromDb = await this.findOne({key:licenseKey,users:user})
+    const validity = new Date(new Date(keyFromDb.validity).setFullYear(new Date(keyFromDb.validity).getFullYear() + 1))
     if(planFromDb.type==PlanType.ENCODE){
       keyFromDb.oldMaxEncodeUses=keyFromDb.maxEncodeUses
       keyFromDb.maxEncodeUses=keyFromDb.maxEncodeUses+planFromDb.availableSonicKeys
+      keyFromDb.logs.push(`Upgraded from ${keyFromDb?.activePlan?.name}(${PlanType.ENCODE}) to ${planFromDb?.name}(${PlanType.ENCODE})`)
       keyFromDb.previousPlan=keyFromDb?.activePlan?._id
       keyFromDb.activePlan=plan
       keyFromDb.payments.push(payment)
-      keyFromDb.logs.push(`Upgraded from ${keyFromDb?.activePlan?.name}(${PlanType.ENCODE}) to ${planFromDb?.name}(${PlanType.ENCODE})`)
+      keyFromDb.validity=validity
+      keyFromDb.oldValidity=keyFromDb.validity
     }
     return keyFromDb.save();
   }

@@ -122,6 +122,12 @@ export class LicenseKey extends Document {
   validity?: Date;
 
   @ApiProperty()
+  @Prop({
+    type: Date
+  })
+  oldValidity?: Date;
+
+  @ApiProperty()
   @Prop()
   metaData?: Map<string, any>;
 

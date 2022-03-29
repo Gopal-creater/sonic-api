@@ -51,7 +51,7 @@ let LicensekeyService = class LicensekeyService {
     async createLicenseFromPlanAndAssignToUser(user, plan, payment) {
         const key = uuid_1.v4();
         const planFromDb = await this.planService.findById(plan);
-        const validity = new Date(new Date().setFullYear(new Date().getFullYear() + 90));
+        const validity = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
         var newLicense;
         if (planFromDb.type == Enums_1.PlanType.ENCODE) {
             newLicense = await this.licenseKeyModel.create({
@@ -78,13 +78,16 @@ let LicensekeyService = class LicensekeyService {
         var _a, _b;
         const planFromDb = await this.planService.findById(plan);
         var keyFromDb = await this.findOne({ key: licenseKey, users: user });
+        const validity = new Date(new Date(keyFromDb.validity).setFullYear(new Date(keyFromDb.validity).getFullYear() + 1));
         if (planFromDb.type == Enums_1.PlanType.ENCODE) {
             keyFromDb.oldMaxEncodeUses = keyFromDb.maxEncodeUses;
             keyFromDb.maxEncodeUses = keyFromDb.maxEncodeUses + planFromDb.availableSonicKeys;
-            keyFromDb.previousPlan = (_a = keyFromDb === null || keyFromDb === void 0 ? void 0 : keyFromDb.activePlan) === null || _a === void 0 ? void 0 : _a._id;
+            keyFromDb.logs.push(`Upgraded from ${(_a = keyFromDb === null || keyFromDb === void 0 ? void 0 : keyFromDb.activePlan) === null || _a === void 0 ? void 0 : _a.name}(${Enums_1.PlanType.ENCODE}) to ${planFromDb === null || planFromDb === void 0 ? void 0 : planFromDb.name}(${Enums_1.PlanType.ENCODE})`);
+            keyFromDb.previousPlan = (_b = keyFromDb === null || keyFromDb === void 0 ? void 0 : keyFromDb.activePlan) === null || _b === void 0 ? void 0 : _b._id;
             keyFromDb.activePlan = plan;
             keyFromDb.payments.push(payment);
-            keyFromDb.logs.push(`Upgraded from ${(_b = keyFromDb === null || keyFromDb === void 0 ? void 0 : keyFromDb.activePlan) === null || _b === void 0 ? void 0 : _b.name}(${Enums_1.PlanType.ENCODE}) to ${planFromDb === null || planFromDb === void 0 ? void 0 : planFromDb.name}(${Enums_1.PlanType.ENCODE})`);
+            keyFromDb.validity = validity;
+            keyFromDb.oldValidity = keyFromDb.validity;
         }
         return keyFromDb.save();
     }

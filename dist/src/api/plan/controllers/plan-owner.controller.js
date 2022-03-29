@@ -49,9 +49,9 @@ let PlansOwnerController = class PlansOwnerController {
         return this.planService.buyPlan(user, buyPlanDto);
     }
     async upgradePlan(upgradePlanDto, user, ownerId) {
-        const { upgradedPlan } = upgradePlanDto;
-        const planFromDb = await this.planService.findById(upgradedPlan);
-        if (!planFromDb) {
+        const { upgradedPlan, oldPlanLicenseKey } = upgradePlanDto;
+        const upgradedPlanFromDb = await this.planService.findById(upgradedPlan);
+        if (!upgradedPlanFromDb) {
             throw new common_1.NotFoundException('Invalid plan selected, Plan not found');
         }
         const isSamePlan = await this.licenseKeyService.findOne({
@@ -60,6 +60,10 @@ let PlansOwnerController = class PlansOwnerController {
         });
         if (isSamePlan) {
             throw new common_1.BadRequestException('Can not select your active plan');
+        }
+        const planLicenseKey = await this.licenseKeyService.findOne({ users: user, key: oldPlanLicenseKey });
+        if (!planLicenseKey) {
+            throw new common_1.NotFoundException(`Your current plan is not found with given id ${oldPlanLicenseKey}`);
         }
         return this.planService.upgradePlan(user, upgradePlanDto);
     }
