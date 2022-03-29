@@ -117,7 +117,12 @@ let PlanService = class PlanService {
         const { amount, paymentMethodNonce, transactionId, deviceData, plan, } = buyPlanDto;
         var brainTreeTransactionResponse;
         if (!transactionId && paymentMethodNonce) {
-            const createdSale = await this.paymentService.createTransactionSaleInBrainTree(paymentMethodNonce, amount, deviceData);
+            const createdSale = await this.paymentService.createTransactionSaleInBrainTree(paymentMethodNonce, amount, deviceData).catch(err => {
+                throw new common_1.BadRequestException(err);
+            });
+            if (!createdSale) {
+                throw new common_1.BadRequestException("Transaction Failed!");
+            }
             brainTreeTransactionResponse = createdSale.transaction;
         }
         else if (transactionId) {
@@ -155,7 +160,13 @@ let PlanService = class PlanService {
         const { amount, paymentMethodNonce, transactionId, deviceData, oldPlanLicenseKey, upgradedPlan, } = upgradePlanDto;
         var brainTreeTransactionResponse;
         if (!transactionId && paymentMethodNonce) {
-            const createdSale = await this.paymentService.createTransactionSaleInBrainTree(paymentMethodNonce, amount, deviceData);
+            const createdSale = await this.paymentService.createTransactionSaleInBrainTree(paymentMethodNonce, amount, deviceData)
+                .catch(err => {
+                throw new common_1.BadRequestException(err);
+            });
+            if (!createdSale) {
+                throw new common_1.BadRequestException("Transaction Failed!");
+            }
             brainTreeTransactionResponse = createdSale.transaction;
         }
         else if (transactionId) {
@@ -190,7 +201,13 @@ let PlanService = class PlanService {
         const { amount, paymentMethodNonce, transactionId, deviceData, oldPlanLicenseKey, extraKeys, } = buyExtraKeysForExistingPlanDto;
         var brainTreeTransactionResponse;
         if (!transactionId && paymentMethodNonce) {
-            const createdSale = await this.paymentService.createTransactionSaleInBrainTree(paymentMethodNonce, amount, deviceData);
+            const createdSale = await this.paymentService.createTransactionSaleInBrainTree(paymentMethodNonce, amount, deviceData)
+                .catch(err => {
+                throw new common_1.BadRequestException(err);
+            });
+            if (!createdSale) {
+                throw new common_1.BadRequestException("Transaction Failed!");
+            }
             brainTreeTransactionResponse = createdSale.transaction;
         }
         else if (transactionId) {

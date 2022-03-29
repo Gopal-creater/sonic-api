@@ -1,4 +1,4 @@
-import { Injectable, Inject, forwardRef, NotFoundException } from '@nestjs/common';
+import { Injectable, Inject, forwardRef, NotFoundException, BadRequestException } from '@nestjs/common';
 import {
   CreatePlanDto,
   BuyPlanDto,
@@ -164,7 +164,12 @@ export class PlanService {
         paymentMethodNonce,
         amount,
         deviceData,
-      );
+      ).catch(err=>{
+        throw new BadRequestException(err)
+      })
+      if(!createdSale){
+        throw new BadRequestException("Transaction Failed!")
+      }
       brainTreeTransactionResponse = createdSale.transaction;
     } else if (transactionId) {
       brainTreeTransactionResponse = await this.paymentService.getTransactionById(
@@ -230,7 +235,13 @@ export class PlanService {
         paymentMethodNonce,
         amount,
         deviceData,
-      );
+      )
+      .catch(err=>{
+        throw new BadRequestException(err)
+      })
+      if(!createdSale){
+        throw new BadRequestException("Transaction Failed!")
+      }
       brainTreeTransactionResponse = createdSale.transaction;
     } else if (transactionId) {
       brainTreeTransactionResponse = await this.paymentService.getTransactionById(
@@ -290,7 +301,13 @@ export class PlanService {
         paymentMethodNonce,
         amount,
         deviceData,
-      );
+      )
+      .catch(err=>{
+        throw new BadRequestException(err)
+      })
+      if(!createdSale){
+        throw new BadRequestException("Transaction Failed!")
+      }
       brainTreeTransactionResponse = createdSale.transaction;
     } else if (transactionId) {
       brainTreeTransactionResponse = await this.paymentService.getTransactionById(
