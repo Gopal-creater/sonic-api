@@ -67,6 +67,13 @@ let DetectionController = class DetectionController {
     async getEstimateCount() {
         return this.detectionService.getEstimateCount();
     }
+    async delete(detectionId) {
+        const deletedDetection = await this.detectionService.detectionModel.findByIdAndRemove(detectionId);
+        if (!deletedDetection) {
+            throw new common_1.NotFoundException('Given detection id is not found');
+        }
+        return deletedDetection;
+    }
 };
 __decorate([
     common_1.Get('/list-plays'),
@@ -82,7 +89,7 @@ __decorate([
         additionalHtmlDescription: `<div>
       To Get plays for specific company ?relation_owner.companies=companyId <br/>
       To Get plays for specific user ?relation_owner.id=ownerId
-    <div>`
+    <div>`,
     }),
     swagger_1.ApiOperation({ summary: 'Get All Plays' }),
     openapi.ApiResponse({ status: 200, type: Object }),
@@ -160,6 +167,18 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "getEstimateCount", null);
+__decorate([
+    common_1.Delete('/:detectionId'),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Delete Detection data' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('detectionId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], DetectionController.prototype, "delete", null);
 DetectionController = __decorate([
     swagger_1.ApiTags('Detection Controller'),
     common_1.Controller('detections'),

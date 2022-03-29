@@ -48,18 +48,16 @@ export class DetectionController {
     required: false,
   })
   @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @AnyApiQueryTemplate({
-    additionalHtmlDescription:`<div>
+    additionalHtmlDescription: `<div>
       To Get plays for specific company ?relation_owner.companies=companyId <br/>
       To Get plays for specific user ?relation_owner.id=ownerId
-    <div>`
+    <div>`,
   })
   @ApiOperation({ summary: 'Get All Plays' })
-  listPlays(
-    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
-  ) {
+  listPlays(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto) {
     return this.detectionService.listPlays(queryDto);
   }
 
@@ -135,8 +133,10 @@ export class DetectionController {
   @ApiOperation({
     summary: 'Get count of all detection also accept filter as query params',
   })
-  async getTotalHitsCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
-    return this.detectionService.getTotalHitsCount(queryDto)
+  async getTotalHitsCount(
+    @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
+  ) {
+    return this.detectionService.getTotalHitsCount(queryDto);
   }
 
   @Get('/count')
@@ -158,5 +158,18 @@ export class DetectionController {
   })
   async getEstimateCount() {
     return this.detectionService.getEstimateCount();
+  }
+
+  @Delete('/:detectionId')
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete Detection data' })
+  async delete(@Param('detectionId') detectionId: string) {
+    const deletedDetection = await this.detectionService.detectionModel.findByIdAndRemove(detectionId);
+    if (!deletedDetection) {
+      throw new NotFoundException('Given detection id is not found');
+    }
+    return deletedDetection;
   }
 }
