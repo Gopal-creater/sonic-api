@@ -41,6 +41,7 @@ let PaymentService = class PaymentService {
         const { paymentMethodNonce, deviceData, amount } = createPaymentDto;
         return this.brainTreeGateway.transaction.sale({
             amount: amount,
+            merchantAccountId: "Pound",
             paymentMethodNonce: paymentMethodNonce,
             deviceData: deviceData,
             options: {
@@ -52,6 +53,7 @@ let PaymentService = class PaymentService {
         return this.brainTreeGateway.transaction.sale({
             amount: amount,
             paymentMethodNonce: paymentMethodNonce,
+            merchantAccountId: "Pound",
             deviceData: deviceData,
             options: {
                 submitForSettlement: true,
