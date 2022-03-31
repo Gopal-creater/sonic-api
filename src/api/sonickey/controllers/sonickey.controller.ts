@@ -1,5 +1,5 @@
 import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
-import { UpdateSonicKeyDto } from '../dtos/update-sonickey.dto';
+import { UpdateSonicKeyDto, UpdateSonicKeyFingerPrintMetaDataDto } from '../dtos/update-sonickey.dto';
 import { DecodeDto } from '../dtos/decode.dto';
 import { EncodeDto, EncodeFromUrlDto } from '../dtos/encode.dto';
 import { SonicKeyDto } from '../dtos/sonicKey.dto';
@@ -25,6 +25,8 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
   Version,
+  MessageEvent,
+  Sse,
 } from '@nestjs/common';
 import { SonickeyService } from '../services/sonickey.service';
 import { S3FileMeta, SonicKey } from '../schemas/sonickey.schema';
@@ -44,6 +46,7 @@ import {
   ApiQuery,
   ApiParam,
 } from '@nestjs/swagger';
+import { interval, Observable } from 'rxjs';
 import * as uniqid from 'uniqid';
 import { JwtAuthGuard } from '../../auth/guards';
 import { RolesAllowed, User } from '../../auth/decorators';
@@ -146,7 +149,7 @@ export class SonickeyController {
 
   @RolesAllowed(Roles.ADMIN)
   @Get('/list-sonickeys')
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'List Sonic Keys' })
@@ -162,26 +165,36 @@ export class SonickeyController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @AnyApiQueryTemplate()
-  @ApiOperation({ summary: 'Get All Sonic Keys of particular user or its companies' })
+  @ApiOperation({
+    summary: 'Get All Sonic Keys of particular user or its companies',
+  })
   async getOwnersKeys(
     @Param('ownerId') ownerId: string,
-    @User() user:UserDB,
+    @User() user: UserDB,
     @Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto,
   ) {
     var includeCompanies = parsedQueryDto.filter['includeCompanies'] as boolean;
     delete parsedQueryDto.filter['includeCompanies'];
     if (includeCompanies == false) {
-      parsedQueryDto.relationalFilter = _.merge({}, parsedQueryDto.relationalFilter, {
-        $or: [{ 'owner._id': user._id }],
-      });
+      parsedQueryDto.relationalFilter = _.merge(
+        {},
+        parsedQueryDto.relationalFilter,
+        {
+          $or: [{ 'owner._id': user._id }],
+        },
+      );
     } else {
       const userCompaniesIds = user.companies.map(com => toObjectId(com._id));
-      parsedQueryDto.relationalFilter = _.merge({}, parsedQueryDto.relationalFilter, {
-        $or: [
-          { 'owner._id': user._id },
-          { 'owner.companies': { $in: userCompaniesIds } },
-        ],
-      });
+      parsedQueryDto.relationalFilter = _.merge(
+        {},
+        parsedQueryDto.relationalFilter,
+        {
+          $or: [
+            { 'owner._id': user._id },
+            { 'owner.companies': { $in: userCompaniesIds } },
+          ],
+        },
+      );
     }
     return this.sonicKeyService.getAll(parsedQueryDto);
   }
@@ -279,14 +292,16 @@ export class SonickeyController {
     // if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
     const licenseId = req?.validLicense?.key as string;
     var s3UploadResult: S3FileMeta;
-    var s3OriginalFileUploadResult:S3FileMeta;
+    var s3OriginalFileUploadResult: S3FileMeta;
     var sonicKey: string;
+    var fingerPrintMetaData: any;
     return this.sonicKeyService
       .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
       .then(data => {
-        s3UploadResult = data.s3UploadResult
-        s3OriginalFileUploadResult = data.s3OriginalFileUploadResult
+        s3UploadResult = data.s3UploadResult;
+        s3OriginalFileUploadResult = data.s3OriginalFileUploadResult;
         sonicKey = data.sonicKey;
+        fingerPrintMetaData = data.fingerPrintMetaData;
         console.log('Increment Usages upon successfull encode');
         return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
       })
@@ -307,7 +322,8 @@ export class SonickeyController {
           channel: channel,
           downloadable: true,
           s3FileMeta: s3UploadResult,
-          s3OriginalFileMeta:s3OriginalFileUploadResult,
+          s3OriginalFileMeta: s3OriginalFileUploadResult,
+          fingerPrintMetaData: fingerPrintMetaData,
           _id: sonicKey,
           license: licenseId,
         };
@@ -338,14 +354,16 @@ export class SonickeyController {
   ) {
     // if(!sonicKeyDto.contentOwner) throw new BadRequestException("contentOwner is required")
     var s3UploadResult: S3FileMeta;
-    var s3OriginalFileUploadResult:S3FileMeta;
+    var s3OriginalFileUploadResult: S3FileMeta;
     var sonicKey: string;
+    var fingerPrintMetaData: any;
     return this.sonicKeyService
       .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
       .then(data => {
         s3UploadResult = data.s3UploadResult;
-        s3OriginalFileUploadResult = data.s3OriginalFileUploadResult
+        s3OriginalFileUploadResult = data.s3OriginalFileUploadResult;
         sonicKey = data.sonicKey;
+        fingerPrintMetaData = data.fingerPrintMetaData;
         console.log('Increment Usages upon successfull encode');
         return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
       })
@@ -366,7 +384,8 @@ export class SonickeyController {
           channel: channel,
           downloadable: true,
           s3FileMeta: s3UploadResult,
-          s3OriginalFileMeta:s3OriginalFileUploadResult,
+          s3OriginalFileMeta: s3OriginalFileUploadResult,
+          fingerPrintMetaData: fingerPrintMetaData,
           _id: sonicKey,
           license: licenseId,
         };
@@ -661,6 +680,31 @@ export class SonickeyController {
     if (!updatedSonickey) {
       throw new NotFoundException(
         'Given sonickey is either not present or doest not belongs to you',
+      );
+    }
+    return updatedSonickey;
+  }
+
+  @Patch('/fingerprint-success/:sonickey')
+  @ApiOperation({
+    summary:
+      'Update Sonic Keys fingerprintmetadata, only from fingerprint server',
+  })
+  async updateFingerPrintMeta(
+    @Param('sonickey') sonickey: string,
+    @Body() updateSonicKeyFingerPrintMetaDataDto: UpdateSonicKeyFingerPrintMetaDataDto,
+  ) {
+    const{fingerPrintMetaData}=updateSonicKeyFingerPrintMetaDataDto
+    const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate(
+      { sonicKey: sonickey },
+      {
+        fingerPrintMetaData:fingerPrintMetaData
+      },
+      { new: true },
+    );
+    if (!updatedSonickey) {
+      throw new NotFoundException(
+        'Given sonickey is not found',
       );
     }
     return updatedSonickey;

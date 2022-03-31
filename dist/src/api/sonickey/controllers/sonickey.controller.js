@@ -116,12 +116,14 @@ let SonickeyController = class SonickeyController {
         var s3UploadResult;
         var s3OriginalFileUploadResult;
         var sonicKey;
+        var fingerPrintMetaData;
         return this.sonicKeyService
             .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
             .then(data => {
             s3UploadResult = data.s3UploadResult;
             s3OriginalFileUploadResult = data.s3OriginalFileUploadResult;
             sonicKey = data.sonicKey;
+            fingerPrintMetaData = data.fingerPrintMetaData;
             console.log('Increment Usages upon successfull encode');
             return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
         })
@@ -129,7 +131,7 @@ let SonickeyController = class SonickeyController {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Enums_1.ChannelEnums.PORTAL;
-            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, _id: sonicKey, license: licenseId });
+            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, fingerPrintMetaData: fingerPrintMetaData, _id: sonicKey, license: licenseId });
             return this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
         })
             .catch(err => {
@@ -143,12 +145,14 @@ let SonickeyController = class SonickeyController {
         var s3UploadResult;
         var s3OriginalFileUploadResult;
         var sonicKey;
+        var fingerPrintMetaData;
         return this.sonicKeyService
             .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
             .then(data => {
             s3UploadResult = data.s3UploadResult;
             s3OriginalFileUploadResult = data.s3OriginalFileUploadResult;
             sonicKey = data.sonicKey;
+            fingerPrintMetaData = data.fingerPrintMetaData;
             console.log('Increment Usages upon successfull encode');
             return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
         })
@@ -156,7 +160,7 @@ let SonickeyController = class SonickeyController {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Enums_1.ChannelEnums.PORTAL;
-            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, _id: sonicKey, license: licenseId });
+            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, fingerPrintMetaData: fingerPrintMetaData, _id: sonicKey, license: licenseId });
             return this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
         })
             .catch(err => {
@@ -339,6 +343,16 @@ let SonickeyController = class SonickeyController {
         }
         return updatedSonickey;
     }
+    async updateFingerPrintMeta(sonickey, updateSonicKeyFingerPrintMetaDataDto) {
+        const { fingerPrintMetaData } = updateSonicKeyFingerPrintMetaDataDto;
+        const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate({ sonicKey: sonickey }, {
+            fingerPrintMetaData: fingerPrintMetaData
+        }, { new: true });
+        if (!updatedSonickey) {
+            throw new common_1.NotFoundException('Given sonickey is not found');
+        }
+        return updatedSonickey;
+    }
     async delete(sonickey, owner) {
         const deletedSonickey = await this.sonicKeyService.sonicKeyModel.deleteOne({
             sonicKey: sonickey,
@@ -430,7 +444,9 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular user or its companies' }),
+    swagger_1.ApiOperation({
+        summary: 'Get All Sonic Keys of particular user or its companies',
+    }),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
     __param(0, common_1.Param('ownerId')),
     __param(1, decorators_1.User()),
@@ -684,6 +700,18 @@ __decorate([
     __metadata("design:paramtypes", [String, update_sonickey_dto_1.UpdateSonicKeyDto, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "updateMeta", null);
+__decorate([
+    common_1.Patch('/fingerprint-success/:sonickey'),
+    swagger_1.ApiOperation({
+        summary: 'Update Sonic Keys fingerprintmetadata, only from fingerprint server',
+    }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('sonickey')),
+    __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_sonickey_dto_1.UpdateSonicKeyFingerPrintMetaDataDto]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "updateFingerPrintMeta", null);
 __decorate([
     common_1.Delete('/:sonickey'),
     common_1.UseGuards(guards_1.JwtAuthGuard),

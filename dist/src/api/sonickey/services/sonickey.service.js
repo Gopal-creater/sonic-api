@@ -30,6 +30,7 @@ const nanoid_1 = require("nanoid");
 const config_1 = require("../../../config");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const axios_1 = require("axios");
 const Enums_1 = require("../../../constants/Enums");
 const s3fileupload_service_1 = require("../../s3fileupload/s3fileupload.service");
 const detection_service_1 = require("../../detection/detection.service");
@@ -141,7 +142,7 @@ let SonickeyService = class SonickeyService {
             this.fileHandlerService.deleteFileAtPath(inFilePath);
         });
     }
-    async encodeAndUploadToS3(file, user, encodingStrength = 15, s3Acl) {
+    async encodeAndUploadToS3(file, user, encodingStrength = 15, s3Acl, fingerPrint = false) {
         const random11CharKey = this.generateUniqueSonicKey();
         file.path = upath.toUnix(file.path);
         file.destination = upath.toUnix(file.destination);
@@ -169,13 +170,20 @@ let SonickeyService = class SonickeyService {
                 .catch(error => Promise.resolve(error));
             return Promise.all([encodedFileUploadToS3, originalFileUploadToS3]);
         })
-            .then(([s3EncodedUploadResult, s3OriginalUploadResult]) => {
-            return {
+            .then(async ([s3EncodedUploadResult, s3OriginalUploadResult]) => {
+            var resultObj = {
                 downloadFileUrl: s3EncodedUploadResult.Location,
                 s3UploadResult: s3EncodedUploadResult,
                 s3OriginalFileUploadResult: s3OriginalUploadResult,
                 sonicKey: random11CharKey,
+                fingerPrintMetaData: null
             };
+            if (fingerPrint) {
+                const fingerPrintMetaData = await this.fingerPrintFile(resultObj.s3OriginalFileUploadResult)
+                    .catch(err => Promise.resolve(null));
+                resultObj.fingerPrintMetaData = fingerPrintMetaData;
+            }
+            return resultObj;
         })
             .finally(() => {
             this.fileHandlerService.deleteFileAtPath(outFilePath);
@@ -192,6 +200,14 @@ let SonickeyService = class SonickeyService {
             .finally(() => {
             this.fileHandlerService.deleteFileAtPath(inFilePath);
         }));
+    }
+    async fingerPrintFile(originalFileS3Meta) {
+        const httpPath = config_1.appConfig.FINGERPRINT_SERVER.baseUrl;
+        return axios_1.default
+            .post(httpPath, Object.assign({}, originalFileS3Meta))
+            .then(res => {
+            return res.data;
+        });
     }
     async findAndGetValidSonicKeyFromRandomDecodedKeys(keys, saveDetection, detectionToSave) {
         var e_1, _a;

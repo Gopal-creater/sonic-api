@@ -1,6 +1,6 @@
 import { SonicKeyDto } from './sonicKey.dto';
 import { ApiProperty, OmitType, PartialType,PickType } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
+import { IsOptional, IsNotEmpty } from 'class-validator';
 import { S3FileMeta } from '../schemas/sonickey.schema';
 
 export class UpdateSonicKeyDto extends PartialType(
@@ -38,4 +38,10 @@ export class UpdateSonicKeyFromBinaryDto extends PartialType(
   @IsOptional()
   @ApiProperty()
   s3OriginalFileMeta?: S3FileMeta;
+}
+
+export class UpdateSonicKeyFingerPrintMetaDataDto  {
+  @IsNotEmpty()
+  @ApiProperty()
+  fingerPrintMetaData?: any;
 }

@@ -18,7 +18,7 @@ export class S3FileMeta implements S3FileUploadI {
 
   @IsNotEmpty()
   @ApiProperty()
-  key: string;
+  key?: string;
 
   @IsNotEmpty()
   @ApiProperty()
@@ -131,8 +131,8 @@ export class SonicKey extends Document {
 
   @IsOptional()
   @ApiProperty()
-  @Prop({type:S3FileMeta})
-  s3OriginalFileMeta?:S3FileMeta;
+  @Prop({ type: S3FileMeta })
+  s3OriginalFileMeta?: S3FileMeta;
 
   @IsOptional()
   @ApiProperty()
@@ -228,6 +228,11 @@ export class SonicKey extends Document {
   @ApiProperty()
   @Prop([String])
   groups?: [string];
+
+  @IsOptional()
+  @ApiProperty()
+  @Prop({ type: MogSchema.Types.Mixed })
+  fingerPrintMetaData: any;
 }
 
 export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);

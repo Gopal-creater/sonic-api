@@ -7,6 +7,7 @@ import * as uniqid from 'uniqid';
 import { S3ACL } from 'src/constants/Enums';
 import { extractFileName } from 'src/shared/utils';
 import { response } from 'express';
+import { S3FileUploadI } from './interfaces/index';
 
 // https://dev.to/vjnvisakh/uploading-to-s3-using-nestjs-4037
 // https://flaviocopes.com/node-upload-files-s3/
@@ -33,7 +34,7 @@ export class S3FileUploadService {
     filePath: string,
     destinationFolder?: string,
     acl = S3ACL.PRIVATE,
-  ) {
+  ):Promise<S3FileUploadI> {
     const fileContect = fs.createReadStream(filePath);
     const fileName = extractFileName(filePath);
     const bucketS3Destination = destinationFolder

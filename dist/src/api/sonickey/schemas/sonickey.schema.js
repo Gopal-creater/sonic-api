@@ -283,6 +283,12 @@ __decorate([
     mongoose_1.Prop([String]),
     __metadata("design:type", Array)
 ], SonicKey.prototype, "groups", void 0);
+__decorate([
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.Mixed }),
+    __metadata("design:type", Object)
+], SonicKey.prototype, "fingerPrintMetaData", void 0);
 SonicKey = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.SonicKeySchemaName })
 ], SonicKey);

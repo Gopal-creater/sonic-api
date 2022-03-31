@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateSonicKeyFromBinaryDto = exports.UpdateSonicKeyDto = void 0;
+exports.UpdateSonicKeyFingerPrintMetaDataDto = exports.UpdateSonicKeyFromBinaryDto = exports.UpdateSonicKeyDto = void 0;
 const openapi = require("@nestjs/swagger");
 const sonicKey_dto_1 = require("./sonicKey.dto");
 const swagger_1 = require("@nestjs/swagger");
@@ -57,4 +57,15 @@ __decorate([
     __metadata("design:type", sonickey_schema_1.S3FileMeta)
 ], UpdateSonicKeyFromBinaryDto.prototype, "s3OriginalFileMeta", void 0);
 exports.UpdateSonicKeyFromBinaryDto = UpdateSonicKeyFromBinaryDto;
+class UpdateSonicKeyFingerPrintMetaDataDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { fingerPrintMetaData: { required: false, type: () => Object } };
+    }
+}
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Object)
+], UpdateSonicKeyFingerPrintMetaDataDto.prototype, "fingerPrintMetaData", void 0);
+exports.UpdateSonicKeyFingerPrintMetaDataDto = UpdateSonicKeyFingerPrintMetaDataDto;
 //# sourceMappingURL=update-sonickey.dto.js.map

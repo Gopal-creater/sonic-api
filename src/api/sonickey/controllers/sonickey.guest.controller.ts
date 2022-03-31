@@ -117,6 +117,7 @@ export class SonickeyGuestController {
           s3FileMeta: data.s3UploadResult,
           s3OriginalFileMeta:data.s3OriginalFileUploadResult,
           originalFileName:file?.originalname,
+          fingerPrintMetaData:data.fingerPrintMetaData,
           owner: owner,
           channel: channel,
           sonicKey: data.sonicKey,

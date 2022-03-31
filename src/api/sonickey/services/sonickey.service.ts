@@ -16,6 +16,7 @@ import { appConfig } from '../../../config';
 import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import axios from 'axios';
 import { MongoosePaginateSonicKeyDto } from '../dtos/mongoosepaginate-sonickey.dto';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { ChannelEnums, S3ACL } from '../../../constants/Enums';
@@ -24,6 +25,7 @@ import { DetectionService } from '../../detection/detection.service';
 import { Detection } from 'src/api/detection/schemas/detection.schema';
 import { UserService } from '../../user/services/user.service';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
+import { S3FileUploadI } from '../../s3fileupload/interfaces/index';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -213,6 +215,7 @@ export class SonickeyService {
     user: string,
     encodingStrength: number = 15,
     s3Acl?: S3ACL,
+    fingerPrint:boolean=false
   ) {
     // The sonic key generation - done randomely.
     const random11CharKey = this.generateUniqueSonicKey();
@@ -245,16 +248,28 @@ export class SonickeyService {
           .uploadFromPath(inFilePath, `${user}/originalFiles`, s3Acl)
           .then(data => Promise.resolve(data))
           .catch(error => Promise.resolve(error));
-        return Promise.all([encodedFileUploadToS3,originalFileUploadToS3])
+        return Promise.all([encodedFileUploadToS3, originalFileUploadToS3]);
       })
-      .then(([s3EncodedUploadResult,s3OriginalUploadResult]) => {
-        return {
-          downloadFileUrl: s3EncodedUploadResult.Location,
-          s3UploadResult: s3EncodedUploadResult,
-          s3OriginalFileUploadResult:s3OriginalUploadResult,
-          sonicKey: random11CharKey,
-        };
-      })
+      .then(
+        async ([s3EncodedUploadResult, s3OriginalUploadResult]: [
+          S3FileUploadI,
+          S3FileUploadI,
+        ]) => {
+          var resultObj = {
+            downloadFileUrl: s3EncodedUploadResult.Location,
+            s3UploadResult: s3EncodedUploadResult,
+            s3OriginalFileUploadResult: s3OriginalUploadResult,
+            sonicKey: random11CharKey,
+            fingerPrintMetaData:null
+          }
+          if(fingerPrint){
+            const fingerPrintMetaData = await this.fingerPrintFile(resultObj.s3OriginalFileUploadResult)
+            .catch(err=>Promise.resolve(null))
+            resultObj.fingerPrintMetaData=fingerPrintMetaData
+          }
+          return resultObj;
+        },
+      )
       .finally(() => {
         // this.fileHandlerService.deleteFileAtPath(inFilePath); //delete in callig side
         this.fileHandlerService.deleteFileAtPath(outFilePath); //Delete outFilePath too since we are storing to S3
@@ -293,6 +308,17 @@ export class SonickeyService {
           this.fileHandlerService.deleteFileAtPath(inFilePath);
         })
     );
+  }
+
+  async fingerPrintFile(originalFileS3Meta: S3FileUploadI) {
+    const httpPath = appConfig.FINGERPRINT_SERVER.baseUrl;
+    return axios
+      .post(httpPath, {
+        ...originalFileS3Meta,
+      })
+      .then(res => {
+        return res.data;
+      });
   }
 
   async findAndGetValidSonicKeyFromRandomDecodedKeys(
