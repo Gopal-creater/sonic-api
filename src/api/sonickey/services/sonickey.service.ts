@@ -312,9 +312,10 @@ export class SonickeyService {
 
   async fingerPrintFile(originalFileS3Meta: S3FileUploadI) {
     const fingerPrintUrl = appConfig.FINGERPRINT_SERVER.fingerPrintUrl;
+    const signedS3UrlToOriginalFile = await this.s3FileUploadService.getSignedUrl(originalFileS3Meta.Key,60*10) //10Min expiry
     return axios
       .post(fingerPrintUrl, {
-        ...originalFileS3Meta,
+        s3FilePath:signedS3UrlToOriginalFile
       })
       .then(res => {
         return res.data;
