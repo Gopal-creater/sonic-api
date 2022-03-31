@@ -311,9 +311,9 @@ export class SonickeyService {
   }
 
   async fingerPrintFile(originalFileS3Meta: S3FileUploadI) {
-    const httpPath = appConfig.FINGERPRINT_SERVER.baseUrl;
+    const fingerPrintUrl = appConfig.FINGERPRINT_SERVER.fingerPrintUrl;
     return axios
-      .post(httpPath, {
+      .post(fingerPrintUrl, {
         ...originalFileS3Meta,
       })
       .then(res => {
