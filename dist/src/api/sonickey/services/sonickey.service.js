@@ -176,11 +176,19 @@ let SonickeyService = class SonickeyService {
                 s3UploadResult: s3EncodedUploadResult,
                 s3OriginalFileUploadResult: s3OriginalUploadResult,
                 sonicKey: random11CharKey,
-                fingerPrintMetaData: null
+                fingerPrintMetaData: null,
+                fingerPrintStatus: Enums_1.FingerPrintStatus.PENDING,
             };
             if (fingerPrint) {
-                const fingerPrintMetaData = await this.fingerPrintFile(resultObj.s3OriginalFileUploadResult)
-                    .catch(err => Promise.resolve(null));
+                const fingerPrintMetaData = await this.fingerPrintRequestToFPServer(resultObj.s3OriginalFileUploadResult, random11CharKey)
+                    .then(data => {
+                    resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.PROCESSING;
+                    return data;
+                })
+                    .catch(err => {
+                    resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.FAILED;
+                    return Promise.resolve(null);
+                });
                 resultObj.fingerPrintMetaData = fingerPrintMetaData;
             }
             return resultObj;
@@ -201,10 +209,14 @@ let SonickeyService = class SonickeyService {
             this.fileHandlerService.deleteFileAtPath(inFilePath);
         }));
     }
-    async fingerPrintFile(originalFileS3Meta) {
-        const httpPath = config_1.appConfig.FINGERPRINT_SERVER.baseUrl;
+    async fingerPrintRequestToFPServer(originalFileS3Meta, sonicKey) {
+        const fingerPrintUrl = config_1.appConfig.FINGERPRINT_SERVER.fingerPrintUrl;
+        const signedS3UrlToOriginalFile = await this.s3FileUploadService.getSignedUrl(originalFileS3Meta.Key, 60 * 10);
         return axios_1.default
-            .post(httpPath, Object.assign({}, originalFileS3Meta))
+            .post(fingerPrintUrl, {
+            s3FileUrl: signedS3UrlToOriginalFile,
+            sonicKey: sonicKey,
+        })
             .then(res => {
             return res.data;
         });

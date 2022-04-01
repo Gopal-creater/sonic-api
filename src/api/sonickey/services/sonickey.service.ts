@@ -19,7 +19,11 @@ import { Model } from 'mongoose';
 import axios from 'axios';
 import { MongoosePaginateSonicKeyDto } from '../dtos/mongoosepaginate-sonickey.dto';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
-import { ChannelEnums, S3ACL } from '../../../constants/Enums';
+import {
+  ChannelEnums,
+  FingerPrintStatus,
+  S3ACL,
+} from '../../../constants/Enums';
 import { S3FileUploadService } from '../../s3fileupload/s3fileupload.service';
 import { DetectionService } from '../../detection/detection.service';
 import { Detection } from 'src/api/detection/schemas/detection.schema';
@@ -215,7 +219,7 @@ export class SonickeyService {
     user: string,
     encodingStrength: number = 15,
     s3Acl?: S3ACL,
-    fingerPrint:boolean=false
+    fingerPrint: boolean = false,
   ) {
     // The sonic key generation - done randomely.
     const random11CharKey = this.generateUniqueSonicKey();
@@ -260,12 +264,26 @@ export class SonickeyService {
             s3UploadResult: s3EncodedUploadResult,
             s3OriginalFileUploadResult: s3OriginalUploadResult,
             sonicKey: random11CharKey,
-            fingerPrintMetaData:null
-          }
-          if(fingerPrint){
-            const fingerPrintMetaData = await this.fingerPrintFile(resultObj.s3OriginalFileUploadResult)
-            .catch(err=>Promise.resolve(null))
-            resultObj.fingerPrintMetaData=fingerPrintMetaData
+            fingerPrintMetaData: null,
+            fingerPrintStatus: FingerPrintStatus.PENDING,
+          };
+          //We will be communication with FP server all event based we wont wait for FP to finished,
+          //All manage by eventStatus
+          if (fingerPrint) {
+            const fingerPrintMetaData = await this.fingerPrintRequestToFPServer(
+              resultObj.s3OriginalFileUploadResult,
+              random11CharKey,
+            )
+              .then(data => {
+                //Indicate that processing has been started in FP Server
+                resultObj.fingerPrintStatus = FingerPrintStatus.PROCESSING;
+                return data;
+              })
+              .catch(err => {
+                resultObj.fingerPrintStatus = FingerPrintStatus.FAILED;
+                return Promise.resolve(null);
+              });
+            resultObj.fingerPrintMetaData = fingerPrintMetaData;
           }
           return resultObj;
         },
@@ -310,12 +328,16 @@ export class SonickeyService {
     );
   }
 
-  async fingerPrintFile(originalFileS3Meta: S3FileUploadI) {
+  async fingerPrintRequestToFPServer(originalFileS3Meta: S3FileUploadI, sonicKey: string) {
     const fingerPrintUrl = appConfig.FINGERPRINT_SERVER.fingerPrintUrl;
-    const signedS3UrlToOriginalFile = await this.s3FileUploadService.getSignedUrl(originalFileS3Meta.Key,60*10) //10Min expiry
+    const signedS3UrlToOriginalFile = await this.s3FileUploadService.getSignedUrl(
+      originalFileS3Meta.Key,
+      60 * 10,
+    ); //10Min expiry
     return axios
       .post(fingerPrintUrl, {
-        s3FilePath:signedS3UrlToOriginalFile
+        s3FileUrl: signedS3UrlToOriginalFile,
+        sonicKey: sonicKey,
       })
       .then(res => {
         return res.data;

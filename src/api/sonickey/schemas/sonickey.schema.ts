@@ -3,7 +3,7 @@ import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { Job, JobSchemaName } from '../../job/schemas/job.schema';
 import { ApiKeySchemaName } from '../../api-key/schemas/api-key.schema';
-import { ChannelEnums } from '../../../constants/Enums';
+import { ChannelEnums, FingerPrintStatus } from '../../../constants/Enums';
 import { S3FileUploadI } from '../../s3fileupload/interfaces';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
@@ -233,6 +233,11 @@ export class SonicKey extends Document {
   @ApiProperty()
   @Prop({ type: MogSchema.Types.Mixed })
   fingerPrintMetaData: any;
+
+  @IsOptional()
+  @ApiProperty()
+  @Prop({ type: String, enum: FingerPrintStatus })
+  fingerPrintStatus: string;
 }
 
 export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);

@@ -1,5 +1,8 @@
 import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
-import { UpdateSonicKeyDto, UpdateSonicKeyFingerPrintMetaDataDto } from '../dtos/update-sonickey.dto';
+import {
+  UpdateSonicKeyDto,
+  UpdateSonicKeyFingerPrintMetaDataDto,
+} from '../dtos/update-sonickey.dto';
 import { DecodeDto } from '../dtos/decode.dto';
 import { EncodeDto, EncodeFromUrlDto } from '../dtos/encode.dto';
 import { SonicKeyDto } from '../dtos/sonicKey.dto';
@@ -57,7 +60,12 @@ import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { Response } from 'express';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
-import { ChannelEnums, Roles } from '../../../constants/Enums';
+import {
+  ChannelEnums,
+  FingerPrintEvents,
+  FingerPrintStatus,
+  Roles,
+} from '../../../constants/Enums';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 import { DetectionService } from '../../detection/detection.service';
 import {
@@ -295,6 +303,7 @@ export class SonickeyController {
     var s3OriginalFileUploadResult: S3FileMeta;
     var sonicKey: string;
     var fingerPrintMetaData: any;
+    var fingerPrintStatus: string;
     return this.sonicKeyService
       .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
       .then(data => {
@@ -302,6 +311,7 @@ export class SonickeyController {
         s3OriginalFileUploadResult = data.s3OriginalFileUploadResult;
         sonicKey = data.sonicKey;
         fingerPrintMetaData = data.fingerPrintMetaData;
+        fingerPrintStatus = data.fingerPrintStatus;
         console.log('Increment Usages upon successfull encode');
         return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
       })
@@ -324,6 +334,7 @@ export class SonickeyController {
           s3FileMeta: s3UploadResult,
           s3OriginalFileMeta: s3OriginalFileUploadResult,
           fingerPrintMetaData: fingerPrintMetaData,
+          fingerPrintStatus: fingerPrintStatus,
           _id: sonicKey,
           license: licenseId,
         };
@@ -356,6 +367,7 @@ export class SonickeyController {
     var s3UploadResult: S3FileMeta;
     var s3OriginalFileUploadResult: S3FileMeta;
     var sonicKey: string;
+    var fingerPrintStatus: string;
     var fingerPrintMetaData: any;
     return this.sonicKeyService
       .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
@@ -364,6 +376,7 @@ export class SonickeyController {
         s3OriginalFileUploadResult = data.s3OriginalFileUploadResult;
         sonicKey = data.sonicKey;
         fingerPrintMetaData = data.fingerPrintMetaData;
+        fingerPrintStatus = data.fingerPrintStatus;
         console.log('Increment Usages upon successfull encode');
         return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
       })
@@ -386,6 +399,7 @@ export class SonickeyController {
           s3FileMeta: s3UploadResult,
           s3OriginalFileMeta: s3OriginalFileUploadResult,
           fingerPrintMetaData: fingerPrintMetaData,
+          fingerPrintStatus: fingerPrintStatus,
           _id: sonicKey,
           license: licenseId,
         };
@@ -685,27 +699,46 @@ export class SonickeyController {
     return updatedSonickey;
   }
 
-  @Patch('/fingerprint-success/:sonickey')
+  @Patch('/fingerprint-events/:sonicKey/success')
   @ApiOperation({
     summary:
-      'Update Sonic Keys fingerprintmetadata, only from fingerprint server',
+      'Call this endpoint on fingerprint success, only from fingerprint server',
   })
-  async updateFingerPrintMeta(
-    @Param('sonickey') sonickey: string,
-    @Body() updateSonicKeyFingerPrintMetaDataDto: UpdateSonicKeyFingerPrintMetaDataDto,
+  async onFingerPrintSuccess(
+    @Param('sonicKey') sonicKey: string,
+    @Body()
+    updateSonicKeyFingerPrintMetaDataDto: UpdateSonicKeyFingerPrintMetaDataDto,
   ) {
-    const{fingerPrintMetaData}=updateSonicKeyFingerPrintMetaDataDto
+    const { fingerPrintMetaData } = updateSonicKeyFingerPrintMetaDataDto;
     const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate(
-      { sonicKey: sonickey },
+      { sonicKey: sonicKey },
       {
-        fingerPrintMetaData:fingerPrintMetaData
+        fingerPrintMetaData: fingerPrintMetaData,
+        fingerPrintStatus: FingerPrintStatus.SUCCESS,
       },
       { new: true },
     );
     if (!updatedSonickey) {
-      throw new NotFoundException(
-        'Given sonickey is not found',
-      );
+      throw new NotFoundException('Given sonickey is not found');
+    }
+    return updatedSonickey;
+  }
+
+  @Patch('/fingerprint-events/:sonicKey/failed')
+  @ApiOperation({
+    summary:
+      'Call this endpoint on fingerprint failed, only from fingerprint server',
+  })
+  async onFingerPrintFailed(@Param('sonicKey') sonicKey: string) {
+    const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate(
+      { sonicKey: sonicKey },
+      {
+        fingerPrintStatus: FingerPrintStatus.FAILED,
+      },
+      { new: true },
+    );
+    if (!updatedSonickey) {
+      throw new NotFoundException('Given sonickey is not found');
     }
     return updatedSonickey;
   }

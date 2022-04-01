@@ -21,6 +21,18 @@ export enum ApiKeyType {
   COMPANY = 'Company',
 }
 
+export enum FingerPrintStatus {
+  SUCCESS = 'Success',
+  FAILED = 'Failed',
+  PENDING = 'Pending',
+  PROCESSING = 'Processing',
+}
+
+export enum FingerPrintEvents {
+  COMPLETED = 'Completed',
+  FAILED = 'Failed'
+}
+
 export enum PlanName {
   BASIC = 'Basic',
   STANDARD = 'Standard',

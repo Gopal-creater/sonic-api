@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Platform = exports.EC2InstanceMetadata = exports.SystemGroup = exports.Roles = exports.MonitorGroupsEnum = exports.S3ACL = exports.PaymentInterval = exports.PlanType = exports.PlanName = exports.ApiKeyType = exports.Permissions = exports.ChannelEnums = void 0;
+exports.Platform = exports.EC2InstanceMetadata = exports.SystemGroup = exports.Roles = exports.MonitorGroupsEnum = exports.S3ACL = exports.PaymentInterval = exports.PlanType = exports.PlanName = exports.FingerPrintEvents = exports.FingerPrintStatus = exports.ApiKeyType = exports.Permissions = exports.ChannelEnums = void 0;
 var ChannelEnums;
 (function (ChannelEnums) {
     ChannelEnums["JOB"] = "JOB";
@@ -23,6 +23,18 @@ var ApiKeyType;
     ApiKeyType["INDIVIDUAL"] = "Individual";
     ApiKeyType["COMPANY"] = "Company";
 })(ApiKeyType = exports.ApiKeyType || (exports.ApiKeyType = {}));
+var FingerPrintStatus;
+(function (FingerPrintStatus) {
+    FingerPrintStatus["SUCCESS"] = "Success";
+    FingerPrintStatus["FAILED"] = "Failed";
+    FingerPrintStatus["PENDING"] = "Pending";
+    FingerPrintStatus["PROCESSING"] = "Processing";
+})(FingerPrintStatus = exports.FingerPrintStatus || (exports.FingerPrintStatus = {}));
+var FingerPrintEvents;
+(function (FingerPrintEvents) {
+    FingerPrintEvents["COMPLETED"] = "Completed";
+    FingerPrintEvents["FAILED"] = "Failed";
+})(FingerPrintEvents = exports.FingerPrintEvents || (exports.FingerPrintEvents = {}));
 var PlanName;
 (function (PlanName) {
     PlanName["BASIC"] = "Basic";
