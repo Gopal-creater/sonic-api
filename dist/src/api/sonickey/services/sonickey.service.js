@@ -187,8 +187,9 @@ let SonickeyService = class SonickeyService {
                     return data;
                 })
                     .catch(err => {
+                    console.log("FingerPrint Failed", err);
                     resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.FAILED;
-                    resultObj.fingerPrintErrorData = err;
+                    resultObj.fingerPrintErrorData = {};
                     return Promise.resolve(null);
                 });
                 resultObj.fingerPrintMetaData = fingerPrintMetaData;
