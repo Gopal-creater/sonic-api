@@ -188,6 +188,7 @@ let SonickeyService = class SonickeyService {
                 })
                     .catch(err => {
                     var _a;
+                    console.log("err", err);
                     resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.FAILED;
                     resultObj.fingerPrintErrorData = {
                         message: err === null || err === void 0 ? void 0 : err.message,

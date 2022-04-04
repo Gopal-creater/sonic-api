@@ -281,6 +281,7 @@ export class SonickeyService {
                 return data;
               })
               .catch(err => {
+                console.log("err",err)
                 resultObj.fingerPrintStatus = FingerPrintStatus.FAILED;
                 resultObj.fingerPrintErrorData = {
                   message: err?.message,
