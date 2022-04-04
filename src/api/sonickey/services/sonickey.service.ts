@@ -265,6 +265,7 @@ export class SonickeyService {
             s3OriginalFileUploadResult: s3OriginalUploadResult,
             sonicKey: random11CharKey,
             fingerPrintMetaData: null,
+            fingerPrintErrorData:null,
             fingerPrintStatus: FingerPrintStatus.PENDING,
           };
           //We will be communication with FP server all event based we wont wait for FP to finished,
@@ -281,6 +282,7 @@ export class SonickeyService {
               })
               .catch(err => {
                 resultObj.fingerPrintStatus = FingerPrintStatus.FAILED;
+                resultObj.fingerPrintErrorData=err
                 return Promise.resolve(null);
               });
             resultObj.fingerPrintMetaData = fingerPrintMetaData;

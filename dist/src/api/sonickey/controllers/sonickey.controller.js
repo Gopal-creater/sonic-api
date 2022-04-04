@@ -117,6 +117,7 @@ let SonickeyController = class SonickeyController {
         var s3OriginalFileUploadResult;
         var sonicKey;
         var fingerPrintMetaData;
+        var fingerPrintErrorData;
         var fingerPrintStatus;
         return this.sonicKeyService
             .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
@@ -126,6 +127,7 @@ let SonickeyController = class SonickeyController {
             sonicKey = data.sonicKey;
             fingerPrintMetaData = data.fingerPrintMetaData;
             fingerPrintStatus = data.fingerPrintStatus;
+            fingerPrintErrorData = data.fingerPrintErrorData;
             console.log('Increment Usages upon successfull encode');
             return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
         })
@@ -133,7 +135,7 @@ let SonickeyController = class SonickeyController {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Enums_1.ChannelEnums.PORTAL;
-            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, fingerPrintMetaData: fingerPrintMetaData, fingerPrintStatus: fingerPrintStatus, _id: sonicKey, license: licenseId });
+            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, fingerPrintMetaData: fingerPrintMetaData, fingerPrintErrorData: fingerPrintErrorData, fingerPrintStatus: fingerPrintStatus, _id: sonicKey, license: licenseId });
             return this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
         })
             .catch(err => {
@@ -149,6 +151,7 @@ let SonickeyController = class SonickeyController {
         var sonicKey;
         var fingerPrintStatus;
         var fingerPrintMetaData;
+        var fingerPrintErrorData;
         return this.sonicKeyService
             .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
             .then(data => {
@@ -157,6 +160,7 @@ let SonickeyController = class SonickeyController {
             sonicKey = data.sonicKey;
             fingerPrintMetaData = data.fingerPrintMetaData;
             fingerPrintStatus = data.fingerPrintStatus;
+            fingerPrintErrorData = data.fingerPrintErrorData;
             console.log('Increment Usages upon successfull encode');
             return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
         })
@@ -164,7 +168,7 @@ let SonickeyController = class SonickeyController {
             console.log('Going to save key in db.');
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
             const channel = Enums_1.ChannelEnums.PORTAL;
-            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, fingerPrintMetaData: fingerPrintMetaData, fingerPrintStatus: fingerPrintStatus, _id: sonicKey, license: licenseId });
+            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, fingerPrintMetaData: fingerPrintMetaData, fingerPrintErrorData: fingerPrintErrorData, fingerPrintStatus: fingerPrintStatus, _id: sonicKey, license: licenseId });
             return this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
         })
             .catch(err => {
@@ -361,7 +365,7 @@ let SonickeyController = class SonickeyController {
     async onFingerPrintFailed(sonicKey, updateSonicKeyFingerPrintMetaDataDto) {
         const { fingerPrintMetaData } = updateSonicKeyFingerPrintMetaDataDto;
         const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate({ sonicKey: sonicKey }, {
-            fingerPrintMetaData: fingerPrintMetaData,
+            fingerPrintErrorData: fingerPrintMetaData,
             fingerPrintStatus: Enums_1.FingerPrintStatus.FAILED,
         }, { new: true });
         if (!updatedSonickey) {

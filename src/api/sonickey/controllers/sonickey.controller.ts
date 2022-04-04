@@ -303,6 +303,7 @@ export class SonickeyController {
     var s3OriginalFileUploadResult: S3FileMeta;
     var sonicKey: string;
     var fingerPrintMetaData: any;
+    var fingerPrintErrorData :any;
     var fingerPrintStatus: string;
     return this.sonicKeyService
       .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
@@ -312,6 +313,7 @@ export class SonickeyController {
         sonicKey = data.sonicKey;
         fingerPrintMetaData = data.fingerPrintMetaData;
         fingerPrintStatus = data.fingerPrintStatus;
+        fingerPrintErrorData=data.fingerPrintErrorData;
         console.log('Increment Usages upon successfull encode');
         return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
       })
@@ -334,6 +336,7 @@ export class SonickeyController {
           s3FileMeta: s3UploadResult,
           s3OriginalFileMeta: s3OriginalFileUploadResult,
           fingerPrintMetaData: fingerPrintMetaData,
+          fingerPrintErrorData:fingerPrintErrorData,
           fingerPrintStatus: fingerPrintStatus,
           _id: sonicKey,
           license: licenseId,
@@ -369,6 +372,7 @@ export class SonickeyController {
     var sonicKey: string;
     var fingerPrintStatus: string;
     var fingerPrintMetaData: any;
+    var fingerPrintErrorData: any;
     return this.sonicKeyService
       .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
       .then(data => {
@@ -377,6 +381,7 @@ export class SonickeyController {
         sonicKey = data.sonicKey;
         fingerPrintMetaData = data.fingerPrintMetaData;
         fingerPrintStatus = data.fingerPrintStatus;
+        fingerPrintErrorData=data.fingerPrintErrorData
         console.log('Increment Usages upon successfull encode');
         return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
       })
@@ -399,6 +404,7 @@ export class SonickeyController {
           s3FileMeta: s3UploadResult,
           s3OriginalFileMeta: s3OriginalFileUploadResult,
           fingerPrintMetaData: fingerPrintMetaData,
+          fingerPrintErrorData:fingerPrintErrorData,
           fingerPrintStatus: fingerPrintStatus,
           _id: sonicKey,
           license: licenseId,
@@ -738,7 +744,7 @@ export class SonickeyController {
     const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate(
       { sonicKey: sonicKey },
       {
-        fingerPrintMetaData: fingerPrintMetaData,
+        fingerPrintErrorData: fingerPrintMetaData,
         fingerPrintStatus: FingerPrintStatus.FAILED,
       },
       { new: true },

@@ -236,6 +236,11 @@ export class SonicKey extends Document {
 
   @IsOptional()
   @ApiProperty()
+  @Prop({ type: MogSchema.Types.Mixed })
+  fingerPrintErrorData: any;
+
+  @IsOptional()
+  @ApiProperty()
   @Prop({ type: String, enum: FingerPrintStatus })
   fingerPrintStatus: string;
 }

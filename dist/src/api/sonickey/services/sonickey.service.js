@@ -177,6 +177,7 @@ let SonickeyService = class SonickeyService {
                 s3OriginalFileUploadResult: s3OriginalUploadResult,
                 sonicKey: random11CharKey,
                 fingerPrintMetaData: null,
+                fingerPrintErrorData: null,
                 fingerPrintStatus: Enums_1.FingerPrintStatus.PENDING,
             };
             if (fingerPrint) {
@@ -187,6 +188,7 @@ let SonickeyService = class SonickeyService {
                 })
                     .catch(err => {
                     resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.FAILED;
+                    resultObj.fingerPrintErrorData = err;
                     return Promise.resolve(null);
                 });
                 resultObj.fingerPrintMetaData = fingerPrintMetaData;

@@ -64,7 +64,8 @@ export class SonickeyThirdPartyController {
     var s3OriginalFileUploadResult:S3FileMeta;
     var sonicKey: string;
     var fingerPrintStatus:string;
-    var fingerPrintMetaData:any
+    var fingerPrintMetaData:any;
+    var fingerPrintErrorData:any;
     return this.sonicKeyService
       .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
       .then(data => {
@@ -72,6 +73,7 @@ export class SonickeyThirdPartyController {
         s3OriginalFileUploadResult = data.s3OriginalFileUploadResult
         sonicKey = data.sonicKey;
         fingerPrintMetaData=data.fingerPrintMetaData
+        fingerPrintErrorData=data.fingerPrintErrorData;
         fingerPrintStatus=data.fingerPrintStatus;
         console.log('Increment Usages upon successfull encode');
         return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
@@ -95,6 +97,7 @@ export class SonickeyThirdPartyController {
           s3FileMeta: s3UploadResult,
           s3OriginalFileMeta:s3OriginalFileUploadResult,
           fingerPrintMetaData:fingerPrintMetaData,
+          fingerPrintErrorData:fingerPrintErrorData,
           fingerPrintStatus:fingerPrintStatus,
           _id: sonicKey,
           license: licenseId,

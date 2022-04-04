@@ -292,6 +292,12 @@ __decorate([
 __decorate([
     class_validator_1.IsOptional(),
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.Mixed }),
+    __metadata("design:type", Object)
+], SonicKey.prototype, "fingerPrintErrorData", void 0);
+__decorate([
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
     mongoose_1.Prop({ type: String, enum: Enums_1.FingerPrintStatus }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "fingerPrintStatus", void 0);

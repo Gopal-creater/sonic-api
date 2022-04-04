@@ -119,6 +119,7 @@ export class SonickeyGuestController {
           originalFileName:file?.originalname,
           fingerPrintMetaData:data.fingerPrintMetaData,
           fingerPrintStatus:data.fingerPrintStatus,
+          fingerPrintErrorData:data.fingerPrintErrorData,
           owner: owner,
           channel: channel,
           sonicKey: data.sonicKey,
