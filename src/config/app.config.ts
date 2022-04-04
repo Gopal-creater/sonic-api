@@ -18,7 +18,7 @@ export const appConfig = {
   ENABLE_STREAMING_LISTENER: true,
 
   FINGERPRINT_SERVER: {
-    fingerPrintUrl: 'https://fpserver.sonicdata.com/api/fp/fingerprint',
+    fingerPrintUrl: 'http://fpserver.sonicdata.com/api/fp/fingerprint',
   },
   DEBUG: false,
   AUTH_CONFIG: {

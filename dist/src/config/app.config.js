@@ -13,7 +13,7 @@ exports.appConfig = {
     TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS: 30,
     ENABLE_STREAMING_LISTENER: true,
     FINGERPRINT_SERVER: {
-        fingerPrintUrl: 'https://fpserver.sonicdata.com/api/fp/fingerprint',
+        fingerPrintUrl: 'http://fpserver.sonicdata.com/api/fp/fingerprint',
     },
     DEBUG: false,
     AUTH_CONFIG: {
