@@ -42,6 +42,8 @@ async function bootstrap() {
       'http://sonicadminportal.arba-dev.uk',
       'https://sonicwpms.arba-dev.uk',
       'http://sonicwpms.arba-dev.uk',
+      'http://fpserver.sonicdata.com',
+      'https://fpserver.sonicdata.com',
       'http://localhost:3000',
       'https://localhost:3000',
       'http://localhost:8001',

@@ -219,7 +219,7 @@ export class SonickeyService {
     user: string,
     encodingStrength: number = 15,
     s3Acl?: S3ACL,
-    fingerPrint: boolean = false,
+    fingerPrint: boolean = true,
   ) {
     // The sonic key generation - done randomely.
     const random11CharKey = this.generateUniqueSonicKey();

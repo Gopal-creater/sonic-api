@@ -729,10 +729,16 @@ export class SonickeyController {
     summary:
       'Call this endpoint on fingerprint failed, only from fingerprint server',
   })
-  async onFingerPrintFailed(@Param('sonicKey') sonicKey: string) {
+  async onFingerPrintFailed(
+    @Param('sonicKey') sonicKey: string,
+    @Body()
+    updateSonicKeyFingerPrintMetaDataDto: UpdateSonicKeyFingerPrintMetaDataDto,
+  ) {
+    const { fingerPrintMetaData } = updateSonicKeyFingerPrintMetaDataDto;
     const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate(
       { sonicKey: sonicKey },
       {
+        fingerPrintMetaData: fingerPrintMetaData,
         fingerPrintStatus: FingerPrintStatus.FAILED,
       },
       { new: true },
