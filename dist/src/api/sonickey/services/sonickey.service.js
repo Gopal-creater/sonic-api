@@ -187,14 +187,12 @@ let SonickeyService = class SonickeyService {
                     return data;
                 })
                     .catch(err => {
-                    var _a, _b;
-                    console.log("FP RESPONSE ERROR", err === null || err === void 0 ? void 0 : err.response);
-                    console.log("FP RESPONSE DATA", (_a = err === null || err === void 0 ? void 0 : err.response) === null || _a === void 0 ? void 0 : _a.data);
-                    console.log("FP ERROR MESSAGE", err === null || err === void 0 ? void 0 : err.message);
-                    console.log("FP CONFIG ERROR", err === null || err === void 0 ? void 0 : err.config);
-                    console.log("FP REQUEST ERROR", err === null || err === void 0 ? void 0 : err.request);
+                    var _a;
                     resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.FAILED;
-                    resultObj.fingerPrintErrorData = (_b = err === null || err === void 0 ? void 0 : err.response) === null || _b === void 0 ? void 0 : _b.data;
+                    resultObj.fingerPrintErrorData = {
+                        message: err === null || err === void 0 ? void 0 : err.message,
+                        data: (_a = err === null || err === void 0 ? void 0 : err.response) === null || _a === void 0 ? void 0 : _a.data,
+                    };
                     return Promise.resolve(null);
                 });
                 resultObj.fingerPrintMetaData = fingerPrintMetaData;

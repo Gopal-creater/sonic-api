@@ -265,7 +265,7 @@ export class SonickeyService {
             s3OriginalFileUploadResult: s3OriginalUploadResult,
             sonicKey: random11CharKey,
             fingerPrintMetaData: null,
-            fingerPrintErrorData:null,
+            fingerPrintErrorData: null,
             fingerPrintStatus: FingerPrintStatus.PENDING,
           };
           //We will be communication with FP server all event based we wont wait for FP to finished,
@@ -281,13 +281,11 @@ export class SonickeyService {
                 return data;
               })
               .catch(err => {
-                console.log("FP RESPONSE ERROR",err?.response)
-                console.log("FP RESPONSE DATA",err?.response?.data)
-                console.log("FP ERROR MESSAGE",err?.message)
-                console.log("FP CONFIG ERROR",err?.config)
-                console.log("FP REQUEST ERROR",err?.request)
                 resultObj.fingerPrintStatus = FingerPrintStatus.FAILED;
-                resultObj.fingerPrintErrorData=err?.response?.data
+                resultObj.fingerPrintErrorData = {
+                  message: err?.message,
+                  data: err?.response?.data,
+                };
                 return Promise.resolve(null);
               });
             resultObj.fingerPrintMetaData = fingerPrintMetaData;
@@ -335,7 +333,10 @@ export class SonickeyService {
     );
   }
 
-  async fingerPrintRequestToFPServer(originalFileS3Meta: S3FileUploadI, sonicKey: string) {
+  async fingerPrintRequestToFPServer(
+    originalFileS3Meta: S3FileUploadI,
+    sonicKey: string,
+  ) {
     const fingerPrintUrl = appConfig.FINGERPRINT_SERVER.fingerPrintUrl;
     const signedS3UrlToOriginalFile = await this.s3FileUploadService.getSignedUrl(
       originalFileS3Meta.Key,
