@@ -281,6 +281,11 @@ export class SonickeyService {
                 return data;
               })
               .catch(err => {
+                console.log("FP RESPONSE ERROR",err?.response)
+                console.log("FP RESPONSE DATA",err?.response?.data)
+                console.log("FP ERROR MESSAGE",err?.message)
+                console.log("FP CONFIG ERROR",err?.config)
+                console.log("FP REQUEST ERROR",err?.request)
                 resultObj.fingerPrintStatus = FingerPrintStatus.FAILED;
                 resultObj.fingerPrintErrorData=err?.response?.data
                 return Promise.resolve(null);
