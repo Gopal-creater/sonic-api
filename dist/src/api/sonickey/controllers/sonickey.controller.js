@@ -358,8 +358,10 @@ let SonickeyController = class SonickeyController {
         }
         return updatedSonickey;
     }
-    async onFingerPrintFailed(sonicKey) {
+    async onFingerPrintFailed(sonicKey, updateSonicKeyFingerPrintMetaDataDto) {
+        const { fingerPrintMetaData } = updateSonicKeyFingerPrintMetaDataDto;
         const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate({ sonicKey: sonicKey }, {
+            fingerPrintMetaData: fingerPrintMetaData,
             fingerPrintStatus: Enums_1.FingerPrintStatus.FAILED,
         }, { new: true });
         if (!updatedSonickey) {
@@ -733,8 +735,9 @@ __decorate([
     }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('sonicKey')),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, update_sonickey_dto_1.UpdateSonicKeyFingerPrintMetaDataDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "onFingerPrintFailed", null);
 __decorate([
