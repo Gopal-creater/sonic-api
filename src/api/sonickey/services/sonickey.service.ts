@@ -30,6 +30,8 @@ import { Detection } from 'src/api/detection/schemas/detection.schema';
 import { UserService } from '../../user/services/user.service';
 import { LicensekeyService } from '../../licensekey/services/licensekey.service';
 import { S3FileUploadI } from '../../s3fileupload/interfaces/index';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -37,7 +39,8 @@ export class SonickeyService {
   constructor(
     @InjectModel(SonicKey.name) public sonicKeyModel: Model<SonicKey>,
     private readonly fileOperationService: FileOperationService,
-    private readonly licensekeyService: LicensekeyService,
+    public readonly licensekeyService: LicensekeyService,
+    @InjectQueue('sonickey') public readonly sonicKeyQueue: Queue,
     private readonly fileHandlerService: FileHandlerService,
     private readonly s3FileUploadService: S3FileUploadService,
     private readonly detectionService: DetectionService,
@@ -62,6 +65,29 @@ export class SonickeyService {
       result: result,
     };
   }
+
+  async encodeBulkWithQueue() {
+   return this.sonicKeyQueue.add('bulk_encode', {
+      fileSpecs: [
+        {
+          filePath: 'a.mp3',
+          metaData: {
+            key1: 'value1',
+            key2: 'value2',
+          },
+        },
+      ],
+      owner:"owner1",
+      company:"company1"
+    },{
+      delay:10000 //10 sec
+    });
+  }
+
+  async getJobStatus(jobId:string){
+    return this.sonicKeyQueue.getJob(jobId)
+  }
+
 
   async testDownloadFile() {
     // const key = `userId1234345/encodedFiles/aa1y7g154cktiatome-4fqq9xz8ckosgjzea-SonicTest_Detect.wav` //public
@@ -275,7 +301,7 @@ export class SonickeyService {
               resultObj.s3OriginalFileUploadResult,
               random11CharKey,
               file.originalname,
-              file.size
+              file.size,
             )
               .then(data => {
                 //Indicate that processing has been started in FP Server
@@ -283,7 +309,7 @@ export class SonickeyService {
                 return data;
               })
               .catch(err => {
-                console.log("err",err)
+                console.log('err', err);
                 resultObj.fingerPrintStatus = FingerPrintStatus.FAILED;
                 resultObj.fingerPrintErrorData = {
                   message: err?.message,
@@ -339,8 +365,8 @@ export class SonickeyService {
   async fingerPrintRequestToFPServer(
     originalFileS3Meta: S3FileUploadI,
     sonicKey: string,
-    originalFileName:string,
-    fileSize:number
+    originalFileName: string,
+    fileSize: number,
   ) {
     const fingerPrintUrl = appConfig.FINGERPRINT_SERVER.fingerPrintUrl;
     const signedS3UrlToOriginalFile = await this.s3FileUploadService.getSignedUrl(
@@ -351,8 +377,8 @@ export class SonickeyService {
       .post(fingerPrintUrl, {
         s3FileUrl: signedS3UrlToOriginalFile,
         sonicKey: sonicKey,
-        originalFileName:originalFileName,
-        fileSize:fileSize
+        originalFileName: originalFileName,
+        fileSize: fileSize,
       })
       .then(res => {
         return res.data;

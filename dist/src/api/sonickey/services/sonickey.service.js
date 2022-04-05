@@ -37,11 +37,13 @@ const detection_service_1 = require("../../detection/detection.service");
 const detection_schema_1 = require("../../detection/schemas/detection.schema");
 const user_service_1 = require("../../user/services/user.service");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
+const bull_1 = require("@nestjs/bull");
 let SonickeyService = class SonickeyService {
-    constructor(sonicKeyModel, fileOperationService, licensekeyService, fileHandlerService, s3FileUploadService, detectionService, userService) {
+    constructor(sonicKeyModel, fileOperationService, licensekeyService, sonicKeyQueue, fileHandlerService, s3FileUploadService, detectionService, userService) {
         this.sonicKeyModel = sonicKeyModel;
         this.fileOperationService = fileOperationService;
         this.licensekeyService = licensekeyService;
+        this.sonicKeyQueue = sonicKeyQueue;
         this.fileHandlerService = fileHandlerService;
         this.s3FileUploadService = s3FileUploadService;
         this.detectionService = detectionService;
@@ -57,6 +59,26 @@ let SonickeyService = class SonickeyService {
             msg: 'uploaded',
             result: result,
         };
+    }
+    async encodeBulkWithQueue() {
+        return this.sonicKeyQueue.add('bulk_encode', {
+            fileSpecs: [
+                {
+                    filePath: 'a.mp3',
+                    metaData: {
+                        key1: 'value1',
+                        key2: 'value2',
+                    },
+                },
+            ],
+            owner: "owner1",
+            company: "company1"
+        }, {
+            delay: 10000
+        });
+    }
+    async getJobStatus(jobId) {
+        return this.sonicKeyQueue.getJob(jobId);
     }
     async testDownloadFile() {
         const key = 'userId1234345/encodedFiles/4fqq9xz8ckosgjzea-SonicTest_Detect.wav';
@@ -188,7 +210,7 @@ let SonickeyService = class SonickeyService {
                 })
                     .catch(err => {
                     var _a;
-                    console.log("err", err);
+                    console.log('err', err);
                     resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.FAILED;
                     resultObj.fingerPrintErrorData = {
                         message: err === null || err === void 0 ? void 0 : err.message,
@@ -224,7 +246,7 @@ let SonickeyService = class SonickeyService {
             s3FileUrl: signedS3UrlToOriginalFile,
             sonicKey: sonicKey,
             originalFileName: originalFileName,
-            fileSize: fileSize
+            fileSize: fileSize,
         })
             .then(res => {
             return res.data;
@@ -306,11 +328,11 @@ let SonickeyService = class SonickeyService {
 SonickeyService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(sonickey_schema_1.SonicKey.name)),
-    __param(6, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
+    __param(3, bull_1.InjectQueue('sonickey')),
+    __param(7, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         file_operation_service_1.FileOperationService,
-        licensekey_service_1.LicensekeyService,
-        file_handler_service_1.FileHandlerService,
+        licensekey_service_1.LicensekeyService, Object, file_handler_service_1.FileHandlerService,
         s3fileupload_service_1.S3FileUploadService,
         detection_service_1.DetectionService,
         user_service_1.UserService])

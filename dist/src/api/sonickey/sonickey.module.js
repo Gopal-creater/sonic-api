@@ -23,11 +23,16 @@ const detection_module_1 = require("../detection/detection.module");
 const sonickey_thirdparty_controller_1 = require("./controllers/sonickey.thirdparty.controller");
 const user_module_1 = require("../user/user.module");
 const auth_module_1 = require("../auth/auth.module");
+const bull_1 = require("@nestjs/bull");
+const sonickey_processor_1 = require("./processors/sonickey.processor");
 let SonickeyModule = class SonickeyModule {
 };
 SonickeyModule = __decorate([
     common_1.Module({
         imports: [
+            bull_1.BullModule.registerQueue({
+                name: 'sonickey',
+            }),
             common_1.forwardRef(() => api_key_module_1.ApiKeyModule),
             licensekey_module_1.LicensekeyModule,
             common_1.forwardRef(() => user_module_1.UserModule),
@@ -44,7 +49,12 @@ SonickeyModule = __decorate([
             sonickey_binary_controller_1.SonickeyBinaryController,
             sonickey_thirdparty_controller_1.SonickeyThirdPartyController,
         ],
-        providers: [sonickey_service_1.SonickeyService, file_operation_service_1.FileOperationService, file_handler_service_1.FileHandlerService],
+        providers: [
+            sonickey_service_1.SonickeyService,
+            file_operation_service_1.FileOperationService,
+            file_handler_service_1.FileHandlerService,
+            sonickey_processor_1.SonicKeyProcessor,
+        ],
         exports: [sonickey_service_1.SonickeyService],
     })
 ], SonickeyModule);

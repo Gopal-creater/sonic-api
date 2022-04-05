@@ -92,7 +92,7 @@ import * as _ from 'lodash';
 export class SonickeyController {
   constructor(
     private readonly sonicKeyService: SonickeyService,
-    private readonly licensekeyService: LicensekeyService,
+    public readonly licensekeyService: LicensekeyService,
     private readonly fileHandlerService: FileHandlerService,
     private readonly detectionService: DetectionService,
   ) {}
@@ -128,6 +128,48 @@ export class SonickeyController {
   @ApiOperation({ summary: 'Get All Sonic Keys' })
   async getAll(@Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto) {
     return this.sonicKeyService.getAll(parsedQueryDto);
+  }
+
+  @Post('/encode-bulk/companies/:companyId')
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
+  @ApiOperation({ summary: 'API for tunesat to import their media to sonic' })
+  async importToSonic(@Param('companyId') companyId: string) {
+    return this.sonicKeyService.encodeBulkWithQueue();
+  }
+
+  @Get('/encode-bulk/companies/:companyId/get-job-status/:jobId')
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Job Status From Queue' })
+  async getJobStatusFromQueue(
+    @Param('companyId') companyId: string,
+    @Param('jobId') jobId: string,
+  ) {
+    const job = await this.sonicKeyService.getJobStatus(jobId);
+    if (!job) {
+      throw new NotFoundException('Job doesnot exists');
+    }
+    if (job.failedReason) {
+      return {
+        completed: false,
+        error: true,
+        failedReason: job.failedReason,
+        stacktrace: job.stacktrace,
+        job:job
+      };
+    }
+    if (job.finishedOn) {
+      return {
+        completed: true,
+        job: job,
+      };
+    } else {
+      return {
+        completed: false,
+        job: job,
+      };
+    }
   }
 
   @Get('/generate-unique-sonic-key')
@@ -303,7 +345,7 @@ export class SonickeyController {
     var s3OriginalFileUploadResult: S3FileMeta;
     var sonicKey: string;
     var fingerPrintMetaData: any;
-    var fingerPrintErrorData :any;
+    var fingerPrintErrorData: any;
     var fingerPrintStatus: string;
     return this.sonicKeyService
       .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
@@ -313,7 +355,7 @@ export class SonickeyController {
         sonicKey = data.sonicKey;
         fingerPrintMetaData = data.fingerPrintMetaData;
         fingerPrintStatus = data.fingerPrintStatus;
-        fingerPrintErrorData=data.fingerPrintErrorData;
+        fingerPrintErrorData = data.fingerPrintErrorData;
         console.log('Increment Usages upon successfull encode');
         return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
       })
@@ -336,7 +378,7 @@ export class SonickeyController {
           s3FileMeta: s3UploadResult,
           s3OriginalFileMeta: s3OriginalFileUploadResult,
           fingerPrintMetaData: fingerPrintMetaData,
-          fingerPrintErrorData:fingerPrintErrorData,
+          fingerPrintErrorData: fingerPrintErrorData,
           fingerPrintStatus: fingerPrintStatus,
           _id: sonicKey,
           license: licenseId,
@@ -381,7 +423,7 @@ export class SonickeyController {
         sonicKey = data.sonicKey;
         fingerPrintMetaData = data.fingerPrintMetaData;
         fingerPrintStatus = data.fingerPrintStatus;
-        fingerPrintErrorData=data.fingerPrintErrorData
+        fingerPrintErrorData = data.fingerPrintErrorData;
         console.log('Increment Usages upon successfull encode');
         return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
       })
@@ -404,7 +446,7 @@ export class SonickeyController {
           s3FileMeta: s3UploadResult,
           s3OriginalFileMeta: s3OriginalFileUploadResult,
           fingerPrintMetaData: fingerPrintMetaData,
-          fingerPrintErrorData:fingerPrintErrorData,
+          fingerPrintErrorData: fingerPrintErrorData,
           fingerPrintStatus: fingerPrintStatus,
           _id: sonicKey,
           license: licenseId,

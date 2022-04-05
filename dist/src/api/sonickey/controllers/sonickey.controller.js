@@ -65,6 +65,36 @@ let SonickeyController = class SonickeyController {
     async getAll(parsedQueryDto) {
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
+    async importToSonic(companyId) {
+        return this.sonicKeyService.encodeBulkWithQueue();
+    }
+    async getJobStatusFromQueue(companyId, jobId) {
+        const job = await this.sonicKeyService.getJobStatus(jobId);
+        if (!job) {
+            throw new common_1.NotFoundException('Job doesnot exists');
+        }
+        if (job.failedReason) {
+            return {
+                completed: false,
+                error: true,
+                failedReason: job.failedReason,
+                stacktrace: job.stacktrace,
+                job: job
+            };
+        }
+        if (job.finishedOn) {
+            return {
+                completed: true,
+                job: job,
+            };
+        }
+        else {
+            return {
+                completed: false,
+                job: job,
+            };
+        }
+    }
     generateUniqueSonicKey() {
         return this.sonicKeyService.generateUniqueSonicKey();
     }
@@ -415,6 +445,25 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getAll", null);
+__decorate([
+    common_1.Post('/encode-bulk/companies/:companyId'),
+    swagger_1.ApiOperation({ summary: 'API for tunesat to import their media to sonic' }),
+    openapi.ApiResponse({ status: 201 }),
+    __param(0, common_1.Param('companyId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "importToSonic", null);
+__decorate([
+    common_1.Get('/encode-bulk/companies/:companyId/get-job-status/:jobId'),
+    swagger_1.ApiOperation({ summary: 'Get Job Status From Queue' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('companyId')),
+    __param(1, common_1.Param('jobId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "getJobStatusFromQueue", null);
 __decorate([
     common_1.Get('/generate-unique-sonic-key'),
     swagger_1.ApiOperation({ summary: 'Generate unique sonic key' }),

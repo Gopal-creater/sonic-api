@@ -35,6 +35,7 @@ import { GroupModule } from './api/group/group.module';
 import { AppVersionModule } from './api/appversions/appversions.module';
 import { NestModule, MiddlewareConsumer,RequestMethod } from '@nestjs/common';
 import { PlanModule } from './api/plan/plan.module';
+import { BullModule } from '@nestjs/bull';
 
 mongoosePaginate.paginate.options = {
   limit: 50,
@@ -47,6 +48,12 @@ var connectionNo = 0;
     AuthModule,
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [

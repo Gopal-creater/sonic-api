@@ -41,6 +41,7 @@ const company_module_1 = require("./api/company/company.module");
 const group_module_1 = require("./api/group/group.module");
 const appversions_module_1 = require("./api/appversions/appversions.module");
 const plan_module_1 = require("./api/plan/plan.module");
+const bull_1 = require("@nestjs/bull");
 mongoosePaginate.paginate.options = {
     limit: 50,
 };
@@ -55,6 +56,12 @@ AppModule = __decorate([
             auth_module_1.AuthModule,
             schedule_1.ScheduleModule.forRoot(),
             event_emitter_1.EventEmitterModule.forRoot(),
+            bull_1.BullModule.forRoot({
+                redis: {
+                    host: 'localhost',
+                    port: 6379,
+                },
+            }),
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 envFilePath: [

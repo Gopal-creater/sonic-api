@@ -14,9 +14,13 @@ import { DetectionModule } from '../detection/detection.module';
 import { SonickeyThirdPartyController } from './controllers/sonickey.thirdparty.controller';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
-
+import { BullModule } from '@nestjs/bull';
+import { SonicKeyProcessor } from './processors/sonickey.processor';
 @Module({
   imports: [
+    BullModule.registerQueue({
+      name: 'sonickey',
+    }),
     forwardRef(() => ApiKeyModule),
     LicensekeyModule,
     forwardRef(() => UserModule),
@@ -33,7 +37,12 @@ import { AuthModule } from '../auth/auth.module';
     SonickeyBinaryController,
     SonickeyThirdPartyController,
   ],
-  providers: [SonickeyService, FileOperationService, FileHandlerService],
+  providers: [
+    SonickeyService,
+    FileOperationService,
+    FileHandlerService,
+    SonicKeyProcessor,
+  ],
   exports: [SonickeyService],
 })
 export class SonickeyModule {}
