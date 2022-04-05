@@ -181,7 +181,7 @@ let SonickeyService = class SonickeyService {
                 fingerPrintStatus: Enums_1.FingerPrintStatus.PENDING,
             };
             if (fingerPrint) {
-                const fingerPrintMetaData = await this.fingerPrintRequestToFPServer(resultObj.s3OriginalFileUploadResult, random11CharKey, file.originalname)
+                const fingerPrintMetaData = await this.fingerPrintRequestToFPServer(resultObj.s3OriginalFileUploadResult, random11CharKey, file.originalname, file.size)
                     .then(data => {
                     resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.PROCESSING;
                     return data;
@@ -216,14 +216,15 @@ let SonickeyService = class SonickeyService {
             this.fileHandlerService.deleteFileAtPath(inFilePath);
         }));
     }
-    async fingerPrintRequestToFPServer(originalFileS3Meta, sonicKey, originalFileName) {
+    async fingerPrintRequestToFPServer(originalFileS3Meta, sonicKey, originalFileName, fileSize) {
         const fingerPrintUrl = config_1.appConfig.FINGERPRINT_SERVER.fingerPrintUrl;
         const signedS3UrlToOriginalFile = await this.s3FileUploadService.getSignedUrl(originalFileS3Meta.Key, 60 * 10);
         return axios_1.default
             .post(fingerPrintUrl, {
             s3FileUrl: signedS3UrlToOriginalFile,
             sonicKey: sonicKey,
-            originalFileName: originalFileName
+            originalFileName: originalFileName,
+            fileSize: fileSize
         })
             .then(res => {
             return res.data;

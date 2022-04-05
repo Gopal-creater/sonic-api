@@ -274,7 +274,8 @@ export class SonickeyService {
             const fingerPrintMetaData = await this.fingerPrintRequestToFPServer(
               resultObj.s3OriginalFileUploadResult,
               random11CharKey,
-              file.originalname
+              file.originalname,
+              file.size
             )
               .then(data => {
                 //Indicate that processing has been started in FP Server
@@ -338,7 +339,8 @@ export class SonickeyService {
   async fingerPrintRequestToFPServer(
     originalFileS3Meta: S3FileUploadI,
     sonicKey: string,
-    originalFileName:string
+    originalFileName:string,
+    fileSize:number
   ) {
     const fingerPrintUrl = appConfig.FINGERPRINT_SERVER.fingerPrintUrl;
     const signedS3UrlToOriginalFile = await this.s3FileUploadService.getSignedUrl(
@@ -349,7 +351,8 @@ export class SonickeyService {
       .post(fingerPrintUrl, {
         s3FileUrl: signedS3UrlToOriginalFile,
         sonicKey: sonicKey,
-        originalFileName:originalFileName
+        originalFileName:originalFileName,
+        fileSize:fileSize
       })
       .then(res => {
         return res.data;
