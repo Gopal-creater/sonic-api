@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as makeDir from 'make-dir';
 import * as rimraf from 'rimraf';
+import { IUploadedFile } from '../interfaces/UploadedFile.interface';
 @Injectable()
 export class FileHandlerService {
   async deleteFileAtPath(pathFromRoot: string) {
@@ -63,4 +64,11 @@ export class FileHandlerService {
         resolve(stream);
     });
 }
+
+// getFileDetailsFromFile(pathFromRoot: string): Promise<IUploadedFile> {
+//   return new Promise(async (resolve, reject) => {
+//       const stream = fs.createReadStream(pathFromRoot)
+//       resolve(stream);
+//   });
+// }
 }

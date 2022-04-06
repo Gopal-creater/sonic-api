@@ -25,17 +25,9 @@ let SonicKeyProcessor = SonicKeyProcessor_1 = class SonicKeyProcessor {
     async handleBulkEncode(job) {
         this.logger.debug(`Start encode for job id: ${job.id}`);
         this.logger.debug(job.data);
-        await this.encodeFileFromJobData(job).catch(err => {
-            this.logger.debug(`Encode failed for job id: ${job.id}`);
-            this.logger.error(err);
-            return Promise.reject(new Error(err.message || 'Encode failed'));
-        });
         this.logger.debug(`Encode completed for job id: ${job.id}`);
     }
     async encodeFileFromJobData(encodeJobData) {
-        return new Promise((resolve, reject) => {
-            reject(encodeJobData);
-        });
         const { id, data } = encodeJobData;
         const { file, owner, licenseId, metaData } = data;
         return new Promise(async (resolve, reject) => {
@@ -50,8 +42,6 @@ let SonicKeyProcessor = SonicKeyProcessor_1 = class SonicKeyProcessor {
             const savedSonicKey = await this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
             resolve(savedSonicKey);
         }).finally(() => {
-            this.logger.debug('Deleting file after encode for job', id);
-            this.fileHandlerService.deleteFileAtPath(file.path);
         });
     }
 };

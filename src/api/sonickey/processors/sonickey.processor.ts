@@ -90,8 +90,8 @@ export class SonicKeyProcessor {
       );
       resolve(savedSonicKey);
     }).finally(() => {
-      this.logger.debug('Deleting file after encode for job', id);
-      this.fileHandlerService.deleteFileAtPath(file.path);
+      // this.logger.debug('Deleting file after encode for job', id);
+      // this.fileHandlerService.deleteFileAtPath(file.path);
     });
   }
 }

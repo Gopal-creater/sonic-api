@@ -7,7 +7,7 @@ import { AuthModule } from './api/auth/auth.module';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SonickeyModule } from './api/sonickey/sonickey.module';
-import { diskStorage } from 'multer';
+import { diskStorage} from 'multer';
 import { UserModule } from './api/user/user.module';
 import { appConfig } from './config';
 import appConfiguration from './config/app.config';

@@ -17,6 +17,7 @@ import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import axios from 'axios';
+import * as makeDir from 'make-dir';
 import { MongoosePaginateSonicKeyDto } from '../dtos/mongoosepaginate-sonickey.dto';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import {
@@ -67,7 +68,9 @@ export class SonickeyService {
   }
 
   async encodeBulkWithQueue() {
-   return this.sonicKeyQueue.add('bulk_encode', {
+    const owner = 'owner1';
+    const company = 'company1';
+    const payload = {
       fileSpecs: [
         {
           filePath: 'a.mp3',
@@ -77,17 +80,28 @@ export class SonickeyService {
           },
         },
       ],
-      owner:"owner1",
-      company:"company1"
-    },{
-      delay:10000 //10 sec
-    });
+    };
+
+    const addedJobsDetails = [];
+    const failedData = [];
+    for await (const fileSpec of payload.fileSpecs) {
+
+    }
+    const jobs = payload.fileSpecs.map(item => ({
+      name: 'bulk_encode',
+      data: {
+        ...item,
+        ownerv: owner,
+        company: company,
+      },
+      opts: { delay: 10000 }, //10 sec
+    }));
+    return this.sonicKeyQueue.addBulk(jobs);
   }
 
-  async getJobStatus(jobId:string){
-    return this.sonicKeyQueue.getJob(jobId)
+  async getJobStatus(jobId: string) {
+    return this.sonicKeyQueue.getJob(jobId);
   }
-
 
   async testDownloadFile() {
     // const key = `userId1234345/encodedFiles/aa1y7g154cktiatome-4fqq9xz8ckosgjzea-SonicTest_Detect.wav` //public
@@ -206,6 +220,9 @@ export class SonickeyService {
     file.path = upath.toUnix(file.path); //Convert windows path to unix path
     file.destination = upath.toUnix(file.destination);
     const inFilePath = file.path;
+    await makeDir(
+      `${file.destination}/encodedFiles`,
+    );
     const outFilePath =
       file.destination + '/' + 'encodedFiles' + '/' + file.filename;
     const argList =
@@ -254,6 +271,9 @@ export class SonickeyService {
     file.path = upath.toUnix(file.path); //Convert windows path to unix path
     file.destination = upath.toUnix(file.destination);
     const inFilePath = file.path;
+    await makeDir(
+      `${file.destination}/encodedFiles`,
+    );
     const outFilePath =
       file.destination + '/' + 'encodedFiles' + '/' + file.filename;
     const argList =
@@ -306,7 +326,8 @@ export class SonickeyService {
               .then(data => {
                 //Indicate that processing has been started in FP Server
                 resultObj.fingerPrintStatus = FingerPrintStatus.PROCESSING;
-                return data;
+                // return data;
+                return Promise.resolve(null);
               })
               .catch(err => {
                 console.log('err', err);

@@ -31,6 +31,7 @@ const config_1 = require("../../../config");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const axios_1 = require("axios");
+const makeDir = require("make-dir");
 const Enums_1 = require("../../../constants/Enums");
 const s3fileupload_service_1 = require("../../s3fileupload/s3fileupload.service");
 const detection_service_1 = require("../../detection/detection.service");
@@ -61,7 +62,10 @@ let SonickeyService = class SonickeyService {
         };
     }
     async encodeBulkWithQueue() {
-        return this.sonicKeyQueue.add('bulk_encode', {
+        var e_1, _a;
+        const owner = 'owner1';
+        const company = 'company1';
+        const payload = {
             fileSpecs: [
                 {
                     filePath: 'a.mp3',
@@ -71,11 +75,27 @@ let SonickeyService = class SonickeyService {
                     },
                 },
             ],
-            owner: "owner1",
-            company: "company1"
-        }, {
-            delay: 10000
-        });
+        };
+        const addedJobsDetails = [];
+        const failedData = [];
+        try {
+            for (var _b = __asyncValues(payload.fileSpecs), _c; _c = await _b.next(), !_c.done;) {
+                const fileSpec = _c.value;
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        const jobs = payload.fileSpecs.map(item => ({
+            name: 'bulk_encode',
+            data: Object.assign(Object.assign({}, item), { ownerv: owner, company: company }),
+            opts: { delay: 10000 },
+        }));
+        return this.sonicKeyQueue.addBulk(jobs);
     }
     async getJobStatus(jobId) {
         return this.sonicKeyQueue.getJob(jobId);
@@ -141,6 +161,7 @@ let SonickeyService = class SonickeyService {
         file.path = upath.toUnix(file.path);
         file.destination = upath.toUnix(file.destination);
         const inFilePath = file.path;
+        await makeDir(`${file.destination}/encodedFiles`);
         const outFilePath = file.destination + '/' + 'encodedFiles' + '/' + file.filename;
         const argList = ' -h ' +
             encodingStrength +
@@ -169,6 +190,7 @@ let SonickeyService = class SonickeyService {
         file.path = upath.toUnix(file.path);
         file.destination = upath.toUnix(file.destination);
         const inFilePath = file.path;
+        await makeDir(`${file.destination}/encodedFiles`);
         const outFilePath = file.destination + '/' + 'encodedFiles' + '/' + file.filename;
         const argList = ' -h ' +
             encodingStrength +
@@ -206,7 +228,7 @@ let SonickeyService = class SonickeyService {
                 const fingerPrintMetaData = await this.fingerPrintRequestToFPServer(resultObj.s3OriginalFileUploadResult, random11CharKey, file.originalname, file.size)
                     .then(data => {
                     resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.PROCESSING;
-                    return data;
+                    return Promise.resolve(null);
                 })
                     .catch(err => {
                     var _a;
@@ -253,7 +275,7 @@ let SonickeyService = class SonickeyService {
         });
     }
     async findAndGetValidSonicKeyFromRandomDecodedKeys(keys, saveDetection, detectionToSave) {
-        var e_1, _a;
+        var e_2, _a;
         var sonicKeys = [];
         try {
             for (var keys_1 = __asyncValues(keys), keys_1_1; keys_1_1 = await keys_1.next(), !keys_1_1.done;) {
@@ -269,12 +291,12 @@ let SonickeyService = class SonickeyService {
                 sonicKeys.push(sonickey);
             }
         }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
         finally {
             try {
                 if (keys_1_1 && !keys_1_1.done && (_a = keys_1.return)) await _a.call(keys_1);
             }
-            finally { if (e_1) throw e_1.error; }
+            finally { if (e_2) throw e_2.error; }
         }
         return sonicKeys;
     }
