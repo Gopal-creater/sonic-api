@@ -40,16 +40,19 @@ const user_service_1 = require("../../user/services/user.service");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 const bull_1 = require("@nestjs/bull");
 const path = require("path");
+const config_2 = require("@nestjs/config");
 let SonickeyService = class SonickeyService {
-    constructor(sonicKeyModel, fileOperationService, licensekeyService, sonicKeyQueue, fileHandlerService, s3FileUploadService, detectionService, userService) {
+    constructor(sonicKeyModel, fileOperationService, licensekeyService, sonicKeyQueue, fileHandlerService, s3FileUploadService, configService, detectionService, userService) {
         this.sonicKeyModel = sonicKeyModel;
         this.fileOperationService = fileOperationService;
         this.licensekeyService = licensekeyService;
         this.sonicKeyQueue = sonicKeyQueue;
         this.fileHandlerService = fileHandlerService;
         this.s3FileUploadService = s3FileUploadService;
+        this.configService = configService;
         this.detectionService = detectionService;
         this.userService = userService;
+        console.log(`FingerPrint Enabled: ${this.configService.get('ENABLE_FINGERPRINTING') == 'true' ? "TRUE" : "FALSE"}`);
     }
     generateUniqueSonicKey() {
         return nanoid_1.nanoid(11);
@@ -241,7 +244,7 @@ let SonickeyService = class SonickeyService {
                 fingerPrintErrorData: null,
                 fingerPrintStatus: Enums_1.FingerPrintStatus.PENDING,
             };
-            if (fingerPrint) {
+            if (fingerPrint && this.configService.get('ENABLE_FINGERPRINTING') == 'true') {
                 const fingerPrintMetaData = await this.fingerPrintRequestToFPServer(resultObj.s3OriginalFileUploadResult, random11CharKey, file.originalname, file.size)
                     .then(data => {
                     resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.PROCESSING;
@@ -374,11 +377,12 @@ SonickeyService = __decorate([
     common_1.Injectable(),
     __param(0, mongoose_1.InjectModel(sonickey_schema_1.SonicKey.name)),
     __param(3, bull_1.InjectQueue('sonickey')),
-    __param(7, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
+    __param(8, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         file_operation_service_1.FileOperationService,
         licensekey_service_1.LicensekeyService, Object, file_handler_service_1.FileHandlerService,
         s3fileupload_service_1.S3FileUploadService,
+        config_2.ConfigService,
         detection_service_1.DetectionService,
         user_service_1.UserService])
 ], SonickeyService);

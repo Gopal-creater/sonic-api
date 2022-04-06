@@ -36,6 +36,7 @@ import { Queue } from 'bull';
 import { EncodeJobDataI } from '../processors/sonickey.processor';
 import * as path from 'path';
 import { EncodeFromQueueDto } from '../dtos/encode.dto';
+import { ConfigService } from '@nestjs/config';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -47,10 +48,13 @@ export class SonickeyService {
     @InjectQueue('sonickey') public readonly sonicKeyQueue: Queue,
     private readonly fileHandlerService: FileHandlerService,
     private readonly s3FileUploadService: S3FileUploadService,
+    private configService: ConfigService,
     private readonly detectionService: DetectionService,
     @Inject(forwardRef(() => UserService))
     public readonly userService: UserService,
-  ) {}
+  ) {
+    console.log(`FingerPrint Enabled: ${this.configService.get('ENABLE_FINGERPRINTING') == 'true'?"TRUE":"FALSE"}`)
+  }
 
   generateUniqueSonicKey() {
     // TODO: Must verify for uniqueness of generated key
@@ -351,7 +355,7 @@ export class SonickeyService {
           };
           //We will be communication with FP server all event based we wont wait for FP to finished,
           //All manage by eventStatus
-          if (fingerPrint) {
+          if (fingerPrint && this.configService.get('ENABLE_FINGERPRINTING') == 'true') {
             const fingerPrintMetaData = await this.fingerPrintRequestToFPServer(
               resultObj.s3OriginalFileUploadResult,
               random11CharKey,

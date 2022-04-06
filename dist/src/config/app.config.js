@@ -13,6 +13,7 @@ exports.appConfig = {
     DECODER_EXE_PATH: `${appRootPath.toString()}/bin/decode.sh`,
     TIME_TO_LISTEN_FOR_STREAM_IN_SECONDS: 30,
     ENABLE_STREAMING_LISTENER: true,
+    ENABLE_FINGERPRINTING: process.env.ENABLE_FINGERPRINTING == 'true',
     FINGERPRINT_SERVER: {
         fingerPrintUrl: 'http://fpserver.sonicdata.com/api/fp/fingerprint',
     },
