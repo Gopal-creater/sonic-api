@@ -1,7 +1,15 @@
 import { SonicKeyDto } from './sonicKey.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty,IsJSON,ValidateNested } from 'class-validator';
-import { Transform ,plainToClass,Type} from 'class-transformer';
+import {
+  IsNotEmpty,
+  IsJSON,
+  ValidateNested,
+  IsArray,
+  ArrayMinSize,
+  ArrayMaxSize,
+  Length
+} from 'class-validator';
+import { Transform, plainToClass, Type } from 'class-transformer';
 
 export class EncodeDto {
   @IsNotEmpty()
@@ -9,7 +17,7 @@ export class EncodeDto {
   mediaFile: any;
 
   @ValidateNested()
-  @Transform((value) => plainToClass(SonicKeyDto, JSON.parse(value)))
+  @Transform(value => plainToClass(SonicKeyDto, JSON.parse(value)))
   // @Type(() => SonicKeyDto)
   // @IsNotEmpty()
   // @IsJSON()
@@ -25,4 +33,23 @@ export class EncodeFromUrlDto {
   @IsNotEmpty()
   @ApiProperty()
   data: SonicKeyDto;
+}
+
+export class QueueFileSpecDto {
+  @IsNotEmpty()
+  @ApiProperty()
+  filePath: string;
+
+  @ApiProperty()
+  metaData: SonicKeyDto;
+}
+export class EncodeFromQueueDto {
+  @IsNotEmpty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => QueueFileSpecDto)
+  @ArrayMinSize(1)
+  @ArrayMaxSize(2)
+  @ApiProperty({ type: [QueueFileSpecDto] })
+  fileSpecs: [QueueFileSpecDto];
 }

@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EncodeFromUrlDto = exports.EncodeDto = void 0;
+exports.EncodeFromQueueDto = exports.QueueFileSpecDto = exports.EncodeFromUrlDto = exports.EncodeDto = void 0;
 const openapi = require("@nestjs/swagger");
 const sonicKey_dto_1 = require("./sonicKey.dto");
 const swagger_1 = require("@nestjs/swagger");
@@ -27,7 +27,7 @@ __decorate([
 ], EncodeDto.prototype, "mediaFile", void 0);
 __decorate([
     class_validator_1.ValidateNested(),
-    class_transformer_1.Transform((value) => class_transformer_1.plainToClass(sonicKey_dto_1.SonicKeyDto, JSON.parse(value))),
+    class_transformer_1.Transform(value => class_transformer_1.plainToClass(sonicKey_dto_1.SonicKeyDto, JSON.parse(value))),
     swagger_1.ApiProperty(),
     __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
 ], EncodeDto.prototype, "data", void 0);
@@ -48,4 +48,35 @@ __decorate([
     __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
 ], EncodeFromUrlDto.prototype, "data", void 0);
 exports.EncodeFromUrlDto = EncodeFromUrlDto;
+class QueueFileSpecDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { filePath: { required: true, type: () => String }, metaData: { required: true, type: () => require("./sonicKey.dto").SonicKeyDto } };
+    }
+}
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], QueueFileSpecDto.prototype, "filePath", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
+], QueueFileSpecDto.prototype, "metaData", void 0);
+exports.QueueFileSpecDto = QueueFileSpecDto;
+class EncodeFromQueueDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { fileSpecs: { required: true } };
+    }
+}
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    class_validator_1.IsArray(),
+    class_validator_1.ValidateNested({ each: true }),
+    class_transformer_1.Type(() => QueueFileSpecDto),
+    class_validator_1.ArrayMinSize(1),
+    class_validator_1.ArrayMaxSize(2),
+    swagger_1.ApiProperty({ type: [QueueFileSpecDto] }),
+    __metadata("design:type", Array)
+], EncodeFromQueueDto.prototype, "fileSpecs", void 0);
+exports.EncodeFromQueueDto = EncodeFromQueueDto;
 //# sourceMappingURL=encode.dto.js.map

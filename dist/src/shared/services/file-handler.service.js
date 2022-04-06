@@ -9,8 +9,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileHandlerService = void 0;
 const common_1 = require("@nestjs/common");
 const fs = require("fs");
+const mime = require("mime");
 const makeDir = require("make-dir");
 const rimraf = require("rimraf");
+const utils_1 = require("../utils");
+const path = require("path");
 let FileHandlerService = class FileHandlerService {
     async deleteFileAtPath(pathFromRoot) {
         if (await this.fileExistsAtPath(pathFromRoot)) {
@@ -62,6 +65,28 @@ let FileHandlerService = class FileHandlerService {
         return new Promise(async (resolve, reject) => {
             const stream = fs.createReadStream(pathFromRoot);
             resolve(stream);
+        });
+    }
+    async getFileDetailsFromFile(pathFromRoot) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const originalname = utils_1.extractFileName(pathFromRoot);
+                const fileStat = fs.statSync(pathFromRoot);
+                const mimeType = mime.getType(pathFromRoot);
+                const fileDetails = {
+                    url: pathFromRoot,
+                    originalname: originalname,
+                    destination: path.resolve(pathFromRoot, '..'),
+                    filename: originalname,
+                    path: pathFromRoot,
+                    size: fileStat.size,
+                    mimetype: mimeType,
+                };
+                resolve([fileDetails, null]);
+            }
+            catch (error) {
+                resolve([null, error]);
+            }
         });
     }
 };

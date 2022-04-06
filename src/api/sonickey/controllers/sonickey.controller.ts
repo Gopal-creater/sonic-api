@@ -4,7 +4,7 @@ import {
   UpdateSonicKeyFingerPrintMetaDataDto,
 } from '../dtos/update-sonickey.dto';
 import { DecodeDto } from '../dtos/decode.dto';
-import { EncodeDto, EncodeFromUrlDto } from '../dtos/encode.dto';
+import { EncodeDto, EncodeFromQueueDto,EncodeFromUrlDto } from '../dtos/encode.dto';
 import { SonicKeyDto } from '../dtos/sonicKey.dto';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { JsonParsePipe } from '../../../shared/pipes/jsonparse.pipe';
@@ -134,8 +134,16 @@ export class SonickeyController {
   // @UseGuards(JwtAuthGuard)
   // @ApiBearerAuth()
   @ApiOperation({ summary: 'API for tunesat to import their media to sonic' })
-  async importToSonic(@Param('companyId') companyId: string) {
-    return this.sonicKeyService.encodeBulkWithQueue();
+  async encodeToSonicFromPath(
+    @Param('companyId') company: string,
+    @User('sub') owner: string,
+    @ValidatedLicense('key') license: string,
+    @Body() encodeFromQueueDto: EncodeFromQueueDto,
+  ) {
+    owner = owner||'owner1';
+    company = company||'company1';
+    license = license||'license1';
+    return this.sonicKeyService.encodeBulkWithQueue(owner,company,license,encodeFromQueueDto);
   }
 
   @Get('/encode-bulk/companies/:companyId/get-job-status/:jobId')
@@ -156,7 +164,7 @@ export class SonickeyController {
         error: true,
         failedReason: job.failedReason,
         stacktrace: job.stacktrace,
-        job:job
+        job: job,
       };
     }
     if (job.finishedOn) {

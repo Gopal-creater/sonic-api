@@ -8,6 +8,8 @@ export const appConfig = {
 
   MULTER_IMPORT_DEST: `${appRootPath.toString()}/storage/uploads/imports`,
 
+  ROOT_RSYNC_UPLOADS: `${appRootPath.toString()}/storage/rsync_uploads/1234567890`,
+
   CONTAINER_DEST: `${appRootPath.toString()}/storage/containers`,
 
   ENCODER_EXE_PATH: `${appRootPath.toString()}/bin/encode.sh`,

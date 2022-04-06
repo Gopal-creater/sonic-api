@@ -10,8 +10,9 @@ import { SonicKeyDto } from '../dtos/sonicKey.dto';
 export interface EncodeJobDataI {
   file: IUploadedFile;
   owner: string;
+  company: string;
   licenseId: string;
-  metaData: SonicKeyDto;
+  metaData:Partial<SonicKeyDto>;
 }
 
 @Processor('sonickey')
@@ -81,6 +82,7 @@ export class SonicKeyProcessor {
         fingerPrintMetaData: fingerPrintMetaData,
         fingerPrintErrorData: fingerPrintErrorData,
         fingerPrintStatus: fingerPrintStatus,
+        queueJobId:id,
         _id: sonicKey,
         license: licenseId,
       };

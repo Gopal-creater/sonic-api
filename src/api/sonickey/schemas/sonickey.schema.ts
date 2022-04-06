@@ -243,6 +243,11 @@ export class SonicKey extends Document {
   @ApiProperty()
   @Prop({ type: String, enum: FingerPrintStatus })
   fingerPrintStatus: string;
+
+  @IsOptional()
+  @ApiProperty()
+  @Prop()
+  queueJobId: string; //Just to track the sonickeys encoded using queueJob
 }
 
 export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);

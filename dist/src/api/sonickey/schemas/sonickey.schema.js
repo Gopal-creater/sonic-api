@@ -301,6 +301,12 @@ __decorate([
     mongoose_1.Prop({ type: String, enum: Enums_1.FingerPrintStatus }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "fingerPrintStatus", void 0);
+__decorate([
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], SonicKey.prototype, "queueJobId", void 0);
 SonicKey = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.SonicKeySchemaName })
 ], SonicKey);

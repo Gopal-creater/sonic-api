@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
+import * as mime from 'mime';
+import * as uniqid from 'uniqid';
 import * as makeDir from 'make-dir';
 import * as rimraf from 'rimraf';
 import { IUploadedFile } from '../interfaces/UploadedFile.interface';
+import { extractFileName } from 'src/shared/utils';
+import * as path from 'path';
 @Injectable()
 export class FileHandlerService {
   async deleteFileAtPath(pathFromRoot: string) {
@@ -60,15 +64,32 @@ export class FileHandlerService {
   }
   downloadFileFromPath(pathFromRoot: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
-        const stream = fs.createReadStream(pathFromRoot)
-        resolve(stream);
+      const stream = fs.createReadStream(pathFromRoot);
+      resolve(stream);
     });
-}
+  }
 
-// getFileDetailsFromFile(pathFromRoot: string): Promise<IUploadedFile> {
-//   return new Promise(async (resolve, reject) => {
-//       const stream = fs.createReadStream(pathFromRoot)
-//       resolve(stream);
-//   });
-// }
+  async getFileDetailsFromFile(
+    pathFromRoot: string,
+  ): Promise<[IUploadedFile, any]> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const originalname = extractFileName(pathFromRoot);
+        const fileStat = fs.statSync(pathFromRoot);
+        const mimeType = mime.getType(pathFromRoot);
+        const fileDetails: IUploadedFile = {
+          url: pathFromRoot,
+          originalname: originalname,
+          destination: path.resolve(pathFromRoot, '..'),
+          filename: originalname,
+          path: pathFromRoot,
+          size: fileStat.size,
+          mimetype: mimeType,
+        };
+        resolve([fileDetails, null]);
+      } catch (error) {
+        resolve([null, error]);
+      }
+    });
+  }
 }

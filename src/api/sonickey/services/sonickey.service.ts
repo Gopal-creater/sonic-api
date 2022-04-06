@@ -15,7 +15,7 @@ import { nanoid } from 'nanoid';
 import { appConfig } from '../../../config';
 import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, FilterQuery } from 'mongoose';
 import axios from 'axios';
 import * as makeDir from 'make-dir';
 import { MongoosePaginateSonicKeyDto } from '../dtos/mongoosepaginate-sonickey.dto';
@@ -33,6 +33,9 @@ import { LicensekeyService } from '../../licensekey/services/licensekey.service'
 import { S3FileUploadI } from '../../s3fileupload/interfaces/index';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
+import { EncodeJobDataI } from '../processors/sonickey.processor';
+import * as path from 'path';
+import { EncodeFromQueueDto } from '../dtos/encode.dto';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -67,36 +70,72 @@ export class SonickeyService {
     };
   }
 
-  async encodeBulkWithQueue() {
-    const owner = 'owner1';
-    const company = 'company1';
-    const payload = {
-      fileSpecs: [
-        {
-          filePath: 'a.mp3',
-          metaData: {
-            key1: 'value1',
-            key2: 'value2',
-          },
-        },
-      ],
-    };
+  async encodeBulkWithQueue(owner:string,company:string,license:string,encodeFromQueueDto: EncodeFromQueueDto) {
+    var{fileSpecs}=encodeFromQueueDto
+    // const payload = {
+    //   fileSpecs: [
+    //     {
+    //       filePath: 'a.mp3',
+    //       metaData: {},
+    //     },
+    //     {
+    //       filePath: 'musicbox2.wav',
+    //       metaData: {},
+    //     },
+    //     {
+    //       filePath: 'testfolder/musicbox3.wav',
+    //       metaData: {},
+    //     },
+    //   ],
+    // };
 
     const addedJobsDetails = [];
     const failedData = [];
-    for await (const fileSpec of payload.fileSpecs) {
-
+    for await (var fileSpec of fileSpecs) {
+      const jobId = `${owner}_${fileSpec.filePath}`;
+      const isAlreadyDone = await this.findByQueueJobId(jobId);
+      if (isAlreadyDone) {
+        fileSpec['message'] = 'File already encoded, duplicate file';
+        failedData.push(fileSpec);
+        continue;
+      }
+      const absoluteFilePath = path.join(
+        appConfig.ROOT_RSYNC_UPLOADS,
+        fileSpec.filePath,
+      );
+      const [
+        fileDetailsFromFilePath,
+        error,
+      ] = await this.fileHandlerService.getFileDetailsFromFile(
+        absoluteFilePath,
+      );
+      if (error) {
+        fileSpec['message'] = 'Can not resolve file, possibly file not found';
+        fileSpec['error'] = error;
+        failedData.push(fileSpec);
+      } else {
+        const jobData: EncodeJobDataI = {
+          file: fileDetailsFromFilePath,
+          metaData: fileSpec.metaData,
+          owner: owner,
+          company: company,
+          licenseId: license,
+        };
+        const jobInfo = {
+          name: 'bulk_encode',
+          data: jobData,
+          opts: { delay: 10000, jobId: jobId }, //10 sec
+        };
+        addedJobsDetails.push(jobInfo);
+      }
     }
-    const jobs = payload.fileSpecs.map(item => ({
-      name: 'bulk_encode',
-      data: {
-        ...item,
-        ownerv: owner,
-        company: company,
-      },
-      opts: { delay: 10000 }, //10 sec
-    }));
-    return this.sonicKeyQueue.addBulk(jobs);
+    const addedJobsQueueResponse = await this.sonicKeyQueue.addBulk(
+      addedJobsDetails,
+    );
+    return {
+      addedJobsQueueResponse: addedJobsQueueResponse,
+      failedData: failedData,
+    };
   }
 
   async getJobStatus(jobId: string) {
@@ -220,9 +259,7 @@ export class SonickeyService {
     file.path = upath.toUnix(file.path); //Convert windows path to unix path
     file.destination = upath.toUnix(file.destination);
     const inFilePath = file.path;
-    await makeDir(
-      `${file.destination}/encodedFiles`,
-    );
+    await makeDir(`${file.destination}/encodedFiles`);
     const outFilePath =
       file.destination + '/' + 'encodedFiles' + '/' + file.filename;
     const argList =
@@ -271,9 +308,7 @@ export class SonickeyService {
     file.path = upath.toUnix(file.path); //Convert windows path to unix path
     file.destination = upath.toUnix(file.destination);
     const inFilePath = file.path;
-    await makeDir(
-      `${file.destination}/encodedFiles`,
-    );
+    await makeDir(`${file.destination}/encodedFiles`);
     const outFilePath =
       file.destination + '/' + 'encodedFiles' + '/' + file.filename;
     const argList =
@@ -456,7 +491,7 @@ export class SonickeyService {
 
   async autoPopulateSonicContentWithMusicMetaForFile(
     file: IUploadedFile,
-    sonicKeyDto?: SonicKeyDto,
+    sonicKeyDto?: Partial<SonicKeyDto>,
   ) {
     const musicData = await this.exractMusicMetaFromFile(file.path);
     sonicKeyDto.contentSize = sonicKeyDto.contentSize || file?.size;
@@ -488,6 +523,14 @@ export class SonickeyService {
 
   async findBySonicKey(sonicKey: string): Promise<SonicKey> {
     return this.sonicKeyModel.findOne({ sonicKey: sonicKey }).lean();
+  }
+
+  async findByQueueJobId(queueJobId: string | number): Promise<SonicKey> {
+    return this.sonicKeyModel.findOne({ queueJobId: queueJobId }).lean();
+  }
+
+  findOne(filter: FilterQuery<SonicKey>) {
+    return this.sonicKeyModel.findOne(filter).lean();
   }
 
   async findBySonicKeyOrFail(sonicKey: string) {

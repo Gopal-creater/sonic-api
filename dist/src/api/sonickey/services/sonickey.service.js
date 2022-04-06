@@ -39,6 +39,7 @@ const detection_schema_1 = require("../../detection/schemas/detection.schema");
 const user_service_1 = require("../../user/services/user.service");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 const bull_1 = require("@nestjs/bull");
+const path = require("path");
 let SonickeyService = class SonickeyService {
     constructor(sonicKeyModel, fileOperationService, licensekeyService, sonicKeyQueue, fileHandlerService, s3FileUploadService, detectionService, userService) {
         this.sonicKeyModel = sonicKeyModel;
@@ -61,41 +62,57 @@ let SonickeyService = class SonickeyService {
             result: result,
         };
     }
-    async encodeBulkWithQueue() {
+    async encodeBulkWithQueue(owner, company, license, encodeFromQueueDto) {
         var e_1, _a;
-        const owner = 'owner1';
-        const company = 'company1';
-        const payload = {
-            fileSpecs: [
-                {
-                    filePath: 'a.mp3',
-                    metaData: {
-                        key1: 'value1',
-                        key2: 'value2',
-                    },
-                },
-            ],
-        };
+        var { fileSpecs } = encodeFromQueueDto;
         const addedJobsDetails = [];
         const failedData = [];
         try {
-            for (var _b = __asyncValues(payload.fileSpecs), _c; _c = await _b.next(), !_c.done;) {
-                const fileSpec = _c.value;
+            for (var fileSpecs_1 = __asyncValues(fileSpecs), fileSpecs_1_1; fileSpecs_1_1 = await fileSpecs_1.next(), !fileSpecs_1_1.done;) {
+                var fileSpec = fileSpecs_1_1.value;
+                const jobId = `${owner}_${fileSpec.filePath}`;
+                const isAlreadyDone = await this.findByQueueJobId(jobId);
+                if (isAlreadyDone) {
+                    fileSpec['message'] = 'File already encoded, duplicate file';
+                    failedData.push(fileSpec);
+                    continue;
+                }
+                const absoluteFilePath = path.join(config_1.appConfig.ROOT_RSYNC_UPLOADS, fileSpec.filePath);
+                const [fileDetailsFromFilePath, error,] = await this.fileHandlerService.getFileDetailsFromFile(absoluteFilePath);
+                if (error) {
+                    fileSpec['message'] = 'Can not resolve file, possibly file not found';
+                    fileSpec['error'] = error;
+                    failedData.push(fileSpec);
+                }
+                else {
+                    const jobData = {
+                        file: fileDetailsFromFilePath,
+                        metaData: fileSpec.metaData,
+                        owner: owner,
+                        company: company,
+                        licenseId: license,
+                    };
+                    const jobInfo = {
+                        name: 'bulk_encode',
+                        data: jobData,
+                        opts: { delay: 10000, jobId: jobId },
+                    };
+                    addedJobsDetails.push(jobInfo);
+                }
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
+                if (fileSpecs_1_1 && !fileSpecs_1_1.done && (_a = fileSpecs_1.return)) await _a.call(fileSpecs_1);
             }
             finally { if (e_1) throw e_1.error; }
         }
-        const jobs = payload.fileSpecs.map(item => ({
-            name: 'bulk_encode',
-            data: Object.assign(Object.assign({}, item), { ownerv: owner, company: company }),
-            opts: { delay: 10000 },
-        }));
-        return this.sonicKeyQueue.addBulk(jobs);
+        const addedJobsQueueResponse = await this.sonicKeyQueue.addBulk(addedJobsDetails);
+        return {
+            addedJobsQueueResponse: addedJobsQueueResponse,
+            failedData: failedData,
+        };
     }
     async getJobStatus(jobId) {
         return this.sonicKeyQueue.getJob(jobId);
@@ -338,6 +355,12 @@ let SonickeyService = class SonickeyService {
     }
     async findBySonicKey(sonicKey) {
         return this.sonicKeyModel.findOne({ sonicKey: sonicKey }).lean();
+    }
+    async findByQueueJobId(queueJobId) {
+        return this.sonicKeyModel.findOne({ queueJobId: queueJobId }).lean();
+    }
+    findOne(filter) {
+        return this.sonicKeyModel.findOne(filter).lean();
     }
     async findBySonicKeyOrFail(sonicKey) {
         return this.findBySonicKey(sonicKey).then(data => {

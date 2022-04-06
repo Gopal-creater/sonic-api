@@ -65,8 +65,11 @@ let SonickeyController = class SonickeyController {
     async getAll(parsedQueryDto) {
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
-    async importToSonic(companyId) {
-        return this.sonicKeyService.encodeBulkWithQueue();
+    async encodeToSonicFromPath(company, owner, license, encodeFromQueueDto) {
+        owner = owner || 'owner1';
+        company = company || 'company1';
+        license = license || 'license1';
+        return this.sonicKeyService.encodeBulkWithQueue(owner, company, license, encodeFromQueueDto);
     }
     async getJobStatusFromQueue(companyId, jobId) {
         const job = await this.sonicKeyService.getJobStatus(jobId);
@@ -79,7 +82,7 @@ let SonickeyController = class SonickeyController {
                 error: true,
                 failedReason: job.failedReason,
                 stacktrace: job.stacktrace,
-                job: job
+                job: job,
             };
         }
         if (job.finishedOn) {
@@ -450,10 +453,13 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'API for tunesat to import their media to sonic' }),
     openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Param('companyId')),
+    __param(1, decorators_1.User('sub')),
+    __param(2, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __param(3, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String, String, encode_dto_1.EncodeFromQueueDto]),
     __metadata("design:returntype", Promise)
-], SonickeyController.prototype, "importToSonic", null);
+], SonickeyController.prototype, "encodeToSonicFromPath", null);
 __decorate([
     common_1.Get('/encode-bulk/companies/:companyId/get-job-status/:jobId'),
     swagger_1.ApiOperation({ summary: 'Get Job Status From Queue' }),
