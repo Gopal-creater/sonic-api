@@ -39,5 +39,6 @@ export default registeredConfig
 /**
  * some filed will be undefined if process.env is used,
  * if you are accesing the value that is using process.env then please use ConfigService to access it
+ * git reset --hard
  */
 export const appConfig =registeredConfig()
