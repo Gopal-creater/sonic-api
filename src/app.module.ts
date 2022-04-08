@@ -36,6 +36,7 @@ import { AppVersionModule } from './api/appversions/appversions.module';
 import { NestModule, MiddlewareConsumer,RequestMethod } from '@nestjs/common';
 import { PlanModule } from './api/plan/plan.module';
 import { BullModule } from '@nestjs/bull';
+import testConfig from './config/test.config';
 
 mongoosePaginate.paginate.options = {
   limit: 50,
@@ -56,11 +57,12 @@ var connectionNo = 0;
     }),
     ConfigModule.forRoot({
       isGlobal: true,
+      cache:true,
       envFilePath: [
         '.env.override',
-        process.env.NODE_ENV == 'production' ? '.env' : '.env.staging',
+        process.env.NODE_ENV == 'production' ? 'production.env' : 'staging.env',
       ],
-      load: [appConfiguration],
+      load: [appConfiguration,testConfig],
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

@@ -52,7 +52,7 @@ let SonickeyService = class SonickeyService {
         this.configService = configService;
         this.detectionService = detectionService;
         this.userService = userService;
-        console.log(`FingerPrint Enabled: ${this.configService.get('ENABLE_FINGERPRINTING') == 'true' ? "TRUE" : "FALSE"}`);
+        console.log(`FingerPrint BASE URL: ${this.configService.get('FINGERPRINT_SERVER.baseUrl')}`);
     }
     generateUniqueSonicKey() {
         return nanoid_1.nanoid(11);
@@ -244,24 +244,22 @@ let SonickeyService = class SonickeyService {
                 fingerPrintErrorData: null,
                 fingerPrintStatus: Enums_1.FingerPrintStatus.PENDING,
             };
-            if (fingerPrint && this.configService.get('ENABLE_FINGERPRINTING') == 'true') {
-                const fingerPrintMetaData = await this.fingerPrintRequestToFPServer(resultObj.s3OriginalFileUploadResult, random11CharKey, file.originalname, file.size)
-                    .then(data => {
-                    resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.PROCESSING;
-                    return Promise.resolve(null);
-                })
-                    .catch(err => {
-                    var _a;
-                    console.log('err', err);
-                    resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.FAILED;
-                    resultObj.fingerPrintErrorData = {
-                        message: err === null || err === void 0 ? void 0 : err.message,
-                        data: (_a = err === null || err === void 0 ? void 0 : err.response) === null || _a === void 0 ? void 0 : _a.data,
-                    };
-                    return Promise.resolve(null);
-                });
-                resultObj.fingerPrintMetaData = fingerPrintMetaData;
-            }
+            const fingerPrintMetaData = await this.fingerPrintRequestToFPServer(resultObj.s3OriginalFileUploadResult, random11CharKey, file.originalname, file.size)
+                .then(data => {
+                resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.PROCESSING;
+                return Promise.resolve(null);
+            })
+                .catch(err => {
+                var _a;
+                console.log('err', err);
+                resultObj.fingerPrintStatus = Enums_1.FingerPrintStatus.FAILED;
+                resultObj.fingerPrintErrorData = {
+                    message: err === null || err === void 0 ? void 0 : err.message,
+                    data: (_a = err === null || err === void 0 ? void 0 : err.response) === null || _a === void 0 ? void 0 : _a.data,
+                };
+                return Promise.resolve(null);
+            });
+            resultObj.fingerPrintMetaData = fingerPrintMetaData;
             return resultObj;
         })
             .finally(() => {
@@ -281,7 +279,7 @@ let SonickeyService = class SonickeyService {
         }));
     }
     async fingerPrintRequestToFPServer(originalFileS3Meta, sonicKey, originalFileName, fileSize) {
-        const fingerPrintUrl = config_1.appConfig.FINGERPRINT_SERVER.fingerPrintUrl;
+        const fingerPrintUrl = this.configService.get('FINGERPRINT_SERVER.fingerPrintUrl');
         const signedS3UrlToOriginalFile = await this.s3FileUploadService.getSignedUrl(originalFileS3Meta.Key, 60 * 10);
         return axios_1.default
             .post(fingerPrintUrl, {

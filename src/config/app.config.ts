@@ -1,6 +1,7 @@
 import * as appRootPath from 'app-root-path';
+import { registerAs } from '@nestjs/config';
 
-export const appConfig = {
+const registeredConfig = registerAs('', () => ({
   PORT: parseInt(process.env.PORT),
   MULTER_DEST: `${appRootPath.toString()}/storage/uploads`,
 
@@ -22,7 +23,8 @@ export const appConfig = {
   ENABLE_FINGERPRINTING: process.env.ENABLE_FINGERPRINTING == 'true',
 
   FINGERPRINT_SERVER: {
-    fingerPrintUrl: 'http://fpserver.sonicdata.com/api/fp/fingerprint',
+    baseUrl:`${process.env.FINGERPRINTING_SERVER_BASE_URL}`,
+    fingerPrintUrl: `${process.env.FINGERPRINTING_SERVER_BASE_URL}/api/fp/fingerprint`,
   },
   DEBUG: false,
   AUTH_CONFIG: {
@@ -31,6 +33,11 @@ export const appConfig = {
     region: process.env.COGNITO_REGION,
     authority: `https://cognito-idp.${process.env.COGNITO_REGION}.amazonaws.com/${process.env.COGNITO_USER_POOL_ID}`,
   },
-};
+}));
+export default registeredConfig
 
-export default () => appConfig;
+/**
+ * some filed will be undefined if process.env is used,
+ * if you are accesing the value that is using process.env then please use ConfigService to access it
+ */
+export const appConfig =registeredConfig()

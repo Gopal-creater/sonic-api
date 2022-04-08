@@ -67,7 +67,7 @@ Create .env.override file OR in command line
 ```.env.override
 BINARY_PATH=/home/ubuntu/code/Sonic-Radio-StreamReader/bin/
 ```
-To override more env variables, please check the variable name in .env or .env.staging file
+To override more env variables, please check the variable name in production.env or staging.env file
 
 # Thirdparty library to work with encode / decode
 * ffmpeg

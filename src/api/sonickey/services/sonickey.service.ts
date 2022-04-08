@@ -13,6 +13,7 @@ import * as mm from 'music-metadata';
 import * as upath from 'upath';
 import { nanoid } from 'nanoid';
 import { appConfig } from '../../../config';
+import config1  from '../../../config/app.config';
 import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, FilterQuery } from 'mongoose';
@@ -53,7 +54,7 @@ export class SonickeyService {
     @Inject(forwardRef(() => UserService))
     public readonly userService: UserService,
   ) {
-    console.log(`FingerPrint Enabled: ${this.configService.get('ENABLE_FINGERPRINTING') == 'true'?"TRUE":"FALSE"}`)
+    console.log(`FingerPrint BASE URL: ${this.configService.get('FINGERPRINT_SERVER.baseUrl')}`)
   }
 
   generateUniqueSonicKey() {
@@ -355,7 +356,6 @@ export class SonickeyService {
           };
           //We will be communication with FP server all event based we wont wait for FP to finished,
           //All manage by eventStatus
-          if (fingerPrint && this.configService.get('ENABLE_FINGERPRINTING') == 'true') {
             const fingerPrintMetaData = await this.fingerPrintRequestToFPServer(
               resultObj.s3OriginalFileUploadResult,
               random11CharKey,
@@ -378,7 +378,6 @@ export class SonickeyService {
                 return Promise.resolve(null);
               });
             resultObj.fingerPrintMetaData = fingerPrintMetaData;
-          }
           return resultObj;
         },
       )
@@ -428,7 +427,7 @@ export class SonickeyService {
     originalFileName: string,
     fileSize: number,
   ) {
-    const fingerPrintUrl = appConfig.FINGERPRINT_SERVER.fingerPrintUrl;
+    const fingerPrintUrl = this.configService.get<string>('FINGERPRINT_SERVER.fingerPrintUrl');
     const signedS3UrlToOriginalFile = await this.s3FileUploadService.getSignedUrl(
       originalFileS3Meta.Key,
       60 * 10,

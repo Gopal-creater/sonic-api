@@ -42,6 +42,7 @@ const group_module_1 = require("./api/group/group.module");
 const appversions_module_1 = require("./api/appversions/appversions.module");
 const plan_module_1 = require("./api/plan/plan.module");
 const bull_1 = require("@nestjs/bull");
+const test_config_1 = require("./config/test.config");
 mongoosePaginate.paginate.options = {
     limit: 50,
 };
@@ -64,11 +65,12 @@ AppModule = __decorate([
             }),
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
+                cache: true,
                 envFilePath: [
                     '.env.override',
-                    process.env.NODE_ENV == 'production' ? '.env' : '.env.staging',
+                    process.env.NODE_ENV == 'production' ? 'production.env' : 'staging.env',
                 ],
-                load: [app_config_1.default],
+                load: [app_config_1.default, test_config_1.default],
             }),
             mongoose_1.MongooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],
