@@ -82,9 +82,9 @@ export class PlanService {
         perExtraCost: 0.99,
         paymentInterval: PaymentInterval.ANNUAL,
         featureLists: [
-          "10 SonicKeys available.",
-          "€0.99 per extra SonicKey",
-          "Limited to 100 total SonicKeys"
+          "10 SonicKeys available",
+          "£0.99 per extra SonicKey",
+          "Limited to 100 SonicKeys total"
       ]
       },
       { upsert: true },
@@ -106,8 +106,8 @@ export class PlanService {
         paymentInterval: PaymentInterval.ANNUAL,
         featureLists:[
           "50 SonicKeys available",
-          "€0.99 per extra SonicKey",
-          "Limited to 100 total SonicKeys"
+          "£0.99 per extra SonicKey",
+          "Limited to 100 SonicKeys total"
       ]
       },
       { upsert: true },
@@ -129,7 +129,7 @@ export class PlanService {
         paymentInterval: PaymentInterval.ANNUAL,
         featureLists:[
           "100 SonicKeys available",
-          "€0.99 per extra SonicKey"
+          "£0.99 per extra SonicKey"
       ]
       },
       { upsert: true },
