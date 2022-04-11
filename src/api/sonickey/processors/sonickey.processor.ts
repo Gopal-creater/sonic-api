@@ -36,11 +36,8 @@ export class SonicKeyProcessor {
   }
 
   async encodeFileFromJobData(encodeJobData: Job) {
-    // return new Promise((resolve, reject) => {
-    //   reject(encodeJobData);
-    // });
     const { id, data } = encodeJobData;
-    const { file, owner, licenseId, metaData }: EncodeJobDataI = data;
+    const { file, owner,company, licenseId, metaData }: EncodeJobDataI = data;
     return new Promise(async (resolve, reject) => {
       const {
         s3UploadResult,
@@ -74,6 +71,7 @@ export class SonicKeyProcessor {
         contentFilePath: s3UploadResult.Location,
         originalFileName: file?.originalname,
         owner: owner,
+        company:company,
         sonicKey: sonicKey,
         channel: channel,
         downloadable: true,

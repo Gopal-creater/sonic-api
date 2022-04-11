@@ -55,6 +55,15 @@ export class SonicKey extends Document {
   owner: string;
 
   @ApiProperty()
+  @Prop({
+    required: false,
+    type: MogSchema.Types.ObjectId,
+    ref: 'Company',
+    autopopulate: { maxDepth: 2 },
+  })
+  company: string;
+
+  @ApiProperty()
   @Prop({ type: MogSchema.Types.ObjectId, ref: JobSchemaName })
   job: any;
 

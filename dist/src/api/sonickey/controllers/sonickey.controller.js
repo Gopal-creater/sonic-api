@@ -55,6 +55,8 @@ const role_based_guard_1 = require("../../auth/guards/role-based.guard");
 const user_db_schema_1 = require("../../user/schemas/user.db.schema");
 const mongoose_utils_1 = require("../../../shared/utils/mongoose.utils");
 const _ = require("lodash");
+const job_license_validation_guard_1 = require("../../licensekey/guards/job-license-validation.guard");
+const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
@@ -66,9 +68,9 @@ let SonickeyController = class SonickeyController {
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
     async encodeToSonicFromPath(company, owner, license, encodeFromQueueDto) {
-        owner = owner || 'owner1';
-        company = company || 'company1';
-        license = license || 'license1';
+        owner = owner;
+        company = company;
+        license = license;
         return this.sonicKeyService.encodeBulkWithQueue(owner, company, license, encodeFromQueueDto);
     }
     async getJobStatusFromQueue(companyId, jobId) {
@@ -450,6 +452,8 @@ __decorate([
 ], SonickeyController.prototype, "getAll", null);
 __decorate([
     common_1.Post('/encode-bulk/companies/:companyId'),
+    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, job_license_validation_guard_1.BulkEncodeWithQueueLicenseValidationGuard),
+    swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiOperation({ summary: 'API for tunesat to import their media to sonic' }),
     openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Param('companyId')),
@@ -462,6 +466,8 @@ __decorate([
 ], SonickeyController.prototype, "encodeToSonicFromPath", null);
 __decorate([
     common_1.Get('/encode-bulk/companies/:companyId/get-job-status/:jobId'),
+    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, job_license_validation_guard_1.BulkEncodeWithQueueLicenseValidationGuard),
+    swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiOperation({ summary: 'Get Job Status From Queue' }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('companyId')),

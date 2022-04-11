@@ -49,7 +49,11 @@ export class EncodeFromQueueDto {
   @ValidateNested({ each: true })
   @Type(() => QueueFileSpecDto)
   @ArrayMinSize(1)
-  @ArrayMaxSize(2)
+  @ArrayMaxSize(100)
   @ApiProperty({ type: [QueueFileSpecDto] })
   fileSpecs: [QueueFileSpecDto];
+
+  @IsNotEmpty()
+  @ApiProperty()
+  license?: string;
 }

@@ -65,7 +65,7 @@ __decorate([
 exports.QueueFileSpecDto = QueueFileSpecDto;
 class EncodeFromQueueDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { fileSpecs: { required: true } };
+        return { fileSpecs: { required: true }, license: { required: false, type: () => String } };
     }
 }
 __decorate([
@@ -74,9 +74,14 @@ __decorate([
     class_validator_1.ValidateNested({ each: true }),
     class_transformer_1.Type(() => QueueFileSpecDto),
     class_validator_1.ArrayMinSize(1),
-    class_validator_1.ArrayMaxSize(2),
+    class_validator_1.ArrayMaxSize(100),
     swagger_1.ApiProperty({ type: [QueueFileSpecDto] }),
     __metadata("design:type", Array)
 ], EncodeFromQueueDto.prototype, "fileSpecs", void 0);
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], EncodeFromQueueDto.prototype, "license", void 0);
 exports.EncodeFromQueueDto = EncodeFromQueueDto;
 //# sourceMappingURL=encode.dto.js.map

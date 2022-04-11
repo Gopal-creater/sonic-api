@@ -29,7 +29,7 @@ let SonicKeyProcessor = SonicKeyProcessor_1 = class SonicKeyProcessor {
     }
     async encodeFileFromJobData(encodeJobData) {
         const { id, data } = encodeJobData;
-        const { file, owner, licenseId, metaData } = data;
+        const { file, owner, company, licenseId, metaData } = data;
         return new Promise(async (resolve, reject) => {
             const { s3UploadResult, sonicKey, s3OriginalFileUploadResult, fingerPrintMetaData, fingerPrintErrorData, fingerPrintStatus, } = await this.sonicKeyService.encodeAndUploadToS3(file, owner, metaData === null || metaData === void 0 ? void 0 : metaData.encodingStrength, Enums_1.S3ACL.PRIVATE, true);
             this.logger.debug('Encode & upload to s3 finished for job', id);
@@ -38,7 +38,7 @@ let SonicKeyProcessor = SonicKeyProcessor_1 = class SonicKeyProcessor {
             this.logger.debug('Going to save key in db for job', id);
             const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, metaData);
             const channel = Enums_1.ChannelEnums.PORTAL;
-            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, fingerPrintMetaData: fingerPrintMetaData, fingerPrintErrorData: fingerPrintErrorData, fingerPrintStatus: fingerPrintStatus, queueJobId: id, _id: sonicKey, license: licenseId });
+            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, company: company, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, fingerPrintMetaData: fingerPrintMetaData, fingerPrintErrorData: fingerPrintErrorData, fingerPrintStatus: fingerPrintStatus, queueJobId: id, _id: sonicKey, license: licenseId });
             const savedSonicKey = await this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
             resolve(savedSonicKey);
         }).finally(() => {

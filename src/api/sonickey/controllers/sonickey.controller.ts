@@ -48,6 +48,7 @@ import {
   ApiResponse,
   ApiQuery,
   ApiParam,
+  ApiSecurity
 } from '@nestjs/swagger';
 import { interval, Observable } from 'rxjs';
 import * as uniqid from 'uniqid';
@@ -80,6 +81,8 @@ import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
 import { UserDB } from '../../user/schemas/user.db.schema';
 import { toObjectId } from 'src/shared/utils/mongoose.utils';
 import * as _ from 'lodash';
+import { BulkEncodeWithQueueLicenseValidationGuard } from 'src/api/licensekey/guards/job-license-validation.guard';
+import { ApiKeyAuthGuard } from 'src/api/auth/guards/apikey-auth.guard';
 
 /**
  * Prabin:
@@ -131,8 +134,8 @@ export class SonickeyController {
   }
 
   @Post('/encode-bulk/companies/:companyId')
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
+  @UseGuards(ApiKeyAuthGuard,BulkEncodeWithQueueLicenseValidationGuard)
+  @ApiSecurity('x-api-key')
   @ApiOperation({ summary: 'API for tunesat to import their media to sonic' })
   async encodeToSonicFromPath(
     @Param('companyId') company: string,
@@ -140,15 +143,15 @@ export class SonickeyController {
     @ValidatedLicense('key') license: string,
     @Body() encodeFromQueueDto: EncodeFromQueueDto,
   ) {
-    owner = owner||'owner1';
-    company = company||'company1';
-    license = license||'license1';
+    owner = owner;
+    company = company;
+    license = license;
     return this.sonicKeyService.encodeBulkWithQueue(owner,company,license,encodeFromQueueDto);
   }
 
   @Get('/encode-bulk/companies/:companyId/get-job-status/:jobId')
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
+  @UseGuards(ApiKeyAuthGuard,BulkEncodeWithQueueLicenseValidationGuard)
+  @ApiSecurity('x-api-key')
   @ApiOperation({ summary: 'Get Job Status From Queue' })
   async getJobStatusFromQueue(
     @Param('companyId') companyId: string,
