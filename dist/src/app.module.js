@@ -42,6 +42,7 @@ const group_module_1 = require("./api/group/group.module");
 const appversions_module_1 = require("./api/appversions/appversions.module");
 const plan_module_1 = require("./api/plan/plan.module");
 const bull_1 = require("@nestjs/bull");
+const queuejob_module_1 = require("./queuejob/queuejob.module");
 const test_config_1 = require("./config/test.config");
 mongoosePaginate.paginate.options = {
     limit: 50,
@@ -123,7 +124,8 @@ AppModule = __decorate([
             company_module_1.CompanyModule,
             group_module_1.GroupModule,
             appversions_module_1.AppVersionModule,
-            plan_module_1.PlanModule
+            plan_module_1.PlanModule,
+            queuejob_module_1.QueuejobModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, app_gateway_1.AppGateway, ec2instance_service_1.Ec2InstanceService],

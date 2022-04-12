@@ -9,7 +9,7 @@ const registeredConfig = registerAs('', () => ({
 
   MULTER_IMPORT_DEST: `${appRootPath.toString()}/storage/uploads/imports`,
 
-  ROOT_RSYNC_UPLOADS: `${appRootPath.toString()}/storage/rsync_uploads/1234567890`,
+  ROOT_RSYNC_UPLOADS: `${appRootPath.toString()}/storage/rsync_uploads`,
 
   CONTAINER_DEST: `${appRootPath.toString()}/storage/containers`,
 

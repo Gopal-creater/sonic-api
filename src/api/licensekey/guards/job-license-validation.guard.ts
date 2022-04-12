@@ -109,7 +109,7 @@ export class BulkEncodeWithQueueLicenseValidationGuard implements CanActivate {
         message: 'Given apikey is not a company type apikey, you must used company apikey here.',
       });
     }
-    if(apikey?.company?._id!==companyId){
+    if(apikey?.company?._id?.toString?.()!==companyId){
       throw new BadRequestException({
         message: 'Given apikey is not own by given company, please use your own apikey',
       });
@@ -134,7 +134,7 @@ export class BulkEncodeWithQueueLicenseValidationGuard implements CanActivate {
         message: 'Given license is not a company type license, you must used company license here.',
       });
     }
-    if (companyId !== licenseKey.company?._id) {
+    if (companyId !== licenseKey?.company?._id?.toString?.()) {
       throw new BadRequestException({
         message: 'Given license is not own by given company, please use your own license',
       });

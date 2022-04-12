@@ -36,6 +36,7 @@ import { AppVersionModule } from './api/appversions/appversions.module';
 import { NestModule, MiddlewareConsumer,RequestMethod } from '@nestjs/common';
 import { PlanModule } from './api/plan/plan.module';
 import { BullModule } from '@nestjs/bull';
+import { QueuejobModule } from './queuejob/queuejob.module';
 import testConfig from './config/test.config';
 
 mongoosePaginate.paginate.options = {
@@ -115,7 +116,8 @@ var connectionNo = 0;
     CompanyModule,
     GroupModule,
     AppVersionModule,
-    PlanModule
+    PlanModule,
+    QueuejobModule
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway, Ec2InstanceService],

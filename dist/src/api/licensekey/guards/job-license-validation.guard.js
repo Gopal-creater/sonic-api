@@ -85,7 +85,7 @@ let BulkEncodeWithQueueLicenseValidationGuard = class BulkEncodeWithQueueLicense
         this.licensekeyService = licensekeyService;
     }
     async canActivate(context) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         const request = context.switchToHttp().getRequest();
         const body = request.body;
         const companyId = (_a = request === null || request === void 0 ? void 0 : request.params) === null || _a === void 0 ? void 0 : _a.companyId;
@@ -95,13 +95,13 @@ let BulkEncodeWithQueueLicenseValidationGuard = class BulkEncodeWithQueueLicense
                 message: 'Given apikey is not a company type apikey, you must used company apikey here.',
             });
         }
-        if (((_b = apikey === null || apikey === void 0 ? void 0 : apikey.company) === null || _b === void 0 ? void 0 : _b._id) !== companyId) {
+        if (((_d = (_c = (_b = apikey === null || apikey === void 0 ? void 0 : apikey.company) === null || _b === void 0 ? void 0 : _b._id) === null || _c === void 0 ? void 0 : _c.toString) === null || _d === void 0 ? void 0 : _d.call(_c)) !== companyId) {
             throw new common_1.BadRequestException({
                 message: 'Given apikey is not own by given company, please use your own apikey',
             });
         }
         console.log('companyId', companyId);
-        if (((_c = body.fileSpecs) === null || _c === void 0 ? void 0 : _c.length) < 0) {
+        if (((_e = body.fileSpecs) === null || _e === void 0 ? void 0 : _e.length) < 0) {
             throw new common_1.BadRequestException({
                 message: 'Please add at least one fileSpecs to create queue',
             });
@@ -117,7 +117,7 @@ let BulkEncodeWithQueueLicenseValidationGuard = class BulkEncodeWithQueueLicense
                 message: 'Given license is not a company type license, you must used company license here.',
             });
         }
-        if (companyId !== ((_d = licenseKey.company) === null || _d === void 0 ? void 0 : _d._id)) {
+        if (companyId !== ((_h = (_g = (_f = licenseKey === null || licenseKey === void 0 ? void 0 : licenseKey.company) === null || _f === void 0 ? void 0 : _f._id) === null || _g === void 0 ? void 0 : _g.toString) === null || _h === void 0 ? void 0 : _h.call(_g))) {
             throw new common_1.BadRequestException({
                 message: 'Given license is not own by given company, please use your own license',
             });

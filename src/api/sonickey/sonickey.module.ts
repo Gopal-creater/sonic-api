@@ -16,6 +16,8 @@ import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
 import { BullModule } from '@nestjs/bull';
 import { SonicKeyProcessor } from './processors/sonickey.processor';
+import { QueuejobModule } from '../../queuejob/queuejob.module';
+
 @Module({
   imports: [
     BullModule.registerQueue({
@@ -30,6 +32,7 @@ import { SonicKeyProcessor } from './processors/sonickey.processor';
     MongooseModule.forFeature([
       { name: SonicKeySchemaName, schema: SonicKeySchema },
     ]),
+    QueuejobModule,
   ],
   controllers: [
     SonickeyController,

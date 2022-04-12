@@ -41,8 +41,9 @@ const licensekey_service_1 = require("../../licensekey/services/licensekey.servi
 const bull_1 = require("@nestjs/bull");
 const path = require("path");
 const config_2 = require("@nestjs/config");
+const queuejob_service_1 = require("../../../queuejob/queuejob.service");
 let SonickeyService = class SonickeyService {
-    constructor(sonicKeyModel, fileOperationService, licensekeyService, sonicKeyQueue, fileHandlerService, s3FileUploadService, configService, detectionService, userService) {
+    constructor(sonicKeyModel, fileOperationService, licensekeyService, sonicKeyQueue, fileHandlerService, s3FileUploadService, configService, detectionService, userService, queuejobService) {
         this.sonicKeyModel = sonicKeyModel;
         this.fileOperationService = fileOperationService;
         this.licensekeyService = licensekeyService;
@@ -52,6 +53,7 @@ let SonickeyService = class SonickeyService {
         this.configService = configService;
         this.detectionService = detectionService;
         this.userService = userService;
+        this.queuejobService = queuejobService;
         console.log(`FingerPrint BASE URL: ${this.configService.get('FINGERPRINT_SERVER.baseUrl')}`);
     }
     generateUniqueSonicKey() {
@@ -69,18 +71,19 @@ let SonickeyService = class SonickeyService {
         var e_1, _a;
         var { fileSpecs } = encodeFromQueueDto;
         const addedJobsDetails = [];
+        const jobsToInsertIntoDb = [];
         const failedData = [];
         try {
             for (var fileSpecs_1 = __asyncValues(fileSpecs), fileSpecs_1_1; fileSpecs_1_1 = await fileSpecs_1.next(), !fileSpecs_1_1.done;) {
                 var fileSpec = fileSpecs_1_1.value;
-                const jobId = `${owner}_${fileSpec.filePath}`;
+                const jobId = `${company}_${fileSpec.filePath}`;
                 const isAlreadyDone = await this.findByQueueJobId(jobId);
                 if (isAlreadyDone) {
                     fileSpec['message'] = 'File already encoded, duplicate file';
                     failedData.push(fileSpec);
                     continue;
                 }
-                const absoluteFilePath = path.join(config_1.appConfig.ROOT_RSYNC_UPLOADS, fileSpec.filePath);
+                const absoluteFilePath = path.join(config_1.appConfig.ROOT_RSYNC_UPLOADS, company, fileSpec.filePath);
                 const [fileDetailsFromFilePath, error,] = await this.fileHandlerService.getFileDetailsFromFile(absoluteFilePath);
                 if (error) {
                     fileSpec['message'] = 'Can not resolve file, possibly file not found';
@@ -100,6 +103,13 @@ let SonickeyService = class SonickeyService {
                         data: jobData,
                         opts: { delay: 10000, jobId: jobId },
                     };
+                    const jobToDb = {
+                        _id: jobId,
+                        name: 'bulk_encode',
+                        jobData: jobData,
+                        company: company,
+                    };
+                    jobsToInsertIntoDb.push(jobToDb);
                     addedJobsDetails.push(jobInfo);
                 }
             }
@@ -111,6 +121,11 @@ let SonickeyService = class SonickeyService {
             }
             finally { if (e_1) throw e_1.error; }
         }
+        await this.queuejobService.queueJobModel
+            .insertMany(jobsToInsertIntoDb)
+            .catch(err => {
+            throw new common_1.UnprocessableEntityException("Can't save queue job details to db");
+        });
         const addedJobsQueueResponse = await this.sonicKeyQueue.addBulk(addedJobsDetails);
         return {
             addedJobsQueueResponse: addedJobsQueueResponse,
@@ -382,7 +397,8 @@ SonickeyService = __decorate([
         s3fileupload_service_1.S3FileUploadService,
         config_2.ConfigService,
         detection_service_1.DetectionService,
-        user_service_1.UserService])
+        user_service_1.UserService,
+        queuejob_service_1.QueuejobService])
 ], SonickeyService);
 exports.SonickeyService = SonickeyService;
 //# sourceMappingURL=sonickey.service.js.map

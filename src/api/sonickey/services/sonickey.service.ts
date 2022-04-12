@@ -7,13 +7,14 @@ import {
   NotFoundException,
   Inject,
   forwardRef,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { SonicKey } from '../schemas/sonickey.schema';
 import * as mm from 'music-metadata';
 import * as upath from 'upath';
 import { nanoid } from 'nanoid';
 import { appConfig } from '../../../config';
-import config1  from '../../../config/app.config';
+import config1 from '../../../config/app.config';
 import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, FilterQuery } from 'mongoose';
@@ -38,6 +39,7 @@ import { EncodeJobDataI } from '../processors/sonickey.processor';
 import * as path from 'path';
 import { EncodeFromQueueDto } from '../dtos/encode.dto';
 import { ConfigService } from '@nestjs/config';
+import { QueuejobService } from '../../../queuejob/queuejob.service';
 
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
@@ -53,8 +55,13 @@ export class SonickeyService {
     private readonly detectionService: DetectionService,
     @Inject(forwardRef(() => UserService))
     public readonly userService: UserService,
+    public readonly queuejobService: QueuejobService,
   ) {
-    console.log(`FingerPrint BASE URL: ${this.configService.get('FINGERPRINT_SERVER.baseUrl')}`)
+    console.log(
+      `FingerPrint BASE URL: ${this.configService.get(
+        'FINGERPRINT_SERVER.baseUrl',
+      )}`,
+    );
   }
 
   generateUniqueSonicKey() {
@@ -75,37 +82,28 @@ export class SonickeyService {
     };
   }
 
-  async encodeBulkWithQueue(owner:string,company:string,license:string,encodeFromQueueDto: EncodeFromQueueDto) {
-    var{fileSpecs}=encodeFromQueueDto
-    // const payload = {
-    //   fileSpecs: [
-    //     {
-    //       filePath: 'a.mp3',
-    //       metaData: {},
-    //     },
-    //     {
-    //       filePath: 'musicbox2.wav',
-    //       metaData: {},
-    //     },
-    //     {
-    //       filePath: 'testfolder/musicbox3.wav',
-    //       metaData: {},
-    //     },
-    //   ],
-    // };
-
+  async encodeBulkWithQueue(
+    owner: string,
+    company: string,
+    license: string,
+    encodeFromQueueDto: EncodeFromQueueDto,
+  ) {
+    var { fileSpecs } = encodeFromQueueDto;
     const addedJobsDetails = [];
+    const jobsToInsertIntoDb = [];
     const failedData = [];
     for await (var fileSpec of fileSpecs) {
-      const jobId = `${owner}_${fileSpec.filePath}`;
+      const jobId = `${company}_${fileSpec.filePath}`;
       const isAlreadyDone = await this.findByQueueJobId(jobId);
       if (isAlreadyDone) {
         fileSpec['message'] = 'File already encoded, duplicate file';
         failedData.push(fileSpec);
         continue;
       }
+      //Here the files of specific company will be present inside their companyId as a folder name
       const absoluteFilePath = path.join(
         appConfig.ROOT_RSYNC_UPLOADS,
+        company,
         fileSpec.filePath,
       );
       const [
@@ -131,9 +129,23 @@ export class SonickeyService {
           data: jobData,
           opts: { delay: 10000, jobId: jobId }, //10 sec
         };
+        const jobToDb = {
+          _id: jobId,
+          name: 'bulk_encode',
+          jobData: jobData,
+          company: company,
+        };
+        jobsToInsertIntoDb.push(jobToDb);
         addedJobsDetails.push(jobInfo);
       }
     }
+    await this.queuejobService.queueJobModel
+      .insertMany(jobsToInsertIntoDb)
+      .catch(err => {
+        throw new UnprocessableEntityException(
+          "Can't save queue job details to db",
+        );
+      });
     const addedJobsQueueResponse = await this.sonicKeyQueue.addBulk(
       addedJobsDetails,
     );
@@ -356,28 +368,28 @@ export class SonickeyService {
           };
           //We will be communication with FP server all event based we wont wait for FP to finished,
           //All manage by eventStatus
-            const fingerPrintMetaData = await this.fingerPrintRequestToFPServer(
-              resultObj.s3OriginalFileUploadResult,
-              random11CharKey,
-              file.originalname,
-              file.size,
-            )
-              .then(data => {
-                //Indicate that processing has been started in FP Server
-                resultObj.fingerPrintStatus = FingerPrintStatus.PROCESSING;
-                // return data;
-                return Promise.resolve(null);
-              })
-              .catch(err => {
-                console.log('err', err);
-                resultObj.fingerPrintStatus = FingerPrintStatus.FAILED;
-                resultObj.fingerPrintErrorData = {
-                  message: err?.message,
-                  data: err?.response?.data,
-                };
-                return Promise.resolve(null);
-              });
-            resultObj.fingerPrintMetaData = fingerPrintMetaData;
+          const fingerPrintMetaData = await this.fingerPrintRequestToFPServer(
+            resultObj.s3OriginalFileUploadResult,
+            random11CharKey,
+            file.originalname,
+            file.size,
+          )
+            .then(data => {
+              //Indicate that processing has been started in FP Server
+              resultObj.fingerPrintStatus = FingerPrintStatus.PROCESSING;
+              // return data;
+              return Promise.resolve(null);
+            })
+            .catch(err => {
+              console.log('err', err);
+              resultObj.fingerPrintStatus = FingerPrintStatus.FAILED;
+              resultObj.fingerPrintErrorData = {
+                message: err?.message,
+                data: err?.response?.data,
+              };
+              return Promise.resolve(null);
+            });
+          resultObj.fingerPrintMetaData = fingerPrintMetaData;
           return resultObj;
         },
       )
@@ -427,7 +439,9 @@ export class SonickeyService {
     originalFileName: string,
     fileSize: number,
   ) {
-    const fingerPrintUrl = this.configService.get<string>('FINGERPRINT_SERVER.fingerPrintUrl');
+    const fingerPrintUrl = this.configService.get<string>(
+      'FINGERPRINT_SERVER.fingerPrintUrl',
+    );
     const signedS3UrlToOriginalFile = await this.s3FileUploadService.getSignedUrl(
       originalFileS3Meta.Key,
       60 * 10,
