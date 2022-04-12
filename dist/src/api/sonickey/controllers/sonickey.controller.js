@@ -76,7 +76,7 @@ let SonickeyController = class SonickeyController {
     async getJobStatusFromQueue(companyId, jobId) {
         const job = await this.sonicKeyService.getJobStatus(jobId);
         if (!job) {
-            throw new common_1.NotFoundException('Job doesnot exists');
+            throw new common_1.NotFoundException('Job doesnot exists or already completed');
         }
         if (job.failedReason) {
             return {
@@ -466,7 +466,7 @@ __decorate([
 ], SonickeyController.prototype, "encodeToSonicFromPath", null);
 __decorate([
     common_1.Get('/encode-bulk/companies/:companyId/get-job-status/:jobId'),
-    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, job_license_validation_guard_1.BulkEncodeWithQueueLicenseValidationGuard),
+    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
     swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiOperation({ summary: 'Get Job Status From Queue' }),
     openapi.ApiResponse({ status: 200, type: Object }),

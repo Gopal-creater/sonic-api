@@ -150,7 +150,7 @@ export class SonickeyController {
   }
 
   @Get('/encode-bulk/companies/:companyId/get-job-status/:jobId')
-  @UseGuards(ApiKeyAuthGuard,BulkEncodeWithQueueLicenseValidationGuard)
+  @UseGuards(ApiKeyAuthGuard)
   @ApiSecurity('x-api-key')
   @ApiOperation({ summary: 'Get Job Status From Queue' })
   async getJobStatusFromQueue(
@@ -159,7 +159,7 @@ export class SonickeyController {
   ) {
     const job = await this.sonicKeyService.getJobStatus(jobId);
     if (!job) {
-      throw new NotFoundException('Job doesnot exists');
+      throw new NotFoundException('Job doesnot exists or already completed');
     }
     if (job.failedReason) {
       return {
