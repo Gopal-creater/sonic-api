@@ -31,6 +31,7 @@ import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
 import { MongoosePaginateUserDto } from '../dtos/mongoosepaginate-user.dto';
 import { ApiKeyService } from '../../api-key/api-key.service';
 import { WpmsUserRegisterDTO } from 'src/api/auth/dto/register.dto';
+import { LicenseKey } from 'src/api/licensekey/schemas/licensekey.schema';
 
 @Injectable()
 export class UserService {
@@ -618,6 +619,7 @@ export class UserService {
     userName = cognitoUserCreated.User.Username;
     var userDb = await this.syncUserFromCognitoToMongooDb(userName);
     const groupDb = await this.groupService.findById(group);
+    var license:LicenseKey
     if (groupDb) {
       await this.adminAddUserToGroup(userName, groupDb.name).catch(err => {
         console.warn('Warning: error adding user to group in cognito', err);
@@ -642,11 +644,12 @@ export class UserService {
       );
     }
     if (groupDb?.name !== Roles.WPMS_USER) {
-      await this.addDefaultLicenseToUser(userName);
+     license = await this.addDefaultLicenseToUser(userName);
     }
     return {
       cognitoUserCreated: cognitoUserCreated,
       userDb: userDb,
+      license:license
     };
   }
 

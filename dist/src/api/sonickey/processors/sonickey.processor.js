@@ -56,7 +56,7 @@ let SonicKeyProcessor = SonicKeyProcessor_1 = class SonicKeyProcessor {
                 this.logger.debug('Increment Usages upon successfull encode for job', id);
                 this.logger.debug('Going to save key in db for job', id);
                 const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, metaData);
-                const channel = Enums_1.ChannelEnums.PORTAL;
+                const channel = Enums_1.ChannelEnums.THIRDPARTY_BULK;
                 const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, company: company, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, fingerPrintMetaData: fingerPrintMetaData, fingerPrintErrorData: fingerPrintErrorData, fingerPrintStatus: fingerPrintStatus, queueJobId: id, _id: sonicKey, license: licenseId });
                 const savedSonicKey = await this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
                 resolve(savedSonicKey);

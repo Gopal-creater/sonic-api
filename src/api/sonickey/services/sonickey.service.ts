@@ -93,7 +93,7 @@ export class SonickeyService {
     const jobsToInsertIntoDb = [];
     const failedData = [];
     for await (var fileSpec of fileSpecs) {
-      const jobId = `${company}_${fileSpec.filePath}`;
+      const jobId = `${owner}_${fileSpec.filePath}`;
       const isAlreadyDone = await this.findByQueueJobId(jobId);
       if (isAlreadyDone) {
         fileSpec['message'] = 'File already encoded, duplicate file';

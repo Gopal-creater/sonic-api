@@ -85,22 +85,18 @@ let BulkEncodeWithQueueLicenseValidationGuard = class BulkEncodeWithQueueLicense
         this.licensekeyService = licensekeyService;
     }
     async canActivate(context) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c, _d, _e, _f, _g;
         const request = context.switchToHttp().getRequest();
         const body = request.body;
         const companyId = (_a = request === null || request === void 0 ? void 0 : request.params) === null || _a === void 0 ? void 0 : _a.companyId;
+        const clientId = (_b = request === null || request === void 0 ? void 0 : request.params) === null || _b === void 0 ? void 0 : _b.clientId;
         const apikey = request === null || request === void 0 ? void 0 : request['apikey'];
-        if (apikey.type !== Enums_1.ApiKeyType.COMPANY) {
+        const user = request === null || request === void 0 ? void 0 : request['user'];
+        if (((_d = (_c = user === null || user === void 0 ? void 0 : user._id) === null || _c === void 0 ? void 0 : _c.toString) === null || _d === void 0 ? void 0 : _d.call(_c)) !== clientId) {
             throw new common_1.BadRequestException({
-                message: 'Given apikey is not a company type apikey, you must used company apikey here.',
+                message: 'Given apikey is not own by given clientId, please use your own apikey',
             });
         }
-        if (((_d = (_c = (_b = apikey === null || apikey === void 0 ? void 0 : apikey.company) === null || _b === void 0 ? void 0 : _b._id) === null || _c === void 0 ? void 0 : _c.toString) === null || _d === void 0 ? void 0 : _d.call(_c)) !== companyId) {
-            throw new common_1.BadRequestException({
-                message: 'Given apikey is not own by given company, please use your own apikey',
-            });
-        }
-        console.log('companyId', companyId);
         if (((_e = body.fileSpecs) === null || _e === void 0 ? void 0 : _e.length) < 0) {
             throw new common_1.BadRequestException({
                 message: 'Please add at least one fileSpecs to create queue',
@@ -112,14 +108,9 @@ let BulkEncodeWithQueueLicenseValidationGuard = class BulkEncodeWithQueueLicense
                 message: 'Invalid license.',
             });
         }
-        if (!licenseKey.company) {
+        if (!licenseKey.users.includes((_g = (_f = user === null || user === void 0 ? void 0 : user._id) === null || _f === void 0 ? void 0 : _f.toString) === null || _g === void 0 ? void 0 : _g.call(_f))) {
             throw new common_1.BadRequestException({
-                message: 'Given license is not a company type license, you must used company license here.',
-            });
-        }
-        if (companyId !== ((_h = (_g = (_f = licenseKey === null || licenseKey === void 0 ? void 0 : licenseKey.company) === null || _f === void 0 ? void 0 : _f._id) === null || _g === void 0 ? void 0 : _g.toString) === null || _h === void 0 ? void 0 : _h.call(_g))) {
-            throw new common_1.BadRequestException({
-                message: 'Given license is not own by given company, please use your own license',
+                message: 'Given license is not own by given clientId, please use your own license',
             });
         }
         if (licenseKey.isUnlimitedEncode) {

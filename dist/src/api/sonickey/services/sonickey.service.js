@@ -76,7 +76,7 @@ let SonickeyService = class SonickeyService {
         try {
             for (var fileSpecs_1 = __asyncValues(fileSpecs), fileSpecs_1_1; fileSpecs_1_1 = await fileSpecs_1.next(), !fileSpecs_1_1.done;) {
                 var fileSpec = fileSpecs_1_1.value;
-                const jobId = `${company}_${fileSpec.filePath}`;
+                const jobId = `${owner}_${fileSpec.filePath}`;
                 const isAlreadyDone = await this.findByQueueJobId(jobId);
                 if (isAlreadyDone) {
                     fileSpec['message'] = 'File already encoded, duplicate file';

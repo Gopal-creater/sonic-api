@@ -10,6 +10,7 @@ import { EncodeFromQueueDto } from 'src/api/sonickey/dtos/encode.dto';
 import { ApiKeyType } from 'src/constants/Enums';
 import { CreateJobDto } from '../../job/dto/create-job.dto';
 import { LicensekeyService } from '../services/licensekey.service';
+import { UserDB } from '../../user/schemas/user.db.schema';
 /**
  * This Guard is responsible for checking valid license with max usages for creating job.
  */
@@ -103,18 +104,16 @@ export class BulkEncodeWithQueueLicenseValidationGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const body = request.body as EncodeFromQueueDto;
     const companyId = request?.params?.companyId;
-    const apikey = request?.['apikey'] as ApiKey
-    if(apikey.type!==ApiKeyType.COMPANY){
+    const clientId = request?.params?.clientId;
+    const apikey = request?.['apikey'] as ApiKey;
+    const user = request?.['user'] as UserDB;
+    
+    if (user?._id?.toString?.() !== clientId) {
       throw new BadRequestException({
-        message: 'Given apikey is not a company type apikey, you must used company apikey here.',
+        message:
+          'Given apikey is not own by given clientId, please use your own apikey',
       });
     }
-    if(apikey?.company?._id?.toString?.()!==companyId){
-      throw new BadRequestException({
-        message: 'Given apikey is not own by given company, please use your own apikey',
-      });
-    }
-    console.log('companyId', companyId);
     if (body.fileSpecs?.length < 0) {
       throw new BadRequestException({
         message: 'Please add at least one fileSpecs to create queue',
@@ -129,14 +128,10 @@ export class BulkEncodeWithQueueLicenseValidationGuard implements CanActivate {
         message: 'Invalid license.',
       });
     }
-    if (!licenseKey.company) {
+    if (!licenseKey.users.includes(user?._id?.toString?.())) {
       throw new BadRequestException({
-        message: 'Given license is not a company type license, you must used company license here.',
-      });
-    }
-    if (companyId !== licenseKey?.company?._id?.toString?.()) {
-      throw new BadRequestException({
-        message: 'Given license is not own by given company, please use your own license',
+        message:
+          'Given license is not own by given clientId, please use your own license',
       });
     }
     if (licenseKey.isUnlimitedEncode) {

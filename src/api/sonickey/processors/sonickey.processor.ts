@@ -92,7 +92,7 @@ export class SonicKeyProcessor {
           file,
           metaData,
         );
-        const channel = ChannelEnums.PORTAL;
+        const channel = ChannelEnums.THIRDPARTY_BULK;
         const newSonicKey = {
           ...sonicKeyDtoWithAudioData,
           contentFilePath: s3UploadResult.Location,

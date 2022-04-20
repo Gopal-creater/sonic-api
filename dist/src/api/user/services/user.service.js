@@ -38,6 +38,7 @@ const Enums_1 = require("../../../constants/Enums");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const api_key_service_1 = require("../../api-key/api-key.service");
 const register_dto_1 = require("../../auth/dto/register.dto");
+const licensekey_schema_1 = require("../../licensekey/schemas/licensekey.schema");
 let UserService = class UserService {
     constructor(licensekeyService, apiKeyService, globalAwsService, groupService, companyService, userModel, configService, userGroupService, userCompanyService, radioMonitorService) {
         this.licensekeyService = licensekeyService;
@@ -471,6 +472,7 @@ let UserService = class UserService {
         userName = cognitoUserCreated.User.Username;
         var userDb = await this.syncUserFromCognitoToMongooDb(userName);
         const groupDb = await this.groupService.findById(group);
+        var license;
         if (groupDb) {
             await this.adminAddUserToGroup(userName, groupDb.name).catch(err => {
                 console.warn('Warning: error adding user to group in cognito', err);
@@ -485,11 +487,12 @@ let UserService = class UserService {
             userDb = await this.userCompanyService.addUserToCompany(userDb, companyDb);
         }
         if ((groupDb === null || groupDb === void 0 ? void 0 : groupDb.name) !== Enums_1.Roles.WPMS_USER) {
-            await this.addDefaultLicenseToUser(userName);
+            license = await this.addDefaultLicenseToUser(userName);
         }
         return {
             cognitoUserCreated: cognitoUserCreated,
             userDb: userDb,
+            license: license
         };
     }
     async registerAsWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail = false) {

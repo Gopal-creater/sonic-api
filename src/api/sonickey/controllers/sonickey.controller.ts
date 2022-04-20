@@ -133,16 +133,20 @@ export class SonickeyController {
     return this.sonicKeyService.getAll(parsedQueryDto);
   }
 
-  @Post('/encode-bulk/companies/:companyId')
+  @Post('/encode-bulk/companies/:companyId/clients/:clientId')
   @UseGuards(ApiKeyAuthGuard,BulkEncodeWithQueueLicenseValidationGuard)
   @ApiSecurity('x-api-key')
-  @ApiOperation({ summary: 'API for tunesat to import their media to sonic' })
+  @ApiOperation({ summary: 'API for companies to import their media to sonic on behalf of their user' })
   async encodeToSonicFromPath(
     @Param('companyId') company: string,
+    @Param('clientId') client: string,
     @User('sub') owner: string,
     @ValidatedLicense('key') license: string,
     @Body() encodeFromQueueDto: EncodeFromQueueDto,
   ) {
+    if(client!==owner){
+      throw new BadRequestException("client not matched with apikey's owner")
+    }
     owner = owner;
     company = company;
     license = license;

@@ -67,7 +67,10 @@ let SonickeyController = class SonickeyController {
     async getAll(parsedQueryDto) {
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
-    async encodeToSonicFromPath(company, owner, license, encodeFromQueueDto) {
+    async encodeToSonicFromPath(company, client, owner, license, encodeFromQueueDto) {
+        if (client !== owner) {
+            throw new common_1.BadRequestException("client not matched with apikey's owner");
+        }
         owner = owner;
         company = company;
         license = license;
@@ -451,17 +454,18 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getAll", null);
 __decorate([
-    common_1.Post('/encode-bulk/companies/:companyId'),
+    common_1.Post('/encode-bulk/companies/:companyId/clients/:clientId'),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, job_license_validation_guard_1.BulkEncodeWithQueueLicenseValidationGuard),
     swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiOperation({ summary: 'API for tunesat to import their media to sonic' }),
+    swagger_1.ApiOperation({ summary: 'API for companies to import their media to sonic on behalf of their user' }),
     openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Param('companyId')),
-    __param(1, decorators_1.User('sub')),
-    __param(2, validatedlicense_decorator_1.ValidatedLicense('key')),
-    __param(3, common_1.Body()),
+    __param(1, common_1.Param('clientId')),
+    __param(2, decorators_1.User('sub')),
+    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __param(4, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, encode_dto_1.EncodeFromQueueDto]),
+    __metadata("design:paramtypes", [String, String, String, String, encode_dto_1.EncodeFromQueueDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "encodeToSonicFromPath", null);
 __decorate([

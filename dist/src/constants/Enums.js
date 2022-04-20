@@ -13,6 +13,7 @@ var ChannelEnums;
     ChannelEnums["STREAMREADER"] = "STREAMREADER";
     ChannelEnums["THIRDPARTY_STREAMREADER"] = "THIRDPARTY_STREAMREADER";
     ChannelEnums["THIRDPARTY"] = "THIRDPARTY";
+    ChannelEnums["THIRDPARTY_BULK"] = "THIRDPARTY_BULK";
 })(ChannelEnums = exports.ChannelEnums || (exports.ChannelEnums = {}));
 var Permissions;
 (function (Permissions) {
