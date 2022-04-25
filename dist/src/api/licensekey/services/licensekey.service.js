@@ -91,6 +91,21 @@ let LicensekeyService = class LicensekeyService {
         }
         return keyFromDb.save();
     }
+    async renewLicenseFromPlanAndAssignToUser(licenseKey, user, plan, payment) {
+        var _a;
+        const planFromDb = await this.planService.findById(plan);
+        var keyFromDb = await this.findOne({ key: licenseKey, users: user });
+        const newValidity = new Date(new Date(keyFromDb.validity).setFullYear(new Date(keyFromDb.validity).getFullYear() + 1));
+        if (planFromDb.type == Enums_1.PlanType.ENCODE) {
+            keyFromDb.oldMaxEncodeUses = keyFromDb.maxEncodeUses;
+            keyFromDb.maxEncodeUses = keyFromDb.maxEncodeUses + planFromDb.availableSonicKeys;
+            keyFromDb.logs.push(`Renewed existing plan ${(_a = keyFromDb === null || keyFromDb === void 0 ? void 0 : keyFromDb.activePlan) === null || _a === void 0 ? void 0 : _a.name}(${Enums_1.PlanType.ENCODE})`);
+            keyFromDb.payments.push(payment);
+            keyFromDb.validity = newValidity;
+            keyFromDb.oldValidity = keyFromDb.validity;
+        }
+        return keyFromDb.save();
+    }
     async addExtraUsesToLicenseFromPlanAndAssignToUser(licenseKey, user, extraUses, payment) {
         var _a;
         var keyFromDb = await this.findOne({ key: licenseKey, users: user });

@@ -61,11 +61,37 @@ let PlansOwnerController = class PlansOwnerController {
         if (isSamePlan) {
             throw new common_1.BadRequestException('Can not select your active plan');
         }
-        const planLicenseKey = await this.licenseKeyService.findOne({ users: user, key: oldPlanLicenseKey });
+        const planLicenseKey = await this.licenseKeyService.findOne({
+            users: user,
+            key: oldPlanLicenseKey,
+        });
         if (!planLicenseKey) {
             throw new common_1.NotFoundException(`Your current plan is not found with given id ${oldPlanLicenseKey}`);
         }
         return this.planService.upgradePlan(user, upgradePlanDto);
+    }
+    async renewPlan(renewPlanDto, user, ownerId) {
+        const { oldPlanLicenseKey } = renewPlanDto;
+        const planLicenseKey = await this.licenseKeyService.findOne({
+            users: user,
+            key: oldPlanLicenseKey,
+        });
+        if (!planLicenseKey) {
+            throw new common_1.NotFoundException(`Your current plan is not found with given id ${oldPlanLicenseKey}`);
+        }
+        var days = 5;
+        var now = new Date();
+        var fiveDaysBeforeToday = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+        if (!(new Date(planLicenseKey.validity).getTime() <
+            fiveDaysBeforeToday.getTime())) {
+            throw new common_1.UnprocessableEntityException(`Current plan can not be renewed right now, contact sonic admin`);
+        }
+        if (planLicenseKey.maxEncodeUses +
+            planLicenseKey.activePlan.availableSonicKeys >
+            planLicenseKey.activePlan.limitedSonicKeys) {
+            throw new common_1.UnprocessableEntityException(`Current plan can not be renewed right now, contact sonic admin`);
+        }
+        return this.planService.renewPlan(user, renewPlanDto, planLicenseKey);
     }
     async buyExtraKeys(buyExtraKeysForExistingPlanDto, user, ownerId) {
         const { oldPlanLicenseKey, extraKeys } = buyExtraKeysForExistingPlanDto;
@@ -126,6 +152,18 @@ __decorate([
     __metadata("design:paramtypes", [create_plan_dto_1.UpgradePlanDto, String, String]),
     __metadata("design:returntype", Promise)
 ], PlansOwnerController.prototype, "upgradePlan", null);
+__decorate([
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Put('/renew-plan'),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, common_1.Body()),
+    __param(1, user_decorator_1.User('sub')),
+    __param(2, common_1.Param('ownerId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_plan_dto_1.RenewPlanDto, String, String]),
+    __metadata("design:returntype", Promise)
+], PlansOwnerController.prototype, "renewPlan", null);
 __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),

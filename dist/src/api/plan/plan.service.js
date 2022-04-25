@@ -20,6 +20,7 @@ const mongoose_2 = require("mongoose");
 const Enums_1 = require("../../constants/Enums");
 const payment_service_1 = require("../payment/services/payment.service");
 const licensekey_service_1 = require("../licensekey/services/licensekey.service");
+const licensekey_schema_1 = require("../licensekey/schemas/licensekey.schema");
 let PlanService = class PlanService {
     constructor(planModel, paymentService, licenseKeyService) {
         this.planModel = planModel;
@@ -104,8 +105,7 @@ let PlanService = class PlanService {
             perExtraCost: 0.99,
             paymentInterval: Enums_1.PaymentInterval.ANNUAL,
             featureLists: [
-                "100 SonicKeys available",
-                "£0.99 per extra SonicKey"
+                "100 SonicKeys available"
             ]
         }, { upsert: true });
         return {
@@ -190,6 +190,47 @@ let PlanService = class PlanService {
         });
         const payment = await newPaymentInDb.save();
         const licenseFromPlan = await this.licenseKeyService.upgradeLicenseFromPlanAndAssignToUser(oldPlanLicenseKey, user, upgradedPlan, payment._id);
+        payment.licenseKey = licenseFromPlan.key;
+        await payment.save();
+        return {
+            payment: payment,
+            brainTreeTransactionResponse: brainTreeTransactionResponse,
+            licenseFromPlan: licenseFromPlan,
+        };
+    }
+    async renewPlan(user, renewPlanDto, planLicenseKey) {
+        var _a, _b, _c, _d;
+        const { amount, paymentMethodNonce, transactionId, deviceData, oldPlanLicenseKey } = renewPlanDto;
+        var brainTreeTransactionResponse;
+        if (!transactionId && paymentMethodNonce) {
+            const createdSale = await this.paymentService.createTransactionSaleInBrainTree(paymentMethodNonce, amount, deviceData)
+                .catch(err => {
+                throw new common_1.BadRequestException(err);
+            });
+            if (!createdSale.success) {
+                throw new common_1.BadRequestException(`Transaction Failed : ${(_a = createdSale === null || createdSale === void 0 ? void 0 : createdSale.transaction) === null || _a === void 0 ? void 0 : _a.status}`);
+            }
+            brainTreeTransactionResponse = createdSale.transaction;
+        }
+        else if (transactionId) {
+            brainTreeTransactionResponse = await this.paymentService.getTransactionById(transactionId);
+        }
+        if (!brainTreeTransactionResponse) {
+            throw new common_1.NotFoundException("Invalid transaction");
+        }
+        const newPaymentInDb = await this.paymentService.paymentModel.create({
+            amount: amount,
+            paymentMethodNonce: paymentMethodNonce,
+            deviceData: deviceData,
+            braintreeTransactionId: brainTreeTransactionResponse.id,
+            braintreeTransactionStatus: brainTreeTransactionResponse.status,
+            braintreeTransactionResult: brainTreeTransactionResponse,
+            user: user,
+            plan: (_b = planLicenseKey === null || planLicenseKey === void 0 ? void 0 : planLicenseKey.activePlan) === null || _b === void 0 ? void 0 : _b._id,
+            notes: `Done renewed for plan id ${(_c = planLicenseKey === null || planLicenseKey === void 0 ? void 0 : planLicenseKey.activePlan) === null || _c === void 0 ? void 0 : _c._id} having licensekey ${planLicenseKey === null || planLicenseKey === void 0 ? void 0 : planLicenseKey._id} at amount ${amount}`,
+        });
+        const payment = await newPaymentInDb.save();
+        const licenseFromPlan = await this.licenseKeyService.renewLicenseFromPlanAndAssignToUser(oldPlanLicenseKey, user, (_d = planLicenseKey === null || planLicenseKey === void 0 ? void 0 : planLicenseKey.activePlan) === null || _d === void 0 ? void 0 : _d._id, payment._id);
         payment.licenseKey = licenseFromPlan.key;
         await payment.save();
         return {

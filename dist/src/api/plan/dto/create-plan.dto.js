@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BuyExtraKeysForExistingPlanDto = exports.UpgradePlanDto = exports.BuyPlanDto = exports.CreatePlanDto = void 0;
+exports.BuyExtraKeysForExistingPlanDto = exports.RenewPlanDto = exports.UpgradePlanDto = exports.BuyPlanDto = exports.CreatePlanDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
@@ -129,6 +129,34 @@ __decorate([
     __metadata("design:type", String)
 ], UpgradePlanDto.prototype, "upgradedPlan", void 0);
 exports.UpgradePlanDto = UpgradePlanDto;
+class RenewPlanDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { paymentMethodNonce: { required: true, type: () => String }, transactionId: { required: true, type: () => String }, amount: { required: true, type: () => String }, deviceData: { required: false, type: () => String }, oldPlanLicenseKey: { required: true, type: () => String } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], RenewPlanDto.prototype, "paymentMethodNonce", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], RenewPlanDto.prototype, "transactionId", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], RenewPlanDto.prototype, "amount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], RenewPlanDto.prototype, "deviceData", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], RenewPlanDto.prototype, "oldPlanLicenseKey", void 0);
+exports.RenewPlanDto = RenewPlanDto;
 class BuyExtraKeysForExistingPlanDto {
     static _OPENAPI_METADATA_FACTORY() {
         return { paymentMethodNonce: { required: true, type: () => String }, transactionId: { required: true, type: () => String }, amount: { required: true, type: () => String }, deviceData: { required: false, type: () => String }, oldPlanLicenseKey: { required: true, type: () => String }, extraKeys: { required: true, type: () => Number } };

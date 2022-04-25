@@ -4,6 +4,7 @@ import {
   BuyPlanDto,
   UpgradePlanDto,
   BuyExtraKeysForExistingPlanDto,
+  RenewPlanDto,
 } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { Plan } from './schemas/plan.schema';
@@ -18,6 +19,7 @@ import {
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { PaymentService } from '../payment/services/payment.service';
 import { LicensekeyService } from '../licensekey/services/licensekey.service';
+import { LicenseKey } from 'src/api/licensekey/schemas/licensekey.schema';
 
 @Injectable()
 export class PlanService {
@@ -128,8 +130,7 @@ export class PlanService {
         perExtraCost: 0.99,
         paymentInterval: PaymentInterval.ANNUAL,
         featureLists:[
-          "100 SonicKeys available",
-          "£0.99 per extra SonicKey"
+          "100 SonicKeys available"
       ]
       },
       { upsert: true },
@@ -270,6 +271,68 @@ export class PlanService {
       oldPlanLicenseKey,
       user,
       upgradedPlan,
+      payment._id
+    );
+    //Update plan with licensekey details
+    payment.licenseKey = licenseFromPlan.key;
+    await payment.save();
+    return {
+      payment: payment,
+      brainTreeTransactionResponse: brainTreeTransactionResponse,
+      licenseFromPlan: licenseFromPlan,
+    };
+  }
+
+  async renewPlan(user: string, renewPlanDto: RenewPlanDto,planLicenseKey:LicenseKey) {
+    const {
+      amount,
+      paymentMethodNonce,
+      transactionId,
+      deviceData,
+      oldPlanLicenseKey
+    } = renewPlanDto;
+    var brainTreeTransactionResponse: braintree.Transaction;
+    if (!transactionId && paymentMethodNonce) {
+      //Braintree transaction
+      const createdSale = await this.paymentService.createTransactionSaleInBrainTree(
+        paymentMethodNonce,
+        amount,
+        deviceData,
+      )
+      .catch(err=>{
+        throw new BadRequestException(err)
+      })
+      if(!createdSale.success){
+        throw new BadRequestException(`Transaction Failed : ${createdSale?.transaction?.status}`)
+      }
+      brainTreeTransactionResponse = createdSale.transaction;
+    } else if (transactionId) {
+      brainTreeTransactionResponse = await this.paymentService.getTransactionById(
+        transactionId,
+      );
+    }
+    if(!brainTreeTransactionResponse){
+      throw new NotFoundException("Invalid transaction")
+    }
+    //Save  Payment info
+    const newPaymentInDb = await this.paymentService.paymentModel.create({
+      amount: amount,
+      paymentMethodNonce: paymentMethodNonce,
+      deviceData: deviceData,
+      braintreeTransactionId: brainTreeTransactionResponse.id,
+      braintreeTransactionStatus:
+        brainTreeTransactionResponse.status,
+      braintreeTransactionResult: brainTreeTransactionResponse,
+      user: user,
+      plan: planLicenseKey?.activePlan?._id,
+      notes: `Done renewed for plan id ${planLicenseKey?.activePlan?._id} having licensekey ${planLicenseKey?._id} at amount ${amount}`,
+    });
+    const payment = await newPaymentInDb.save();
+    //Create LicenseKey From Plan
+    const licenseFromPlan = await this.licenseKeyService.renewLicenseFromPlanAndAssignToUser(
+      oldPlanLicenseKey,
+      user,
+      planLicenseKey?.activePlan?._id,
       payment._id
     );
     //Update plan with licensekey details

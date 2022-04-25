@@ -85,6 +85,25 @@ export class UpgradePlanDto {
   upgradedPlan: string;
 }
 
+export class RenewPlanDto {
+  @ApiProperty()
+  paymentMethodNonce: string;
+
+  @ApiProperty()
+  transactionId: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  amount: string;
+
+  @ApiProperty()
+  deviceData?: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  oldPlanLicenseKey: string;
+}
+
 export class BuyExtraKeysForExistingPlanDto {
   @ApiProperty()
   paymentMethodNonce: string;

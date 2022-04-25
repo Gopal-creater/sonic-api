@@ -10,12 +10,14 @@ import {
   UseGuards,
   NotFoundException,
   BadRequestException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { PaymentService } from '../../payment/services/payment.service';
 import {
   UpgradePlanDto,
   BuyPlanDto,
   BuyExtraKeysForExistingPlanDto,
+  RenewPlanDto,
 } from '../dto/create-plan.dto';
 import { ApiQuery, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { PlanService } from '../plan.service';
@@ -33,8 +35,7 @@ export class PlansOwnerController {
   constructor(
     private readonly planService: PlanService,
     private readonly licenseKeyService: LicensekeyService,
-  ) {
-  }
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -79,7 +80,7 @@ export class PlansOwnerController {
     @User('sub') user: string,
     @Param('ownerId') ownerId: string,
   ) {
-    const { upgradedPlan,oldPlanLicenseKey } = upgradePlanDto;
+    const { upgradedPlan, oldPlanLicenseKey } = upgradePlanDto;
     const upgradedPlanFromDb = await this.planService.findById(upgradedPlan);
     if (!upgradedPlanFromDb) {
       throw new NotFoundException('Invalid plan selected, Plan not found');
@@ -91,11 +92,63 @@ export class PlansOwnerController {
     if (isSamePlan) {
       throw new BadRequestException('Can not select your active plan');
     }
-    const planLicenseKey = await this.licenseKeyService.findOne({users:user,key:oldPlanLicenseKey})
+    const planLicenseKey = await this.licenseKeyService.findOne({
+      users: user,
+      key: oldPlanLicenseKey,
+    });
     if (!planLicenseKey) {
-      throw new NotFoundException(`Your current plan is not found with given id ${oldPlanLicenseKey}`);
+      throw new NotFoundException(
+        `Your current plan is not found with given id ${oldPlanLicenseKey}`,
+      );
     }
     return this.planService.upgradePlan(user, upgradePlanDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Put('/renew-plan')
+  async renewPlan(
+    @Body() renewPlanDto: RenewPlanDto,
+    @User('sub') user: string,
+    @Param('ownerId') ownerId: string,
+  ) {
+    const { oldPlanLicenseKey } = renewPlanDto;
+    const planLicenseKey = await this.licenseKeyService.findOne({
+      users: user,
+      key: oldPlanLicenseKey,
+    });
+    if (!planLicenseKey) {
+      throw new NotFoundException(
+        `Your current plan is not found with given id ${oldPlanLicenseKey}`,
+      );
+    }
+    var days = 5;
+    var now = new Date();
+    var fiveDaysBeforeToday = new Date(
+      now.getTime() - days * 24 * 60 * 60 * 1000,
+    );
+    if (
+      !(
+        new Date(planLicenseKey.validity).getTime() <
+        fiveDaysBeforeToday.getTime()
+      )
+    ) {
+      throw new UnprocessableEntityException(
+        `Current plan can not be renewed right now, contact sonic admin`,
+      );
+    }
+
+    if (
+      planLicenseKey.maxEncodeUses +
+        planLicenseKey.activePlan.availableSonicKeys >
+      planLicenseKey.activePlan.limitedSonicKeys
+    ) {
+      throw new UnprocessableEntityException(
+        `Current plan can not be renewed right now, contact sonic admin`,
+      );
+    }
+
+    return this.planService.renewPlan(user, renewPlanDto,planLicenseKey);
   }
 
   @UseGuards(JwtAuthGuard)
