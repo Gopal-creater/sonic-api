@@ -85,7 +85,7 @@ export class PlanService {
         paymentInterval: PaymentInterval.ANNUAL,
         featureLists: [
           "10 SonicKeys available",
-          "£0.99 per extra SonicKey",
+          "£0.99 per additional SonicKey",
           "Limited to 100 SonicKeys total"
       ]
       },
@@ -108,7 +108,7 @@ export class PlanService {
         paymentInterval: PaymentInterval.ANNUAL,
         featureLists:[
           "50 SonicKeys available",
-          "£0.99 per extra SonicKey",
+          "£0.99 per additional SonicKey",
           "Limited to 100 SonicKeys total"
       ]
       },
@@ -123,7 +123,7 @@ export class PlanService {
       {
         name: PlanName.PREMIUM,
         type: PlanType.ENCODE,
-        description: 'encode a songs, for extra keys contact admin',
+        description: 'encode a songs, for additional keys contact admin',
         availableSonicKeys: 100,
         limitedSonicKeys: null,
         cost: 69.99,

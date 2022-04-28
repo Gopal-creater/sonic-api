@@ -70,7 +70,7 @@ let PlanService = class PlanService {
             paymentInterval: Enums_1.PaymentInterval.ANNUAL,
             featureLists: [
                 "10 SonicKeys available",
-                "£0.99 per extra SonicKey",
+                "£0.99 per additional SonicKey",
                 "Limited to 100 SonicKeys total"
             ]
         }, { upsert: true });
@@ -88,7 +88,7 @@ let PlanService = class PlanService {
             paymentInterval: Enums_1.PaymentInterval.ANNUAL,
             featureLists: [
                 "50 SonicKeys available",
-                "£0.99 per extra SonicKey",
+                "£0.99 per additional SonicKey",
                 "Limited to 100 SonicKeys total"
             ]
         }, { upsert: true });
@@ -98,7 +98,7 @@ let PlanService = class PlanService {
         }, {
             name: Enums_1.PlanName.PREMIUM,
             type: Enums_1.PlanType.ENCODE,
-            description: 'encode a songs, for extra keys contact admin',
+            description: 'encode a songs, for additional keys contact admin',
             availableSonicKeys: 100,
             limitedSonicKeys: null,
             cost: 69.99,
