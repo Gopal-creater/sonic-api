@@ -22,6 +22,12 @@ export enum ApiKeyType {
   COMPANY = 'Company',
 }
 
+export enum UserType {
+  INDIVIDUAL = 'Individual',
+  COMPANY = 'Company',
+  PARTNER = 'Partner',
+}
+
 export enum FingerPrintStatus {
   SUCCESS = 'Success',
   FAILED = 'Failed',
@@ -74,13 +80,34 @@ export enum Roles {
   THIRDPARTY_ADMIN='ThirdPartyAdmin'
 }
 
+export enum AppRoles {
+  ADMIN = 'Admin',
+  PARTNER_ADMIN='PartnerAdmin',
+  PARTNER_USER='PartnerUser',
+  PARTNER_COMPANY='PartnerUser',
+  COMPANY_ADMIN='CompanyAdmin',
+  THIRDPARTY_ADMIN='ThirdPartyAdmin'
+}
+
 export enum SystemGroup {
   ADMIN = 'Admin',
   PORTAL_USER='PortalUser',
-  AIM='AIM',
-  AFEM='AFEM',
   WPMS_USER='WPMSUser',
-  COMPANY_ADMIN='CompanyAdmin'
+  PARTNER_ADMIN='PartnerAdmin',
+  PARTNER_COMPANY='PartnerCompany',
+  PARTNER_USER='PartnerUser',
+  COMPANY_ADMIN='CompanyAdmin',
+  COMPANY_USER='CompanyUser'
+}
+
+export enum AccountTypes {
+  ADMIN = 'Admin',
+  PORTAL_USER='PortalUser',
+  WPMS_USER='WPMSUser',
+  PARTNER_ADMIN='Partner Admin',
+  PARTNER='Partner',
+  COMPANY_ADMIN='CompanyAdmin',
+  COMPANY='Company'
 }
 
 export enum EC2InstanceMetadata {

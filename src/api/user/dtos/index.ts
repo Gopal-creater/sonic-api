@@ -100,3 +100,5 @@ export class CognitoCreateUserDTO {
 }
 
 export class CompanyFindOrCreateUser extends OmitType(CognitoCreateUserDTO,['company','group']){}
+
+export class CreateUserInCognitoDto extends OmitType(CognitoCreateUserDTO,['company','group']){}

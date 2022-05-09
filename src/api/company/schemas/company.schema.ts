@@ -51,7 +51,15 @@ export class Company extends Document {
     ref: 'User',
     autopopulate: { maxDepth: 2 },
   })
-  owner: any;
+  owner: any; //Will be admin of this company
+
+  @ApiProperty()
+  @Prop({
+    type: String,
+    ref: 'Partner',
+    autopopulate: { maxDepth: 2 },
+  })
+  partner: any; //Will be parent partner that this company belongs to
 
   @ApiProperty()
   @Prop()

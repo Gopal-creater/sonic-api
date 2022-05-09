@@ -81,7 +81,7 @@ export class CompanyController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
-    summary: 'Get all count of all sonickeys',
+    summary: 'Get all count of all companies',
   })
   async getEstimateCount() {
     return this.companyService.getEstimateCount();

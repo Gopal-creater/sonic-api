@@ -117,7 +117,7 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({
-        summary: 'Get all count of all sonickeys',
+        summary: 'Get all count of all companies',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
     __metadata("design:type", Function),

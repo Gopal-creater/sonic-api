@@ -434,6 +434,20 @@ let UserService = class UserService {
             });
         });
     }
+    async adminDisableUser(username) {
+        const params = {
+            UserPoolId: this.cognitoUserPoolId,
+            Username: username,
+        };
+        return this.cognitoIdentityServiceProvider.adminDisableUser().promise();
+    }
+    async adminEnableUser(username) {
+        const params = {
+            UserPoolId: this.cognitoUserPoolId,
+            Username: username,
+        };
+        return this.cognitoIdentityServiceProvider.adminEnableUser().promise();
+    }
     async cognitoCreateUser(cognitoCreateUserDTO) {
         var _a, _b;
         var { userName, email, group, company, password, phoneNumber = '', isEmailVerified = false, isPhoneNumberVerified = false, sendInvitationByEmail = false, } = cognitoCreateUserDTO;
@@ -492,12 +506,60 @@ let UserService = class UserService {
         return {
             cognitoUserCreated: cognitoUserCreated,
             userDb: userDb,
-            license: license
+            license: license,
         };
+    }
+    async createUserInCognito(createUserInCognitoDto, saveInDb = true, additionalUserData = null) {
+        var _a, _b, _c, _d, _e;
+        var { userName, email, password, phoneNumber = '', isEmailVerified = false, isPhoneNumberVerified = false, sendInvitationByEmail = false, } = createUserInCognitoDto;
+        var registerNewUserParams = {
+            UserPoolId: this.cognitoUserPoolId,
+            Username: userName,
+            TemporaryPassword: password,
+            UserAttributes: [
+                {
+                    Name: 'email',
+                    Value: email,
+                },
+                {
+                    Name: 'email_verified',
+                    Value: (_a = isEmailVerified === null || isEmailVerified === void 0 ? void 0 : isEmailVerified.toString) === null || _a === void 0 ? void 0 : _a.call(isEmailVerified),
+                },
+                {
+                    Name: 'phone_number',
+                    Value: phoneNumber,
+                },
+                {
+                    Name: 'phone_number_verified',
+                    Value: (_b = isPhoneNumberVerified === null || isPhoneNumberVerified === void 0 ? void 0 : isPhoneNumberVerified.toString) === null || _b === void 0 ? void 0 : _b.call(isPhoneNumberVerified),
+                },
+            ],
+        };
+        if (sendInvitationByEmail) {
+            registerNewUserParams['DesiredDeliveryMediums'] = ['EMAIL'];
+        }
+        else {
+            registerNewUserParams['MessageAction'] = 'SUPPRESS';
+        }
+        const cognitoUserCreated = await this.cognitoIdentityServiceProvider
+            .adminCreateUser(registerNewUserParams)
+            .promise();
+        var userDb;
+        if (saveInDb) {
+            const enabled = cognitoUserCreated.User.Enabled;
+            const userStatus = cognitoUserCreated.User.UserStatus;
+            const mfaOptions = cognitoUserCreated.User.MFAOptions;
+            const sub = (_c = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'sub')) === null || _c === void 0 ? void 0 : _c.Value;
+            const email_verified = (_d = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'email_verified')) === null || _d === void 0 ? void 0 : _d.Value;
+            const phone_number_verified = (_e = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _e === void 0 ? void 0 : _e.Value;
+            const userToSaveInDb = await this.userModel.create(Object.assign({ _id: sub, sub: sub, username: cognitoUserCreated.User.Username, email: email, email_verified: email_verified == 'true', phone_number: phoneNumber, phone_number_verified: phone_number_verified == 'true', user_status: userStatus, enabled: enabled, mfa_options: mfaOptions }, additionalUserData));
+            userDb = await userToSaveInDb.save();
+        }
+        return { cognitoUserCreated: cognitoUserCreated, userDb: userDb };
     }
     async registerAsWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail = false) {
         var _a, _b, _c;
-        var { userName, email, password, phoneNumber = '', country, name } = wpmsUserRegisterDTO;
+        var { userName, email, password, phoneNumber = '', country, name, } = wpmsUserRegisterDTO;
         var registerNewUserParams = {
             UserPoolId: this.cognitoUserPoolId,
             Username: userName,
@@ -562,7 +624,7 @@ let UserService = class UserService {
     }
     async signupAsWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail = false) {
         var _a, _b, _c;
-        var { userName, email, password, phoneNumber = '', country, name } = wpmsUserRegisterDTO;
+        var { userName, email, password, phoneNumber = '', country, name, } = wpmsUserRegisterDTO;
         var registerNewUserParams = {
             ClientId: this.clientId,
             Username: userName,
@@ -579,7 +641,8 @@ let UserService = class UserService {
             ],
         };
         var cognitoUserCreated = await this.cognitoIdentityServiceProvider
-            .signUp(registerNewUserParams).promise();
+            .signUp(registerNewUserParams)
+            .promise();
         const cognitoUserAfterMakingPasswordParmanent = await this.getCognitoUser(cognitoUserCreated.UserSub);
         const username = cognitoUserAfterMakingPasswordParmanent.Username;
         const enabled = cognitoUserAfterMakingPasswordParmanent.Enabled;
@@ -615,7 +678,7 @@ let UserService = class UserService {
         return {
             cognitoUserCreated: cognitoUserAfterMakingPasswordParmanent,
             userDb: userDb,
-            cognitoUserSignuped: cognitoUserCreated
+            cognitoUserSignuped: cognitoUserCreated,
         };
     }
     async addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub) {

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Platform = exports.EC2InstanceMetadata = exports.SystemGroup = exports.Roles = exports.MonitorGroupsEnum = exports.S3ACL = exports.PaymentInterval = exports.PlanType = exports.PlanName = exports.FingerPrintEvents = exports.FingerPrintStatus = exports.ApiKeyType = exports.Permissions = exports.ChannelEnums = void 0;
+exports.Platform = exports.EC2InstanceMetadata = exports.AccountTypes = exports.SystemGroup = exports.AppRoles = exports.Roles = exports.MonitorGroupsEnum = exports.S3ACL = exports.PaymentInterval = exports.PlanType = exports.PlanName = exports.FingerPrintEvents = exports.FingerPrintStatus = exports.UserType = exports.ApiKeyType = exports.Permissions = exports.ChannelEnums = void 0;
 var ChannelEnums;
 (function (ChannelEnums) {
     ChannelEnums["JOB"] = "JOB";
@@ -24,6 +24,12 @@ var ApiKeyType;
     ApiKeyType["INDIVIDUAL"] = "Individual";
     ApiKeyType["COMPANY"] = "Company";
 })(ApiKeyType = exports.ApiKeyType || (exports.ApiKeyType = {}));
+var UserType;
+(function (UserType) {
+    UserType["INDIVIDUAL"] = "Individual";
+    UserType["COMPANY"] = "Company";
+    UserType["PARTNER"] = "Partner";
+})(UserType = exports.UserType || (exports.UserType = {}));
 var FingerPrintStatus;
 (function (FingerPrintStatus) {
     FingerPrintStatus["SUCCESS"] = "Success";
@@ -76,15 +82,36 @@ var Roles;
     Roles["COMPANY_ADMIN"] = "CompanyAdmin";
     Roles["THIRDPARTY_ADMIN"] = "ThirdPartyAdmin";
 })(Roles = exports.Roles || (exports.Roles = {}));
+var AppRoles;
+(function (AppRoles) {
+    AppRoles["ADMIN"] = "Admin";
+    AppRoles["PARTNER_ADMIN"] = "PartnerAdmin";
+    AppRoles["PARTNER_USER"] = "PartnerUser";
+    AppRoles["PARTNER_COMPANY"] = "PartnerUser";
+    AppRoles["COMPANY_ADMIN"] = "CompanyAdmin";
+    AppRoles["THIRDPARTY_ADMIN"] = "ThirdPartyAdmin";
+})(AppRoles = exports.AppRoles || (exports.AppRoles = {}));
 var SystemGroup;
 (function (SystemGroup) {
     SystemGroup["ADMIN"] = "Admin";
     SystemGroup["PORTAL_USER"] = "PortalUser";
-    SystemGroup["AIM"] = "AIM";
-    SystemGroup["AFEM"] = "AFEM";
     SystemGroup["WPMS_USER"] = "WPMSUser";
+    SystemGroup["PARTNER_ADMIN"] = "PartnerAdmin";
+    SystemGroup["PARTNER_COMPANY"] = "PartnerCompany";
+    SystemGroup["PARTNER_USER"] = "PartnerUser";
     SystemGroup["COMPANY_ADMIN"] = "CompanyAdmin";
+    SystemGroup["COMPANY_USER"] = "CompanyUser";
 })(SystemGroup = exports.SystemGroup || (exports.SystemGroup = {}));
+var AccountTypes;
+(function (AccountTypes) {
+    AccountTypes["ADMIN"] = "Admin";
+    AccountTypes["PORTAL_USER"] = "PortalUser";
+    AccountTypes["WPMS_USER"] = "WPMSUser";
+    AccountTypes["PARTNER_ADMIN"] = "Partner Admin";
+    AccountTypes["PARTNER"] = "Partner";
+    AccountTypes["COMPANY_ADMIN"] = "CompanyAdmin";
+    AccountTypes["COMPANY"] = "Company";
+})(AccountTypes = exports.AccountTypes || (exports.AccountTypes = {}));
 var EC2InstanceMetadata;
 (function (EC2InstanceMetadata) {
     EC2InstanceMetadata["ami_id"] = "ami-id";

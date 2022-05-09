@@ -76,6 +76,15 @@ __decorate([
 ], Company.prototype, "owner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: String,
+        ref: 'Partner',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], Company.prototype, "partner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Company.prototype, "createdBy", void 0);

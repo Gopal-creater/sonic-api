@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema,model } from 'mongoose';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { GroupSchemaName } from '../../group/schemas/group.schema';
-import { CompanySchemaName } from '../../company/schemas/company.schema';
+import { AccountTypes, SystemGroup, UserType } from 'src/constants/Enums';
 
 export const UserSchemaName = 'User';
 
@@ -83,13 +83,21 @@ export class UserDB extends Document {
   enabled: boolean;
 
   @ApiProperty()
+  @Prop({default:false})
+  isSonicAdmin: boolean;
+
+  @ApiProperty()
+  @Prop({type:String,enum:AccountTypes,default:AccountTypes.PORTAL_USER})
+  accountType?: string;
+
+  @ApiProperty()
   @Prop([MFAOption])
   mfa_options: MFAOption[];
 
   @ApiProperty()
   @Prop([{
     type: MogSchema.Types.ObjectId,
-    ref: CompanySchemaName,
+    ref: 'Company',
     autopopulate: { maxDepth: 2 },
   }])
   companies: any[];
@@ -97,10 +105,34 @@ export class UserDB extends Document {
   @ApiProperty()
   @Prop({
     type: MogSchema.Types.ObjectId,
-    ref: CompanySchemaName,
+    ref: 'Company',
     autopopulate: { maxDepth: 2 },
   })
-  adminCompany: any;
+  company: any; //Where user is belongs To
+
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Partner',
+    autopopulate: { maxDepth: 2 },
+  })
+  partner: any; //Where user is belongs To
+
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Company',
+    autopopulate: { maxDepth: 2 },
+  })
+  adminCompany: any; //Admin of this company
+
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Partner',
+    autopopulate: { maxDepth: 2 },
+  })
+  adminPartner: any; //Admin of this partner
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDB);

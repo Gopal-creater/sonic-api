@@ -32,6 +32,7 @@ import { MongoosePaginateUserDto } from '../dtos/mongoosepaginate-user.dto';
 import { ApiKeyService } from '../../api-key/api-key.service';
 import { WpmsUserRegisterDTO } from 'src/api/auth/dto/register.dto';
 import { LicenseKey } from 'src/api/licensekey/schemas/licensekey.schema';
+import { CreateUserInCognitoDto } from '../dtos/index';
 
 @Injectable()
 export class UserService {
@@ -567,6 +568,24 @@ export class UserService {
     });
   }
 
+  async adminDisableUser(username: string) {
+    const params = {
+      UserPoolId: this.cognitoUserPoolId,
+      Username: username,
+    };
+
+    return this.cognitoIdentityServiceProvider.adminDisableUser().promise()
+  }
+
+  async adminEnableUser(username: string) {
+    const params = {
+      UserPoolId: this.cognitoUserPoolId,
+      Username: username,
+    };
+
+    return this.cognitoIdentityServiceProvider.adminEnableUser().promise()
+  }
+
   /**
    * Create cognito user to also save user to our database
    * @param cognitoCreateUserDTO
@@ -619,7 +638,7 @@ export class UserService {
     userName = cognitoUserCreated.User.Username;
     var userDb = await this.syncUserFromCognitoToMongooDb(userName);
     const groupDb = await this.groupService.findById(group);
-    var license:LicenseKey
+    var license: LicenseKey;
     if (groupDb) {
       await this.adminAddUserToGroup(userName, groupDb.name).catch(err => {
         console.warn('Warning: error adding user to group in cognito', err);
@@ -644,13 +663,97 @@ export class UserService {
       );
     }
     if (groupDb?.name !== Roles.WPMS_USER) {
-     license = await this.addDefaultLicenseToUser(userName);
+      license = await this.addDefaultLicenseToUser(userName);
     }
     return {
       cognitoUserCreated: cognitoUserCreated,
       userDb: userDb,
-      license:license
+      license: license,
     };
+  }
+
+  /**
+   * Create cognito user
+   * @param createUserInCognitoDto
+   * @returns
+   */
+  async createUserInCognito(
+    createUserInCognitoDto: CreateUserInCognitoDto,
+    saveInDb: boolean = true,
+    additionalUserData: any = null,
+  ) {
+    var {
+      userName,
+      email,
+      password,
+      phoneNumber = '',
+      isEmailVerified = false,
+      isPhoneNumberVerified = false,
+      sendInvitationByEmail = false,
+    } = createUserInCognitoDto;
+    var registerNewUserParams = {
+      UserPoolId: this.cognitoUserPoolId,
+      Username: userName,
+      TemporaryPassword: password,
+      UserAttributes: [
+        {
+          Name: 'email',
+          Value: email,
+        },
+        {
+          Name: 'email_verified',
+          Value: isEmailVerified?.toString?.(),
+        },
+        {
+          Name: 'phone_number',
+          Value: phoneNumber,
+        },
+        {
+          Name: 'phone_number_verified',
+          Value: isPhoneNumberVerified?.toString?.(),
+        },
+      ],
+    };
+    if (sendInvitationByEmail) {
+      registerNewUserParams['DesiredDeliveryMediums'] = ['EMAIL'];
+    } else {
+      registerNewUserParams['MessageAction'] = 'SUPPRESS';
+    }
+    const cognitoUserCreated = await this.cognitoIdentityServiceProvider
+      .adminCreateUser(registerNewUserParams)
+      .promise();
+    //Once user created in cognito save it to our database too
+    var userDb: UserDB;
+    if (saveInDb) {
+      const enabled = cognitoUserCreated.User.Enabled;
+      const userStatus = cognitoUserCreated.User.UserStatus;
+      const mfaOptions = cognitoUserCreated.User.MFAOptions as any[];
+      const sub = cognitoUserCreated.User.Attributes.find(
+        attr => attr.Name == 'sub',
+      )?.Value;
+      const email_verified = cognitoUserCreated.User.Attributes.find(
+        attr => attr.Name == 'email_verified',
+      )?.Value;
+      const phone_number_verified = cognitoUserCreated.User.Attributes.find(
+        attr => attr.Name == 'phone_number_verified',
+      )?.Value;
+      const userToSaveInDb = await this.userModel.create({
+        _id: sub,
+        sub: sub,
+        username: cognitoUserCreated.User.Username,
+        email: email,
+        email_verified: email_verified == 'true',
+        phone_number: phoneNumber,
+        phone_number_verified: phone_number_verified == 'true',
+        user_status: userStatus,
+        enabled: enabled,
+        mfa_options: mfaOptions,
+        ...additionalUserData,
+      });
+      userDb = await userToSaveInDb.save();
+    }
+
+    return { cognitoUserCreated: cognitoUserCreated, userDb: userDb };
   }
 
   /**
@@ -662,7 +765,14 @@ export class UserService {
     wpmsUserRegisterDTO: WpmsUserRegisterDTO,
     sendInvitationByEmail = false,
   ) {
-    var { userName, email, password, phoneNumber = '',country,name } = wpmsUserRegisterDTO;
+    var {
+      userName,
+      email,
+      password,
+      phoneNumber = '',
+      country,
+      name,
+    } = wpmsUserRegisterDTO;
     var registerNewUserParams = {
       UserPoolId: this.cognitoUserPoolId,
       Username: userName,
@@ -690,7 +800,9 @@ export class UserService {
     const username = cognitoUserCreated.User.Username;
     //Make password as permanent(Confirmed) otherwise it will be in FORCE_CHANGE_PASSWORD
     await this.adminSetUserPassword(username, password);
-    const cognitoUserAfterMakingPasswordParmanent = await this.getCognitoUser(username)
+    const cognitoUserAfterMakingPasswordParmanent = await this.getCognitoUser(
+      username,
+    );
     //Once user created in cognito save it to our database too
     const enabled = cognitoUserAfterMakingPasswordParmanent.Enabled;
     const userStatus = cognitoUserAfterMakingPasswordParmanent.UserStatus;
@@ -707,14 +819,14 @@ export class UserService {
     const userToSaveInDb = await this.userModel.create({
       _id: sub,
       sub: sub,
-      name:name,
+      name: name,
       username: username,
       email: email,
       email_verified: email_verified == 'true',
       phone_number: phoneNumber,
       phone_number_verified: phone_number_verified == 'true',
       user_status: userStatus,
-      country:country,
+      country: country,
       enabled: enabled,
       mfa_options: mfaOptions,
     });
@@ -741,11 +853,18 @@ export class UserService {
    * @param wpmsUserRegisterDTO
    * @returns
    */
-   async signupAsWpmsUser(
+  async signupAsWpmsUser(
     wpmsUserRegisterDTO: WpmsUserRegisterDTO,
     sendInvitationByEmail = false,
   ) {
-    var { userName, email, password, phoneNumber = '',country,name } = wpmsUserRegisterDTO;
+    var {
+      userName,
+      email,
+      password,
+      phoneNumber = '',
+      country,
+      name,
+    } = wpmsUserRegisterDTO;
     var registerNewUserParams = {
       ClientId: this.clientId, //Client Id
       Username: userName,
@@ -763,9 +882,12 @@ export class UserService {
     };
     //Create User in cognito
     var cognitoUserCreated = await this.cognitoIdentityServiceProvider
-    .signUp(registerNewUserParams).promise();
-    const cognitoUserAfterMakingPasswordParmanent = await this.getCognitoUser(cognitoUserCreated.UserSub)
-    const username =cognitoUserAfterMakingPasswordParmanent.Username;
+      .signUp(registerNewUserParams)
+      .promise();
+    const cognitoUserAfterMakingPasswordParmanent = await this.getCognitoUser(
+      cognitoUserCreated.UserSub,
+    );
+    const username = cognitoUserAfterMakingPasswordParmanent.Username;
     //Once user created in cognito save it to our database too
     const enabled = cognitoUserAfterMakingPasswordParmanent.Enabled;
     const userStatus = cognitoUserAfterMakingPasswordParmanent.UserStatus;
@@ -782,14 +904,14 @@ export class UserService {
     const userToSaveInDb = await this.userModel.create({
       _id: sub,
       sub: sub,
-      name:name,
+      name: name,
       username: username,
       email: email,
       email_verified: email_verified == 'true',
       phone_number: phoneNumber,
       phone_number_verified: phone_number_verified == 'true',
       user_status: userStatus,
-      country:country,
+      country: country,
       enabled: enabled,
       mfa_options: mfaOptions,
     });
@@ -808,7 +930,7 @@ export class UserService {
     return {
       cognitoUserCreated: cognitoUserAfterMakingPasswordParmanent,
       userDb: userDb,
-      cognitoUserSignuped:cognitoUserCreated
+      cognitoUserSignuped: cognitoUserCreated,
     };
   }
 
