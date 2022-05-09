@@ -48,6 +48,8 @@
     "axios": "^0.21.4",
     "braintree": "^3.7.0",
     "bull": "^4.8.1",
+    "chargebee": "^2.11.0",
+    "chargebee-typescript": "^2.8.0",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
     "date-fns": "^2.27.0",
