@@ -6,7 +6,7 @@ import { Partner } from '../schemas/partner.schema';
 import { Model, FilterQuery } from 'mongoose';
 import { UserService } from '../../user/services/user.service';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
-import { AccountTypes } from 'src/constants/Enums';
+import { SystemRoles } from 'src/constants/Enums';
 
 @Injectable()
 export class PartnerService {
@@ -24,7 +24,7 @@ export class PartnerService {
       await this.userService.userModel.findByIdAndUpdate(
         createPartnerDto.owner,
         {
-          accountType: AccountTypes.PARTNER_ADMIN,
+          userRole: SystemRoles.PARTNER_ADMIN,
           adminPartner: createdPartner._id,
           partner: createdPartner._id,
         },

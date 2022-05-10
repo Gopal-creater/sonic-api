@@ -32,13 +32,13 @@ let PartnerUserService = class PartnerUserService {
             new: true,
         });
         await this.userService.userModel.findByIdAndUpdate(user, {
-            accountType: Enums_1.AccountTypes.PARTNER_ADMIN,
+            userRole: Enums_1.SystemRoles.PARTNER_ADMIN,
             adminPartner: partner,
             partner: partner,
         });
         if (partnerFromDb.owner) {
             await this.userService.userModel.findByIdAndUpdate(partnerFromDb.owner, {
-                accountType: Enums_1.AccountTypes.PARTNER,
+                userRole: Enums_1.SystemRoles.PARTNER,
                 adminPartner: null,
             });
         }

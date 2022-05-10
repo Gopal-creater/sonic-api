@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Platform = exports.EC2InstanceMetadata = exports.AccountTypes = exports.SystemGroup = exports.AppRoles = exports.Roles = exports.MonitorGroupsEnum = exports.S3ACL = exports.PaymentInterval = exports.PlanType = exports.PlanName = exports.FingerPrintEvents = exports.FingerPrintStatus = exports.UserType = exports.ApiKeyType = exports.Permissions = exports.ChannelEnums = void 0;
+exports.Platform = exports.EC2InstanceMetadata = exports.SystemRoles = exports.SystemGroup = exports.AppRoles = exports.Roles = exports.MonitorGroupsEnum = exports.S3ACL = exports.PaymentInterval = exports.PlanType = exports.PlanName = exports.FingerPrintEvents = exports.FingerPrintStatus = exports.UserType = exports.ApiKeyType = exports.Permissions = exports.ChannelEnums = void 0;
 var ChannelEnums;
 (function (ChannelEnums) {
     ChannelEnums["JOB"] = "JOB";
@@ -102,16 +102,16 @@ var SystemGroup;
     SystemGroup["COMPANY_ADMIN"] = "CompanyAdmin";
     SystemGroup["COMPANY_USER"] = "CompanyUser";
 })(SystemGroup = exports.SystemGroup || (exports.SystemGroup = {}));
-var AccountTypes;
-(function (AccountTypes) {
-    AccountTypes["ADMIN"] = "Admin";
-    AccountTypes["PORTAL_USER"] = "PortalUser";
-    AccountTypes["WPMS_USER"] = "WPMSUser";
-    AccountTypes["PARTNER_ADMIN"] = "Partner Admin";
-    AccountTypes["PARTNER"] = "Partner";
-    AccountTypes["COMPANY_ADMIN"] = "CompanyAdmin";
-    AccountTypes["COMPANY"] = "Company";
-})(AccountTypes = exports.AccountTypes || (exports.AccountTypes = {}));
+var SystemRoles;
+(function (SystemRoles) {
+    SystemRoles["ADMIN"] = "Admin";
+    SystemRoles["PORTAL_USER"] = "PortalUser";
+    SystemRoles["WPMS_USER"] = "WPMSUser";
+    SystemRoles["PARTNER_ADMIN"] = "PartnerAdmin";
+    SystemRoles["PARTNER"] = "Partner";
+    SystemRoles["COMPANY_ADMIN"] = "CompanyAdmin";
+    SystemRoles["COMPANY"] = "Company";
+})(SystemRoles = exports.SystemRoles || (exports.SystemRoles = {}));
 var EC2InstanceMetadata;
 (function (EC2InstanceMetadata) {
     EC2InstanceMetadata["ami_id"] = "ami-id";

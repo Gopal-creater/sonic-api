@@ -57,13 +57,13 @@ let PartnerUserController = class PartnerUserController {
             if (!companyFromDb)
                 throw new common_1.NotFoundException('Unknown company');
             return this.partnerUserService.userService.createUserInCognito(createPartnerUserDto, true, {
-                accountType: Enums_1.AccountTypes.COMPANY,
+                userRole: Enums_1.SystemRoles.COMPANY,
                 company: company,
             });
         }
         else {
             return await this.partnerUserService.userService.createUserInCognito(createPartnerUserDto, true, {
-                accountType: Enums_1.AccountTypes.PARTNER,
+                userRole: Enums_1.SystemRoles.PARTNER,
                 partner: partner,
             });
         }

@@ -17,7 +17,7 @@ import {
   CreatePartnerUserDto,
   EditPartnerUserDto,
 } from '../dto/partneruser/partner-user';
-import { AccountTypes } from 'src/constants/Enums';
+import { SystemRoles } from 'src/constants/Enums';
 import { CompanyService } from '../../company/company.service';
 
 @ApiTags('Partners Controller')
@@ -88,7 +88,7 @@ export class PartnerUserController {
         createPartnerUserDto,
         true,
         {
-          accountType: AccountTypes.COMPANY,
+          userRole: SystemRoles.COMPANY,
           company: company,
         },
       );
@@ -98,7 +98,7 @@ export class PartnerUserController {
         createPartnerUserDto,
         true,
         {
-          accountType: AccountTypes.PARTNER,
+          userRole: SystemRoles.PARTNER,
           partner: partner,
         },
       );

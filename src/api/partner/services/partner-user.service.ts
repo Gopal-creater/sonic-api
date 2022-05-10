@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Partner } from '../schemas/partner.schema';
 import { Model } from 'mongoose';
 import { UserService } from '../../user/services/user.service';
-import { AccountTypes } from 'src/constants/Enums';
+import { SystemRoles } from 'src/constants/Enums';
 import { CreatePartnerUserDto } from '../dto/partneruser/partner-user';
 
 @Injectable()
@@ -27,14 +27,14 @@ export class PartnerUserService {
       },
     );
     await this.userService.userModel.findByIdAndUpdate(user, {
-      accountType: AccountTypes.PARTNER_ADMIN,
+      userRole: SystemRoles.PARTNER_ADMIN,
       adminPartner: partner,
       partner: partner,
     });
     if (partnerFromDb.owner) {
       //Remove ownership of old user
       await this.userService.userModel.findByIdAndUpdate(partnerFromDb.owner, {
-        accountType: AccountTypes.PARTNER,
+        userRole: SystemRoles.PARTNER,
         adminPartner: null,
       });
     }

@@ -29,7 +29,7 @@ let PartnerService = class PartnerService {
         const createdPartner = await newPartner.save();
         if (createPartnerDto.owner) {
             await this.userService.userModel.findByIdAndUpdate(createPartnerDto.owner, {
-                accountType: Enums_1.AccountTypes.PARTNER_ADMIN,
+                userRole: Enums_1.SystemRoles.PARTNER_ADMIN,
                 adminPartner: createdPartner._id,
                 partner: createdPartner._id,
             });

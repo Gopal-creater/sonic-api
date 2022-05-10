@@ -111,9 +111,9 @@ __decorate([
 ], UserDB.prototype, "isSonicAdmin", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, enum: Enums_1.AccountTypes, default: Enums_1.AccountTypes.PORTAL_USER }),
+    mongoose_1.Prop({ type: String, enum: Enums_1.SystemRoles, default: Enums_1.SystemRoles.PORTAL_USER }),
     __metadata("design:type", String)
-], UserDB.prototype, "accountType", void 0);
+], UserDB.prototype, "userRole", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop([MFAOption]),

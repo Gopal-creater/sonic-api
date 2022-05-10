@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema,model } from 'mongoose';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { GroupSchemaName } from '../../group/schemas/group.schema';
-import { AccountTypes, SystemGroup, UserType } from 'src/constants/Enums';
+import { SystemRoles } from 'src/constants/Enums';
 
 export const UserSchemaName = 'User';
 
@@ -87,8 +87,8 @@ export class UserDB extends Document {
   isSonicAdmin: boolean;
 
   @ApiProperty()
-  @Prop({type:String,enum:AccountTypes,default:AccountTypes.PORTAL_USER})
-  accountType?: string;
+  @Prop({type:String,enum:SystemRoles,default:SystemRoles.PORTAL_USER})
+  userRole?: string;
 
   @ApiProperty()
   @Prop([MFAOption])
@@ -100,7 +100,7 @@ export class UserDB extends Document {
     ref: 'Company',
     autopopulate: { maxDepth: 2 },
   }])
-  companies: any[];
+  companies: any[]; //Will be dump out later
 
   @ApiProperty()
   @Prop({

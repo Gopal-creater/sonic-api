@@ -39,6 +39,7 @@ import { BullModule } from '@nestjs/bull';
 import { QueuejobModule } from './queuejob/queuejob.module';
 import { ChargebeeModule } from './api/chargebee/chargebee.module';
 import { PartnerModule } from './api/partner/partner.module';
+import { TrackModule } from './api/track/track.module';
 import testConfig from './config/test.config';
 
 mongoosePaginate.paginate.options = {
@@ -121,7 +122,8 @@ var connectionNo = 0;
     PlanModule,
     QueuejobModule,
     ChargebeeModule,
-    PartnerModule
+    PartnerModule,
+    TrackModule
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway, Ec2InstanceService],

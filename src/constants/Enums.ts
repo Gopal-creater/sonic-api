@@ -100,11 +100,21 @@ export enum SystemGroup {
   COMPANY_USER='CompanyUser'
 }
 
-export enum AccountTypes {
+// export enum AccountTypes {
+//   ADMIN = 'Admin',
+//   PORTAL_USER='PortalUser',
+//   WPMS_USER='WPMSUser',
+//   PARTNER_ADMIN='Partner Admin',
+//   PARTNER='Partner',
+//   COMPANY_ADMIN='CompanyAdmin',
+//   COMPANY='Company'
+// }
+
+export enum SystemRoles {
   ADMIN = 'Admin',
   PORTAL_USER='PortalUser',
   WPMS_USER='WPMSUser',
-  PARTNER_ADMIN='Partner Admin',
+  PARTNER_ADMIN='PartnerAdmin',
   PARTNER='Partner',
   COMPANY_ADMIN='CompanyAdmin',
   COMPANY='Company'
