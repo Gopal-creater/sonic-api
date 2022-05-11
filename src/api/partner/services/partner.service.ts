@@ -20,7 +20,8 @@ export class PartnerService {
   async create(createPartnerDto: CreatePartnerDto) {
     const newPartner = await this.partnerModel.create(createPartnerDto);
     const createdPartner = await newPartner.save();
-    if (createPartnerDto.owner) {//Make this user as admin user
+    //Make this user as admin user for this partner
+    if (createPartnerDto.owner) {
       await this.userService.userModel.findByIdAndUpdate(
         createPartnerDto.owner,
         {
@@ -30,10 +31,83 @@ export class PartnerService {
         },
       );
     }
+    return createdPartner
   }
 
-  findAll() {
-    return this.partnerModel.find();
+  async makePartnerAdminUser(user: string, partner: string) {
+    const partnerFromDb = await this.partnerModel.findById(partner);
+    await this.partnerModel.findByIdAndUpdate(
+      partner,
+      {
+        owner: user,
+      },
+      {
+        new: true,
+      },
+    );
+    await this.userService.userModel.findByIdAndUpdate(user, {
+      userRole: SystemRoles.PARTNER_ADMIN,
+      adminPartner: partner,
+      partner: partner,
+    });
+    if (partnerFromDb.owner) {
+      //Remove ownership of old user
+      await this.userService.userModel.findByIdAndUpdate(partnerFromDb.owner, {
+        userRole: SystemRoles.PARTNER,
+        adminPartner: null,
+      });
+    }
+    return this.partnerModel.findById(partner);
+  }
+
+  findAll(queryDto: ParsedQueryDto) {
+    const {
+      limit,
+      skip,
+      sort,
+      page,
+      filter,
+      select,
+      populate,
+      relationalFilter,
+    } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    var aggregateArray: any[] = [
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+          ...sort,
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'User',
+          localField: 'owner',
+          foreignField: '_id',
+          as: 'owner',
+        },
+      },
+      { $addFields: { owner: { $first: '$owner' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+    ];
+    const aggregate = this.partnerModel.aggregate(aggregateArray);
+    return this.partnerModel['aggregatePaginate'](aggregate, paginateOptions);
   }
 
   findOne(filter: FilterQuery<Partner>) {

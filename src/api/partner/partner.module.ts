@@ -7,17 +7,19 @@ import { PartnerSchemaName, PartnerSchema } from './schemas/partner.schema';
 import { PartnerUserService } from './services/partner-user.service';
 import { PartnerUserController } from './controllers/partner-user.controller';
 import { CompanyModule } from '../company/company.module';
+import { PartnerCompanyController } from './controllers/partner-company.controller';
+import { PartnerCompanyService } from './services/partner-company.service';
 
 @Module({
   imports: [
-  MongooseModule.forFeature([
+MongooseModule.forFeature([
       { name: PartnerSchemaName, schema: PartnerSchema },
     ]),
     forwardRef(() => UserModule),
     forwardRef(() => CompanyModule),
   ],
-  controllers: [PartnerController, PartnerUserController],
-  providers: [PartnerService, PartnerUserService],
-  exports: [PartnerService, PartnerUserService],
+  controllers: [PartnerController, PartnerUserController,PartnerCompanyController],
+  providers: [PartnerService, PartnerUserService,PartnerCompanyService],
+  exports: [PartnerService, PartnerUserService,PartnerCompanyService],
 })
 export class PartnerModule {}

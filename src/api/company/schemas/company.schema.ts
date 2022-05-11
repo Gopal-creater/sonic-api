@@ -40,6 +40,10 @@ export class Company extends Document {
   @Prop()
   contactNo: string;
 
+  @ApiProperty()
+  @Prop({default:true})
+  enabled: boolean;
+
 
   @ApiProperty()
   @Prop({ type: Address })

@@ -69,6 +69,14 @@ export class Track extends Document {
 
   @ApiProperty()
   @Prop()
+  artist: string; //saved from encode dto, can not be changed later
+
+  @ApiProperty()
+  @Prop()
+  title: string; //saved from encode dto, can not be changed later
+
+  @ApiProperty()
+  @Prop()
   duration?: number;
 
   @ApiProperty()

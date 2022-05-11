@@ -20,6 +20,8 @@ const mongoose_2 = require("mongoose");
 const user_service_1 = require("../user/services/user.service");
 const mm = require("music-metadata");
 const s3fileupload_service_1 = require("../s3fileupload/s3fileupload.service");
+const nanoid_1 = require("nanoid");
+const Enums_1 = require("../../constants/Enums");
 let TrackService = class TrackService {
     constructor(trackModel, s3FileUploadService, userService) {
         this.trackModel = trackModel;
@@ -30,6 +32,9 @@ let TrackService = class TrackService {
         return this.trackModel.create(doc).then(createdTrack => {
             return createdTrack.save();
         });
+    }
+    generateTrackId() {
+        return `T${nanoid_1.nanoid(8)}`;
     }
     findAll(queryDto) {
         const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;

@@ -34,9 +34,59 @@ let PartnerService = class PartnerService {
                 partner: createdPartner._id,
             });
         }
+        return createdPartner;
     }
-    findAll() {
-        return this.partnerModel.find();
+    async makePartnerAdminUser(user, partner) {
+        const partnerFromDb = await this.partnerModel.findById(partner);
+        await this.partnerModel.findByIdAndUpdate(partner, {
+            owner: user,
+        }, {
+            new: true,
+        });
+        await this.userService.userModel.findByIdAndUpdate(user, {
+            userRole: Enums_1.SystemRoles.PARTNER_ADMIN,
+            adminPartner: partner,
+            partner: partner,
+        });
+        if (partnerFromDb.owner) {
+            await this.userService.userModel.findByIdAndUpdate(partnerFromDb.owner, {
+                userRole: Enums_1.SystemRoles.PARTNER,
+                adminPartner: null,
+            });
+        }
+        return this.partnerModel.findById(partner);
+    }
+    findAll(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ createdAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+        ];
+        const aggregate = this.partnerModel.aggregate(aggregateArray);
+        return this.partnerModel['aggregatePaginate'](aggregate, paginateOptions);
     }
     findOne(filter) {
         return this.partnerModel.findOne(filter);

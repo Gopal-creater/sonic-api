@@ -27,18 +27,6 @@ let PartnerUserController = class PartnerUserController {
         this.companyService = companyService;
         this.partnerUserService = partnerUserService;
     }
-    async changeAdminUser(partner, user) {
-        const userFromDb = await this.partnerService.userService.getUserProfile(user);
-        if (!userFromDb)
-            throw new common_1.NotFoundException('Unknown user');
-        if (userFromDb.adminPartner) {
-            throw new common_1.UnprocessableEntityException('Given user already own the partner, please choose different user as a partner');
-        }
-        const partnerFromDb = await this.partnerService.findById(partner);
-        if (!partnerFromDb)
-            throw new common_1.NotFoundException('Unknown partner');
-        return this.partnerUserService.changeAdminUser(user, partner);
-    }
     async createUser(partner, createPartnerUserDto) {
         const { company, email, userName } = createPartnerUserDto;
         const userFromDb = await this.partnerService.userService.findOne({
@@ -106,24 +94,6 @@ let PartnerUserController = class PartnerUserController {
     }
 };
 __decorate([
-    common_1.Put('/change-admin-user'),
-    swagger_1.ApiOperation({ summary: 'Change admin user' }),
-    swagger_1.ApiBody({
-        schema: {
-            type: 'object',
-            properties: {
-                user: { type: 'string' },
-            },
-        },
-    }),
-    openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('partner')),
-    __param(1, common_1.Body('user')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], PartnerUserController.prototype, "changeAdminUser", null);
-__decorate([
     common_1.Post('/create-partner-user'),
     swagger_1.ApiOperation({
         summary: 'Create partner user can also be company user id company field is present',
@@ -135,7 +105,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PartnerUserController.prototype, "createUser", null);
 __decorate([
-    common_1.Put('/update-partner-user/:usernameOrSub'),
+    common_1.Put(':usernameOrSub/update-partner-user'),
     swagger_1.ApiOperation({ summary: 'Update partner user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('partner')),
@@ -146,7 +116,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PartnerUserController.prototype, "updatePartnerUser", null);
 __decorate([
-    common_1.Put('/disable-user/:usernameOrSub'),
+    common_1.Put(':usernameOrSub/disable-user'),
     swagger_1.ApiOperation({ summary: 'Disable partner user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('partner')),
@@ -156,7 +126,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PartnerUserController.prototype, "disablePartnerUser", null);
 __decorate([
-    common_1.Put('/enable-user/:usernameOrSub'),
+    common_1.Put(':usernameOrSub/enable-user'),
     swagger_1.ApiOperation({ summary: 'Disable partner user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('partner')),

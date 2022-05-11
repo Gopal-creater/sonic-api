@@ -95,7 +95,7 @@ export class TrackController {
     @UploadedFile() file: IUploadedFile,
     @User() loggedInUser: UserDB,
   ) {
-    const { mediaFile, channel } = uploadTrackDto;
+    const { mediaFile, channel,artist,title } = uploadTrackDto;
     const {
       destinationFolder,
       resourceOwnerObj,
@@ -107,12 +107,15 @@ export class TrackController {
     const extractFileMeta = await this.trackService.exractMusicMetaFromFile(
       file,
     );
+    const trackId = this.trackService.generateTrackId()
     const createdTrack = await this.trackService.create({
-      _id: `${Date.now()}`,
+      _id: trackId,
       ...resourceOwnerObj,
       channel: channel || ChannelEnums.PORTAL,
       mimeType: extractFileMeta.mimeType,
       duration: extractFileMeta.duration,
+      artist:artist,
+      title:title,
       fileSize: extractFileMeta.size,
       localFilePath: file.path,
       s3OriginalFileMeta: s3FileUploadResponse,
@@ -146,18 +149,6 @@ export class TrackController {
     @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
     @User() loggedInUser: UserDB,
   ) {
-    switch (loggedInUser.userRole) {
-      case SystemRoles.PARTNER:
-      case SystemRoles.PARTNER_ADMIN:
-        break;
-
-      case SystemRoles.COMPANY:
-      case SystemRoles.COMPANY_ADMIN:
-        break;
-
-      default:
-        break;
-    }
     return this.trackService.findAll(queryDto);
   }
 

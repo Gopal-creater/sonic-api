@@ -89,6 +89,16 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
+    __metadata("design:type", String)
+], Track.prototype, "artist", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], Track.prototype, "title", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", Number)
 ], Track.prototype, "duration", void 0);
 __decorate([

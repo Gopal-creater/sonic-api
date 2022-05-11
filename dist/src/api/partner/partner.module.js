@@ -16,6 +16,8 @@ const partner_schema_1 = require("./schemas/partner.schema");
 const partner_user_service_1 = require("./services/partner-user.service");
 const partner_user_controller_1 = require("./controllers/partner-user.controller");
 const company_module_1 = require("../company/company.module");
+const partner_company_controller_1 = require("./controllers/partner-company.controller");
+const partner_company_service_1 = require("./services/partner-company.service");
 let PartnerModule = class PartnerModule {
 };
 PartnerModule = __decorate([
@@ -27,9 +29,9 @@ PartnerModule = __decorate([
             common_1.forwardRef(() => user_module_1.UserModule),
             common_1.forwardRef(() => company_module_1.CompanyModule),
         ],
-        controllers: [partner_controller_1.PartnerController, partner_user_controller_1.PartnerUserController],
-        providers: [partner_service_1.PartnerService, partner_user_service_1.PartnerUserService],
-        exports: [partner_service_1.PartnerService, partner_user_service_1.PartnerUserService],
+        controllers: [partner_controller_1.PartnerController, partner_user_controller_1.PartnerUserController, partner_company_controller_1.PartnerCompanyController],
+        providers: [partner_service_1.PartnerService, partner_user_service_1.PartnerUserService, partner_company_service_1.PartnerCompanyService],
+        exports: [partner_service_1.PartnerService, partner_user_service_1.PartnerUserService, partner_company_service_1.PartnerCompanyService],
     })
 ], PartnerModule);
 exports.PartnerModule = PartnerModule;

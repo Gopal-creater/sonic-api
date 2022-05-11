@@ -8,11 +8,12 @@ import {
   Delete,
   NotFoundException,
   Query,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { PartnerService } from '../services/partner.service';
 import { CreatePartnerDto } from '../dto/create-partner.dto';
 import { UpdatePartnerDto } from '../dto/update-partner.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { ParseQueryValue } from 'src/shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
 
@@ -45,8 +46,10 @@ export class PartnerController {
     summary: 'Get partners',
   })
   @Get()
-  findAll() {
-    return this.partnerService.findAll();
+  findAll(
+    @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
+  ) {
+    return this.partnerService.findAll(queryDto);
   }
 
   @ApiOperation({
@@ -55,6 +58,34 @@ export class PartnerController {
   @Get(':id')
   findById(@Param('id') id: string) {
     return this.partnerService.findById(id);
+  }
+
+  @Put(':id/change-partner-admin-user')
+  @ApiOperation({ summary: 'Change admin user' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        user: { type: 'string' },
+      },
+    },
+  })
+  async changeAdminUser(
+    @Param('id') partner: string,
+    @Body('user') user: string,
+  ) {
+    const userFromDb = await this.partnerService.userService.getUserProfile(
+      user,
+    );
+    if (!userFromDb) throw new NotFoundException('Unknown user');
+    if (userFromDb.adminPartner) {
+      throw new UnprocessableEntityException(
+        'Given user already own the partner, please choose different user as a partner admin',
+      );
+    }
+    const partnerFromDb = await this.partnerService.findById(partner);
+    if (!partnerFromDb) throw new NotFoundException('Unknown partner');
+    return this.partnerService.makePartnerAdminUser(user, partner);
   }
 
   @ApiOperation({

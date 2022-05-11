@@ -2,12 +2,13 @@ import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { CreateCompanyDto } from './dtos/create-company.dto';
 import { UpdateCompanyDto } from './dtos/update-company.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, FilterQuery } from 'mongoose';
+import { Model, FilterQuery, AnyObject, AnyKeys } from 'mongoose';
 import { Company } from './schemas/company.schema';
 import { UserService } from '../user/services/user.service';
 import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
 import { UserDB } from '../user/schemas/user.db.schema';
 import { UserCompanyService } from '../user/services/user-company.service';
+import { SystemRoles } from 'src/constants/Enums';
 
 @Injectable()
 export class CompanyService {
@@ -21,18 +22,48 @@ export class CompanyService {
     @Inject(forwardRef(() => UserCompanyService))
     private readonly userCompanyService: UserCompanyService,
   ) {}
-  async create(createCompanyDto: CreateCompanyDto) {
-    const { name, owner } = createCompanyDto;
-    const newCompany = await this.companyModel.create(createCompanyDto);
+  async create(doc: AnyObject | AnyKeys<Company>) {
+    const { owner } = doc;
+    const newCompany = await this.companyModel.create(doc);
     const createdCompany = await newCompany.save();
-    //Once saved to db , also save it to cognito group as a company
-    const cognitoGroupName = `COM_${name}`;
-    await this.userService
-      .cognitoCreateGroup(cognitoGroupName)
-      .catch(err => console.warn('Warning: Error creating cognito group', err));
-    const userfromDb = await this.userService.findById(owner);
-    await this.userCompanyService.makeCompanyAdmin(userfromDb, createdCompany);
+     //Make this user as admin user for this company
+     if (owner) {
+      await this.userService.userModel.findByIdAndUpdate(
+        owner,
+        {
+          userRole: SystemRoles.COMPANY_ADMIN,
+          adminCompany: createdCompany._id,
+          company: createdCompany._id,
+        },
+      );
+    }
     return createdCompany;
+  }
+
+  async makeCompanyAdminUser(company:string,user:string) {
+    const companyFromDb = await this.companyModel.findById(company);
+    await this.companyModel.findByIdAndUpdate(
+      company,
+      {
+        owner: user,
+      },
+      {
+        new: true,
+      },
+    );
+    await this.userService.userModel.findByIdAndUpdate(user, {
+      userRole: SystemRoles.COMPANY_ADMIN,
+      adminCompany: company,
+      company: company,
+    });
+    if (companyFromDb.owner) {
+      //Remove ownership of old user
+      await this.userService.userModel.findByIdAndUpdate(companyFromDb.owner, {
+        userRole: SystemRoles.COMPANY,
+        adminCompany: null,
+      });
+    }
+    return this.companyModel.findById(company);
   }
 
   findAll() {

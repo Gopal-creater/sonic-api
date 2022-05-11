@@ -8,6 +8,10 @@ import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import * as mm from 'music-metadata';
 import { IUploadedFile } from '../../shared/interfaces/UploadedFile.interface';
 import { S3FileUploadService } from '../s3fileupload/s3fileupload.service';
+import { MongoosePaginateTrackDto } from './dto/mongoosepaginate-track.dto';
+import { customAlphabet,nanoid} from 'nanoid'
+import { UserDB } from '../user/schemas/user.db.schema';
+import { SystemRoles } from 'src/constants/Enums';
 
 @Injectable()
 export class TrackService {
@@ -25,7 +29,11 @@ export class TrackService {
     });
   }
 
-  findAll(queryDto: ParsedQueryDto) {
+   generateTrackId(){
+    return `T${nanoid(8)}`
+  }
+
+  findAll(queryDto: ParsedQueryDto):Promise<MongoosePaginateTrackDto> {
     const {
       limit,
       skip,

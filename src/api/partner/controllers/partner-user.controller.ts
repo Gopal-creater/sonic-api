@@ -29,34 +29,6 @@ export class PartnerUserController {
     private readonly partnerUserService: PartnerUserService,
   ) {}
 
-  @Put('/change-admin-user')
-  @ApiOperation({ summary: 'Change admin user' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        user: { type: 'string' },
-      },
-    },
-  })
-  async changeAdminUser(
-    @Param('partner') partner: string,
-    @Body('user') user: string,
-  ) {
-    const userFromDb = await this.partnerService.userService.getUserProfile(
-      user,
-    );
-    if (!userFromDb) throw new NotFoundException('Unknown user');
-    if (userFromDb.adminPartner) {
-      throw new UnprocessableEntityException(
-        'Given user already own the partner, please choose different user as a partner',
-      );
-    }
-    const partnerFromDb = await this.partnerService.findById(partner);
-    if (!partnerFromDb) throw new NotFoundException('Unknown partner');
-    return this.partnerUserService.changeAdminUser(user, partner);
-  }
-
   @Post('/create-partner-user')
   @ApiOperation({
     summary:
@@ -105,7 +77,7 @@ export class PartnerUserController {
     }
   }
 
-  @Put('/update-partner-user/:usernameOrSub')
+  @Put(':usernameOrSub/update-partner-user')
   @ApiOperation({ summary: 'Update partner user' })
   async updatePartnerUser(
     @Param('partner') partner: string,
@@ -128,7 +100,7 @@ export class PartnerUserController {
     return updatedUser;
   }
 
-  @Put('/disable-user/:usernameOrSub')
+  @Put(':usernameOrSub/disable-user')
   @ApiOperation({ summary: 'Disable partner user' })
   async disablePartnerUser(
     @Param('partner') partner: string,
@@ -151,7 +123,7 @@ export class PartnerUserController {
     return updatedUser;
   }
 
-  @Put('/enable-user/:usernameOrSub')
+  @Put(':usernameOrSub/enable-user')
   @ApiOperation({ summary: 'Disable partner user' })
   async enablePartnerUser(
     @Param('partner') partner: string,

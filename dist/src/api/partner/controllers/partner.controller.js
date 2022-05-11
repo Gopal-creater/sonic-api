@@ -38,11 +38,23 @@ let PartnerController = class PartnerController {
         }
         return this.partnerService.create(createPartnerDto);
     }
-    findAll() {
-        return this.partnerService.findAll();
+    findAll(queryDto) {
+        return this.partnerService.findAll(queryDto);
     }
     findById(id) {
         return this.partnerService.findById(id);
+    }
+    async changeAdminUser(partner, user) {
+        const userFromDb = await this.partnerService.userService.getUserProfile(user);
+        if (!userFromDb)
+            throw new common_1.NotFoundException('Unknown user');
+        if (userFromDb.adminPartner) {
+            throw new common_1.UnprocessableEntityException('Given user already own the partner, please choose different user as a partner admin');
+        }
+        const partnerFromDb = await this.partnerService.findById(partner);
+        if (!partnerFromDb)
+            throw new common_1.NotFoundException('Unknown partner');
+        return this.partnerService.makePartnerAdminUser(user, partner);
     }
     update(id, updatePartnerDto) {
         return this.partnerService.update(id, updatePartnerDto);
@@ -60,7 +72,7 @@ let PartnerController = class PartnerController {
 __decorate([
     common_1.Post(),
     swagger_1.ApiOperation({ summary: 'Create partner' }),
-    openapi.ApiResponse({ status: 201 }),
+    openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_partner_dto_1.CreatePartnerDto]),
@@ -71,9 +83,10 @@ __decorate([
         summary: 'Get partners',
     }),
     common_1.Get(),
-    openapi.ApiResponse({ status: 200 }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], PartnerController.prototype, "findAll", null);
 __decorate([
@@ -87,6 +100,24 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], PartnerController.prototype, "findById", null);
+__decorate([
+    common_1.Put(':id/change-partner-admin-user'),
+    swagger_1.ApiOperation({ summary: 'Change admin user' }),
+    swagger_1.ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                user: { type: 'string' },
+            },
+        },
+    }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('id')),
+    __param(1, common_1.Body('user')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], PartnerController.prototype, "changeAdminUser", null);
 __decorate([
     swagger_1.ApiOperation({
         summary: 'Update partner by id',

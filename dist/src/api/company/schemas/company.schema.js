@@ -62,6 +62,11 @@ __decorate([
 ], Company.prototype, "contactNo", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: true }),
+    __metadata("design:type", Boolean)
+], Company.prototype, "enabled", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop({ type: Address }),
     __metadata("design:type", Address)
 ], Company.prototype, "address", void 0);
