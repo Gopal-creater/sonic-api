@@ -21,6 +21,12 @@ const update_partner_dto_1 = require("../dto/update-partner.dto");
 const swagger_1 = require("@nestjs/swagger");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
+const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
+const get_partner_security_guard_1 = require("../guards/get-partner-security.guard");
+const role_based_guard_1 = require("../../auth/guards/role-based.guard");
+const decorators_1 = require("../../auth/decorators");
+const Enums_1 = require("../../../constants/Enums");
+const update_partner_security_guard_1 = require("../guards/update-partner-security.guard");
 let PartnerController = class PartnerController {
     constructor(partnerService) {
         this.partnerService = partnerService;
@@ -70,6 +76,8 @@ let PartnerController = class PartnerController {
     }
 };
 __decorate([
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     common_1.Post(),
     swagger_1.ApiOperation({ summary: 'Create partner' }),
     openapi.ApiResponse({ status: 201, type: Object }),
@@ -82,6 +90,8 @@ __decorate([
     swagger_1.ApiOperation({
         summary: 'Get partners',
     }),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     common_1.Get(),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
@@ -93,6 +103,8 @@ __decorate([
     swagger_1.ApiOperation({
         summary: 'Get partner by id',
     }),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.PARTNER_USER),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, get_partner_security_guard_1.GetPartnerSecurityGuard),
     common_1.Get(':id'),
     openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Param('id')),
@@ -101,6 +113,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], PartnerController.prototype, "findById", null);
 __decorate([
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     common_1.Put(':id/change-partner-admin-user'),
     swagger_1.ApiOperation({ summary: 'Change admin user' }),
     swagger_1.ApiBody({
@@ -122,6 +136,8 @@ __decorate([
     swagger_1.ApiOperation({
         summary: 'Update partner by id',
     }),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, update_partner_security_guard_1.UpdatePartnerSecurityGuard),
     common_1.Put(':id'),
     openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Param('id')),
@@ -152,6 +168,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PartnerController.prototype, "getEstimateCount", null);
 __decorate([
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     common_1.Delete(':id'),
     swagger_1.ApiOperation({ summary: 'Remove partner' }),
     openapi.ApiResponse({ status: 200, type: Object }),

@@ -15,56 +15,61 @@ const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const userexists_validation_1 = require("../validations/userexists.validation");
 class CreateUserDto {
-    constructor(data) {
-        Object.assign(this, data);
-    }
     static _OPENAPI_METADATA_FACTORY() {
-        return { _id: { required: true, type: () => String }, username: { required: true, type: () => String }, sub: { required: true, type: () => String }, email_verified: { required: false, type: () => Boolean }, phone_number_verified: { required: false, type: () => Boolean }, phone_number: { required: false, type: () => String }, email: { required: true, type: () => String }, user_status: { required: false, type: () => String }, enabled: { required: false, type: () => Boolean }, mfa_options: { required: false, type: () => [Object] } };
+        return { userName: { required: true, type: () => String }, name: { required: false, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String }, isEmailVerified: { required: true, type: () => Boolean }, isPhoneNumberVerified: { required: true, type: () => Boolean }, userRole: { required: false, type: () => String }, company: { required: false, type: () => String }, partner: { required: false, type: () => String }, sendInvitationByEmail: { required: true, type: () => Boolean } };
     }
 }
 __decorate([
+    swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "userName", void 0);
+__decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
-], CreateUserDto.prototype, "_id", void 0);
+], CreateUserDto.prototype, "name", void 0);
 __decorate([
+    swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "password", void 0);
+__decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
-], CreateUserDto.prototype, "username", void 0);
+], CreateUserDto.prototype, "phoneNumber", void 0);
 __decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "country", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "sub", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", Boolean)
-], CreateUserDto.prototype, "email_verified", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", Boolean)
-], CreateUserDto.prototype, "phone_number_verified", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "phone_number", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "email", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "user_status", void 0);
+    __metadata("design:type", Boolean)
+], CreateUserDto.prototype, "isEmailVerified", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Boolean)
-], CreateUserDto.prototype, "enabled", void 0);
+], CreateUserDto.prototype, "isPhoneNumberVerified", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    __metadata("design:type", Array)
-], CreateUserDto.prototype, "mfa_options", void 0);
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "userRole", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "company", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "partner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Boolean)
+], CreateUserDto.prototype, "sendInvitationByEmail", void 0);
 exports.CreateUserDto = CreateUserDto;
 class ValidationTestDto {
     static _OPENAPI_METADATA_FACTORY() {

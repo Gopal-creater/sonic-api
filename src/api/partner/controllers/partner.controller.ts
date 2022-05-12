@@ -9,6 +9,7 @@ import {
   NotFoundException,
   Query,
   UnprocessableEntityException,
+  UseGuards,
 } from '@nestjs/common';
 import { PartnerService } from '../services/partner.service';
 import { CreatePartnerDto } from '../dto/create-partner.dto';
@@ -16,12 +17,20 @@ import { UpdatePartnerDto } from '../dto/update-partner.dto';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { ParseQueryValue } from 'src/shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { GetPartnerSecurityGuard } from '../guards/get-partner-security.guard';
+import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
+import { RolesAllowed } from 'src/api/auth/decorators';
+import { Roles, SystemRoles } from 'src/constants/Enums';
+import { UpdatePartnerSecurityGuard } from '../guards/update-partner-security.guard';
 
 @ApiTags('Partners Controller')
 @Controller('partners')
 export class PartnerController {
   constructor(private readonly partnerService: PartnerService) {}
 
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @Post()
   @ApiOperation({ summary: 'Create partner' })
   async create(@Body() createPartnerDto: CreatePartnerDto) {
@@ -45,6 +54,8 @@ export class PartnerController {
   @ApiOperation({
     summary: 'Get partners',
   })
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @Get()
   findAll(
     @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
@@ -55,11 +66,15 @@ export class PartnerController {
   @ApiOperation({
     summary: 'Get partner by id',
   })
+  @RolesAllowed(Roles.ADMIN,Roles.PARTNER_ADMIN,Roles.PARTNER_USER)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard,GetPartnerSecurityGuard)
   @Get(':id')
   findById(@Param('id') id: string) {
     return this.partnerService.findById(id);
   }
 
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @Put(':id/change-partner-admin-user')
   @ApiOperation({ summary: 'Change admin user' })
   @ApiBody({
@@ -91,6 +106,8 @@ export class PartnerController {
   @ApiOperation({
     summary: 'Update partner by id',
   })
+  @RolesAllowed(Roles.ADMIN,Roles.PARTNER_ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard,UpdatePartnerSecurityGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() updatePartnerDto: UpdatePartnerDto) {
     return this.partnerService.update(id, updatePartnerDto);
@@ -112,6 +129,8 @@ export class PartnerController {
     return this.partnerService.getEstimateCount();
   }
 
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Remove partner' })
   remove(@Param('id') id: string) {

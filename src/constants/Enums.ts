@@ -77,7 +77,10 @@ export enum Roles {
   PORTAL_USER='PortalUser',
   WPMS_USER='WPMSUser',
   COMPANY_ADMIN='CompanyAdmin',
-  THIRDPARTY_ADMIN='ThirdPartyAdmin'
+  THIRDPARTY_ADMIN='ThirdPartyAdmin',
+  PARTNER_ADMIN='PartnerAdmin',
+  PARTNER_USER='PartnerUser',
+  COMPANY_USER='CompanyUser'
 }
 
 export enum AppRoles {
@@ -115,9 +118,9 @@ export enum SystemRoles {
   PORTAL_USER='PortalUser',
   WPMS_USER='WPMSUser',
   PARTNER_ADMIN='PartnerAdmin',
-  PARTNER='Partner',
+  PARTNER_USER='PartnerUser',
   COMPANY_ADMIN='CompanyAdmin',
-  COMPANY='Company'
+  COMPANY_USER='CompanyUser'
 }
 
 export enum EC2InstanceMetadata {

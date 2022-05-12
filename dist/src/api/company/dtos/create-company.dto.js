@@ -16,7 +16,7 @@ const class_validator_1 = require("class-validator");
 const company_schema_1 = require("../schemas/company.schema");
 class CreateCompanyDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, description: { required: true, type: () => String }, email: { required: true, type: () => String }, contactNo: { required: true, type: () => String }, address: { required: true, type: () => require("../schemas/company.schema").Address }, owner: { required: true, type: () => String } };
+        return { name: { required: true, type: () => String }, description: { required: true, type: () => String }, email: { required: true, type: () => String }, contactNo: { required: true, type: () => String }, address: { required: true, type: () => require("../schemas/company.schema").Address }, owner: { required: true, type: () => String }, partner: { required: true, type: () => String } };
     }
 }
 __decorate([
@@ -45,5 +45,9 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "owner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "partner", void 0);
 exports.CreateCompanyDto = CreateCompanyDto;
 //# sourceMappingURL=create-company.dto.js.map

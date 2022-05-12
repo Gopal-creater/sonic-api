@@ -81,27 +81,6 @@ export class UserCompanyService {
     return updatedUser;
   }
 
-  async makeCompanyAdmin(user: UserDB,company:Company) {
-    await this.companyService.update(
-      company._id,
-      {
-        owner: user._id,
-      }
-    );
-    await this.addUserToCompany(user,company)
-    const companyAdminGroup = await this.userGroupService.groupService.findOne({name:SystemGroup.COMPANY_ADMIN})
-    await this.userGroupService.addUserToGroup(user,companyAdminGroup)
-    return this.userModel.findOneAndUpdate(
-      { _id: user._id },
-      {
-        adminCompany: company.id,
-      },
-      {
-        new: true,
-      },
-    );
-  }
-
   async listAllCompaniesForUser(user: UserDB):Promise<{companies:Company[],adminCompany:Company}>{
     const userWithCompanies = await this.userModel.findById(user.id)
     return {

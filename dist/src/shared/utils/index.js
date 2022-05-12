@@ -54,14 +54,14 @@ function identifyDestinationFolderAndResourceOwnerFromUser(user, keyNameForOwner
     var destinationFolder;
     var resourceOwnerObj;
     switch (user.userRole) {
-        case Enums_1.SystemRoles.COMPANY:
+        case Enums_1.SystemRoles.COMPANY_USER:
         case Enums_1.SystemRoles.COMPANY_ADMIN:
             if (user.company) {
                 destinationFolder = `companies/${(_a = user.company) === null || _a === void 0 ? void 0 : _a._id}`;
                 resourceOwnerObj[keyNameForCompany] = (_b = user.company) === null || _b === void 0 ? void 0 : _b._id;
             }
             break;
-        case Enums_1.SystemRoles.PARTNER:
+        case Enums_1.SystemRoles.PARTNER_USER:
         case Enums_1.SystemRoles.PARTNER_ADMIN:
             if (user.partner) {
                 destinationFolder = `partners/${(_c = user.partner) === null || _c === void 0 ? void 0 : _c._id}`;

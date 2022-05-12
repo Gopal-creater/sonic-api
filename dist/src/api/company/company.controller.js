@@ -25,27 +25,59 @@ const Enums_1 = require("../../constants/Enums");
 const anyapiquerytemplate_decorator_1 = require("../../shared/decorators/anyapiquerytemplate.decorator");
 const parseQueryValue_pipe_1 = require("../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
+const create_company_guard_1 = require("./guards/create-company.guard");
+const change_company_admin_security_guard_1 = require("./guards/change-company-admin-security.guard");
+const get_company_security_guard_1 = require("./guards/get-company-security.guard");
+const update_company_security_guard_1 = require("./guards/update-company-security.guard");
+const delete_company_security_guard_1 = require("./guards/delete-company-security.guard");
 let CompanyController = class CompanyController {
     constructor(companyService) {
         this.companyService = companyService;
     }
     async create(createCompanyDto) {
-        const user = await this.companyService.userService.getUserProfile(createCompanyDto.owner);
-        if (!user)
-            throw new common_1.NotFoundException('Unknown user');
-        createCompanyDto.owner = user.sub;
-        const isalreadyOwnCompany = await this.companyService.findOne({ owner: createCompanyDto.owner });
-        if (isalreadyOwnCompany)
-            throw new common_1.NotFoundException('Given user already own the company, please choose different user');
+        const { owner } = createCompanyDto;
+        if (owner) {
+            const userFromDb = await this.companyService.userService.getUserProfile(owner);
+            if (!userFromDb)
+                throw new common_1.NotFoundException('Unknown user');
+            const isalreadyOwnCompany = await this.companyService.findOne({
+                owner: owner,
+            });
+            if (userFromDb.adminCompany || isalreadyOwnCompany)
+                throw new common_1.NotFoundException('Given user already own the company, please choose different user');
+        }
         return this.companyService.create(createCompanyDto);
     }
-    findAll() {
-        return this.companyService.findAll();
+    findAll(queryDto) {
+        return this.companyService.findAll(queryDto);
     }
-    findById(id) {
-        return this.companyService.findById(id);
+    async findById(id) {
+        const company = await this.companyService.findById(id);
+        if (!company) {
+            return new common_1.NotFoundException();
+        }
+        return company;
     }
-    update(id, updateCompanyDto) {
+    async changeAdminUser(company, user) {
+        const companyFromDb = await this.companyService.findOne({
+            _id: company,
+        });
+        if (!companyFromDb)
+            throw new common_1.NotFoundException('Unknown company');
+        return this.companyService.makeCompanyAdminUser(company, user);
+    }
+    async update(id, updateCompanyDto) {
+        const { owner } = updateCompanyDto;
+        if (owner) {
+            const userFromDb = await this.companyService.userService.getUserProfile(owner);
+            if (!userFromDb)
+                throw new common_1.NotFoundException('Unknown user');
+            const isalreadyOwnCompany = await this.companyService.findOne({
+                owner: owner,
+            });
+            if (userFromDb.adminCompany || isalreadyOwnCompany)
+                throw new common_1.NotFoundException('Given user already own the company, please choose different user');
+        }
         return this.companyService.update(id, updateCompanyDto);
     }
     async getCount(queryDto) {
@@ -54,13 +86,17 @@ let CompanyController = class CompanyController {
     async getEstimateCount() {
         return this.companyService.getEstimateCount();
     }
-    remove(id) {
-        return this.companyService.removeById(id);
+    async remove(id) {
+        const delectedCompany = await this.companyService.removeById(id);
+        if (!delectedCompany) {
+            return new common_1.NotFoundException();
+        }
+        return delectedCompany;
     }
 };
 __decorate([
-    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, create_company_guard_1.CreateCompanySecurityGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create company' }),
     common_1.Post(),
@@ -71,32 +107,60 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "create", null);
 __decorate([
+    swagger_1.ApiOperation({
+        summary: 'Get companies',
+    }),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
     common_1.Get(),
-    openapi.ApiResponse({ status: 200 }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], CompanyController.prototype, "findAll", null);
 __decorate([
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, get_company_security_guard_1.GetCompanySecurityGuard),
     common_1.Get(':id'),
-    openapi.ApiResponse({ status: 200 }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "findById", null);
 __decorate([
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, change_company_admin_security_guard_1.ChangeCompanyAdminSecurityGuard),
+    common_1.Put(':id/change-company-admin-user'),
+    swagger_1.ApiOperation({ summary: 'Change admin user' }),
+    swagger_1.ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                user: { type: 'string' },
+            },
+        },
+    }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('id')),
+    __param(1, common_1.Body('user')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], CompanyController.prototype, "changeAdminUser", null);
+__decorate([
     common_1.Put(':id'),
-    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, update_company_security_guard_1.UpdateCompanySecurityGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update company' }),
-    openapi.ApiResponse({ status: 200 }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_company_dto_1.UpdateCompanyDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "update", null);
 __decorate([
     common_1.Get('/count'),
@@ -126,15 +190,15 @@ __decorate([
 ], CompanyController.prototype, "getEstimateCount", null);
 __decorate([
     common_1.Delete(':id'),
-    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, delete_company_security_guard_1.DeleteCompanySecurityGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Remove company' }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "remove", null);
 CompanyController = __decorate([
     swagger_1.ApiTags('Company Controller'),

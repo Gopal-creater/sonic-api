@@ -13,6 +13,7 @@ const company_controller_1 = require("./company.controller");
 const mongoose_1 = require("@nestjs/mongoose");
 const company_schema_1 = require("./schemas/company.schema");
 const user_module_1 = require("../user/user.module");
+const create_company_guard_1 = require("./guards/create-company.guard");
 let CompanyModule = class CompanyModule {
 };
 CompanyModule = __decorate([
@@ -22,7 +23,7 @@ CompanyModule = __decorate([
             common_1.forwardRef(() => user_module_1.UserModule)
         ],
         controllers: [company_controller_1.CompanyController],
-        providers: [company_service_1.CompanyService],
+        providers: [company_service_1.CompanyService, create_company_guard_1.CreateCompanySecurityGuard],
         exports: [company_service_1.CompanyService],
     })
 ], CompanyModule);

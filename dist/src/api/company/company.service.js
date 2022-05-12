@@ -54,14 +54,52 @@ let CompanyService = class CompanyService {
         });
         if (companyFromDb.owner) {
             await this.userService.userModel.findByIdAndUpdate(companyFromDb.owner, {
-                userRole: Enums_1.SystemRoles.COMPANY,
+                userRole: Enums_1.SystemRoles.COMPANY_USER,
                 adminCompany: null,
             });
         }
         return this.companyModel.findById(company);
     }
-    findAll() {
-        return this.companyModel.find();
+    findAll(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ createdAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'partner',
+                    foreignField: '_id',
+                    as: 'partner',
+                },
+            },
+            { $addFields: { partner: { $first: '$partner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+        ];
+        const aggregate = this.companyModel.aggregate(aggregateArray);
+        return this.companyModel['aggregatePaginate'](aggregate, paginateOptions);
     }
     findOne(filter) {
         return this.companyModel.findOne(filter);
@@ -69,10 +107,19 @@ let CompanyService = class CompanyService {
     findById(id) {
         return this.companyModel.findById(id);
     }
-    update(id, updateCompanyDto) {
-        return this.companyModel.findByIdAndUpdate(id, updateCompanyDto, {
+    async update(id, updateCompanyDto) {
+        const { owner } = updateCompanyDto;
+        const updatedCompany = await this.companyModel.findByIdAndUpdate(id, updateCompanyDto, {
             new: true,
         });
+        if (owner) {
+            await this.userService.userModel.findByIdAndUpdate(owner, {
+                userRole: Enums_1.SystemRoles.COMPANY_ADMIN,
+                adminCompany: updatedCompany._id,
+                company: updatedCompany._id,
+            });
+        }
+        return updatedCompany;
     }
     async getCount(queryDto) {
         const { filter, includeGroupData } = queryDto;

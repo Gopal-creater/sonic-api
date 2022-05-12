@@ -98,7 +98,7 @@ export class UserCompanyController {
     if(!validCompany){
       throw new NotFoundException("Invalid company")
     }
-    return this.userCompanyService.makeCompanyAdmin(validUser,validCompany);
+    return this.companyService.makeCompanyAdminUser(company,user);
   }
 
   @UseGuards(JwtAuthGuard)

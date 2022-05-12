@@ -60,7 +60,7 @@ export class PartnerUserController {
         createPartnerUserDto,
         true,
         {
-          userRole: SystemRoles.COMPANY,
+          userRole: SystemRoles.COMPANY_USER,
           company: company,
         },
       );
@@ -70,7 +70,7 @@ export class PartnerUserController {
         createPartnerUserDto,
         true,
         {
-          userRole: SystemRoles.PARTNER,
+          userRole: SystemRoles.PARTNER_USER,
           partner: partner,
         },
       );

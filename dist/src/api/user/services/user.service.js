@@ -29,7 +29,6 @@ const radiomonitor_service_1 = require("../../radiomonitor/radiomonitor.service"
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const user_db_schema_1 = require("../schemas/user.db.schema");
-const create_user_dto_1 = require("../dtos/create-user.dto");
 const user_group_service_1 = require("./user-group.service");
 const user_company_service_1 = require("./user-company.service");
 const group_service_1 = require("../../group/group.service");
@@ -247,7 +246,7 @@ let UserService = class UserService {
         const email_verified = (_c = userFromCognito.Attributes.find(attr => attr.Name == 'email_verified')) === null || _c === void 0 ? void 0 : _c.Value;
         const phone_number = (_d = userFromCognito.Attributes.find(attr => attr.Name == 'phone_number')) === null || _d === void 0 ? void 0 : _d.Value;
         const phone_number_verified = (_e = userFromCognito.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _e === void 0 ? void 0 : _e.Value;
-        const userToSaveInDb = new create_user_dto_1.CreateUserDto({
+        const userToSaveInDb = await this.userModel.create({
             _id: sub,
             sub: sub,
             username: username,
@@ -300,7 +299,7 @@ let UserService = class UserService {
                 const email_verified = (_d = user.Attributes.find(attr => attr.Name == 'email_verified')) === null || _d === void 0 ? void 0 : _d.Value;
                 const phone_number = (_e = user.Attributes.find(attr => attr.Name == 'phone_number')) === null || _e === void 0 ? void 0 : _e.Value;
                 const phone_number_verified = (_f = user.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _f === void 0 ? void 0 : _f.Value;
-                const userToSaveInDb = new create_user_dto_1.CreateUserDto({
+                const userToSaveInDb = await this.userModel.create({
                     _id: sub,
                     sub: sub,
                     username: username,

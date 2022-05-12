@@ -50,7 +50,7 @@ let PartnerService = class PartnerService {
         });
         if (partnerFromDb.owner) {
             await this.userService.userModel.findByIdAndUpdate(partnerFromDb.owner, {
-                userRole: Enums_1.SystemRoles.PARTNER,
+                userRole: Enums_1.SystemRoles.PARTNER_USER,
                 adminPartner: null,
             });
         }

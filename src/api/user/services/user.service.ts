@@ -18,7 +18,7 @@ import { UserProfile, UserAttributesObj } from '../schemas/user.aws.schema';
 import { CognitoCreateUserDTO } from '../dtos';
 import { RadioMonitorService } from '../../radiomonitor/radiomonitor.service';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, FilterQuery } from 'mongoose';
+import { Model, FilterQuery, UpdateQuery } from 'mongoose';
 import { UserDB, UserSchemaName } from '../schemas/user.db.schema';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
@@ -308,7 +308,7 @@ export class UserService {
     const phone_number_verified = userFromCognito.Attributes.find(
       attr => attr.Name == 'phone_number_verified',
     )?.Value;
-    const userToSaveInDb = new CreateUserDto({
+    const userToSaveInDb = await this.userModel.create({
       _id: sub,
       sub: sub,
       username: username,
@@ -398,7 +398,7 @@ export class UserService {
       const phone_number_verified = user.Attributes.find(
         attr => attr.Name == 'phone_number_verified',
       )?.Value;
-      const userToSaveInDb = new CreateUserDto({
+      const userToSaveInDb = await this.userModel.create({
         _id: sub,
         sub: sub,
         username: username,
@@ -970,7 +970,7 @@ export class UserService {
     return this.userModel.findOne({ username: username });
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
+  update(id: string, updateUserDto: UpdateQuery<UserDB>) {
     return this.userModel.findByIdAndUpdate(id, updateUserDto);
   }
 

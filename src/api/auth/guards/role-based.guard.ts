@@ -22,7 +22,7 @@ export class RoleBasedGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    if (!roles || isPublic) {
+    if (!roles || roles.length<=0 || isPublic) {
       return true;
     }
     const request = context.switchToHttp().getRequest();

@@ -22,4 +22,7 @@ export class CreateCompanyDto {
   @IsNotEmpty()
   @ApiProperty()
   owner: string;
+
+  @ApiProperty()
+  partner: string;
 }

@@ -53,7 +53,7 @@ export class PartnerService {
     if (partnerFromDb.owner) {
       //Remove ownership of old user
       await this.userService.userModel.findByIdAndUpdate(partnerFromDb.owner, {
-        userRole: SystemRoles.PARTNER,
+        userRole: SystemRoles.PARTNER_USER,
         adminPartner: null,
       });
     }

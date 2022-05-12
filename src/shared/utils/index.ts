@@ -86,7 +86,7 @@ export function identifyDestinationFolderAndResourceOwnerFromUser(user:UserDB,ke
   var destinationFolder:string;
   var resourceOwnerObj:{owner?:string,partner?:string,company?:string}
   switch (user.userRole) {
-    case SystemRoles.COMPANY:
+    case SystemRoles.COMPANY_USER:
     case SystemRoles.COMPANY_ADMIN:
       if(user.company){
         destinationFolder =`companies/${user.company?._id}`
@@ -94,7 +94,7 @@ export function identifyDestinationFolderAndResourceOwnerFromUser(user:UserDB,ke
       }
       break;
 
-    case SystemRoles.PARTNER:
+    case SystemRoles.PARTNER_USER:
     case SystemRoles.PARTNER_ADMIN:
       if(user.partner){
         destinationFolder =`partners/${user.partner?._id}`

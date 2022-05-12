@@ -81,6 +81,9 @@ var Roles;
     Roles["WPMS_USER"] = "WPMSUser";
     Roles["COMPANY_ADMIN"] = "CompanyAdmin";
     Roles["THIRDPARTY_ADMIN"] = "ThirdPartyAdmin";
+    Roles["PARTNER_ADMIN"] = "PartnerAdmin";
+    Roles["PARTNER_USER"] = "PartnerUser";
+    Roles["COMPANY_USER"] = "CompanyUser";
 })(Roles = exports.Roles || (exports.Roles = {}));
 var AppRoles;
 (function (AppRoles) {
@@ -108,9 +111,9 @@ var SystemRoles;
     SystemRoles["PORTAL_USER"] = "PortalUser";
     SystemRoles["WPMS_USER"] = "WPMSUser";
     SystemRoles["PARTNER_ADMIN"] = "PartnerAdmin";
-    SystemRoles["PARTNER"] = "Partner";
+    SystemRoles["PARTNER_USER"] = "PartnerUser";
     SystemRoles["COMPANY_ADMIN"] = "CompanyAdmin";
-    SystemRoles["COMPANY"] = "Company";
+    SystemRoles["COMPANY_USER"] = "CompanyUser";
 })(SystemRoles = exports.SystemRoles || (exports.SystemRoles = {}));
 var EC2InstanceMetadata;
 (function (EC2InstanceMetadata) {

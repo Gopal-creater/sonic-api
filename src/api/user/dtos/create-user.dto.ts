@@ -1,53 +1,58 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, Validate } from 'class-validator';
 import { MFAOption } from '../schemas/user.db.schema';
-import { UserExists,UserExistsRule } from '../validations/userexists.validation';
+import {
+  UserExists,
+  UserExistsRule,
+} from '../validations/userexists.validation';
 
 export class CreateUserDto {
-  constructor(data: CreateUserDto) {
-    Object.assign(this, data);
-  }
+  @ApiProperty()
   @IsNotEmpty()
-  @ApiProperty()
-  _id: string;
+  userName: string;
 
+  @ApiProperty()
+  name?: string;
+
+  @ApiProperty()
   @IsNotEmpty()
-  @ApiProperty()
-  username: string;
+  password: string;
 
+  @ApiProperty()
+  phoneNumber?: string;
+
+  @ApiProperty()
+  country?: string;
+
+  @ApiProperty()
   @IsNotEmpty()
-  @ApiProperty()
-  sub: string;
-
-  @ApiProperty()
-  email_verified?: boolean;
-
-  @ApiProperty()
-  phone_number_verified?: boolean;
-
-  @ApiProperty()
-  phone_number?: string;
-
-  @ApiProperty()
   email: string;
 
   @ApiProperty()
-  user_status?: string;
+  isEmailVerified: boolean;
 
   @ApiProperty()
-  enabled?: boolean;
+  isPhoneNumberVerified: boolean;
 
   @ApiProperty()
-  mfa_options?: any[];
+  userRole?: string;
+
+  @ApiProperty()
+  company?: string;
+
+  @ApiProperty()
+  partner?: string;
+
+  @ApiProperty()
+  sendInvitationByEmail: boolean;
 }
 
-export class ValidationTestDto{
-
+export class ValidationTestDto {
   @ApiProperty()
   // @UserExists()
   @Validate(UserExistsRule)
-  user:string
+  user: string;
 
   @ApiProperty()
-  param1: string
+  param1: string;
 }
