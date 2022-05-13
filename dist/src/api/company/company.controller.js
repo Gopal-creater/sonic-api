@@ -30,11 +30,13 @@ const change_company_admin_security_guard_1 = require("./guards/change-company-a
 const get_company_security_guard_1 = require("./guards/get-company-security.guard");
 const update_company_security_guard_1 = require("./guards/update-company-security.guard");
 const delete_company_security_guard_1 = require("./guards/delete-company-security.guard");
+const user_decorator_1 = require("../auth/decorators/user.decorator");
+const user_db_schema_1 = require("../user/schemas/user.db.schema");
 let CompanyController = class CompanyController {
     constructor(companyService) {
         this.companyService = companyService;
     }
-    async create(createCompanyDto) {
+    async create(createCompanyDto, loggedInUser) {
         const { owner } = createCompanyDto;
         if (owner) {
             const userFromDb = await this.companyService.userService.getUserProfile(owner);
@@ -46,7 +48,7 @@ let CompanyController = class CompanyController {
             if (userFromDb.adminCompany || isalreadyOwnCompany)
                 throw new common_1.NotFoundException('Given user already own the company, please choose different user');
         }
-        return this.companyService.create(createCompanyDto);
+        return this.companyService.create(Object.assign(Object.assign({}, createCompanyDto), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id }));
     }
     findAll(queryDto) {
         return this.companyService.findAll(queryDto);
@@ -58,15 +60,18 @@ let CompanyController = class CompanyController {
         }
         return company;
     }
-    async changeAdminUser(company, user) {
+    async changeAdminUser(company, user, loggedInUser) {
         const companyFromDb = await this.companyService.findOne({
             _id: company,
         });
         if (!companyFromDb)
             throw new common_1.NotFoundException('Unknown company');
-        return this.companyService.makeCompanyAdminUser(company, user);
+        await this.companyService.makeCompanyAdminUser(company, user);
+        return this.companyService.update(company, {
+            updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id,
+        });
     }
-    async update(id, updateCompanyDto) {
+    async update(id, updateCompanyDto, loggedInUser) {
         const { owner } = updateCompanyDto;
         if (owner) {
             const userFromDb = await this.companyService.userService.getUserProfile(owner);
@@ -78,7 +83,7 @@ let CompanyController = class CompanyController {
             if (userFromDb.adminCompany || isalreadyOwnCompany)
                 throw new common_1.NotFoundException('Given user already own the company, please choose different user');
         }
-        return this.companyService.update(id, updateCompanyDto);
+        return this.companyService.update(id, Object.assign(Object.assign({}, updateCompanyDto), { updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id }));
     }
     async getCount(queryDto) {
         return this.companyService.getCount(queryDto);
@@ -102,8 +107,10 @@ __decorate([
     common_1.Post(),
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body()),
+    __param(1, user_decorator_1.User()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_company_dto_1.CreateCompanyDto]),
+    __metadata("design:paramtypes", [create_company_dto_1.CreateCompanyDto,
+        user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "create", null);
 __decorate([
@@ -145,8 +152,9 @@ __decorate([
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __param(1, common_1.Body('user')),
+    __param(2, user_decorator_1.User()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "changeAdminUser", null);
 __decorate([
@@ -158,8 +166,10 @@ __decorate([
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __param(1, common_1.Body()),
+    __param(2, user_decorator_1.User()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_company_dto_1.UpdateCompanyDto]),
+    __metadata("design:paramtypes", [String, update_company_dto_1.UpdateCompanyDto,
+        user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "update", null);
 __decorate([

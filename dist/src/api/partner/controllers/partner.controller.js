@@ -27,11 +27,13 @@ const role_based_guard_1 = require("../../auth/guards/role-based.guard");
 const decorators_1 = require("../../auth/decorators");
 const Enums_1 = require("../../../constants/Enums");
 const update_partner_security_guard_1 = require("../guards/update-partner-security.guard");
+const user_decorator_1 = require("../../auth/decorators/user.decorator");
+const user_db_schema_1 = require("../../user/schemas/user.db.schema");
 let PartnerController = class PartnerController {
     constructor(partnerService) {
         this.partnerService = partnerService;
     }
-    async create(createPartnerDto) {
+    async create(loggedInUser, createPartnerDto) {
         if (createPartnerDto.owner) {
             const user = await this.partnerService.userService.getUserProfile(createPartnerDto.owner);
             if (!user)
@@ -42,7 +44,7 @@ let PartnerController = class PartnerController {
             if (isalreadyOwnPartner || user.adminPartner)
                 throw new common_1.NotFoundException('Given user already own the company, please choose different user');
         }
-        return this.partnerService.create(createPartnerDto);
+        return this.partnerService.create(Object.assign(Object.assign({}, createPartnerDto), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id }));
     }
     findAll(queryDto) {
         return this.partnerService.findAll(queryDto);
@@ -50,7 +52,7 @@ let PartnerController = class PartnerController {
     findById(id) {
         return this.partnerService.findById(id);
     }
-    async changeAdminUser(partner, user) {
+    async changeAdminUser(partner, user, loggedInUser) {
         const userFromDb = await this.partnerService.userService.getUserProfile(user);
         if (!userFromDb)
             throw new common_1.NotFoundException('Unknown user');
@@ -60,10 +62,13 @@ let PartnerController = class PartnerController {
         const partnerFromDb = await this.partnerService.findById(partner);
         if (!partnerFromDb)
             throw new common_1.NotFoundException('Unknown partner');
-        return this.partnerService.makePartnerAdminUser(user, partner);
+        await this.partnerService.makePartnerAdminUser(user, partner);
+        return this.partnerService.update(partner, {
+            updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id,
+        });
     }
-    update(id, updatePartnerDto) {
-        return this.partnerService.update(id, updatePartnerDto);
+    update(id, loggedInUser, updatePartnerDto) {
+        return this.partnerService.update(id, Object.assign(Object.assign({}, updatePartnerDto), { updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id }));
     }
     async getCount(queryDto) {
         return this.partnerService.getCount(queryDto);
@@ -81,9 +86,11 @@ __decorate([
     common_1.Post(),
     swagger_1.ApiOperation({ summary: 'Create partner' }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body()),
+    __param(0, user_decorator_1.User()),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_partner_dto_1.CreatePartnerDto]),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB,
+        create_partner_dto_1.CreatePartnerDto]),
     __metadata("design:returntype", Promise)
 ], PartnerController.prototype, "create", null);
 __decorate([
@@ -128,8 +135,9 @@ __decorate([
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __param(1, common_1.Body('user')),
+    __param(2, user_decorator_1.User()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], PartnerController.prototype, "changeAdminUser", null);
 __decorate([
@@ -141,9 +149,11 @@ __decorate([
     common_1.Put(':id'),
     openapi.ApiResponse({ status: 200 }),
     __param(0, common_1.Param('id')),
-    __param(1, common_1.Body()),
+    __param(1, user_decorator_1.User()),
+    __param(2, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_partner_dto_1.UpdatePartnerDto]),
+    __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
+        update_partner_dto_1.UpdatePartnerDto]),
     __metadata("design:returntype", void 0)
 ], PartnerController.prototype, "update", null);
 __decorate([

@@ -3,7 +3,7 @@ import { CreatePartnerDto } from '../dto/create-partner.dto';
 import { UpdatePartnerDto } from '../dto/update-partner.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Partner } from '../schemas/partner.schema';
-import { Model, FilterQuery } from 'mongoose';
+import { Model, FilterQuery, UpdateQuery, AnyObject, AnyKeys } from 'mongoose';
 import { UserService } from '../../user/services/user.service';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { SystemRoles } from 'src/constants/Enums';
@@ -17,13 +17,13 @@ export class PartnerService {
     @Inject(forwardRef(() => UserService))
     public readonly userService: UserService,
   ) {}
-  async create(createPartnerDto: CreatePartnerDto) {
-    const newPartner = await this.partnerModel.create(createPartnerDto);
+  async create(doc: AnyObject | AnyKeys<Partner>) {
+    const newPartner = await this.partnerModel.create(doc);
     const createdPartner = await newPartner.save();
     //Make this user as admin user for this partner
-    if (createPartnerDto.owner) {
+    if (doc.owner) {
       await this.userService.userModel.findByIdAndUpdate(
-        createPartnerDto.owner,
+        doc.owner,
         {
           userRole: SystemRoles.PARTNER_ADMIN,
           adminPartner: createdPartner._id,
@@ -118,7 +118,7 @@ export class PartnerService {
     return this.partnerModel.findById(id);
   }
 
-  update(id: string, updatePartnerDto: UpdatePartnerDto) {
+  update(id: string, updatePartnerDto: UpdateQuery<Partner>) {
     return this.partnerModel.findByIdAndUpdate(id, updatePartnerDto, {
       new: true,
     });

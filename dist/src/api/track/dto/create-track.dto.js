@@ -106,7 +106,7 @@ __decorate([
 exports.TrackDto = TrackDto;
 class UploadTrackDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { mediaFile: { required: true, type: () => Object }, channel: { required: true, type: () => String }, artist: { required: true, type: () => String }, title: { required: true, type: () => String } };
+        return { mediaFile: { required: true, type: () => Object }, channel: { required: true, type: () => String }, artist: { required: true, type: () => String }, title: { required: true, type: () => String }, owner: { required: true, type: () => String }, company: { required: true, type: () => String }, partner: { required: true, type: () => String } };
     }
 }
 __decorate([
@@ -129,5 +129,17 @@ __decorate([
     class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], UploadTrackDto.prototype, "title", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], UploadTrackDto.prototype, "owner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], UploadTrackDto.prototype, "company", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], UploadTrackDto.prototype, "partner", void 0);
 exports.UploadTrackDto = UploadTrackDto;
 //# sourceMappingURL=create-track.dto.js.map

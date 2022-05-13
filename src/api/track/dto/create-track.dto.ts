@@ -84,4 +84,13 @@ export class TrackDto {
     @ApiProperty()
     @IsNotEmpty()
     title: string;
+
+    @ApiProperty()
+    owner: string;
+  
+    @ApiProperty()
+    company: string;
+  
+    @ApiProperty()
+    partner: string;
   }

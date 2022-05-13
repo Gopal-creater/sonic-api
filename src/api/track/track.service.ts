@@ -2,7 +2,7 @@ import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Track } from './schemas/track.schema';
-import { Model, FilterQuery, AnyObject, AnyKeys } from 'mongoose';
+import { Model, FilterQuery, AnyObject, AnyKeys, UpdateQuery } from 'mongoose';
 import { UserService } from '../user/services/user.service';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import * as mm from 'music-metadata';
@@ -113,12 +113,11 @@ export class TrackService {
 
   update(
     id: string,
-    updateTrackDto: UpdateTrackDto,
-    additionalObj?: Record<string, any>,
+    updateTrackDto: UpdateQuery<Track>
   ) {
     return this.trackModel.findByIdAndUpdate(
       id,
-      { ...updateTrackDto, ...additionalObj },
+      updateTrackDto,
       {
         new: true,
       },

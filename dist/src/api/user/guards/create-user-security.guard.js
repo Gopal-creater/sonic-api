@@ -52,7 +52,7 @@ let CreateUserSecurityGuard = class CreateUserSecurityGuard {
             case Enums_1.SystemRoles.COMPANY_ADMIN:
                 const companyId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _b === void 0 ? void 0 : _b._id;
                 if (!createUserDto.company) {
-                    throw new common_1.UnprocessableEntityException('Please provide your company id for this user');
+                    throw new common_1.UnprocessableEntityException('Please provide your company id in the body for this user');
                 }
                 if (createUserDto.company !== companyId) {
                     throw new common_2.ForbiddenException('Resource mismatch, Provide your own company id');

@@ -49,7 +49,8 @@ let UserController = class UserController {
         this.partnerService = partnerService;
         this.licensekeyService = licensekeyService;
     }
-    async create(createUserDto) {
+    async create(loggedInUser, createUserDto) {
+        var _a;
         var { company, partner, userName, email } = createUserDto;
         const userFromDb = await this.userService.findOne({
             $or: [{ email: email }, { username: userName }],
@@ -67,7 +68,11 @@ let UserController = class UserController {
             if (!companyFormDb)
                 throw new common_1.NotFoundException('Unknown company');
         }
-        return this.userService.createUserInCognito(createUserDto, true);
+        const createdUser = await this.userService.createUserInCognito(createUserDto, true);
+        await this.userService.update((_a = createdUser === null || createdUser === void 0 ? void 0 : createdUser.userDb) === null || _a === void 0 ? void 0 : _a._id, {
+            createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id,
+        });
+        return createdUser;
     }
     findAll(queryDto) {
         return this.userService.listUsers(queryDto);
@@ -79,27 +84,29 @@ let UserController = class UserController {
         }
         return user;
     }
-    async disableUser(userId) {
+    async disableUser(loggedInUser, userId) {
         const userFromDb = await this.partnerService.userService.getUserProfile(userId);
         if (!userFromDb)
             throw new common_1.NotFoundException('User not found');
         await this.userService.adminDisableUser(userFromDb.username);
         const updatedUser = await this.userService.userModel.findByIdAndUpdate(userFromDb._id, {
             enabled: false,
+            updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id,
         }, { new: true });
         return updatedUser;
     }
-    async enableUser(userId) {
+    async enableUser(loggedInUser, userId) {
         const userFromDb = await this.partnerService.userService.getUserProfile(userId);
         if (!userFromDb)
             throw new common_1.NotFoundException('User not found');
         await this.userService.adminEnableUser(userFromDb.username);
         const updatedUser = await this.userService.userModel.findByIdAndUpdate(userFromDb._id, {
             enabled: true,
+            updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id,
         }, { new: true });
         return updatedUser;
     }
-    async update(id, updateUserDto) {
+    async update(id, loggedInUser, updateUserDto) {
         var { company, partner } = updateUserDto;
         if (partner) {
             const partnerFromDb = await this.partnerService.findById(partner);
@@ -111,7 +118,7 @@ let UserController = class UserController {
             if (!companyFormDb)
                 throw new common_1.NotFoundException('Unknown company');
         }
-        return this.userService.update(id, updateUserDto);
+        return this.userService.update(id, Object.assign(Object.assign({}, updateUserDto), { updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id }));
     }
     async remove(id) {
         const deletedUser = await this.userService.removeById(id);
@@ -228,9 +235,11 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create user' }),
     common_1.Post(),
-    __param(0, common_1.Body()),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB,
+        create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "create", null);
 __decorate([
@@ -263,9 +272,10 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Disable user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('id')),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Param('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "disableUser", null);
 __decorate([
@@ -275,9 +285,10 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Disable user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('id')),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Param('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "enableUser", null);
 __decorate([
@@ -288,9 +299,11 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Update user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
-    __param(1, common_1.Body()),
+    __param(1, decorators_1.User()),
+    __param(2, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_user_dto_1.UpdateUserDto]),
+    __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
+        update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "update", null);
 __decorate([

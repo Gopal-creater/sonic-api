@@ -69,7 +69,10 @@ export class UserController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create user' })
   @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
+  async create(
+    @User() loggedInUser: UserDB,
+    @Body() createUserDto: CreateUserDto,
+  ) {
     var { company, partner, userName, email } = createUserDto;
     const userFromDb = await this.userService.findOne({
       $or: [{ email: email }, { username: userName }],
@@ -88,7 +91,14 @@ export class UserController {
       const companyFormDb = await this.companyService.findById(company);
       if (!companyFormDb) throw new NotFoundException('Unknown company');
     }
-    return this.userService.createUserInCognito(createUserDto, true);
+    const createdUser = await this.userService.createUserInCognito(
+      createUserDto,
+      true,
+    );
+    await this.userService.update(createdUser?.userDb?._id, {
+      createdBy: loggedInUser?._id,
+    });
+    return createdUser;
   }
   @ApiOperation({
     summary: 'Get users',
@@ -116,7 +126,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RoleBasedGuard, EnableDisableUserSecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Disable user' })
-  async disableUser(@Param('id') userId: string) {
+  async disableUser(@User() loggedInUser: UserDB, @Param('id') userId: string) {
     const userFromDb = await this.partnerService.userService.getUserProfile(
       userId,
     );
@@ -126,6 +136,7 @@ export class UserController {
       userFromDb._id,
       {
         enabled: false,
+        updatedBy: loggedInUser?._id,
       },
       { new: true },
     );
@@ -137,7 +148,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RoleBasedGuard, EnableDisableUserSecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Disable user' })
-  async enableUser(@Param('id') userId: string) {
+  async enableUser(@User() loggedInUser: UserDB, @Param('id') userId: string) {
     const userFromDb = await this.partnerService.userService.getUserProfile(
       userId,
     );
@@ -147,6 +158,7 @@ export class UserController {
       userFromDb._id,
       {
         enabled: true,
+        updatedBy: loggedInUser?._id,
       },
       { new: true },
     );
@@ -158,7 +170,11 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RoleBasedGuard, UpdateUserSecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update user' })
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  async update(
+    @Param('id') id: string,
+    @User() loggedInUser: UserDB,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
     var { company, partner } = updateUserDto;
     if (partner) {
       const partnerFromDb = await this.partnerService.findById(partner);
@@ -168,7 +184,10 @@ export class UserController {
       const companyFormDb = await this.companyService.findById(company);
       if (!companyFormDb) throw new NotFoundException('Unknown company');
     }
-    return this.userService.update(id, updateUserDto);
+    return this.userService.update(id, {
+      ...updateUserDto,
+      updatedBy: loggedInUser?._id,
+    });
   }
 
   @Delete(':id')

@@ -92,8 +92,8 @@ let TrackService = class TrackService {
     findById(id) {
         return this.trackModel.findById(id);
     }
-    update(id, updateTrackDto, additionalObj) {
-        return this.trackModel.findByIdAndUpdate(id, Object.assign(Object.assign({}, updateTrackDto), additionalObj), {
+    update(id, updateTrackDto) {
+        return this.trackModel.findByIdAndUpdate(id, updateTrackDto, {
             new: true,
         });
     }

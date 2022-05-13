@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { TrackService } from '../track.service';
 import { UpdateTrackDto } from '../dto/update-track.dto';
@@ -31,10 +32,15 @@ import { appConfig } from 'src/config';
 import * as uniqid from 'uniqid';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { UserDB } from '../../user/schemas/user.db.schema';
-import { User } from '../../auth/decorators';
+import { RolesAllowed, User } from '../../auth/decorators';
 import { identifyDestinationFolderAndResourceOwnerFromUser } from 'src/shared/utils';
 import { ChannelEnums, SystemRoles } from 'src/constants/Enums';
 import { JwtAuthGuard } from '../../auth/guards';
+import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
+import { UpdateTrackSecurityGuard } from '../guards/update-track-security.guard';
+import { DeleteTrackSecurityGuard } from '../guards/delete-track-security.guard';
+import { FailedAlwaysGuard } from '../../auth/guards/failedAlways.guard';
+import { UploadTrackSecurityGuard } from '../guards/upload-track-security.guard';
 
 @Controller('tracks')
 export class TrackController {
@@ -42,17 +48,6 @@ export class TrackController {
 
   @UseInterceptors(
     FileInterceptor('mediaFile', {
-      // Check the mimetypes to allow for upload
-      // fileFilter: (req: any, file: any, cb: any) => {
-      //   const mimetype = file.mimetype as string;
-      //   if (mimetype.includes('audio')) {
-      //     // Allow storage of file
-      //     cb(null, true);
-      //   } else {
-      //     // Reject file
-      //     cb(new BadRequestException('Unsupported file type'), false);
-      //   }
-      // },
       storage: diskStorage({
         destination: async (req, file, cb) => {
           const loggedInUser = req['user'] as UserDB;
@@ -87,7 +82,8 @@ export class TrackController {
   })
   @AnyApiQueryTemplate()
   @ApiOperation({ summary: 'Upload Track' })
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard,RoleBasedGuard,UploadTrackSecurityGuard)
   @ApiBearerAuth()
   @Post()
   async uploadTrack(
@@ -95,7 +91,7 @@ export class TrackController {
     @UploadedFile() file: IUploadedFile,
     @User() loggedInUser: UserDB,
   ) {
-    const { mediaFile, channel,artist,title } = uploadTrackDto;
+    const { mediaFile, channel, artist, title } = uploadTrackDto;
     const {
       destinationFolder,
       resourceOwnerObj,
@@ -107,15 +103,15 @@ export class TrackController {
     const extractFileMeta = await this.trackService.exractMusicMetaFromFile(
       file,
     );
-    const trackId = this.trackService.generateTrackId()
+    const trackId = this.trackService.generateTrackId();
     const createdTrack = await this.trackService.create({
       _id: trackId,
       ...resourceOwnerObj,
       channel: channel || ChannelEnums.PORTAL,
       mimeType: extractFileMeta.mimeType,
       duration: extractFileMeta.duration,
-      artist:artist,
-      title:title,
+      artist: artist,
+      title: title,
       fileSize: extractFileMeta.size,
       localFilePath: file.path,
       s3OriginalFileMeta: s3FileUploadResponse,
@@ -124,7 +120,7 @@ export class TrackController {
       samplingFrequency: extractFileMeta.samplingFrequency,
       originalFileName: file.originalname,
       iExtractedMetaData: extractFileMeta,
-      createdByUser: loggedInUser?.sub,
+      createdBy: loggedInUser?.sub,
     });
     return createdTrack;
   }
@@ -156,23 +152,33 @@ export class TrackController {
     summary: 'Get track by id',
   })
   @Get(':id')
-  findById(@Param('id') id: string) {
-    return this.trackService.findById(id);
+  async findById(@Param('id') id: string) {
+    const track = await this.trackService.findById(id);
+    if(!track){
+      return new NotFoundException()
+    }
+    return track
   }
 
   @ApiOperation({
     summary: 'Update track by id',
   })
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, UpdateTrackSecurityGuard)
   @ApiBearerAuth()
   @Put(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @User() loggedInUser: UserDB,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-    return this.trackService.update(id, updateTrackDto, {
-      updatedByUser: loggedInUser.sub,
+    const track = await this.trackService.findById(id);
+    if(!track){
+      return new NotFoundException()
+    }
+    return this.trackService.update(id, {
+      ...updateTrackDto,
+      updatedBy: loggedInUser.sub,
     });
   }
 
@@ -193,10 +199,15 @@ export class TrackController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed()
+  @UseGuards(FailedAlwaysGuard,JwtAuthGuard,RoleBasedGuard,DeleteTrackSecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Remove track' })
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
+    const track = await this.trackService.findById(id);
+    if(!track){
+      return new NotFoundException()
+    }
     return this.trackService.removeById(id);
   }
 }

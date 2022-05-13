@@ -55,7 +55,7 @@ export class CreateUserSecurityGuard implements CanActivate {
         const companyId = loggedInUser?.adminCompany?._id;
         if(!createUserDto.company){
             throw new UnprocessableEntityException(
-                'Please provide your company id for this user',
+                'Please provide your company id in the body for this user',
             );
         }
         if (createUserDto.company !== companyId) {

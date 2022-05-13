@@ -164,6 +164,24 @@ __decorate([
     }),
     __metadata("design:type", Object)
 ], UserDB.prototype, "adminPartner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'User',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], UserDB.prototype, "createdBy", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'User',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], UserDB.prototype, "updatedBy", void 0);
 UserDB = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.UserSchemaName })
 ], UserDB);

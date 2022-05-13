@@ -24,11 +24,11 @@ let PartnerService = class PartnerService {
         this.partnerModel = partnerModel;
         this.userService = userService;
     }
-    async create(createPartnerDto) {
-        const newPartner = await this.partnerModel.create(createPartnerDto);
+    async create(doc) {
+        const newPartner = await this.partnerModel.create(doc);
         const createdPartner = await newPartner.save();
-        if (createPartnerDto.owner) {
-            await this.userService.userModel.findByIdAndUpdate(createPartnerDto.owner, {
+        if (doc.owner) {
+            await this.userService.userModel.findByIdAndUpdate(doc.owner, {
                 userRole: Enums_1.SystemRoles.PARTNER_ADMIN,
                 adminPartner: createdPartner._id,
                 partner: createdPartner._id,

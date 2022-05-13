@@ -32,6 +32,11 @@ const decorators_1 = require("../../auth/decorators");
 const utils_1 = require("../../../shared/utils");
 const Enums_1 = require("../../../constants/Enums");
 const guards_1 = require("../../auth/guards");
+const role_based_guard_1 = require("../../auth/guards/role-based.guard");
+const update_track_security_guard_1 = require("../guards/update-track-security.guard");
+const delete_track_security_guard_1 = require("../guards/delete-track-security.guard");
+const failedAlways_guard_1 = require("../../auth/guards/failedAlways.guard");
+const upload_track_security_guard_1 = require("../guards/upload-track-security.guard");
 let TrackController = class TrackController {
     constructor(trackService) {
         this.trackService = trackService;
@@ -42,19 +47,25 @@ let TrackController = class TrackController {
         const s3FileUploadResponse = await this.trackService.s3FileUploadService.uploadFromPath(file.path, `${destinationFolder}/originalFiles`);
         const extractFileMeta = await this.trackService.exractMusicMetaFromFile(file);
         const trackId = this.trackService.generateTrackId();
-        const createdTrack = await this.trackService.create(Object.assign(Object.assign({ _id: trackId }, resourceOwnerObj), { channel: channel || Enums_1.ChannelEnums.PORTAL, mimeType: extractFileMeta.mimeType, duration: extractFileMeta.duration, artist: artist, title: title, fileSize: extractFileMeta.size, localFilePath: file.path, s3OriginalFileMeta: s3FileUploadResponse, fileType: 'Audio', encoding: extractFileMeta.encoding, samplingFrequency: extractFileMeta.samplingFrequency, originalFileName: file.originalname, iExtractedMetaData: extractFileMeta, createdByUser: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub }));
+        const createdTrack = await this.trackService.create(Object.assign(Object.assign({ _id: trackId }, resourceOwnerObj), { channel: channel || Enums_1.ChannelEnums.PORTAL, mimeType: extractFileMeta.mimeType, duration: extractFileMeta.duration, artist: artist, title: title, fileSize: extractFileMeta.size, localFilePath: file.path, s3OriginalFileMeta: s3FileUploadResponse, fileType: 'Audio', encoding: extractFileMeta.encoding, samplingFrequency: extractFileMeta.samplingFrequency, originalFileName: file.originalname, iExtractedMetaData: extractFileMeta, createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub }));
         return createdTrack;
     }
     findAll(queryDto, loggedInUser) {
         return this.trackService.findAll(queryDto);
     }
-    findById(id) {
-        return this.trackService.findById(id);
+    async findById(id) {
+        const track = await this.trackService.findById(id);
+        if (!track) {
+            return new common_1.NotFoundException();
+        }
+        return track;
     }
-    update(id, loggedInUser, updateTrackDto) {
-        return this.trackService.update(id, updateTrackDto, {
-            updatedByUser: loggedInUser.sub,
-        });
+    async update(id, loggedInUser, updateTrackDto) {
+        const track = await this.trackService.findById(id);
+        if (!track) {
+            return new common_1.NotFoundException();
+        }
+        return this.trackService.update(id, Object.assign(Object.assign({}, updateTrackDto), { updatedBy: loggedInUser.sub }));
     }
     async getCount(queryDto) {
         return this.trackService.getCount(queryDto);
@@ -62,7 +73,11 @@ let TrackController = class TrackController {
     async getEstimateCount() {
         return this.trackService.getEstimateCount();
     }
-    remove(id) {
+    async remove(id) {
+        const track = await this.trackService.findById(id);
+        if (!track) {
+            return new common_1.NotFoundException();
+        }
         return this.trackService.removeById(id);
     }
 };
@@ -98,7 +113,8 @@ __decorate([
     }),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiOperation({ summary: 'Upload Track' }),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, upload_track_security_guard_1.UploadTrackSecurityGuard),
     swagger_1.ApiBearerAuth(),
     common_1.Post(),
     openapi.ApiResponse({ status: 201, type: Object }),
@@ -139,27 +155,28 @@ __decorate([
         summary: 'Get track by id',
     }),
     common_1.Get(':id'),
-    openapi.ApiResponse({ status: 200 }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], TrackController.prototype, "findById", null);
 __decorate([
     swagger_1.ApiOperation({
         summary: 'Update track by id',
     }),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, update_track_security_guard_1.UpdateTrackSecurityGuard),
     swagger_1.ApiBearerAuth(),
     common_1.Put(':id'),
-    openapi.ApiResponse({ status: 200 }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __param(1, decorators_1.User()),
     __param(2, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
         update_track_dto_1.UpdateTrackDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], TrackController.prototype, "update", null);
 __decorate([
     common_1.Get('/count'),
@@ -184,14 +201,15 @@ __decorate([
 ], TrackController.prototype, "getEstimateCount", null);
 __decorate([
     common_1.Delete(':id'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(failedAlways_guard_1.FailedAlwaysGuard, guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, delete_track_security_guard_1.DeleteTrackSecurityGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Remove track' }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], TrackController.prototype, "remove", null);
 TrackController = __decorate([
     common_1.Controller('tracks'),

@@ -133,6 +133,22 @@ export class UserDB extends Document {
     autopopulate: { maxDepth: 2 },
   })
   adminPartner: any; //Admin of this partner
+
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'User',
+    autopopulate: { maxDepth: 2 },
+  })
+  createdBy: any;
+
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'User',
+    autopopulate: { maxDepth: 2 },
+  })
+  updatedBy: any; 
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDB);

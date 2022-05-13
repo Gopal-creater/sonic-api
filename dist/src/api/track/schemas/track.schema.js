@@ -149,7 +149,7 @@ __decorate([
         autopopulate: { maxDepth: 2 },
     }),
     __metadata("design:type", String)
-], Track.prototype, "createdByUser", void 0);
+], Track.prototype, "createdBy", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
@@ -158,7 +158,7 @@ __decorate([
         autopopulate: { maxDepth: 2 },
     }),
     __metadata("design:type", String)
-], Track.prototype, "updatedByUser", void 0);
+], Track.prototype, "updatedBy", void 0);
 Track = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.TrackSchemaName })
 ], Track);

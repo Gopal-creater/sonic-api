@@ -31,6 +31,8 @@ import { ChangeCompanyAdminSecurityGuard } from './guards/change-company-admin-s
 import { GetCompanySecurityGuard } from './guards/get-company-security.guard';
 import { UpdateCompanySecurityGuard } from './guards/update-company-security.guard';
 import { DeleteCompanySecurityGuard } from './guards/delete-company-security.guard';
+import { User } from '../auth/decorators/user.decorator';
+import { UserDB } from '../user/schemas/user.db.schema';
 
 @ApiTags('Company Controller')
 @Controller('companies')
@@ -42,7 +44,10 @@ export class CompanyController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create company' })
   @Post()
-  async create(@Body() createCompanyDto: CreateCompanyDto) {
+  async create(
+    @Body() createCompanyDto: CreateCompanyDto,
+    @User() loggedInUser: UserDB,
+  ) {
     const { owner } = createCompanyDto;
 
     if (owner) {
@@ -60,34 +65,35 @@ export class CompanyController {
         );
     }
 
-    return this.companyService.create(createCompanyDto);
+    return this.companyService.create({
+      ...createCompanyDto,
+      createdBy: loggedInUser?._id,
+    });
   }
 
   @ApiOperation({
     summary: 'Get companies',
   })
-  @RolesAllowed(Roles.ADMIN,Roles.PARTNER_ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @RolesAllowed(Roles.ADMIN, Roles.PARTNER_ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @Get()
-  findAll(
-    @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
-  ) {
+  findAll(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
     return this.companyService.findAll(queryDto);
   }
 
   @RolesAllowed()
-  @UseGuards(JwtAuthGuard, RoleBasedGuard,GetCompanySecurityGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, GetCompanySecurityGuard)
   @Get(':id')
   async findById(@Param('id') id: string) {
     const company = await this.companyService.findById(id);
-    if(!company){
-      return new NotFoundException()
+    if (!company) {
+      return new NotFoundException();
     }
-    return company
+    return company;
   }
 
-  @RolesAllowed(Roles.ADMIN,Roles.PARTNER_ADMIN)
-  @UseGuards(JwtAuthGuard, RoleBasedGuard,ChangeCompanyAdminSecurityGuard)
+  @RolesAllowed(Roles.ADMIN, Roles.PARTNER_ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, ChangeCompanyAdminSecurityGuard)
   @Put(':id/change-company-admin-user')
   @ApiOperation({ summary: 'Change admin user' })
   @ApiBody({
@@ -101,22 +107,30 @@ export class CompanyController {
   async changeAdminUser(
     @Param('id') company: string,
     @Body('user') user: string,
+    @User() loggedInUser: UserDB,
   ) {
     const companyFromDb = await this.companyService.findOne({
       _id: company,
     });
     if (!companyFromDb) throw new NotFoundException('Unknown company');
 
-    return this.companyService.makeCompanyAdminUser(company, user);
+    await this.companyService.makeCompanyAdminUser(company, user);
+    return this.companyService.update(company,{
+      updatedBy: loggedInUser?._id,
+    })
   }
 
   @Put(':id')
-  @RolesAllowed(Roles.ADMIN,Roles.COMPANY_ADMIN,Roles.PARTNER_ADMIN)
-  @UseGuards(JwtAuthGuard, RoleBasedGuard,UpdateCompanySecurityGuard)
+  @RolesAllowed(Roles.ADMIN, Roles.COMPANY_ADMIN, Roles.PARTNER_ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, UpdateCompanySecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update company' })
-  async update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
-    const{owner}=updateCompanyDto
+  async update(
+    @Param('id') id: string,
+    @Body() updateCompanyDto: UpdateCompanyDto,
+    @User() loggedInUser: UserDB,
+  ) {
+    const { owner } = updateCompanyDto;
     if (owner) {
       const userFromDb = await this.companyService.userService.getUserProfile(
         owner,
@@ -131,7 +145,7 @@ export class CompanyController {
           'Given user already own the company, please choose different user',
         );
     }
-    return this.companyService.update(id, updateCompanyDto);
+    return this.companyService.update(id, {...updateCompanyDto,updatedBy: loggedInUser?._id,});
   }
 
   @Get('/count')
@@ -156,15 +170,15 @@ export class CompanyController {
   }
 
   @Delete(':id')
-  @RolesAllowed(Roles.ADMIN,Roles.PARTNER_ADMIN)
-  @UseGuards(JwtAuthGuard, RoleBasedGuard,DeleteCompanySecurityGuard)
+  @RolesAllowed(Roles.ADMIN, Roles.PARTNER_ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, DeleteCompanySecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Remove company' })
   async remove(@Param('id') id: string) {
     const delectedCompany = await this.companyService.removeById(id);
-    if(!delectedCompany){
-      return new NotFoundException()
+    if (!delectedCompany) {
+      return new NotFoundException();
     }
-    return delectedCompany
+    return delectedCompany;
   }
 }
