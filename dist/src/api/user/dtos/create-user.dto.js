@@ -14,9 +14,11 @@ const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const userexists_validation_1 = require("../validations/userexists.validation");
+const Enums_1 = require("../../../constants/Enums");
+const index_1 = require("../../../constants/index");
 class CreateUserDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { userName: { required: true, type: () => String }, name: { required: false, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String }, isEmailVerified: { required: true, type: () => Boolean }, isPhoneNumberVerified: { required: true, type: () => Boolean }, userRole: { required: false, type: () => String }, company: { required: false, type: () => String }, partner: { required: false, type: () => String }, sendInvitationByEmail: { required: true, type: () => Boolean } };
+        return { userName: { required: true, type: () => String }, name: { required: false, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String }, isEmailVerified: { required: false, type: () => Boolean }, isPhoneNumberVerified: { required: false, type: () => Boolean }, userRole: { required: false, enum: require("../../../constants/Enums").SystemRoles }, company: { required: false, type: () => String }, partner: { required: false, type: () => String }, sendInvitationByEmail: { required: false, type: () => Boolean } };
     }
 }
 __decorate([
@@ -31,6 +33,9 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),
+    class_validator_1.Matches(index_1.COGNITO_PASSWORD_REGULAR_EXPRESSION, {
+        message: 'password too weak',
+    }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "password", void 0);
 __decorate([
@@ -56,6 +61,7 @@ __decorate([
 ], CreateUserDto.prototype, "isPhoneNumberVerified", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    class_validator_1.IsEnum(Enums_1.SystemRoles),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "userRole", void 0);
 __decorate([

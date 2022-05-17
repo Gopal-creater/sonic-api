@@ -94,10 +94,10 @@ export class UserController {
     const createdUser = await this.userService.createUserInCognito(
       createUserDto,
       true,
+      {
+        createdBy: loggedInUser?._id
+      }
     );
-    await this.userService.update(createdUser?.userDb?._id, {
-      createdBy: loggedInUser?._id,
-    });
     return createdUser;
   }
   @ApiOperation({
@@ -108,6 +108,14 @@ export class UserController {
   @Get()
   findAll(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
     return this.userService.listUsers(queryDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get User profile by token' })
+  @Get('/@me')
+  async findMe(@User() user: UserDB) {
+    return user;
   }
 
   @RolesAllowed()

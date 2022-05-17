@@ -16,29 +16,31 @@ const common_1 = require("@nestjs/common");
 const amazon_cognito_identity_js_1 = require("amazon-cognito-identity-js");
 const user_service_1 = require("../user/services/user.service");
 const register_dto_1 = require("./dto/register.dto");
+const partner_service_1 = require("../partner/services/partner.service");
+const Enums_1 = require("../../constants/Enums");
 let AuthService = class AuthService {
-    constructor(authConfig, globalAwsService, userService) {
+    constructor(authConfig, globalAwsService, userService, partnerService) {
         this.authConfig = authConfig;
         this.globalAwsService = globalAwsService;
         this.userService = userService;
+        this.partnerService = partnerService;
         this.userPool = new amazon_cognito_identity_js_1.CognitoUserPool({
             UserPoolId: this.authConfig.userPoolId,
             ClientId: this.authConfig.clientId,
         });
         this.cognitoIdentityServiceProvider = globalAwsService.getCognitoIdentityServiceProvider();
     }
-    authenticateUser(loginDTO) {
-        const { name, password } = loginDTO;
+    async login(userName, password) {
         const authenticationDetails = new amazon_cognito_identity_js_1.AuthenticationDetails({
-            Username: name,
+            Username: userName,
             Password: password,
         });
         const userData = {
-            Username: name,
+            Username: userName,
             Pool: this.userPool,
         };
         const newUser = new amazon_cognito_identity_js_1.CognitoUser(userData);
-        return new Promise((resolve, reject) => {
+        const cognitoUserSession = await new Promise((resolve, reject) => {
             return newUser.authenticateUser(authenticationDetails, {
                 onSuccess: result => {
                     resolve(result);
@@ -48,16 +50,55 @@ let AuthService = class AuthService {
                 },
             });
         });
+        var userDb = await this.userService.findByUsername(userName);
+        if (!userDb) {
+            const userCreatedResult = await this.userService.syncUserFromCognitoToMongooDb(userName);
+            userDb = userCreatedResult;
+        }
+        return {
+            cognitoUserSession: cognitoUserSession,
+            user: userDb
+        };
     }
-    async signupWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail = false) {
-        return this.userService.signupAsWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail);
+    async signupWpmsUser(wpmsUserRegisterDTO) {
+        const wpmsPartner = await this.partnerService.findOne({ name: 'WPMS' });
+        if (!wpmsPartner) {
+            throw new common_1.NotFoundException('WPMS partner doest not exists, please ask admin to create WPMS partner first before signing up WPMS user');
+        }
+        var { userName, email, password, phoneNumber = '', country, name, } = wpmsUserRegisterDTO;
+        var registerNewUserParams = {
+            ClientId: this.authConfig.clientId,
+            Username: userName,
+            Password: password,
+            UserAttributes: [
+                {
+                    Name: 'email',
+                    Value: email,
+                },
+                {
+                    Name: 'phone_number',
+                    Value: phoneNumber,
+                },
+            ],
+        };
+        var cognitoUserSignedUp = await this.cognitoIdentityServiceProvider
+            .signUp(registerNewUserParams)
+            .promise();
+        const userCreatedResponse = await this.userService.createOrUpdateUserInDbFromCognitoUserName(cognitoUserSignedUp.UserSub, {
+            partner: wpmsPartner._id,
+            userRole: Enums_1.SystemRoles.PARTNER_USER,
+            country: country,
+            name: name,
+        });
+        return userCreatedResponse;
     }
 };
 AuthService = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [auth_config_1.AuthConfig,
         global_aws_service_1.GlobalAwsService,
-        user_service_1.UserService])
+        user_service_1.UserService,
+        partner_service_1.PartnerService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

@@ -212,6 +212,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TrackController.prototype, "remove", null);
 TrackController = __decorate([
+    swagger_1.ApiTags("Track Controller"),
     common_1.Controller('tracks'),
     __metadata("design:paramtypes", [track_service_1.TrackService])
 ], TrackController);

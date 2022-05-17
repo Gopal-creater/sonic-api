@@ -20,6 +20,7 @@ import {
   ApiBody,
   ApiQuery,
   ApiBearerAuth,
+  ApiTags,
 } from '@nestjs/swagger';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
@@ -42,6 +43,7 @@ import { DeleteTrackSecurityGuard } from '../guards/delete-track-security.guard'
 import { FailedAlwaysGuard } from '../../auth/guards/failedAlways.guard';
 import { UploadTrackSecurityGuard } from '../guards/upload-track-security.guard';
 
+@ApiTags("Track Controller")
 @Controller('tracks')
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}

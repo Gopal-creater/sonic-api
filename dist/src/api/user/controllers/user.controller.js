@@ -50,7 +50,6 @@ let UserController = class UserController {
         this.licensekeyService = licensekeyService;
     }
     async create(loggedInUser, createUserDto) {
-        var _a;
         var { company, partner, userName, email } = createUserDto;
         const userFromDb = await this.userService.findOne({
             $or: [{ email: email }, { username: userName }],
@@ -68,14 +67,16 @@ let UserController = class UserController {
             if (!companyFormDb)
                 throw new common_1.NotFoundException('Unknown company');
         }
-        const createdUser = await this.userService.createUserInCognito(createUserDto, true);
-        await this.userService.update((_a = createdUser === null || createdUser === void 0 ? void 0 : createdUser.userDb) === null || _a === void 0 ? void 0 : _a._id, {
-            createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id,
+        const createdUser = await this.userService.createUserInCognito(createUserDto, true, {
+            createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id
         });
         return createdUser;
     }
     findAll(queryDto) {
         return this.userService.listUsers(queryDto);
+    }
+    async findMe(user) {
+        return user;
     }
     async findById(userId) {
         const user = await this.userService.getUserProfile(userId);
@@ -255,6 +256,17 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "findAll", null);
+__decorate([
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get User profile by token' }),
+    common_1.Get('/@me'),
+    openapi.ApiResponse({ status: 200, type: require("../schemas/user.db.schema").UserDB }),
+    __param(0, decorators_1.User()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "findMe", null);
 __decorate([
     roles_decorator_1.RolesAllowed(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),

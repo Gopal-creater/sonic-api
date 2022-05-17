@@ -10,14 +10,16 @@ import { UserModule } from '../user/user.module';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ApiKeyAuthGuard } from './guards/apikey-auth.guard';
 import { CompanyModule } from '../company/company.module';
+import { PartnerModule } from '../partner/partner.module';
 
 @Module({
   imports: [
-  PassportModule.register({ defaultStrategy: 'jwt' }),
+PassportModule.register({ defaultStrategy: 'jwt' }),
     ApiKeyModule,
     LicensekeyModule,
     UserModule,
-    CompanyModule
+    CompanyModule,
+    PartnerModule
   ],
   providers: [
     AuthConfig,

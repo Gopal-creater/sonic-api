@@ -16,9 +16,14 @@ const class_validator_1 = require("class-validator");
 const constants_1 = require("../../../constants");
 class RegisterDTO {
     static _OPENAPI_METADATA_FACTORY() {
-        return { userName: { required: true, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, email: { required: true, type: () => String } };
+        return { name: { required: true, type: () => String }, userName: { required: true, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String } };
     }
 }
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], RegisterDTO.prototype, "name", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),
@@ -27,6 +32,9 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),
+    class_validator_1.Matches(constants_1.COGNITO_PASSWORD_REGULAR_EXPRESSION, {
+        message: 'password too weak',
+    }),
     __metadata("design:type", String)
 ], RegisterDTO.prototype, "password", void 0);
 __decorate([
@@ -35,7 +43,12 @@ __decorate([
 ], RegisterDTO.prototype, "phoneNumber", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], RegisterDTO.prototype, "country", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),
+    class_validator_1.IsEmail(),
     __metadata("design:type", String)
 ], RegisterDTO.prototype, "email", void 0);
 exports.RegisterDTO = RegisterDTO;

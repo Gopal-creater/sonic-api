@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, Validate } from 'class-validator';
+import { IsEnum, IsNotEmpty, Validate,Matches } from 'class-validator';
 import { MFAOption } from '../schemas/user.db.schema';
 import {
   UserExists,
   UserExistsRule,
 } from '../validations/userexists.validation';
+import { SystemRoles } from 'src/constants/Enums';
+import { COGNITO_PASSWORD_REGULAR_EXPRESSION } from '../../../constants/index';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -16,6 +18,9 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @Matches(COGNITO_PASSWORD_REGULAR_EXPRESSION, {
+    message: 'password too weak',
+  })
   password: string;
 
   @ApiProperty()
@@ -29,13 +34,14 @@ export class CreateUserDto {
   email: string;
 
   @ApiProperty()
-  isEmailVerified: boolean;
+  isEmailVerified?: boolean;
 
   @ApiProperty()
-  isPhoneNumberVerified: boolean;
+  isPhoneNumberVerified?: boolean;
 
   @ApiProperty()
-  userRole?: string;
+  @IsEnum(SystemRoles)
+  userRole?: SystemRoles;
 
   @ApiProperty()
   company?: string;
@@ -44,7 +50,7 @@ export class CreateUserDto {
   partner?: string;
 
   @ApiProperty()
-  sendInvitationByEmail: boolean;
+  sendInvitationByEmail?: boolean;
 }
 
 export class ValidationTestDto {
