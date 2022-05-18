@@ -9,6 +9,13 @@
           "classValidatorShim": true
         }
       }
+    ],
+    "assets": [
+      {
+        "include": "./modules/mail/templates/**/*",
+        "outDir": "dist/src",
+        "watchAssets": true
+      }
     ]
   }
 }

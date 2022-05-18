@@ -4,7 +4,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './api/auth/auth.module';
-
+import { MailModule } from './api/mail/mail.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SonickeyModule } from './api/sonickey/sonickey.module';
 import { diskStorage} from 'multer';
@@ -68,9 +68,10 @@ var connectionNo = 0;
       ],
       load: [appConfiguration,testConfig],
     }),
+    MailModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI'),
         useNewUrlParser: true,
         useUnifiedTopology: true,

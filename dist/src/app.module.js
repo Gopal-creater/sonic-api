@@ -13,6 +13,7 @@ const platform_express_1 = require("@nestjs/platform-express");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const auth_module_1 = require("./api/auth/auth.module");
+const mail_module_1 = require("./api/mail/mail.module");
 const config_1 = require("@nestjs/config");
 const sonickey_module_1 = require("./api/sonickey/sonickey.module");
 const multer_1 = require("multer");
@@ -76,6 +77,7 @@ AppModule = __decorate([
                 ],
                 load: [app_config_1.default, test_config_1.default],
             }),
+            mail_module_1.MailModule,
             mongoose_1.MongooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 useFactory: async (configService) => ({

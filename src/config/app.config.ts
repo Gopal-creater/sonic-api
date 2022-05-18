@@ -33,6 +33,23 @@ const registeredConfig = registerAs('', () => ({
     region: process.env.COGNITO_REGION,
     authority: `https://cognito-idp.${process.env.COGNITO_REGION}.amazonaws.com/${process.env.COGNITO_USER_POOL_ID}`,
   },
+  mail: {
+    default: 'smtp',
+    smtp: {
+      transport: {
+        host: process.env.MAIL_HOST,
+        port: process.env.MAIL_PORT,
+        secure: process.env.MAIL_SECURE == 'true',
+        auth: {
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASSWORD,
+        },
+      },
+      defaults: {
+        from: `"No Reply" <${process.env.MAIL_FROM}>`,
+      },
+    },
+  },
 }));
 export default registeredConfig
 
