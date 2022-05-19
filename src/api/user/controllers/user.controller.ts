@@ -30,6 +30,7 @@ import {
   ForbiddenException,
   UnprocessableEntityException,
   Delete,
+  Version,
 } from '@nestjs/common';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
@@ -53,7 +54,7 @@ import { UpdateUserSecurityGuard } from '../guards/update-user-security.guard';
 import { CreateUserSecurityGuard } from '../guards/create-user-security.guard';
 import { EnableDisableUserSecurityGuard } from '../guards/enabledisable-user-security.guard';
 
-@ApiTags('User Controller')
+@ApiTags('User Controller (D & M May 2022)')
 @Controller('users')
 export class UserController {
   constructor(
@@ -105,14 +106,15 @@ export class UserController {
   })
   @RolesAllowed(Roles.ADMIN, Roles.PARTNER_ADMIN, Roles.COMPANY_ADMIN)
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
   @Get()
   findAll(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
     return this.userService.listUsers(queryDto);
   }
 
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get User profile by token' })
+  @ApiBearerAuth()
   @Get('/@me')
   async findMe(@User() user: UserDB) {
     return user;
@@ -120,6 +122,7 @@ export class UserController {
 
   @RolesAllowed()
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
   @Get(':id')
   async findById(@Param('id') userId: string) {
     const user = await this.userService.getUserProfile(userId);

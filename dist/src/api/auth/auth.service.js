@@ -18,12 +18,14 @@ const user_service_1 = require("../user/services/user.service");
 const register_dto_1 = require("./dto/register.dto");
 const partner_service_1 = require("../partner/services/partner.service");
 const Enums_1 = require("../../constants/Enums");
+const config_1 = require("@nestjs/config");
 let AuthService = class AuthService {
-    constructor(authConfig, globalAwsService, userService, partnerService) {
+    constructor(authConfig, globalAwsService, userService, partnerService, configService) {
         this.authConfig = authConfig;
         this.globalAwsService = globalAwsService;
         this.userService = userService;
         this.partnerService = partnerService;
+        this.configService = configService;
         this.userPool = new amazon_cognito_identity_js_1.CognitoUserPool({
             UserPoolId: this.authConfig.userPoolId,
             ClientId: this.authConfig.clientId,
@@ -57,7 +59,7 @@ let AuthService = class AuthService {
         }
         return {
             cognitoUserSession: cognitoUserSession,
-            user: userDb
+            user: userDb,
         };
     }
     async signupWpmsUser(wpmsUserRegisterDTO) {
@@ -92,13 +94,42 @@ let AuthService = class AuthService {
         });
         return userCreatedResponse;
     }
+    async createSonicAdmin() {
+        var _a, _b;
+        const createUserDto = {
+            userName: this.configService.get('SONIC_ADMIN_USERNAME'),
+            name: 'Sonic Admin',
+            password: this.configService.get('SONIC_ADMIN_PASSWORD'),
+            email: this.configService.get('SONIC_ADMIN_EMAIL'),
+            phoneNumber: this.configService.get('SONIC_ADMIN_PHONE'),
+            isEmailVerified: true,
+            isPhoneNumberVerified: true,
+            userRole: Enums_1.SystemRoles.ADMIN,
+            sendInvitationByEmail: false,
+        };
+        const alreadyUser = await this.userService.findOne({
+            username: createUserDto.userName,
+            isSonicAdmin: true,
+            userRole: Enums_1.SystemRoles.ADMIN,
+        });
+        if (alreadyUser) {
+            console.log('Sonic Admin Present Already');
+            return;
+        }
+        const userCreated = await this.userService.createUserInCognito(createUserDto, true, {
+            isSonicAdmin: true,
+        });
+        await this.userService.adminSetUserPassword((_b = (_a = userCreated === null || userCreated === void 0 ? void 0 : userCreated.cognitoUser) === null || _a === void 0 ? void 0 : _a.User) === null || _b === void 0 ? void 0 : _b.Username, createUserDto.password);
+        console.log('Sonic Admin User Created');
+    }
 };
 AuthService = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [auth_config_1.AuthConfig,
         global_aws_service_1.GlobalAwsService,
         user_service_1.UserService,
-        partner_service_1.PartnerService])
+        partner_service_1.PartnerService,
+        config_1.ConfigService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

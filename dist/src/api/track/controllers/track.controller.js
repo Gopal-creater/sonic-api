@@ -116,7 +116,7 @@ __decorate([
     decorators_1.RolesAllowed(),
     common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, upload_track_security_guard_1.UploadTrackSecurityGuard),
     swagger_1.ApiBearerAuth(),
-    common_1.Post(),
+    common_1.Post('/upload'),
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body()),
     __param(1, common_1.UploadedFile()),
@@ -154,6 +154,8 @@ __decorate([
     swagger_1.ApiOperation({
         summary: 'Get track by id',
     }),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
     common_1.Get(':id'),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
@@ -180,6 +182,8 @@ __decorate([
 ], TrackController.prototype, "update", null);
 __decorate([
     common_1.Get('/count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({
         summary: 'Get count of all tracks also accept filter as query params',
     }),
@@ -191,6 +195,8 @@ __decorate([
 ], TrackController.prototype, "getCount", null);
 __decorate([
     common_1.Get('/estimate-count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({
         summary: 'Get all count of all tracks',
     }),
@@ -212,7 +218,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TrackController.prototype, "remove", null);
 TrackController = __decorate([
-    swagger_1.ApiTags("Track Controller"),
+    swagger_1.ApiTags("Track Controller (D & M May 2022)"),
     common_1.Controller('tracks'),
     __metadata("design:paramtypes", [track_service_1.TrackService])
 ], TrackController);

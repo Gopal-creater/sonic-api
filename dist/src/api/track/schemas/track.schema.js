@@ -65,7 +65,7 @@ __decorate([
 ], Track.prototype, "apiKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, enum: Enums_1.ChannelEnums, required: true }),
+    mongoose_1.Prop({ type: String, enum: Enums_1.ChannelEnums, required: true, default: Enums_1.ChannelEnums.PORTAL }),
     __metadata("design:type", String)
 ], Track.prototype, "channel", void 0);
 __decorate([

@@ -136,7 +136,7 @@ export class UserDB extends Document {
 
   @ApiProperty()
   @Prop({
-    type: MogSchema.Types.ObjectId,
+    type: String,
     ref: 'User',
     autopopulate: { maxDepth: 2 },
   })
@@ -144,7 +144,7 @@ export class UserDB extends Document {
 
   @ApiProperty()
   @Prop({
-    type: MogSchema.Types.ObjectId,
+    type: String,
     ref: 'User',
     autopopulate: { maxDepth: 2 },
   })

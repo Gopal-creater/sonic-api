@@ -54,6 +54,16 @@ __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
+], Company.prototype, "companyType", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], Company.prototype, "companyUrnOrId", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
 ], Company.prototype, "email", void 0);
 __decorate([
     swagger_1.ApiProperty(),

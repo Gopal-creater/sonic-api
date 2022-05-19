@@ -13,10 +13,11 @@ exports.CreateCompanyDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
+const constant_1 = require("../constant");
 const company_schema_1 = require("../schemas/company.schema");
 class CreateCompanyDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, description: { required: true, type: () => String }, email: { required: true, type: () => String }, contactNo: { required: true, type: () => String }, address: { required: true, type: () => require("../schemas/company.schema").Address }, owner: { required: true, type: () => String }, partner: { required: true, type: () => String } };
+        return { name: { required: true, type: () => String }, description: { required: true, type: () => String }, companyType: { required: true, type: () => String }, companyUrnOrId: { required: true, type: () => String }, email: { required: true, type: () => String }, contactNo: { required: true, type: () => String }, address: { required: true, type: () => require("../schemas/company.schema").Address }, owner: { required: true, type: () => String }, partner: { required: true, type: () => String } };
     }
 }
 __decorate([
@@ -30,6 +31,17 @@ __decorate([
 ], CreateCompanyDto.prototype, "description", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    class_validator_1.IsIn(constant_1.companyTypes),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "companyType", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "companyUrnOrId", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "email", void 0);
 __decorate([
@@ -41,7 +53,6 @@ __decorate([
     __metadata("design:type", company_schema_1.Address)
 ], CreateCompanyDto.prototype, "address", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "owner", void 0);

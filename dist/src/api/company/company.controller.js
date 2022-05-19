@@ -119,6 +119,7 @@ __decorate([
     }),
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
     common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
     common_1.Get(),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
@@ -129,6 +130,7 @@ __decorate([
 __decorate([
     decorators_1.RolesAllowed(),
     common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, get_company_security_guard_1.GetCompanySecurityGuard),
+    swagger_1.ApiBearerAuth(),
     common_1.Get(':id'),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
@@ -140,6 +142,7 @@ __decorate([
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
     common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, change_company_admin_security_guard_1.ChangeCompanyAdminSecurityGuard),
     common_1.Put(':id/change-company-admin-user'),
+    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Change admin user' }),
     swagger_1.ApiBody({
         schema: {
@@ -211,7 +214,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "remove", null);
 CompanyController = __decorate([
-    swagger_1.ApiTags('Company Controller'),
+    swagger_1.ApiTags('Company Controller (D & M May 2022)'),
     common_1.Controller('companies'),
     __metadata("design:paramtypes", [company_service_1.CompanyService])
 ], CompanyController);

@@ -63,7 +63,7 @@ var connectionNo = 0;
       isGlobal: true,
       cache:true,
       envFilePath: [
-        '.env.override',
+        'override.env',
         process.env.NODE_ENV == 'production' ? 'production.env' : 'staging.env',
       ],
       load: [appConfiguration,testConfig],

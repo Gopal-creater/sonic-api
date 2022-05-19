@@ -33,6 +33,9 @@ let RoleBasedGuard = class RoleBasedGuard {
         const request = context.switchToHttp().getRequest();
         const currentUser = request === null || request === void 0 ? void 0 : request.user;
         const userRole = currentUser === null || currentUser === void 0 ? void 0 : currentUser.userRole;
+        if (currentUser.isSonicAdmin || currentUser.userRole == Enums_1.SystemRoles.ADMIN) {
+            return true;
+        }
         if (!userRole) {
             throw new common_2.ForbiddenException("User role not found");
         }

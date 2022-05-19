@@ -34,6 +34,14 @@ export class Company extends Document {
 
   @ApiProperty()
   @Prop()
+  companyType: string;
+
+  @ApiProperty()
+  @Prop()
+  companyUrnOrId: string;
+
+  @ApiProperty()
+  @Prop()
   email: string;
 
   @ApiProperty()

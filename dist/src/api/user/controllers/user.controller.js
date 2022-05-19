@@ -249,6 +249,7 @@ __decorate([
     }),
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.COMPANY_ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
     common_1.Get(),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-user.dto").MongoosePaginateUserDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
@@ -258,8 +259,8 @@ __decorate([
 ], UserController.prototype, "findAll", null);
 __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get User profile by token' }),
+    swagger_1.ApiBearerAuth(),
     common_1.Get('/@me'),
     openapi.ApiResponse({ status: 200, type: require("../schemas/user.db.schema").UserDB }),
     __param(0, decorators_1.User()),
@@ -270,6 +271,7 @@ __decorate([
 __decorate([
     roles_decorator_1.RolesAllowed(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
     common_1.Get(':id'),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
@@ -487,7 +489,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "addMonitoringSubscriptionFromMonitoringGroup", null);
 UserController = __decorate([
-    swagger_1.ApiTags('User Controller'),
+    swagger_1.ApiTags('User Controller (D & M May 2022)'),
     common_1.Controller('users'),
     __metadata("design:paramtypes", [user_service_1.UserService,
         group_service_1.GroupService,

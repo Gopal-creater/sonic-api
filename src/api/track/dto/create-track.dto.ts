@@ -74,8 +74,7 @@ export class TrackDto {
     mediaFile: any;
   
     @ApiProperty()
-    @IsNotEmpty()
-    channel: string;
+    channel?: string;
 
     @ApiProperty()
     @IsNotEmpty()
@@ -86,11 +85,11 @@ export class TrackDto {
     title: string;
 
     @ApiProperty()
-    owner: string;
+    owner?: string;
   
     @ApiProperty()
-    company: string;
+    company?: string;
   
     @ApiProperty()
-    partner: string;
+    partner?: string;
   }

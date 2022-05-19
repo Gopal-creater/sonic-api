@@ -5,6 +5,7 @@ import {
   Get,
   NotFoundException,
   Post,
+  Version,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -17,9 +18,8 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDTO, WpmsUserRegisterDTO } from './dto/register.dto';
 import { UserService } from '../user/services/user.service';
 import { PartnerService } from '../partner/services/partner.service';
-import { SystemRoles } from 'src/constants/Enums';
 
-@ApiTags('Authentication Controller')
+@ApiTags('Authentication Controller (D & M May 2022)')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -35,6 +35,7 @@ export class AuthController {
       return  this.authService.login(userName,password);
   }
 
+  
   @Post('/wpms/signup')
   @ApiOperation({ summary: 'User Signup from WPMS website under WPMS Partner' })
   async wpmsSignup(@Body() wpmsUserRegisterDTO: WpmsUserRegisterDTO) {

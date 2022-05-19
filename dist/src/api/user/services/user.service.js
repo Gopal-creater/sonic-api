@@ -249,7 +249,7 @@ let UserService = class UserService {
         var userCreationOrUpdationResult = await this.createOrUpdateUserInDbFromCognitoUserName(usernameOrSub);
         if (!userCreationOrUpdationResult.userDb.userRole) {
             const updatedUserWithRole = await this.update(userCreationOrUpdationResult.userDb._id, {
-                userRole: Enums_1.SystemRoles.PORTAL_USER
+                userRole: Enums_1.SystemRoles.PORTAL_USER,
             });
             userCreationOrUpdationResult.userDb = updatedUserWithRole;
         }
@@ -340,20 +340,40 @@ let UserService = class UserService {
             },
             {
                 $lookup: {
-                    from: 'Group',
-                    localField: 'groups',
+                    from: 'Partner',
+                    localField: 'partner',
                     foreignField: '_id',
-                    as: 'groups',
+                    as: 'partner',
                 },
             },
+            { $addFields: { partner: { $first: '$partner' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'adminPartner',
+                    foreignField: '_id',
+                    as: 'adminPartner',
+                },
+            },
+            { $addFields: { adminPartner: { $first: '$adminPartner' } } },
             {
                 $lookup: {
                     from: 'Company',
-                    localField: 'companies',
+                    localField: 'company',
                     foreignField: '_id',
-                    as: 'companies',
+                    as: 'company',
                 },
             },
+            { $addFields: { company: { $first: '$company' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'adminCompany',
+                    foreignField: '_id',
+                    as: 'adminCompany',
+                },
+            },
+            { $addFields: { adminCompany: { $first: '$adminCompany' } } },
             {
                 $match: Object.assign({}, relationalFilter),
             },
@@ -528,14 +548,20 @@ let UserService = class UserService {
             .promise();
         var userDb;
         if (saveInDb) {
-            const enabled = cognitoUserCreated.User.Enabled;
-            const userStatus = cognitoUserCreated.User.UserStatus;
-            const mfaOptions = cognitoUserCreated.User.MFAOptions;
-            const sub = (_c = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'sub')) === null || _c === void 0 ? void 0 : _c.Value;
-            const email_verified = (_d = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'email_verified')) === null || _d === void 0 ? void 0 : _d.Value;
-            const phone_number_verified = (_e = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _e === void 0 ? void 0 : _e.Value;
-            const userToSaveInDb = await this.userModel.create(Object.assign(Object.assign({ _id: sub, sub: sub, username: cognitoUserCreated.User.Username, email: email, email_verified: email_verified == 'true', phone_number: phoneNumber, phone_number_verified: phone_number_verified == 'true', user_status: userStatus, enabled: enabled, mfa_options: mfaOptions }, userPayload), additionalUserData));
-            userDb = await userToSaveInDb.save();
+            try {
+                const enabled = cognitoUserCreated.User.Enabled;
+                const userStatus = cognitoUserCreated.User.UserStatus;
+                const mfaOptions = cognitoUserCreated.User.MFAOptions;
+                const sub = (_c = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'sub')) === null || _c === void 0 ? void 0 : _c.Value;
+                const email_verified = (_d = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'email_verified')) === null || _d === void 0 ? void 0 : _d.Value;
+                const phone_number_verified = (_e = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _e === void 0 ? void 0 : _e.Value;
+                const userToSaveInDb = await this.userModel.create(Object.assign(Object.assign({ _id: sub, sub: sub, username: cognitoUserCreated.User.Username, email: email, email_verified: email_verified == 'true', phone_number: phoneNumber, phone_number_verified: phone_number_verified == 'true', user_status: userStatus, enabled: enabled, mfa_options: mfaOptions }, userPayload), additionalUserData));
+                userDb = await userToSaveInDb.save();
+            }
+            catch (error) {
+                await this.adminDeleteUser(cognitoUserCreated.User.Username);
+                return Promise.reject(error);
+            }
         }
         return { cognitoUser: cognitoUserCreated, userDb: userDb };
     }

@@ -11,6 +11,7 @@ import {
   UploadedFile,
   UseGuards,
   NotFoundException,
+  Version,
 } from '@nestjs/common';
 import { TrackService } from '../track.service';
 import { UpdateTrackDto } from '../dto/update-track.dto';
@@ -43,7 +44,7 @@ import { DeleteTrackSecurityGuard } from '../guards/delete-track-security.guard'
 import { FailedAlwaysGuard } from '../../auth/guards/failedAlways.guard';
 import { UploadTrackSecurityGuard } from '../guards/upload-track-security.guard';
 
-@ApiTags("Track Controller")
+@ApiTags("Track Controller (D & M May 2022)")
 @Controller('tracks')
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
@@ -87,7 +88,7 @@ export class TrackController {
   @RolesAllowed()
   @UseGuards(JwtAuthGuard,RoleBasedGuard,UploadTrackSecurityGuard)
   @ApiBearerAuth()
-  @Post()
+  @Post('/upload')
   async uploadTrack(
     @Body() uploadTrackDto: UploadTrackDto,
     @UploadedFile() file: IUploadedFile,
@@ -150,9 +151,12 @@ export class TrackController {
     return this.trackService.findAll(queryDto);
   }
 
+
   @ApiOperation({
     summary: 'Get track by id',
   })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get(':id')
   async findById(@Param('id') id: string) {
     const track = await this.trackService.findById(id);
@@ -185,6 +189,8 @@ export class TrackController {
   }
 
   @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get count of all tracks also accept filter as query params',
   })
@@ -193,6 +199,8 @@ export class TrackController {
   }
 
   @Get('/estimate-count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get all count of all tracks',
   })

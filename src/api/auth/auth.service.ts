@@ -22,6 +22,8 @@ import { UserService } from '../user/services/user.service';
 import { WpmsUserRegisterDTO } from 'src/api/auth/dto/register.dto';
 import { PartnerService } from '../partner/services/partner.service';
 import { SystemRoles } from 'src/constants/Enums';
+import { CreateUserDto } from '../user/dtos/create-user.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -32,6 +34,7 @@ export class AuthService {
     private readonly globalAwsService: GlobalAwsService,
     public readonly userService: UserService,
     private readonly partnerService: PartnerService,
+    private readonly configService: ConfigService,
   ) {
     this.userPool = new CognitoUserPool({
       UserPoolId: this.authConfig.userPoolId,
@@ -52,27 +55,31 @@ export class AuthService {
 
     const newUser = new CognitoUser(userData);
 
-    const cognitoUserSession:CognitoUserSession = await  new Promise((resolve, reject) => {
-      return newUser.authenticateUser(authenticationDetails, {
-        onSuccess: result => {
-          resolve(result);
-        },
-        onFailure: err => {
-          reject(err);
-        },
-      });
-    });
+    const cognitoUserSession: CognitoUserSession = await new Promise(
+      (resolve, reject) => {
+        return newUser.authenticateUser(authenticationDetails, {
+          onSuccess: result => {
+            resolve(result);
+          },
+          onFailure: err => {
+            reject(err);
+          },
+        });
+      },
+    );
     //Get user from Db
-    var userDb = await this.userService.findByUsername(userName)
+    var userDb = await this.userService.findByUsername(userName);
     //If user not found on our db, please create it in our db too
-    if(!userDb){
-      const userCreatedResult =await this.userService.syncUserFromCognitoToMongooDb(userName)
-      userDb=userCreatedResult
+    if (!userDb) {
+      const userCreatedResult = await this.userService.syncUserFromCognitoToMongooDb(
+        userName,
+      );
+      userDb = userCreatedResult;
     }
-    return{
-      cognitoUserSession:cognitoUserSession,
-      user:userDb
-    }
+    return {
+      cognitoUserSession: cognitoUserSession,
+      user: userDb,
+    };
   }
   async signupWpmsUser(wpmsUserRegisterDTO: WpmsUserRegisterDTO) {
     const wpmsPartner = await this.partnerService.findOne({ name: 'WPMS' });
@@ -117,5 +124,40 @@ export class AuthService {
       },
     );
     return userCreatedResponse;
+  }
+
+  async createSonicAdmin() {
+    const createUserDto: CreateUserDto = {
+      userName: this.configService.get('SONIC_ADMIN_USERNAME'),
+      name: 'Sonic Admin',
+      password: this.configService.get('SONIC_ADMIN_PASSWORD'),
+      email: this.configService.get('SONIC_ADMIN_EMAIL'),
+      phoneNumber: this.configService.get('SONIC_ADMIN_PHONE'),
+      isEmailVerified: true,
+      isPhoneNumberVerified: true,
+      userRole: SystemRoles.ADMIN,
+      sendInvitationByEmail: false,
+    };
+    const alreadyUser = await this.userService.findOne({
+      username: createUserDto.userName,
+      isSonicAdmin: true,
+      userRole: SystemRoles.ADMIN,
+    });
+    if (alreadyUser) {
+      console.log('Sonic Admin Present Already')
+      return
+    }
+    const userCreated = await this.userService.createUserInCognito(
+      createUserDto,
+      true,
+      {
+        isSonicAdmin: true,
+      },
+    );
+    await this.userService.adminSetUserPassword(
+      userCreated?.cognitoUser?.User?.Username,
+      createUserDto.password,
+    );
+    console.log('Sonic Admin User Created');
   }
 }

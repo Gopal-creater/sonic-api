@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AuthConfig } from './config/auth.config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -31,4 +31,9 @@ PassportModule.register({ defaultStrategy: 'jwt' }),
   controllers: [AuthController],
   exports: [JwtAuthGuard, ApiKeyAuthGuard,CompanyModule,ApiKeyModule],
 })
-export class AuthModule {}
+export class AuthModule implements OnModuleInit {
+  constructor(private readonly authService: AuthService) {}
+  onModuleInit() {
+    this.authService.createSonicAdmin();
+  }
+}

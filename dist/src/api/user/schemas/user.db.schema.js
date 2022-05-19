@@ -167,7 +167,7 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        type: mongoose_2.Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
         autopopulate: { maxDepth: 2 },
     }),
@@ -176,7 +176,7 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        type: mongoose_2.Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
         autopopulate: { maxDepth: 2 },
     }),

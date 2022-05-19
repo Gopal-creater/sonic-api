@@ -9,6 +9,7 @@ import {
   UseGuards,
   Query,
   NotFoundException,
+  Version,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { CreateCompanyDto } from './dtos/create-company.dto';
@@ -34,7 +35,7 @@ import { DeleteCompanySecurityGuard } from './guards/delete-company-security.gua
 import { User } from '../auth/decorators/user.decorator';
 import { UserDB } from '../user/schemas/user.db.schema';
 
-@ApiTags('Company Controller')
+@ApiTags('Company Controller (D & M May 2022)')
 @Controller('companies')
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
@@ -76,6 +77,7 @@ export class CompanyController {
   })
   @RolesAllowed(Roles.ADMIN, Roles.PARTNER_ADMIN)
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
   @Get()
   findAll(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
     return this.companyService.findAll(queryDto);
@@ -83,6 +85,7 @@ export class CompanyController {
 
   @RolesAllowed()
   @UseGuards(JwtAuthGuard, RoleBasedGuard, GetCompanySecurityGuard)
+  @ApiBearerAuth()
   @Get(':id')
   async findById(@Param('id') id: string) {
     const company = await this.companyService.findById(id);
@@ -95,6 +98,7 @@ export class CompanyController {
   @RolesAllowed(Roles.ADMIN, Roles.PARTNER_ADMIN)
   @UseGuards(JwtAuthGuard, RoleBasedGuard, ChangeCompanyAdminSecurityGuard)
   @Put(':id/change-company-admin-user')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Change admin user' })
   @ApiBody({
     schema: {

@@ -21,7 +21,6 @@ const login_dto_1 = require("./dto/login.dto");
 const register_dto_1 = require("./dto/register.dto");
 const user_service_1 = require("../user/services/user.service");
 const partner_service_1 = require("../partner/services/partner.service");
-const Enums_1 = require("../../constants/Enums");
 let AuthController = class AuthController {
     constructor(authService, userService, partnerService) {
         this.authService = authService;
@@ -62,7 +61,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "wpmsSignup", null);
 AuthController = __decorate([
-    swagger_1.ApiTags('Authentication Controller'),
+    swagger_1.ApiTags('Authentication Controller (D & M May 2022)'),
     common_1.Controller('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService,
         user_service_1.UserService,

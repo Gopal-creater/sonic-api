@@ -21,6 +21,10 @@ export class Partner extends Document {
 
   @ApiProperty()
   @Prop()
+  partnerType: string;
+
+  @ApiProperty()
+  @Prop()
   email: string;
 
   @ApiProperty()

@@ -289,15 +289,20 @@ export class UserService {
    * @returns
    */
   async syncUserFromCognitoToMongooDb(usernameOrSub: string) {
-   var userCreationOrUpdationResult = await this.createOrUpdateUserInDbFromCognitoUserName(usernameOrSub)
-  //Given default role as PORTAL_USER
-   if(!userCreationOrUpdationResult.userDb.userRole){
-    const updatedUserWithRole = await this.update(userCreationOrUpdationResult.userDb._id,{
-      userRole:SystemRoles.PORTAL_USER
-    })
-    userCreationOrUpdationResult.userDb=updatedUserWithRole
-   }
-   return userCreationOrUpdationResult.userDb
+    var userCreationOrUpdationResult = await this.createOrUpdateUserInDbFromCognitoUserName(
+      usernameOrSub,
+    );
+    //Given default role as PORTAL_USER
+    if (!userCreationOrUpdationResult.userDb.userRole) {
+      const updatedUserWithRole = await this.update(
+        userCreationOrUpdationResult.userDb._id,
+        {
+          userRole: SystemRoles.PORTAL_USER,
+        },
+      );
+      userCreationOrUpdationResult.userDb = updatedUserWithRole;
+    }
+    return userCreationOrUpdationResult.userDb;
   }
 
   /**
@@ -428,22 +433,44 @@ export class UserService {
       },
       {
         $lookup: {
-          //populate radioStation from its relational table
-          from: 'Group',
-          localField: 'groups',
+          //populate group from its relational table
+          from: 'Partner',
+          localField: 'partner',
           foreignField: '_id',
-          as: 'groups',
+          as: 'partner',
         },
       },
+      { $addFields: { partner: { $first: '$partner' } } },
       {
         $lookup: {
-          //populate radioStation from its relational table
-          from: 'Company',
-          localField: 'companies',
+          //populate group from its relational table
+          from: 'Partner',
+          localField: 'adminPartner',
           foreignField: '_id',
-          as: 'companies',
+          as: 'adminPartner',
         },
       },
+      { $addFields: { adminPartner: { $first: '$adminPartner' } } },
+      {
+        $lookup: {
+          //populate company from its relational table
+          from: 'Company',
+          localField: 'company',
+          foreignField: '_id',
+          as: 'company',
+        },
+      },
+      { $addFields: { company: { $first: '$company' } } },
+      {
+        $lookup: {
+          //populate company from its relational table
+          from: 'Company',
+          localField: 'adminCompany',
+          foreignField: '_id',
+          as: 'adminCompany',
+        },
+      },
+      { $addFields: { adminCompany: { $first: '$adminCompany' } } },
       {
         $match: {
           ...relationalFilter,
@@ -676,33 +703,38 @@ export class UserService {
     //Once user created in cognito save it to our database too
     var userDb: UserDB;
     if (saveInDb) {
-      const enabled = cognitoUserCreated.User.Enabled;
-      const userStatus = cognitoUserCreated.User.UserStatus;
-      const mfaOptions = cognitoUserCreated.User.MFAOptions as any[];
-      const sub = cognitoUserCreated.User.Attributes.find(
-        attr => attr.Name == 'sub',
-      )?.Value;
-      const email_verified = cognitoUserCreated.User.Attributes.find(
-        attr => attr.Name == 'email_verified',
-      )?.Value;
-      const phone_number_verified = cognitoUserCreated.User.Attributes.find(
-        attr => attr.Name == 'phone_number_verified',
-      )?.Value;
-      const userToSaveInDb = await this.userModel.create({
-        _id: sub,
-        sub: sub,
-        username: cognitoUserCreated.User.Username,
-        email: email,
-        email_verified: email_verified == 'true',
-        phone_number: phoneNumber,
-        phone_number_verified: phone_number_verified == 'true',
-        user_status: userStatus,
-        enabled: enabled,
-        mfa_options: mfaOptions,
-        ...userPayload,
-        ...additionalUserData,
-      });
-      userDb = await userToSaveInDb.save();
+      try {
+        const enabled = cognitoUserCreated.User.Enabled;
+        const userStatus = cognitoUserCreated.User.UserStatus;
+        const mfaOptions = cognitoUserCreated.User.MFAOptions as any[];
+        const sub = cognitoUserCreated.User.Attributes.find(
+          attr => attr.Name == 'sub',
+        )?.Value;
+        const email_verified = cognitoUserCreated.User.Attributes.find(
+          attr => attr.Name == 'email_verified',
+        )?.Value;
+        const phone_number_verified = cognitoUserCreated.User.Attributes.find(
+          attr => attr.Name == 'phone_number_verified',
+        )?.Value;
+        const userToSaveInDb = await this.userModel.create({
+          _id: sub,
+          sub: sub,
+          username: cognitoUserCreated.User.Username,
+          email: email,
+          email_verified: email_verified == 'true',
+          phone_number: phoneNumber,
+          phone_number_verified: phone_number_verified == 'true',
+          user_status: userStatus,
+          enabled: enabled,
+          mfa_options: mfaOptions,
+          ...userPayload,
+          ...additionalUserData,
+        });
+        userDb = await userToSaveInDb.save();
+      } catch (error) {
+        await this.adminDeleteUser(cognitoUserCreated.User.Username);
+        return Promise.reject(error);
+      }
     }
 
     return { cognitoUser: cognitoUserCreated, userDb: userDb };

@@ -83,6 +83,7 @@ let PartnerController = class PartnerController {
 __decorate([
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
     common_1.Post(),
     swagger_1.ApiOperation({ summary: 'Create partner' }),
     openapi.ApiResponse({ status: 201, type: Object }),
@@ -98,6 +99,7 @@ __decorate([
         summary: 'Get partners',
     }),
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     common_1.Get(),
     openapi.ApiResponse({ status: 200, type: Object }),
@@ -111,6 +113,7 @@ __decorate([
         summary: 'Get partner by id',
     }),
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.PARTNER_USER),
+    swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, get_partner_security_guard_1.GetPartnerSecurityGuard),
     common_1.Get(':id'),
     openapi.ApiResponse({ status: 200 }),
@@ -121,6 +124,7 @@ __decorate([
 ], PartnerController.prototype, "findById", null);
 __decorate([
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     common_1.Put(':id/change-partner-admin-user'),
     swagger_1.ApiOperation({ summary: 'Change admin user' }),
@@ -145,6 +149,7 @@ __decorate([
         summary: 'Update partner by id',
     }),
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    swagger_1.ApiBearerAuth(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, update_partner_security_guard_1.UpdatePartnerSecurityGuard),
     common_1.Put(':id'),
     openapi.ApiResponse({ status: 200 }),
@@ -158,6 +163,7 @@ __decorate([
 ], PartnerController.prototype, "update", null);
 __decorate([
     common_1.Get('/count'),
+    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({
         summary: 'Get count of all partners also accept filter as query params',
     }),
@@ -169,6 +175,7 @@ __decorate([
 ], PartnerController.prototype, "getCount", null);
 __decorate([
     common_1.Get('/estimate-count'),
+    swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({
         summary: 'Get all count of all partners',
     }),
@@ -180,6 +187,7 @@ __decorate([
 __decorate([
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
     common_1.Delete(':id'),
     swagger_1.ApiOperation({ summary: 'Remove partner' }),
     openapi.ApiResponse({ status: 200, type: Object }),
@@ -189,7 +197,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], PartnerController.prototype, "remove", null);
 PartnerController = __decorate([
-    swagger_1.ApiTags('Partners Controller'),
+    swagger_1.ApiTags('Partners Controller (D & M May 2022)'),
     common_1.Controller('partners'),
     __metadata("design:paramtypes", [partner_service_1.PartnerService])
 ], PartnerController);

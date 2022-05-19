@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
-import { Roles } from 'src/constants/Enums';
+import { Roles, SystemRoles } from 'src/constants/Enums';
 import { ForbiddenException } from '@nestjs/common';
 import { UserDB } from '../../user/schemas/user.db.schema';
 
@@ -27,6 +27,10 @@ export class RoleBasedGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const currentUser = request?.user as UserDB
     const userRole = currentUser?.userRole
+    //No check for Admin or SonicAdmin
+    if(currentUser.isSonicAdmin||currentUser.userRole==SystemRoles.ADMIN){
+      return true
+    }
     if(!userRole){
       throw new ForbiddenException("User role not found")
     }

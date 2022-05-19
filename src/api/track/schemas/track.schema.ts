@@ -49,7 +49,7 @@ export class Track extends Document {
   apiKey: any;
 
   @ApiProperty()
-  @Prop({ type: String, enum: ChannelEnums, required: true })
+  @Prop({ type: String, enum: ChannelEnums, required: true,default:ChannelEnums.PORTAL })
   channel: string;
 
   @ApiProperty()

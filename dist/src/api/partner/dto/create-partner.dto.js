@@ -14,9 +14,10 @@ const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const company_schema_1 = require("../../company/schemas/company.schema");
+const constant_1 = require("../constant");
 class CreatePartnerDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, description: { required: true, type: () => String }, email: { required: true, type: () => String }, contactNo: { required: true, type: () => String }, address: { required: true, type: () => require("../../company/schemas/company.schema").Address }, owner: { required: true, type: () => String } };
+        return { name: { required: true, type: () => String }, description: { required: true, type: () => String }, partnerType: { required: true, type: () => String }, email: { required: true, type: () => String }, contactNo: { required: true, type: () => String }, address: { required: true, type: () => require("../../company/schemas/company.schema").Address }, owner: { required: true, type: () => String } };
     }
 }
 __decorate([
@@ -28,6 +29,12 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreatePartnerDto.prototype, "description", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    class_validator_1.IsIn(constant_1.partnerTypes),
+    __metadata("design:type", String)
+], CreatePartnerDto.prototype, "partnerType", void 0);
 __decorate([
     class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),

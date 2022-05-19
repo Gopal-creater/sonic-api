@@ -72,7 +72,7 @@ AppModule = __decorate([
                 isGlobal: true,
                 cache: true,
                 envFilePath: [
-                    '.env.override',
+                    'override.env',
                     process.env.NODE_ENV == 'production' ? 'production.env' : 'staging.env',
                 ],
                 load: [app_config_1.default, test_config_1.default],
