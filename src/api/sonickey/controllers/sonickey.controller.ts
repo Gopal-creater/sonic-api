@@ -300,8 +300,9 @@ export class SonickeyController {
   }
 
   @Get('/:sonickey')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ConditionalAuthGuard)
   @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
   @ApiOperation({ summary: 'Get Single SonicKey' })
   async getOne(@Param('sonickey') sonickey: string) {
     return this.sonicKeyService.findBySonicKeyOrFail(sonickey);

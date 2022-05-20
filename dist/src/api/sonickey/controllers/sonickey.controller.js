@@ -583,8 +583,9 @@ __decorate([
 ], SonickeyController.prototype, "getEstimateCount", null);
 __decorate([
     common_1.Get('/:sonickey'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
     swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiOperation({ summary: 'Get Single SonicKey' }),
     openapi.ApiResponse({ status: 200, type: require("../schemas/sonickey.schema").SonicKey }),
     __param(0, common_1.Param('sonickey')),
