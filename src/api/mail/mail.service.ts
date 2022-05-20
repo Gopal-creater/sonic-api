@@ -11,7 +11,7 @@ export class MailService {
       to: user.email,
       // from: '"Support Team" <support@example.com>', // override default from
       subject: 'Welcome to App',
-      template: './invitation', // `.hbs` extension is appended automatically
+      template: '/invitation.hbs',
       context: {
         // ✏️ filling curly brackets with content
         name: user.name,
