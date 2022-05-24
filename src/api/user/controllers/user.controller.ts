@@ -76,8 +76,6 @@ export class UserController {
     @User() loggedInUser: UserDB,
     @Body() createUserDto: CreateUserDto,
   ) {
-    console.log("createUserDto",createUserDto)
-    return createUserDto
     var { company, partner, userName, email } = createUserDto;
     const userFromDb = await this.userService.findOne({
       $or: [{ email: email }, { username: userName }],
