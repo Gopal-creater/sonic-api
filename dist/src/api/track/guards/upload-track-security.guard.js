@@ -27,7 +27,7 @@ let UploadTrackSecurityGuard = class UploadTrackSecurityGuard {
                 break;
             case Enums_1.SystemRoles.PARTNER_ADMIN:
             case Enums_1.SystemRoles.PARTNER_USER:
-                const partnerId = (_a = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.partner) === null || _a === void 0 ? void 0 : _a._id;
+                const partnerId = (_a = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.partner) === null || _a === void 0 ? void 0 : _a.id;
                 if (!uploadTrackDto.partner) {
                     throw new common_1.BadRequestException("Please provide partner id in the request body");
                 }
@@ -40,7 +40,7 @@ let UploadTrackSecurityGuard = class UploadTrackSecurityGuard {
                 break;
             case Enums_1.SystemRoles.COMPANY_ADMIN:
             case Enums_1.SystemRoles.COMPANY_USER:
-                const companyId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.company) === null || _b === void 0 ? void 0 : _b._id;
+                const companyId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.company) === null || _b === void 0 ? void 0 : _b.id;
                 if (!uploadTrackDto.company) {
                     throw new common_1.BadRequestException("Please provide company id in the request body");
                 }
@@ -52,7 +52,7 @@ let UploadTrackSecurityGuard = class UploadTrackSecurityGuard {
                 request.body = uploadTrackDto;
                 break;
             default:
-                const ownerId = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id;
+                const ownerId = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.id;
                 if (!uploadTrackDto.owner) {
                     throw new common_1.BadRequestException("Please provide owner id in the request body");
                 }

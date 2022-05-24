@@ -187,5 +187,7 @@ UserDB = __decorate([
 ], UserDB);
 exports.UserDB = UserDB;
 exports.UserSchema = mongoose_1.SchemaFactory.createForClass(UserDB);
+exports.UserSchema.set('toObject', { virtuals: true });
+exports.UserSchema.set('toJSON', { virtuals: true });
 exports.RawUserModel = mongoose_2.model('User', exports.UserSchema);
 //# sourceMappingURL=user.db.schema.js.map

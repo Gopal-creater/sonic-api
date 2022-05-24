@@ -50,7 +50,7 @@ export class UpdateUserSecurityGuard implements CanActivate {
         break;
 
       case SystemRoles.COMPANY_ADMIN:
-        const companyId = loggedInUser?.adminCompany?._id;
+        const companyId = loggedInUser?.adminCompany?.id;
         //Delete fields that are not applicable for this role
         delete updateUserDto.userRole;
         delete updateUserDto.partner;

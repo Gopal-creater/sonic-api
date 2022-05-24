@@ -73,4 +73,6 @@ Partner = __decorate([
 ], Partner);
 exports.Partner = Partner;
 exports.PartnerSchema = mongoose_1.SchemaFactory.createForClass(Partner);
+exports.PartnerSchema.set('toObject', { virtuals: true });
+exports.PartnerSchema.set('toJSON', { virtuals: true });
 //# sourceMappingURL=partner.schema.js.map

@@ -283,7 +283,8 @@ export class SonicKey extends Document {
 }
 
 export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);
-
+SonicKeySchema.set('toObject', { virtuals: true });
+SonicKeySchema.set('toJSON', { virtuals: true });
 SonicKeySchema.pre('save', function(next) {
   this._id = this.sonicKey;
   next();

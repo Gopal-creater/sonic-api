@@ -348,6 +348,8 @@ SonicKey = __decorate([
 ], SonicKey);
 exports.SonicKey = SonicKey;
 exports.SonicKeySchema = mongoose_1.SchemaFactory.createForClass(SonicKey);
+exports.SonicKeySchema.set('toObject', { virtuals: true });
+exports.SonicKeySchema.set('toJSON', { virtuals: true });
 exports.SonicKeySchema.pre('save', function (next) {
     this._id = this.sonicKey;
     next();

@@ -27,7 +27,7 @@ let UpdateCompanySecurityGuard = class UpdateCompanySecurityGuard {
             case Enums_1.SystemRoles.ADMIN:
                 break;
             case Enums_1.SystemRoles.PARTNER_ADMIN:
-                const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _b === void 0 ? void 0 : _b._id;
+                const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _b === void 0 ? void 0 : _b.id;
                 const company = await this.companyService.findOne({ _id: companyId, partner: partnerId });
                 if (!company) {
                     throw new common_2.ForbiddenException("Resource mismatch");
@@ -36,7 +36,7 @@ let UpdateCompanySecurityGuard = class UpdateCompanySecurityGuard {
                 (_d = request === null || request === void 0 ? void 0 : request.body) === null || _d === void 0 ? true : delete _d.partner;
                 break;
             case Enums_1.SystemRoles.COMPANY_ADMIN:
-                if (companyId !== ((_e = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _e === void 0 ? void 0 : _e._id)) {
+                if (companyId !== ((_e = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _e === void 0 ? void 0 : _e.id)) {
                     throw new common_2.ForbiddenException("Resource mismatch");
                 }
                 (_f = request === null || request === void 0 ? void 0 : request.body) === null || _f === void 0 ? true : delete _f.owner;

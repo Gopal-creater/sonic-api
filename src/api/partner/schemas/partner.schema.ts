@@ -55,3 +55,5 @@ export class Partner extends Document {
 }
 
 export const PartnerSchema = SchemaFactory.createForClass(Partner);
+PartnerSchema.set('toObject', { virtuals: true });
+PartnerSchema.set('toJSON', { virtuals: true });

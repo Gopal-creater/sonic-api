@@ -50,6 +50,8 @@ let UserController = class UserController {
         this.licensekeyService = licensekeyService;
     }
     async create(loggedInUser, createUserDto) {
+        console.log("createUserDto", createUserDto);
+        return createUserDto;
         var { company, partner, userName, email } = createUserDto;
         const userFromDb = await this.userService.findOne({
             $or: [{ email: email }, { username: userName }],

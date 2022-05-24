@@ -7,6 +7,9 @@ import {
 } from '../validations/userexists.validation';
 import { SystemRoles } from 'src/constants/Enums';
 import { COGNITO_PASSWORD_REGULAR_EXPRESSION } from '../../../constants/index';
+import { Type, Transform } from 'class-transformer';
+import { Types } from "mongoose"
+import { BadRequestException } from '@nestjs/common';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -51,6 +54,14 @@ export class CreateUserDto {
 
   @ApiProperty()
   sendInvitationByEmail?: boolean;
+}
+
+function toMongoObjectId({ value, key }): Types.ObjectId {
+  if ( Types.ObjectId.isValid(value) && ( new Types.ObjectId(value).toString() === value)) {
+      return new Types.ObjectId(value);
+  } else {
+      throw new BadRequestException(`${key} is not a valid MongoId`);
+  }
 }
 
 export class ValidationTestDto {

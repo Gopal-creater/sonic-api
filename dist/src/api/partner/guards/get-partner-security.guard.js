@@ -31,7 +31,7 @@ let GetPartnerSecurityGuard = class GetPartnerSecurityGuard {
                 throw new common_2.ForbiddenException("You dont have permission to do this action.");
             case Enums_1.SystemRoles.PARTNER_ADMIN:
             case Enums_1.SystemRoles.PARTNER_USER:
-                if (partnerId !== ((_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.partner) === null || _b === void 0 ? void 0 : _b._id)) {
+                if (partnerId !== ((_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.partner) === null || _b === void 0 ? void 0 : _b.id)) {
                     throw new common_2.ForbiddenException("You dont have permission to do this action, resource mismatch");
                 }
                 break;

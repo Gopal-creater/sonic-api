@@ -16,6 +16,8 @@ const class_validator_1 = require("class-validator");
 const userexists_validation_1 = require("../validations/userexists.validation");
 const Enums_1 = require("../../../constants/Enums");
 const index_1 = require("../../../constants/index");
+const mongoose_1 = require("mongoose");
+const common_1 = require("@nestjs/common");
 class CreateUserDto {
     static _OPENAPI_METADATA_FACTORY() {
         return { userName: { required: true, type: () => String }, name: { required: false, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String }, isEmailVerified: { required: false, type: () => Boolean }, isPhoneNumberVerified: { required: false, type: () => Boolean }, userRole: { required: false, enum: require("../../../constants/Enums").SystemRoles }, company: { required: false, type: () => String }, partner: { required: false, type: () => String }, sendInvitationByEmail: { required: false, type: () => Boolean } };
@@ -77,6 +79,14 @@ __decorate([
     __metadata("design:type", Boolean)
 ], CreateUserDto.prototype, "sendInvitationByEmail", void 0);
 exports.CreateUserDto = CreateUserDto;
+function toMongoObjectId({ value, key }) {
+    if (mongoose_1.Types.ObjectId.isValid(value) && (new mongoose_1.Types.ObjectId(value).toString() === value)) {
+        return new mongoose_1.Types.ObjectId(value);
+    }
+    else {
+        throw new common_1.BadRequestException(`${key} is not a valid MongoId`);
+    }
+}
 class ValidationTestDto {
     static _OPENAPI_METADATA_FACTORY() {
         return { user: { required: true, type: () => String }, param1: { required: true, type: () => String } };

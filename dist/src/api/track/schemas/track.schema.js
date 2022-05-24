@@ -164,4 +164,6 @@ Track = __decorate([
 ], Track);
 exports.Track = Track;
 exports.TrackSchema = mongoose_1.SchemaFactory.createForClass(Track);
+exports.TrackSchema.set('toObject', { virtuals: true });
+exports.TrackSchema.set('toJSON', { virtuals: true });
 //# sourceMappingURL=track.schema.js.map

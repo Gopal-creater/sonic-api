@@ -84,3 +84,5 @@ export class Company extends Document {
 }
 
 export const CompanySchema = SchemaFactory.createForClass(Company);
+CompanySchema.set('toObject', { virtuals: true });
+CompanySchema.set('toJSON', { virtuals: true });

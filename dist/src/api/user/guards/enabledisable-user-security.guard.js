@@ -32,7 +32,7 @@ let EnableDisableUserSecurityGuard = class EnableDisableUserSecurityGuard {
             case Enums_1.SystemRoles.ADMIN:
                 break;
             case Enums_1.SystemRoles.PARTNER_ADMIN:
-                const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _b === void 0 ? void 0 : _b._id;
+                const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _b === void 0 ? void 0 : _b.id;
                 const userFromDb = await this.userService.getUserProfile(userId);
                 if (!userFromDb) {
                     throw new common_1.NotFoundException('User not found');
@@ -41,7 +41,7 @@ let EnableDisableUserSecurityGuard = class EnableDisableUserSecurityGuard {
                     throw new common_1.UnprocessableEntityException('User can not be modified');
                 }
                 if (userFromDb.userRole == Enums_1.SystemRoles.PARTNER_USER) {
-                    if (((_c = userFromDb === null || userFromDb === void 0 ? void 0 : userFromDb.partner) === null || _c === void 0 ? void 0 : _c._id) !== partnerId) {
+                    if (((_c = userFromDb === null || userFromDb === void 0 ? void 0 : userFromDb.partner) === null || _c === void 0 ? void 0 : _c.id) !== partnerId) {
                         throw new common_1.NotFoundException('User not found');
                     }
                 }
@@ -56,7 +56,7 @@ let EnableDisableUserSecurityGuard = class EnableDisableUserSecurityGuard {
                 }
                 break;
             case Enums_1.SystemRoles.COMPANY_ADMIN:
-                const companyId = (_d = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _d === void 0 ? void 0 : _d._id;
+                const companyId = (_d = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _d === void 0 ? void 0 : _d.id;
                 const userFromDatabase = await this.userService.findOne({
                     _id: userId,
                     'company': companyId

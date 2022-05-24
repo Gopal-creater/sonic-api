@@ -27,7 +27,7 @@ let DeleteCompanySecurityGuard = class DeleteCompanySecurityGuard {
             case Enums_1.SystemRoles.ADMIN:
                 break;
             case Enums_1.SystemRoles.PARTNER_ADMIN:
-                const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _b === void 0 ? void 0 : _b._id;
+                const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _b === void 0 ? void 0 : _b.id;
                 const company = await this.companyService.findOne({ _id: companyId, partner: partnerId });
                 if (!company) {
                     throw new common_1.NotFoundException("Resource not found");

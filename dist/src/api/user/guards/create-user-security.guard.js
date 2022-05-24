@@ -29,13 +29,12 @@ let CreateUserSecurityGuard = class CreateUserSecurityGuard {
             case Enums_1.SystemRoles.ADMIN:
                 break;
             case Enums_1.SystemRoles.PARTNER_ADMIN:
-                const partnerId = (_a = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _a === void 0 ? void 0 : _a._id;
+                const partnerId = (_a = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _a === void 0 ? void 0 : _a.id;
                 if (!createUserDto.partner && !createUserDto.company) {
                     throw new common_1.UnprocessableEntityException('Please provide at least one partner or company for this user');
                 }
                 if (createUserDto.partner) {
-                    console.log("createUserDto.partner", createUserDto.partner);
-                    if (createUserDto.partner !== String(partnerId)) {
+                    if (createUserDto.partner !== partnerId) {
                         throw new common_2.ForbiddenException('Resource mismatch, Provide your own partner id');
                     }
                     createUserDto.userRole = Enums_1.SystemRoles.PARTNER_USER;
@@ -51,11 +50,11 @@ let CreateUserSecurityGuard = class CreateUserSecurityGuard {
                 }
                 break;
             case Enums_1.SystemRoles.COMPANY_ADMIN:
-                const companyId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _b === void 0 ? void 0 : _b._id;
+                const companyId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _b === void 0 ? void 0 : _b.id;
                 if (!createUserDto.company) {
                     throw new common_1.UnprocessableEntityException('Please provide your company id in the body for this user');
                 }
-                if (createUserDto.company !== String(companyId)) {
+                if (createUserDto.company !== companyId) {
                     throw new common_2.ForbiddenException('Resource mismatch, Provide your own company id');
                 }
                 createUserDto.userRole = Enums_1.SystemRoles.COMPANY_USER;

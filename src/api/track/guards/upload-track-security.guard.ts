@@ -26,7 +26,7 @@ export class UploadTrackSecurityGuard implements CanActivate {
 
       case SystemRoles.PARTNER_ADMIN:
       case SystemRoles.PARTNER_USER:
-        const partnerId = loggedInUser?.partner?._id;
+        const partnerId = loggedInUser?.partner?.id;
         if(!uploadTrackDto.partner){
           throw new BadRequestException("Please provide partner id in the request body")
         }
@@ -41,7 +41,7 @@ export class UploadTrackSecurityGuard implements CanActivate {
 
       case SystemRoles.COMPANY_ADMIN:
       case SystemRoles.COMPANY_USER:
-        const companyId = loggedInUser?.company?._id;
+        const companyId = loggedInUser?.company?.id;
         if(!uploadTrackDto.company){
           throw new BadRequestException("Please provide company id in the request body")
         }
@@ -55,7 +55,7 @@ export class UploadTrackSecurityGuard implements CanActivate {
         break;
 
       default:
-        const ownerId = loggedInUser?._id;
+        const ownerId = loggedInUser?.id;
         if(!uploadTrackDto.owner){
           throw new BadRequestException("Please provide owner id in the request body")
         }

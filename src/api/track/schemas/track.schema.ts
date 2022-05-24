@@ -129,3 +129,5 @@ export class Track extends Document {
 }
 
 export const TrackSchema = SchemaFactory.createForClass(Track);
+TrackSchema.set('toObject', { virtuals: true });
+TrackSchema.set('toJSON', { virtuals: true });

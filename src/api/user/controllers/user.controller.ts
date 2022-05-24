@@ -31,6 +31,8 @@ import {
   UnprocessableEntityException,
   Delete,
   Version,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
@@ -66,7 +68,7 @@ export class UserController {
   ) {}
 
   @RolesAllowed(Roles.ADMIN, Roles.PARTNER_ADMIN, Roles.COMPANY_ADMIN)
-  @UseGuards(JwtAuthGuard, RoleBasedGuard, CreateUserSecurityGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard,CreateUserSecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create user' })
   @Post()
@@ -74,6 +76,8 @@ export class UserController {
     @User() loggedInUser: UserDB,
     @Body() createUserDto: CreateUserDto,
   ) {
+    console.log("createUserDto",createUserDto)
+    return createUserDto
     var { company, partner, userName, email } = createUserDto;
     const userFromDb = await this.userService.findOne({
       $or: [{ email: email }, { username: userName }],

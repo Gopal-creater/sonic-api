@@ -113,4 +113,6 @@ Company = __decorate([
 ], Company);
 exports.Company = Company;
 exports.CompanySchema = mongoose_1.SchemaFactory.createForClass(Company);
+exports.CompanySchema.set('toObject', { virtuals: true });
+exports.CompanySchema.set('toJSON', { virtuals: true });
 //# sourceMappingURL=company.schema.js.map

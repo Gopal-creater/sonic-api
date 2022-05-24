@@ -25,7 +25,7 @@ export class UpdatePartnerSecurityGuard implements CanActivate {
         break;
 
       case SystemRoles.PARTNER_ADMIN:
-          if(partnerId!==loggedInUser?.adminPartner?._id){
+          if(partnerId!==loggedInUser?.adminPartner?.id){
             throw new ForbiddenException("You dont have permission to do this action, resource mismatch")
           }
           //Remove data that can not be modified by this user role

@@ -19,13 +19,13 @@ export class GetCompanySecurityGuard implements CanActivate {
 
       case SystemRoles.COMPANY_ADMIN:
       case SystemRoles.COMPANY_USER:
-        if (companyId !== loggedInUser?.company?._id) {
+        if (companyId !== loggedInUser?.company?.id) {
           throw new ForbiddenException('Resource mismatch');
         }
         break;
 
       case SystemRoles.PARTNER_ADMIN:
-        const partnerId = loggedInUser?.adminPartner?._id;
+        const partnerId = loggedInUser?.adminPartner?.id;
         const company = await this.companyService.findOne({
           _id: companyId,
           partner: partnerId,

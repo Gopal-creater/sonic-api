@@ -27,15 +27,14 @@ export class CreateUserSecurityGuard implements CanActivate {
         break;
 
       case SystemRoles.PARTNER_ADMIN:
-        const partnerId = loggedInUser?.adminPartner?._id;
+        const partnerId = loggedInUser?.adminPartner?.id;
         if(!createUserDto.partner && !createUserDto.company){
             throw new UnprocessableEntityException(
                 'Please provide at least one partner or company for this user',
             );
         }
         if (createUserDto.partner) {
-          console.log("createUserDto.partner",createUserDto.partner)
-          if (createUserDto.partner !== String(partnerId)) {
+          if (createUserDto.partner !== partnerId) {
             throw new ForbiddenException(
               'Resource mismatch, Provide your own partner id',
             );
@@ -53,13 +52,13 @@ export class CreateUserSecurityGuard implements CanActivate {
         break;
 
       case SystemRoles.COMPANY_ADMIN:
-        const companyId = loggedInUser?.adminCompany?._id;
+        const companyId = loggedInUser?.adminCompany?.id;
         if(!createUserDto.company){
             throw new UnprocessableEntityException(
                 'Please provide your company id in the body for this user',
             );
         }
-        if (createUserDto.company !== String(companyId)) {
+        if (createUserDto.company !== companyId) {
           throw new ForbiddenException(
             'Resource mismatch, Provide your own company id',
           );

@@ -30,7 +30,7 @@ export class GetPartnerSecurityGuard implements CanActivate {
 
       case SystemRoles.PARTNER_ADMIN:
       case SystemRoles.PARTNER_USER:
-          if(partnerId!==loggedInUser?.partner?._id){
+          if(partnerId!==loggedInUser?.partner?.id){
             throw new ForbiddenException("You dont have permission to do this action, resource mismatch")
           }
           break;

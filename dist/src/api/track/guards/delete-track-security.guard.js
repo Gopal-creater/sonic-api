@@ -27,7 +27,7 @@ let DeleteTrackSecurityGuard = class DeleteTrackSecurityGuard {
                 break;
             case Enums_1.SystemRoles.PARTNER_ADMIN:
             case Enums_1.SystemRoles.PARTNER_USER:
-                const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.partner) === null || _b === void 0 ? void 0 : _b._id;
+                const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.partner) === null || _b === void 0 ? void 0 : _b.id;
                 const track = await this.trackService.findOne({
                     _id: trackId,
                     partner: partnerId,
@@ -38,7 +38,7 @@ let DeleteTrackSecurityGuard = class DeleteTrackSecurityGuard {
                 break;
             case Enums_1.SystemRoles.COMPANY_ADMIN:
             case Enums_1.SystemRoles.COMPANY_USER:
-                const companyId = (_c = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.company) === null || _c === void 0 ? void 0 : _c._id;
+                const companyId = (_c = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.company) === null || _c === void 0 ? void 0 : _c.id;
                 const trackfromdb = await this.trackService.findOne({
                     _id: trackId,
                     company: companyId,
@@ -48,7 +48,7 @@ let DeleteTrackSecurityGuard = class DeleteTrackSecurityGuard {
                 }
                 break;
             default:
-                const ownerId = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id;
+                const ownerId = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.id;
                 const trackfromdb1 = await this.trackService.findOne({
                     _id: trackId,
                     owner: ownerId,

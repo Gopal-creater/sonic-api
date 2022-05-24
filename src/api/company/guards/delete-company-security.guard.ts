@@ -19,7 +19,7 @@ export class DeleteCompanySecurityGuard implements CanActivate {
         break;
 
       case SystemRoles.PARTNER_ADMIN:
-        const partnerId = loggedInUser?.adminPartner?._id
+        const partnerId = loggedInUser?.adminPartner?.id
         const company = await this.companyService.findOne({_id:companyId,partner:partnerId})
         if(!company){
           throw new NotFoundException("Resource not found")

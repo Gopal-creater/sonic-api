@@ -25,7 +25,7 @@ export class UpdateTrackSecurityGuard implements CanActivate {
 
       case SystemRoles.PARTNER_ADMIN:
       case SystemRoles.PARTNER_USER:
-        const partnerId = loggedInUser?.partner?._id;
+        const partnerId = loggedInUser?.partner?.id;
         const track = await this.trackService.findOne({
           _id: trackId,
           partner: partnerId,
@@ -53,7 +53,7 @@ export class UpdateTrackSecurityGuard implements CanActivate {
 
       case SystemRoles.COMPANY_ADMIN:
       case SystemRoles.COMPANY_USER:
-        const companyId = loggedInUser?.company?._id;
+        const companyId = loggedInUser?.company?.id;
         const trackfromdb = await this.trackService.findOne({
           _id: trackId,
           company: companyId,
@@ -80,7 +80,7 @@ export class UpdateTrackSecurityGuard implements CanActivate {
         break;
 
       default:
-        const ownerId = loggedInUser?._id;
+        const ownerId = loggedInUser?.id;
         const trackfromdb1 = await this.trackService.findOne({
           _id: trackId,
           owner: ownerId,

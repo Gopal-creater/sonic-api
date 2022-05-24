@@ -30,7 +30,7 @@ let CreateCompanySecurityGuard = class CreateCompanySecurityGuard {
                 if (!createCompanyDto.partner) {
                     throw new common_1.BadRequestException('Please provide your partner id');
                 }
-                if (createCompanyDto.partner !== ((_a = loggedInUser.adminPartner) === null || _a === void 0 ? void 0 : _a._id)) {
+                if (createCompanyDto.partner !== ((_a = loggedInUser.adminPartner) === null || _a === void 0 ? void 0 : _a.id)) {
                     throw new common_2.ForbiddenException('You dont have permission to do this action, resource mismatch');
                 }
                 break;

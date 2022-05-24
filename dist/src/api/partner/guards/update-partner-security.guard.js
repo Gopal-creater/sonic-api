@@ -27,7 +27,7 @@ let UpdatePartnerSecurityGuard = class UpdatePartnerSecurityGuard {
             case Enums_1.SystemRoles.ADMIN:
                 break;
             case Enums_1.SystemRoles.PARTNER_ADMIN:
-                if (partnerId !== ((_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _b === void 0 ? void 0 : _b._id)) {
+                if (partnerId !== ((_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _b === void 0 ? void 0 : _b.id)) {
                     throw new common_2.ForbiddenException("You dont have permission to do this action, resource mismatch");
                 }
                 (_c = request === null || request === void 0 ? void 0 : request.body) === null || _c === void 0 ? true : delete _c.owner;

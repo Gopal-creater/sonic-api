@@ -153,4 +153,6 @@ export class UserDB extends Document {
 
 export const UserSchema = SchemaFactory.createForClass(UserDB);
 
+UserSchema.set('toObject', { virtuals: true });
+UserSchema.set('toJSON', { virtuals: true });
 export const RawUserModel = model<UserDB>('User',UserSchema)

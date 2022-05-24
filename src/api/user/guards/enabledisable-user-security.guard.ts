@@ -35,7 +35,7 @@ export class EnableDisableUserSecurityGuard implements CanActivate {
         break;
 
       case SystemRoles.PARTNER_ADMIN:
-        const partnerId = loggedInUser?.adminPartner?._id
+        const partnerId = loggedInUser?.adminPartner?.id
         const userFromDb = await this.userService.getUserProfile(userId)
         if(!userFromDb){
           throw new NotFoundException('User not found')
@@ -44,7 +44,7 @@ export class EnableDisableUserSecurityGuard implements CanActivate {
           throw new UnprocessableEntityException('User can not be modified')
         }
         if(userFromDb.userRole==SystemRoles.PARTNER_USER){
-            if(userFromDb?.partner?._id!==partnerId){
+            if(userFromDb?.partner?.id!==partnerId){
               throw new NotFoundException('User not found');
             }
         }
@@ -61,7 +61,7 @@ export class EnableDisableUserSecurityGuard implements CanActivate {
         break;
 
       case SystemRoles.COMPANY_ADMIN:
-        const companyId = loggedInUser?.adminCompany?._id
+        const companyId = loggedInUser?.adminCompany?.id
         const userFromDatabase = await this.userService.findOne({
           _id:userId,
           'company':companyId

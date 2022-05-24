@@ -21,7 +21,7 @@ export class UpdateCompanySecurityGuard implements CanActivate {
         break;
 
       case SystemRoles.PARTNER_ADMIN:
-        const partnerId = loggedInUser?.adminPartner?._id
+        const partnerId = loggedInUser?.adminPartner?.id
         const company = await this.companyService.findOne({_id:companyId,partner:partnerId})
         if(!company){
           throw new ForbiddenException("Resource mismatch")
@@ -32,7 +32,7 @@ export class UpdateCompanySecurityGuard implements CanActivate {
         break;
 
       case SystemRoles.COMPANY_ADMIN:
-        if(companyId!==loggedInUser?.adminCompany?._id){
+        if(companyId!==loggedInUser?.adminCompany?.id){
           throw new ForbiddenException("Resource mismatch")
         }
         //Remove data that can not be modified by this user role

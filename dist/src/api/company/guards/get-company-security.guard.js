@@ -28,12 +28,12 @@ let GetCompanySecurityGuard = class GetCompanySecurityGuard {
                 break;
             case Enums_1.SystemRoles.COMPANY_ADMIN:
             case Enums_1.SystemRoles.COMPANY_USER:
-                if (companyId !== ((_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.company) === null || _b === void 0 ? void 0 : _b._id)) {
+                if (companyId !== ((_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.company) === null || _b === void 0 ? void 0 : _b.id)) {
                     throw new common_2.ForbiddenException('Resource mismatch');
                 }
                 break;
             case Enums_1.SystemRoles.PARTNER_ADMIN:
-                const partnerId = (_c = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _c === void 0 ? void 0 : _c._id;
+                const partnerId = (_c = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _c === void 0 ? void 0 : _c.id;
                 const company = await this.companyService.findOne({
                     _id: companyId,
                     partner: partnerId,

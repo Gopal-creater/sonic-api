@@ -48,7 +48,7 @@ let UpdateUserSecurityGuard = class UpdateUserSecurityGuard {
                 request.body = updateUserDto;
                 break;
             case Enums_1.SystemRoles.COMPANY_ADMIN:
-                const companyId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _b === void 0 ? void 0 : _b._id;
+                const companyId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _b === void 0 ? void 0 : _b.id;
                 delete updateUserDto.userRole;
                 delete updateUserDto.partner;
                 delete updateUserDto.password;
