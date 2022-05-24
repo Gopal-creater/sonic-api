@@ -20,7 +20,7 @@ let MailService = class MailService {
         return this.mailerService.sendMail({
             to: user.email,
             subject: 'Welcome to App',
-            template: './invitation',
+            template: '/invitation.hbs',
             context: {
                 name: user.name,
             },

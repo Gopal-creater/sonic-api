@@ -17,7 +17,7 @@ import { appConfig } from '../../../config';
 import config1 from '../../../config/app.config';
 import { CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, FilterQuery } from 'mongoose';
+import { Model, FilterQuery, UpdateQuery } from 'mongoose';
 import axios from 'axios';
 import * as makeDir from 'make-dir';
 import { MongoosePaginateSonicKeyDto } from '../dtos/mongoosepaginate-sonickey.dto';
@@ -230,6 +230,26 @@ export class SonickeyService {
           ...sort,
         },
       },
+      {
+        $lookup: {
+          //populate sonickey from its relational table
+          from: 'Company',
+          localField: 'company',
+          foreignField: '_id',
+          as: 'company',
+        },
+      },
+      { $addFields: { company: { $first: '$company' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'Partner',
+          localField: 'partner',
+          foreignField: '_id',
+          as: 'partner',
+        },
+      },
+      { $addFields: { partner: { $first: '$partner' } } },
       {
         $lookup: {
           //populate radioStation from its relational table
@@ -546,8 +566,29 @@ export class SonickeyService {
     return this.sonicKeyModel.findOne({ queueJobId: queueJobId }).lean();
   }
 
+  findById(id: string) {
+    return this.sonicKeyModel.findById(id);
+  }
+
+  update(
+    id: string,
+    updateSonicKeyDto: UpdateQuery<SonicKey>
+  ) {
+    return this.sonicKeyModel.findByIdAndUpdate(
+      id,
+      updateSonicKeyDto,
+      {
+        new: true,
+      },
+    );
+  }
+
   findOne(filter: FilterQuery<SonicKey>) {
     return this.sonicKeyModel.findOne(filter).lean();
+  }
+
+  async removeById(id: string) {
+    return this.sonicKeyModel.findByIdAndRemove(id);
   }
 
   async findBySonicKeyOrFail(sonicKey: string) {

@@ -56,12 +56,19 @@ export class SonicKey extends Document {
 
   @ApiProperty()
   @Prop({
-    required: false,
     type: MogSchema.Types.ObjectId,
     ref: 'Company',
     autopopulate: { maxDepth: 2 },
   })
   company: string;
+
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Partner',
+    autopopulate: { maxDepth: 2 },
+  })
+  partner: string;
 
   @ApiProperty()
   @Prop({ type: MogSchema.Types.ObjectId, ref: JobSchemaName })
@@ -257,6 +264,22 @@ export class SonicKey extends Document {
   @ApiProperty()
   @Prop()
   queueJobId: string; //Just to track the sonickeys encoded using queueJob
+
+  @ApiProperty()
+  @Prop({
+    type: String,
+    ref: 'User',
+    autopopulate: { maxDepth: 2 },
+  })
+  createdBy: string;
+
+  @ApiProperty()
+  @Prop({
+    type: String,
+    ref: 'User',
+    autopopulate: { maxDepth: 2 },
+  })
+  updatedBy: string;
 }
 
 export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);
@@ -265,9 +288,3 @@ SonicKeySchema.pre('save', function(next) {
   this._id = this.sonicKey;
   next();
 });
-
-// SonicKeySchema.pre('insertMany', function (next) {
-//   this.map((doc) =>
-//    console.log(doc)
-//   );
-// });

@@ -54,7 +54,6 @@ const detection_schema_1 = require("../../detection/schemas/detection.schema");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
 const user_db_schema_1 = require("../../user/schemas/user.db.schema");
 const mongoose_utils_1 = require("../../../shared/utils/mongoose.utils");
-const _ = require("lodash");
 const job_license_validation_guard_1 = require("../../licensekey/guards/job-license-validation.guard");
 const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 let SonickeyController = class SonickeyController {
@@ -64,7 +63,7 @@ let SonickeyController = class SonickeyController {
         this.fileHandlerService = fileHandlerService;
         this.detectionService = detectionService;
     }
-    async getAll(parsedQueryDto) {
+    async getAll(parsedQueryDto, loggedInUser) {
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
     async encodeToSonicFromPath(company, client, owner, license, encodeFromQueueDto) {
@@ -106,33 +105,11 @@ let SonickeyController = class SonickeyController {
     generateUniqueSonicKey() {
         return this.sonicKeyService.generateUniqueSonicKey();
     }
-    async fileDownloadTest() {
-        return this.sonicKeyService.testDownloadFile();
-    }
     async createForJob(createSonicKeyDto, owner, req) {
         createSonicKeyDto.owner = owner;
         return this.sonicKeyService.createFromJob(createSonicKeyDto);
     }
     async listSonickeys(parsedQueryDto) {
-        return this.sonicKeyService.getAll(parsedQueryDto);
-    }
-    async getOwnersKeys(ownerId, user, parsedQueryDto) {
-        var includeCompanies = parsedQueryDto.filter['includeCompanies'];
-        delete parsedQueryDto.filter['includeCompanies'];
-        if (includeCompanies == false) {
-            parsedQueryDto.relationalFilter = _.merge({}, parsedQueryDto.relationalFilter, {
-                $or: [{ 'owner._id': user._id }],
-            });
-        }
-        else {
-            const userCompaniesIds = user.companies.map(com => mongoose_utils_1.toObjectId(com._id));
-            parsedQueryDto.relationalFilter = _.merge({}, parsedQueryDto.relationalFilter, {
-                $or: [
-                    { 'owner._id': user._id },
-                    { 'owner.companies': { $in: userCompaniesIds } },
-                ],
-            });
-        }
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
     async getKeysByJob(jobId, parsedQueryDto) {
@@ -146,7 +123,11 @@ let SonickeyController = class SonickeyController {
         return this.sonicKeyService.getEstimateCount();
     }
     async getOne(sonickey) {
-        return this.sonicKeyService.findBySonicKeyOrFail(sonickey);
+        const key = await this.sonicKeyService.findOne({ sonickey: sonickey });
+        if (!key) {
+            return new common_1.NotFoundException();
+        }
+        return key;
     }
     encode(sonicKeyDto, file, owner, req) {
         var _a;
@@ -439,25 +420,46 @@ let SonickeyController = class SonickeyController {
             }
         });
     }
+    async update(sonickey, loggedInUser, updateSonicKeyDto) {
+        const key = await this.sonicKeyService.findOne({ sonicKey: sonickey });
+        if (!key) {
+            return new common_1.NotFoundException();
+        }
+        return this.sonicKeyService.update(key._id, Object.assign(Object.assign({}, updateSonicKeyDto), { updatedBy: loggedInUser.sub }));
+    }
 };
 __decorate([
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+        additionalHtmlDescription: `<div>
+      To Get sonickeys for specific company ?company=companyId <br/>
+      To Get sonickeys for specific partner ?partner=partnerId <br/>
+      To Get sonickeys for specific user ?owner=ownerId
+    <div>`,
+    }),
+    swagger_1.ApiQuery({
+        name: 'channel',
+        enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'],
+        required: false,
+    }),
     common_1.Get('/'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
-    swagger_1.ApiOperation({ summary: 'Get All Sonic Keys' }),
+    swagger_1.ApiOperation({ summary: 'List Sonic Keys' }),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(1, decorators_1.User()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto,
+        user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getAll", null);
 __decorate([
     common_1.Post('/encode-bulk/companies/:companyId/clients/:clientId'),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, job_license_validation_guard_1.BulkEncodeWithQueueLicenseValidationGuard),
     swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiOperation({ summary: 'API for companies to import their media to sonic on behalf of their user' }),
+    swagger_1.ApiOperation({
+        summary: 'API for companies to import their media to sonic on behalf of their user',
+    }),
     openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Param('companyId')),
     __param(1, common_1.Param('clientId')),
@@ -489,14 +491,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SonickeyController.prototype, "generateUniqueSonicKey", null);
 __decorate([
-    common_1.Get('/file-download-test'),
-    swagger_1.ApiOperation({ summary: 'Generate unique sonic key' }),
-    openapi.ApiResponse({ status: 200, type: String }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], SonickeyController.prototype, "fileDownloadTest", null);
-__decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
     common_1.Post('/create-from-job'),
     swagger_1.ApiBearerAuth(),
@@ -522,25 +516,6 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "listSonickeys", null);
-__decorate([
-    common_1.Get('/owners/:ownerId'),
-    swagger_1.ApiQuery({ name: 'includeCompanies', type: Boolean, required: false }),
-    swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({
-        summary: 'Get All Sonic Keys of particular user or its companies',
-    }),
-    openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
-    __param(0, common_1.Param('ownerId')),
-    __param(1, decorators_1.User()),
-    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
-        parsedquery_dto_1.ParsedQueryDto]),
-    __metadata("design:returntype", Promise)
-], SonickeyController.prototype, "getOwnersKeys", null);
 __decorate([
     common_1.Get('/jobs/:jobId'),
     common_1.UseGuards(guards_1.JwtAuthGuard),
@@ -586,7 +561,7 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get Single SonicKey' }),
-    openapi.ApiResponse({ status: 200, type: require("../schemas/sonickey.schema").SonicKey }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('sonickey')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -834,6 +809,23 @@ __decorate([
     __metadata("design:paramtypes", [download_dto_1.DownloadDto, String, Object]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "downloadFile", null);
+__decorate([
+    swagger_1.ApiOperation({
+        summary: 'Update sonickey by sonickey id',
+    }),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Put(':sonickey'),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('sonickey')),
+    __param(1, decorators_1.User()),
+    __param(2, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
+        update_sonickey_dto_1.UpdateSonicKeyDto]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "update", null);
 SonickeyController = __decorate([
     swagger_1.ApiTags('SonicKeys Controller'),
     common_1.Controller('sonic-keys'),

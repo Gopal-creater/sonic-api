@@ -4,7 +4,11 @@ import {
   UpdateSonicKeyFingerPrintMetaDataDto,
 } from '../dtos/update-sonickey.dto';
 import { DecodeDto } from '../dtos/decode.dto';
-import { EncodeDto, EncodeFromQueueDto,EncodeFromUrlDto } from '../dtos/encode.dto';
+import {
+  EncodeDto,
+  EncodeFromQueueDto,
+  EncodeFromUrlDto,
+} from '../dtos/encode.dto';
 import { SonicKeyDto } from '../dtos/sonicKey.dto';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { JsonParsePipe } from '../../../shared/pipes/jsonparse.pipe';
@@ -48,7 +52,7 @@ import {
   ApiResponse,
   ApiQuery,
   ApiParam,
-  ApiSecurity
+  ApiSecurity,
 } from '@nestjs/swagger';
 import { interval, Observable } from 'rxjs';
 import * as uniqid from 'uniqid';
@@ -84,12 +88,6 @@ import * as _ from 'lodash';
 import { BulkEncodeWithQueueLicenseValidationGuard } from 'src/api/licensekey/guards/job-license-validation.guard';
 import { ApiKeyAuthGuard } from 'src/api/auth/guards/apikey-auth.guard';
 
-/**
- * Prabin:
- * Our DynamoDb table has a sonickey as a hash key. So we can perform all CURD using sonickey.
- * To get all owner's sonickeys we have to create a global secondary index table.
- */
-
 @ApiTags('SonicKeys Controller')
 @Controller('sonic-keys')
 export class SonickeyController {
@@ -100,43 +98,36 @@ export class SonickeyController {
     private readonly detectionService: DetectionService,
   ) {}
 
-  // @Get('/update-channel')
-  // async updateChannel() {
-  //  await  this.sonicKeyService.sonicKeyModel.updateMany(
-  //     { owner: 'guest' },
-  //     { channel: ChannelEnums.MOBILEAPP },
-  //   );
-
-  //   await  this.sonicKeyService.sonicKeyModel.updateMany(
-  //     { job: {$exists:true} },
-  //     { channel: ChannelEnums.PCAPP},
-  //   );
-
-  //   await  this.sonicKeyService.sonicKeyModel.updateMany(
-  //     { channel: {$exists:false} },
-  //     { channel: ChannelEnums.PORTAL },
-  //   );
-
-  //   await  this.sonicKeyService.sonicKeyModel.updateMany(
-  //     { channel: ChannelEnums.PORTAL },
-  //     { downloadable: true },
-  //   );
-  // }
-
-  @AnyApiQueryTemplate()
+  @AnyApiQueryTemplate({
+    additionalHtmlDescription: `<div>
+      To Get sonickeys for specific company ?company=companyId <br/>
+      To Get sonickeys for specific partner ?partner=partnerId <br/>
+      To Get sonickeys for specific user ?owner=ownerId
+    <div>`,
+  })
+  @ApiQuery({
+    name: 'channel',
+    enum: [...Object.values(ChannelEnums), 'ALL'],
+    required: false,
+  })
   @Get('/')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiQuery({ name: 'includeGroupData', type: Boolean, required: false })
-  @ApiOperation({ summary: 'Get All Sonic Keys' })
-  async getAll(@Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto) {
+  @ApiOperation({ summary: 'List Sonic Keys' })
+  async getAll(
+    @Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto,
+    @User() loggedInUser: UserDB,
+  ) {
     return this.sonicKeyService.getAll(parsedQueryDto);
   }
 
   @Post('/encode-bulk/companies/:companyId/clients/:clientId')
-  @UseGuards(ApiKeyAuthGuard,BulkEncodeWithQueueLicenseValidationGuard)
+  @UseGuards(ApiKeyAuthGuard, BulkEncodeWithQueueLicenseValidationGuard)
   @ApiSecurity('x-api-key')
-  @ApiOperation({ summary: 'API for companies to import their media to sonic on behalf of their user' })
+  @ApiOperation({
+    summary:
+      'API for companies to import their media to sonic on behalf of their user',
+  })
   async encodeToSonicFromPath(
     @Param('companyId') company: string,
     @Param('clientId') client: string,
@@ -144,13 +135,18 @@ export class SonickeyController {
     @ValidatedLicense('key') license: string,
     @Body() encodeFromQueueDto: EncodeFromQueueDto,
   ) {
-    if(client!==owner){
-      throw new BadRequestException("client not matched with apikey's owner")
+    if (client !== owner) {
+      throw new BadRequestException("client not matched with apikey's owner");
     }
     owner = owner;
     company = company;
     license = license;
-    return this.sonicKeyService.encodeBulkWithQueue(owner,company,license,encodeFromQueueDto);
+    return this.sonicKeyService.encodeBulkWithQueue(
+      owner,
+      company,
+      license,
+      encodeFromQueueDto,
+    );
   }
 
   @Get('/encode-bulk/companies/:companyId/get-job-status/:jobId')
@@ -193,12 +189,6 @@ export class SonickeyController {
     return this.sonicKeyService.generateUniqueSonicKey();
   }
 
-  @Get('/file-download-test')
-  @ApiOperation({ summary: 'Generate unique sonic key' })
-  async fileDownloadTest() {
-    return this.sonicKeyService.testDownloadFile();
-  }
-
   @UseGuards(JwtAuthGuard, LicenseValidationGuard)
   @Post('/create-from-job')
   @ApiBearerAuth()
@@ -221,46 +211,6 @@ export class SonickeyController {
   async listSonickeys(
     @Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto,
   ) {
-    return this.sonicKeyService.getAll(parsedQueryDto);
-  }
-
-  @Get('/owners/:ownerId')
-  @ApiQuery({ name: 'includeCompanies', type: Boolean, required: false })
-  @ApiQuery({ name: 'limit', type: Number, required: false })
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @AnyApiQueryTemplate()
-  @ApiOperation({
-    summary: 'Get All Sonic Keys of particular user or its companies',
-  })
-  async getOwnersKeys(
-    @Param('ownerId') ownerId: string,
-    @User() user: UserDB,
-    @Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto,
-  ) {
-    var includeCompanies = parsedQueryDto.filter['includeCompanies'] as boolean;
-    delete parsedQueryDto.filter['includeCompanies'];
-    if (includeCompanies == false) {
-      parsedQueryDto.relationalFilter = _.merge(
-        {},
-        parsedQueryDto.relationalFilter,
-        {
-          $or: [{ 'owner._id': user._id }],
-        },
-      );
-    } else {
-      const userCompaniesIds = user.companies.map(com => toObjectId(com._id));
-      parsedQueryDto.relationalFilter = _.merge(
-        {},
-        parsedQueryDto.relationalFilter,
-        {
-          $or: [
-            { 'owner._id': user._id },
-            { 'owner.companies': { $in: userCompaniesIds } },
-          ],
-        },
-      );
-    }
     return this.sonicKeyService.getAll(parsedQueryDto);
   }
 
@@ -304,7 +254,11 @@ export class SonickeyController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Single SonicKey' })
   async getOne(@Param('sonickey') sonickey: string) {
-    return this.sonicKeyService.findBySonicKeyOrFail(sonickey);
+    const key = await  this.sonicKeyService.findOne({sonickey:sonickey});
+    if(!key){
+      return new NotFoundException()
+    }
+    return key
   }
 
   @UseInterceptors(
@@ -859,6 +813,28 @@ export class SonickeyController {
         console.log(err);
         return response.status(400).json({ message: 'Error sending file.' });
       }
+    });
+  }
+
+  @ApiOperation({
+    summary: 'Update sonickey by sonickey id',
+  })
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
+  @Put(':sonickey')
+  async update(
+    @Param('sonickey') sonickey: string,
+    @User() loggedInUser: UserDB,
+    @Body() updateSonicKeyDto: UpdateSonicKeyDto,
+  ) {
+    const key = await this.sonicKeyService.findOne({sonicKey:sonickey});
+    if(!key){
+      return new NotFoundException()
+    }
+    return this.sonicKeyService.update(key._id, {
+      ...updateSonicKeyDto,
+      updatedBy: loggedInUser.sub,
     });
   }
 }

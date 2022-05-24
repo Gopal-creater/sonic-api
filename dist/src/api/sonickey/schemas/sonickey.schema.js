@@ -78,13 +78,21 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        required: false,
         type: mongoose_2.Schema.Types.ObjectId,
         ref: 'Company',
         autopopulate: { maxDepth: 2 },
     }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "company", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'Partner',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", String)
+], SonicKey.prototype, "partner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: job_schema_1.JobSchemaName }),
@@ -317,6 +325,24 @@ __decorate([
     mongoose_1.Prop(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "queueJobId", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: String,
+        ref: 'User',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", String)
+], SonicKey.prototype, "createdBy", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: String,
+        ref: 'User',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", String)
+], SonicKey.prototype, "updatedBy", void 0);
 SonicKey = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.SonicKeySchemaName })
 ], SonicKey);

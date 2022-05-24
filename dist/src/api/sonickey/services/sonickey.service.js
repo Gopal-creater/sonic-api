@@ -171,6 +171,24 @@ let SonickeyService = class SonickeyService {
             },
             {
                 $lookup: {
+                    from: 'Company',
+                    localField: 'company',
+                    foreignField: '_id',
+                    as: 'company',
+                },
+            },
+            { $addFields: { company: { $first: '$company' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'partner',
+                    foreignField: '_id',
+                    as: 'partner',
+                },
+            },
+            { $addFields: { partner: { $first: '$partner' } } },
+            {
+                $lookup: {
                     from: 'User',
                     localField: 'owner',
                     foreignField: '_id',
@@ -375,8 +393,19 @@ let SonickeyService = class SonickeyService {
     async findByQueueJobId(queueJobId) {
         return this.sonicKeyModel.findOne({ queueJobId: queueJobId }).lean();
     }
+    findById(id) {
+        return this.sonicKeyModel.findById(id);
+    }
+    update(id, updateSonicKeyDto) {
+        return this.sonicKeyModel.findByIdAndUpdate(id, updateSonicKeyDto, {
+            new: true,
+        });
+    }
     findOne(filter) {
         return this.sonicKeyModel.findOne(filter).lean();
+    }
+    async removeById(id) {
+        return this.sonicKeyModel.findByIdAndRemove(id);
     }
     async findBySonicKeyOrFail(sonicKey) {
         return this.findBySonicKey(sonicKey).then(data => {
