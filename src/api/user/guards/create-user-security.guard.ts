@@ -34,7 +34,8 @@ export class CreateUserSecurityGuard implements CanActivate {
             );
         }
         if (createUserDto.partner) {
-          if (createUserDto.partner !== partnerId) {
+          console.log("createUserDto.partner",createUserDto.partner)
+          if (createUserDto.partner !== String(partnerId)) {
             throw new ForbiddenException(
               'Resource mismatch, Provide your own partner id',
             );
@@ -58,7 +59,7 @@ export class CreateUserSecurityGuard implements CanActivate {
                 'Please provide your company id in the body for this user',
             );
         }
-        if (createUserDto.company !== companyId) {
+        if (createUserDto.company !== String(companyId)) {
           throw new ForbiddenException(
             'Resource mismatch, Provide your own company id',
           );

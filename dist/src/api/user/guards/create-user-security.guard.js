@@ -34,7 +34,8 @@ let CreateUserSecurityGuard = class CreateUserSecurityGuard {
                     throw new common_1.UnprocessableEntityException('Please provide at least one partner or company for this user');
                 }
                 if (createUserDto.partner) {
-                    if (createUserDto.partner !== partnerId) {
+                    console.log("createUserDto.partner", createUserDto.partner);
+                    if (createUserDto.partner !== String(partnerId)) {
                         throw new common_2.ForbiddenException('Resource mismatch, Provide your own partner id');
                     }
                     createUserDto.userRole = Enums_1.SystemRoles.PARTNER_USER;
@@ -54,7 +55,7 @@ let CreateUserSecurityGuard = class CreateUserSecurityGuard {
                 if (!createUserDto.company) {
                     throw new common_1.UnprocessableEntityException('Please provide your company id in the body for this user');
                 }
-                if (createUserDto.company !== companyId) {
+                if (createUserDto.company !== String(companyId)) {
                     throw new common_2.ForbiddenException('Resource mismatch, Provide your own company id');
                 }
                 createUserDto.userRole = Enums_1.SystemRoles.COMPANY_USER;
