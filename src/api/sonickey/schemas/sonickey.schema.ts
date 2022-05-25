@@ -280,6 +280,14 @@ export class SonicKey extends Document {
     autopopulate: { maxDepth: 2 },
   })
   updatedBy: string;
+
+  @ApiProperty()
+  @Prop({
+    type: String,
+    ref: 'Track',
+    autopopulate: { maxDepth: 2 },
+  })
+  track: string;
 }
 
 export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);

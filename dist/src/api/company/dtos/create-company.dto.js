@@ -17,7 +17,7 @@ const constant_1 = require("../constant");
 const company_schema_1 = require("../schemas/company.schema");
 class CreateCompanyDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, description: { required: true, type: () => String }, companyType: { required: true, type: () => String }, companyUrnOrId: { required: true, type: () => String }, email: { required: true, type: () => String }, contactNo: { required: true, type: () => String }, address: { required: true, type: () => require("../schemas/company.schema").Address }, owner: { required: true, type: () => String }, partner: { required: true, type: () => String } };
+        return { name: { required: true, type: () => String }, description: { required: true, type: () => String }, companyType: { required: true, type: () => String }, companyUrnOrId: { required: true, type: () => String }, email: { required: true, type: () => String }, enabled: { required: true, type: () => Boolean }, contactNo: { required: true, type: () => String }, address: { required: true, type: () => require("../schemas/company.schema").Address }, owner: { required: true, type: () => String }, partner: { required: true, type: () => String } };
     }
 }
 __decorate([
@@ -44,6 +44,10 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "email", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Boolean)
+], CreateCompanyDto.prototype, "enabled", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)

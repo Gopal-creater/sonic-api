@@ -76,7 +76,6 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        required: true,
         select: false,
     }),
     __metadata("design:type", String)

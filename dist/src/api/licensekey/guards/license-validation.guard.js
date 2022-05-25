@@ -21,6 +21,7 @@ const common_1 = require("@nestjs/common");
 const licensekey_schema_1 = require("../schemas/licensekey.schema");
 const licensekey_service_1 = require("../services/licensekey.service");
 const common_2 = require("@nestjs/common");
+const Enums_1 = require("../../../constants/Enums");
 let LicenseValidationGuard = class LicenseValidationGuard {
     constructor(licensekeyService) {
         this.licensekeyService = licensekeyService;
@@ -29,9 +30,10 @@ let LicenseValidationGuard = class LicenseValidationGuard {
         var e_1, _a;
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        const licenses = await this.licensekeyService.findValidLicesesForUser(user.sub);
+        var licenses;
+        licenses = await this.licensekeyService.findValidLicesesForUser(user.sub);
         if (!licenses || licenses.length <= 0) {
-            throw new common_1.UnprocessableEntityException('No License keys present. Please add a license key to subscribe for encode.');
+            throw new common_1.UnprocessableEntityException('No active license, please get atleast one to perform this action');
         }
         var currentValidLicense;
         var valid;

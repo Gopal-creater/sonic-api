@@ -25,6 +25,7 @@ TrackModule = __decorate([
         ],
         controllers: [track_controller_1.TrackController],
         providers: [track_service_1.TrackService],
+        exports: [track_service_1.TrackService],
     })
 ], TrackModule);
 exports.TrackModule = TrackModule;

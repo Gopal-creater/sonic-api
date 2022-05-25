@@ -10,6 +10,7 @@ import { LicensekeyService } from '../services/licensekey.service';
 import { CognitoUserSession } from '../../user/schemas/user.aws.schema';
 import { HttpException } from '@nestjs/common';
 import { UserDB } from '../../user/schemas/user.db.schema';
+import { SystemRoles } from 'src/constants/Enums';
 
 /**
  * This Guard is responsible for checking valid license from user and add the validLicense field to the request object
@@ -23,10 +24,11 @@ export class LicenseValidationGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const user = request.user as UserDB;
-    const licenses = await this.licensekeyService.findValidLicesesForUser(user.sub)
+    var licenses:LicenseKey[]
+    licenses = await this.licensekeyService.findValidLicesesForUser(user.sub)
     if (!licenses || licenses.length <= 0) {
       throw new UnprocessableEntityException(
-        'No License keys present. Please add a license key to subscribe for encode.',
+        'No active license, please get atleast one to perform this action',
       );
     }
     var currentValidLicense: LicenseKey;

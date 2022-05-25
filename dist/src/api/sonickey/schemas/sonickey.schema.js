@@ -343,6 +343,15 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], SonicKey.prototype, "updatedBy", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: String,
+        ref: 'Track',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", String)
+], SonicKey.prototype, "track", void 0);
 SonicKey = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.SonicKeySchemaName })
 ], SonicKey);

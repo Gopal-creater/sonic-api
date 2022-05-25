@@ -28,4 +28,7 @@ export class CreatePartnerDto {
 
   @ApiProperty()
   owner: string;
+
+  @ApiProperty()
+  enabled: boolean;
 }

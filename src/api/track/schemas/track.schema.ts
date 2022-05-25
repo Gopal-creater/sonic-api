@@ -58,7 +58,6 @@ export class Track extends Document {
 
   @ApiProperty()
   @Prop({
-    required: true,
     select: false,
   })
   license: string;

@@ -14,5 +14,6 @@ import { S3FileUploadModule } from '../s3fileupload/s3fileupload.module';
   ],
   controllers: [TrackController],
   providers: [TrackService],
+  exports: [TrackService],
 })
 export class TrackModule {}

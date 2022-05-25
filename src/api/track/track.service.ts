@@ -11,7 +11,8 @@ import { S3FileUploadService } from '../s3fileupload/s3fileupload.service';
 import { MongoosePaginateTrackDto } from './dto/mongoosepaginate-track.dto';
 import { customAlphabet,nanoid} from 'nanoid'
 import { UserDB } from '../user/schemas/user.db.schema';
-import { SystemRoles } from 'src/constants/Enums';
+import { SystemRoles, S3ACL, ChannelEnums } from 'src/constants/Enums';
+import { UploadTrackDto } from './dto/create-track.dto';
 
 @Injectable()
 export class TrackService {
@@ -27,6 +28,35 @@ export class TrackService {
     return this.trackModel.create(doc).then(createdTrack => {
       return createdTrack.save();
     });
+  }
+
+  async uploadAndCreate(file:IUploadedFile,doc: AnyObject | AnyKeys<Track>,s3destinationFolder?:string,acl?:S3ACL) {
+    const {channel, artist, title } = doc;
+    const s3FileUploadResponse = await this.s3FileUploadService.uploadFromPath(
+      file.path,
+      `${s3destinationFolder}/originalFiles`,
+    );
+    const extractFileMeta = await this.exractMusicMetaFromFile(
+      file,
+    );
+    const trackId = this.generateTrackId();
+    const createdTrack = await this.create({
+      _id: trackId,
+      ...doc,
+      channel: channel || ChannelEnums.PORTAL,
+      mimeType: extractFileMeta.mimeType,
+      duration: extractFileMeta.duration,
+      artist: artist,
+      title: title,
+      fileSize: extractFileMeta.size,
+      localFilePath: file.path,
+      s3OriginalFileMeta: s3FileUploadResponse,
+      encoding: extractFileMeta.encoding,
+      samplingFrequency: extractFileMeta.samplingFrequency,
+      originalFileName: file.originalname,
+      iExtractedMetaData: extractFileMeta
+    });
+    return createdTrack
   }
 
    generateTrackId(){

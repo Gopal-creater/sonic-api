@@ -57,11 +57,11 @@ export class TrackController {
           var filePath: string;
           if (loggedInUser.partner) {
             filePath = await makeDir(
-              `${appConfig.MULTER_DEST}/partners/${loggedInUser.partner?._id}`,
+              `${appConfig.MULTER_DEST}/partners/${loggedInUser.partner?.id}`,
             );
           } else if (loggedInUser.company) {
             filePath = await makeDir(
-              `${appConfig.MULTER_DEST}/companies/${loggedInUser.company?._id}`,
+              `${appConfig.MULTER_DEST}/companies/${loggedInUser.company?.id}`,
             );
           } else {
             filePath = await makeDir(
@@ -94,38 +94,17 @@ export class TrackController {
     @UploadedFile() file: IUploadedFile,
     @User() loggedInUser: UserDB,
   ) {
-    const { mediaFile, channel, artist, title } = uploadTrackDto;
     const {
       destinationFolder,
       resourceOwnerObj,
     } = identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
-    const s3FileUploadResponse = await this.trackService.s3FileUploadService.uploadFromPath(
-      file.path,
-      `${destinationFolder}/originalFiles`,
-    );
-    const extractFileMeta = await this.trackService.exractMusicMetaFromFile(
-      file,
-    );
-    const trackId = this.trackService.generateTrackId();
-    const createdTrack = await this.trackService.create({
-      _id: trackId,
+    const doc = {
+      ...uploadTrackDto,
       ...resourceOwnerObj,
-      channel: channel || ChannelEnums.PORTAL,
-      mimeType: extractFileMeta.mimeType,
-      duration: extractFileMeta.duration,
-      artist: artist,
-      title: title,
-      fileSize: extractFileMeta.size,
-      localFilePath: file.path,
-      s3OriginalFileMeta: s3FileUploadResponse,
       fileType: 'Audio',
-      encoding: extractFileMeta.encoding,
-      samplingFrequency: extractFileMeta.samplingFrequency,
-      originalFileName: file.originalname,
-      iExtractedMetaData: extractFileMeta,
       createdBy: loggedInUser?.sub,
-    });
-    return createdTrack;
+    }
+    return this.trackService.uploadAndCreate(file,doc,destinationFolder)
   }
 
   @ApiOperation({ summary: 'List Tracks' })

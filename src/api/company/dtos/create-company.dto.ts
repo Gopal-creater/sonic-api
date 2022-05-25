@@ -24,6 +24,9 @@ export class CreateCompanyDto {
   email: string;
 
   @ApiProperty()
+  enabled: boolean;
+
+  @ApiProperty()
   contactNo: string;
 
   @ApiProperty()

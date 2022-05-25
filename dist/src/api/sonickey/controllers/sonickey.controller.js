@@ -47,6 +47,7 @@ const Enums_1 = require("../../../constants/Enums");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 const detection_service_1 = require("../../detection/detection.service");
 const FileFromUrl_interceptor_1 = require("../../../shared/interceptors/FileFromUrl.interceptor");
+const FileFromTrack_interceptor_1 = require("../../../shared/interceptors/FileFromTrack.interceptor");
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
@@ -56,6 +57,11 @@ const user_db_schema_1 = require("../../user/schemas/user.db.schema");
 const mongoose_utils_1 = require("../../../shared/utils/mongoose.utils");
 const job_license_validation_guard_1 = require("../../licensekey/guards/job-license-validation.guard");
 const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
+const utils_1 = require("../../../shared/utils");
+const track_schema_1 = require("../../track/schemas/track.schema");
+const encode_security_guard_1 = require("../guards/encode-security.guard");
+const update_sonickey_security_guard_1 = require("../guards/update-sonickey-security.guard");
+const delete_sonickey_security_guard_1 = require("../guards/delete-sonickey-security.guard");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
@@ -129,7 +135,7 @@ let SonickeyController = class SonickeyController {
         }
         return key;
     }
-    encode(sonicKeyDto, file, owner, req) {
+    async encode(sonicKeyDto, file, owner, req) {
         var _a;
         const licenseId = (_a = req === null || req === void 0 ? void 0 : req.validLicense) === null || _a === void 0 ? void 0 : _a.key;
         var s3UploadResult;
@@ -164,37 +170,52 @@ let SonickeyController = class SonickeyController {
             this.fileHandlerService.deleteFileAtPath(file.path);
         });
     }
-    encodeFromUrl(sonicKeyDto, file, owner, licenseId) {
-        var s3UploadResult;
-        var s3OriginalFileUploadResult;
-        var sonicKey;
-        var fingerPrintStatus;
-        var fingerPrintMetaData;
-        var fingerPrintErrorData;
-        return this.sonicKeyService
-            .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
-            .then(data => {
-            s3UploadResult = data.s3UploadResult;
-            s3OriginalFileUploadResult = data.s3OriginalFileUploadResult;
-            sonicKey = data.sonicKey;
-            fingerPrintMetaData = data.fingerPrintMetaData;
-            fingerPrintStatus = data.fingerPrintStatus;
-            fingerPrintErrorData = data.fingerPrintErrorData;
-            console.log('Increment Usages upon successfull encode');
-            return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
-        })
-            .then(async (result) => {
-            console.log('Going to save key in db.');
-            const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
-            const channel = Enums_1.ChannelEnums.PORTAL;
-            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, fingerPrintMetaData: fingerPrintMetaData, fingerPrintErrorData: fingerPrintErrorData, fingerPrintStatus: fingerPrintStatus, _id: sonicKey, license: licenseId });
-            return this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
-        })
-            .catch(err => {
-            throw new common_1.InternalServerErrorException(err);
-        })
-            .finally(() => {
-            this.fileHandlerService.deleteFileAtPath(file.path);
+    async encodeByFile(sonicKeyDto, file, loggedInUser, owner, licenseId) {
+        const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        const encodingStrength = sonicKeyDto.encodingStrength;
+        const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
+        const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
+        return this.sonicKeyService.encodeSonicKeyFromFile({
+            file,
+            licenseId,
+            sonickeyDoc,
+            encodingStrength,
+            s3destinationFolder: destinationFolder
+        });
+    }
+    async encodeByTrack(sonicKeyDto, track, file, loggedInUser, licenseId) {
+        const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        sonicKeyDto.contentFileType = sonicKeyDto.contentFileType || track.mimeType;
+        sonicKeyDto.contentOwner = sonicKeyDto.contentOwner || track.artist;
+        sonicKeyDto.contentName = sonicKeyDto.contentName || track.title;
+        sonicKeyDto.contentDuration = sonicKeyDto.contentDuration || track.duration;
+        sonicKeyDto.contentSize = sonicKeyDto.contentSize || track.fileSize;
+        sonicKeyDto.contentType = sonicKeyDto.contentType || track.fileType;
+        sonicKeyDto.contentEncoding = sonicKeyDto.contentEncoding || track.encoding;
+        sonicKeyDto.contentSamplingFrequency = sonicKeyDto.contentSamplingFrequency || track.samplingFrequency;
+        sonicKeyDto.originalFileName = sonicKeyDto.originalFileName || track.originalFileName;
+        const encodingStrength = sonicKeyDto.encodingStrength;
+        const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, sonicKeyDto), resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
+        return this.sonicKeyService.encodeSonicKeyFromTrack({
+            trackId: track === null || track === void 0 ? void 0 : track.id,
+            file,
+            licenseId,
+            sonickeyDoc,
+            encodingStrength,
+            s3destinationFolder: destinationFolder
+        });
+    }
+    async encodeFromUrl(sonicKeyDto, file, loggedInUser, owner, licenseId) {
+        const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        const encodingStrength = sonicKeyDto.encodingStrength;
+        const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
+        const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
+        return this.sonicKeyService.encodeSonicKeyFromFile({
+            file,
+            licenseId,
+            sonickeyDoc,
+            encodingStrength,
+            s3destinationFolder: destinationFolder
         });
     }
     async decode(file) {
@@ -363,12 +384,12 @@ let SonickeyController = class SonickeyController {
             throw new common_1.BadRequestException(err);
         });
     }
-    async updateMeta(sonickey, updateSonicKeyDto, owner) {
-        const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate({ sonicKey: sonickey, owner: owner }, updateSonicKeyDto, { new: true });
-        if (!updatedSonickey) {
-            throw new common_1.NotFoundException('Given sonickey is either not present or doest not belongs to you');
+    async updateMeta(sonickey, updateSonicKeyDto, loggedInUser) {
+        const key = await this.sonicKeyService.findOne({ sonicKey: sonickey });
+        if (!key) {
+            return new common_1.NotFoundException();
         }
-        return updatedSonickey;
+        return this.sonicKeyService.update(key._id, Object.assign(Object.assign({}, updateSonicKeyDto), { updatedBy: loggedInUser.sub }));
     }
     async onFingerPrintSuccess(sonicKey, updateSonicKeyFingerPrintMetaDataDto) {
         const { fingerPrintMetaData } = updateSonicKeyFingerPrintMetaDataDto;
@@ -393,14 +414,11 @@ let SonickeyController = class SonickeyController {
         return updatedSonickey;
     }
     async delete(sonickey, owner) {
-        const deletedSonickey = await this.sonicKeyService.sonicKeyModel.deleteOne({
-            sonicKey: sonickey,
-            owner: owner,
-        });
-        if (!deletedSonickey) {
-            throw new common_1.NotFoundException('Given sonickey is either not present or doest not belongs to you');
+        const key = await this.sonicKeyService.findOne({ sonicKey: sonickey });
+        if (!key) {
+            return new common_1.NotFoundException();
         }
-        return deletedSonickey;
+        return this.sonicKeyService.sonicKeyModel.findByIdAndRemove(key._id);
     }
     async downloadFile(downloadDto, userId, response) {
         var _a;
@@ -420,13 +438,6 @@ let SonickeyController = class SonickeyController {
             }
         });
     }
-    async update(sonickey, loggedInUser, updateSonicKeyDto) {
-        const key = await this.sonicKeyService.findOne({ sonicKey: sonickey });
-        if (!key) {
-            return new common_1.NotFoundException();
-        }
-        return this.sonicKeyService.update(key._id, Object.assign(Object.assign({}, updateSonicKeyDto), { updatedBy: loggedInUser.sub }));
-    }
 };
 __decorate([
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
@@ -442,7 +453,8 @@ __decorate([
         required: false,
     }),
     common_1.Get('/'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'List Sonic Keys' }),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
@@ -600,26 +612,95 @@ __decorate([
     __param(3, common_1.Req()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [sonicKey_dto_1.SonicKeyDto, Object, String, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "encode", null);
+__decorate([
+    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
+        storage: multer_1.diskStorage({
+            destination: async (req, file, cb) => {
+                var _a, _b;
+                const loggedInUser = req['user'];
+                var filePath;
+                if (loggedInUser.partner) {
+                    filePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/partners/${(_a = loggedInUser.partner) === null || _a === void 0 ? void 0 : _a.id}`);
+                }
+                else if (loggedInUser.company) {
+                    filePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/companies/${(_b = loggedInUser.company) === null || _b === void 0 ? void 0 : _b.id}`);
+                }
+                else {
+                    filePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub}`);
+                }
+                cb(null, filePath);
+            },
+            filename: (req, file, cb) => {
+                let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+                const randomName = uniqid();
+                cb(null, `${randomName}-${orgName}`);
+            },
+        }),
+    }), common_1.ClassSerializerInterceptor),
+    swagger_1.ApiConsumes('multipart/form-data'),
+    swagger_1.ApiBody({
+        description: 'File To Encode',
+        type: encode_dto_1.EncodeFromFileDto,
+    }),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard, encode_security_guard_1.EncodeSecurityGuard),
+    common_1.Post('/encode-from-file'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Encode File And save to database & into track table' }),
+    openapi.ApiResponse({ status: 201, type: Object }),
+    __param(0, common_1.Body('data')),
+    __param(1, common_1.UploadedFile()),
+    __param(2, decorators_1.User()),
+    __param(3, decorators_1.User('sub')),
+    __param(4, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto, Object, user_db_schema_1.UserDB, String, String]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "encodeByFile", null);
+__decorate([
+    common_1.UseInterceptors(FileFromTrack_interceptor_1.FileFromTrackInterceptor('track')),
+    swagger_1.ApiBody({
+        description: 'File To Encode',
+        type: encode_dto_1.EncodeFromTrackDto,
+    }),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard, encode_security_guard_1.EncodeSecurityGuard),
+    common_1.Post('/encode-from-track'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Encode File And save to database & into track table' }),
+    openapi.ApiResponse({ status: 201, type: Object }),
+    __param(0, common_1.Body('data')),
+    __param(1, FileFromTrack_interceptor_1.CurrentTrack()),
+    __param(2, FileFromTrack_interceptor_1.UploadedFileFromTrack()),
+    __param(3, decorators_1.User()),
+    __param(4, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto,
+        track_schema_1.Track, Object, user_db_schema_1.UserDB, String]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "encodeByTrack", null);
 __decorate([
     common_1.UseInterceptors(FileFromUrl_interceptor_1.FileFromUrlInterceptor('mediaFile')),
     swagger_1.ApiBody({
         description: 'File To Encode',
         type: encode_dto_1.EncodeFromUrlDto,
     }),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, license_validation_guard_1.LicenseValidationGuard),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard, encode_security_guard_1.EncodeSecurityGuard),
     common_1.Post('/encode-from-url'),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Encode File From URL And save to database' }),
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body('data')),
     __param(1, FileFromUrl_interceptor_1.UploadedFileFromUrl()),
-    __param(2, decorators_1.User('sub')),
-    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __param(2, decorators_1.User()),
+    __param(3, decorators_1.User('sub')),
+    __param(4, validatedlicense_decorator_1.ValidatedLicense('key')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [sonicKey_dto_1.SonicKeyDto, Object, String, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto, Object, user_db_schema_1.UserDB, String, String]),
+    __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "encodeFromUrl", null);
 __decorate([
     common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
@@ -641,7 +722,8 @@ __decorate([
         description: 'File To Decode',
         type: decode_dto_1.DecodeDto,
     }),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     common_1.Post('/decode'),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
@@ -749,15 +831,17 @@ __decorate([
 ], SonickeyController.prototype, "decodeFromChannelV2", null);
 __decorate([
     common_1.Patch('/:sonickey'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, update_sonickey_security_guard_1.UpdateSonicKeySecurityGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update Sonic Keys meta data' }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('sonickey')),
     __param(1, common_1.Body()),
-    __param(2, decorators_1.User('sub')),
+    __param(2, decorators_1.User()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_sonickey_dto_1.UpdateSonicKeyDto, String]),
+    __metadata("design:paramtypes", [String, update_sonickey_dto_1.UpdateSonicKeyDto,
+        user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "updateMeta", null);
 __decorate([
@@ -786,7 +870,7 @@ __decorate([
 ], SonickeyController.prototype, "onFingerPrintFailed", null);
 __decorate([
     common_1.Delete('/:sonickey'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
+    common_1.UseGuards(guards_1.JwtAuthGuard, delete_sonickey_security_guard_1.DeleteSonicKeySecurityGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Delete Sonic Key data' }),
     openapi.ApiResponse({ status: 200, type: Object }),
@@ -809,23 +893,6 @@ __decorate([
     __metadata("design:paramtypes", [download_dto_1.DownloadDto, String, Object]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "downloadFile", null);
-__decorate([
-    swagger_1.ApiOperation({
-        summary: 'Update sonickey by sonickey id',
-    }),
-    decorators_1.RolesAllowed(),
-    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    common_1.Put(':sonickey'),
-    openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('sonickey')),
-    __param(1, decorators_1.User()),
-    __param(2, common_1.Body()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
-        update_sonickey_dto_1.UpdateSonicKeyDto]),
-    __metadata("design:returntype", Promise)
-], SonickeyController.prototype, "update", null);
 SonickeyController = __decorate([
     swagger_1.ApiTags('SonicKeys Controller'),
     common_1.Controller('sonic-keys'),

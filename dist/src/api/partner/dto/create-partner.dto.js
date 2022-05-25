@@ -17,7 +17,7 @@ const company_schema_1 = require("../../company/schemas/company.schema");
 const constant_1 = require("../constant");
 class CreatePartnerDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, description: { required: true, type: () => String }, partnerType: { required: true, type: () => String }, email: { required: true, type: () => String }, contactNo: { required: true, type: () => String }, address: { required: true, type: () => require("../../company/schemas/company.schema").Address }, owner: { required: true, type: () => String } };
+        return { name: { required: true, type: () => String }, description: { required: true, type: () => String }, partnerType: { required: true, type: () => String }, email: { required: true, type: () => String }, contactNo: { required: true, type: () => String }, address: { required: true, type: () => require("../../company/schemas/company.schema").Address }, owner: { required: true, type: () => String }, enabled: { required: true, type: () => Boolean } };
     }
 }
 __decorate([
@@ -52,5 +52,9 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreatePartnerDto.prototype, "owner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Boolean)
+], CreatePartnerDto.prototype, "enabled", void 0);
 exports.CreatePartnerDto = CreatePartnerDto;
 //# sourceMappingURL=create-partner.dto.js.map

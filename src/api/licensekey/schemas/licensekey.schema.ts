@@ -140,10 +140,6 @@ export class LicenseKey extends Document {
   updatedBy?: string;
 
   @ApiProperty()
-  @Prop([LKOwner])
-  owners?: LKOwner[];
-
-  @ApiProperty()
   @Prop({
     type: MogSchema.Types.ObjectId,
     ref: 'Company',

@@ -42,13 +42,9 @@ let TrackController = class TrackController {
         this.trackService = trackService;
     }
     async uploadTrack(uploadTrackDto, file, loggedInUser) {
-        const { mediaFile, channel, artist, title } = uploadTrackDto;
         const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
-        const s3FileUploadResponse = await this.trackService.s3FileUploadService.uploadFromPath(file.path, `${destinationFolder}/originalFiles`);
-        const extractFileMeta = await this.trackService.exractMusicMetaFromFile(file);
-        const trackId = this.trackService.generateTrackId();
-        const createdTrack = await this.trackService.create(Object.assign(Object.assign({ _id: trackId }, resourceOwnerObj), { channel: channel || Enums_1.ChannelEnums.PORTAL, mimeType: extractFileMeta.mimeType, duration: extractFileMeta.duration, artist: artist, title: title, fileSize: extractFileMeta.size, localFilePath: file.path, s3OriginalFileMeta: s3FileUploadResponse, fileType: 'Audio', encoding: extractFileMeta.encoding, samplingFrequency: extractFileMeta.samplingFrequency, originalFileName: file.originalname, iExtractedMetaData: extractFileMeta, createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub }));
-        return createdTrack;
+        const doc = Object.assign(Object.assign(Object.assign({}, uploadTrackDto), resourceOwnerObj), { fileType: 'Audio', createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
+        return this.trackService.uploadAndCreate(file, doc, destinationFolder);
     }
     findAll(queryDto, loggedInUser) {
         return this.trackService.findAll(queryDto);
@@ -89,10 +85,10 @@ __decorate([
                 const loggedInUser = req['user'];
                 var filePath;
                 if (loggedInUser.partner) {
-                    filePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/partners/${(_a = loggedInUser.partner) === null || _a === void 0 ? void 0 : _a._id}`);
+                    filePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/partners/${(_a = loggedInUser.partner) === null || _a === void 0 ? void 0 : _a.id}`);
                 }
                 else if (loggedInUser.company) {
-                    filePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/companies/${(_b = loggedInUser.company) === null || _b === void 0 ? void 0 : _b._id}`);
+                    filePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/companies/${(_b = loggedInUser.company) === null || _b === void 0 ? void 0 : _b.id}`);
                 }
                 else {
                     filePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub}`);

@@ -33,6 +33,14 @@ let TrackService = class TrackService {
             return createdTrack.save();
         });
     }
+    async uploadAndCreate(file, doc, s3destinationFolder, acl) {
+        const { channel, artist, title } = doc;
+        const s3FileUploadResponse = await this.s3FileUploadService.uploadFromPath(file.path, `${s3destinationFolder}/originalFiles`);
+        const extractFileMeta = await this.exractMusicMetaFromFile(file);
+        const trackId = this.generateTrackId();
+        const createdTrack = await this.create(Object.assign(Object.assign({ _id: trackId }, doc), { channel: channel || Enums_1.ChannelEnums.PORTAL, mimeType: extractFileMeta.mimeType, duration: extractFileMeta.duration, artist: artist, title: title, fileSize: extractFileMeta.size, localFilePath: file.path, s3OriginalFileMeta: s3FileUploadResponse, encoding: extractFileMeta.encoding, samplingFrequency: extractFileMeta.samplingFrequency, originalFileName: file.originalname, iExtractedMetaData: extractFileMeta }));
+        return createdTrack;
+    }
     generateTrackId() {
         return `T${nanoid_1.nanoid(8)}`;
     }

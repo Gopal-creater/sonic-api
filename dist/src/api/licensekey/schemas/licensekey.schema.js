@@ -178,11 +178,6 @@ __decorate([
 ], LicenseKey.prototype, "updatedBy", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop([LKOwner]),
-    __metadata("design:type", Array)
-], LicenseKey.prototype, "owners", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
     mongoose_1.Prop({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: 'Company',

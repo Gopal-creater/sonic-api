@@ -26,6 +26,7 @@ const auth_module_1 = require("../auth/auth.module");
 const bull_1 = require("@nestjs/bull");
 const sonickey_processor_1 = require("./processors/sonickey.processor");
 const queuejob_module_1 = require("../../queuejob/queuejob.module");
+const track_module_1 = require("../track/track.module");
 let SonickeyModule = class SonickeyModule {
 };
 SonickeyModule = __decorate([
@@ -44,6 +45,7 @@ SonickeyModule = __decorate([
                 { name: sonickey_schema_1.SonicKeySchemaName, schema: sonickey_schema_1.SonicKeySchema },
             ]),
             queuejob_module_1.QueuejobModule,
+            track_module_1.TrackModule
         ],
         controllers: [
             sonickey_controller_1.SonickeyController,
