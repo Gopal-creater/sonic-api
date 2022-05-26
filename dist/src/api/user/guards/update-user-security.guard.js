@@ -21,10 +21,10 @@ let UpdateUserSecurityGuard = class UpdateUserSecurityGuard {
         this.companyService = companyService;
     }
     async canActivate(context) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         const request = context.switchToHttp().getRequest();
         const loggedInUser = request === null || request === void 0 ? void 0 : request.user;
-        const userId = (_a = request === null || request === void 0 ? void 0 : request.param) === null || _a === void 0 ? void 0 : _a.id;
+        const userId = (_a = request === null || request === void 0 ? void 0 : request.params) === null || _a === void 0 ? void 0 : _a.id;
         const updateUserDto = request === null || request === void 0 ? void 0 : request.body;
         if (userId == (loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub)) {
             throw new common_1.UnprocessableEntityException('You can not update your own details using this endpoint');
@@ -39,6 +39,32 @@ let UpdateUserSecurityGuard = class UpdateUserSecurityGuard {
                 }
                 break;
             case Enums_1.SystemRoles.PARTNER_ADMIN:
+                const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _b === void 0 ? void 0 : _b.id;
+                const userFromDb = await this.userService.getUserProfile(userId);
+                if (!userFromDb) {
+                    throw new common_1.NotFoundException('User not found');
+                }
+                if (userFromDb.userRole !== Enums_1.SystemRoles.PARTNER_USER && userFromDb.userRole !== Enums_1.SystemRoles.COMPANY_USER) {
+                    throw new common_1.UnprocessableEntityException('User can not be modified');
+                }
+                if (userFromDb.userRole == Enums_1.SystemRoles.PARTNER_USER) {
+                    if (((_c = userFromDb === null || userFromDb === void 0 ? void 0 : userFromDb.partner) === null || _c === void 0 ? void 0 : _c.id) !== partnerId) {
+                        throw new common_1.NotFoundException('User not found');
+                    }
+                }
+                if (userFromDb.userRole == Enums_1.SystemRoles.COMPANY_USER) {
+                    const isOwnUser = await this.userService.findOneAggregate({
+                        filter: {
+                            _id: userId
+                        },
+                        relationalFilter: {
+                            'company.partner': partnerId
+                        }
+                    });
+                    if (!isOwnUser) {
+                        throw new common_1.NotFoundException('User not found');
+                    }
+                }
                 delete updateUserDto.userRole;
                 delete updateUserDto.partner;
                 delete updateUserDto.password;
@@ -48,7 +74,17 @@ let UpdateUserSecurityGuard = class UpdateUserSecurityGuard {
                 request.body = updateUserDto;
                 break;
             case Enums_1.SystemRoles.COMPANY_ADMIN:
-                const companyId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _b === void 0 ? void 0 : _b.id;
+                const companyId = (_d = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _d === void 0 ? void 0 : _d.id;
+                const userFromDatabase = await this.userService.findOne({
+                    _id: userId,
+                    'company': companyId
+                });
+                if (!userFromDatabase) {
+                    throw new common_1.NotFoundException('User not found');
+                }
+                if (userFromDb.userRole !== Enums_1.SystemRoles.COMPANY_USER) {
+                    throw new common_1.UnprocessableEntityException('User can not be modified');
+                }
                 delete updateUserDto.userRole;
                 delete updateUserDto.partner;
                 delete updateUserDto.password;

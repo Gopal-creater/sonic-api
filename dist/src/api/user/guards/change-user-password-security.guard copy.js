@@ -9,24 +9,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EnableDisableUserSecurityGuard = void 0;
+exports.ChangeUserPasswordSecurityGuard = void 0;
 const common_1 = require("@nestjs/common");
 const common_2 = require("@nestjs/common");
 const Enums_1 = require("../../../constants/Enums");
 const user_service_1 = require("../services/user.service");
 const company_service_1 = require("../../company/company.service");
-let EnableDisableUserSecurityGuard = class EnableDisableUserSecurityGuard {
+let ChangeUserPasswordSecurityGuard = class ChangeUserPasswordSecurityGuard {
     constructor(userService, companyService) {
         this.userService = userService;
         this.companyService = companyService;
     }
     async canActivate(context) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         const request = context.switchToHttp().getRequest();
         const loggedInUser = request === null || request === void 0 ? void 0 : request.user;
         const userId = (_a = request === null || request === void 0 ? void 0 : request.params) === null || _a === void 0 ? void 0 : _a.id;
+        console.log("userId", userId);
         if (userId == (loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub)) {
-            throw new common_1.UnprocessableEntityException('You can not update your own details using this endpoint');
+            throw new common_1.UnprocessableEntityException('You can not change your own password using this endpoint');
         }
         switch (loggedInUser.userRole) {
             case Enums_1.SystemRoles.ADMIN:
@@ -34,15 +35,17 @@ let EnableDisableUserSecurityGuard = class EnableDisableUserSecurityGuard {
             case Enums_1.SystemRoles.PARTNER_ADMIN:
                 const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _b === void 0 ? void 0 : _b.id;
                 const userFromDb = await this.userService.getUserProfile(userId);
+                console.log("partnerId", partnerId);
+                console.log("userFromDb?.partner?.id", (_c = userFromDb === null || userFromDb === void 0 ? void 0 : userFromDb.partner) === null || _c === void 0 ? void 0 : _c.id);
                 if (!userFromDb) {
-                    throw new common_1.NotFoundException('User not found');
+                    throw new common_1.NotFoundException('User not found db');
                 }
                 if (userFromDb.userRole !== Enums_1.SystemRoles.PARTNER_USER && userFromDb.userRole !== Enums_1.SystemRoles.COMPANY_USER) {
                     throw new common_1.UnprocessableEntityException('User can not be modified');
                 }
                 if (userFromDb.userRole == Enums_1.SystemRoles.PARTNER_USER) {
-                    if (((_c = userFromDb === null || userFromDb === void 0 ? void 0 : userFromDb.partner) === null || _c === void 0 ? void 0 : _c.id) !== partnerId) {
-                        throw new common_1.NotFoundException('User not found');
+                    if (((_d = userFromDb === null || userFromDb === void 0 ? void 0 : userFromDb.partner) === null || _d === void 0 ? void 0 : _d.id) !== partnerId) {
+                        throw new common_1.NotFoundException('User not found cond');
                     }
                 }
                 if (userFromDb.userRole == Enums_1.SystemRoles.COMPANY_USER) {
@@ -60,7 +63,7 @@ let EnableDisableUserSecurityGuard = class EnableDisableUserSecurityGuard {
                 }
                 break;
             case Enums_1.SystemRoles.COMPANY_ADMIN:
-                const companyId = (_d = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _d === void 0 ? void 0 : _d.id;
+                const companyId = (_e = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _e === void 0 ? void 0 : _e.id;
                 const userFromDatabase = await this.userService.findOne({
                     _id: userId,
                     'company': companyId
@@ -78,10 +81,10 @@ let EnableDisableUserSecurityGuard = class EnableDisableUserSecurityGuard {
         return true;
     }
 };
-EnableDisableUserSecurityGuard = __decorate([
+ChangeUserPasswordSecurityGuard = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [user_service_1.UserService,
         company_service_1.CompanyService])
-], EnableDisableUserSecurityGuard);
-exports.EnableDisableUserSecurityGuard = EnableDisableUserSecurityGuard;
-//# sourceMappingURL=enabledisable-user-security.guard.js.map
+], ChangeUserPasswordSecurityGuard);
+exports.ChangeUserPasswordSecurityGuard = ChangeUserPasswordSecurityGuard;
+//# sourceMappingURL=change-user-password-security.guard%20copy.js.map

@@ -21,7 +21,7 @@ let DeleteCompanySecurityGuard = class DeleteCompanySecurityGuard {
     async canActivate(context) {
         var _a, _b;
         const request = context.switchToHttp().getRequest();
-        const companyId = (_a = request === null || request === void 0 ? void 0 : request.param) === null || _a === void 0 ? void 0 : _a.id;
+        const companyId = (_a = request === null || request === void 0 ? void 0 : request.params) === null || _a === void 0 ? void 0 : _a.id;
         const loggedInUser = request === null || request === void 0 ? void 0 : request.user;
         switch (loggedInUser.userRole) {
             case Enums_1.SystemRoles.ADMIN:

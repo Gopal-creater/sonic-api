@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateUserInCognitoDto = exports.CompanyFindOrCreateUser = exports.CognitoCreateUserDTO = exports.UpdateProfileDto = exports.AddBulkNewLicensesDto = exports.RemoveUserFromCompanyDto = exports.MakeAdminCompanyDto = exports.AddUserToCompanyDto = exports.RemoveUserFromGroupDto = exports.AddUserToGroupDto = exports.AddNewLicenseDto = void 0;
+exports.CreateUserInCognitoDto = exports.CompanyFindOrCreateUser = exports.CognitoCreateUserDTO = exports.ChangePassword = exports.UpdateProfileDto = exports.AddBulkNewLicensesDto = exports.RemoveUserFromCompanyDto = exports.MakeAdminCompanyDto = exports.AddUserToCompanyDto = exports.RemoveUserFromGroupDto = exports.AddUserToGroupDto = exports.AddNewLicenseDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class AddNewLicenseDto {
@@ -98,6 +98,14 @@ __decorate([
     __metadata("design:type", Array)
 ], UpdateProfileDto.prototype, "attributes", void 0);
 exports.UpdateProfileDto = UpdateProfileDto;
+class ChangePassword {
+}
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], ChangePassword.prototype, "password", void 0);
+exports.ChangePassword = ChangePassword;
 class CognitoCreateUserDTO {
 }
 __decorate([

@@ -12,6 +12,9 @@ import { UserService } from '../services/user.service';
 import { CompanyService } from '../../company/company.service';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 
+/**
+ * Check ownership of the user here
+ */
 @Injectable()
 export class UpdateUserSecurityGuard implements CanActivate {
   constructor(
@@ -21,7 +24,7 @@ export class UpdateUserSecurityGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const loggedInUser = request?.user as UserDB;
-    const userId = request?.param?.id;
+    const userId = request?.params?.id;
     const updateUserDto = request?.body as UpdateUserDto;
     if (userId == loggedInUser?.sub) {
       throw new UnprocessableEntityException(
@@ -39,24 +42,62 @@ export class UpdateUserSecurityGuard implements CanActivate {
         break;
 
       case SystemRoles.PARTNER_ADMIN:
-        //Delete fields that are not applicable for this role
-        delete updateUserDto.userRole;
-        delete updateUserDto.partner;
-        delete updateUserDto.password;
-        if (updateUserDto.company) {
-          updateUserDto.userRole = SystemRoles.COMPANY_USER;
+        const partnerId = loggedInUser?.adminPartner?.id
+        const userFromDb = await this.userService.getUserProfile(userId)
+        if(!userFromDb){
+          throw new NotFoundException('User not found')
         }
-        request.body = updateUserDto;
+        if(userFromDb.userRole!==SystemRoles.PARTNER_USER && userFromDb.userRole!==SystemRoles.COMPANY_USER){
+          throw new UnprocessableEntityException('User can not be modified')
+        }
+        if(userFromDb.userRole==SystemRoles.PARTNER_USER){
+            if(userFromDb?.partner?.id!==partnerId){
+              throw new NotFoundException('User not found');
+            }
+        }
+        if(userFromDb.userRole==SystemRoles.COMPANY_USER){
+          const isOwnUser = await this.userService.findOneAggregate({
+            filter:{
+              _id:userId
+            },
+            relationalFilter:{
+              'company.partner':partnerId
+            }
+          })
+          if(!isOwnUser){
+            throw new NotFoundException('User not found');
+          }
+      }
+
+            //Delete fields that are not applicable for this role
+            delete updateUserDto.userRole;
+            delete updateUserDto.partner;
+            delete updateUserDto.password;
+            if (updateUserDto.company) {
+              updateUserDto.userRole = SystemRoles.COMPANY_USER;
+            }
+            request.body = updateUserDto;
+
         break;
 
       case SystemRoles.COMPANY_ADMIN:
-        const companyId = loggedInUser?.adminCompany?.id;
-        //Delete fields that are not applicable for this role
-        delete updateUserDto.userRole;
-        delete updateUserDto.partner;
-        delete updateUserDto.password;
-        delete updateUserDto.company;
-        request.body = updateUserDto;
+        const companyId = loggedInUser?.adminCompany?.id
+        const userFromDatabase = await this.userService.findOne({
+          _id:userId,
+          'company':companyId
+        })
+        if(!userFromDatabase){
+          throw new NotFoundException('User not found')
+        }
+        if(userFromDb.userRole!==SystemRoles.COMPANY_USER){
+          throw new UnprocessableEntityException('User can not be modified')
+        }
+         //Delete fields that are not applicable for this role
+         delete updateUserDto.userRole;
+         delete updateUserDto.partner;
+         delete updateUserDto.password;
+         delete updateUserDto.company;
+         request.body = updateUserDto;
         break;
 
       default:

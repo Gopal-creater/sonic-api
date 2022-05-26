@@ -1036,12 +1036,157 @@ export class UserService {
     return newUser.save();
   }
 
-  findAll() {
-    return this.userModel.find();
+  async findAll(queryDto: ParsedQueryDto): Promise<MongoosePaginateUserDto> {
+    const {
+      limit,
+      skip,
+      sort,
+      page,
+      filter,
+      select,
+      populate,
+      relationalFilter,
+    } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    const userAggregate = this.userModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $lookup: {
+          //populate group from its relational table
+          from: 'Partner',
+          localField: 'partner',
+          foreignField: '_id',
+          as: 'partner',
+        },
+      },
+      { $addFields: { partner: { $first: '$partner' } } },
+      {
+        $lookup: {
+          //populate group from its relational table
+          from: 'Partner',
+          localField: 'adminPartner',
+          foreignField: '_id',
+          as: 'adminPartner',
+        },
+      },
+      { $addFields: { adminPartner: { $first: '$adminPartner' } } },
+      {
+        $lookup: {
+          //populate company from its relational table
+          from: 'Company',
+          localField: 'company',
+          foreignField: '_id',
+          as: 'company',
+        },
+      },
+      { $addFields: { company: { $first: '$company' } } },
+      {
+        $lookup: {
+          //populate company from its relational table
+          from: 'Company',
+          localField: 'adminCompany',
+          foreignField: '_id',
+          as: 'adminCompany',
+        },
+      },
+      { $addFields: { adminCompany: { $first: '$adminCompany' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+    ]);
+
+    return this.userModel['aggregatePaginate'](userAggregate, paginateOptions);
   }
 
-  findOne(filter: FilterQuery<UserDB>) {
-    return this.userModel.findOne(filter);
+  async findOneAggregate(queryDto: ParsedQueryDto) {
+    const {
+      limit,
+      skip,
+      sort,
+      page,
+      filter,
+      select,
+      populate,
+      relationalFilter,
+    } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+   const datas = await this.userModel.aggregate<UserDB>([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $lookup: {
+          //populate group from its relational table
+          from: 'Partner',
+          localField: 'partner',
+          foreignField: '_id',
+          as: 'partner',
+        },
+      },
+      { $addFields: { partner: { $first: '$partner' } } },
+      {
+        $lookup: {
+          //populate group from its relational table
+          from: 'Partner',
+          localField: 'adminPartner',
+          foreignField: '_id',
+          as: 'adminPartner',
+        },
+      },
+      { $addFields: { adminPartner: { $first: '$adminPartner' } } },
+      {
+        $lookup: {
+          //populate company from its relational table
+          from: 'Company',
+          localField: 'company',
+          foreignField: '_id',
+          as: 'company',
+        },
+      },
+      { $addFields: { company: { $first: '$company' } } },
+      {
+        $lookup: {
+          //populate company from its relational table
+          from: 'Company',
+          localField: 'adminCompany',
+          foreignField: '_id',
+          as: 'adminCompany',
+        },
+      },
+      { $addFields: { adminCompany: { $first: '$adminCompany' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+      {
+        $limit:1
+      }
+    ])
+    return datas[0]
+  }
+  async findOne(filter: FilterQuery<UserDB>) {
+    return this.userModel.findOne(filter)
   }
 
   findById(id: string) {

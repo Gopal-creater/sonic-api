@@ -21,7 +21,7 @@ let DeleteSonicKeySecurityGuard = class DeleteSonicKeySecurityGuard {
         var _a, _b, _c;
         const request = context.switchToHttp().getRequest();
         const loggedInUser = request === null || request === void 0 ? void 0 : request.user;
-        const sonickey = (_a = request === null || request === void 0 ? void 0 : request.param) === null || _a === void 0 ? void 0 : _a.sonickey;
+        const sonickey = (_a = request === null || request === void 0 ? void 0 : request.params) === null || _a === void 0 ? void 0 : _a.sonickey;
         switch (loggedInUser.userRole) {
             case Enums_1.SystemRoles.ADMIN:
                 break;

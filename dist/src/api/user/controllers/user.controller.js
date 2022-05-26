@@ -16,7 +16,7 @@ exports.UserController = void 0;
 const openapi = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const swagger_1 = require("@nestjs/swagger");
-const index_1 = require("../dtos/index");
+const dtos_1 = require("../dtos");
 const _ = require("lodash");
 const user_service_1 = require("../services/user.service");
 const common_1 = require("@nestjs/common");
@@ -41,6 +41,8 @@ const update_user_dto_1 = require("../dtos/update-user.dto");
 const update_user_security_guard_1 = require("../guards/update-user-security.guard");
 const create_user_security_guard_1 = require("../guards/create-user-security.guard");
 const enabledisable_user_security_guard_1 = require("../guards/enabledisable-user-security.guard");
+const update_profile_dto_1 = require("../dtos/update-profile.dto");
+const change_user_password_security_guard_copy_1 = require("../guards/change-user-password-security.guard copy");
 let UserController = class UserController {
     constructor(userService, groupService, companyService, partnerService, licensekeyService) {
         this.userService = userService;
@@ -68,7 +70,7 @@ let UserController = class UserController {
                 throw new common_1.NotFoundException('Unknown company');
         }
         const createdUser = await this.userService.createUserInCognito(createUserDto, true, {
-            createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id
+            createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id,
         });
         return createdUser;
     }
@@ -77,6 +79,12 @@ let UserController = class UserController {
     }
     async findMe(user) {
         return user;
+    }
+    async updateMe(loggedInUser, updateUserDto) {
+        const user = await this.userService.getUserProfile(loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub);
+        if (!user)
+            throw new common_1.NotFoundException('Unknown user');
+        return this.userService.update(loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id, Object.assign({}, updateUserDto));
     }
     async findById(userId) {
         const user = await this.userService.getUserProfile(userId);
@@ -96,6 +104,16 @@ let UserController = class UserController {
         }, { new: true });
         return updatedUser;
     }
+    async changeUserPassword(loggedInUser, password, userId) {
+        const userFromDb = await this.partnerService.userService.getUserProfile(userId);
+        if (!userFromDb)
+            throw new common_1.NotFoundException('User not found');
+        await this.userService.adminSetUserPassword(userFromDb.username, password);
+        const updatedUser = await this.userService.userModel.findByIdAndUpdate(userFromDb._id, {
+            updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id,
+        }, { new: true });
+        return updatedUser;
+    }
     async enableUser(loggedInUser, userId) {
         const userFromDb = await this.partnerService.userService.getUserProfile(userId);
         if (!userFromDb)
@@ -108,7 +126,7 @@ let UserController = class UserController {
         return updatedUser;
     }
     async update(id, loggedInUser, updateUserDto) {
-        var { company, partner } = updateUserDto;
+        var { company, partner, enabled, password } = updateUserDto;
         if (partner) {
             const partnerFromDb = await this.partnerService.findById(partner);
             if (!partnerFromDb)
@@ -118,6 +136,20 @@ let UserController = class UserController {
             const companyFormDb = await this.companyService.findById(company);
             if (!companyFormDb)
                 throw new common_1.NotFoundException('Unknown company');
+        }
+        const user = await this.userService.getUserProfile(id);
+        if (!user)
+            throw new common_1.NotFoundException('Unknown user');
+        if (user.enabled !== enabled) {
+            if (enabled) {
+                await this.userService.adminEnableUser(user.username);
+            }
+            else {
+                await this.userService.adminDisableUser(user.username);
+            }
+        }
+        if (password) {
+            await this.userService.adminSetUserPassword(user.username, password);
         }
         return this.userService.update(id, Object.assign(Object.assign({}, updateUserDto), { updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id }));
     }
@@ -179,7 +211,7 @@ let UserController = class UserController {
         return user;
     }
     async companyFindOrCreateUser(loggedInUser, companyFindOrCreateUser) {
-        const cognitoCreateUser = Object.assign({}, companyFindOrCreateUser, new index_1.CognitoCreateUserDTO());
+        const cognitoCreateUser = Object.assign({}, companyFindOrCreateUser, new dtos_1.CognitoCreateUserDTO());
         const { email, userName } = cognitoCreateUser;
         var userInDb = await this.userService.findByEmail(email);
         if (!userInDb) {
@@ -247,6 +279,7 @@ __decorate([
     swagger_1.ApiOperation({
         summary: 'Get users',
     }),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.COMPANY_ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
@@ -268,6 +301,19 @@ __decorate([
     __metadata("design:paramtypes", [user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "findMe", null);
+__decorate([
+    common_1.Put('/updateme'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Update user profile by token' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB,
+        update_profile_dto_1.UpdateProfileDto]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateMe", null);
 __decorate([
     roles_decorator_1.RolesAllowed(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
@@ -292,6 +338,23 @@ __decorate([
     __metadata("design:paramtypes", [user_db_schema_1.UserDB, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "disableUser", null);
+__decorate([
+    common_1.Put(':id/change-user-password'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    swagger_1.ApiBody({
+        type: dtos_1.ChangePassword,
+    }),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, change_user_password_security_guard_copy_1.ChangeUserPasswordSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Change user password' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Body('password')),
+    __param(2, common_1.Param('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB, String, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "changeUserPassword", null);
 __decorate([
     common_1.Put(':id/enable-user'),
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
@@ -409,7 +472,7 @@ __decorate([
     __param(0, common_1.Param('userIdOrUsername')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, index_1.AddNewLicenseDto]),
+    __metadata("design:paramtypes", [String, dtos_1.AddNewLicenseDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "addNewLicense", null);
 __decorate([
@@ -421,7 +484,7 @@ __decorate([
     __param(0, common_1.Param('userIdOrUsername')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, index_1.AddBulkNewLicensesDto]),
+    __metadata("design:paramtypes", [String, dtos_1.AddBulkNewLicensesDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "addBulkNewLicense", null);
 __decorate([
@@ -447,7 +510,7 @@ __decorate([
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_db_schema_1.UserDB,
-        index_1.CompanyFindOrCreateUser]),
+        dtos_1.CompanyFindOrCreateUser]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "companyFindOrCreateUser", null);
 __decorate([
@@ -458,7 +521,7 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Admin create user' }),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [index_1.CognitoCreateUserDTO]),
+    __metadata("design:paramtypes", [dtos_1.CognitoCreateUserDTO]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "cognitoCreateUser", null);
 __decorate([

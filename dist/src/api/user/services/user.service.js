@@ -751,10 +751,120 @@ let UserService = class UserService {
         const newUser = await this.userModel.create(createUserDto);
         return newUser.save();
     }
-    findAll() {
-        return this.userModel.find();
+    async findAll(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        const userAggregate = this.userModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'partner',
+                    foreignField: '_id',
+                    as: 'partner',
+                },
+            },
+            { $addFields: { partner: { $first: '$partner' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'adminPartner',
+                    foreignField: '_id',
+                    as: 'adminPartner',
+                },
+            },
+            { $addFields: { adminPartner: { $first: '$adminPartner' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'company',
+                    foreignField: '_id',
+                    as: 'company',
+                },
+            },
+            { $addFields: { company: { $first: '$company' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'adminCompany',
+                    foreignField: '_id',
+                    as: 'adminCompany',
+                },
+            },
+            { $addFields: { adminCompany: { $first: '$adminCompany' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+        ]);
+        return this.userModel['aggregatePaginate'](userAggregate, paginateOptions);
     }
-    findOne(filter) {
+    async findOneAggregate(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        const datas = await this.userModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'partner',
+                    foreignField: '_id',
+                    as: 'partner',
+                },
+            },
+            { $addFields: { partner: { $first: '$partner' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'adminPartner',
+                    foreignField: '_id',
+                    as: 'adminPartner',
+                },
+            },
+            { $addFields: { adminPartner: { $first: '$adminPartner' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'company',
+                    foreignField: '_id',
+                    as: 'company',
+                },
+            },
+            { $addFields: { company: { $first: '$company' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'adminCompany',
+                    foreignField: '_id',
+                    as: 'adminCompany',
+                },
+            },
+            { $addFields: { adminCompany: { $first: '$adminCompany' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $limit: 1
+            }
+        ]);
+        return datas[0];
+    }
+    async findOne(filter) {
         return this.userModel.findOne(filter);
     }
     findById(id) {

@@ -16,7 +16,7 @@ export class DeleteTrackSecurityGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const loggedInUser = request?.user as UserDB;
-    const trackId = request?.param?.id;
+    const trackId = request?.params?.id;
     switch (loggedInUser.userRole) {
       case SystemRoles.ADMIN:
         break;

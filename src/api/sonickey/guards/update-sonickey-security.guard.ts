@@ -17,7 +17,7 @@ import { SonickeyService } from '../services/sonickey.service';
     async canActivate(context: ExecutionContext) {
       const request = context.switchToHttp().getRequest();
       const loggedInUser = request?.user as UserDB;
-      const sonickey = request?.param?.sonickey;
+      const sonickey = request?.params?.sonickey;
       const updateSonicKeyDto = request?.body as UpdateSonicKeyDto;
       switch (loggedInUser.userRole) {
         case SystemRoles.ADMIN:

@@ -66,6 +66,11 @@ export class UpdateProfileDto {
   attributes: [{ Name: string; Value: any }];
 }
 
+export class ChangePassword {
+  @ApiProperty()
+  @IsNotEmpty()
+  password: string;
+}
 
 export class CognitoCreateUserDTO {
   @ApiProperty()

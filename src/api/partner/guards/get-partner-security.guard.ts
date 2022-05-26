@@ -16,7 +16,7 @@ export class GetPartnerSecurityGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     // const queries = request?.query
-    const partnerId = request?.param?.id as string
+    const partnerId = request?.params?.id as string
     const loggedInUser = request?.user as UserDB
     // const parsedQueryValue = parsedQueryValueFromQuery(queries)
     // const{filter}=parsedQueryValue

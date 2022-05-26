@@ -6,14 +6,15 @@ import {
   ApiOkResponse,
   ApiQuery,
   ApiSecurity,
+  ApiBody,
 } from '@nestjs/swagger';
 import {
   AddNewLicenseDto,
   AddBulkNewLicensesDto,
-  UpdateProfileDto,
   CognitoCreateUserDTO,
   CompanyFindOrCreateUser,
-} from '../dtos/index';
+  ChangePassword,
+} from '../dtos';
 import * as _ from 'lodash';
 import { UserService } from '../services/user.service';
 import {
@@ -55,6 +56,8 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 import { UpdateUserSecurityGuard } from '../guards/update-user-security.guard';
 import { CreateUserSecurityGuard } from '../guards/create-user-security.guard';
 import { EnableDisableUserSecurityGuard } from '../guards/enabledisable-user-security.guard';
+import { UpdateProfileDto } from '../dtos/update-profile.dto';
+import { ChangeUserPasswordSecurityGuard } from '../guards/change-user-password-security.guard copy';
 
 @ApiTags('User Controller (D & M May 2022)')
 @Controller('users')
@@ -68,7 +71,7 @@ export class UserController {
   ) {}
 
   @RolesAllowed(Roles.ADMIN, Roles.PARTNER_ADMIN, Roles.COMPANY_ADMIN)
-  @UseGuards(JwtAuthGuard, RoleBasedGuard,CreateUserSecurityGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, CreateUserSecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create user' })
   @Post()
@@ -98,14 +101,15 @@ export class UserController {
       createUserDto,
       true,
       {
-        createdBy: loggedInUser?._id
-      }
+        createdBy: loggedInUser?._id,
+      },
     );
     return createdUser;
   }
   @ApiOperation({
     summary: 'Get users',
   })
+  @AnyApiQueryTemplate()
   @RolesAllowed(Roles.ADMIN, Roles.PARTNER_ADMIN, Roles.COMPANY_ADMIN)
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
@@ -120,6 +124,21 @@ export class UserController {
   @Get('/@me')
   async findMe(@User() user: UserDB) {
     return user;
+  }
+
+  @Put('/updateme')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update user profile by token' })
+  async updateMe(
+    @User() loggedInUser: UserDB,
+    @Body() updateUserDto: UpdateProfileDto,
+  ) {
+    const user = await this.userService.getUserProfile(loggedInUser?.sub);
+    if (!user) throw new NotFoundException('Unknown user');
+    return this.userService.update(loggedInUser?._id, {
+      ...updateUserDto,
+    });
   }
 
   @RolesAllowed()
@@ -149,6 +168,34 @@ export class UserController {
       userFromDb._id,
       {
         enabled: false,
+        updatedBy: loggedInUser?._id,
+      },
+      { new: true },
+    );
+    return updatedUser;
+  }
+
+  @Put(':id/change-user-password')
+  @RolesAllowed(Roles.ADMIN, Roles.COMPANY_ADMIN, Roles.PARTNER_ADMIN)
+  @ApiBody({
+    type: ChangePassword,
+  })
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, ChangeUserPasswordSecurityGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Change user password' })
+  async changeUserPassword(
+    @User() loggedInUser: UserDB,
+    @Body('password') password: string,
+    @Param('id') userId: string,
+  ) {
+    const userFromDb = await this.partnerService.userService.getUserProfile(
+      userId,
+    );
+    if (!userFromDb) throw new NotFoundException('User not found');
+    await this.userService.adminSetUserPassword(userFromDb.username, password);
+    const updatedUser = await this.userService.userModel.findByIdAndUpdate(
+      userFromDb._id,
+      {
         updatedBy: loggedInUser?._id,
       },
       { new: true },
@@ -188,7 +235,7 @@ export class UserController {
     @User() loggedInUser: UserDB,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    var { company, partner } = updateUserDto;
+    var { company, partner, enabled, password } = updateUserDto;
     if (partner) {
       const partnerFromDb = await this.partnerService.findById(partner);
       if (!partnerFromDb) throw new NotFoundException('Unknown partner');
@@ -197,6 +244,19 @@ export class UserController {
       const companyFormDb = await this.companyService.findById(company);
       if (!companyFormDb) throw new NotFoundException('Unknown company');
     }
+    const user = await this.userService.getUserProfile(id);
+    if (!user) throw new NotFoundException('Unknown user');
+    if (user.enabled !== enabled) {
+      if (enabled) {
+        await this.userService.adminEnableUser(user.username);
+      } else {
+        await this.userService.adminDisableUser(user.username);
+      }
+    }
+    if (password) {
+      await this.userService.adminSetUserPassword(user.username, password);
+    }
+
     return this.userService.update(id, {
       ...updateUserDto,
       updatedBy: loggedInUser?._id,

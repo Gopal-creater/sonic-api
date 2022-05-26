@@ -15,7 +15,7 @@ import { CompanyService } from '../../company/company.service';
  * Check ownership of the user here
  */
 @Injectable()
-export class EnableDisableUserSecurityGuard implements CanActivate {
+export class ChangeUserPasswordSecurityGuard implements CanActivate {
   constructor(
     private readonly userService: UserService,
     private readonly companyService: CompanyService,
@@ -24,9 +24,10 @@ export class EnableDisableUserSecurityGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const loggedInUser = request?.user as UserDB;
     const userId = request?.params?.id;
+    console.log("userId",userId)
     if (userId == loggedInUser?.sub) {
       throw new UnprocessableEntityException(
-        'You can not update your own details using this endpoint',
+        'You can not change your own password using this endpoint',
       );
     }
     switch (loggedInUser.userRole) {
@@ -36,15 +37,17 @@ export class EnableDisableUserSecurityGuard implements CanActivate {
       case SystemRoles.PARTNER_ADMIN:
         const partnerId = loggedInUser?.adminPartner?.id
         const userFromDb = await this.userService.getUserProfile(userId)
+        console.log("partnerId",partnerId)
+        console.log("userFromDb?.partner?.id",userFromDb?.partner?.id)
         if(!userFromDb){
-          throw new NotFoundException('User not found')
+          throw new NotFoundException('User not found db')
         }
         if(userFromDb.userRole!==SystemRoles.PARTNER_USER && userFromDb.userRole!==SystemRoles.COMPANY_USER){
           throw new UnprocessableEntityException('User can not be modified')
         }
         if(userFromDb.userRole==SystemRoles.PARTNER_USER){
             if(userFromDb?.partner?.id!==partnerId){
-              throw new NotFoundException('User not found');
+              throw new NotFoundException('User not found cond');
             }
         }
         if(userFromDb.userRole==SystemRoles.COMPANY_USER){

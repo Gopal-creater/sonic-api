@@ -12,7 +12,7 @@ export class DeleteCompanySecurityGuard implements CanActivate {
   ) {
 
     const request = context.switchToHttp().getRequest();
-    const companyId = request?.param?.id as string
+    const companyId = request?.params?.id as string
     const loggedInUser = request?.user as UserDB
     switch (loggedInUser.userRole) {
       case SystemRoles.ADMIN: 
