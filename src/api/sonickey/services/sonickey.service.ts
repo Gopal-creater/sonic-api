@@ -566,7 +566,7 @@ export class SonickeyService {
     console.log('Increment License Usages upon successfull encode & save');
     await this.licensekeyService.incrementUses(licenseId, 'encode', 1);
     console.log('Increment License Usages upon successfull encode & save Done');
-    return this.findBySonicKey(savedSonnicKey.sonicKey)
+    return this.findById(savedSonnicKey._id)
   }
   async encodeSonicKeyFromTrack(config: {
     trackId:string,
