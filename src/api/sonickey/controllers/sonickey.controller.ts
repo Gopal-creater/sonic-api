@@ -405,12 +405,13 @@ export class SonickeyController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Encode File And save to database & into track table' })
   async encodeByFile(
-    @Body('data') sonicKeyDto: CreateSonicKeyDto,
+    @Body('data',JsonParsePipe) sonicKeyDto: CreateSonicKeyDto,
     @UploadedFile() file: IUploadedFile,
     @User() loggedInUser: UserDB,
     @User('sub') owner: string,
     @ValidatedLicense('key') licenseId: string,
   ) {
+    console.log("sonicKeyDto",sonicKeyDto)
     const {
       destinationFolder,
       resourceOwnerObj,

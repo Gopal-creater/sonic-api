@@ -172,6 +172,7 @@ let SonickeyController = class SonickeyController {
         });
     }
     async encodeByFile(sonicKeyDto, file, loggedInUser, owner, licenseId) {
+        console.log("sonicKeyDto", sonicKeyDto);
         const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
         const encodingStrength = sonicKeyDto.encodingStrength;
         const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
@@ -651,7 +652,7 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Encode File And save to database & into track table' }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body('data')),
+    __param(0, common_1.Body('data', jsonparse_pipe_1.JsonParsePipe)),
     __param(1, common_1.UploadedFile()),
     __param(2, decorators_1.User()),
     __param(3, decorators_1.User('sub')),
