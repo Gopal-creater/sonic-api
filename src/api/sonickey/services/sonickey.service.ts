@@ -533,6 +533,8 @@ export class SonickeyService {
       originalFileName: file?.originalname,
       sonicKey: sonicKey,
       downloadable: true,
+      license:licenseId,
+      channel:sonickeyDoc.channel||ChannelEnums.PORTAL,
       track:track?._id,
       s3FileMeta: s3EncodedUploadResult,
       fingerPrintStatus: FingerPrintStatus.PENDING,
