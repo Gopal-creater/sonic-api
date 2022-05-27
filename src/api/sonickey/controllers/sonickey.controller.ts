@@ -391,7 +391,6 @@ export class SonickeyController {
         },
       }),
     }),
-    ClassSerializerInterceptor,
     EncodeSecurityInterceptor
   )
   @ApiConsumes('multipart/form-data')

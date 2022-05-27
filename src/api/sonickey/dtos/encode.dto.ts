@@ -33,14 +33,14 @@ export class EncodeFromFileDto {
   mediaFile: any;
 
   @ValidateNested()
-  @Transform(value => {
-    try {
-      console.log('value', value);
-      return value && JSON.parse(value);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  })
+  // @Transform(value => {
+  //   try {
+  //     console.log('value', value);
+  //     return value && JSON.parse(value);
+  //   } catch (error) {
+  //     throw new BadRequestException(error);
+  //   }
+  // })
   @Type(() => CreateSonicKeyDto)
   @IsNotEmpty()
   @ApiProperty()

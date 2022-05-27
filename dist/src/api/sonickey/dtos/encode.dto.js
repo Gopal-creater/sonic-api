@@ -16,7 +16,6 @@ const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 const create_sonickey_dto_1 = require("./create-sonickey.dto");
-const common_1 = require("@nestjs/common");
 class EncodeDto {
     static _OPENAPI_METADATA_FACTORY() {
         return { mediaFile: { required: true, type: () => Object }, data: { required: true, type: () => require("./sonicKey.dto").SonicKeyDto } };
@@ -46,15 +45,6 @@ __decorate([
 ], EncodeFromFileDto.prototype, "mediaFile", void 0);
 __decorate([
     class_validator_1.ValidateNested(),
-    class_transformer_1.Transform(value => {
-        try {
-            console.log('value', value);
-            return value && JSON.parse(value);
-        }
-        catch (error) {
-            throw new common_1.BadRequestException(error);
-        }
-    }),
     class_transformer_1.Type(() => create_sonickey_dto_1.CreateSonicKeyDto),
     class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),

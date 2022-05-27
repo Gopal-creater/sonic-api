@@ -640,7 +640,7 @@ __decorate([
                 cb(null, `${randomName}-${orgName}`);
             },
         }),
-    }), common_1.ClassSerializerInterceptor, encode_security_interceptor_1.EncodeSecurityInterceptor),
+    }), encode_security_interceptor_1.EncodeSecurityInterceptor),
     swagger_1.ApiConsumes('multipart/form-data'),
     swagger_1.ApiBody({
         description: 'File To Encode',
