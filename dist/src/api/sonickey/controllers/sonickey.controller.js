@@ -647,7 +647,7 @@ __decorate([
         type: encode_dto_1.EncodeFromFileDto,
     }),
     decorators_1.RolesAllowed(),
-    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard),
     common_1.Post('/encode-from-file'),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Encode File And save to database & into track table' }),

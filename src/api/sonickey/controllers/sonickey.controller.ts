@@ -400,7 +400,7 @@ export class SonickeyController {
     type: EncodeFromFileDto,
   })
   @RolesAllowed()
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard,LicenseValidationGuard)
   @Post('/encode-from-file')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Encode File And save to database & into track table' })
