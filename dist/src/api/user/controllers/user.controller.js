@@ -151,6 +151,9 @@ let UserController = class UserController {
         if (password) {
             await this.userService.adminSetUserPassword(user.username, password);
         }
+        if (updateUserDto.phoneNumber) {
+            updateUserDto['phone_number'] = updateUserDto.phoneNumber;
+        }
         return this.userService.update(id, Object.assign(Object.assign({}, updateUserDto), { updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id }));
     }
     async remove(id) {

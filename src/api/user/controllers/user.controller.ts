@@ -256,6 +256,9 @@ export class UserController {
     if (password) {
       await this.userService.adminSetUserPassword(user.username, password);
     }
+    if(updateUserDto.phoneNumber){
+      updateUserDto['phone_number']=updateUserDto.phoneNumber
+    }
 
     return this.userService.update(id, {
       ...updateUserDto,
