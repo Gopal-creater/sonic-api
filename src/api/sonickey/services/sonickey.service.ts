@@ -792,9 +792,8 @@ export class SonickeyService {
   }
 
   async create(doc: AnyObject | AnyKeys<SonicKey>) {
-    return this.sonicKeyModel.create(doc).then(createdSonicKey => {
-      return createdSonicKey.save();
-    });
+    const newSonicKey = await this.sonicKeyModel.create(doc)
+    return newSonicKey.save();
   }
 
   update(id: string, updateSonicKeyDto: UpdateQuery<SonicKey>) {

@@ -517,9 +517,8 @@ let SonickeyService = class SonickeyService {
         return this.sonicKeyModel.findById(id);
     }
     async create(doc) {
-        return this.sonicKeyModel.create(doc).then(createdSonicKey => {
-            return createdSonicKey.save();
-        });
+        const newSonicKey = await this.sonicKeyModel.create(doc);
+        return newSonicKey.save();
     }
     update(id, updateSonicKeyDto) {
         return this.sonicKeyModel.findByIdAndUpdate(id, updateSonicKeyDto, {
