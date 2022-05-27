@@ -72,7 +72,6 @@ export class UpdateUserSecurityGuard implements CanActivate {
             //Delete fields that are not applicable for this role
             delete updateUserDto.userRole;
             delete updateUserDto.partner;
-            delete updateUserDto.password;
             if (updateUserDto.company) {
               updateUserDto.userRole = SystemRoles.COMPANY_USER;
             }
@@ -95,7 +94,6 @@ export class UpdateUserSecurityGuard implements CanActivate {
          //Delete fields that are not applicable for this role
          delete updateUserDto.userRole;
          delete updateUserDto.partner;
-         delete updateUserDto.password;
          delete updateUserDto.company;
          request.body = updateUserDto;
         break;

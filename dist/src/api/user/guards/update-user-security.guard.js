@@ -67,7 +67,6 @@ let UpdateUserSecurityGuard = class UpdateUserSecurityGuard {
                 }
                 delete updateUserDto.userRole;
                 delete updateUserDto.partner;
-                delete updateUserDto.password;
                 if (updateUserDto.company) {
                     updateUserDto.userRole = Enums_1.SystemRoles.COMPANY_USER;
                 }
@@ -87,7 +86,6 @@ let UpdateUserSecurityGuard = class UpdateUserSecurityGuard {
                 }
                 delete updateUserDto.userRole;
                 delete updateUserDto.partner;
-                delete updateUserDto.password;
                 delete updateUserDto.company;
                 request.body = updateUserDto;
                 break;
