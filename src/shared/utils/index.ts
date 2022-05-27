@@ -84,7 +84,7 @@ export function promiseHandler(promise:any):Promise<[any,any]>{
    */
 export function identifyDestinationFolderAndResourceOwnerFromUser(user:UserDB,keyNameForOwner:string="owner",keyNameForPartner:string="partner",keyNameForCompany:string="company"){
   var destinationFolder:string;
-  var resourceOwnerObj:{owner?:string,partner?:string,company?:string}
+  var resourceOwnerObj:{owner?:string,partner?:string,company?:string}={}
   switch (user.userRole) {
     case SystemRoles.COMPANY_USER:
     case SystemRoles.COMPANY_ADMIN:

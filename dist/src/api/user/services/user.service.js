@@ -441,14 +441,14 @@ let UserService = class UserService {
             UserPoolId: this.cognitoUserPoolId,
             Username: username,
         };
-        return this.cognitoIdentityServiceProvider.adminDisableUser().promise();
+        return this.cognitoIdentityServiceProvider.adminDisableUser(params).promise();
     }
     async adminEnableUser(username) {
         const params = {
             UserPoolId: this.cognitoUserPoolId,
             Username: username,
         };
-        return this.cognitoIdentityServiceProvider.adminEnableUser().promise();
+        return this.cognitoIdentityServiceProvider.adminEnableUser(params).promise();
     }
     async cognitoCreateUser(cognitoCreateUserDTO) {
         var _a, _b;
@@ -877,7 +877,7 @@ let UserService = class UserService {
         return this.userModel.findOne({ username: username });
     }
     update(id, updateUserDto) {
-        return this.userModel.findByIdAndUpdate(id, updateUserDto);
+        return this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true });
     }
     removeById(id) {
         return this.userModel.findByIdAndRemove(id);

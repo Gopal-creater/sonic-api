@@ -246,7 +246,13 @@ export class UserController {
     }
     const user = await this.userService.getUserProfile(id);
     if (!user) throw new NotFoundException('Unknown user');
-    if (user.enabled !== enabled) {
+    if(updateUserDto.phoneNumber){
+      await this.userService.updateUserWithCustomField(user.username, [
+        {Name:'phone_number',Value:updateUserDto.phoneNumber}
+      ]);
+      updateUserDto['phone_number']=updateUserDto.phoneNumber
+    }
+    if (enabled && user.enabled !== enabled) {
       if (enabled) {
         await this.userService.adminEnableUser(user.username);
       } else {
@@ -255,9 +261,6 @@ export class UserController {
     }
     if (password) {
       await this.userService.adminSetUserPassword(user.username, password);
-    }
-    if(updateUserDto.phoneNumber){
-      updateUserDto['phone_number']=updateUserDto.phoneNumber
     }
 
     return this.userService.update(id, {

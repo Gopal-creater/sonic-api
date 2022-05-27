@@ -52,7 +52,7 @@ exports.enumToArrayOfObject = enumToArrayOfObject;
 function identifyDestinationFolderAndResourceOwnerFromUser(user, keyNameForOwner = "owner", keyNameForPartner = "partner", keyNameForCompany = "company") {
     var _a, _b, _c, _d;
     var destinationFolder;
-    var resourceOwnerObj;
+    var resourceOwnerObj = {};
     switch (user.userRole) {
         case Enums_1.SystemRoles.COMPANY_USER:
         case Enums_1.SystemRoles.COMPANY_ADMIN:

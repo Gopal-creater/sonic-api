@@ -551,7 +551,7 @@ export class UserService {
       Username: username,
     };
 
-    return this.cognitoIdentityServiceProvider.adminDisableUser().promise();
+    return this.cognitoIdentityServiceProvider.adminDisableUser(params).promise();
   }
 
   async adminEnableUser(username: string) {
@@ -560,7 +560,7 @@ export class UserService {
       Username: username,
     };
 
-    return this.cognitoIdentityServiceProvider.adminEnableUser().promise();
+    return this.cognitoIdentityServiceProvider.adminEnableUser(params).promise();
   }
 
   /**
@@ -1202,7 +1202,7 @@ export class UserService {
   }
 
   update(id: string, updateUserDto: UpdateQuery<UserDB>) {
-    return this.userModel.findByIdAndUpdate(id, updateUserDto);
+    return this.userModel.findByIdAndUpdate(id, updateUserDto,{new:true});
   }
 
   removeById(id: string) {

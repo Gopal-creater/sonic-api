@@ -140,7 +140,13 @@ let UserController = class UserController {
         const user = await this.userService.getUserProfile(id);
         if (!user)
             throw new common_1.NotFoundException('Unknown user');
-        if (user.enabled !== enabled) {
+        if (updateUserDto.phoneNumber) {
+            await this.userService.updateUserWithCustomField(user.username, [
+                { Name: 'phone_number', Value: updateUserDto.phoneNumber }
+            ]);
+            updateUserDto['phone_number'] = updateUserDto.phoneNumber;
+        }
+        if (enabled && user.enabled !== enabled) {
             if (enabled) {
                 await this.userService.adminEnableUser(user.username);
             }
@@ -150,9 +156,6 @@ let UserController = class UserController {
         }
         if (password) {
             await this.userService.adminSetUserPassword(user.username, password);
-        }
-        if (updateUserDto.phoneNumber) {
-            updateUserDto['phone_number'] = updateUserDto.phoneNumber;
         }
         return this.userService.update(id, Object.assign(Object.assign({}, updateUserDto), { updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id }));
     }
