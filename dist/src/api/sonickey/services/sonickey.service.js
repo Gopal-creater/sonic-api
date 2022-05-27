@@ -382,7 +382,7 @@ let SonickeyService = class SonickeyService {
         console.log('Increment License Usages upon successfull encode & save');
         await this.licensekeyService.incrementUses(licenseId, 'encode', 1);
         console.log('Increment License Usages upon successfull encode & save Done');
-        return savedSonnicKey;
+        return this.findBySonicKey(savedSonnicKey.sonicKey);
     }
     async encodeSonicKeyFromTrack(config) {
         const { trackId, file, licenseId, s3destinationFolder, sonickeyDoc, encodingStrength = 15, s3Acl, fingerPrint = true, } = config;
