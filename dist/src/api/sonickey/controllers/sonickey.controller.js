@@ -62,6 +62,7 @@ const track_schema_1 = require("../../track/schemas/track.schema");
 const encode_security_guard_1 = require("../guards/encode-security.guard");
 const update_sonickey_security_guard_1 = require("../guards/update-sonickey-security.guard");
 const delete_sonickey_security_guard_1 = require("../guards/delete-sonickey-security.guard");
+const encode_security_interceptor_1 = require("../interceptors/encode-security.interceptor");
 let SonickeyController = class SonickeyController {
     constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
@@ -638,14 +639,14 @@ __decorate([
                 cb(null, `${randomName}-${orgName}`);
             },
         }),
-    }), common_1.ClassSerializerInterceptor),
+    }), common_1.ClassSerializerInterceptor, encode_security_interceptor_1.EncodeSecurityInterceptor),
     swagger_1.ApiConsumes('multipart/form-data'),
     swagger_1.ApiBody({
         description: 'File To Encode',
         type: encode_dto_1.EncodeFromFileDto,
     }),
     decorators_1.RolesAllowed(),
-    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard, encode_security_guard_1.EncodeSecurityGuard),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     common_1.Post('/encode-from-file'),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Encode File And save to database & into track table' }),

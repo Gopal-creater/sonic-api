@@ -96,6 +96,7 @@ import { Track } from 'src/api/track/schemas/track.schema';
 import { EncodeSecurityGuard } from '../guards/encode-security.guard';
 import { UpdateSonicKeySecurityGuard } from '../guards/update-sonickey-security.guard';
 import { DeleteSonicKeySecurityGuard } from '../guards/delete-sonickey-security.guard';
+import { EncodeSecurityInterceptor } from '../interceptors/encode-security.interceptor';
 
 @ApiTags('SonicKeys Controller')
 @Controller('sonic-keys')
@@ -390,7 +391,8 @@ export class SonickeyController {
         },
       }),
     }),
-    ClassSerializerInterceptor
+    ClassSerializerInterceptor,
+    EncodeSecurityInterceptor
   )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -398,7 +400,7 @@ export class SonickeyController {
     type: EncodeFromFileDto,
   })
   @RolesAllowed()
-  @UseGuards(JwtAuthGuard,RoleBasedGuard, LicenseValidationGuard,EncodeSecurityGuard)
+  @UseGuards(JwtAuthGuard,RoleBasedGuard)
   @Post('/encode-from-file')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Encode File And save to database & into track table' })

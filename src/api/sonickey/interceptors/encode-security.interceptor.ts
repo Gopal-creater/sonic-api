@@ -1,18 +1,18 @@
 import {
-  BadRequestException,
-  CanActivate,
-  ExecutionContext,
   Injectable,
-  UnprocessableEntityException,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+  BadRequestException,
+  UnprocessableEntityException
 } from '@nestjs/common';
 import { SystemRoles } from 'src/constants/Enums';
 import { UserDB } from '../../user/schemas/user.db.schema';
 import { CreateSonicKeyDto } from '../dtos/create-sonickey.dto';
 
 @Injectable()
-export class EncodeSecurityGuard implements CanActivate {
-  constructor() {}
-  async canActivate(context: ExecutionContext) {
+export class EncodeSecurityInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler) {
     const request = context.switchToHttp().getRequest();
     const loggedInUser = request?.user as UserDB;
     var createSonicKeyDto: CreateSonicKeyDto;
@@ -21,9 +21,6 @@ export class EncodeSecurityGuard implements CanActivate {
     } else {
       createSonicKeyDto = request?.body?.data;
     }
-    console.log("request?.body",request?.body)
-    console.log("createSonicKeyDto",createSonicKeyDto)
-    throw new Error("tested error")
     switch (loggedInUser.userRole) {
       case SystemRoles.ADMIN:
         break;
@@ -86,7 +83,6 @@ export class EncodeSecurityGuard implements CanActivate {
     } else {
       request.body.data = createSonicKeyDto;
     }
-
-    return true;
+    return next.handle();
   }
 }

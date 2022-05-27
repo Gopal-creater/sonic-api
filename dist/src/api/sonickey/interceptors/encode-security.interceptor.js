@@ -5,16 +5,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EncodeSecurityGuard = void 0;
+exports.EncodeSecurityInterceptor = void 0;
 const common_1 = require("@nestjs/common");
 const Enums_1 = require("../../../constants/Enums");
-let EncodeSecurityGuard = class EncodeSecurityGuard {
-    constructor() { }
-    async canActivate(context) {
+let EncodeSecurityInterceptor = class EncodeSecurityInterceptor {
+    intercept(context, next) {
         var _a, _b, _c, _d, _e, _f;
         const request = context.switchToHttp().getRequest();
         const loggedInUser = request === null || request === void 0 ? void 0 : request.user;
@@ -25,9 +21,6 @@ let EncodeSecurityGuard = class EncodeSecurityGuard {
         else {
             createSonicKeyDto = (_c = request === null || request === void 0 ? void 0 : request.body) === null || _c === void 0 ? void 0 : _c.data;
         }
-        console.log("request?.body", request === null || request === void 0 ? void 0 : request.body);
-        console.log("createSonicKeyDto", createSonicKeyDto);
-        throw new Error("tested error");
         switch (loggedInUser.userRole) {
             case Enums_1.SystemRoles.ADMIN:
                 break;
@@ -73,12 +66,11 @@ let EncodeSecurityGuard = class EncodeSecurityGuard {
         else {
             request.body.data = createSonicKeyDto;
         }
-        return true;
+        return next.handle();
     }
 };
-EncodeSecurityGuard = __decorate([
-    common_1.Injectable(),
-    __metadata("design:paramtypes", [])
-], EncodeSecurityGuard);
-exports.EncodeSecurityGuard = EncodeSecurityGuard;
-//# sourceMappingURL=encode-security.guard.js.map
+EncodeSecurityInterceptor = __decorate([
+    common_1.Injectable()
+], EncodeSecurityInterceptor);
+exports.EncodeSecurityInterceptor = EncodeSecurityInterceptor;
+//# sourceMappingURL=encode-security.interceptor.js.map
