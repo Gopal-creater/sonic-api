@@ -111,6 +111,10 @@ export class Track extends Document {
   iExtractedMetaData: any;
 
   @ApiProperty()
+  @Prop({type:MogSchema.Types.Mixed})
+  trackMetaData: any;
+
+  @ApiProperty()
   @Prop({
     type: String,
     ref: 'User',

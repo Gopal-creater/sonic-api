@@ -510,6 +510,7 @@ export class SonickeyService {
       artist:sonickeyDoc.contentOwner,
       title:sonickeyDoc.contentName,
       fileType: sonickeyDoc.contentFileType,
+      trackMetaData:sonickeyDoc,
       owner,
       partner,
       company,

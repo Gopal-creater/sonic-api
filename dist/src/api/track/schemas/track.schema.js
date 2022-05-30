@@ -142,6 +142,11 @@ __decorate([
 ], Track.prototype, "iExtractedMetaData", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.Mixed }),
+    __metadata("design:type", Object)
+], Track.prototype, "trackMetaData", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop({
         type: String,
         ref: 'User',

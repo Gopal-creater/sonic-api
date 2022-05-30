@@ -168,7 +168,7 @@ __decorate([
 ], LicenseKey.prototype, "metaData", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ required: true }),
+    mongoose_1.Prop({}),
     __metadata("design:type", String)
 ], LicenseKey.prototype, "createdBy", void 0);
 __decorate([

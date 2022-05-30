@@ -4,11 +4,12 @@ exports.partnerTypes = void 0;
 exports.partnerTypes = [
     'CMO',
     'Distributor',
-    'Monitor',
+    'Monitoring Company',
     'Music Management Services',
     'PRO',
     'Production Library',
     'Publisher',
     'Sub Publisher',
+    'Record Company',
 ];
 //# sourceMappingURL=index.js.map

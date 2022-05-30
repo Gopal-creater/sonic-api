@@ -9,11 +9,14 @@ import {
   UseGuards,
   Query,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { LicensekeyService } from '../services/licensekey.service';
-import { AdminUpdateLicensekeyDto, CreateLicensekeyDto } from '../dto/create-licensekey.dto';
-import { UpdateLicensekeyDto } from '../dto/update-licensekey.dto';
+import {
+  AdminUpdateLicensekeyDto,
+  CreateLicensekeyDto,
+} from '../dto/create-licensekey.dto';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -27,75 +30,75 @@ import { User } from 'src/api/auth/decorators';
 import { RolesAllowed } from '../../auth/decorators/roles.decorator';
 import { ApiKeyType, Roles } from 'src/constants/Enums';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
-import { FailedAlwaysGuard } from '../../auth/guards/failedAlways.guard';
 import * as _ from 'lodash';
+import { LicenseKey } from '../schemas/licensekey.schema';
+import { UserDB } from '../../user/schemas/user.db.schema';
+import { CreateLicenseSecurityGuard } from '../guards/create-license-security.guard';
+import { UpdateLicenseSecurityGuard } from '../guards/update-license-security.guard';
+import { DeleteLicenseSecurityGuard } from '../guards/delete-license-security.guard';
+import { AddUserToLicense } from '../dto/update-licensekey.dto';
+import { AddUserToLicenseSecurityGuard } from '../guards/adduserto-license-security.guard copy';
+import { GetOneLicenseSecurityGuard } from '../guards/getone-license-security.guard';
 
-@ApiTags('License Keys Management Controller')
+@ApiTags('License Keys Management Controller (D & M)')
 @Controller('license-keys')
 export class LicensekeyController {
   constructor(private readonly licensekeyService: LicensekeyService) {}
 
-  @Get('/convert-owners-to-users')
-  // @UseGuards(FailedAlwaysGuard)
-  // @ApiBearerAuth()
- async migrate() {
-  //  var licenses = await this.licensekeyService.licenseKeyModel.find()
-  // console.log("licenses length",licenses.length)
-  //  for await (var license of licenses) {
-  //   license = license.depopulate('users')
-  //    const users = license.owners.map(o=>o?.ownerId?._id).filter(Boolean)
-  //    console.log("users",users)
-  //    var newUsers = license.users||[]
-  //    newUsers.push(...users)
-  //    newUsers=_.uniq(newUsers)
-  //    await this.licensekeyService.licenseKeyModel.findByIdAndUpdate(license._id,{users:newUsers})
-  //  }
-  // await this.licensekeyService.licenseKeyModel.updateMany({},{type:ApiKeyType.INDIVIDUAL})
-   return "Disabled"
-  }
-
   @Post()
-  @RolesAllowed(Roles.ADMIN,Roles.THIRDPARTY_ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @RolesAllowed(
+    Roles.ADMIN,
+    Roles.THIRDPARTY_ADMIN,
+    Roles.PARTNER_ADMIN,
+    Roles.COMPANY_ADMIN,
+  )
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, CreateLicenseSecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create License Key' })
   async create(
     @Body() createLicensekeyDto: CreateLicensekeyDto,
-    @User('sub') createdBy: string,
+    @User() loggedInUser: UserDB,
   ) {
+    const doc: Partial<LicenseKey> = {
+      ...createLicensekeyDto,
+      createdBy: loggedInUser?.sub,
+    };
+
     if (createLicensekeyDto.type == ApiKeyType.INDIVIDUAL) {
       const user = await this.licensekeyService.userService.getUserProfile(
         createLicensekeyDto.user,
       );
       if (!user) throw new NotFoundException('Unknown user');
-      createLicensekeyDto.user = user?.sub;
-      delete createLicensekeyDto.company
+      doc.users = [createLicensekeyDto.user];
     } else if (createLicensekeyDto.type == ApiKeyType.COMPANY) {
       const company = await this.licensekeyService.companyService.findById(
         createLicensekeyDto.company,
       );
       if (!company) throw new NotFoundException('Unknown company');
-      if (!company?.owner?.sub)
-        throw new NotFoundException(
-          'The given company doesnot have any valid admin user',
+      if (createLicensekeyDto.user) {
+        const user = await this.licensekeyService.userService.getUserProfile(
+          createLicensekeyDto.user,
         );
-        createLicensekeyDto.user = company.owner.sub
+        if (!user) throw new NotFoundException('Unknown user');
+        doc.users = [createLicensekeyDto.user];
+      }
     }
-    return this.licensekeyService.create(createLicensekeyDto, createdBy);
+    return this.licensekeyService.create(doc);
   }
 
   @Get()
-  @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @AnyApiQueryTemplate()
-  @ApiOperation({ summary: 'Get All LicenseJKeys' })
+  @ApiOperation({ summary: 'Get All LicenseKeys' })
   findAll(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto) {
     return this.licensekeyService.findAll(queryDto);
   }
 
   @Get('/count')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @AnyApiQueryTemplate()
   @ApiQuery({ name: 'includeGroupData', type: Boolean, required: false })
   @ApiBearerAuth()
@@ -107,7 +110,8 @@ export class LicensekeyController {
   }
 
   @Get('/estimate-count')
-  @UseGuards(JwtAuthGuard)
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get all count of all licenskeys',
@@ -115,11 +119,10 @@ export class LicensekeyController {
   async getEstimateCount() {
     return this.licensekeyService.getEstimateCount();
   }
-  
 
   @Get(':id')
-  @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard,GetOneLicenseSecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Single License key' })
   async findOne(@Param('id') id: string) {
@@ -133,8 +136,8 @@ export class LicensekeyController {
   }
 
   @Put(':id')
-  @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, UpdateLicenseSecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Single License key' })
   async update(
@@ -142,23 +145,86 @@ export class LicensekeyController {
     @Body() updateLicensekeyDto: AdminUpdateLicensekeyDto,
     @User('sub') updatedBy: string,
   ) {
-    const updatedKey = await this.licensekeyService.licenseKeyModel.findOneAndUpdate(
-      { _id: id },
-      { ...updateLicensekeyDto, updatedBy: updatedBy },
-      { new: true },
-    );
-    if (!updatedKey) {
+    const licenseKey = await this.licensekeyService.findById(id);
+    if (!licenseKey) {
       throw new NotFoundException();
     }
+    const updatedKey = await this.licensekeyService.update(id, {
+      ...updateLicensekeyDto,
+      updatedBy: updatedBy,
+    });
+    return updatedKey;
+  }
+
+  @Put(':id/add-new-user')
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, AddUserToLicenseSecurityGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Add new user to license key' })
+  async addNewUser(
+    @Param('id') id: string,
+    @Body() addUserToLicense: AddUserToLicense,
+    @User('sub') updatedBy: string,
+  ) {
+    const { user } = addUserToLicense;
+    const licenseKey = await this.licensekeyService.findById(id);
+    if (!licenseKey) {
+      throw new NotFoundException('Licensekey not found');
+    }
+    if (licenseKey.type==ApiKeyType.INDIVIDUAL && licenseKey.users.length>0) {
+      throw new UnprocessableEntityException('Can not add user to individual license type');
+    }
+    const userformdb = await this.licensekeyService.userService.findById(user);
+    if (!userformdb) {
+      throw new NotFoundException('User not found');
+    }
+    const updatedKey = await this.licensekeyService.update(id, {
+      $addToSet: {
+        users: { $each: [user] },
+      },
+      updatedBy: updatedBy,
+    });
+    return updatedKey;
+  }
+
+  @Put(':id/remove-user')
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, AddUserToLicenseSecurityGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Remove user from license key' })
+  async removeUser(
+    @Param('id') id: string,
+    @Body() addUserToLicense: AddUserToLicense,
+    @User('sub') updatedBy: string,
+  ) {
+    const { user } = addUserToLicense;
+    const licenseKey = await this.licensekeyService.findById(id);
+    if (!licenseKey) {
+      throw new NotFoundException('Licensekey not found');
+    }
+    const userformdb = await this.licensekeyService.userService.findById(user);
+    if (!userformdb) {
+      throw new NotFoundException('User not found');
+    }
+    const updatedKey = await this.licensekeyService.update(id, {
+      $pull: {
+        users: user,
+      },
+      updatedBy: updatedBy,
+    });
     return updatedKey;
   }
 
   @Delete(':id')
-  @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, DeleteLicenseSecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete License key' })
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
+    const licenseKey = await this.licensekeyService.findById(id);
+    if (!licenseKey) {
+      throw new NotFoundException();
+    }
     return this.licensekeyService.licenseKeyModel.findByIdAndRemove(id);
   }
 }

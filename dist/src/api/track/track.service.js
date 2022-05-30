@@ -29,7 +29,8 @@ let TrackService = class TrackService {
         this.userService = userService;
     }
     async create(doc) {
-        return this.trackModel.create(doc).then(createdTrack => {
+        const trackId = this.generateTrackId();
+        return this.trackModel.create(Object.assign(Object.assign({}, doc), { _id: trackId })).then(createdTrack => {
             return createdTrack.save();
         });
     }
@@ -42,7 +43,7 @@ let TrackService = class TrackService {
         return createdTrack;
     }
     generateTrackId() {
-        return `T${nanoid_1.nanoid(8)}`;
+        return `T${nanoid_1.customAlphabet('1234567890', 8)}`;
     }
     findAll(queryDto) {
         const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
