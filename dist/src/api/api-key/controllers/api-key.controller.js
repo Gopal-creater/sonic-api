@@ -38,6 +38,7 @@ let ApiKeyController = class ApiKeyController {
             if (!user)
                 throw new common_1.NotFoundException('Unknown user');
             createApiKeyDto.customer = user === null || user === void 0 ? void 0 : user.sub;
+            delete createApiKeyDto.company;
         }
         else if (createApiKeyDto.type == Enums_1.ApiKeyType.COMPANY) {
             const company = await this.apiKeyService.companyService.findById(createApiKeyDto.company);

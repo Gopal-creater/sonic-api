@@ -54,6 +54,7 @@ export class ApiKeyController {
       );
       if (!user) throw new NotFoundException('Unknown user');
       createApiKeyDto.customer = user?.sub;
+      delete createApiKeyDto.company
     } else if (createApiKeyDto.type == ApiKeyType.COMPANY) {
       const company = await this.apiKeyService.companyService.findById(
         createApiKeyDto.company,
