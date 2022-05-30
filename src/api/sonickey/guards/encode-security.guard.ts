@@ -23,7 +23,6 @@ export class EncodeSecurityGuard implements CanActivate {
     }
     console.log("request?.body",request?.body)
     console.log("createSonicKeyDto",createSonicKeyDto)
-    throw new Error("tested error")
     switch (loggedInUser.userRole) {
       case SystemRoles.ADMIN:
         break;

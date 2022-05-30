@@ -27,7 +27,6 @@ let EncodeSecurityGuard = class EncodeSecurityGuard {
         }
         console.log("request?.body", request === null || request === void 0 ? void 0 : request.body);
         console.log("createSonicKeyDto", createSonicKeyDto);
-        throw new Error("tested error");
         switch (loggedInUser.userRole) {
             case Enums_1.SystemRoles.ADMIN:
                 break;
