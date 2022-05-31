@@ -607,6 +607,8 @@ export class SonickeyService {
       originalFileName: file?.originalname,
       sonicKey: sonicKey,
       downloadable: true,
+      license:licenseId,
+      channel:sonickeyDoc.channel||ChannelEnums.PORTAL,
       track:track?._id,
       s3FileMeta: s3EncodedUploadResult,
       fingerPrintStatus: FingerPrintStatus.PENDING,
@@ -637,7 +639,8 @@ export class SonickeyService {
     console.log('Sonickey saved.');
     console.log('Increment License Usages upon successfull encode & save');
     await this.licensekeyService.incrementUses(licenseId, 'encode', 1);
-    return savedSonnicKey
+    console.log('Increment License Usages upon successfull encode & save Done');
+    return this.findById(savedSonnicKey._id)
   }
 
   /**
