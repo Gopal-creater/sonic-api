@@ -61,7 +61,7 @@ export class TrackService {
   }
 
    generateTrackId(){
-    return `T${customAlphabet('1234567890', 8)}`
+    return `T${customAlphabet('1234567890', 10)(8)}`
   }
 
   findAll(queryDto: ParsedQueryDto):Promise<MongoosePaginateTrackDto> {
