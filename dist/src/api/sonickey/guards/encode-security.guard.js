@@ -15,16 +15,10 @@ const Enums_1 = require("../../../constants/Enums");
 let EncodeSecurityGuard = class EncodeSecurityGuard {
     constructor() { }
     async canActivate(context) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c;
         const request = context.switchToHttp().getRequest();
         const loggedInUser = request === null || request === void 0 ? void 0 : request.user;
-        var createSonicKeyDto;
-        if (typeof ((_a = request === null || request === void 0 ? void 0 : request.body) === null || _a === void 0 ? void 0 : _a.data) == 'string') {
-            createSonicKeyDto = JSON.parse((_b = request === null || request === void 0 ? void 0 : request.body) === null || _b === void 0 ? void 0 : _b.data);
-        }
-        else {
-            createSonicKeyDto = (_c = request === null || request === void 0 ? void 0 : request.body) === null || _c === void 0 ? void 0 : _c.data;
-        }
+        var createSonicKeyDto = (_a = request === null || request === void 0 ? void 0 : request.body) === null || _a === void 0 ? void 0 : _a.data;
         console.log("request?.body", request === null || request === void 0 ? void 0 : request.body);
         console.log("createSonicKeyDto", createSonicKeyDto);
         switch (loggedInUser.userRole) {
@@ -32,7 +26,7 @@ let EncodeSecurityGuard = class EncodeSecurityGuard {
                 break;
             case Enums_1.SystemRoles.PARTNER_ADMIN:
             case Enums_1.SystemRoles.PARTNER_USER:
-                const partnerId = (_d = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.partner) === null || _d === void 0 ? void 0 : _d.id;
+                const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.partner) === null || _b === void 0 ? void 0 : _b.id;
                 if (!createSonicKeyDto.partner) {
                     throw new common_1.BadRequestException('Please provide partner id in the request body');
                 }
@@ -44,11 +38,11 @@ let EncodeSecurityGuard = class EncodeSecurityGuard {
                 break;
             case Enums_1.SystemRoles.COMPANY_ADMIN:
             case Enums_1.SystemRoles.COMPANY_USER:
-                const companyId = (_e = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.company) === null || _e === void 0 ? void 0 : _e.id;
-                if (!createSonicKeyDto.company) {
+                const companyId = (_c = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.company) === null || _c === void 0 ? void 0 : _c.id;
+                if (!(createSonicKeyDto === null || createSonicKeyDto === void 0 ? void 0 : createSonicKeyDto.company)) {
                     throw new common_1.BadRequestException('Please provide company id in the request body');
                 }
-                if (createSonicKeyDto.company !== companyId) {
+                if ((createSonicKeyDto === null || createSonicKeyDto === void 0 ? void 0 : createSonicKeyDto.company) !== companyId) {
                     throw new common_1.UnprocessableEntityException('Resource mismatch, Please provide your own company id');
                 }
                 createSonicKeyDto === null || createSonicKeyDto === void 0 ? true : delete createSonicKeyDto.owner;
@@ -56,22 +50,17 @@ let EncodeSecurityGuard = class EncodeSecurityGuard {
                 break;
             default:
                 const ownerId = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.id;
-                if (!createSonicKeyDto.owner) {
+                if (!(createSonicKeyDto === null || createSonicKeyDto === void 0 ? void 0 : createSonicKeyDto.owner)) {
                     throw new common_1.BadRequestException('Please provide owner id in the request body');
                 }
-                if (createSonicKeyDto.owner !== ownerId) {
+                if ((createSonicKeyDto === null || createSonicKeyDto === void 0 ? void 0 : createSonicKeyDto.owner) !== ownerId) {
                     throw new common_1.UnprocessableEntityException('Resource mismatch, Please provide your own user/owner id');
                 }
                 createSonicKeyDto === null || createSonicKeyDto === void 0 ? true : delete createSonicKeyDto.partner;
                 createSonicKeyDto === null || createSonicKeyDto === void 0 ? true : delete createSonicKeyDto.company;
                 break;
         }
-        if (typeof ((_f = request === null || request === void 0 ? void 0 : request.body) === null || _f === void 0 ? void 0 : _f.data) == 'string') {
-            request.body.data = JSON.stringify(createSonicKeyDto);
-        }
-        else {
-            request.body.data = createSonicKeyDto;
-        }
+        request.body.data = createSonicKeyDto;
         return true;
     }
 };

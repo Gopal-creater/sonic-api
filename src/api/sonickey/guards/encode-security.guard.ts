@@ -15,12 +15,7 @@ export class EncodeSecurityGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const loggedInUser = request?.user as UserDB;
-    var createSonicKeyDto: CreateSonicKeyDto;
-    if (typeof request?.body?.data == 'string') {
-      createSonicKeyDto = JSON.parse(request?.body?.data);
-    } else {
-      createSonicKeyDto = request?.body?.data;
-    }
+    var createSonicKeyDto =request?.body?.data  as CreateSonicKeyDto;
     console.log("request?.body",request?.body)
     console.log("createSonicKeyDto",createSonicKeyDto)
     switch (loggedInUser.userRole) {
@@ -48,12 +43,12 @@ export class EncodeSecurityGuard implements CanActivate {
       case SystemRoles.COMPANY_ADMIN:
       case SystemRoles.COMPANY_USER:
         const companyId = loggedInUser?.company?.id;
-        if (!createSonicKeyDto.company) {
+        if (!createSonicKeyDto?.company) {
           throw new BadRequestException(
             'Please provide company id in the request body',
           );
         }
-        if (createSonicKeyDto.company !== companyId) {
+        if (createSonicKeyDto?.company !== companyId) {
           throw new UnprocessableEntityException(
             'Resource mismatch, Please provide your own company id',
           );
@@ -65,12 +60,12 @@ export class EncodeSecurityGuard implements CanActivate {
 
       default:
         const ownerId = loggedInUser?.id;
-        if (!createSonicKeyDto.owner) {
+        if (!createSonicKeyDto?.owner) {
           throw new BadRequestException(
             'Please provide owner id in the request body',
           );
         }
-        if (createSonicKeyDto.owner !== ownerId) {
+        if (createSonicKeyDto?.owner !== ownerId) {
           throw new UnprocessableEntityException(
             'Resource mismatch, Please provide your own user/owner id',
           );
@@ -80,11 +75,7 @@ export class EncodeSecurityGuard implements CanActivate {
         delete createSonicKeyDto?.company;
         break;
     }
-    if (typeof request?.body?.data == 'string') {
-      request.body.data = JSON.stringify(createSonicKeyDto);
-    } else {
-      request.body.data = createSonicKeyDto;
-    }
+    request.body.data = createSonicKeyDto;
 
     return true;
   }
