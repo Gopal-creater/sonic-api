@@ -67,7 +67,7 @@ export class Company extends Document {
 
   @ApiProperty()
   @Prop({
-    type: String,
+    type: MogSchema.Types.ObjectId,
     ref: 'Partner',
     autopopulate: { maxDepth: 2 },
   })

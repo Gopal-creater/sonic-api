@@ -27,11 +27,14 @@ let CreateCompanySecurityGuard = class CreateCompanySecurityGuard {
             case Enums_1.SystemRoles.ADMIN:
                 break;
             case Enums_1.SystemRoles.PARTNER_ADMIN:
-                if (!createCompanyDto.partner) {
+                if (!(createCompanyDto === null || createCompanyDto === void 0 ? void 0 : createCompanyDto.partner)) {
                     throw new common_1.BadRequestException('Please provide your partner id');
                 }
-                if (createCompanyDto.partner !== ((_a = loggedInUser.adminPartner) === null || _a === void 0 ? void 0 : _a.id)) {
+                if ((createCompanyDto === null || createCompanyDto === void 0 ? void 0 : createCompanyDto.partner) !== ((_a = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminPartner) === null || _a === void 0 ? void 0 : _a.id)) {
                     throw new common_2.ForbiddenException('You dont have permission to do this action, resource mismatch');
+                }
+                if (!(createCompanyDto === null || createCompanyDto === void 0 ? void 0 : createCompanyDto.owner)) {
+                    throw new common_1.BadRequestException('Please provide owner id in request body');
                 }
                 break;
             default:

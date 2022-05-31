@@ -24,13 +24,17 @@ export class CreateCompanySecurityGuard implements CanActivate {
       case SystemRoles.ADMIN:
         break;
       case SystemRoles.PARTNER_ADMIN:
-        if (!createCompanyDto.partner) {
+        if (!createCompanyDto?.partner) {
           throw new BadRequestException('Please provide your partner id');
         }
-        if (createCompanyDto.partner !== loggedInUser.adminPartner?.id) {
+        if (createCompanyDto?.partner !== loggedInUser?.adminPartner?.id) {
           throw new ForbiddenException(
             'You dont have permission to do this action, resource mismatch',
           );
+        }
+
+        if (!createCompanyDto?.owner) {
+          throw new BadRequestException('Please provide owner id in request body');
         }
 
         break;

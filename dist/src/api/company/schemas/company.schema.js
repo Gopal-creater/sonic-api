@@ -92,7 +92,7 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        type: String,
+        type: mongoose_2.Schema.Types.ObjectId,
         ref: 'Partner',
         autopopulate: { maxDepth: 2 },
     }),
