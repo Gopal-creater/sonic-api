@@ -9,10 +9,17 @@ import * as mm from 'music-metadata';
 import { IUploadedFile } from '../../shared/interfaces/UploadedFile.interface';
 import { S3FileUploadService } from '../s3fileupload/s3fileupload.service';
 import { MongoosePaginateTrackDto } from './dto/mongoosepaginate-track.dto';
-import { customAlphabet,nanoid} from 'nanoid'
+import { customAlphabet, nanoid } from 'nanoid';
 import { UserDB } from '../user/schemas/user.db.schema';
 import { SystemRoles, S3ACL, ChannelEnums } from 'src/constants/Enums';
 import { UploadTrackDto } from './dto/create-track.dto';
+import { FileHandlerService } from '../../shared/services/file-handler.service';
+import * as AdmZip from 'adm-zip';
+import * as makeDir from 'make-dir';
+import * as xlsx from 'xlsx';
+import * as XLSXChart from 'xlsx-chart';
+import * as moment from 'moment';
+import { appConfig } from 'src/config';
 
 @Injectable()
 export class TrackService {
@@ -26,20 +33,25 @@ export class TrackService {
   ) {}
   async create(doc: AnyObject | AnyKeys<Track>) {
     const trackId = this.generateTrackId();
-    return this.trackModel.create({...doc,_id:trackId}).then(createdTrack => {
-      return createdTrack.save();
-    });
+    return this.trackModel
+      .create({ ...doc, _id: trackId })
+      .then(createdTrack => {
+        return createdTrack.save();
+      });
   }
 
-  async uploadAndCreate(file:IUploadedFile,doc: AnyObject | AnyKeys<Track>,s3destinationFolder?:string,acl?:S3ACL) {
-    const {channel, artist, title } = doc;
+  async uploadAndCreate(
+    file: IUploadedFile,
+    doc: AnyObject | AnyKeys<Track>,
+    s3destinationFolder?: string,
+    acl?: S3ACL,
+  ) {
+    const { channel, artist, title } = doc;
     const s3FileUploadResponse = await this.s3FileUploadService.uploadFromPath(
       file.path,
       `${s3destinationFolder}/originalFiles`,
     );
-    const extractFileMeta = await this.exractMusicMetaFromFile(
-      file,
-    );
+    const extractFileMeta = await this.exractMusicMetaFromFile(file);
     const trackId = this.generateTrackId();
     const createdTrack = await this.create({
       _id: trackId,
@@ -55,16 +67,75 @@ export class TrackService {
       encoding: extractFileMeta.encoding,
       samplingFrequency: extractFileMeta.samplingFrequency,
       originalFileName: file.originalname,
-      iExtractedMetaData: extractFileMeta
+      iExtractedMetaData: extractFileMeta,
     });
-    return createdTrack
+    return createdTrack;
   }
 
-   generateTrackId(){
-    return `T${customAlphabet('1234567890', 10)(8)}`
+  generateTrackId() {
+    return `T${customAlphabet('1234567890', 10)(8)}`;
   }
 
-  findAll(queryDto: ParsedQueryDto):Promise<MongoosePaginateTrackDto> {
+  async exportTracks(queryDto: ParsedQueryDto, format: string):Promise<string> {
+    return new Promise(async (resolve,reject)=>{
+      const tracks = await this.findAll(queryDto)
+
+      var tracksListInJsonFormat = [];
+      for await (const track of tracks.docs) {
+        var trackExcelData = {
+          TrackId: track?._id,
+          Title: track?.trackMetaData?.contentName || "--",
+          Version: track?.trackMetaData?.version || "--",
+          Artist: track?.trackMetaData?.contentOwner || "--",
+          Distributor: track?.trackMetaData?.distributor || "--",
+          FileType: track?.fileType || "--",
+          Date: moment(track?.['createdAt'])
+            .utc()
+            .format('DD/MM/YYYY'),
+          "System / Partner Id": track?.partner?._id || "--"
+      }
+      tracksListInJsonFormat.push(trackExcelData);
+    }
+      if (tracksListInJsonFormat.length <= 0) {
+        tracksListInJsonFormat.push({
+          TrackId: '',
+          Title: '',
+          Version: '',
+          Artist: '',
+          Distributor: '',
+          FileType: '',
+          Date: '',
+          "System / Partner Id": ''
+        });
+      }
+  
+      const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
+      var finalFilePath:string=''
+      var zip = new AdmZip();
+      try {
+        const file = xlsx.utils.book_new()
+        const wsTracksListInJsonFormat = xlsx.utils.json_to_sheet(
+          tracksListInJsonFormat,
+        );
+        xlsx.utils.book_append_sheet(file, wsTracksListInJsonFormat, 'Tracks');
+        if(format=="xlsx"){
+          const excelFilePath =`${destination}/${`tracks${Date.now()}`}.xlsx`;
+          xlsx.writeFile(file, excelFilePath);
+          finalFilePath=excelFilePath
+          resolve(excelFilePath)
+        }else if (format == 'csv') {
+          const csvFilePath = `${destination}/${`tracks${Date.now()}`}.csv`;
+          xlsx.writeFile(file, csvFilePath,{bookType:'csv',sheet:"Tracks"});
+          finalFilePath=csvFilePath
+          resolve(csvFilePath)
+        }
+      } catch (error) {
+        return reject(error);
+      }
+    })
+  }
+
+  findAll(queryDto: ParsedQueryDto): Promise<MongoosePaginateTrackDto> {
     const {
       limit,
       skip,
@@ -142,17 +213,10 @@ export class TrackService {
     return this.trackModel.findById(id);
   }
 
-  update(
-    id: string,
-    updateTrackDto: UpdateQuery<Track>
-  ) {
-    return this.trackModel.findByIdAndUpdate(
-      id,
-      updateTrackDto,
-      {
-        new: true,
-      },
-    );
+  update(id: string, updateTrackDto: UpdateQuery<Track>) {
+    return this.trackModel.findByIdAndUpdate(id, updateTrackDto, {
+      new: true,
+    });
   }
 
   async getCount(queryDto: ParsedQueryDto) {

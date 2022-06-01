@@ -30,7 +30,7 @@ export class Track extends Document {
     ref: 'Company',
     autopopulate: { maxDepth: 2 },
   })
-  company: string;
+  company: any;
 
   @ApiProperty()
   @Prop({
@@ -38,7 +38,7 @@ export class Track extends Document {
     ref: 'Partner',
     autopopulate: { maxDepth: 2 },
   })
-  partner: string;
+  partner: any;
 
   @ApiProperty()
   @Prop({
@@ -120,7 +120,7 @@ export class Track extends Document {
     ref: 'User',
     autopopulate: { maxDepth: 2 },
   })
-  createdBy: string;
+  createdBy: any;
 
   @ApiProperty()
   @Prop({
@@ -128,7 +128,7 @@ export class Track extends Document {
     ref: 'User',
     autopopulate: { maxDepth: 2 },
   })
-  updatedBy: string;
+  updatedBy: any;
 }
 
 export const TrackSchema = SchemaFactory.createForClass(Track);

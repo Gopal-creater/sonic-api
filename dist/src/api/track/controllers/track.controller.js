@@ -37,9 +37,11 @@ const update_track_security_guard_1 = require("../guards/update-track-security.g
 const delete_track_security_guard_1 = require("../guards/delete-track-security.guard");
 const failedAlways_guard_1 = require("../../auth/guards/failedAlways.guard");
 const upload_track_security_guard_1 = require("../guards/upload-track-security.guard");
+const file_handler_service_1 = require("../../../shared/services/file-handler.service");
 let TrackController = class TrackController {
-    constructor(trackService) {
+    constructor(trackService, fileHandlerService) {
         this.trackService = trackService;
+        this.fileHandlerService = fileHandlerService;
     }
     async uploadTrack(uploadTrackDto, file, loggedInUser) {
         const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
@@ -48,6 +50,18 @@ let TrackController = class TrackController {
     }
     findAll(queryDto, loggedInUser) {
         return this.trackService.findAll(queryDto);
+    }
+    async exportTracks(res, format, queryDto, loggedInUser) {
+        queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
+        const filePath = await this.trackService.exportTracks(queryDto, format);
+        const fileName = utils_1.extractFileName(filePath);
+        res.download(filePath, `tracks_${format}.${fileName.split('.')[1]}`, err => {
+            if (err) {
+                this.fileHandlerService.deleteFileAtPath(filePath);
+                res.send(err);
+            }
+            this.fileHandlerService.deleteFileAtPath(filePath);
+        });
     }
     async findById(id) {
         const track = await this.trackService.findById(id);
@@ -147,6 +161,29 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TrackController.prototype, "findAll", null);
 __decorate([
+    swagger_1.ApiOperation({ summary: 'List Tracks' }),
+    common_1.Get('/export/:format'),
+    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
+    swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
+    swagger_1.ApiQuery({
+        name: 'channel',
+        enum: [...Object.values(Enums_1.ChannelEnums)],
+        required: false,
+    }),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Param('format')),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(3, decorators_1.User()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, parsedquery_dto_1.ParsedQueryDto,
+        user_db_schema_1.UserDB]),
+    __metadata("design:returntype", Promise)
+], TrackController.prototype, "exportTracks", null);
+__decorate([
     swagger_1.ApiOperation({
         summary: 'Get track by id',
     }),
@@ -216,7 +253,7 @@ __decorate([
 TrackController = __decorate([
     swagger_1.ApiTags("Track Controller (D & M May 2022)"),
     common_1.Controller('tracks'),
-    __metadata("design:paramtypes", [track_service_1.TrackService])
+    __metadata("design:paramtypes", [track_service_1.TrackService, file_handler_service_1.FileHandlerService])
 ], TrackController);
 exports.TrackController = TrackController;
 //# sourceMappingURL=track.controller.js.map

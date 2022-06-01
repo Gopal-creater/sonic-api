@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { TrackSchemaName, TrackSchema } from './schemas/track.schema';
 import { UserModule } from '../user/user.module';
 import { S3FileUploadModule } from '../s3fileupload/s3fileupload.module';
+import { FileHandlerService } from 'src/shared/services/file-handler.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { S3FileUploadModule } from '../s3fileupload/s3fileupload.module';
     S3FileUploadModule,
   ],
   controllers: [TrackController],
-  providers: [TrackService],
+  providers: [TrackService,FileHandlerService],
   exports: [TrackService],
 })
 export class TrackModule {}

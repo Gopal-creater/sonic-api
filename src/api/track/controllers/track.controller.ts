@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  Res,
   UseInterceptors,
   UploadedFile,
   UseGuards,
@@ -22,6 +23,7 @@ import {
   ApiQuery,
   ApiBearerAuth,
   ApiTags,
+  ApiParam,
 } from '@nestjs/swagger';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
@@ -35,19 +37,21 @@ import * as uniqid from 'uniqid';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { UserDB } from '../../user/schemas/user.db.schema';
 import { RolesAllowed, User } from '../../auth/decorators';
-import { identifyDestinationFolderAndResourceOwnerFromUser } from 'src/shared/utils';
+import { extractFileName, identifyDestinationFolderAndResourceOwnerFromUser } from 'src/shared/utils';
 import { ChannelEnums, SystemRoles } from 'src/constants/Enums';
 import { JwtAuthGuard } from '../../auth/guards';
+import { Response } from 'express';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
 import { UpdateTrackSecurityGuard } from '../guards/update-track-security.guard';
 import { DeleteTrackSecurityGuard } from '../guards/delete-track-security.guard';
 import { FailedAlwaysGuard } from '../../auth/guards/failedAlways.guard';
 import { UploadTrackSecurityGuard } from '../guards/upload-track-security.guard';
+import { FileHandlerService } from 'src/shared/services/file-handler.service';
 
 @ApiTags("Track Controller (D & M May 2022)")
 @Controller('tracks')
 export class TrackController {
-  constructor(private readonly trackService: TrackService) {}
+  constructor(private readonly trackService: TrackService,    private readonly fileHandlerService: FileHandlerService,) {}
 
   @UseInterceptors(
     FileInterceptor('mediaFile', {
@@ -128,6 +132,43 @@ export class TrackController {
     @User() loggedInUser: UserDB,
   ) {
     return this.trackService.findAll(queryDto);
+  }
+
+  @ApiOperation({ summary: 'List Tracks' })
+  @Get('/export/:format')
+  @ApiParam({ name: 'format', enum: ['xlsx', 'csv'] })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiQuery({
+    name: 'channel',
+    enum: [...Object.values(ChannelEnums)],
+    required: false,
+  })
+  @AnyApiQueryTemplate()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async exportTracks(
+    @Res() res: Response,
+    @Param('format') format: string,
+    @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
+    @User() loggedInUser: UserDB,
+  ) {
+    queryDto.limit = queryDto?.limit <= 2000 ? queryDto?.limit : 2000;
+    const filePath = await this.trackService.exportTracks(
+      queryDto,
+      format,
+    );
+    const fileName = extractFileName(filePath);
+    res.download(
+      filePath,
+      `tracks_${format}.${fileName.split('.')[1]}`,
+      err => {
+        if (err) {
+          this.fileHandlerService.deleteFileAtPath(filePath);
+          res.send(err);
+        }
+        this.fileHandlerService.deleteFileAtPath(filePath);
+      },
+    );
   }
 
 

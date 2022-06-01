@@ -14,6 +14,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const track_schema_1 = require("./schemas/track.schema");
 const user_module_1 = require("../user/user.module");
 const s3fileupload_module_1 = require("../s3fileupload/s3fileupload.module");
+const file_handler_service_1 = require("../../shared/services/file-handler.service");
 let TrackModule = class TrackModule {
 };
 TrackModule = __decorate([
@@ -24,7 +25,7 @@ TrackModule = __decorate([
             s3fileupload_module_1.S3FileUploadModule,
         ],
         controllers: [track_controller_1.TrackController],
-        providers: [track_service_1.TrackService],
+        providers: [track_service_1.TrackService, file_handler_service_1.FileHandlerService],
         exports: [track_service_1.TrackService],
     })
 ], TrackModule);
