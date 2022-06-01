@@ -47,7 +47,6 @@ export class SonicKey extends Document {
 
   @ApiProperty()
   @Prop({
-    required: true,
     type: String,
     ref: 'User',
     autopopulate: { maxDepth: 2 },

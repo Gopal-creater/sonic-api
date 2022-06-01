@@ -68,7 +68,6 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        required: true,
         type: String,
         ref: 'User',
         autopopulate: { maxDepth: 2 },
