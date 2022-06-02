@@ -249,13 +249,12 @@ let DetectionService = class DetectionService {
             radioStation: radioStationId
         });
     }
-    async exportDashboardPlaysView(queryDto, ownerId, format) {
-        const { filter, limit } = queryDto;
+    async exportDashboardPlaysView(queryDto, format) {
         return new Promise(async (resolve, reject) => {
             var e_1, _a, e_2, _b;
             var _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
             const playsLists = (await this.listPlays(queryDto, true));
-            const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(ownerId, queryDto.limit, queryDto);
+            const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(queryDto.limit, queryDto);
             const chartsData = await this.getPlaysDashboardGraphData(queryDto.filter);
             var playsListInJsonFormat = [];
             var topRadioStationsWithPlaysCountInJsonFormat = [];
@@ -445,12 +444,12 @@ let DetectionService = class DetectionService {
             });
         });
     }
-    async exportHistoryOfSonicKeyPlays(queryDto, ownerId, format) {
+    async exportHistoryOfSonicKeyPlays(queryDto, format) {
         return new Promise(async (resolve, reject) => {
             var e_3, _a, e_4, _b;
             var _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
             const playsLists = (await this.listPlays(queryDto, true));
-            const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(ownerId, queryDto.limit, queryDto);
+            const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(queryDto.limit, queryDto);
             var playsListInJsonFormat = [];
             var topRadioStationsWithPlaysCountInJsonFormat = [];
             try {
@@ -1660,14 +1659,14 @@ let DetectionService = class DetectionService {
         }
     }
     async getTotalHitsCount(queryDto) {
-        const { filter, includeGroupData } = queryDto;
+        const { filter } = queryDto;
         return this.detectionModel
             .find(filter || {})
             .countDocuments()
             .exec();
     }
     async getCount(queryDto) {
-        const { filter, includeGroupData } = queryDto;
+        const { filter } = queryDto;
         return this.detectionModel
             .find(filter || {})
             .count();
@@ -1717,11 +1716,11 @@ let DetectionService = class DetectionService {
         ]);
         return playsCountDetails[0];
     }
-    async findTopRadioStationsWithPlaysCountForOwner(ownerId, topLimit, queryDto) {
+    async findTopRadioStationsWithPlaysCountForOwner(topLimit, queryDto) {
         const { filter, relationalFilter } = queryDto;
         return this.detectionModel.aggregate([
             {
-                $match: Object.assign(Object.assign({}, filter), { owner: ownerId, channel: Enums_1.ChannelEnums.STREAMREADER }),
+                $match: Object.assign(Object.assign({}, filter), { channel: Enums_1.ChannelEnums.STREAMREADER }),
             },
             {
                 $lookup: {

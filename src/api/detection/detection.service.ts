@@ -285,17 +285,14 @@ export class DetectionService {
 
   async exportDashboardPlaysView(
     queryDto: ParsedQueryDto,
-    ownerId: string,
     format: string,
   ):Promise<string> {
-    const{filter,limit}=queryDto
     return new Promise(async (resolve,reject)=>{
       const playsLists = (await this.listPlays(
         queryDto,
         true,
       )) as PlaysListResponseDto[];
       const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(
-        ownerId,
         queryDto.limit,
         queryDto,
       );
@@ -500,7 +497,6 @@ export class DetectionService {
 
   async exportHistoryOfSonicKeyPlays(
     queryDto: ParsedQueryDto,
-    ownerId: string,
     format: string,
   ):Promise<string> {
     return new Promise(async (resolve,reject)=>{
@@ -509,7 +505,6 @@ export class DetectionService {
         true,
       )) as PlaysListResponseDto[];
       const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(
-        ownerId,
         queryDto.limit,
         queryDto,
       );
@@ -1926,7 +1921,7 @@ export class DetectionService {
   }
 
   async getTotalHitsCount(queryDto: ParsedQueryDto) {
-    const { filter, includeGroupData } = queryDto;
+    const { filter } = queryDto;
     return this.detectionModel
       .find(filter || {})
       .countDocuments()
@@ -1934,7 +1929,7 @@ export class DetectionService {
   }
 
   async getCount(queryDto: ParsedQueryDto) {
-    const { filter, includeGroupData } = queryDto;
+    const { filter } = queryDto;
     return this.detectionModel
       .find(filter || {})
       .count()
@@ -1994,7 +1989,6 @@ export class DetectionService {
   }
 
   async findTopRadioStationsWithPlaysCountForOwner(
-    ownerId: string,
     topLimit: number,
     queryDto: ParsedQueryDto,
   ): Promise<TopRadioStationWithPlaysDetails[]> {
@@ -2003,7 +1997,6 @@ export class DetectionService {
       {
         $match: {
           ...filter,
-          owner: ownerId,
           channel: ChannelEnums.STREAMREADER,
         },
       },

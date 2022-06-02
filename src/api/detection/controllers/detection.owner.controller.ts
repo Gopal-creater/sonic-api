@@ -182,7 +182,6 @@ export class DetectionOwnerController {
     const { topLimit = 5 } = queryDto;
 
     const topStationsWithPlaysDetails = await this.detectionService.findTopRadioStationsWithPlaysCountForOwner(
-      targetUser,
       topLimit,
       queryDto,
     );
@@ -263,7 +262,6 @@ export class DetectionOwnerController {
     queryDto.limit = queryDto?.limit <= 2000 ? queryDto?.limit : 2000;
     const filePath = await this.detectionService.exportDashboardPlaysView(
       queryDto,
-      targetUser,
       format,
     );
     const fileName = extractFileName(filePath);
@@ -310,7 +308,6 @@ export class DetectionOwnerController {
     queryDto.limit = queryDto?.limit <= 2000 ? queryDto?.limit : 2000;
     const filePath = await this.detectionService.exportHistoryOfSonicKeyPlays(
       queryDto,
-      targetUser,
       format,
     );
     const fileName = extractFileName(filePath);

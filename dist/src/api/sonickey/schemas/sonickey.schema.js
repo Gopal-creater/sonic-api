@@ -17,6 +17,8 @@ const job_schema_1 = require("../../job/schemas/job.schema");
 const api_key_schema_1 = require("../../api-key/schemas/api-key.schema");
 const Enums_1 = require("../../../constants/Enums");
 const class_validator_1 = require("class-validator");
+const distributorTypes = require("../constants/distributor.constant.json");
+const labelTypes = require("../constants/label.constant.json");
 exports.SonicKeySchemaName = 'SonicKey';
 let S3FileMeta = class S3FileMeta {
 };
@@ -279,6 +281,7 @@ __decorate([
 ], SonicKey.prototype, "isAuthorizedForEncode", void 0);
 __decorate([
     class_validator_1.IsOptional(),
+    class_validator_1.IsIn(distributorTypes),
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
@@ -291,6 +294,7 @@ __decorate([
 ], SonicKey.prototype, "version", void 0);
 __decorate([
     class_validator_1.IsOptional(),
+    class_validator_1.IsIn(labelTypes),
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)

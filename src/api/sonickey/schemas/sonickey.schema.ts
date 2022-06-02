@@ -5,7 +5,9 @@ import { Job, JobSchemaName } from '../../job/schemas/job.schema';
 import { ApiKeySchemaName } from '../../api-key/schemas/api-key.schema';
 import { ChannelEnums, FingerPrintStatus } from '../../../constants/Enums';
 import { S3FileUploadI } from '../../s3fileupload/interfaces';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsIn } from 'class-validator';
+import  * as distributorTypes from '../constants/distributor.constant.json';
+import  * as  labelTypes from '../constants/label.constant.json';
 
 export const SonicKeySchemaName = 'SonicKey';
 @Schema()
@@ -226,6 +228,7 @@ export class SonicKey extends Document {
   isAuthorizedForEncode?: boolean;
 
   @IsOptional()
+  @IsIn(distributorTypes)
   @ApiProperty()
   @Prop()
   distributor: string;
@@ -236,6 +239,7 @@ export class SonicKey extends Document {
   version: string;
 
   @IsOptional()
+  @IsIn(labelTypes)
   @ApiProperty()
   @Prop()
   label: string;

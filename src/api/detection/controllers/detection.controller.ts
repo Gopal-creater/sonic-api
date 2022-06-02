@@ -9,6 +9,8 @@ import {
   Delete,
   NotFoundException,
   Query,
+  Res,
+  BadRequestException,
 } from '@nestjs/common';
 import { DetectionService } from '../detection.service';
 import {
@@ -22,6 +24,7 @@ import {
   ApiSecurity,
   ApiTags,
   ApiQuery,
+  ApiParam,
 } from '@nestjs/swagger';
 import { ChannelEnums, Roles } from 'src/constants/Enums';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
@@ -31,7 +34,12 @@ import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytempl
 import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
-import { RolesAllowed } from 'src/api/auth/decorators';
+import { RolesAllowed, User } from 'src/api/auth/decorators';
+import { UserDB } from 'src/api/user/schemas/user.db.schema';
+import { ConditionalAuthGuard } from 'src/api/auth/guards/conditional-auth.guard';
+import { Response } from 'express';
+import { extractFileName } from 'src/shared/utils';
+import { FileHandlerService } from 'src/shared/services/file-handler.service';
 
 @ApiTags('Detection Controller')
 @Controller('detections')
@@ -39,26 +47,67 @@ export class DetectionController {
   constructor(
     private readonly detectionService: DetectionService,
     private readonly sonickeyServive: SonickeyService,
+    private readonly fileHandlerService: FileHandlerService,
   ) {}
 
   @Get('/list-plays')
   @ApiQuery({
-    name: 'channel',
-    enum: [...Object.values(ChannelEnums), 'ALL'],
+    name: 'playsBy',
+    enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS'],
     required: false,
   })
-  @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiQuery({ name: 'radioStation', type: String, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiQuery({ name: 'recentPlays', type: Boolean, required: false })
+  @ApiQuery({
+    name: 'channel',
+    enum: [...Object.values(ChannelEnums)],
+    required: false,
+  })
+  @RolesAllowed()
+  @UseGuards(ConditionalAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
   @AnyApiQueryTemplate({
     additionalHtmlDescription: `<div>
-      To Get plays for specific company ?relation_owner.companies=companyId <br/>
-      To Get plays for specific user ?relation_owner.id=ownerId
+      To Get plays for specific company ?relation_sonickey.company=companyId <br/>
+      To Get plays for specific partner ?relation_sonickey.partner=partnerId <br/>
+      To Get plays for specific user ?relation_sonickey.owner=ownerId
     <div>`,
   })
   @ApiOperation({ summary: 'Get All Plays' })
   listPlays(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto) {
-    return this.detectionService.listPlays(queryDto);
+    const playsBy = queryDto.filter['playsBy'] as string;
+    switch (playsBy) {
+      case 'ARTISTS':
+        return this.detectionService.listPlaysByArtists(queryDto);
+      case 'COUNTRIES':
+        return this.detectionService.listPlaysByCountries(queryDto);
+      case 'TRACKS':
+        return this.detectionService.listPlaysByTracks(queryDto);
+      case 'RADIOSTATIONS':
+        return this.detectionService.listPlaysByRadioStations(queryDto);
+      default:
+        return this.detectionService.listPlays(queryDto, queryDto.recentPlays);
+    }
+  }
+
+  @Get('/get-monitor-dashboard-data')
+  @AnyApiQueryTemplate({
+    additionalHtmlDescription: `<div>
+      To Get plays for specific company ?relation_sonickey.company=companyId <br/>
+      To Get plays for specific partner ?relation_sonickey.partner=partnerId <br/>
+      To Get plays for specific user ?relation_sonickey.owner=ownerId
+    <div>`,
+  })  
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Monitor Dashboard data' })
+  async getMonitorDashboardData(
+    @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
+  ) {    
+    return this.detectionService.getMonitorDashboardData(queryDto);
   }
 
   @ApiSecurity('x-api-key')
@@ -172,4 +221,163 @@ export class DetectionController {
     }
     return deletedDetection;
   }
+
+
+    /**
+   * @param targetUser
+   * @param queryDto
+   * @returns
+   */
+     @Get('/export/dashboard-plays-view/:format')
+     @ApiParam({ name: 'format', enum: ['xlsx', 'csv'] })
+     @UseGuards(ConditionalAuthGuard)
+     @ApiBearerAuth()
+     @ApiSecurity('x-api-key')
+     @AnyApiQueryTemplate()
+     @ApiOperation({ summary: 'Export Dashboard Plays View' })
+     async exportDashboardPlaysView(
+       @Res() res: Response,
+       @Param('format') format: string,
+       @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+     ) {
+       if (!['xlsx', 'csv'].includes(format))
+         throw new BadRequestException('Unsupported format');
+       queryDto.limit = queryDto?.limit <= 2000 ? queryDto?.limit : 2000;
+       const filePath = await this.detectionService.exportDashboardPlaysView(
+         queryDto,
+         format,
+       );
+       const fileName = extractFileName(filePath);
+       res.download(
+         filePath,
+         `exported_dashboard_plays_view_${format}.${fileName.split('.')[1]}`,
+         err => {
+           if (err) {
+             this.fileHandlerService.deleteFileAtPath(filePath);
+             res.send(err);
+           }
+           this.fileHandlerService.deleteFileAtPath(filePath);
+         },
+       );
+     }
+
+       /**
+   * @param targetUser
+   * @param queryDto
+   * @returns
+   */
+  @Get('/export/history-of-sonickey/:format')
+  @ApiParam({ name: 'format', enum: ['xlsx', 'csv'] })
+  @ApiQuery({ name: 'radioStation', type: String, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiQuery({ name: 'sonicKey', type: String, required: false })
+  @ApiQuery({
+    name: 'channel',
+    enum: [...Object.values(ChannelEnums)],
+    required: false,
+  })
+  @UseGuards(ConditionalAuthGuard)
+  @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
+  @AnyApiQueryTemplate()
+  @ApiOperation({ summary: 'Export History Of Sonickey View' })
+  async exportHistoryOfSonicKeyView(
+    @Res() res: Response,
+    @Param('targetUser') targetUser: string,
+    @Param('format') format: string,
+    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+  ) {
+    queryDto.limit = queryDto?.limit <= 2000 ? queryDto?.limit : 2000;
+    const filePath = await this.detectionService.exportHistoryOfSonicKeyPlays(
+      queryDto,
+      format,
+    );
+    const fileName = extractFileName(filePath);
+    res.download(
+      filePath,
+      `exported_history_of_sonickey_${format}.${fileName.split('.')[1]}`,
+      err => {
+        if (err) {
+          this.fileHandlerService.deleteFileAtPath(filePath);
+          res.send(err);
+        }
+        this.fileHandlerService.deleteFileAtPath(filePath);
+      },
+    );
+  }
+
+    /**
+   * @param queryDto
+   * @returns
+   */
+     @Get('/export-plays-by/:format')
+     @ApiQuery({
+       name: 'playsBy',
+       enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS'],
+       required: false,
+     })
+     @ApiParam({ name: 'format', enum: ['xlsx', 'csv'] })
+     @UseGuards(ConditionalAuthGuard)
+     @ApiBearerAuth()
+     @ApiSecurity('x-api-key')
+     @AnyApiQueryTemplate()
+     @ApiOperation({ summary: 'Export Plays View' })
+     async exportPlaysBy(
+       @Res() res: Response,
+       @User() user: UserDB,
+       @Param('format') format: string,
+       @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+     ) {
+       if (!['xlsx', 'csv'].includes(format))
+         throw new BadRequestException('Unsupported format');
+       queryDto.limit = queryDto?.limit <= 2000 ? queryDto?.limit : 2000;
+   
+       const playsBy = queryDto.filter['playsBy'] as string;
+       delete queryDto.filter['playsBy'];
+       var exportedFilePath: string;
+       switch (playsBy) {
+         case 'ARTISTS':
+           exportedFilePath = await this.detectionService.exportPlaysByArtists(
+             queryDto,
+             format,
+           );
+           break;
+         case 'COUNTRIES':
+           exportedFilePath = await this.detectionService.exportPlaysByCountries(
+             queryDto,
+             format,
+           );
+           break;
+         case 'TRACKS':
+           exportedFilePath = await this.detectionService.exportPlaysByTracks(
+             queryDto,
+             format,
+           );
+           break;
+         case 'RADIOSTATIONS':
+           exportedFilePath = await this.detectionService.exportPlaysByRadioStations(
+             queryDto,
+             format,
+           );
+           break;
+         default:
+           exportedFilePath = await this.detectionService.exportPlays(
+             queryDto,
+             format,
+           );
+           break;
+       }
+       const fileName = extractFileName(exportedFilePath);
+       res.download(
+         exportedFilePath,
+         `${fileName.split('_nameseperator_')[1]}`,
+         err => {
+           if (err) {
+             this.fileHandlerService.deleteFileAtPath(exportedFilePath);
+             res.send(err);
+           }
+           this.fileHandlerService.deleteFileAtPath(exportedFilePath);
+         },
+       );
+     }
 }

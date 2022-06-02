@@ -14,6 +14,8 @@ const openapi = require("@nestjs/swagger");
 const sonicKey_dto_1 = require("./sonicKey.dto");
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
+const distributorTypes = require("../constants/distributor.constant.json");
+const labelTypes = require("../constants/label.constant.json");
 class CreateSonicKeyFromJobDto extends sonicKey_dto_1.SonicKeyDto {
     static _OPENAPI_METADATA_FACTORY() {
         return { sonicKey: { required: true, type: () => String }, contentFilePath: { required: true, type: () => String }, job: { required: true, type: () => String }, owner: { required: true, type: () => String }, license: { required: true, type: () => String }, licenseId: { required: true, type: () => String } };
@@ -220,10 +222,14 @@ __decorate([
     __metadata("design:type", Boolean)
 ], CreateSonicKeyDto.prototype, "isAuthorizedForEncode", void 0);
 __decorate([
+    class_validator_1.IsOptional(),
+    class_validator_1.IsIn(distributorTypes),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateSonicKeyDto.prototype, "distributor", void 0);
 __decorate([
+    class_validator_1.IsOptional(),
+    class_validator_1.IsIn(labelTypes),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateSonicKeyDto.prototype, "version", void 0);

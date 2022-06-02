@@ -109,7 +109,7 @@ let DetectionOwnerController = class DetectionOwnerController {
     }
     async getTopRadiostationsWithPlays(targetUser, queryDto) {
         const { topLimit = 5 } = queryDto;
-        const topStationsWithPlaysDetails = await this.detectionService.findTopRadioStationsWithPlaysCountForOwner(targetUser, topLimit, queryDto);
+        const topStationsWithPlaysDetails = await this.detectionService.findTopRadioStationsWithPlaysCountForOwner(topLimit, queryDto);
         return topStationsWithPlaysDetails;
     }
     async getSonicKeyGraphs(targetUser, radioStation, time, queryDto) {
@@ -128,7 +128,7 @@ let DetectionOwnerController = class DetectionOwnerController {
             throw new common_1.BadRequestException('unsupported format');
         queryDto.filter['owner'] = targetUser;
         queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
-        const filePath = await this.detectionService.exportDashboardPlaysView(queryDto, targetUser, format);
+        const filePath = await this.detectionService.exportDashboardPlaysView(queryDto, format);
         const fileName = utils_1.extractFileName(filePath);
         res.download(filePath, `exported_dashboard_plays_view_${format}.${fileName.split('.')[1]}`, err => {
             if (err) {
@@ -141,7 +141,7 @@ let DetectionOwnerController = class DetectionOwnerController {
     async exportHistoryOfSonicKeyView(res, targetUser, format, queryDto) {
         queryDto.filter['owner'] = targetUser;
         queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
-        const filePath = await this.detectionService.exportHistoryOfSonicKeyPlays(queryDto, targetUser, format);
+        const filePath = await this.detectionService.exportHistoryOfSonicKeyPlays(queryDto, format);
         const fileName = utils_1.extractFileName(filePath);
         res.download(filePath, `exported_history_of_sonickey_${format}.${fileName.split('.')[1]}`, err => {
             if (err) {
