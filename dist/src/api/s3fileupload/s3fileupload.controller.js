@@ -26,9 +26,6 @@ let S3FileUploadController = class S3FileUploadController {
         this.s3FileUploadService = s3FileUploadService;
     }
     getSignedUrl(key, userId) {
-        if (!(key === null || key === void 0 ? void 0 : key.includes(userId))) {
-            throw new common_1.ForbiddenException('You are not the owner of this file');
-        }
         return this.s3FileUploadService.getSignedUrl(key);
     }
     getSignedUrlFromPost(key, userId) {

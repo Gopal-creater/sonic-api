@@ -18,9 +18,9 @@ export class S3FileUploadController {
   @ApiOperation({ summary: 'Get Signed Url for download' })
   getSignedUrl(@Param('key') key: string,@User('sub') userId: string,) {
       /* Checks for authenticated user in order to download the file */
-      if (!key?.includes(userId)) {
-        throw new ForbiddenException('You are not the owner of this file');
-      }
+      // if (!key?.includes(userId)) {
+      //   throw new ForbiddenException('You are not the owner of this file');
+      // }
     return this.s3FileUploadService.getSignedUrl(key);
   }
 
