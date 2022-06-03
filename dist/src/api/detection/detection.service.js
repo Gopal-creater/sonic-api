@@ -1658,6 +1658,44 @@ let DetectionService = class DetectionService {
             return this.detectionModel['paginate'](filter, paginateOptions);
         }
     }
+    async getSonicKeysDetails(queryDto, aggregateQuery) {
+        const { limit, skip, sort, page, filter, select, populate, aggregateSearch, includeGroupData, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        const aggregate = this.detectionModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            { $group: { _id: '$sonicKey', totalHits: { $sum: 1 } } },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            {
+                $project: {
+                    sonicKey: { $first: '$sonicKey' },
+                    totalHits: 1,
+                    otherField: 1,
+                },
+            },
+            { $sort: { totalHits: -1 } },
+        ]);
+        if (aggregateQuery) {
+            return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+        }
+        else {
+            return this.detectionModel['paginate'](filter, paginateOptions);
+        }
+    }
     async getTotalHitsCount(queryDto) {
         const { filter } = queryDto;
         return this.detectionModel

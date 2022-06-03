@@ -53,6 +53,12 @@ let DetectionController = class DetectionController {
                 return this.detectionService.listPlays(queryDto, queryDto.recentPlays);
         }
     }
+    findAll(channel, queryDto) {
+        if (channel !== 'ALL') {
+            queryDto.filter['channel'] = channel;
+        }
+        return this.detectionService.getSonicKeysDetails(queryDto, true);
+    }
     async getMonitorDashboardData(queryDto) {
         return this.detectionService.getMonitorDashboardData(queryDto);
     }
@@ -186,6 +192,25 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], DetectionController.prototype, "listPlays", null);
+__decorate([
+    common_1.Get('/:channel/data'),
+    swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
+    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums)] }),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({
+        summary: 'Get All Detections for specific channel and specific user',
+    }),
+    openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDetectionDto }),
+    __param(0, common_1.Param('channel')),
+    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", void 0)
+], DetectionController.prototype, "findAll", null);
 __decorate([
     common_1.Get('/get-monitor-dashboard-data'),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({

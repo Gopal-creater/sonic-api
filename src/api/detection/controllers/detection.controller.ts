@@ -92,6 +92,27 @@ export class DetectionController {
     }
   }
 
+  @Get('/:channel/data')
+  @ApiQuery({ name: 'radioStation', type: String, required: false })
+  @ApiParam({ name: 'channel', enum: [...Object.values(ChannelEnums)] })
+  @UseGuards(ConditionalAuthGuard)
+  @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
+  @ApiQuery({ name: 'includeGroupData', type: Boolean, required: false })
+  @AnyApiQueryTemplate()
+  @ApiOperation({
+    summary: 'Get All Detections for specific channel and specific user',
+  })
+  findAll(
+    @Param('channel') channel: string,
+    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+  ) {
+    if (channel !== 'ALL') {
+      queryDto.filter['channel'] = channel;
+    }
+    return this.detectionService.getSonicKeysDetails(queryDto, true);
+  }
+
   @Get('/get-monitor-dashboard-data')
   @AnyApiQueryTemplate({
     additionalHtmlDescription: `<div>

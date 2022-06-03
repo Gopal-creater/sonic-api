@@ -1870,19 +1870,64 @@ export class DetectionService {
     paginateOptions['page'] = page;
     paginateOptions['limit'] = limit;
 
-    // if (includeGroupData && filter.owner) {
-    //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
-    //   const usergroups = await this.userService.adminListGroupsForUser(
-    //     filter.owner,
-    //   );
-    //   if (usergroups.groupNames.length > 0) {
-    //     filter['$or'] = [
-    //       { groups: { $all: usergroups.groupNames } },
-    //       { owner: filter.owner },
-    //     ];
-    //     delete filter.owner;
-    //   }
-    // }
+    const aggregate = this.detectionModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      { $group: { _id: '$sonicKey', totalHits: { $sum: 1 } } }, //group by radioStation to get duplicates counts
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'SonicKey',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'sonicKey',
+        },
+      },
+      {
+        $project: {
+          sonicKey: { $first: '$sonicKey' },
+          totalHits: 1,
+          otherField: 1,
+        }, //lookup will return array so always tale first index elememt
+      },
+      { $sort: { totalHits: -1 } }, //sort in decending order
+    ]);
+
+    if (aggregateQuery) {
+      return this.detectionModel['aggregatePaginate'](
+        aggregate,
+        paginateOptions,
+      );
+    } else {
+      return this.detectionModel['paginate'](filter, paginateOptions);
+    }
+  }
+
+  async getSonicKeysDetails(
+    queryDto: ParsedQueryDto,
+    aggregateQuery?: boolean,
+  ): Promise<MongoosePaginateDetectionDto> {
+    const {
+      limit,
+      skip,
+      sort,
+      page,
+      filter,
+      select,
+      populate,
+      aggregateSearch,
+      includeGroupData,
+    } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
 
     const aggregate = this.detectionModel.aggregate([
       {
