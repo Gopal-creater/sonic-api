@@ -179,14 +179,35 @@ let LicensekeyService = class LicensekeyService {
     async findPreferedLicenseToGetRadioMonitoringListFor(userId) {
         var now = new Date();
         var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        var validLicenseForMonitor = await this.licenseKeyModel.findOne({
-            users: userId,
+        var validLicense;
+        var userFromDb = await this.userService.userModel.findById(userId);
+        userFromDb = userFromDb.depopulate('companies');
+        var validLicenseForUserWithInCompany = await this.licenseKeyModel.findOne({
             disabled: false,
             suspended: false,
             validity: { $gte: startOfToday },
-            $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }],
+            $or: [
+                { company: userFromDb.company },
+                { company: { $in: userFromDb.companies } },
+                { isUnlimitedMonitor: true },
+                { maxMonitoringUses: { $gt: 0 } }
+            ],
+            isUnlimitedMonitor: true
         });
-        return validLicenseForMonitor;
+        if (validLicenseForUserWithInCompany) {
+            validLicense = validLicenseForUserWithInCompany;
+        }
+        else {
+            var validLicenseForUser = await this.licenseKeyModel.findOne({
+                disabled: false,
+                suspended: false,
+                validity: { $gte: startOfToday },
+                users: userId,
+                $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }]
+            });
+            validLicense = validLicenseForUser;
+        }
+        return validLicense;
     }
     async findValidLicesesForUser(user, filter) {
         var now = new Date();
@@ -196,7 +217,10 @@ let LicensekeyService = class LicensekeyService {
         userFromDb = userFromDb.depopulate('companies');
         var validLicenseForUserWithInCompany = await this.licenseKeyModel.aggregate([
             {
-                $match: Object.assign({ disabled: false, suspended: false, validity: { $gte: startOfToday }, company: { $in: userFromDb.companies } }, filter),
+                $match: Object.assign({ disabled: false, suspended: false, validity: { $gte: startOfToday }, $or: [
+                        { company: userFromDb.company },
+                        { company: { $in: userFromDb.companies } }
+                    ] }, filter),
             }
         ]);
         if (validLicenseForUserWithInCompany.length > 0) {

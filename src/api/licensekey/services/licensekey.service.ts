@@ -221,14 +221,46 @@ export class LicensekeyService {
       now.getMonth(),
       now.getDate(),
     );
-    var validLicenseForMonitor = await this.licenseKeyModel.findOne({
-      users: userId,
-      disabled: false,
-      suspended: false,
-      validity: { $gte: startOfToday },
-      $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }],
-    });
-    return validLicenseForMonitor;
+    // var validLicenseForMonitor = await this.licenseKeyModel.findOne({
+    //   users: userId,
+    //   disabled: false,
+    //   suspended: false,
+    //   validity: { $gte: startOfToday },
+    //   $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }],
+    // });
+    // return validLicenseForMonitor;
+
+    var validLicense: LicenseKey;
+    var userFromDb = await this.userService.userModel.findById(userId);
+    userFromDb = userFromDb.depopulate('companies');
+
+    var validLicenseForUserWithInCompany = await this.licenseKeyModel.findOne(
+        {
+            disabled: false,
+            suspended: false,
+            validity: { $gte: startOfToday },
+            $or:[
+              {company:userFromDb.company},
+              {company:{$in:userFromDb.companies}}, //TODO: Remove,
+              { isUnlimitedMonitor: true }, 
+              { maxMonitoringUses: { $gt: 0 } }
+            ],
+            isUnlimitedMonitor: true
+          }
+    );
+    if (validLicenseForUserWithInCompany) {
+      validLicense = validLicenseForUserWithInCompany;
+    } else {
+      var validLicenseForUser = await this.licenseKeyModel.findOne({
+        disabled: false,
+        suspended: false,
+        validity: { $gte: startOfToday },
+        users: userId,
+        $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }]
+      });
+      validLicense = validLicenseForUser;
+    }
+    return validLicense;
   }
 
   async findValidLicesesForUser(
@@ -252,7 +284,10 @@ export class LicensekeyService {
             disabled: false,
             suspended: false,
             validity: { $gte: startOfToday },
-            company:{$in:userFromDb.companies},
+            $or:[
+              {company:userFromDb.company},
+              {company:{$in:userFromDb.companies}} //TODO: Remove
+            ],
             ...filter,
           },
         }

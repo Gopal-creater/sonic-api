@@ -26,8 +26,8 @@ let ApiKeyService = class ApiKeyService {
         this.userService = userService;
         this.companyService = companyService;
     }
-    async create(createApiKeyDto, createdBy) {
-        const newApiKey = await this.apiKeyModel.create(Object.assign(Object.assign({}, createApiKeyDto), { createdBy: createdBy }));
+    async create(doc) {
+        const newApiKey = await this.apiKeyModel.create(Object.assign({}, doc));
         return newApiKey.save();
     }
     async findOrCreateApiKeyForCompanyUser(user, createdBy) {
@@ -120,8 +120,10 @@ let ApiKeyService = class ApiKeyService {
     findById(id) {
         return this.apiKeyModel.findById(id);
     }
-    update(id, updateUserDto) {
-        return this.apiKeyModel.findByIdAndUpdate(id, updateUserDto, { new: true });
+    update(id, updateApiKeyDto) {
+        return this.apiKeyModel.findByIdAndUpdate(id, updateApiKeyDto, {
+            new: true,
+        });
     }
     async getEstimateCount() {
         return this.apiKeyModel.estimatedDocumentCount();

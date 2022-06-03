@@ -3,7 +3,7 @@ import { AdminCreateApiKeyDto } from './dto/create-api-key.dto';
 import { AdminUpdateApiKeyDto } from './dto/update-api-key.dto';
 import { ApiKey } from './schemas/api-key.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { AnyObject, FilterQuery, Model, AnyKeys, UpdateQuery } from 'mongoose';
 import { ParsedQueryDto } from '../../shared/dtos/parsedquery.dto';
 import { MongoosePaginateApiKeyDto } from './dto/mongoosepaginate-apikey.dto';
 import { UserService } from '../user/services/user.service';
@@ -21,8 +21,10 @@ export class ApiKeyService {
     public readonly companyService: CompanyService
   ) {}
 
-  async create(createApiKeyDto: AdminCreateApiKeyDto,createdBy?:string) {
-    const newApiKey = await this.apiKeyModel.create({...createApiKeyDto,createdBy:createdBy});
+  async create(doc: AnyObject | AnyKeys<ApiKey>) {
+    const newApiKey = await this.apiKeyModel.create({
+      ...doc
+    });
     return newApiKey.save();
   }
 
@@ -135,8 +137,17 @@ export class ApiKeyService {
     return this.apiKeyModel.findById(id);
   }
 
-  update(id: string, updateUserDto: AdminUpdateApiKeyDto) {
-    return this.apiKeyModel.findByIdAndUpdate(id, updateUserDto,{new:true});
+  update(
+    id: string,
+    updateApiKeyDto: UpdateQuery<ApiKey>
+  ) {
+    return this.apiKeyModel.findByIdAndUpdate(
+      id,
+      updateApiKeyDto,
+      {
+        new: true,
+      },
+    );
   }
 
   async getEstimateCount() {

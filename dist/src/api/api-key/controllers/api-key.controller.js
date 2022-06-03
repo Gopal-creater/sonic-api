@@ -27,17 +27,19 @@ const roles_decorator_1 = require("../../auth/decorators/roles.decorator");
 const Enums_1 = require("../../../constants/Enums");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
 const decorators_1 = require("../../auth/decorators");
+const user_db_schema_1 = require("../../user/schemas/user.db.schema");
+const api_key_schema_1 = require("../schemas/api-key.schema");
 let ApiKeyController = class ApiKeyController {
     constructor(apiKeyService) {
         this.apiKeyService = apiKeyService;
     }
-    async create(creatorId, createApiKeyDto) {
+    async create(loggedInUser, createApiKeyDto) {
         var _a;
+        const doc = Object.assign(Object.assign({}, createApiKeyDto), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
         if (createApiKeyDto.type == Enums_1.ApiKeyType.INDIVIDUAL) {
             const user = await this.apiKeyService.userService.getUserProfile(createApiKeyDto.customer);
             if (!user)
                 throw new common_1.NotFoundException('Unknown user');
-            createApiKeyDto.customer = user === null || user === void 0 ? void 0 : user.sub;
         }
         else if (createApiKeyDto.type == Enums_1.ApiKeyType.COMPANY) {
             const company = await this.apiKeyService.companyService.findById(createApiKeyDto.company);
@@ -45,9 +47,9 @@ let ApiKeyController = class ApiKeyController {
                 throw new common_1.NotFoundException('Unknown company');
             if (!((_a = company === null || company === void 0 ? void 0 : company.owner) === null || _a === void 0 ? void 0 : _a.sub))
                 throw new common_1.NotFoundException('The given company doesnot have any valid admin user');
-            createApiKeyDto.customer = company.owner.sub;
+            doc.customer = company.owner.sub;
         }
-        return this.apiKeyService.create(createApiKeyDto, creatorId);
+        return this.apiKeyService.create(doc);
     }
     findAll(queryDto) {
         return this.apiKeyService.findAll(queryDto);
@@ -59,29 +61,13 @@ let ApiKeyController = class ApiKeyController {
         }
         return apiKey;
     }
-    async update(id, updateApiKeyDto) {
-        var _a;
+    async update(id, updateApiKeyDto, updatedBy) {
         const apiKey = await this.apiKeyService.findById(id);
         if (!apiKey) {
             throw new common_1.NotFoundException();
         }
-        if (updateApiKeyDto.type == Enums_1.ApiKeyType.INDIVIDUAL &&
-            updateApiKeyDto.customer) {
-            const user = await this.apiKeyService.userService.getUserProfile(updateApiKeyDto.customer);
-            if (!user)
-                throw new common_1.NotFoundException('Unknown user');
-            updateApiKeyDto.customer = user === null || user === void 0 ? void 0 : user.sub;
-        }
-        else if (updateApiKeyDto.type == Enums_1.ApiKeyType.COMPANY &&
-            updateApiKeyDto.company) {
-            const company = await this.apiKeyService.companyService.findById(updateApiKeyDto.company);
-            if (!company)
-                throw new common_1.NotFoundException('Unknown company');
-            if (!((_a = company === null || company === void 0 ? void 0 : company.owner) === null || _a === void 0 ? void 0 : _a.sub))
-                throw new common_1.NotFoundException('The given company doesnot have any valid admin user');
-            updateApiKeyDto.customer = company.owner.sub;
-        }
-        return this.apiKeyService.update(id, updateApiKeyDto);
+        const updatedKey = await this.apiKeyService.update(id, Object.assign(Object.assign({}, updateApiKeyDto), { updatedBy: updatedBy }));
+        return updatedKey;
     }
     async getCount(queryDto) {
         return this.apiKeyService.getCount(queryDto);
@@ -104,10 +90,10 @@ __decorate([
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create Api Key' }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, decorators_1.User('sub')),
+    __param(0, decorators_1.User()),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, create_api_key_dto_1.AdminCreateApiKeyDto]),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB, create_api_key_dto_1.AdminCreateApiKeyDto]),
     __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "create", null);
 __decorate([
@@ -144,8 +130,9 @@ __decorate([
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __param(1, common_1.Body()),
+    __param(2, decorators_1.User('sub')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_api_key_dto_1.UpdateApiKeyDto]),
+    __metadata("design:paramtypes", [String, update_api_key_dto_1.UpdateApiKeyDto, String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "update", null);
 __decorate([

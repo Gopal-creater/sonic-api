@@ -30,6 +30,8 @@ import { RolesAllowed } from '../../auth/decorators/roles.decorator';
 import { Roles, ApiKeyType } from 'src/constants/Enums';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
 import { User } from 'src/api/auth/decorators';
+import { UserDB } from 'src/api/user/schemas/user.db.schema';
+import { ApiKey } from 'src/api/api-key/schemas/api-key.schema';
 
 /**
  * Accept this key asa x-api-key header from client side
@@ -47,25 +49,29 @@ export class ApiKeyController {
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Api Key' })
-  async create(@User('sub') creatorId: string ,@Body() createApiKeyDto: AdminCreateApiKeyDto) {
+  async create(@User() loggedInUser: UserDB ,@Body() createApiKeyDto: AdminCreateApiKeyDto) {
+    const doc: Partial<ApiKey> = {
+      ...createApiKeyDto,
+      createdBy: loggedInUser?.sub,
+    };
     if (createApiKeyDto.type == ApiKeyType.INDIVIDUAL) {
       const user = await this.apiKeyService.userService.getUserProfile(
         createApiKeyDto.customer,
       );
       if (!user) throw new NotFoundException('Unknown user');
-      createApiKeyDto.customer = user?.sub;
     } else if (createApiKeyDto.type == ApiKeyType.COMPANY) {
       const company = await this.apiKeyService.companyService.findById(
         createApiKeyDto.company,
       );
       if (!company) throw new NotFoundException('Unknown company');
+
       if (!company?.owner?.sub)
         throw new NotFoundException(
           'The given company doesnot have any valid admin user',
         );
-      createApiKeyDto.customer = company.owner.sub
+      doc.customer = company.owner.sub //TODO: Remove
     }
-    return this.apiKeyService.create(createApiKeyDto,creatorId);
+    return this.apiKeyService.create(doc);
   }
 
   @Get()
@@ -99,35 +105,17 @@ export class ApiKeyController {
   async update(
     @Param('id') id: string,
     @Body() updateApiKeyDto: UpdateApiKeyDto,
+    @User('sub') updatedBy: string,
   ) {
     const apiKey = await this.apiKeyService.findById(id);
     if (!apiKey) {
       throw new NotFoundException();
     }
-    if (
-      updateApiKeyDto.type == ApiKeyType.INDIVIDUAL &&
-      updateApiKeyDto.customer
-    ) {
-      const user = await this.apiKeyService.userService.getUserProfile(
-        updateApiKeyDto.customer,
-      );
-      if (!user) throw new NotFoundException('Unknown user');
-      updateApiKeyDto.customer = user?.sub;
-    } else if (
-      updateApiKeyDto.type == ApiKeyType.COMPANY &&
-      updateApiKeyDto.company
-    ) {
-      const company = await this.apiKeyService.companyService.findById(
-        updateApiKeyDto.company,
-      );
-      if (!company) throw new NotFoundException('Unknown company');
-      if (!company?.owner?.sub)
-        throw new NotFoundException(
-          'The given company doesnot have any valid admin user',
-        );
-      updateApiKeyDto.customer = company.owner.sub;
-    }
-    return this.apiKeyService.update(id, updateApiKeyDto);
+    const updatedKey = await this.apiKeyService.update(id, {
+      ...updateApiKeyDto,
+      updatedBy: updatedBy,
+    });
+    return updatedKey;
   }
 
   @Get('/count')
