@@ -81,7 +81,7 @@ let UpdateUserSecurityGuard = class UpdateUserSecurityGuard {
                 if (!userFromDatabase) {
                     throw new common_1.NotFoundException('User not found');
                 }
-                if (userFromDb.userRole !== Enums_1.SystemRoles.COMPANY_USER) {
+                if (userFromDatabase.userRole !== Enums_1.SystemRoles.COMPANY_USER) {
                     throw new common_1.UnprocessableEntityException('User can not be modified');
                 }
                 delete updateUserDto.userRole;

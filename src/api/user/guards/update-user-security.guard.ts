@@ -88,7 +88,7 @@ export class UpdateUserSecurityGuard implements CanActivate {
         if(!userFromDatabase){
           throw new NotFoundException('User not found')
         }
-        if(userFromDb.userRole!==SystemRoles.COMPANY_USER){
+        if(userFromDatabase.userRole!==SystemRoles.COMPANY_USER){
           throw new UnprocessableEntityException('User can not be modified')
         }
          //Delete fields that are not applicable for this role
