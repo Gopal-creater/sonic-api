@@ -78,6 +78,7 @@ export class DetectionController {
   @ApiOperation({ summary: 'Get All Plays' })
   listPlays(@Query(new ParseQueryValue()) queryDto?: ParsedQueryDto) {
     const playsBy = queryDto.filter['playsBy'] as string;
+    delete queryDto.filter['playsBy'];
     switch (playsBy) {
       case 'ARTISTS':
         return this.detectionService.listPlaysByArtists(queryDto);

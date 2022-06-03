@@ -40,6 +40,7 @@ let DetectionController = class DetectionController {
     }
     listPlays(queryDto) {
         const playsBy = queryDto.filter['playsBy'];
+        delete queryDto.filter['playsBy'];
         switch (playsBy) {
             case 'ARTISTS':
                 return this.detectionService.listPlaysByArtists(queryDto);
