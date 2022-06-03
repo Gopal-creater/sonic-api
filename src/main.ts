@@ -38,6 +38,7 @@ async function bootstrap() {
       'http://admin.sonicdata.com',
       'https://sonicportal.arba-dev.uk',
       'http://sonicportal.arba-dev.uk',
+      'https://sonictempportal.arba-dev.uk',
       'https://sonicadminportal.arba-dev.uk',
       'http://sonicadminportal.arba-dev.uk',
       'https://sonicwpms.arba-dev.uk',
