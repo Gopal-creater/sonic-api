@@ -10,6 +10,7 @@ import { UserDB } from '../schemas/user.db.schema';
 import { SystemRoles } from 'src/constants/Enums';
 import { UserService } from '../services/user.service';
 import { CompanyService } from '../../company/company.service';
+import { toObjectId } from 'src/shared/utils/mongoose.utils';
 
 /**
  * Check ownership of the user here
@@ -53,7 +54,7 @@ export class EnableDisableUserSecurityGuard implements CanActivate {
               _id:userId
             },
             relationalFilter:{
-              'company.partner':partnerId
+              'company.partner':toObjectId(partnerId)
             }
           })
           if(!isOwnUser){
@@ -67,7 +68,7 @@ export class EnableDisableUserSecurityGuard implements CanActivate {
         const companyId = loggedInUser?.adminCompany?.id
         const userFromDatabase = await this.userService.findOne({
           _id:userId,
-          'company':companyId
+          'company':toObjectId(companyId)
         })
         if(!userFromDatabase){
           throw new NotFoundException('User not found')

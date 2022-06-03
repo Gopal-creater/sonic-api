@@ -11,6 +11,7 @@ import { SystemRoles } from 'src/constants/Enums';
 import { UserService } from '../services/user.service';
 import { CompanyService } from '../../company/company.service';
 import { UpdateUserDto } from '../dtos/update-user.dto';
+import { toObjectId } from 'src/shared/utils/mongoose.utils';
 
 /**
  * Check ownership of the user here
@@ -61,9 +62,11 @@ export class UpdateUserSecurityGuard implements CanActivate {
               _id:userId
             },
             relationalFilter:{
-              'company.partner':partnerId
+              'company.partner':toObjectId(partnerId)
             }
           })
+          console.log("isOwnUser",isOwnUser)
+          console.log("partnerId",partnerId)
           if(!isOwnUser){
             throw new NotFoundException('User not found');
           }
@@ -83,7 +86,7 @@ export class UpdateUserSecurityGuard implements CanActivate {
         const companyId = loggedInUser?.adminCompany?.id
         const userFromDatabase = await this.userService.findOne({
           _id:userId,
-          'company':companyId
+          'company':toObjectId(companyId)
         })
         if(!userFromDatabase){
           throw new NotFoundException('User not found')
