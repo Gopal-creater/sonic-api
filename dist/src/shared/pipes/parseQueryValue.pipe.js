@@ -116,6 +116,15 @@ let ParseQueryValue = class ParseQueryValue {
                 res[key] = mongoose_utils_1.toObjectId(value);
             }
             else {
+                if (lodash_1.isArray(key)) {
+                    for (let index = 0; index < key.length; index++) {
+                        const ele = key[index];
+                        if (typeof (ele) == "object") {
+                            const response = this.castToObjectId(ele);
+                            value[index] = response;
+                        }
+                    }
+                }
                 res[key] = value;
             }
         }
