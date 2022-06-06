@@ -118,13 +118,13 @@ export class ParseQueryValue implements PipeTransform {
     const res = {};
     for (const key in filter) {
       var value = filter[key];
-      console.log(`IsObjectId ${isObjectId(value)} :${value}`);
+      console.log(`IsObjectId ${isObjectId(value)} :${JSON.stringify(value)}`);
       if (isObjectId(value)) {
         res[key] = toObjectId(value);
       } else {
-        if(isArray(key)){
-          for (let index = 0; index < key.length; index++) {
-            const ele = key[index];
+        if(isArray(value)){
+          for (let index = 0; index < value.length; index++) {
+            const ele = value[index];
             if(typeof(ele)=="object"){
               const response = this.castToObjectId(ele)
               console.log("inner obj conversion",response)

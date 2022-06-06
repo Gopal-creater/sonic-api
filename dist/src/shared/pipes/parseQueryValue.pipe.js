@@ -111,14 +111,14 @@ let ParseQueryValue = class ParseQueryValue {
         const res = {};
         for (const key in filter) {
             var value = filter[key];
-            console.log(`IsObjectId ${mongoose_utils_1.isObjectId(value)} :${value}`);
+            console.log(`IsObjectId ${mongoose_utils_1.isObjectId(value)} :${JSON.stringify(value)}`);
             if (mongoose_utils_1.isObjectId(value)) {
                 res[key] = mongoose_utils_1.toObjectId(value);
             }
             else {
-                if (lodash_1.isArray(key)) {
-                    for (let index = 0; index < key.length; index++) {
-                        const ele = key[index];
+                if (lodash_1.isArray(value)) {
+                    for (let index = 0; index < value.length; index++) {
+                        const ele = value[index];
                         if (typeof (ele) == "object") {
                             const response = this.castToObjectId(ele);
                             console.log("inner obj conversion", response);
