@@ -228,7 +228,6 @@ export class SonicKey extends Document {
   isAuthorizedForEncode?: boolean;
 
   @IsOptional()
-  @IsEmpty()
   @IsIn(distributorTypes)
   @ApiProperty()
   @Prop()
@@ -240,7 +239,6 @@ export class SonicKey extends Document {
   version: string;
 
   @IsOptional()
-  @IsEmpty()
   @IsIn(labelTypes)
   @ApiProperty()
   @Prop()

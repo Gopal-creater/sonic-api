@@ -155,7 +155,6 @@ export class CreateSonicKeyDto {
     isAuthorizedForEncode?: boolean;
   
     @IsOptional()
-    @IsEmpty()
     @IsIn(distributorTypes)
     @ApiProperty()
     distributor?: string;
@@ -164,7 +163,6 @@ export class CreateSonicKeyDto {
     version?: string;
   
     @IsOptional()
-    @IsEmpty()
     @IsIn(labelTypes)
     @ApiProperty()
     label?: string;
