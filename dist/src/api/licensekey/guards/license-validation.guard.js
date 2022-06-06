@@ -83,6 +83,7 @@ let LicenseValidationGuard = class LicenseValidationGuard {
             }, statusCode);
         }
         request.validLicense = currentValidLicense;
+        console.log("validLicense", currentValidLicense);
         return Boolean(currentValidLicense);
     }
     async isValidLicenseForEncode(id) {

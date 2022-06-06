@@ -72,6 +72,7 @@ export class LicenseValidationGuard implements CanActivate {
       );
     }
     request.validLicense = currentValidLicense;
+    console.log("validLicense",currentValidLicense)
     return Boolean(currentValidLicense);
   }
 
