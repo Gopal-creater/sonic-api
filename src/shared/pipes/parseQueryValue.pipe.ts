@@ -17,7 +17,11 @@ export class ParseQueryValue implements PipeTransform {
   transform(queries: any = {}, metadata: ArgumentMetadata) {
     try {
       const { aggregateSearch,relation_filter=JSON.stringify({}), ...query } = queries;
-      const parser = new MongooseQueryParser();
+      const parser = new MongooseQueryParser({
+        casters: {
+          objectId: val => toObjectId(val)
+        }
+      });
       const relationPrefix = 'relation_';
       const queryToParse = {
         page: 1,
