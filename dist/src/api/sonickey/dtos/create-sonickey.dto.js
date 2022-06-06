@@ -223,17 +223,19 @@ __decorate([
 ], CreateSonicKeyDto.prototype, "isAuthorizedForEncode", void 0);
 __decorate([
     class_validator_1.IsOptional(),
+    class_validator_1.IsEmpty(),
     class_validator_1.IsIn(distributorTypes),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateSonicKeyDto.prototype, "distributor", void 0);
 __decorate([
-    class_validator_1.IsOptional(),
-    class_validator_1.IsIn(labelTypes),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateSonicKeyDto.prototype, "version", void 0);
 __decorate([
+    class_validator_1.IsOptional(),
+    class_validator_1.IsEmpty(),
+    class_validator_1.IsIn(labelTypes),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateSonicKeyDto.prototype, "label", void 0);

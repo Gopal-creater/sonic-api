@@ -1,6 +1,6 @@
 import { SonicKeyDto } from './sonicKey.dto';
 import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsIn } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsIn, IsEmpty } from 'class-validator';
 import  * as distributorTypes from '../constants/distributor.constant.json';
 import  * as  labelTypes from '../constants/label.constant.json';
 
@@ -155,15 +155,17 @@ export class CreateSonicKeyDto {
     isAuthorizedForEncode?: boolean;
   
     @IsOptional()
+    @IsEmpty()
     @IsIn(distributorTypes)
     @ApiProperty()
     distributor?: string;
   
-    @IsOptional()
-    @IsIn(labelTypes)
     @ApiProperty()
     version?: string;
   
+    @IsOptional()
+    @IsEmpty()
+    @IsIn(labelTypes)
     @ApiProperty()
     label?: string;
   
