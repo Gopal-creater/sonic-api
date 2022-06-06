@@ -127,6 +127,7 @@ export class ParseQueryValue implements PipeTransform {
             const ele = key[index];
             if(typeof(ele)=="object"){
               const response = this.castToObjectId(ele)
+              console.log("inner obj conversion",response)
               value[index]=response
             }
           }
@@ -135,6 +136,7 @@ export class ParseQueryValue implements PipeTransform {
         res[key] = value;
       }
     }
+    console.log("conversion",res)
     return res;
   }
 }

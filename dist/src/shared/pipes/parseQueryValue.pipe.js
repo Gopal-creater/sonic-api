@@ -121,6 +121,7 @@ let ParseQueryValue = class ParseQueryValue {
                         const ele = key[index];
                         if (typeof (ele) == "object") {
                             const response = this.castToObjectId(ele);
+                            console.log("inner obj conversion", response);
                             value[index] = response;
                         }
                     }
@@ -128,6 +129,7 @@ let ParseQueryValue = class ParseQueryValue {
                 res[key] = value;
             }
         }
+        console.log("conversion", res);
         return res;
     }
 };
