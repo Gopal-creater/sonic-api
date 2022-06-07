@@ -604,7 +604,7 @@ export class SonickeyService {
     const newSonicKey:Partial<SonicKey> = {
       ...sonickeyDoc,
       contentFilePath: s3EncodedUploadResult.Location,
-      originalFileName: file?.originalname,
+      originalFileName: track?.originalFileName,
       sonicKey: sonicKey,
       downloadable: true,
       license:licenseId,
