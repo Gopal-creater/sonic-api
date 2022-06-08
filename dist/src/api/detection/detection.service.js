@@ -1242,6 +1242,24 @@ let DetectionService = class DetectionService {
             { $addFields: { sonicKey: { $first: '$sonicKey' } } },
             {
                 $lookup: {
+                    from: 'User',
+                    localField: 'sonicKey.owner',
+                    foreignField: '_id',
+                    as: 'sonicKey.owner',
+                },
+            },
+            { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'sonicKey.company',
+                    foreignField: '_id',
+                    as: 'sonicKey.company',
+                },
+            },
+            { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+            {
+                $lookup: {
                     from: 'RadioStation',
                     localField: 'radioStation',
                     foreignField: '_id',
@@ -1301,6 +1319,24 @@ let DetectionService = class DetectionService {
                 },
             },
             { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'sonicKey.owner',
+                    foreignField: '_id',
+                    as: 'sonicKey.owner',
+                },
+            },
+            { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'sonicKey.company',
+                    foreignField: '_id',
+                    as: 'sonicKey.company',
+                },
+            },
+            { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
             {
                 $lookup: {
                     from: 'RadioStation',
@@ -1387,6 +1423,24 @@ let DetectionService = class DetectionService {
             { $addFields: { sonicKey: { $first: '$sonicKey' } } },
             {
                 $lookup: {
+                    from: 'User',
+                    localField: 'sonicKey.owner',
+                    foreignField: '_id',
+                    as: 'sonicKey.owner',
+                },
+            },
+            { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'sonicKey.company',
+                    foreignField: '_id',
+                    as: 'sonicKey.company',
+                },
+            },
+            { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+            {
+                $lookup: {
                     from: 'RadioStation',
                     localField: 'radioStation',
                     foreignField: '_id',
@@ -1471,6 +1525,24 @@ let DetectionService = class DetectionService {
             { $addFields: { sonicKey: { $first: '$sonicKey' } } },
             {
                 $lookup: {
+                    from: 'User',
+                    localField: 'sonicKey.owner',
+                    foreignField: '_id',
+                    as: 'sonicKey.owner',
+                },
+            },
+            { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'sonicKey.company',
+                    foreignField: '_id',
+                    as: 'sonicKey.company',
+                },
+            },
+            { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+            {
+                $lookup: {
                     from: 'RadioStation',
                     localField: 'radioStation',
                     foreignField: '_id',
@@ -1553,6 +1625,24 @@ let DetectionService = class DetectionService {
                 },
             },
             { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'sonicKey.owner',
+                    foreignField: '_id',
+                    as: 'sonicKey.owner',
+                },
+            },
+            { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'sonicKey.company',
+                    foreignField: '_id',
+                    as: 'sonicKey.company',
+                },
+            },
+            { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
             {
                 $lookup: {
                     from: 'RadioStation',
@@ -1769,6 +1859,24 @@ let DetectionService = class DetectionService {
                 },
             },
             { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'sonicKey.owner',
+                    foreignField: '_id',
+                    as: 'sonicKey.owner',
+                },
+            },
+            { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'sonicKey.company',
+                    foreignField: '_id',
+                    as: 'sonicKey.company',
+                },
+            },
+            { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
             {
                 $lookup: {
                     from: 'RadioStation',
