@@ -1260,6 +1260,15 @@ let DetectionService = class DetectionService {
             { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
             {
                 $lookup: {
+                    from: 'Partner',
+                    localField: 'sonicKey.partner',
+                    foreignField: '_id',
+                    as: 'sonicKey.partner',
+                },
+            },
+            { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
+            {
+                $lookup: {
                     from: 'RadioStation',
                     localField: 'radioStation',
                     foreignField: '_id',

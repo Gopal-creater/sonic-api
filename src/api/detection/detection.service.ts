@@ -1399,6 +1399,16 @@ export class DetectionService {
       { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
       {
         $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Partner',
+          localField: 'sonicKey.partner',
+          foreignField: '_id',
+          as: 'sonicKey.partner',
+        },
+      },
+      { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
+      {
+        $lookup: {
           //populate radioStation from its relational table
           from: 'RadioStation',
           localField: 'radioStation',
