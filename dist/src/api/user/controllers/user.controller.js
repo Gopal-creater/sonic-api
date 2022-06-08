@@ -86,13 +86,6 @@ let UserController = class UserController {
             throw new common_1.NotFoundException('Unknown user');
         return this.userService.update(loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id, Object.assign({}, updateUserDto));
     }
-    async findById(userId) {
-        const user = await this.userService.getUserProfile(userId);
-        if (!user) {
-            return new common_1.NotFoundException();
-        }
-        return user;
-    }
     async disableUser(loggedInUser, userId) {
         const userFromDb = await this.partnerService.userService.getUserProfile(userId);
         if (!userFromDb)
@@ -267,6 +260,13 @@ let UserController = class UserController {
         }
         return this.userService.addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub);
     }
+    async findById(userId) {
+        const user = await this.userService.getUserProfile(userId);
+        if (!user) {
+            return new common_1.NotFoundException();
+        }
+        return user;
+    }
 };
 __decorate([
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.COMPANY_ADMIN),
@@ -320,17 +320,6 @@ __decorate([
         update_profile_dto_1.UpdateProfileDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateMe", null);
-__decorate([
-    roles_decorator_1.RolesAllowed(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    common_1.Get(':id'),
-    openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "findById", null);
 __decorate([
     common_1.Put(':id/disable-user'),
     roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
@@ -557,6 +546,17 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "addMonitoringSubscriptionFromMonitoringGroup", null);
+__decorate([
+    roles_decorator_1.RolesAllowed(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Get(':id'),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "findById", null);
 UserController = __decorate([
     swagger_1.ApiTags('User Controller (D & M May 2022)'),
     common_1.Controller('users'),

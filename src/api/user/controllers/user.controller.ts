@@ -141,17 +141,6 @@ export class UserController {
     });
   }
 
-  @RolesAllowed()
-  @UseGuards(JwtAuthGuard, RoleBasedGuard)
-  @ApiBearerAuth()
-  @Get(':id')
-  async findById(@Param('id') userId: string) {
-    const user = await this.userService.getUserProfile(userId);
-    if (!user) {
-      return new NotFoundException();
-    }
-    return user;
-  }
 
   @Put(':id/disable-user')
   @RolesAllowed(Roles.ADMIN, Roles.COMPANY_ADMIN, Roles.PARTNER_ADMIN)
@@ -505,5 +494,17 @@ export class UserController {
     return this.userService.addMonitoringSubscriptionFromMonitoringGroup(
       usernameOrSub,
     );
+  }
+
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
+  @Get(':id')
+  async findById(@Param('id') userId: string) {
+    const user = await this.userService.getUserProfile(userId);
+    if (!user) {
+      return new NotFoundException();
+    }
+    return user;
   }
 }

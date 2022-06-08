@@ -53,13 +53,6 @@ let CompanyController = class CompanyController {
     findAll(queryDto) {
         return this.companyService.findAll(queryDto);
     }
-    async findById(id) {
-        const company = await this.companyService.findById(id);
-        if (!company) {
-            return new common_1.NotFoundException();
-        }
-        return company;
-    }
     async changeAdminUser(company, user, loggedInUser) {
         const companyFromDb = await this.companyService.findOne({
             _id: company,
@@ -98,6 +91,13 @@ let CompanyController = class CompanyController {
         }
         return delectedCompany;
     }
+    async findById(id) {
+        const company = await this.companyService.findById(id);
+        if (!company) {
+            return new common_1.NotFoundException();
+        }
+        return company;
+    }
 };
 __decorate([
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
@@ -127,17 +127,6 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], CompanyController.prototype, "findAll", null);
-__decorate([
-    decorators_1.RolesAllowed(),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, get_company_security_guard_1.GetCompanySecurityGuard),
-    swagger_1.ApiBearerAuth(),
-    common_1.Get(':id'),
-    openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], CompanyController.prototype, "findById", null);
 __decorate([
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
     common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, change_company_admin_security_guard_1.ChangeCompanyAdminSecurityGuard),
@@ -213,6 +202,17 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "remove", null);
+__decorate([
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, get_company_security_guard_1.GetCompanySecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Get(':id'),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], CompanyController.prototype, "findById", null);
 CompanyController = __decorate([
     swagger_1.ApiTags('Company Controller (D & M May 2022)'),
     common_1.Controller('companies'),

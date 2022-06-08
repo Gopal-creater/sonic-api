@@ -83,18 +83,6 @@ export class CompanyController {
     return this.companyService.findAll(queryDto);
   }
 
-  @RolesAllowed()
-  @UseGuards(JwtAuthGuard, RoleBasedGuard, GetCompanySecurityGuard)
-  @ApiBearerAuth()
-  @Get(':id')
-  async findById(@Param('id') id: string) {
-    const company = await this.companyService.findById(id);
-    if (!company) {
-      return new NotFoundException();
-    }
-    return company;
-  }
-
   @RolesAllowed(Roles.ADMIN, Roles.PARTNER_ADMIN)
   @UseGuards(JwtAuthGuard, RoleBasedGuard, ChangeCompanyAdminSecurityGuard)
   @Put(':id/change-company-admin-user')
@@ -184,5 +172,17 @@ export class CompanyController {
       return new NotFoundException();
     }
     return delectedCompany;
+  }
+
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, GetCompanySecurityGuard)
+  @ApiBearerAuth()
+  @Get(':id')
+  async findById(@Param('id') id: string) {
+    const company = await this.companyService.findById(id);
+    if (!company) {
+      return new NotFoundException();
+    }
+    return company;
   }
 }
