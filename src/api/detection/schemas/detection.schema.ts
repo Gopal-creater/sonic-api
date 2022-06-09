@@ -54,11 +54,11 @@ export class Detection extends Document {
   licenseKey: string;
 
   @ApiProperty()
-  @Prop({required:true})
+  @Prop({})
   owner: string;
 
   @ApiProperty()
-  @Prop({required:true})
+  @Prop({})
   sonicKeyOwnerId: string;
 
   @ApiProperty()

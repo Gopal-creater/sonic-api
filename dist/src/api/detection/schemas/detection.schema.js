@@ -79,12 +79,12 @@ __decorate([
 ], Detection.prototype, "licenseKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ required: true }),
+    mongoose_1.Prop({}),
     __metadata("design:type", String)
 ], Detection.prototype, "owner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ required: true }),
+    mongoose_1.Prop({}),
     __metadata("design:type", String)
 ], Detection.prototype, "sonicKeyOwnerId", void 0);
 __decorate([
