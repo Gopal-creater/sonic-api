@@ -25,15 +25,18 @@ const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const user_decorator_1 = require("../../auth/decorators/user.decorator");
+const utils_1 = require("../../../shared/utils");
+const user_db_schema_1 = require("../../user/schemas/user.db.schema");
 let SonickeyBinaryController = class SonickeyBinaryController {
     constructor(sonicKeyService, licensekeyService) {
         this.sonicKeyService = sonicKeyService;
         this.licensekeyService = licensekeyService;
     }
-    async createFormBinary(createSonicKeyDto, customer, apiKey, licenseKey) {
+    async createFormBinary(createSonicKeyDto, loggedInUser, apiKey, licenseKey) {
+        const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
         const channel = Enums_1.ChannelEnums.BINARY;
-        const newSonicKey = Object.assign(Object.assign({}, createSonicKeyDto), { owner: customer, apiKey: apiKey, channel: channel, license: licenseKey, _id: createSonicKeyDto.sonicKey });
-        const savedSonicKey = await this.sonicKeyService.createFromBinaryForUser(customer, newSonicKey);
+        const newSonicKey = Object.assign(Object.assign(Object.assign({}, createSonicKeyDto), resourceOwnerObj), { apiKey: apiKey, channel: channel, license: licenseKey, _id: createSonicKeyDto.sonicKey });
+        const savedSonicKey = await this.sonicKeyService.create(newSonicKey);
         await this.licensekeyService.incrementUses(licenseKey, "encode", 1)
             .catch(async (err) => {
             await this.sonicKeyService.sonicKeyModel.deleteOne({ _id: savedSonicKey.id });
@@ -49,11 +52,12 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Save to database after local encode from binary.' }),
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body()),
-    __param(1, user_decorator_1.User('sub')),
+    __param(1, user_decorator_1.User()),
     __param(2, apikey_decorator_1.ApiKey('_id')),
     __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromBinaryDto, String, String, String]),
+    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromBinaryDto,
+        user_db_schema_1.UserDB, String, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyBinaryController.prototype, "createFormBinary", null);
 SonickeyBinaryController = __decorate([

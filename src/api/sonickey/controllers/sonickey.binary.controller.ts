@@ -20,6 +20,8 @@ import { ApiKey } from '../../api-key/decorators/apikey.decorator';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
 import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
 import { User } from '../../auth/decorators/user.decorator';
+import { identifyDestinationFolderAndResourceOwnerFromUser } from 'src/shared/utils';
+import { UserDB } from '../../user/schemas/user.db.schema';
 
 //REMOVABLE:  Added on thirdparty-controller
 
@@ -38,20 +40,23 @@ export class SonickeyBinaryController {
   @ApiOperation({ summary: 'Save to database after local encode from binary.' })
   async createFormBinary(
     @Body() createSonicKeyDto: CreateSonicKeyFromBinaryDto,
-    @User('sub') customer: string,
+    @User() loggedInUser: UserDB,
     @ApiKey('_id') apiKey: string,
     @ValidatedLicense('key') licenseKey: string
   ) {
+    const {
+      resourceOwnerObj,
+    } = identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
     const channel = ChannelEnums.BINARY
     const newSonicKey = {
       ...createSonicKeyDto,
-      owner:customer,
+      ...resourceOwnerObj,
       apiKey:apiKey,
       channel:channel,
       license: licenseKey,
       _id:createSonicKeyDto.sonicKey
     };
-    const savedSonicKey = await this.sonicKeyService.createFromBinaryForUser(customer,newSonicKey)
+    const savedSonicKey = await this.sonicKeyService.create(newSonicKey)
      await this.licensekeyService.incrementUses(licenseKey,"encode", 1)
      .catch(async err=>{
       await this.sonicKeyService.sonicKeyModel.deleteOne({_id:savedSonicKey.id})

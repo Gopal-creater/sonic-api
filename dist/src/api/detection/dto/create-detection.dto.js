@@ -18,7 +18,7 @@ const general_dto_1 = require("./general.dto");
 const class_transformer_1 = require("class-transformer");
 class CreateDetectionDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { radioStation: { required: true, type: () => String }, sonicKey: { required: true, type: () => String }, apiKey: { required: true, type: () => String }, licenseKey: { required: true, type: () => String }, owner: { required: true, type: () => String }, channel: { required: true, type: () => String }, channelUuid: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date }, metaData: { required: false } };
+        return { radioStation: { required: true, type: () => String }, sonicKey: { required: true, type: () => String }, channel: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date }, metaData: { required: false } };
     }
 }
 __decorate([
@@ -27,28 +27,15 @@ __decorate([
 ], CreateDetectionDto.prototype, "radioStation", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], CreateDetectionDto.prototype, "sonicKey", void 0);
 __decorate([
+    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], CreateDetectionDto.prototype, "apiKey", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], CreateDetectionDto.prototype, "licenseKey", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], CreateDetectionDto.prototype, "owner", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
+    class_validator_1.IsIn([Object.values(Enums_1.ChannelEnums)]),
     __metadata("design:type", String)
 ], CreateDetectionDto.prototype, "channel", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    __metadata("design:type", String)
-], CreateDetectionDto.prototype, "channelUuid", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Date)

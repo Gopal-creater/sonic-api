@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { DetectionService } from '../detection.service';
 import {
+  CreateDetectionDto,
   CreateDetectionFromBinaryDto,
   CreateDetectionFromHardwareDto,
 } from '../dto/create-detection.dto';
@@ -133,6 +134,40 @@ export class DetectionController {
   }
 
   @ApiSecurity('x-api-key')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: '[NEW]: Create Detection from specific channel',
+  })
+  @UseGuards(ConditionalAuthGuard)
+  @Post(`/create`)
+  async createDetection(
+    @Body() createDetectionDto: CreateDetectionDto,
+    @ApiKey('_id') apiKey: string,
+  ) {
+    const keyFound = await this.sonickeyServive.findBySonicKey(
+      createDetectionDto.sonicKey,
+    );
+    if (!keyFound) {
+      throw new NotFoundException(
+        'Provided sonickey is not found on our database.',
+      );
+    }
+    if (!createDetectionDto.detectedAt) {
+      createDetectionDto.detectedAt = new Date();
+    }
+    const newDetection = new this.detectionService.detectionModel({
+      ...createDetectionDto,
+      apiKey: apiKey,
+      owner: keyFound.owner,
+      company:keyFound.owner,
+      partner:keyFound.partner,
+      sonicKeyOwnerId: keyFound.owner,
+      sonicKeyOwnerName: keyFound.contentOwner,
+    });
+    return newDetection.save();
+  }
+
+  @ApiSecurity('x-api-key')
   @ApiOperation({
     summary: 'Create Detection From Binary [protected by x-api-key]',
   })
@@ -157,13 +192,15 @@ export class DetectionController {
     const newDetection = new this.detectionService.detectionModel({
       ...createDetectionFromBinaryDto,
       apiKey: apiKey,
-      owner: customer,
+      owner: keyFound.owner,
       sonicKeyOwnerId: keyFound.owner,
       sonicKeyOwnerName: keyFound.contentOwner,
       channel: ChannelEnums.BINARY,
     });
     return newDetection.save();
   }
+
+
 
   @ApiSecurity('x-api-key')
   @ApiOperation({
@@ -190,7 +227,9 @@ export class DetectionController {
     const newDetection = new this.detectionService.detectionModel({
       ...createDetectionFromHardwareDto,
       apiKey: apiKey,
-      owner: customer,
+      owner: keyFound.owner,
+      company:keyFound.company,
+      partner:keyFound.partner,
       sonicKeyOwnerId: keyFound.owner,
       sonicKeyOwnerName: keyFound.contentOwner,
       channel: ChannelEnums.HARDWARE,

@@ -63,6 +63,17 @@ let DetectionController = class DetectionController {
     async getMonitorDashboardData(queryDto) {
         return this.detectionService.getMonitorDashboardData(queryDto);
     }
+    async createDetection(createDetectionDto, apiKey) {
+        const keyFound = await this.sonickeyServive.findBySonicKey(createDetectionDto.sonicKey);
+        if (!keyFound) {
+            throw new common_1.NotFoundException('Provided sonickey is not found on our database.');
+        }
+        if (!createDetectionDto.detectedAt) {
+            createDetectionDto.detectedAt = new Date();
+        }
+        const newDetection = new this.detectionService.detectionModel(Object.assign(Object.assign({}, createDetectionDto), { apiKey: apiKey, owner: keyFound.owner, company: keyFound.owner, partner: keyFound.partner, sonicKeyOwnerId: keyFound.owner, sonicKeyOwnerName: keyFound.contentOwner }));
+        return newDetection.save();
+    }
     async createFromBinary(createDetectionFromBinaryDto, customer, apiKey) {
         const keyFound = await this.sonickeyServive.findBySonicKey(createDetectionFromBinaryDto.sonicKey);
         if (!keyFound) {
@@ -71,7 +82,7 @@ let DetectionController = class DetectionController {
         if (!createDetectionFromBinaryDto.detectedAt) {
             createDetectionFromBinaryDto.detectedAt = new Date();
         }
-        const newDetection = new this.detectionService.detectionModel(Object.assign(Object.assign({}, createDetectionFromBinaryDto), { apiKey: apiKey, owner: customer, sonicKeyOwnerId: keyFound.owner, sonicKeyOwnerName: keyFound.contentOwner, channel: Enums_1.ChannelEnums.BINARY }));
+        const newDetection = new this.detectionService.detectionModel(Object.assign(Object.assign({}, createDetectionFromBinaryDto), { apiKey: apiKey, owner: keyFound.owner, sonicKeyOwnerId: keyFound.owner, sonicKeyOwnerName: keyFound.contentOwner, channel: Enums_1.ChannelEnums.BINARY }));
         return newDetection.save();
     }
     async createFromHardware(createDetectionFromHardwareDto, customer, apiKey) {
@@ -82,7 +93,7 @@ let DetectionController = class DetectionController {
         if (!createDetectionFromHardwareDto.detectedAt) {
             createDetectionFromHardwareDto.detectedAt = new Date();
         }
-        const newDetection = new this.detectionService.detectionModel(Object.assign(Object.assign({}, createDetectionFromHardwareDto), { apiKey: apiKey, owner: customer, sonicKeyOwnerId: keyFound.owner, sonicKeyOwnerName: keyFound.contentOwner, channel: Enums_1.ChannelEnums.HARDWARE }));
+        const newDetection = new this.detectionService.detectionModel(Object.assign(Object.assign({}, createDetectionFromHardwareDto), { apiKey: apiKey, owner: keyFound.owner, company: keyFound.company, partner: keyFound.partner, sonicKeyOwnerId: keyFound.owner, sonicKeyOwnerName: keyFound.contentOwner, channel: Enums_1.ChannelEnums.HARDWARE }));
         return newDetection.save();
     }
     async getTotalHitsCount(queryDto) {
@@ -231,6 +242,21 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "getMonitorDashboardData", null);
+__decorate([
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: '[NEW]: Create Detection from specific channel',
+    }),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
+    common_1.Post(`/create`),
+    openapi.ApiResponse({ status: 201, type: Object }),
+    __param(0, common_1.Body()),
+    __param(1, apikey_decorator_1.ApiKey('_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_detection_dto_1.CreateDetectionDto, String]),
+    __metadata("design:returntype", Promise)
+], DetectionController.prototype, "createDetection", null);
 __decorate([
     swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiOperation({

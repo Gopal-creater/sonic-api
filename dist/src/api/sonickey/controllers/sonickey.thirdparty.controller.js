@@ -14,7 +14,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonickeyThirdPartyController = void 0;
 const openapi = require("@nestjs/swagger");
-const sonicKey_dto_1 = require("../dtos/sonicKey.dto");
 const common_1 = require("@nestjs/common");
 const sonickey_service_1 = require("../services/sonickey.service");
 const swagger_1 = require("@nestjs/swagger");
@@ -31,58 +30,44 @@ const license_validation_guard_1 = require("../../licensekey/guards/license-vali
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
 const update_sonickey_dto_1 = require("../dtos/update-sonickey.dto");
+const user_db_schema_1 = require("../../user/schemas/user.db.schema");
+const utils_1 = require("../../../shared/utils");
 let SonickeyThirdPartyController = class SonickeyThirdPartyController {
     constructor(sonicKeyService, fileHandlerService, licensekeyService) {
         this.sonicKeyService = sonicKeyService;
         this.fileHandlerService = fileHandlerService;
         this.licensekeyService = licensekeyService;
     }
-    encodeFromUrl(sonicKeyDto, file, owner, licenseId) {
-        var s3UploadResult;
-        var s3OriginalFileUploadResult;
-        var sonicKey;
-        var fingerPrintStatus;
-        var fingerPrintMetaData;
-        var fingerPrintErrorData;
-        return this.sonicKeyService
-            .encodeAndUploadToS3(file, owner, sonicKeyDto.encodingStrength)
-            .then(data => {
-            s3UploadResult = data.s3UploadResult;
-            s3OriginalFileUploadResult = data.s3OriginalFileUploadResult;
-            sonicKey = data.sonicKey;
-            fingerPrintMetaData = data.fingerPrintMetaData;
-            fingerPrintErrorData = data.fingerPrintErrorData;
-            fingerPrintStatus = data.fingerPrintStatus;
-            console.log('Increment Usages upon successfull encode');
-            return this.licensekeyService.incrementUses(licenseId, 'encode', 1);
-        })
-            .then(async (result) => {
-            console.log('Going to save key in db.');
-            const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
-            const channel = Enums_1.ChannelEnums.THIRDPARTY;
-            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3UploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, owner: owner, sonicKey: sonicKey, channel: channel, downloadable: true, s3FileMeta: s3UploadResult, s3OriginalFileMeta: s3OriginalFileUploadResult, fingerPrintMetaData: fingerPrintMetaData, fingerPrintErrorData: fingerPrintErrorData, fingerPrintStatus: fingerPrintStatus, _id: sonicKey, license: licenseId });
-            return this.sonicKeyService.saveSonicKeyForUser(owner, newSonicKey);
-        })
-            .catch(err => {
-            throw new common_1.InternalServerErrorException(err);
-        })
-            .finally(() => {
-            this.fileHandlerService.deleteFileAtPath(file.path);
+    async encodeFromUrl(sonicKeyDto, file, loggedInUser, owner, licenseId) {
+        const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        const encodingStrength = sonicKeyDto.encodingStrength;
+        const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
+        const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
+        return this.sonicKeyService.encodeSonicKeyFromFile({
+            file,
+            licenseId,
+            sonickeyDoc,
+            encodingStrength,
+            s3destinationFolder: destinationFolder,
         });
     }
-    async createFormBinary(createSonicKeyDto, customer, apiKey, licenseKey) {
+    async createFormBinary(createSonicKeyDto, loggedInUser, apiKey, licenseKey) {
+        const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
         const channel = Enums_1.ChannelEnums.BINARY;
-        const newSonicKey = Object.assign(Object.assign({}, createSonicKeyDto), { owner: customer, apiKey: apiKey, channel: channel, license: licenseKey, _id: createSonicKeyDto.sonicKey });
-        const savedSonicKey = await this.sonicKeyService.createFromBinaryForUser(customer, newSonicKey);
-        await this.licensekeyService.incrementUses(licenseKey, "encode", 1)
+        const newSonicKey = Object.assign(Object.assign(Object.assign({}, createSonicKeyDto), resourceOwnerObj), { apiKey: apiKey, channel: channel, license: licenseKey, _id: createSonicKeyDto.sonicKey });
+        const savedSonicKey = await this.sonicKeyService.create(newSonicKey);
+        await this.licensekeyService
+            .incrementUses(licenseKey, 'encode', 1)
             .catch(async (err) => {
-            await this.sonicKeyService.sonicKeyModel.deleteOne({ _id: savedSonicKey.id });
+            await this.sonicKeyService.sonicKeyModel.deleteOne({
+                _id: savedSonicKey.id,
+            });
             throw new common_2.BadRequestException('Unable to increment the license usage!');
         });
         return savedSonicKey;
     }
     async updateMeta(sonickey, updateSonicKeyFromBinaryDto, owner) {
-        const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate({ sonicKey: sonickey, owner: owner }, updateSonicKeyFromBinaryDto, { new: true });
+        const updatedSonickey = await this.sonicKeyService.sonicKeyModel.findOneAndUpdate({ sonicKey: sonickey }, updateSonicKeyFromBinaryDto, { new: true });
         if (!updatedSonickey) {
             throw new common_2.NotFoundException('Given sonickey is either not present or doest not belongs to you');
         }
@@ -102,11 +87,12 @@ __decorate([
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body('data')),
     __param(1, FileFromUrl_interceptor_1.UploadedFileFromUrl()),
-    __param(2, decorators_1.User('sub')),
-    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __param(2, decorators_1.User()),
+    __param(3, decorators_1.User('sub')),
+    __param(4, validatedlicense_decorator_1.ValidatedLicense('key')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [sonicKey_dto_1.SonicKeyDto, Object, String, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto, Object, user_db_schema_1.UserDB, String, String]),
+    __metadata("design:returntype", Promise)
 ], SonickeyThirdPartyController.prototype, "encodeFromUrl", null);
 __decorate([
     common_2.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, license_validation_guard_1.LicenseValidationGuard),
@@ -115,18 +101,21 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Save to database after local encode from binary.' }),
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body()),
-    __param(1, decorators_1.User('sub')),
+    __param(1, decorators_1.User()),
     __param(2, apikey_decorator_1.ApiKey('_id')),
     __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromBinaryDto, String, String, String]),
+    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromBinaryDto,
+        user_db_schema_1.UserDB, String, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyThirdPartyController.prototype, "createFormBinary", null);
 __decorate([
     common_1.Patch('/:sonickey'),
     common_2.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
     swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiOperation({ summary: 'Update Sonic Keys meta data from binary including s3FileMeta' }),
+    swagger_1.ApiOperation({
+        summary: 'Update Sonic Keys meta data from binary including s3FileMeta',
+    }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_2.Param('sonickey')),
     __param(1, common_1.Body()),

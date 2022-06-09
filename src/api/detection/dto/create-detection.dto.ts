@@ -1,6 +1,6 @@
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 import { ChannelEnums } from 'src/constants/Enums';
-import { IsArray, IsDefined, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
+import { IsArray, IsDefined, IsIn, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
 import { DetectedTimeStamp } from '../schemas/detection.schema';
 import { DecodeResponseFromBinaryDto } from './general.dto';
 import { Type } from 'class-transformer';
@@ -10,22 +10,19 @@ export class CreateDetectionDto {
   radioStation: string;
 
   @ApiProperty()
+  @IsNotEmpty()
   sonicKey: string;
 
+  @IsNotEmpty()
   @ApiProperty()
-  apiKey: string;
-
-  @ApiProperty()
-  licenseKey: string;
-
-  @ApiProperty()
-  owner: string;
-
-  @ApiProperty()
+  @IsIn([Object.values(ChannelEnums)])
   channel: string;
 
-  @ApiProperty()
-  channelUuid: string;
+  // @ApiProperty()
+  // licenseKey: string;
+
+  // @ApiProperty()
+  // owner: string;
 
   @ApiProperty()
   detectedAt: Date;
