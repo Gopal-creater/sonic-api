@@ -60,7 +60,7 @@ export class Detection extends Document {
     ref: 'User',
     autopopulate: { maxDepth: 2 },
   })
-  owner: string;
+  owner: any;
 
   @ApiProperty()
   @Prop({
@@ -68,7 +68,7 @@ export class Detection extends Document {
     ref: 'Partner',
     autopopulate: { maxDepth: 2 },
   })
-  partner: string;
+  partner: any;
 
   @ApiProperty()
   @Prop({
@@ -76,7 +76,7 @@ export class Detection extends Document {
     ref: 'Company',
     autopopulate: { maxDepth: 2 },
   })
-  company: string;
+  company: any;
 
   @ApiProperty()
   @Prop()
