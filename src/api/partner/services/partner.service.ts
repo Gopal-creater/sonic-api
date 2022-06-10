@@ -31,7 +31,7 @@ export class PartnerService {
         },
       );
     }
-    return createdPartner
+    return this.findById(createdPartner?._id)
   }
 
   async makePartnerAdminUser(user: string, partner: string) {

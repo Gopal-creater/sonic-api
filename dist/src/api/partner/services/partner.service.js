@@ -34,7 +34,7 @@ let PartnerService = class PartnerService {
                 partner: createdPartner._id,
             });
         }
-        return createdPartner;
+        return this.findById(createdPartner === null || createdPartner === void 0 ? void 0 : createdPartner._id);
     }
     async makePartnerAdminUser(user, partner) {
         const partnerFromDb = await this.partnerModel.findById(partner);

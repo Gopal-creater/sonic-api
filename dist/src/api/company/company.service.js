@@ -38,7 +38,7 @@ let CompanyService = class CompanyService {
                 company: createdCompany._id,
             });
         }
-        return createdCompany;
+        return this.findById(createdCompany._id);
     }
     async makeCompanyAdminUser(company, user) {
         const companyFromDb = await this.companyModel.findById(company);

@@ -34,7 +34,7 @@ export class CompanyService {
         company: createdCompany._id,
       });
     }
-    return createdCompany;
+    return this.findById(createdCompany._id);
   }
 
   async makeCompanyAdminUser(company: string, user: string) {
