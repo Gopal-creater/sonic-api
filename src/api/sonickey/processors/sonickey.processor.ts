@@ -7,6 +7,13 @@ import { FileHandlerService } from '../../../shared/services/file-handler.servic
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
 import { SonicKeyDto } from '../dtos/sonicKey.dto';
 import { QueuejobService } from '../../../queuejob/queuejob.service';
+import { SonicKey } from '../schemas/sonickey.schema';
+import { UserDB } from 'src/api/user/schemas/user.db.schema';
+import { LicensekeyService } from 'src/api/licensekey/services/licensekey.service';
+import { LicenseKey } from 'src/api/licensekey/schemas/licensekey.schema';
+import { SonickeyUtils } from './utils/sonickey.utils';
+import { identifyDestinationFolderAndResourceOwnerFromUser } from 'src/shared/utils';
+import { nanoid } from 'nanoid';
 
 export interface EncodeJobDataI {
   file: IUploadedFile;
@@ -16,11 +23,19 @@ export interface EncodeJobDataI {
   metaData: Partial<SonicKeyDto>;
 }
 
+export interface EncodeAgainJobDataI {
+  trackId: string;
+  user: UserDB;
+  sonicKeyDto?: Partial<SonicKey>;
+  metaData?: Record<string, any>;
+}
+
 @Processor('sonickey')
 export class SonicKeyProcessor {
   constructor(
     private readonly sonicKeyService: SonickeyService,
-    private readonly fileHandlerService: FileHandlerService,
+    private readonly sonickeyUtils: SonickeyUtils,
+    private readonly licensekeyService: LicensekeyService,
     public readonly queuejobService: QueuejobService,
   ) {}
   private readonly logger = new Logger(SonicKeyProcessor.name);
@@ -44,7 +59,7 @@ export class SonicKeyProcessor {
       .catch(async err => {
         this.logger.debug(`Encode failed for job id: ${job.id}`);
         this.logger.error(err);
-         //update job upon error
+        //update job upon error
         await this.queuejobService.queueJobModel.updateOne(
           { _id: job.id },
           {
@@ -56,6 +71,100 @@ export class SonicKeyProcessor {
         return Promise.reject(new Error(err.message || 'Encode failed'));
       });
     this.logger.debug(`Encode completed for job id: ${job.id}`);
+  }
+
+  @Process('encode_again')
+  async handleEncodeAgainForNextDownload(job: Job) {
+    this.logger.debug(`Start encode again job for job id: ${job.id}`);
+    this.logger.debug(job.data);
+    const {
+      user,
+      trackId,
+      sonicKeyDto,
+      metaData,
+    } = job.data as EncodeAgainJobDataI;
+    const license = await this.sonickeyUtils.checkAndGetValidLicenseForEncode(
+      user,
+    );
+    const {
+      fileUploadFromTrackResult: file,
+      currentTrack: track,
+    } = await this.sonickeyUtils.downloadFileFromTrack(trackId);
+    const oldLatestSonicKey = await this.sonicKeyService.findOneAggregate({
+      filter: { track: trackId },
+      sort: { createdAt: -1 },
+    });
+    const {
+      destinationFolder,
+      resourceOwnerObj,
+    } = identifyDestinationFolderAndResourceOwnerFromUser(user);
+    //Create Job in db
+    await this.queuejobService
+      .create({
+        _id: job.id,
+        name: job.name,
+        jobData: job.data,
+        ...resourceOwnerObj,
+      })
+      .catch(err => {
+        throw new Error("Can't save queue job details to db");
+      });
+    var sonickeyDoc: Partial<SonicKey>;
+    if (oldLatestSonicKey) {
+      sonickeyDoc = Object.assign(oldLatestSonicKey?.toObject?.(), sonicKeyDto, {
+        createdBy: user?.sub,
+      });
+    } else {
+      sonicKeyDto.contentFileType =
+        sonicKeyDto.contentFileType || track.mimeType;
+      sonicKeyDto.contentOwner = sonicKeyDto.contentOwner || track.artist;
+      sonicKeyDto.contentName = sonicKeyDto.contentName || track.title;
+      sonicKeyDto.contentDuration =
+        sonicKeyDto.contentDuration || track.duration;
+      sonicKeyDto.contentSize = sonicKeyDto.contentSize || track.fileSize;
+      sonicKeyDto.contentType = sonicKeyDto.contentType || track.fileType;
+      sonicKeyDto.contentEncoding =
+        sonicKeyDto.contentEncoding || track.encoding;
+      sonicKeyDto.contentSamplingFrequency =
+        sonicKeyDto.contentSamplingFrequency || track.samplingFrequency;
+      sonicKeyDto.originalFileName =
+        sonicKeyDto.originalFileName || track.originalFileName;
+      sonickeyDoc = Object.assign(sonicKeyDto, resourceOwnerObj, {
+        createdBy: user?.sub,
+      });
+    }
+    const encodingStrength = sonickeyDoc.encodingStrength || 30;
+    await this.sonicKeyService
+      .encodeSonicKeyFromTrack({
+        trackId: track?.id,
+        file,
+        licenseId: license._id,
+        sonickeyDoc,
+        encodingStrength,
+        s3destinationFolder: destinationFolder,
+      })
+      .then(async res => {
+        await this.queuejobService.queueJobModel.updateOne(
+          { _id: job.id },
+          {
+            completed: true,
+          },
+          { new: true },
+        );
+      })
+      .catch(async err => {
+        await this.queuejobService.queueJobModel.updateOne(
+          { _id: job.id },
+          {
+            error: true,
+            errorData: err,
+          },
+          { new: true },
+        );
+      });
+    this.logger.debug(
+      `Encode Again For next download job completed for job id: ${job.id}`,
+    );
   }
 
   async encodeFileFromJobData(encodeJobData: Job) {

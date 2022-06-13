@@ -53,7 +53,7 @@ export class SonicKey extends Document {
     ref: 'User',
     autopopulate: { maxDepth: 2 },
   })
-  owner: string;
+  owner: any;
 
   @ApiProperty()
   @Prop({
@@ -61,7 +61,7 @@ export class SonicKey extends Document {
     ref: 'Company',
     autopopulate: { maxDepth: 2 },
   })
-  company: string;
+  company: any;
 
   @ApiProperty()
   @Prop({
@@ -69,7 +69,7 @@ export class SonicKey extends Document {
     ref: 'Partner',
     autopopulate: { maxDepth: 2 },
   })
-  partner: string;
+  partner: any;
 
   @ApiProperty()
   @Prop({ type: MogSchema.Types.ObjectId, ref: JobSchemaName })
@@ -274,7 +274,7 @@ export class SonicKey extends Document {
     ref: 'User',
     autopopulate: { maxDepth: 2 },
   })
-  createdBy: string;
+  createdBy: any;
 
   @ApiProperty()
   @Prop({
@@ -282,7 +282,7 @@ export class SonicKey extends Document {
     ref: 'User',
     autopopulate: { maxDepth: 2 },
   })
-  updatedBy: string;
+  updatedBy: any;
 
   @ApiProperty()
   @Prop({
@@ -290,7 +290,7 @@ export class SonicKey extends Document {
     ref: 'Track',
     autopopulate: { maxDepth: 2 },
   })
-  track: string;
+  track: any;
 }
 
 export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);

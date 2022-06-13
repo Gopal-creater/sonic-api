@@ -272,6 +272,79 @@ export class SonickeyService {
     return this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
   }
 
+  async findOneAggregate(queryDto: ParsedQueryDto): Promise<SonicKey> {
+    const {
+      limit,
+      skip,
+      sort,
+      page,
+      filter,
+      select,
+      populate,
+      relationalFilter,
+    } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    const aggregate = this.sonicKeyModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+          ...sort,
+        },
+      },
+      {
+        $lookup: {
+          //populate sonickey from its relational table
+          from: 'Company',
+          localField: 'company',
+          foreignField: '_id',
+          as: 'company',
+        },
+      },
+      { $addFields: { company: { $first: '$company' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'Partner',
+          localField: 'partner',
+          foreignField: '_id',
+          as: 'partner',
+        },
+      },
+      { $addFields: { partner: { $first: '$partner' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'User',
+          localField: 'owner',
+          foreignField: '_id',
+          as: 'owner',
+        },
+      },
+      { $addFields: { owner: { $first: '$owner' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+      {
+        $limit: 1
+    }
+    ]);
+    const datas =await this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
+    return datas[0]
+  }
+
   async getCount(queryDto: ParsedQueryDto) {
     const { filter, includeGroupData } = queryDto;
     return this.sonicKeyModel.find(filter || {}).count();

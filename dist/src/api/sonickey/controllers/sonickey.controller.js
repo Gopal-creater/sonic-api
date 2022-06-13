@@ -34,6 +34,7 @@ const makeDir = require("make-dir");
 const multer_1 = require("multer");
 const config_1 = require("../../../config");
 const swagger_1 = require("@nestjs/swagger");
+const nanoid_1 = require("nanoid");
 const uniqid = require("uniqid");
 const guards_1 = require("../../auth/guards");
 const decorators_1 = require("../../auth/decorators");
@@ -63,15 +64,43 @@ const update_sonickey_security_guard_1 = require("../guards/update-sonickey-secu
 const delete_sonickey_security_guard_1 = require("../guards/delete-sonickey-security.guard");
 const encode_security_interceptor_1 = require("../interceptors/encode-security.interceptor");
 const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
+const s3fileupload_service_1 = require("../../s3fileupload/s3fileupload.service");
 let SonickeyController = class SonickeyController {
-    constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService) {
+    constructor(sonicKeyService, licensekeyService, fileHandlerService, detectionService, s3FileUploadService) {
         this.sonicKeyService = sonicKeyService;
         this.licensekeyService = licensekeyService;
         this.fileHandlerService = fileHandlerService;
         this.detectionService = detectionService;
+        this.s3FileUploadService = s3FileUploadService;
     }
     async getAll(parsedQueryDto, loggedInUser) {
         return this.sonicKeyService.getAll(parsedQueryDto);
+    }
+    async getDownloadUrlByMetadata(parsedQueryDto, loggedInUser) {
+        var _a;
+        const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        parsedQueryDto.filter = Object.assign(Object.assign({}, parsedQueryDto.filter), resourceOwnerObj);
+        parsedQueryDto.sort = {
+            createdAt: -1
+        };
+        const sonicKey = await this.sonicKeyService.findOneAggregate(parsedQueryDto);
+        if (!sonicKey) {
+            throw new common_1.NotFoundException("Sonickey not found");
+        }
+        const downloadSignedUrl = await this.s3FileUploadService.getSignedUrl(sonicKey.s3FileMeta.Key);
+        const encodeAgainForNextDownloadJobData = {
+            trackId: (_a = sonicKey === null || sonicKey === void 0 ? void 0 : sonicKey.track) === null || _a === void 0 ? void 0 : _a._id,
+            user: loggedInUser,
+            sonicKeyDto: {},
+            metaData: {
+                purpose: "Encode again for next download job"
+            }
+        };
+        await this.sonicKeyService.sonicKeyQueue.add("encode_again", encodeAgainForNextDownloadJobData, { jobId: nanoid_1.nanoid(15) });
+        return {
+            sonicKey: sonicKey,
+            downloadUrl: downloadSignedUrl
+        };
     }
     async encodeToSonicFromPath(company, client, owner, license, encodeFromQueueDto) {
         if (client !== owner) {
@@ -467,6 +496,20 @@ __decorate([
         user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getAll", null);
+__decorate([
+    common_1.Get('/get-download-url-by-metadata'),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiOperation({ summary: 'get download url by metadata' }),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(1, decorators_1.User()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto,
+        user_db_schema_1.UserDB]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "getDownloadUrlByMetadata", null);
 __decorate([
     common_1.Post('/encode-bulk/companies/:companyId/clients/:clientId'),
     common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, job_license_validation_guard_1.BulkEncodeWithQueueLicenseValidationGuard),
@@ -924,7 +967,8 @@ SonickeyController = __decorate([
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
         licensekey_service_1.LicensekeyService,
         file_handler_service_1.FileHandlerService,
-        detection_service_1.DetectionService])
+        detection_service_1.DetectionService,
+        s3fileupload_service_1.S3FileUploadService])
 ], SonickeyController);
 exports.SonickeyController = SonickeyController;
 //# sourceMappingURL=sonickey.controller.js.map

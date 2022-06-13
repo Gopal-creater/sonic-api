@@ -65,7 +65,7 @@ export const FileFromTrackInterceptor = (fieldName: string = 'track') => {
       const originalname = extractFileName(signedUrlForTrack);
       const filename = `${uniqid()}-${originalname}`;
       const destination = `${filePath}/${filename}`;
-      const uploaded = await this.download(signedUrlForTrack, destination);
+      const uploaded = await download(signedUrlForTrack, destination);
       const fileStat = fs.statSync(destination);
       const mimeType = mime.getType(destination);
       const fileUploadResult: IUploadedFile = {
@@ -81,31 +81,6 @@ export const FileFromTrackInterceptor = (fieldName: string = 'track') => {
       req['fileUploadFromTrackResult'] = fileUploadResult; //Add fileUploadResult to request object
       req['currentTrack'] = trackFromDb;
       return next.handle();
-    }
-
-    download(
-      url: string,
-      dest: string,
-    ): Promise<{ url: string; dest: string }> {
-      return new Promise((resolve, reject) => {
-        var file = fs.createWriteStream(dest);
-        var request = http
-          .get(url, function(response) {
-            response.pipe(file);
-            file.on('finish', function() {
-              file.close();
-              resolve({
-                url: url,
-                dest: dest,
-              }); // close() is async, call cb after close completes.
-            });
-          })
-          .on('error', function(err) {
-            // Handle errors
-            fs.unlink(dest, () => {}); // Delete the file async. (But we don't check the result)
-            reject(err);
-          });
-      });
     }
   }
   return mixin(FileFromUrlInterceptorClass);
@@ -132,3 +107,28 @@ export const CurrentTrack = createParamDecorator(
     }
   },
 );
+
+function download(
+  url: string,
+  dest: string,
+): Promise<{ url: string; dest: string }> {
+  return new Promise((resolve, reject) => {
+    var file = fs.createWriteStream(dest);
+    var request = http
+      .get(url, function(response) {
+        response.pipe(file);
+        file.on('finish', function() {
+          file.close();
+          resolve({
+            url: url,
+            dest: dest,
+          }); // close() is async, call cb after close completes.
+        });
+      })
+      .on('error', function(err) {
+        // Handle errors
+        fs.unlink(dest, () => {}); // Delete the file async. (But we don't check the result)
+        reject(err);
+      });
+  });
+}

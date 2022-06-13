@@ -205,6 +205,59 @@ let SonickeyService = class SonickeyService {
         ]);
         return this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
     }
+    async findOneAggregate(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        const aggregate = this.sonicKeyModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ createdAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'company',
+                    foreignField: '_id',
+                    as: 'company',
+                },
+            },
+            { $addFields: { company: { $first: '$company' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'partner',
+                    foreignField: '_id',
+                    as: 'partner',
+                },
+            },
+            { $addFields: { partner: { $first: '$partner' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $limit: 1
+            }
+        ]);
+        const datas = await this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
+        return datas[0];
+    }
     async getCount(queryDto) {
         const { filter, includeGroupData } = queryDto;
         return this.sonicKeyModel.find(filter || {}).count();

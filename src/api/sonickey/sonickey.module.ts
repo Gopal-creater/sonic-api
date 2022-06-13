@@ -18,6 +18,7 @@ import { BullModule } from '@nestjs/bull';
 import { SonicKeyProcessor } from './processors/sonickey.processor';
 import { QueuejobModule } from '../../queuejob/queuejob.module';
 import { TrackModule } from '../track/track.module';
+import { SonickeyUtils } from './processors/utils/sonickey.utils';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { TrackModule } from '../track/track.module';
     FileOperationService,
     FileHandlerService,
     SonicKeyProcessor,
+    SonickeyUtils
   ],
   exports: [SonickeyService],
 })

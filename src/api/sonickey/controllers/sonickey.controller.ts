@@ -57,6 +57,7 @@ import {
   ApiParam,
   ApiSecurity,
 } from '@nestjs/swagger';
+import { nanoid } from 'nanoid';
 import { interval, Observable } from 'rxjs';
 import * as uniqid from 'uniqid';
 import { JwtAuthGuard } from '../../auth/guards';
@@ -88,6 +89,7 @@ import { Detection } from 'src/api/detection/schemas/detection.schema';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
 import { UserDB } from '../../user/schemas/user.db.schema';
 import * as _ from 'lodash';
+import {Job } from 'bull';
 import { BulkEncodeWithQueueLicenseValidationGuard } from 'src/api/licensekey/guards/job-license-validation.guard';
 import { ApiKeyAuthGuard } from 'src/api/auth/guards/apikey-auth.guard';
 import { identifyDestinationFolderAndResourceOwnerFromUser } from 'src/shared/utils';
@@ -97,6 +99,8 @@ import { UpdateSonicKeySecurityGuard } from '../guards/update-sonickey-security.
 import { DeleteSonicKeySecurityGuard } from '../guards/delete-sonickey-security.guard';
 import { EncodeSecurityInterceptor } from '../interceptors/encode-security.interceptor';
 import { ApiKey } from 'src/api/api-key/decorators/apikey.decorator';
+import { S3FileUploadService } from '../../s3fileupload/s3fileupload.service';
+import { EncodeAgainJobDataI } from '../processors/sonickey.processor';
 
 @ApiTags('SonicKeys Controller')
 @Controller('sonic-keys')
@@ -106,6 +110,7 @@ export class SonickeyController {
     public readonly licensekeyService: LicensekeyService,
     private readonly fileHandlerService: FileHandlerService,
     private readonly detectionService: DetectionService,
+    private readonly s3FileUploadService: S3FileUploadService,
   ) {}
 
   @AnyApiQueryTemplate({
@@ -130,6 +135,44 @@ export class SonickeyController {
     @User() loggedInUser: UserDB,
   ) {
     return this.sonicKeyService.getAll(parsedQueryDto);
+  }
+
+  @Get('/get-download-url-by-metadata')
+  @UseGuards(ConditionalAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
+  @ApiOperation({ summary: 'get download url by metadata' })
+  async getDownloadUrlByMetadata(
+    @Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto,
+    @User() loggedInUser: UserDB,
+  ) {
+    const {
+      resourceOwnerObj,
+    } = identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+    parsedQueryDto.filter={...parsedQueryDto.filter,...resourceOwnerObj}
+    parsedQueryDto.sort={ //Fetch the latest entry
+      createdAt:-1
+    }
+    const sonicKey = await this.sonicKeyService.findOneAggregate(parsedQueryDto);
+    if(!sonicKey){
+      throw new NotFoundException("Sonickey not found")
+    }
+    const downloadSignedUrl = await this.s3FileUploadService.getSignedUrl(sonicKey.s3FileMeta.Key);
+    
+    //Add Next Encode On Queue for next download
+    const encodeAgainForNextDownloadJobData: EncodeAgainJobDataI = {
+      trackId:sonicKey?.track?._id,
+      user:loggedInUser,
+      sonicKeyDto:{},
+      metaData:{
+        purpose:"Encode again for next download job"
+      }
+    };
+    await this.sonicKeyService.sonicKeyQueue.add("encode_again",encodeAgainForNextDownloadJobData,{jobId: nanoid(15)})
+    return {
+      sonicKey:sonicKey,
+      downloadUrl:downloadSignedUrl
+    }
   }
 
   @Post('/encode-bulk/companies/:companyId/clients/:clientId')

@@ -7,6 +7,7 @@ import * as rimraf from 'rimraf';
 import { IUploadedFile } from '../interfaces/UploadedFile.interface';
 import { extractFileName } from 'src/shared/utils';
 import * as path from 'path';
+import * as http from 'https';
 @Injectable()
 export class FileHandlerService {
   async deleteFileAtPath(pathFromRoot: string) {
@@ -66,6 +67,31 @@ export class FileHandlerService {
     return new Promise(async (resolve, reject) => {
       const stream = fs.createReadStream(pathFromRoot);
       resolve(stream);
+    });
+  }
+
+  download(
+    url: string,
+    dest: string,
+  ): Promise<{ url: string; dest: string }> {
+    return new Promise((resolve, reject) => {
+      var file = fs.createWriteStream(dest);
+      var request = http
+        .get(url, function(response) {
+          response.pipe(file);
+          file.on('finish', function() {
+            file.close();
+            resolve({
+              url: url,
+              dest: dest,
+            }); // close() is async, call cb after close completes.
+          });
+        })
+        .on('error', function(err) {
+          // Handle errors
+          fs.unlink(dest, () => {}); // Delete the file async. (But we don't check the result)
+          reject(err);
+        });
     });
   }
 

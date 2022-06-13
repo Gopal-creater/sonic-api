@@ -74,7 +74,7 @@ __decorate([
         ref: 'User',
         autopopulate: { maxDepth: 2 },
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Object)
 ], SonicKey.prototype, "owner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
@@ -83,7 +83,7 @@ __decorate([
         ref: 'Company',
         autopopulate: { maxDepth: 2 },
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Object)
 ], SonicKey.prototype, "company", void 0);
 __decorate([
     swagger_1.ApiProperty(),
@@ -92,7 +92,7 @@ __decorate([
         ref: 'Partner',
         autopopulate: { maxDepth: 2 },
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Object)
 ], SonicKey.prototype, "partner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
@@ -335,7 +335,7 @@ __decorate([
         ref: 'User',
         autopopulate: { maxDepth: 2 },
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Object)
 ], SonicKey.prototype, "createdBy", void 0);
 __decorate([
     swagger_1.ApiProperty(),
@@ -344,7 +344,7 @@ __decorate([
         ref: 'User',
         autopopulate: { maxDepth: 2 },
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Object)
 ], SonicKey.prototype, "updatedBy", void 0);
 __decorate([
     swagger_1.ApiProperty(),
@@ -353,7 +353,7 @@ __decorate([
         ref: 'Track',
         autopopulate: { maxDepth: 2 },
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Object)
 ], SonicKey.prototype, "track", void 0);
 SonicKey = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.SonicKeySchemaName })

@@ -44,7 +44,7 @@ const FileFromTrackInterceptor = (fieldName = 'track') => {
             const originalname = utils_1.extractFileName(signedUrlForTrack);
             const filename = `${uniqid()}-${originalname}`;
             const destination = `${filePath}/${filename}`;
-            const uploaded = await this.download(signedUrlForTrack, destination);
+            const uploaded = await download(signedUrlForTrack, destination);
             const fileStat = fs.statSync(destination);
             const mimeType = mime.getType(destination);
             const fileUploadResult = {
@@ -60,26 +60,6 @@ const FileFromTrackInterceptor = (fieldName = 'track') => {
             req['fileUploadFromTrackResult'] = fileUploadResult;
             req['currentTrack'] = trackFromDb;
             return next.handle();
-        }
-        download(url, dest) {
-            return new Promise((resolve, reject) => {
-                var file = fs.createWriteStream(dest);
-                var request = http
-                    .get(url, function (response) {
-                    response.pipe(file);
-                    file.on('finish', function () {
-                        file.close();
-                        resolve({
-                            url: url,
-                            dest: dest,
-                        });
-                    });
-                })
-                    .on('error', function (err) {
-                    fs.unlink(dest, () => { });
-                    reject(err);
-                });
-            });
         }
     };
     FileFromUrlInterceptorClass = __decorate([
@@ -108,4 +88,24 @@ exports.CurrentTrack = common_1.createParamDecorator((data, ctx) => {
         return req.currentTrack;
     }
 });
+function download(url, dest) {
+    return new Promise((resolve, reject) => {
+        var file = fs.createWriteStream(dest);
+        var request = http
+            .get(url, function (response) {
+            response.pipe(file);
+            file.on('finish', function () {
+                file.close();
+                resolve({
+                    url: url,
+                    dest: dest,
+                });
+            });
+        })
+            .on('error', function (err) {
+            fs.unlink(dest, () => { });
+            reject(err);
+        });
+    });
+}
 //# sourceMappingURL=FileFromTrack.interceptor.js.map

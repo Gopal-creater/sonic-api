@@ -59,6 +59,15 @@ __decorate([
 ], QueueJob.prototype, "user", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: String,
+        ref: 'Partner',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], QueueJob.prototype, "partner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop({ default: false }),
     __metadata("design:type", Boolean)
 ], QueueJob.prototype, "completed", void 0);
