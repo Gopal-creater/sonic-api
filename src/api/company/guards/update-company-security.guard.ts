@@ -18,6 +18,8 @@ export class UpdateCompanySecurityGuard implements CanActivate {
     const loggedInUser = request?.user as UserDB
     switch (loggedInUser.userRole) {
       case SystemRoles.ADMIN: 
+      delete request?.body?.owner
+      delete request?.body?.partner
         break;
 
       case SystemRoles.PARTNER_ADMIN:

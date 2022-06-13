@@ -6,10 +6,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PlanSchemaName, PlanSchema } from './schemas/plan.schema';
 import { LicensekeyModule } from '../licensekey/licensekey.module';
 import { PaymentModule } from '../payment/payment.module';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-  MongooseModule.forFeature([{ name: PlanSchemaName, schema: PlanSchema }]),
+MongooseModule.forFeature([{ name: PlanSchemaName, schema: PlanSchema }]),
     forwardRef(() => LicensekeyModule),
     forwardRef(() => PaymentModule),
   ],
@@ -18,8 +19,10 @@ import { PaymentModule } from '../payment/payment.module';
   exports: [PlanService],
 })
 export class PlanModule implements OnModuleInit {
-  constructor(private readonly planService: PlanService) {}
+  constructor(private readonly planService: PlanService,private readonly configService:ConfigService) {}
   onModuleInit() {
     this.planService.createDefaultPlans();
+    console.log("path",this.configService.get('ENCODER_EXE_PATH'))
+    console.log("path",this.configService.get('DECODER_EXE_PATH'))
   }
 }

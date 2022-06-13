@@ -59,15 +59,6 @@ AppModule = __decorate([
     common_1.Module({
         imports: [
             axios_1.HttpModule,
-            auth_module_1.AuthModule,
-            schedule_1.ScheduleModule.forRoot(),
-            event_emitter_1.EventEmitterModule.forRoot(),
-            bull_1.BullModule.forRoot({
-                redis: {
-                    host: 'localhost',
-                    port: 6379,
-                },
-            }),
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 cache: true,
@@ -76,6 +67,15 @@ AppModule = __decorate([
                     process.env.NODE_ENV == 'production' ? 'production.env' : 'staging.env',
                 ],
                 load: [app_config_1.default, test_config_1.default],
+            }),
+            auth_module_1.AuthModule,
+            schedule_1.ScheduleModule.forRoot(),
+            event_emitter_1.EventEmitterModule.forRoot(),
+            bull_1.BullModule.forRoot({
+                redis: {
+                    host: 'localhost',
+                    port: 6379,
+                },
             }),
             mail_module_1.MailModule,
             mongoose_1.MongooseModule.forRootAsync({
@@ -133,7 +133,7 @@ AppModule = __decorate([
             queuejob_module_1.QueuejobModule,
             chargebee_module_1.ChargebeeModule,
             partner_module_1.PartnerModule,
-            track_module_1.TrackModule
+            track_module_1.TrackModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, app_gateway_1.AppGateway, ec2instance_service_1.Ec2InstanceService],

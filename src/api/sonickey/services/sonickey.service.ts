@@ -384,7 +384,7 @@ export class SonickeyService {
       outFilePath +
       ' ' +
       random11CharKey;
-    const sonicEncodeCmd = `${appConfig.ENCODER_EXE_PATH}` + argList;
+    const sonicEncodeCmd = this.configService.get<string>('ENCODER_EXE_PATH') + argList;
 
     // TODO: this whole stuff needs to be promise/callback based.
     //Prabin: Handling File Operation in Async(promise/callback) mode
@@ -433,7 +433,7 @@ export class SonickeyService {
       outFilePath +
       ' ' +
       random11CharKey;
-    const sonicEncodeCmd = `${appConfig.ENCODER_EXE_PATH}` + argList;
+    const sonicEncodeCmd = this.configService.get<string>('ENCODER_EXE_PATH') + argList;
 
     return this.fileOperationService
       .encodeFile(sonicEncodeCmd, outFilePath)
@@ -521,7 +521,7 @@ export class SonickeyService {
       outFilePath +
       ' ' +
       random11CharKey;
-    const sonicEncodeCmd = `${appConfig.ENCODER_EXE_PATH}` + argList;
+    const sonicEncodeCmd = this.configService.get<string>('ENCODER_EXE_PATH') + argList;
 
     return this.fileOperationService
       .encodeFile(sonicEncodeCmd, outFilePath)
@@ -736,7 +736,7 @@ export class SonickeyService {
     const logFilePath = inFilePath + '.log';
     const argList = ' ' + inFilePath + ' ' + logFilePath;
 
-    const sonicDecodeCmd = `${appConfig.DECODER_EXE_PATH}` + argList;
+    const sonicDecodeCmd = this.configService.get<string>('DECODER_EXE_PATH') + argList;
 
     //Prabin:Dont wait file to decode. just return Promise itself
     return (
@@ -811,7 +811,7 @@ export class SonickeyService {
     const logFilePath = inFilePath + '.log';
     const argList = ' ' + inFilePath + ' ' + logFilePath;
 
-    const sonicDecodeCmd = `${appConfig.DECODER_EXE_PATH}` + argList;
+    const sonicDecodeCmd = this.configService.get<string>('DECODER_EXE_PATH') + argList;
     //Prabin:Dont wait file to decode. just return Promise itself
     return this.fileOperationService
       .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)

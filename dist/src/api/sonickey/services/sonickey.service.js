@@ -280,7 +280,7 @@ let SonickeyService = class SonickeyService {
             outFilePath +
             ' ' +
             random11CharKey;
-        const sonicEncodeCmd = `${config_1.appConfig.ENCODER_EXE_PATH}` + argList;
+        const sonicEncodeCmd = this.configService.get('ENCODER_EXE_PATH') + argList;
         return this.fileOperationService
             .encodeFile(sonicEncodeCmd, outFilePath)
             .then(async () => {
@@ -309,7 +309,7 @@ let SonickeyService = class SonickeyService {
             outFilePath +
             ' ' +
             random11CharKey;
-        const sonicEncodeCmd = `${config_1.appConfig.ENCODER_EXE_PATH}` + argList;
+        const sonicEncodeCmd = this.configService.get('ENCODER_EXE_PATH') + argList;
         return this.fileOperationService
             .encodeFile(sonicEncodeCmd, outFilePath)
             .then(() => {
@@ -370,7 +370,7 @@ let SonickeyService = class SonickeyService {
             outFilePath +
             ' ' +
             random11CharKey;
-        const sonicEncodeCmd = `${config_1.appConfig.ENCODER_EXE_PATH}` + argList;
+        const sonicEncodeCmd = this.configService.get('ENCODER_EXE_PATH') + argList;
         return this.fileOperationService
             .encodeFile(sonicEncodeCmd, outFilePath)
             .then(() => {
@@ -479,7 +479,7 @@ let SonickeyService = class SonickeyService {
         const inFilePath = file.path;
         const logFilePath = inFilePath + '.log';
         const argList = ' ' + inFilePath + ' ' + logFilePath;
-        const sonicDecodeCmd = `${config_1.appConfig.DECODER_EXE_PATH}` + argList;
+        const sonicDecodeCmd = this.configService.get('DECODER_EXE_PATH') + argList;
         return (this.fileOperationService
             .decodeFile(sonicDecodeCmd, logFilePath)
             .finally(() => {
@@ -531,7 +531,7 @@ let SonickeyService = class SonickeyService {
         const inFilePath = file.path;
         const logFilePath = inFilePath + '.log';
         const argList = ' ' + inFilePath + ' ' + logFilePath;
-        const sonicDecodeCmd = `${config_1.appConfig.DECODER_EXE_PATH}` + argList;
+        const sonicDecodeCmd = this.configService.get('DECODER_EXE_PATH') + argList;
         return this.fileOperationService
             .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
             .finally(() => {
