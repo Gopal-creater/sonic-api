@@ -81,11 +81,11 @@ let SonickeyController = class SonickeyController {
         const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
         parsedQueryDto.filter = Object.assign(Object.assign({}, parsedQueryDto.filter), resourceOwnerObj);
         parsedQueryDto.sort = {
-            createdAt: -1
+            createdAt: -1,
         };
         const sonicKey = await this.sonicKeyService.findOneAggregate(parsedQueryDto);
         if (!sonicKey) {
-            throw new common_1.NotFoundException("Sonickey not found");
+            throw new common_1.NotFoundException('Sonickey not found');
         }
         const downloadSignedUrl = await this.s3FileUploadService.getSignedUrl(sonicKey.s3FileMeta.Key);
         const encodeAgainForNextDownloadJobData = {
@@ -93,13 +93,13 @@ let SonickeyController = class SonickeyController {
             user: loggedInUser,
             sonicKeyDto: {},
             metaData: {
-                purpose: "Encode again for next download job"
-            }
+                purpose: 'Encode again for next download job',
+            },
         };
-        await this.sonicKeyService.sonicKeyQueue.add("encode_again", encodeAgainForNextDownloadJobData, { jobId: nanoid_1.nanoid(15) });
+        await this.sonicKeyService.sonicKeyQueue.add('encode_again', encodeAgainForNextDownloadJobData, { jobId: nanoid_1.nanoid(15) });
         return {
             sonicKey: sonicKey,
-            downloadUrl: downloadSignedUrl
+            downloadUrl: downloadSignedUrl,
         };
     }
     async encodeToSonicFromPath(company, client, owner, license, encodeFromQueueDto) {
@@ -190,7 +190,7 @@ let SonickeyController = class SonickeyController {
             licenseId,
             sonickeyDoc,
             encodingStrength,
-            s3destinationFolder: destinationFolder
+            s3destinationFolder: destinationFolder,
         });
     }
     async encodeByFile(sonicKeyDto, file, loggedInUser, licenseId) {
@@ -203,7 +203,7 @@ let SonickeyController = class SonickeyController {
             licenseId,
             sonickeyDoc,
             encodingStrength,
-            s3destinationFolder: destinationFolder
+            s3destinationFolder: destinationFolder,
         });
     }
     async encodeByTrack(sonicKeyDto, track, file, loggedInUser, licenseId) {
@@ -215,8 +215,10 @@ let SonickeyController = class SonickeyController {
         sonicKeyDto.contentSize = sonicKeyDto.contentSize || track.fileSize;
         sonicKeyDto.contentType = sonicKeyDto.contentType || track.fileType;
         sonicKeyDto.contentEncoding = sonicKeyDto.contentEncoding || track.encoding;
-        sonicKeyDto.contentSamplingFrequency = sonicKeyDto.contentSamplingFrequency || track.samplingFrequency;
-        sonicKeyDto.originalFileName = sonicKeyDto.originalFileName || track.originalFileName;
+        sonicKeyDto.contentSamplingFrequency =
+            sonicKeyDto.contentSamplingFrequency || track.samplingFrequency;
+        sonicKeyDto.originalFileName =
+            sonicKeyDto.originalFileName || track.originalFileName;
         const encodingStrength = sonicKeyDto.encodingStrength;
         const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, sonicKeyDto), resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
         return this.sonicKeyService.encodeSonicKeyFromTrack({
@@ -225,7 +227,7 @@ let SonickeyController = class SonickeyController {
             licenseId,
             sonickeyDoc,
             encodingStrength,
-            s3destinationFolder: destinationFolder
+            s3destinationFolder: destinationFolder,
         });
     }
     async encodeFromUrl(sonicKeyDto, file, loggedInUser, owner, licenseId) {
@@ -238,7 +240,7 @@ let SonickeyController = class SonickeyController {
             licenseId,
             sonickeyDoc,
             encodingStrength,
-            s3destinationFolder: destinationFolder
+            s3destinationFolder: destinationFolder,
         });
     }
     async decode(file) {
@@ -500,6 +502,11 @@ __decorate([
     common_1.Get('/get-download-url-by-metadata'),
     common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
+    swagger_1.ApiQuery({
+        name: 'query',
+        type: 'object',
+        required: false
+    }),
     swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiOperation({ summary: 'get download url by metadata' }),
     openapi.ApiResponse({ status: 200 }),
@@ -551,7 +558,9 @@ __decorate([
     common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, license_validation_guard_1.LicenseValidationGuard),
     common_1.Post('/create-from-outside'),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: '[NEW]: Save to database after local encode from job. ' }),
+    swagger_1.ApiOperation({
+        summary: '[NEW]: Save to database after local encode from job. ',
+    }),
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body()),
     __param(1, decorators_1.User()),
@@ -566,7 +575,9 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
     common_1.Post('/create-from-job'),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Save to database after local encode from job desktop app.' }),
+    swagger_1.ApiOperation({
+        summary: 'Save to database after local encode from job desktop app.',
+    }),
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body()),
     __param(1, decorators_1.User()),
@@ -717,7 +728,9 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard),
     common_1.Post('/encode-from-file'),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Encode File And save to database & into track table' }),
+    swagger_1.ApiOperation({
+        summary: 'Encode File And save to database & into track table',
+    }),
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body('data', jsonparse_pipe_1.JsonParsePipe)),
     __param(1, common_1.UploadedFile()),
@@ -737,7 +750,9 @@ __decorate([
     common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard, encode_security_guard_1.EncodeSecurityGuard),
     common_1.Post('/encode-from-track'),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Encode File And save to database & into track table' }),
+    swagger_1.ApiOperation({
+        summary: 'Encode File And save to database & into track table',
+    }),
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body('data')),
     __param(1, FileFromTrack_interceptor_1.CurrentTrack()),

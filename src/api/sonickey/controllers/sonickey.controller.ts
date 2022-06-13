@@ -1,4 +1,7 @@
-import { CreateSonicKeyDto, CreateSonicKeyFromJobDto } from '../dtos/create-sonickey.dto';
+import {
+  CreateSonicKeyDto,
+  CreateSonicKeyFromJobDto,
+} from '../dtos/create-sonickey.dto';
 import {
   UpdateSonicKeyDto,
   UpdateSonicKeyFingerPrintMetaDataDto,
@@ -58,7 +61,6 @@ import {
   ApiSecurity,
 } from '@nestjs/swagger';
 import { nanoid } from 'nanoid';
-import { interval, Observable } from 'rxjs';
 import * as uniqid from 'uniqid';
 import { JwtAuthGuard } from '../../auth/guards';
 import { RolesAllowed, User } from '../../auth/decorators';
@@ -71,7 +73,6 @@ import { Response } from 'express';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import {
   ChannelEnums,
-  FingerPrintEvents,
   FingerPrintStatus,
   Roles,
 } from '../../../constants/Enums';
@@ -81,7 +82,11 @@ import {
   FileFromUrlInterceptor,
   UploadedFileFromUrl,
 } from '../../../shared/interceptors/FileFromUrl.interceptor';
-import { FileFromTrackInterceptor,UploadedFileFromTrack,CurrentTrack } from '../../../shared/interceptors/FileFromTrack.interceptor';
+import {
+  FileFromTrackInterceptor,
+  UploadedFileFromTrack,
+  CurrentTrack,
+} from '../../../shared/interceptors/FileFromTrack.interceptor';
 import { LicenseValidationGuard } from '../../licensekey/guards/license-validation.guard';
 import { ValidatedLicense } from '../../licensekey/decorators/validatedlicense.decorator';
 import { ConditionalAuthGuard } from '../../auth/guards/conditional-auth.guard';
@@ -89,7 +94,6 @@ import { Detection } from 'src/api/detection/schemas/detection.schema';
 import { RoleBasedGuard } from '../../auth/guards/role-based.guard';
 import { UserDB } from '../../user/schemas/user.db.schema';
 import * as _ from 'lodash';
-import {Job } from 'bull';
 import { BulkEncodeWithQueueLicenseValidationGuard } from 'src/api/licensekey/guards/job-license-validation.guard';
 import { ApiKeyAuthGuard } from 'src/api/auth/guards/apikey-auth.guard';
 import { identifyDestinationFolderAndResourceOwnerFromUser } from 'src/shared/utils';
@@ -127,7 +131,7 @@ export class SonickeyController {
   })
   @Get('/')
   @RolesAllowed()
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List Sonic Keys' })
   async getAll(
@@ -140,6 +144,11 @@ export class SonickeyController {
   @Get('/get-download-url-by-metadata')
   @UseGuards(ConditionalAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
+  @ApiQuery({
+    name: 'query',
+    type: 'object',
+    required: false
+  })
   @ApiSecurity('x-api-key')
   @ApiOperation({ summary: 'get download url by metadata' })
   async getDownloadUrlByMetadata(
@@ -149,30 +158,39 @@ export class SonickeyController {
     const {
       resourceOwnerObj,
     } = identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
-    parsedQueryDto.filter={...parsedQueryDto.filter,...resourceOwnerObj}
-    parsedQueryDto.sort={ //Fetch the latest entry
-      createdAt:-1
+    parsedQueryDto.filter = { ...parsedQueryDto.filter, ...resourceOwnerObj };
+    parsedQueryDto.sort = {
+      //Fetch the latest entry
+      createdAt: -1,
+    };
+    const sonicKey = await this.sonicKeyService.findOneAggregate(
+      parsedQueryDto,
+    );
+    if (!sonicKey) {
+      throw new NotFoundException('Sonickey not found');
     }
-    const sonicKey = await this.sonicKeyService.findOneAggregate(parsedQueryDto);
-    if(!sonicKey){
-      throw new NotFoundException("Sonickey not found")
-    }
-    const downloadSignedUrl = await this.s3FileUploadService.getSignedUrl(sonicKey.s3FileMeta.Key);
-    
+    const downloadSignedUrl = await this.s3FileUploadService.getSignedUrl(
+      sonicKey.s3FileMeta.Key,
+    );
+
     //Add Next Encode On Queue for next download
     const encodeAgainForNextDownloadJobData: EncodeAgainJobDataI = {
-      trackId:sonicKey?.track?._id,
-      user:loggedInUser,
-      sonicKeyDto:{},
-      metaData:{
-        purpose:"Encode again for next download job"
-      }
+      trackId: sonicKey?.track?._id,
+      user: loggedInUser,
+      sonicKeyDto: {},
+      metaData: {
+        purpose: 'Encode again for next download job',
+      },
     };
-    await this.sonicKeyService.sonicKeyQueue.add("encode_again",encodeAgainForNextDownloadJobData,{jobId: nanoid(15)})
+    await this.sonicKeyService.sonicKeyQueue.add(
+      'encode_again',
+      encodeAgainForNextDownloadJobData,
+      { jobId: nanoid(15) },
+    );
     return {
-      sonicKey:sonicKey,
-      downloadUrl:downloadSignedUrl
-    }
+      sonicKey: sonicKey,
+      downloadUrl: downloadSignedUrl,
+    };
   }
 
   @Post('/encode-bulk/companies/:companyId/clients/:clientId')
@@ -182,7 +200,6 @@ export class SonickeyController {
     summary:
       'API for companies to import their media to sonic on behalf of their user',
   })
-
   async encodeToSonicFromPath(
     @Param('companyId') company: string,
     @Param('clientId') client: string,
@@ -247,7 +264,9 @@ export class SonickeyController {
   @UseGuards(ConditionalAuthGuard, LicenseValidationGuard)
   @Post('/create-from-outside')
   @ApiBearerAuth()
-  @ApiOperation({ summary: '[NEW]: Save to database after local encode from job. ' })
+  @ApiOperation({
+    summary: '[NEW]: Save to database after local encode from job. ',
+  })
   async create(
     @Body() createSonicKeyDto: CreateSonicKeyDto,
     @User() loggedInUser: UserDB,
@@ -257,14 +276,14 @@ export class SonickeyController {
     const {
       resourceOwnerObj,
     } = identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
-    const sonickeyDoc:Partial<SonicKey>={
+    const sonickeyDoc: Partial<SonicKey> = {
       ...createSonicKeyDto,
       ...resourceOwnerObj,
       _id: createSonicKeyDto.sonicKey,
-      apiKey:apiKey,
-      license:licenseId,
-      createdBy:loggedInUser?.sub
-    }
+      apiKey: apiKey,
+      license: licenseId,
+      createdBy: loggedInUser?.sub,
+    };
     const savedSonicKey = await this.sonicKeyService.create(sonickeyDoc);
     await this.licensekeyService
       .incrementUses(licenseId, 'encode', 1)
@@ -280,20 +299,22 @@ export class SonickeyController {
   @UseGuards(JwtAuthGuard, LicenseValidationGuard)
   @Post('/create-from-job')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Save to database after local encode from job desktop app.' })
+  @ApiOperation({
+    summary: 'Save to database after local encode from job desktop app.',
+  })
   async createForJob(
     @Body() createSonicKeyDto: CreateSonicKeyFromJobDto,
-    @User() loggedInUser: UserDB
+    @User() loggedInUser: UserDB,
   ) {
     const {
       resourceOwnerObj,
     } = identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
-    const sonickeyDoc:Partial<SonicKey>={
+    const sonickeyDoc: Partial<SonicKey> = {
       ...createSonicKeyDto,
       ...resourceOwnerObj,
       _id: createSonicKeyDto.sonicKey,
-      createdBy:loggedInUser?.sub
-    }
+      createdBy: loggedInUser?.sub,
+    };
     return this.sonicKeyService.create(sonickeyDoc);
   }
 
@@ -349,11 +370,11 @@ export class SonickeyController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Single SonicKey' })
   async getOne(@Param('sonickey') sonickey: string) {
-    const key = await  this.sonicKeyService.findOne({sonickey:sonickey});
-    if(!key){
-      return new NotFoundException()
+    const key = await this.sonicKeyService.findOne({ sonickey: sonickey });
+    if (!key) {
+      return new NotFoundException();
     }
-    return key
+    return key;
   }
 
   @UseInterceptors(
@@ -384,7 +405,7 @@ export class SonickeyController {
         },
       }),
     }),
-    EncodeSecurityInterceptor
+    EncodeSecurityInterceptor,
   )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -392,7 +413,7 @@ export class SonickeyController {
     type: EncodeDto,
   })
   @RolesAllowed()
-  @UseGuards(JwtAuthGuard,RoleBasedGuard, LicenseValidationGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, LicenseValidationGuard)
   @Post('/encode')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Encode File And save to database' })
@@ -407,23 +428,23 @@ export class SonickeyController {
       destinationFolder,
       resourceOwnerObj,
     } = identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
-    const encodingStrength = sonicKeyDto.encodingStrength
+    const encodingStrength = sonicKeyDto.encodingStrength;
     const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(
       file,
       sonicKeyDto,
     );
-    const sonickeyDoc:Partial<SonicKey>={
+    const sonickeyDoc: Partial<SonicKey> = {
       ...sonicKeyDtoWithAudioData,
       ...resourceOwnerObj,
-      createdBy:loggedInUser?.sub
-    }
+      createdBy: loggedInUser?.sub,
+    };
     return this.sonicKeyService.encodeSonicKeyFromFile({
       file,
       licenseId,
       sonickeyDoc,
       encodingStrength,
-      s3destinationFolder:destinationFolder
-    })
+      s3destinationFolder: destinationFolder,
+    });
   }
 
   @UseInterceptors(
@@ -454,7 +475,7 @@ export class SonickeyController {
         },
       }),
     }),
-    EncodeSecurityInterceptor
+    EncodeSecurityInterceptor,
   )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -462,12 +483,14 @@ export class SonickeyController {
     type: EncodeFromFileDto,
   })
   @RolesAllowed()
-  @UseGuards(JwtAuthGuard,RoleBasedGuard,LicenseValidationGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, LicenseValidationGuard)
   @Post('/encode-from-file')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Encode File And save to database & into track table' })
+  @ApiOperation({
+    summary: 'Encode File And save to database & into track table',
+  })
   async encodeByFile(
-    @Body('data',JsonParsePipe) sonicKeyDto: CreateSonicKeyDto,
+    @Body('data', JsonParsePipe) sonicKeyDto: CreateSonicKeyDto,
     @UploadedFile() file: IUploadedFile,
     @User() loggedInUser: UserDB,
     @ValidatedLicense('key') licenseId: string,
@@ -476,23 +499,23 @@ export class SonickeyController {
       destinationFolder,
       resourceOwnerObj,
     } = identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
-    const encodingStrength = sonicKeyDto.encodingStrength
+    const encodingStrength = sonicKeyDto.encodingStrength;
     const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(
       file,
       sonicKeyDto,
     );
-    const sonickeyDoc:Partial<SonicKey>={
+    const sonickeyDoc: Partial<SonicKey> = {
       ...sonicKeyDtoWithAudioData,
       ...resourceOwnerObj,
-      createdBy:loggedInUser?.sub
-    }
+      createdBy: loggedInUser?.sub,
+    };
     return this.sonicKeyService.encodeSonicKeyFromFile({
       file,
       licenseId,
       sonickeyDoc,
       encodingStrength,
-      s3destinationFolder:destinationFolder
-    })
+      s3destinationFolder: destinationFolder,
+    });
   }
 
   @UseInterceptors(FileFromTrackInterceptor('track'))
@@ -501,10 +524,17 @@ export class SonickeyController {
     type: EncodeFromTrackDto,
   })
   @RolesAllowed()
-  @UseGuards(JwtAuthGuard,RoleBasedGuard, LicenseValidationGuard,EncodeSecurityGuard)
+  @UseGuards(
+    JwtAuthGuard,
+    RoleBasedGuard,
+    LicenseValidationGuard,
+    EncodeSecurityGuard,
+  )
   @Post('/encode-from-track')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Encode File And save to database & into track table' })
+  @ApiOperation({
+    summary: 'Encode File And save to database & into track table',
+  })
   async encodeByTrack(
     @Body('data') sonicKeyDto: CreateSonicKeyDto,
     @CurrentTrack() track: Track,
@@ -517,29 +547,31 @@ export class SonickeyController {
       resourceOwnerObj,
     } = identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
 
-    sonicKeyDto.contentFileType=sonicKeyDto.contentFileType||track.mimeType
-    sonicKeyDto.contentOwner=sonicKeyDto.contentOwner||track.artist
-    sonicKeyDto.contentName=sonicKeyDto.contentName||track.title
-    sonicKeyDto.contentDuration=sonicKeyDto.contentDuration||track.duration
-    sonicKeyDto.contentSize=sonicKeyDto.contentSize||track.fileSize
-    sonicKeyDto.contentType=sonicKeyDto.contentType||track.fileType
-    sonicKeyDto.contentEncoding=sonicKeyDto.contentEncoding||track.encoding
-    sonicKeyDto.contentSamplingFrequency=sonicKeyDto.contentSamplingFrequency||track.samplingFrequency
-    sonicKeyDto.originalFileName=sonicKeyDto.originalFileName||track.originalFileName
-    const encodingStrength = sonicKeyDto.encodingStrength
-    const sonickeyDoc:Partial<SonicKey>={
+    sonicKeyDto.contentFileType = sonicKeyDto.contentFileType || track.mimeType;
+    sonicKeyDto.contentOwner = sonicKeyDto.contentOwner || track.artist;
+    sonicKeyDto.contentName = sonicKeyDto.contentName || track.title;
+    sonicKeyDto.contentDuration = sonicKeyDto.contentDuration || track.duration;
+    sonicKeyDto.contentSize = sonicKeyDto.contentSize || track.fileSize;
+    sonicKeyDto.contentType = sonicKeyDto.contentType || track.fileType;
+    sonicKeyDto.contentEncoding = sonicKeyDto.contentEncoding || track.encoding;
+    sonicKeyDto.contentSamplingFrequency =
+      sonicKeyDto.contentSamplingFrequency || track.samplingFrequency;
+    sonicKeyDto.originalFileName =
+      sonicKeyDto.originalFileName || track.originalFileName;
+    const encodingStrength = sonicKeyDto.encodingStrength;
+    const sonickeyDoc: Partial<SonicKey> = {
       ...sonicKeyDto,
       ...resourceOwnerObj,
-      createdBy:loggedInUser?.sub
-    }
+      createdBy: loggedInUser?.sub,
+    };
     return this.sonicKeyService.encodeSonicKeyFromTrack({
-      trackId:track?.id,
+      trackId: track?.id,
       file,
       licenseId,
       sonickeyDoc,
       encodingStrength,
-      s3destinationFolder:destinationFolder
-    })
+      s3destinationFolder: destinationFolder,
+    });
   }
 
   @UseInterceptors(FileFromUrlInterceptor('mediaFile'))
@@ -548,7 +580,12 @@ export class SonickeyController {
     type: EncodeFromUrlDto,
   })
   @RolesAllowed()
-  @UseGuards(ConditionalAuthGuard,RoleBasedGuard, LicenseValidationGuard,EncodeSecurityGuard)
+  @UseGuards(
+    ConditionalAuthGuard,
+    RoleBasedGuard,
+    LicenseValidationGuard,
+    EncodeSecurityGuard,
+  )
   @Post('/encode-from-url')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Encode File From URL And save to database' })
@@ -563,23 +600,23 @@ export class SonickeyController {
       destinationFolder,
       resourceOwnerObj,
     } = identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
-    const encodingStrength = sonicKeyDto.encodingStrength
+    const encodingStrength = sonicKeyDto.encodingStrength;
     const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(
       file,
       sonicKeyDto,
     );
-    const sonickeyDoc:Partial<SonicKey>={
+    const sonickeyDoc: Partial<SonicKey> = {
       ...sonicKeyDtoWithAudioData,
       ...resourceOwnerObj,
-      createdBy:loggedInUser?.sub
-    }
+      createdBy: loggedInUser?.sub,
+    };
     return this.sonicKeyService.encodeSonicKeyFromFile({
       file,
       licenseId,
       sonickeyDoc,
       encodingStrength,
-      s3destinationFolder:destinationFolder
-    })
+      s3destinationFolder: destinationFolder,
+    });
   }
 
   @UseInterceptors(
@@ -606,7 +643,7 @@ export class SonickeyController {
     type: DecodeDto,
   })
   @RolesAllowed()
-  @UseGuards(JwtAuthGuard,RoleBasedGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @Post('/decode')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Decode File and retrive key information' })
@@ -628,8 +665,8 @@ export class SonickeyController {
             {
               sonicKey: sonicKey.sonicKey,
               owner: validSonicKey.owner,
-              company:validSonicKey.company,
-              partner:validSonicKey.partner,
+              company: validSonicKey.company,
+              partner: validSonicKey.partner,
               sonicKeyOwnerId: validSonicKey.owner,
               sonicKeyOwnerName: validSonicKey.contentOwner,
               channel: ChannelEnums.PORTAL,
@@ -694,8 +731,8 @@ export class SonickeyController {
             {
               sonicKey: sonicKey.sonicKey,
               owner: validSonicKey.owner,
-              company:validSonicKey.company,
-              partner:validSonicKey.partner,
+              company: validSonicKey.company,
+              partner: validSonicKey.partner,
               sonicKeyOwnerId: validSonicKey.owner,
               sonicKeyOwnerName: validSonicKey.contentOwner,
               channel: ChannelEnums.PORTAL,
@@ -764,8 +801,8 @@ export class SonickeyController {
             {
               sonicKey: sonicKey,
               owner: validSonicKey.owner,
-              company:validSonicKey.company,
-              partner:validSonicKey.partner,
+              company: validSonicKey.company,
+              partner: validSonicKey.partner,
               sonicKeyOwnerId: validSonicKey.owner,
               sonicKeyOwnerName: validSonicKey.contentOwner,
               channel: channel,
@@ -834,8 +871,8 @@ export class SonickeyController {
             {
               sonicKey: sonicKey,
               owner: validSonicKey.owner,
-              company:validSonicKey.company,
-              partner:validSonicKey.partner,
+              company: validSonicKey.company,
+              partner: validSonicKey.partner,
               sonicKeyOwnerId: validSonicKey.owner,
               sonicKeyOwnerName: validSonicKey.contentOwner,
               channel: channel,
@@ -857,7 +894,7 @@ export class SonickeyController {
 
   @Patch('/:sonickey')
   @RolesAllowed()
-  @UseGuards(JwtAuthGuard,RoleBasedGuard,UpdateSonicKeySecurityGuard)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard, UpdateSonicKeySecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Sonic Keys meta data' })
   async updateMeta(
@@ -865,9 +902,9 @@ export class SonickeyController {
     @Body() updateSonicKeyDto: UpdateSonicKeyDto,
     @User() loggedInUser: UserDB,
   ) {
-    const key = await this.sonicKeyService.findOne({sonicKey:sonickey});
-    if(!key){
-      return new NotFoundException()
+    const key = await this.sonicKeyService.findOne({ sonicKey: sonickey });
+    if (!key) {
+      return new NotFoundException();
     }
     return this.sonicKeyService.update(key._id, {
       ...updateSonicKeyDto,
@@ -926,18 +963,18 @@ export class SonickeyController {
   }
 
   @Delete('/:sonickey')
-  @UseGuards(JwtAuthGuard,DeleteSonicKeySecurityGuard)
+  @UseGuards(JwtAuthGuard, DeleteSonicKeySecurityGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete Sonic Key data' })
   async delete(
     @Param('sonickey') sonickey: string,
     @User('sub') owner: string,
   ) {
-    const key = await this.sonicKeyService.findOne({sonicKey:sonickey});
-    if(!key){
-      return new NotFoundException()
+    const key = await this.sonicKeyService.findOne({ sonicKey: sonickey });
+    if (!key) {
+      return new NotFoundException();
     }
-   return this.sonicKeyService.sonicKeyModel.findByIdAndRemove(key._id);
+    return this.sonicKeyService.sonicKeyModel.findByIdAndRemove(key._id);
   }
 
   @UseGuards(JwtAuthGuard)
