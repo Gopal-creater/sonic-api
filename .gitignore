@@ -39,3 +39,6 @@ lerna-debug.log*
 
 # Env
 override.env
+
+# Package lock
+package-lock.*
