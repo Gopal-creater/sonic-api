@@ -20,6 +20,7 @@ export class UpdateLicenseSecurityGuard implements CanActivate {
         const loggedInUser = request?.user as UserDB;
         const licenseKeyId = request?.params?.id;
         const updateLicensekeyDto = request?.body as UpdateLicensekeyDto;
+        console.log("loggedInUser",loggedInUser)
         switch (loggedInUser.userRole) {
             case SystemRoles.ADMIN:
             case Roles.THIRDPARTY_ADMIN:

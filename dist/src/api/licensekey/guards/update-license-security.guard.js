@@ -23,6 +23,7 @@ let UpdateLicenseSecurityGuard = class UpdateLicenseSecurityGuard {
         const loggedInUser = request === null || request === void 0 ? void 0 : request.user;
         const licenseKeyId = (_a = request === null || request === void 0 ? void 0 : request.params) === null || _a === void 0 ? void 0 : _a.id;
         const updateLicensekeyDto = request === null || request === void 0 ? void 0 : request.body;
+        console.log("loggedInUser", loggedInUser);
         switch (loggedInUser.userRole) {
             case Enums_1.SystemRoles.ADMIN:
             case Enums_1.Roles.THIRDPARTY_ADMIN:
