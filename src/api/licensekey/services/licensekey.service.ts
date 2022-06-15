@@ -277,7 +277,7 @@ export class LicensekeyService {
     var validLicenses: LicenseKey[];
     var userFromDb = await this.userService.userModel.findById(user);
     userFromDb = userFromDb.depopulate('companies');
-
+      console.log("userFromDb in lic",userFromDb)
     var validLicenseForUserWithInCompany: LicenseKey[] = await this.licenseKeyModel.aggregate(
       [
         {
