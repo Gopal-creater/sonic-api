@@ -22,7 +22,7 @@ export class DeleteLicenseSecurityGuard implements CanActivate {
         break;
 
       case SystemRoles.PARTNER_ADMIN:
-        const partnerId = loggedInUser?.partner?.id;
+        const partnerId = loggedInUser?.partner?._id;
         const licenseKey = await this.licensekeyService.findOneAggregate({
           filter: {},
           relationalFilter: {

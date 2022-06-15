@@ -28,7 +28,7 @@ let AddUserToLicenseSecurityGuard = class AddUserToLicenseSecurityGuard {
             case Enums_1.Roles.THIRDPARTY_ADMIN:
                 break;
             case Enums_1.SystemRoles.PARTNER_ADMIN:
-                const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.partner) === null || _b === void 0 ? void 0 : _b.id;
+                const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.partner) === null || _b === void 0 ? void 0 : _b._id;
                 const licenseKey = await this.licensekeyService.findOneAggregate({
                     filter: {
                         _id: licenseKeyId,
