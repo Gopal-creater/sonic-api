@@ -20,24 +20,24 @@ const auth_service_1 = require("./auth.service");
 const login_dto_1 = require("./dto/login.dto");
 const register_dto_1 = require("./dto/register.dto");
 const user_service_1 = require("../user/services/user.service");
+const partner_service_1 = require("../partner/services/partner.service");
 let AuthController = class AuthController {
-    constructor(authService, userService) {
+    constructor(authService, userService, partnerService) {
         this.authService = authService;
         this.userService = userService;
+        this.partnerService = partnerService;
     }
-    async login(authenticateRequest) {
-        try {
-            return await this.authService.authenticateUser(authenticateRequest);
-        }
-        catch (e) {
-            throw new common_1.BadRequestException(e.message);
-        }
+    async login(loginDto) {
+        const { userName, password } = loginDto;
+        return this.authService.login(userName, password);
     }
     async wpmsSignup(wpmsUserRegisterDTO) {
         const { userName, email } = wpmsUserRegisterDTO;
-        const userFromUsername = await this.userService.findOne({ $or: [{ username: userName }, { email: email }] });
+        const userFromUsername = await this.userService.findOne({
+            $or: [{ username: userName }, { email: email }],
+        });
         if (userFromUsername) {
-            throw new common_1.BadRequestException("User with given email or username already exists!");
+            throw new common_1.BadRequestException('User with given email or username already exists!');
         }
         return this.authService.signupWpmsUser(wpmsUserRegisterDTO);
     }
@@ -45,7 +45,7 @@ let AuthController = class AuthController {
 __decorate([
     common_1.Post('login'),
     swagger_1.ApiOperation({ summary: 'User Login' }),
-    openapi.ApiResponse({ status: 201, type: Object }),
+    openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [login_dto_1.LoginDto]),
@@ -53,16 +53,19 @@ __decorate([
 ], AuthController.prototype, "login", null);
 __decorate([
     common_1.Post('/wpms/signup'),
-    swagger_1.ApiOperation({ summary: 'User Signup from WPMS website' }),
+    swagger_1.ApiOperation({ summary: 'User Signup from WPMS website under WPMS Partner' }),
+    openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [register_dto_1.WpmsUserRegisterDTO]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "wpmsSignup", null);
 AuthController = __decorate([
-    swagger_1.ApiTags('Authentication Controller'),
+    swagger_1.ApiTags('Authentication Controller (D & M May 2022)'),
     common_1.Controller('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService, user_service_1.UserService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        user_service_1.UserService,
+        partner_service_1.PartnerService])
 ], AuthController);
 exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controller.js.map

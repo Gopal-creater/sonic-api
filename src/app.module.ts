@@ -4,10 +4,10 @@ import { MulterModule } from '@nestjs/platform-express';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './api/auth/auth.module';
-
+import { MailModule } from './api/mail/mail.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SonickeyModule } from './api/sonickey/sonickey.module';
-import { diskStorage} from 'multer';
+import { diskStorage } from 'multer';
 import { UserModule } from './api/user/user.module';
 import { appConfig } from './config';
 import appConfiguration from './config/app.config';
@@ -33,11 +33,13 @@ import { PaymentModule } from './api/payment/payment.module';
 import { CompanyModule } from './api/company/company.module';
 import { GroupModule } from './api/group/group.module';
 import { AppVersionModule } from './api/appversions/appversions.module';
-import { NestModule, MiddlewareConsumer,RequestMethod } from '@nestjs/common';
+import { NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { PlanModule } from './api/plan/plan.module';
 import { BullModule } from '@nestjs/bull';
 import { QueuejobModule } from './queuejob/queuejob.module';
 import { ChargebeeModule } from './api/chargebee/chargebee.module';
+import { PartnerModule } from './api/partner/partner.module';
+import { TrackModule } from './api/track/track.module';
 import testConfig from './config/test.config';
 
 mongoosePaginate.paginate.options = {
@@ -48,6 +50,15 @@ var connectionNo = 0;
 @Module({
   imports: [
     HttpModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+      envFilePath: [
+        'override.env',
+        process.env.NODE_ENV == 'production' ? 'production.env' : 'staging.env',
+      ],
+      load: [appConfiguration, testConfig],
+    }),
     AuthModule,
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
@@ -57,15 +68,7 @@ var connectionNo = 0;
         port: 6379,
       },
     }),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      cache:true,
-      envFilePath: [
-        '.env.override',
-        process.env.NODE_ENV == 'production' ? 'production.env' : 'staging.env',
-      ],
-      load: [appConfiguration,testConfig],
-    }),
+    MailModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -119,11 +122,11 @@ var connectionNo = 0;
     AppVersionModule,
     PlanModule,
     QueuejobModule,
-    ChargebeeModule
+    ChargebeeModule,
+    PartnerModule,
+    TrackModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway, Ec2InstanceService],
 })
-export class AppModule {
-
-}
+export class AppModule {}

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty,IsIn } from 'class-validator';
+import { companyTypes } from '../constant';
 import { Address } from '../schemas/company.schema';
 
 export class CreateCompanyDto {
@@ -11,7 +12,19 @@ export class CreateCompanyDto {
   description: string;
 
   @ApiProperty()
+  @IsNotEmpty()
+  @IsIn(companyTypes)
+  companyType: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  companyUrnOrId: string;
+
+  @ApiProperty()
   email: string;
+
+  @ApiProperty()
+  enabled: boolean;
 
   @ApiProperty()
   contactNo: string;
@@ -19,7 +32,9 @@ export class CreateCompanyDto {
   @ApiProperty()
   address: Address;
 
-  @IsNotEmpty()
   @ApiProperty()
   owner: string;
+
+  @ApiProperty()
+  partner: string;
 }

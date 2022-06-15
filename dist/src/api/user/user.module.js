@@ -23,6 +23,7 @@ const user_company_controller_1 = require("./controllers/user-company.controller
 const auth_module_1 = require("../auth/auth.module");
 const api_key_module_1 = require("../api-key/api-key.module");
 const userexists_validation_1 = require("./validations/userexists.validation");
+const partner_module_1 = require("../partner/partner.module");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
@@ -34,6 +35,7 @@ UserModule = __decorate([
             group_module_1.GroupModule,
             common_1.forwardRef(() => api_key_module_1.ApiKeyModule),
             common_1.forwardRef(() => company_module_1.CompanyModule),
+            common_1.forwardRef(() => partner_module_1.PartnerModule),
             common_1.forwardRef(() => auth_module_1.AuthModule),
         ],
         controllers: [user_controller_1.UserController, user_group_controller_1.UserGroupController, user_company_controller_1.UserCompanyController],

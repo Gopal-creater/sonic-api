@@ -26,31 +26,37 @@ const decorators_1 = require("../../auth/decorators");
 const roles_decorator_1 = require("../../auth/decorators/roles.decorator");
 const Enums_1 = require("../../../constants/Enums");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
+const user_db_schema_1 = require("../../user/schemas/user.db.schema");
+const create_license_security_guard_1 = require("../guards/create-license-security.guard");
+const update_license_security_guard_1 = require("../guards/update-license-security.guard");
+const delete_license_security_guard_1 = require("../guards/delete-license-security.guard");
+const update_licensekey_dto_1 = require("../dto/update-licensekey.dto");
+const adduserto_license_security_guard_copy_1 = require("../guards/adduserto-license-security.guard copy");
+const getone_license_security_guard_1 = require("../guards/getone-license-security.guard");
 let LicensekeyController = class LicensekeyController {
     constructor(licensekeyService) {
         this.licensekeyService = licensekeyService;
     }
-    async migrate() {
-        return "Disabled";
-    }
-    async create(createLicensekeyDto, createdBy) {
-        var _a;
+    async create(createLicensekeyDto, loggedInUser) {
+        const doc = Object.assign(Object.assign({}, createLicensekeyDto), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
         if (createLicensekeyDto.type == Enums_1.ApiKeyType.INDIVIDUAL) {
             const user = await this.licensekeyService.userService.getUserProfile(createLicensekeyDto.user);
             if (!user)
                 throw new common_1.NotFoundException('Unknown user');
-            createLicensekeyDto.user = user === null || user === void 0 ? void 0 : user.sub;
-            delete createLicensekeyDto.company;
+            doc.users = [createLicensekeyDto.user];
         }
         else if (createLicensekeyDto.type == Enums_1.ApiKeyType.COMPANY) {
             const company = await this.licensekeyService.companyService.findById(createLicensekeyDto.company);
             if (!company)
                 throw new common_1.NotFoundException('Unknown company');
-            if (!((_a = company === null || company === void 0 ? void 0 : company.owner) === null || _a === void 0 ? void 0 : _a.sub))
-                throw new common_1.NotFoundException('The given company doesnot have any valid admin user');
-            createLicensekeyDto.user = company.owner.sub;
+            if (createLicensekeyDto.user) {
+                const user = await this.licensekeyService.userService.getUserProfile(createLicensekeyDto.user);
+                if (!user)
+                    throw new common_1.NotFoundException('Unknown user');
+                doc.users = [createLicensekeyDto.user];
+            }
         }
-        return this.licensekeyService.create(createLicensekeyDto, createdBy);
+        return this.licensekeyService.create(doc);
     }
     findAll(queryDto) {
         return this.licensekeyService.findAll(queryDto);
@@ -69,43 +75,81 @@ let LicensekeyController = class LicensekeyController {
         return licenseKey;
     }
     async update(id, updateLicensekeyDto, updatedBy) {
-        const updatedKey = await this.licensekeyService.licenseKeyModel.findOneAndUpdate({ _id: id }, Object.assign(Object.assign({}, updateLicensekeyDto), { updatedBy: updatedBy }), { new: true });
-        if (!updatedKey) {
+        const licenseKey = await this.licensekeyService.findById(id);
+        if (!licenseKey) {
             throw new common_1.NotFoundException();
         }
+        const updatedKey = await this.licensekeyService.update(id, Object.assign(Object.assign({}, updateLicensekeyDto), { updatedBy: updatedBy }));
         return updatedKey;
     }
-    remove(id) {
+    async addNewUser(id, addUserToLicense, updatedBy) {
+        const { user } = addUserToLicense;
+        const licenseKey = await this.licensekeyService.findById(id);
+        if (!licenseKey) {
+            throw new common_1.NotFoundException('Licensekey not found');
+        }
+        if (licenseKey.type == Enums_1.ApiKeyType.INDIVIDUAL && licenseKey.users.length > 0) {
+            throw new common_1.UnprocessableEntityException('Can not add user to individual license type');
+        }
+        const userformdb = await this.licensekeyService.userService.findById(user);
+        if (!userformdb) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        const updatedKey = await this.licensekeyService.update(id, {
+            $addToSet: {
+                users: { $each: [user] },
+            },
+            updatedBy: updatedBy,
+        });
+        return updatedKey;
+    }
+    async removeUser(id, addUserToLicense, updatedBy) {
+        const { user } = addUserToLicense;
+        const licenseKey = await this.licensekeyService.findById(id);
+        if (!licenseKey) {
+            throw new common_1.NotFoundException('Licensekey not found');
+        }
+        const userformdb = await this.licensekeyService.userService.findById(user);
+        if (!userformdb) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        const updatedKey = await this.licensekeyService.update(id, {
+            $pull: {
+                users: user,
+            },
+            updatedBy: updatedBy,
+        });
+        return updatedKey;
+    }
+    async remove(id) {
+        const licenseKey = await this.licensekeyService.findById(id);
+        if (!licenseKey) {
+            throw new common_1.NotFoundException();
+        }
         return this.licensekeyService.licenseKeyModel.findByIdAndRemove(id);
     }
 };
 __decorate([
-    common_1.Get('/convert-owners-to-users'),
-    openapi.ApiResponse({ status: 200, type: String }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], LicensekeyController.prototype, "migrate", null);
-__decorate([
     common_1.Post(),
-    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.THIRDPARTY_ADMIN),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.THIRDPARTY_ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.COMPANY_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, create_license_security_guard_1.CreateLicenseSecurityGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Create License Key' }),
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body()),
-    __param(1, decorators_1.User('sub')),
+    __param(1, decorators_1.User()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_licensekey_dto_1.CreateLicensekeyDto, String]),
+    __metadata("design:paramtypes", [create_licensekey_dto_1.CreateLicensekeyDto,
+        user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], LicensekeyController.prototype, "create", null);
 __decorate([
     common_1.Get(),
-    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    roles_decorator_1.RolesAllowed(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({ summary: 'Get All LicenseJKeys' }),
+    swagger_1.ApiOperation({ summary: 'Get All LicenseKeys' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-licensekey.dto").MongoosePaginateLicensekeyDto }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
@@ -114,7 +158,8 @@ __decorate([
 ], LicensekeyController.prototype, "findAll", null);
 __decorate([
     common_1.Get('/count'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    roles_decorator_1.RolesAllowed(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
     swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
     swagger_1.ApiBearerAuth(),
@@ -129,7 +174,8 @@ __decorate([
 ], LicensekeyController.prototype, "getCount", null);
 __decorate([
     common_1.Get('/estimate-count'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    roles_decorator_1.RolesAllowed(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({
         summary: 'Get all count of all licenskeys',
@@ -141,8 +187,8 @@ __decorate([
 ], LicensekeyController.prototype, "getEstimateCount", null);
 __decorate([
     common_1.Get(':id'),
-    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    roles_decorator_1.RolesAllowed(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, getone_license_security_guard_1.GetOneLicenseSecurityGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Get Single License key' }),
     openapi.ApiResponse({ status: 200, type: Object }),
@@ -153,8 +199,8 @@ __decorate([
 ], LicensekeyController.prototype, "findOne", null);
 __decorate([
     common_1.Put(':id'),
-    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    roles_decorator_1.RolesAllowed(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, update_license_security_guard_1.UpdateLicenseSecurityGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Update Single License key' }),
     openapi.ApiResponse({ status: 200, type: Object }),
@@ -166,19 +212,47 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], LicensekeyController.prototype, "update", null);
 __decorate([
+    common_1.Put(':id/add-new-user'),
+    roles_decorator_1.RolesAllowed(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, adduserto_license_security_guard_copy_1.AddUserToLicenseSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Add new user to license key' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('id')),
+    __param(1, common_1.Body()),
+    __param(2, decorators_1.User('sub')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_licensekey_dto_1.AddUserToLicense, String]),
+    __metadata("design:returntype", Promise)
+], LicensekeyController.prototype, "addNewUser", null);
+__decorate([
+    common_1.Put(':id/remove-user'),
+    roles_decorator_1.RolesAllowed(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, adduserto_license_security_guard_copy_1.AddUserToLicenseSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Remove user from license key' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('id')),
+    __param(1, common_1.Body()),
+    __param(2, decorators_1.User('sub')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_licensekey_dto_1.AddUserToLicense, String]),
+    __metadata("design:returntype", Promise)
+], LicensekeyController.prototype, "removeUser", null);
+__decorate([
     common_1.Delete(':id'),
-    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    roles_decorator_1.RolesAllowed(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, delete_license_security_guard_1.DeleteLicenseSecurityGuard),
     swagger_1.ApiBearerAuth(),
     swagger_1.ApiOperation({ summary: 'Delete License key' }),
-    openapi.ApiResponse({ status: 200 }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], LicensekeyController.prototype, "remove", null);
 LicensekeyController = __decorate([
-    swagger_1.ApiTags('License Keys Management Controller'),
+    swagger_1.ApiTags('License Keys Management Controller (D & M)'),
     common_1.Controller('license-keys'),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], LicensekeyController);

@@ -54,11 +54,32 @@ export class Detection extends Document {
   licenseKey: string;
 
   @ApiProperty()
-  @Prop({required:true})
-  owner: string;
+  @ApiProperty()
+  @Prop({
+    type: String,
+    ref: 'User',
+    autopopulate: { maxDepth: 2 },
+  })
+  owner: any;
 
   @ApiProperty()
-  @Prop({required:true})
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Partner',
+    autopopulate: { maxDepth: 2 },
+  })
+  partner: any;
+
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Company',
+    autopopulate: { maxDepth: 2 },
+  })
+  company: any;
+
+  @ApiProperty()
+  @Prop()
   sonicKeyOwnerId: string;
 
   @ApiProperty()

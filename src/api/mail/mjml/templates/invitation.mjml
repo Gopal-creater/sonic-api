@@ -1,0 +1,25 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="16px" font-family="helvetica">Hi {{firstname}},</mj-text>
+        <mj-text font-size="16px" font-family="helvetica">Welcome to Who Played My Song!</mj-text>
+        <mj-text font-size="16px" font-family="helvetica">I am pleased to confirm that your Who Played My Song account has been created.</mj-text>
+        <mj-text font-size="16px" font-family="helvetica">Please find below your login details, which enable you to access the Who Played My Song Dashboard, encode your track(s), and monitor its usage'.</mj-text>
+        <mj-text font-size="16px" font-family="helvetica">Your details to the <a href="{{dashboardLink}}" target="_blank">Dashboard</a></mj-text>
+        <mj-text font-size="18px" font-family="helvetica">
+          <ul>
+            <li>Username: {{username}}</li>
+            <li>Password: {{password}}</li>
+          </ul>
+        </mj-text>
+        <mj-text font-size="16px" font-family="helvetica">If you have any questions, please do not hesitate to contact me.</mj-text>
+        <mj-text font-size="16px" font-family="helvetica">
+          Kind regards, <br />
+          Olivier Parkes – Product Manager
+        </mj-text>
+        <mj-text font-size="16px" font-family="helvetica">Email: <a href="mailto:olivier@whoplayedmysong.com">olivier@whoplayedmysong.com</a></mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

@@ -14,6 +14,7 @@ const makeDir = require("make-dir");
 const rimraf = require("rimraf");
 const utils_1 = require("../utils");
 const path = require("path");
+const http = require("https");
 let FileHandlerService = class FileHandlerService {
     async deleteFileAtPath(pathFromRoot) {
         if (await this.fileExistsAtPath(pathFromRoot)) {
@@ -65,6 +66,26 @@ let FileHandlerService = class FileHandlerService {
         return new Promise(async (resolve, reject) => {
             const stream = fs.createReadStream(pathFromRoot);
             resolve(stream);
+        });
+    }
+    download(url, dest) {
+        return new Promise((resolve, reject) => {
+            var file = fs.createWriteStream(dest);
+            var request = http
+                .get(url, function (response) {
+                response.pipe(file);
+                file.on('finish', function () {
+                    file.close();
+                    resolve({
+                        url: url,
+                        dest: dest,
+                    });
+                });
+            })
+                .on('error', function (err) {
+                fs.unlink(dest, () => { });
+                reject(err);
+            });
         });
     }
     async getFileDetailsFromFile(pathFromRoot) {

@@ -12,17 +12,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LoginDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
+const class_validator_1 = require("class-validator");
 class LoginDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, password: { required: true, type: () => String } };
+        return { userName: { required: true, type: () => String }, password: { required: true, type: () => String } };
     }
 }
 __decorate([
     swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
-], LoginDto.prototype, "name", void 0);
+], LoginDto.prototype, "userName", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], LoginDto.prototype, "password", void 0);
 exports.LoginDto = LoginDto;

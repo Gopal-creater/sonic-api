@@ -42,6 +42,14 @@ export class QueueJob extends Document {
   user: any;
 
   @ApiProperty()
+  @Prop({
+    type: String,
+    ref: 'Partner',
+    autopopulate: { maxDepth: 2 },
+  })
+  partner: any;
+
+  @ApiProperty()
   @Prop({default:false})
   completed?: boolean;
 

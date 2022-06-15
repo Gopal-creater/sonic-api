@@ -57,9 +57,7 @@ export class ApiKeyAuthGuard implements CanActivate {
       );
       if (!ownerCompany)
         throw new ForbiddenException('Company not found for this apikey');
-      ownerUser = await this.userService.findOne({
-        adminCompany: ownerCompany._id,
-      });
+      ownerUser = await this.userService.findOne({_id:ownerCompany?.owner?._id});
     }
     if (!ownerUser)
       throw new ForbiddenException('Admin user not found for this apikey');

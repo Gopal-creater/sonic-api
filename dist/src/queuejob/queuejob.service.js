@@ -21,6 +21,27 @@ let QueuejobService = class QueuejobService {
     constructor(queueJobModel) {
         this.queueJobModel = queueJobModel;
     }
+    find(filter) {
+        return this.queueJobModel.find(filter);
+    }
+    findById(id) {
+        return this.queueJobModel.findById(id);
+    }
+    async create(doc) {
+        const newSonicKey = await this.queueJobModel.create(doc);
+        return newSonicKey.save();
+    }
+    update(id, updateSonicKeyDto) {
+        return this.queueJobModel.findByIdAndUpdate(id, updateSonicKeyDto, {
+            new: true,
+        });
+    }
+    findOne(filter) {
+        return this.queueJobModel.findOne(filter).lean();
+    }
+    async removeById(id) {
+        return this.queueJobModel.findByIdAndRemove(id);
+    }
 };
 QueuejobService = __decorate([
     common_1.Injectable(),

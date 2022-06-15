@@ -14,15 +14,17 @@ import { UserCompanyController } from './controllers/user-company.controller';
 import { AuthModule } from '../auth/auth.module';
 import { ApiKeyModule } from '../api-key/api-key.module';
 import { UserExistsRule } from './validations/userexists.validation';
+import { PartnerModule } from '../partner/partner.module';
 
 @Module({
   imports: [
-  forwardRef(() => LicensekeyModule),
+forwardRef(() => LicensekeyModule),
     forwardRef(() => RadiomonitorModule),
     MongooseModule.forFeature([{ name: UserSchemaName, schema: UserSchema }]),
     GroupModule,
     forwardRef(() => ApiKeyModule),
     forwardRef(() => CompanyModule),
+    forwardRef(() => PartnerModule),
     forwardRef(() => AuthModule),
   ],
   controllers: [UserController, UserGroupController, UserCompanyController],

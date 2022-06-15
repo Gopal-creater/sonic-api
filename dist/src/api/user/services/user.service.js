@@ -18,6 +18,17 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const config_1 = require("@nestjs/config");
@@ -29,7 +40,6 @@ const radiomonitor_service_1 = require("../../radiomonitor/radiomonitor.service"
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const user_db_schema_1 = require("../schemas/user.db.schema");
-const create_user_dto_1 = require("../dtos/create-user.dto");
 const user_group_service_1 = require("./user-group.service");
 const user_company_service_1 = require("./user-company.service");
 const group_service_1 = require("../../group/group.service");
@@ -236,42 +246,14 @@ let UserService = class UserService {
         return attributesObj;
     }
     async syncUserFromCognitoToMongooDb(usernameOrSub) {
-        var _a, _b, _c, _d, _e;
-        const userFromCognito = await this.getCognitoUser(usernameOrSub);
-        const username = userFromCognito.Username;
-        const userStatus = userFromCognito.UserStatus;
-        const enabled = userFromCognito.Enabled;
-        const mfaOptions = userFromCognito.MFAOptions;
-        const sub = (_a = userFromCognito.Attributes.find(attr => attr.Name == 'sub')) === null || _a === void 0 ? void 0 : _a.Value;
-        const email = (_b = userFromCognito.Attributes.find(attr => attr.Name == 'email')) === null || _b === void 0 ? void 0 : _b.Value;
-        const email_verified = (_c = userFromCognito.Attributes.find(attr => attr.Name == 'email_verified')) === null || _c === void 0 ? void 0 : _c.Value;
-        const phone_number = (_d = userFromCognito.Attributes.find(attr => attr.Name == 'phone_number')) === null || _d === void 0 ? void 0 : _d.Value;
-        const phone_number_verified = (_e = userFromCognito.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _e === void 0 ? void 0 : _e.Value;
-        const userToSaveInDb = new create_user_dto_1.CreateUserDto({
-            _id: sub,
-            sub: sub,
-            username: username,
-            email: email,
-            email_verified: email_verified == 'true',
-            phone_number: phone_number,
-            user_status: userStatus,
-            enabled: enabled,
-            mfa_options: mfaOptions,
-            phone_number_verified: phone_number_verified == 'true',
-        });
-        var userFromDb = await this.userModel.findOneAndUpdate({
-            _id: userToSaveInDb.sub,
-        }, userToSaveInDb, { upsert: true, new: true });
-        var userGroups = await this.adminListGroupsForUser(username);
-        if (!userGroups.groupNames.includes(Enums_1.Roles.PORTAL_USER) &&
-            !userGroups.groupNames.includes(Enums_1.Roles.WPMS_USER)) {
-            userGroups.groupNames = [...userGroups.groupNames, Enums_1.Roles.PORTAL_USER];
+        var userCreationOrUpdationResult = await this.createOrUpdateUserInDbFromCognitoUserName(usernameOrSub);
+        if (!userCreationOrUpdationResult.userDb.userRole) {
+            const updatedUserWithRole = await this.update(userCreationOrUpdationResult.userDb._id, {
+                userRole: Enums_1.SystemRoles.PORTAL_USER,
+            });
+            userCreationOrUpdationResult.userDb = updatedUserWithRole;
         }
-        const userGroupsToDbGroups = await this.groupService.groupModel.find({
-            name: { $in: userGroups.groupNames },
-        });
-        userFromDb = await this.userGroupService.addUserToGroups(userFromDb, userGroupsToDbGroups);
-        return userFromDb;
+        return userCreationOrUpdationResult.userDb;
     }
     async syncUsersFromCognitoToMongooDb(limit = 50, paginationToken = '', itritation = 1, usersCount = 0) {
         var e_1, _a;
@@ -300,7 +282,7 @@ let UserService = class UserService {
                 const email_verified = (_d = user.Attributes.find(attr => attr.Name == 'email_verified')) === null || _d === void 0 ? void 0 : _d.Value;
                 const phone_number = (_e = user.Attributes.find(attr => attr.Name == 'phone_number')) === null || _e === void 0 ? void 0 : _e.Value;
                 const phone_number_verified = (_f = user.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _f === void 0 ? void 0 : _f.Value;
-                const userToSaveInDb = new create_user_dto_1.CreateUserDto({
+                const userToSaveInDb = await this.userModel.create({
                     _id: sub,
                     sub: sub,
                     username: username,
@@ -358,20 +340,40 @@ let UserService = class UserService {
             },
             {
                 $lookup: {
-                    from: 'Group',
-                    localField: 'groups',
+                    from: 'Partner',
+                    localField: 'partner',
                     foreignField: '_id',
-                    as: 'groups',
+                    as: 'partner',
                 },
             },
+            { $addFields: { partner: { $first: '$partner' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'adminPartner',
+                    foreignField: '_id',
+                    as: 'adminPartner',
+                },
+            },
+            { $addFields: { adminPartner: { $first: '$adminPartner' } } },
             {
                 $lookup: {
                     from: 'Company',
-                    localField: 'companies',
+                    localField: 'company',
                     foreignField: '_id',
-                    as: 'companies',
+                    as: 'company',
                 },
             },
+            { $addFields: { company: { $first: '$company' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'adminCompany',
+                    foreignField: '_id',
+                    as: 'adminCompany',
+                },
+            },
+            { $addFields: { adminCompany: { $first: '$adminCompany' } } },
             {
                 $match: Object.assign({}, relationalFilter),
             },
@@ -434,6 +436,20 @@ let UserService = class UserService {
             });
         });
     }
+    async adminDisableUser(username) {
+        const params = {
+            UserPoolId: this.cognitoUserPoolId,
+            Username: username,
+        };
+        return this.cognitoIdentityServiceProvider.adminDisableUser(params).promise();
+    }
+    async adminEnableUser(username) {
+        const params = {
+            UserPoolId: this.cognitoUserPoolId,
+            Username: username,
+        };
+        return this.cognitoIdentityServiceProvider.adminEnableUser(params).promise();
+    }
     async cognitoCreateUser(cognitoCreateUserDTO) {
         var _a, _b;
         var { userName, email, group, company, password, phoneNumber = '', isEmailVerified = false, isPhoneNumberVerified = false, sendInvitationByEmail = false, } = cognitoCreateUserDTO;
@@ -492,12 +508,117 @@ let UserService = class UserService {
         return {
             cognitoUserCreated: cognitoUserCreated,
             userDb: userDb,
-            license: license
+            license: license,
+        };
+    }
+    async createUserInCognito(createUserInCognitoDto, saveInDb = true, additionalUserData = null) {
+        var _a, _b, _c, _d, _e;
+        var { userName, email, password, phoneNumber = '', isEmailVerified = false, isPhoneNumberVerified = false, sendInvitationByEmail = false } = createUserInCognitoDto, userPayload = __rest(createUserInCognitoDto, ["userName", "email", "password", "phoneNumber", "isEmailVerified", "isPhoneNumberVerified", "sendInvitationByEmail"]);
+        var registerNewUserParams = {
+            UserPoolId: this.cognitoUserPoolId,
+            Username: userName,
+            TemporaryPassword: password,
+            UserAttributes: [
+                {
+                    Name: 'email',
+                    Value: email,
+                },
+                {
+                    Name: 'email_verified',
+                    Value: (_a = isEmailVerified === null || isEmailVerified === void 0 ? void 0 : isEmailVerified.toString) === null || _a === void 0 ? void 0 : _a.call(isEmailVerified),
+                },
+                {
+                    Name: 'phone_number',
+                    Value: phoneNumber,
+                },
+                {
+                    Name: 'phone_number_verified',
+                    Value: (_b = isPhoneNumberVerified === null || isPhoneNumberVerified === void 0 ? void 0 : isPhoneNumberVerified.toString) === null || _b === void 0 ? void 0 : _b.call(isPhoneNumberVerified),
+                },
+            ],
+        };
+        if (sendInvitationByEmail) {
+            registerNewUserParams['DesiredDeliveryMediums'] = ['EMAIL'];
+        }
+        else {
+            registerNewUserParams['MessageAction'] = 'SUPPRESS';
+        }
+        const cognitoUserCreated = await this.cognitoIdentityServiceProvider
+            .adminCreateUser(registerNewUserParams)
+            .promise();
+        var userDb;
+        if (saveInDb) {
+            try {
+                const enabled = cognitoUserCreated.User.Enabled;
+                const userStatus = cognitoUserCreated.User.UserStatus;
+                const mfaOptions = cognitoUserCreated.User.MFAOptions;
+                const sub = (_c = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'sub')) === null || _c === void 0 ? void 0 : _c.Value;
+                const email_verified = (_d = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'email_verified')) === null || _d === void 0 ? void 0 : _d.Value;
+                const phone_number_verified = (_e = cognitoUserCreated.User.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _e === void 0 ? void 0 : _e.Value;
+                const userToSaveInDb = await this.userModel.create(Object.assign(Object.assign({ _id: sub, sub: sub, username: cognitoUserCreated.User.Username, email: email, email_verified: email_verified == 'true', phone_number: phoneNumber, phone_number_verified: phone_number_verified == 'true', user_status: userStatus, enabled: enabled, mfa_options: mfaOptions }, userPayload), additionalUserData));
+                userDb = await userToSaveInDb.save();
+            }
+            catch (error) {
+                await this.adminDeleteUser(cognitoUserCreated.User.Username);
+                return Promise.reject(error);
+            }
+        }
+        return { cognitoUser: cognitoUserCreated, userDb: userDb };
+    }
+    async createOrUpdateUserInDbFromCognitoUser(cognitoUser, additionalUserData) {
+        var _a, _b, _c, _d, _e;
+        const enabled = cognitoUser.Enabled;
+        const userStatus = cognitoUser.UserStatus;
+        const userName = cognitoUser.Username;
+        const mfaOptions = cognitoUser.MFAOptions;
+        const sub = (_a = cognitoUser.Attributes.find(attr => attr.Name == 'sub')) === null || _a === void 0 ? void 0 : _a.Value;
+        const email = (_b = cognitoUser.Attributes.find(attr => attr.Name == 'email')) === null || _b === void 0 ? void 0 : _b.Value;
+        const phoneNumber = (_c = cognitoUser.Attributes.find(attr => attr.Name == 'phone_number')) === null || _c === void 0 ? void 0 : _c.Value;
+        const email_verified = (_d = cognitoUser.Attributes.find(attr => attr.Name == 'email_verified')) === null || _d === void 0 ? void 0 : _d.Value;
+        const phone_number_verified = (_e = cognitoUser.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _e === void 0 ? void 0 : _e.Value;
+        const userToSaveInDb = await this.userModel.findOneAndUpdate({
+            _id: sub,
+            sub: sub,
+            username: userName,
+        }, Object.assign({ _id: sub, sub: sub, username: userName, email: email, email_verified: email_verified == 'true', phone_number: phoneNumber, phone_number_verified: phone_number_verified == 'true', user_status: userStatus, enabled: enabled, mfa_options: mfaOptions }, additionalUserData), {
+            upsert: true,
+            new: true,
+        });
+        const userDb = await userToSaveInDb.save();
+        return {
+            cognitoUser: cognitoUser,
+            userDb: userDb,
+        };
+    }
+    async createOrUpdateUserInDbFromCognitoUserName(cognitoUserNameOrSub, additionalUserData) {
+        var _a, _b, _c, _d, _e;
+        const cognitoUser = await this.getCognitoUser(cognitoUserNameOrSub);
+        const enabled = cognitoUser.Enabled;
+        const userStatus = cognitoUser.UserStatus;
+        const userName = cognitoUser.Username;
+        const mfaOptions = cognitoUser.MFAOptions;
+        const sub = (_a = cognitoUser.Attributes.find(attr => attr.Name == 'sub')) === null || _a === void 0 ? void 0 : _a.Value;
+        const email = (_b = cognitoUser.Attributes.find(attr => attr.Name == 'email')) === null || _b === void 0 ? void 0 : _b.Value;
+        const phoneNumber = (_c = cognitoUser.Attributes.find(attr => attr.Name == 'phone_number')) === null || _c === void 0 ? void 0 : _c.Value;
+        const email_verified = (_d = cognitoUser.Attributes.find(attr => attr.Name == 'email_verified')) === null || _d === void 0 ? void 0 : _d.Value;
+        const phone_number_verified = (_e = cognitoUser.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _e === void 0 ? void 0 : _e.Value;
+        const userToSaveInDb = await this.userModel.findOneAndUpdate({
+            _id: sub,
+            sub: sub,
+            username: userName,
+        }, Object.assign({ _id: sub, sub: sub, username: userName, email: email, email_verified: email_verified == 'true', phone_number: phoneNumber, phone_number_verified: phone_number_verified == 'true', user_status: userStatus, enabled: enabled, mfa_options: mfaOptions }, additionalUserData), {
+            upsert: true,
+            new: true,
+        });
+        const userDb = await userToSaveInDb.save();
+        return {
+            cognitoUser: cognitoUser,
+            userDb: userDb,
         };
     }
     async registerAsWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail = false) {
         var _a, _b, _c;
-        var { userName, email, password, phoneNumber = '', country, name } = wpmsUserRegisterDTO;
+        var { userName, email, password, phoneNumber = '', country, name, } = wpmsUserRegisterDTO;
         var registerNewUserParams = {
             UserPoolId: this.cognitoUserPoolId,
             Username: userName,
@@ -562,7 +683,7 @@ let UserService = class UserService {
     }
     async signupAsWpmsUser(wpmsUserRegisterDTO, sendInvitationByEmail = false) {
         var _a, _b, _c;
-        var { userName, email, password, phoneNumber = '', country, name } = wpmsUserRegisterDTO;
+        var { userName, email, password, phoneNumber = '', country, name, } = wpmsUserRegisterDTO;
         var registerNewUserParams = {
             ClientId: this.clientId,
             Username: userName,
@@ -579,7 +700,8 @@ let UserService = class UserService {
             ],
         };
         var cognitoUserCreated = await this.cognitoIdentityServiceProvider
-            .signUp(registerNewUserParams).promise();
+            .signUp(registerNewUserParams)
+            .promise();
         const cognitoUserAfterMakingPasswordParmanent = await this.getCognitoUser(cognitoUserCreated.UserSub);
         const username = cognitoUserAfterMakingPasswordParmanent.Username;
         const enabled = cognitoUserAfterMakingPasswordParmanent.Enabled;
@@ -615,7 +737,7 @@ let UserService = class UserService {
         return {
             cognitoUserCreated: cognitoUserAfterMakingPasswordParmanent,
             userDb: userDb,
-            cognitoUserSignuped: cognitoUserCreated
+            cognitoUserSignuped: cognitoUserCreated,
         };
     }
     async addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub) {
@@ -629,10 +751,120 @@ let UserService = class UserService {
         const newUser = await this.userModel.create(createUserDto);
         return newUser.save();
     }
-    findAll() {
-        return this.userModel.find();
+    async findAll(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        const userAggregate = this.userModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'partner',
+                    foreignField: '_id',
+                    as: 'partner',
+                },
+            },
+            { $addFields: { partner: { $first: '$partner' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'adminPartner',
+                    foreignField: '_id',
+                    as: 'adminPartner',
+                },
+            },
+            { $addFields: { adminPartner: { $first: '$adminPartner' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'company',
+                    foreignField: '_id',
+                    as: 'company',
+                },
+            },
+            { $addFields: { company: { $first: '$company' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'adminCompany',
+                    foreignField: '_id',
+                    as: 'adminCompany',
+                },
+            },
+            { $addFields: { adminCompany: { $first: '$adminCompany' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+        ]);
+        return this.userModel['aggregatePaginate'](userAggregate, paginateOptions);
     }
-    findOne(filter) {
+    async findOneAggregate(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        const datas = await this.userModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'partner',
+                    foreignField: '_id',
+                    as: 'partner',
+                },
+            },
+            { $addFields: { partner: { $first: '$partner' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'adminPartner',
+                    foreignField: '_id',
+                    as: 'adminPartner',
+                },
+            },
+            { $addFields: { adminPartner: { $first: '$adminPartner' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'company',
+                    foreignField: '_id',
+                    as: 'company',
+                },
+            },
+            { $addFields: { company: { $first: '$company' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'adminCompany',
+                    foreignField: '_id',
+                    as: 'adminCompany',
+                },
+            },
+            { $addFields: { adminCompany: { $first: '$adminCompany' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $limit: 1
+            }
+        ]);
+        return datas[0];
+    }
+    async findOne(filter) {
         return this.userModel.findOne(filter);
     }
     findById(id) {
@@ -645,7 +877,7 @@ let UserService = class UserService {
         return this.userModel.findOne({ username: username });
     }
     update(id, updateUserDto) {
-        return this.userModel.findByIdAndUpdate(id, updateUserDto);
+        return this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true });
     }
     removeById(id) {
         return this.userModel.findByIdAndRemove(id);

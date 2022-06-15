@@ -20,26 +20,86 @@ const company_schema_1 = require("./schemas/company.schema");
 const user_service_1 = require("../user/services/user.service");
 const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 const user_company_service_1 = require("../user/services/user-company.service");
+const Enums_1 = require("../../constants/Enums");
 let CompanyService = class CompanyService {
     constructor(companyModel, userService, userCompanyService) {
         this.companyModel = companyModel;
         this.userService = userService;
         this.userCompanyService = userCompanyService;
     }
-    async create(createCompanyDto) {
-        const { name, owner } = createCompanyDto;
-        const newCompany = await this.companyModel.create(createCompanyDto);
+    async create(doc) {
+        const { owner } = doc;
+        const newCompany = await this.companyModel.create(doc);
         const createdCompany = await newCompany.save();
-        const cognitoGroupName = `COM_${name}`;
-        await this.userService
-            .cognitoCreateGroup(cognitoGroupName)
-            .catch(err => console.warn('Warning: Error creating cognito group', err));
-        const userfromDb = await this.userService.findById(owner);
-        await this.userCompanyService.makeCompanyAdmin(userfromDb, createdCompany);
-        return createdCompany;
+        if (owner) {
+            await this.userService.userModel.findByIdAndUpdate(owner, {
+                userRole: Enums_1.SystemRoles.COMPANY_ADMIN,
+                adminCompany: createdCompany._id,
+                company: createdCompany._id,
+            });
+        }
+        return this.findById(createdCompany._id);
     }
-    findAll() {
-        return this.companyModel.find();
+    async makeCompanyAdminUser(company, user) {
+        const companyFromDb = await this.companyModel.findById(company);
+        await this.companyModel.findByIdAndUpdate(company, {
+            owner: user,
+        }, {
+            new: true,
+        });
+        await this.userService.userModel.findByIdAndUpdate(user, {
+            userRole: Enums_1.SystemRoles.COMPANY_ADMIN,
+            adminCompany: company,
+            company: company,
+        });
+        if (companyFromDb.owner) {
+            await this.userService.userModel.findByIdAndUpdate(companyFromDb.owner, {
+                userRole: Enums_1.SystemRoles.COMPANY_USER,
+                adminCompany: null,
+            });
+        }
+        return this.companyModel.findById(company);
+    }
+    findAll(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ createdAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'partner',
+                    foreignField: '_id',
+                    as: 'partner',
+                },
+            },
+            { $addFields: { partner: { $first: '$partner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+        ];
+        const aggregate = this.companyModel.aggregate(aggregateArray);
+        return this.companyModel['aggregatePaginate'](aggregate, paginateOptions);
     }
     findOne(filter) {
         return this.companyModel.findOne(filter);
@@ -47,10 +107,19 @@ let CompanyService = class CompanyService {
     findById(id) {
         return this.companyModel.findById(id);
     }
-    update(id, updateCompanyDto) {
-        return this.companyModel.findByIdAndUpdate(id, updateCompanyDto, {
+    async update(id, updateCompanyDto) {
+        const { owner } = updateCompanyDto;
+        const updatedCompany = await this.companyModel.findByIdAndUpdate(id, updateCompanyDto, {
             new: true,
         });
+        if (owner) {
+            await this.userService.userModel.findByIdAndUpdate(owner, {
+                userRole: Enums_1.SystemRoles.COMPANY_ADMIN,
+                adminCompany: updatedCompany._id,
+                company: updatedCompany._id,
+            });
+        }
+        return updatedCompany;
     }
     async getCount(queryDto) {
         const { filter, includeGroupData } = queryDto;

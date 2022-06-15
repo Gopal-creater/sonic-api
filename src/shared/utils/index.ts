@@ -1,5 +1,7 @@
 export * as JSONUtils from './json.utils'
 import axios from 'axios';
+import { UserDB } from '../../api/user/schemas/user.db.schema';
+import { SystemRoles } from 'src/constants/Enums';
 
 /* Check if string is valid UUID */
 export function isValidUUID(str:string) {
@@ -71,3 +73,42 @@ export function promiseHandler(promise:any):Promise<[any,any]>{
     }
     return arrayObjects  
   }
+
+  /**
+   * This function will identify the user types such as whether a user is a regular user or company user or partner user and return the upload destinationFolder and resourceOwnerObj
+   * @param user 
+   * @param keyNameForOwner 
+   * @param keyNameForPartner 
+   * @param keyNameForCompany 
+   * @returns 
+   */
+export function identifyDestinationFolderAndResourceOwnerFromUser(user:UserDB,keyNameForOwner:string="owner",keyNameForPartner:string="partner",keyNameForCompany:string="company"){
+  var destinationFolder:string;
+  var resourceOwnerObj:{owner?:string,partner?:string,company?:string}={}
+  switch (user.userRole) {
+    case SystemRoles.COMPANY_USER:
+    case SystemRoles.COMPANY_ADMIN:
+      if(user.company){
+        destinationFolder =`companies/${user.company?._id}`
+        resourceOwnerObj[keyNameForCompany]=user.company?._id
+      }
+      break;
+
+    case SystemRoles.PARTNER_USER:
+    case SystemRoles.PARTNER_ADMIN:
+      if(user.partner){
+        destinationFolder =`partners/${user.partner?._id}`
+        resourceOwnerObj[keyNameForPartner]=user.partner?._id
+      }
+      break;
+  
+    default:
+      destinationFolder =`${user?.sub}`
+      resourceOwnerObj[keyNameForOwner]=user?.sub
+      break;
+  }
+  return {
+    destinationFolder:destinationFolder,
+    resourceOwnerObj:resourceOwnerObj
+  }
+}

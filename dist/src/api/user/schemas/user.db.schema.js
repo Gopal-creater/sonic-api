@@ -14,7 +14,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const group_schema_1 = require("../../group/schemas/group.schema");
-const company_schema_1 = require("../../company/schemas/company.schema");
+const Enums_1 = require("../../../constants/Enums");
 exports.UserSchemaName = 'User';
 class MFAOption {
 }
@@ -106,6 +106,16 @@ __decorate([
 ], UserDB.prototype, "enabled", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: false }),
+    __metadata("design:type", Boolean)
+], UserDB.prototype, "isSonicAdmin", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: String, enum: Enums_1.SystemRoles, default: Enums_1.SystemRoles.PORTAL_USER }),
+    __metadata("design:type", String)
+], UserDB.prototype, "userRole", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop([MFAOption]),
     __metadata("design:type", Array)
 ], UserDB.prototype, "mfa_options", void 0);
@@ -113,7 +123,7 @@ __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop([{
             type: mongoose_2.Schema.Types.ObjectId,
-            ref: company_schema_1.CompanySchemaName,
+            ref: 'Company',
             autopopulate: { maxDepth: 2 },
         }]),
     __metadata("design:type", Array)
@@ -122,15 +132,62 @@ __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
         type: mongoose_2.Schema.Types.ObjectId,
-        ref: company_schema_1.CompanySchemaName,
+        ref: 'Company',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], UserDB.prototype, "company", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'Partner',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], UserDB.prototype, "partner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'Company',
         autopopulate: { maxDepth: 2 },
     }),
     __metadata("design:type", Object)
 ], UserDB.prototype, "adminCompany", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'Partner',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], UserDB.prototype, "adminPartner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: String,
+        ref: 'User',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], UserDB.prototype, "createdBy", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: String,
+        ref: 'User',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], UserDB.prototype, "updatedBy", void 0);
 UserDB = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.UserSchemaName })
 ], UserDB);
 exports.UserDB = UserDB;
 exports.UserSchema = mongoose_1.SchemaFactory.createForClass(UserDB);
+exports.UserSchema.set('toObject', { virtuals: true });
+exports.UserSchema.set('toJSON', { virtuals: true });
 exports.RawUserModel = mongoose_2.model('User', exports.UserSchema);
 //# sourceMappingURL=user.db.schema.js.map

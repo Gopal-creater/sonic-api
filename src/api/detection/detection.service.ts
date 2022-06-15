@@ -285,17 +285,14 @@ export class DetectionService {
 
   async exportDashboardPlaysView(
     queryDto: ParsedQueryDto,
-    ownerId: string,
     format: string,
   ):Promise<string> {
-    const{filter,limit}=queryDto
     return new Promise(async (resolve,reject)=>{
       const playsLists = (await this.listPlays(
         queryDto,
         true,
       )) as PlaysListResponseDto[];
       const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(
-        ownerId,
         queryDto.limit,
         queryDto,
       );
@@ -500,7 +497,6 @@ export class DetectionService {
 
   async exportHistoryOfSonicKeyPlays(
     queryDto: ParsedQueryDto,
-    ownerId: string,
     format: string,
   ):Promise<string> {
     return new Promise(async (resolve,reject)=>{
@@ -509,7 +505,6 @@ export class DetectionService {
         true,
       )) as PlaysListResponseDto[];
       const topRadioStationsWithPlaysCount = await this.findTopRadioStationsWithPlaysCountForOwner(
-        ownerId,
         queryDto.limit,
         queryDto,
       );
@@ -675,6 +670,36 @@ export class DetectionService {
       { $addFields: { sonicKey: { $first: '$sonicKey' } } },
       {
         $lookup: {
+          //populate sonickey's owner from its relational table
+          from: 'User',
+          localField: 'sonicKey.owner',
+          foreignField: '_id',
+          as: 'sonicKey.owner',
+        },
+      },
+      { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Company',
+          localField: 'sonicKey.company',
+          foreignField: '_id',
+          as: 'sonicKey.company',
+        },
+      },
+      { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Partner',
+          localField: 'sonicKey.partner',
+          foreignField: '_id',
+          as: 'sonicKey.partner',
+        },
+      },
+      { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
+      {
+        $lookup: {
           //populate radioStation from its relational table
           from: 'RadioStation',
           localField: 'radioStation',
@@ -747,6 +772,36 @@ export class DetectionService {
         },
       },
       { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $lookup: {
+          //populate sonickey's owner from its relational table
+          from: 'User',
+          localField: 'sonicKey.owner',
+          foreignField: '_id',
+          as: 'sonicKey.owner',
+        },
+      },
+      { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Company',
+          localField: 'sonicKey.company',
+          foreignField: '_id',
+          as: 'sonicKey.company',
+        },
+      },
+      { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Partner',
+          localField: 'sonicKey.partner',
+          foreignField: '_id',
+          as: 'sonicKey.partner',
+        },
+      },
+      { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
       {
         $lookup: {
           //populate radioStation from its relational table
@@ -847,6 +902,36 @@ export class DetectionService {
       { $addFields: { sonicKey: { $first: '$sonicKey' } } },
       {
         $lookup: {
+          //populate sonickey's owner from its relational table
+          from: 'User',
+          localField: 'sonicKey.owner',
+          foreignField: '_id',
+          as: 'sonicKey.owner',
+        },
+      },
+      { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Company',
+          localField: 'sonicKey.company',
+          foreignField: '_id',
+          as: 'sonicKey.company',
+        },
+      },
+      { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Partner',
+          localField: 'sonicKey.partner',
+          foreignField: '_id',
+          as: 'sonicKey.partner',
+        },
+      },
+      { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
+      {
+        $lookup: {
           //populate radioStation from its relational table
           from: 'RadioStation',
           localField: 'radioStation',
@@ -945,6 +1030,36 @@ export class DetectionService {
       { $addFields: { sonicKey: { $first: '$sonicKey' } } },
       {
         $lookup: {
+          //populate sonickey's owner from its relational table
+          from: 'User',
+          localField: 'sonicKey.owner',
+          foreignField: '_id',
+          as: 'sonicKey.owner',
+        },
+      },
+      { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Company',
+          localField: 'sonicKey.company',
+          foreignField: '_id',
+          as: 'sonicKey.company',
+        },
+      },
+      { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Partner',
+          localField: 'sonicKey.partner',
+          foreignField: '_id',
+          as: 'sonicKey.partner',
+        },
+      },
+      { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
+      {
+        $lookup: {
           //populate radioStation from its relational table
           from: 'RadioStation',
           localField: 'radioStation',
@@ -1041,6 +1156,36 @@ export class DetectionService {
         },
       },
       { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $lookup: {
+          //populate sonickey's owner from its relational table
+          from: 'User',
+          localField: 'sonicKey.owner',
+          foreignField: '_id',
+          as: 'sonicKey.owner',
+        },
+      },
+      { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Company',
+          localField: 'sonicKey.company',
+          foreignField: '_id',
+          as: 'sonicKey.company',
+        },
+      },
+      { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Partner',
+          localField: 'sonicKey.partner',
+          foreignField: '_id',
+          as: 'sonicKey.partner',
+        },
+      },
+      { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
       {
         $lookup: {
           //populate radioStation from its relational table
@@ -1381,6 +1526,37 @@ export class DetectionService {
         },
       },
       { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+
+      {
+        $lookup: {
+          //populate sonickey's owner from its relational table
+          from: 'User',
+          localField: 'sonicKey.owner',
+          foreignField: '_id',
+          as: 'sonicKey.owner',
+        },
+      },
+      { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Company',
+          localField: 'sonicKey.company',
+          foreignField: '_id',
+          as: 'sonicKey.company',
+        },
+      },
+      { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Partner',
+          localField: 'sonicKey.partner',
+          foreignField: '_id',
+          as: 'sonicKey.partner',
+        },
+      },
+      { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
       {
         $lookup: {
           //populate radioStation from its relational table
@@ -1464,6 +1640,36 @@ export class DetectionService {
         },
       },
       { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $lookup: {
+          //populate sonickey's owner from its relational table
+          from: 'User',
+          localField: 'sonicKey.owner',
+          foreignField: '_id',
+          as: 'sonicKey.owner',
+        },
+      },
+      { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Company',
+          localField: 'sonicKey.company',
+          foreignField: '_id',
+          as: 'sonicKey.company',
+        },
+      },
+      { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Partner',
+          localField: 'sonicKey.partner',
+          foreignField: '_id',
+          as: 'sonicKey.partner',
+        },
+      },
+      { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
       {
         $lookup: {
           //populate radioStation from its relational table
@@ -1571,6 +1777,36 @@ export class DetectionService {
       { $addFields: { sonicKey: { $first: '$sonicKey' } } },
       {
         $lookup: {
+          //populate sonickey's owner from its relational table
+          from: 'User',
+          localField: 'sonicKey.owner',
+          foreignField: '_id',
+          as: 'sonicKey.owner',
+        },
+      },
+      { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Company',
+          localField: 'sonicKey.company',
+          foreignField: '_id',
+          as: 'sonicKey.company',
+        },
+      },
+      { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Partner',
+          localField: 'sonicKey.partner',
+          foreignField: '_id',
+          as: 'sonicKey.partner',
+        },
+      },
+      { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
+      {
+        $lookup: {
           //populate radioStation from its relational table
           from: 'RadioStation',
           localField: 'radioStation',
@@ -1674,6 +1910,36 @@ export class DetectionService {
         },
       },
       { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $lookup: {
+          //populate sonickey's owner from its relational table
+          from: 'User',
+          localField: 'sonicKey.owner',
+          foreignField: '_id',
+          as: 'sonicKey.owner',
+        },
+      },
+      { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Company',
+          localField: 'sonicKey.company',
+          foreignField: '_id',
+          as: 'sonicKey.company',
+        },
+      },
+      { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Partner',
+          localField: 'sonicKey.partner',
+          foreignField: '_id',
+          as: 'sonicKey.partner',
+        },
+      },
+      { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
       {
         $lookup: {
           //populate radioStation from its relational table
@@ -1781,6 +2047,36 @@ export class DetectionService {
       { $addFields: { sonicKey: { $first: '$sonicKey' } } },
       {
         $lookup: {
+          //populate sonickey's owner from its relational table
+          from: 'User',
+          localField: 'sonicKey.owner',
+          foreignField: '_id',
+          as: 'sonicKey.owner',
+        },
+      },
+      { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Company',
+          localField: 'sonicKey.company',
+          foreignField: '_id',
+          as: 'sonicKey.company',
+        },
+      },
+      { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Partner',
+          localField: 'sonicKey.partner',
+          foreignField: '_id',
+          as: 'sonicKey.partner',
+        },
+      },
+      { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
+      {
+        $lookup: {
           //populate radioStation from its relational table
           from: 'RadioStation',
           localField: 'radioStation',
@@ -1875,19 +2171,64 @@ export class DetectionService {
     paginateOptions['page'] = page;
     paginateOptions['limit'] = limit;
 
-    // if (includeGroupData && filter.owner) {
-    //   //If includeGroupData, try to fetch all data belongs to the user's groups and use the OR condition to fetch data
-    //   const usergroups = await this.userService.adminListGroupsForUser(
-    //     filter.owner,
-    //   );
-    //   if (usergroups.groupNames.length > 0) {
-    //     filter['$or'] = [
-    //       { groups: { $all: usergroups.groupNames } },
-    //       { owner: filter.owner },
-    //     ];
-    //     delete filter.owner;
-    //   }
-    // }
+    const aggregate = this.detectionModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      { $group: { _id: '$sonicKey', totalHits: { $sum: 1 } } }, //group by radioStation to get duplicates counts
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'SonicKey',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'sonicKey',
+        },
+      },
+      {
+        $project: {
+          sonicKey: { $first: '$sonicKey' },
+          totalHits: 1,
+          otherField: 1,
+        }, //lookup will return array so always tale first index elememt
+      },
+      { $sort: { totalHits: -1 } }, //sort in decending order
+    ]);
+
+    if (aggregateQuery) {
+      return this.detectionModel['aggregatePaginate'](
+        aggregate,
+        paginateOptions,
+      );
+    } else {
+      return this.detectionModel['paginate'](filter, paginateOptions);
+    }
+  }
+
+  async getSonicKeysDetails(
+    queryDto: ParsedQueryDto,
+    aggregateQuery?: boolean,
+  ): Promise<MongoosePaginateDetectionDto> {
+    const {
+      limit,
+      skip,
+      sort,
+      page,
+      filter,
+      select,
+      populate,
+      aggregateSearch,
+      includeGroupData,
+    } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
 
     const aggregate = this.detectionModel.aggregate([
       {
@@ -1926,7 +2267,7 @@ export class DetectionService {
   }
 
   async getTotalHitsCount(queryDto: ParsedQueryDto) {
-    const { filter, includeGroupData } = queryDto;
+    const { filter } = queryDto;
     return this.detectionModel
       .find(filter || {})
       .countDocuments()
@@ -1934,7 +2275,7 @@ export class DetectionService {
   }
 
   async getCount(queryDto: ParsedQueryDto) {
-    const { filter, includeGroupData } = queryDto;
+    const { filter } = queryDto;
     return this.detectionModel
       .find(filter || {})
       .count()
@@ -1994,7 +2335,6 @@ export class DetectionService {
   }
 
   async findTopRadioStationsWithPlaysCountForOwner(
-    ownerId: string,
     topLimit: number,
     queryDto: ParsedQueryDto,
   ): Promise<TopRadioStationWithPlaysDetails[]> {
@@ -2003,7 +2343,6 @@ export class DetectionService {
       {
         $match: {
           ...filter,
-          owner: ownerId,
           channel: ChannelEnums.STREAMREADER,
         },
       },
@@ -2017,6 +2356,26 @@ export class DetectionService {
         },
       },
       { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+      {
+        $lookup: {
+          //populate sonickey's owner from its relational table
+          from: 'User',
+          localField: 'sonicKey.owner',
+          foreignField: '_id',
+          as: 'sonicKey.owner',
+        },
+      },
+      { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+      {
+        $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Company',
+          localField: 'sonicKey.company',
+          foreignField: '_id',
+          as: 'sonicKey.company',
+        },
+      },
+      { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
       {
         $lookup: {
           //populate radioStation from its relational table

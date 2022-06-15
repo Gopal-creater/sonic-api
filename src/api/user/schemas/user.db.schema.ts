@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema,model } from 'mongoose';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { GroupSchemaName } from '../../group/schemas/group.schema';
-import { CompanySchemaName } from '../../company/schemas/company.schema';
+import { SystemRoles } from 'src/constants/Enums';
 
 export const UserSchemaName = 'User';
 
@@ -83,26 +83,76 @@ export class UserDB extends Document {
   enabled: boolean;
 
   @ApiProperty()
+  @Prop({default:false})
+  isSonicAdmin: boolean;
+
+  @ApiProperty()
+  @Prop({type:String,enum:SystemRoles,default:SystemRoles.PORTAL_USER})
+  userRole?: string;
+
+  @ApiProperty()
   @Prop([MFAOption])
   mfa_options: MFAOption[];
 
   @ApiProperty()
   @Prop([{
     type: MogSchema.Types.ObjectId,
-    ref: CompanySchemaName,
+    ref: 'Company',
     autopopulate: { maxDepth: 2 },
   }])
-  companies: any[];
+  companies: any[]; //Will be dump out later
 
   @ApiProperty()
   @Prop({
     type: MogSchema.Types.ObjectId,
-    ref: CompanySchemaName,
+    ref: 'Company',
     autopopulate: { maxDepth: 2 },
   })
-  adminCompany: any;
+  company: any; //Where user is belongs To
+
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Partner',
+    autopopulate: { maxDepth: 2 },
+  })
+  partner: any; //Where user is belongs To
+
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Company',
+    autopopulate: { maxDepth: 2 },
+  })
+  adminCompany: any; //Admin of this company
+
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Partner',
+    autopopulate: { maxDepth: 2 },
+  })
+  adminPartner: any; //Admin of this partner
+
+  @ApiProperty()
+  @Prop({
+    type: String,
+    ref: 'User',
+    autopopulate: { maxDepth: 2 },
+  })
+  createdBy: any;
+
+  @ApiProperty()
+  @Prop({
+    type: String,
+    ref: 'User',
+    autopopulate: { maxDepth: 2 },
+  })
+  updatedBy: any; 
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDB);
 
+UserSchema.set('toObject', { virtuals: true });
+UserSchema.set('toJSON', { virtuals: true });
 export const RawUserModel = model<UserDB>('User',UserSchema)

@@ -33,7 +33,11 @@ let ParseQueryValue = class ParseQueryValue {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
         try {
             const { aggregateSearch, relation_filter = JSON.stringify({}) } = queries, query = __rest(queries, ["aggregateSearch", "relation_filter"]);
-            const parser = new mongoose_query_parser_1.MongooseQueryParser();
+            const parser = new mongoose_query_parser_1.MongooseQueryParser({
+                casters: {
+                    objectId: val => mongoose_utils_1.toObjectId(val)
+                }
+            });
             const relationPrefix = 'relation_';
             const queryToParse = Object.assign({ page: 1 }, query);
             var parsed = parser.parse(queryToParse);
@@ -107,14 +111,25 @@ let ParseQueryValue = class ParseQueryValue {
         const res = {};
         for (const key in filter) {
             var value = filter[key];
-            console.log(`IsObjectId ${mongoose_utils_1.isObjectId(value)} :${value}`);
+            console.log(`IsObjectId ${mongoose_utils_1.isObjectId(value)} :${JSON.stringify(value)}`);
             if (mongoose_utils_1.isObjectId(value)) {
                 res[key] = mongoose_utils_1.toObjectId(value);
             }
             else {
+                if (lodash_1.isArray(value)) {
+                    for (let index = 0; index < value.length; index++) {
+                        const ele = value[index];
+                        if (typeof (ele) == "object") {
+                            const response = this.castToObjectId(ele);
+                            console.log("inner obj conversion", response);
+                            value[index] = response;
+                        }
+                    }
+                }
                 res[key] = value;
             }
         }
+        console.log("conversion", res);
         return res;
     }
 };

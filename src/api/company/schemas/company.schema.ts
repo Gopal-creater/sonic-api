@@ -34,11 +34,23 @@ export class Company extends Document {
 
   @ApiProperty()
   @Prop()
+  companyType: string;
+
+  @ApiProperty()
+  @Prop()
+  companyUrnOrId: string;
+
+  @ApiProperty()
+  @Prop()
   email: string;
 
   @ApiProperty()
   @Prop()
   contactNo: string;
+
+  @ApiProperty()
+  @Prop({default:true})
+  enabled: boolean;
 
 
   @ApiProperty()
@@ -51,7 +63,15 @@ export class Company extends Document {
     ref: 'User',
     autopopulate: { maxDepth: 2 },
   })
-  owner: any;
+  owner: any; //Will be admin of this company
+
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Partner',
+    autopopulate: { maxDepth: 2 },
+  })
+  partner: any; //Will be parent partner that this company belongs to
 
   @ApiProperty()
   @Prop()
@@ -64,3 +84,5 @@ export class Company extends Document {
 }
 
 export const CompanySchema = SchemaFactory.createForClass(Company);
+CompanySchema.set('toObject', { virtuals: true });
+CompanySchema.set('toJSON', { virtuals: true });

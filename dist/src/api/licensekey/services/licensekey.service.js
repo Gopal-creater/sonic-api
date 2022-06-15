@@ -11,17 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LicensekeyService = void 0;
 const common_1 = require("@nestjs/common");
@@ -42,10 +31,9 @@ let LicensekeyService = class LicensekeyService {
         this.planService = planService;
         this.userService = userService;
     }
-    async create(createLicensekeyDto, createdBy) {
-        const { user } = createLicensekeyDto, dtos = __rest(createLicensekeyDto, ["user"]);
+    async create(doc) {
         const key = uuid_1.v4();
-        const newLicenseKey = await this.licenseKeyModel.create(Object.assign(Object.assign({}, dtos), { users: [user], _id: key, key: key, createdBy: createdBy }));
+        const newLicenseKey = await this.licenseKeyModel.create(Object.assign(Object.assign({}, doc), { _id: key, key: key }));
         return newLicenseKey.save();
     }
     async createLicenseFromPlanAndAssignToUser(user, plan, payment) {
@@ -191,14 +179,35 @@ let LicensekeyService = class LicensekeyService {
     async findPreferedLicenseToGetRadioMonitoringListFor(userId) {
         var now = new Date();
         var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        var validLicenseForMonitor = await this.licenseKeyModel.findOne({
-            users: userId,
+        var validLicense;
+        var userFromDb = await this.userService.userModel.findById(userId);
+        userFromDb = userFromDb.depopulate('companies');
+        var validLicenseForUserWithInCompany = await this.licenseKeyModel.findOne({
             disabled: false,
             suspended: false,
             validity: { $gte: startOfToday },
-            $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }],
+            $or: [
+                { company: userFromDb.company },
+                { company: { $in: userFromDb.companies } },
+                { isUnlimitedMonitor: true },
+                { maxMonitoringUses: { $gt: 0 } }
+            ],
+            isUnlimitedMonitor: true
         });
-        return validLicenseForMonitor;
+        if (validLicenseForUserWithInCompany) {
+            validLicense = validLicenseForUserWithInCompany;
+        }
+        else {
+            var validLicenseForUser = await this.licenseKeyModel.findOne({
+                disabled: false,
+                suspended: false,
+                validity: { $gte: startOfToday },
+                users: userId,
+                $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }]
+            });
+            validLicense = validLicenseForUser;
+        }
+        return validLicense;
     }
     async findValidLicesesForUser(user, filter) {
         var now = new Date();
@@ -208,7 +217,10 @@ let LicensekeyService = class LicensekeyService {
         userFromDb = userFromDb.depopulate('companies');
         var validLicenseForUserWithInCompany = await this.licenseKeyModel.aggregate([
             {
-                $match: Object.assign({ disabled: false, suspended: false, validity: { $gte: startOfToday }, company: { $in: userFromDb.companies } }, filter),
+                $match: Object.assign({ disabled: false, suspended: false, validity: { $gte: startOfToday }, $or: [
+                        { company: userFromDb.company },
+                        { company: { $in: userFromDb.companies } }
+                    ] }, filter),
             }
         ]);
         if (validLicenseForUserWithInCompany.length > 0) {
@@ -404,6 +416,68 @@ let LicensekeyService = class LicensekeyService {
     findOne(filter) {
         return this.licenseKeyModel.findOne(filter);
     }
+    async findOneAggregate(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        const datas = await this.licenseKeyModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'users',
+                    foreignField: '_id',
+                    as: 'users',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'Payment',
+                    localField: 'payments',
+                    foreignField: '_id',
+                    as: 'payments',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'company',
+                    foreignField: '_id',
+                    as: 'company',
+                },
+            },
+            { $addFields: { company: { $first: '$company' } } },
+            {
+                $lookup: {
+                    from: 'Plan',
+                    localField: 'previousPlan',
+                    foreignField: '_id',
+                    as: 'previousPlan',
+                },
+            },
+            { $addFields: { previousPlan: { $first: '$previousPlan' } } },
+            {
+                $lookup: {
+                    from: 'Plan',
+                    localField: 'activePlan',
+                    foreignField: '_id',
+                    as: 'activePlan',
+                },
+            },
+            { $addFields: { activePlan: { $first: '$activePlan' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+        ]);
+        return datas[0];
+    }
     async decrementUses(id, usesFor, decrementBy = 1) {
         const licenseKey = await this.licenseKeyModel.findById(id);
         if (!licenseKey)
@@ -521,6 +595,18 @@ let LicensekeyService = class LicensekeyService {
         });
         license.reserves = updatedReserves;
         return license.save();
+    }
+    findById(id) {
+        return this.licenseKeyModel.findById(id);
+    }
+    update(id, updateLicenseKeyDto) {
+        return this.licenseKeyModel.findByIdAndUpdate(id, updateLicenseKeyDto, {
+            new: true,
+        });
+    }
+    async removeById(id) {
+        const deletedKey = await this.licenseKeyModel.findByIdAndRemove(id);
+        return deletedKey;
     }
 };
 LicensekeyService = __decorate([

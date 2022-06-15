@@ -52,6 +52,12 @@ export class CreateLicensekeyDto {
 
   @ApiProperty()
   type: string;
+
+  @ApiProperty()
+  createdBy: string;
+
+  @ApiProperty()
+  updatedBy: string;
 }
 
 export class AdminUpdateLicensekeyDto extends PartialType(

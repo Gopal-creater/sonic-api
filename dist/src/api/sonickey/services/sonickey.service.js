@@ -42,8 +42,10 @@ const bull_1 = require("@nestjs/bull");
 const path = require("path");
 const config_2 = require("@nestjs/config");
 const queuejob_service_1 = require("../../../queuejob/queuejob.service");
+const track_service_1 = require("../../track/track.service");
+const track_schema_1 = require("../../track/schemas/track.schema");
 let SonickeyService = class SonickeyService {
-    constructor(sonicKeyModel, fileOperationService, licensekeyService, sonicKeyQueue, fileHandlerService, s3FileUploadService, configService, detectionService, userService, queuejobService) {
+    constructor(sonicKeyModel, fileOperationService, licensekeyService, sonicKeyQueue, fileHandlerService, s3FileUploadService, configService, detectionService, userService, queuejobService, trackService) {
         this.sonicKeyModel = sonicKeyModel;
         this.fileOperationService = fileOperationService;
         this.licensekeyService = licensekeyService;
@@ -54,6 +56,7 @@ let SonickeyService = class SonickeyService {
         this.detectionService = detectionService;
         this.userService = userService;
         this.queuejobService = queuejobService;
+        this.trackService = trackService;
         console.log(`FingerPrint BASE URL: ${this.configService.get('FINGERPRINT_SERVER.baseUrl')}`);
     }
     generateUniqueSonicKey() {
@@ -171,6 +174,24 @@ let SonickeyService = class SonickeyService {
             },
             {
                 $lookup: {
+                    from: 'Company',
+                    localField: 'company',
+                    foreignField: '_id',
+                    as: 'company',
+                },
+            },
+            { $addFields: { company: { $first: '$company' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'partner',
+                    foreignField: '_id',
+                    as: 'partner',
+                },
+            },
+            { $addFields: { partner: { $first: '$partner' } } },
+            {
+                $lookup: {
                     from: 'User',
                     localField: 'owner',
                     foreignField: '_id',
@@ -183,6 +204,59 @@ let SonickeyService = class SonickeyService {
             },
         ]);
         return this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
+    }
+    async findOneAggregate(queryDto) {
+        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        const aggregate = this.sonicKeyModel.aggregate([
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ createdAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'company',
+                    foreignField: '_id',
+                    as: 'company',
+                },
+            },
+            { $addFields: { company: { $first: '$company' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'partner',
+                    foreignField: '_id',
+                    as: 'partner',
+                },
+            },
+            { $addFields: { partner: { $first: '$partner' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $limit: 1
+            }
+        ]);
+        const datas = await this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
+        return datas[0];
     }
     async getCount(queryDto) {
         const { filter, includeGroupData } = queryDto;
@@ -206,7 +280,7 @@ let SonickeyService = class SonickeyService {
             outFilePath +
             ' ' +
             random11CharKey;
-        const sonicEncodeCmd = `${config_1.appConfig.ENCODER_EXE_PATH}` + argList;
+        const sonicEncodeCmd = this.configService.get('ENCODER_EXE_PATH') + argList;
         return this.fileOperationService
             .encodeFile(sonicEncodeCmd, outFilePath)
             .then(async () => {
@@ -235,7 +309,7 @@ let SonickeyService = class SonickeyService {
             outFilePath +
             ' ' +
             random11CharKey;
-        const sonicEncodeCmd = `${config_1.appConfig.ENCODER_EXE_PATH}` + argList;
+        const sonicEncodeCmd = this.configService.get('ENCODER_EXE_PATH') + argList;
         return this.fileOperationService
             .encodeFile(sonicEncodeCmd, outFilePath)
             .then(() => {
@@ -281,12 +355,131 @@ let SonickeyService = class SonickeyService {
             this.fileHandlerService.deleteFileAtPath(outFilePath);
         });
     }
+    async encodeAndUpload(file, s3destinationFolder, doc, encodingStrength = 15, s3Acl, fingerPrint = true) {
+        const random11CharKey = this.generateUniqueSonicKey();
+        file.path = upath.toUnix(file.path);
+        file.destination = upath.toUnix(file.destination);
+        const inFilePath = file.path;
+        await makeDir(`${file.destination}/encodedFiles`);
+        const outFilePath = file.destination + '/' + 'encodedFiles' + '/' + file.filename;
+        const argList = ' -h ' +
+            encodingStrength +
+            ' ' +
+            inFilePath +
+            ' ' +
+            outFilePath +
+            ' ' +
+            random11CharKey;
+        const sonicEncodeCmd = this.configService.get('ENCODER_EXE_PATH') + argList;
+        return this.fileOperationService
+            .encodeFile(sonicEncodeCmd, outFilePath)
+            .then(() => {
+            const encodedFileUploadToS3 = this.s3FileUploadService
+                .uploadFromPath(outFilePath, `${s3destinationFolder}/encodedFiles`, s3Acl)
+                .then(data => Promise.resolve(data))
+                .catch(error => Promise.resolve(error));
+            return Promise.all([encodedFileUploadToS3]);
+        })
+            .then(async ([s3EncodedUploadResult]) => {
+            const sonicKeyDtoWithAudioData = await this.autoPopulateSonicContentWithMusicMetaForFile(file, doc);
+            const newSonicKey = Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), { contentFilePath: s3EncodedUploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, sonicKey: random11CharKey, downloadable: true, s3FileMeta: s3EncodedUploadResult, fingerPrintStatus: Enums_1.FingerPrintStatus.PENDING, _id: random11CharKey });
+            return;
+        })
+            .finally(() => {
+            this.fileHandlerService.deleteFileAtPath(inFilePath);
+            this.fileHandlerService.deleteFileAtPath(outFilePath);
+        });
+    }
+    async encodeSonicKeyFromFile(config) {
+        const { file, licenseId, s3destinationFolder, sonickeyDoc, encodingStrength = 15, s3Acl, fingerPrint = true, } = config;
+        const { owner, partner, company } = sonickeyDoc;
+        const trackDoc = {
+            channel: sonickeyDoc.channel,
+            artist: sonickeyDoc.contentOwner,
+            title: sonickeyDoc.contentName,
+            fileType: sonickeyDoc.contentFileType,
+            trackMetaData: sonickeyDoc,
+            owner,
+            partner,
+            company,
+            createdBy: sonickeyDoc.createdBy,
+        };
+        console.log('Saving Track');
+        const track = await this.trackService.uploadAndCreate(file, trackDoc, s3destinationFolder);
+        console.log('Track Saved');
+        console.log('Encoding....');
+        const { outFilePath, sonicKey } = await this.encode(file, encodingStrength);
+        console.log('Encoding Done');
+        console.log('Uploading encoded file to s3');
+        const s3EncodedUploadResult = await this.s3FileUploadService.uploadFromPath(outFilePath, `${s3destinationFolder}/encodedFiles`, s3Acl)
+            .finally(() => {
+            this.fileHandlerService.deleteFileAtPath(outFilePath);
+        });
+        console.log('Uploading encoded file to s3 Done');
+        const newSonicKey = Object.assign(Object.assign({}, sonickeyDoc), { contentFilePath: s3EncodedUploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, sonicKey: sonicKey, downloadable: true, license: licenseId, channel: sonickeyDoc.channel || Enums_1.ChannelEnums.PORTAL, track: track === null || track === void 0 ? void 0 : track._id, s3FileMeta: s3EncodedUploadResult, fingerPrintStatus: Enums_1.FingerPrintStatus.PENDING, _id: sonicKey });
+        if (fingerPrint) {
+            await this.fingerPrintRequestToFPServer(track.s3OriginalFileMeta, sonicKey, file.originalname, file.size).then(data => {
+                newSonicKey.fingerPrintStatus = Enums_1.FingerPrintStatus.PROCESSING;
+            })
+                .catch(err => {
+                var _a;
+                newSonicKey.fingerPrintStatus = Enums_1.FingerPrintStatus.FAILED;
+                newSonicKey.fingerPrintErrorData = {
+                    message: err === null || err === void 0 ? void 0 : err.message,
+                    data: (_a = err === null || err === void 0 ? void 0 : err.response) === null || _a === void 0 ? void 0 : _a.data,
+                };
+            });
+        }
+        console.log('Going to save key in db.');
+        const savedSonnicKey = await this.create(newSonicKey);
+        console.log('Sonickey saved.');
+        console.log('Increment License Usages upon successfull encode & save');
+        await this.licensekeyService.incrementUses(licenseId, 'encode', 1);
+        console.log('Increment License Usages upon successfull encode & save Done');
+        return this.findById(savedSonnicKey._id);
+    }
+    async encodeSonicKeyFromTrack(config) {
+        const { trackId, file, licenseId, s3destinationFolder, sonickeyDoc, encodingStrength = 15, s3Acl, fingerPrint = true, } = config;
+        console.log('Fetching Track');
+        const track = await this.trackService.findById(trackId);
+        console.log('Track Fetched');
+        console.log('Encoding....');
+        const { outFilePath, sonicKey } = await this.encode(file, encodingStrength);
+        console.log('Encoding Done');
+        console.log('Uploading encoded file to s3');
+        const s3EncodedUploadResult = await this.s3FileUploadService.uploadFromPath(outFilePath, `${s3destinationFolder}/encodedFiles`, s3Acl)
+            .finally(() => {
+            this.fileHandlerService.deleteFileAtPath(outFilePath);
+        });
+        console.log('Uploading encoded file to s3 Done');
+        const newSonicKey = Object.assign(Object.assign({}, sonickeyDoc), { contentFilePath: s3EncodedUploadResult.Location, originalFileName: track === null || track === void 0 ? void 0 : track.originalFileName, sonicKey: sonicKey, downloadable: true, license: licenseId, channel: sonickeyDoc.channel || Enums_1.ChannelEnums.PORTAL, track: track === null || track === void 0 ? void 0 : track._id, s3FileMeta: s3EncodedUploadResult, fingerPrintStatus: Enums_1.FingerPrintStatus.PENDING, _id: sonicKey });
+        if (fingerPrint) {
+            await this.fingerPrintRequestToFPServer(track.s3OriginalFileMeta, sonicKey, file.originalname, file.size).then(data => {
+                newSonicKey.fingerPrintStatus = Enums_1.FingerPrintStatus.PROCESSING;
+            })
+                .catch(err => {
+                var _a;
+                newSonicKey.fingerPrintStatus = Enums_1.FingerPrintStatus.FAILED;
+                newSonicKey.fingerPrintErrorData = {
+                    message: err === null || err === void 0 ? void 0 : err.message,
+                    data: (_a = err === null || err === void 0 ? void 0 : err.response) === null || _a === void 0 ? void 0 : _a.data,
+                };
+            });
+        }
+        console.log('Going to save key in db.');
+        const savedSonnicKey = await this.create(newSonicKey);
+        console.log('Sonickey saved.');
+        console.log('Increment License Usages upon successfull encode & save');
+        await this.licensekeyService.incrementUses(licenseId, 'encode', 1);
+        console.log('Increment License Usages upon successfull encode & save Done');
+        return this.findById(savedSonnicKey._id);
+    }
     async decode(file) {
         file.path = upath.toUnix(file.path);
         const inFilePath = file.path;
         const logFilePath = inFilePath + '.log';
         const argList = ' ' + inFilePath + ' ' + logFilePath;
-        const sonicDecodeCmd = `${config_1.appConfig.DECODER_EXE_PATH}` + argList;
+        const sonicDecodeCmd = this.configService.get('DECODER_EXE_PATH') + argList;
         return (this.fileOperationService
             .decodeFile(sonicDecodeCmd, logFilePath)
             .finally(() => {
@@ -338,7 +531,7 @@ let SonickeyService = class SonickeyService {
         const inFilePath = file.path;
         const logFilePath = inFilePath + '.log';
         const argList = ' ' + inFilePath + ' ' + logFilePath;
-        const sonicDecodeCmd = `${config_1.appConfig.DECODER_EXE_PATH}` + argList;
+        const sonicDecodeCmd = this.configService.get('DECODER_EXE_PATH') + argList;
         return this.fileOperationService
             .decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath)
             .finally(() => {
@@ -375,8 +568,23 @@ let SonickeyService = class SonickeyService {
     async findByQueueJobId(queueJobId) {
         return this.sonicKeyModel.findOne({ queueJobId: queueJobId }).lean();
     }
+    findById(id) {
+        return this.sonicKeyModel.findById(id);
+    }
+    async create(doc) {
+        const newSonicKey = await this.sonicKeyModel.create(doc);
+        return newSonicKey.save();
+    }
+    update(id, updateSonicKeyDto) {
+        return this.sonicKeyModel.findByIdAndUpdate(id, updateSonicKeyDto, {
+            new: true,
+        });
+    }
     findOne(filter) {
         return this.sonicKeyModel.findOne(filter).lean();
+    }
+    async removeById(id) {
+        return this.sonicKeyModel.findByIdAndRemove(id);
     }
     async findBySonicKeyOrFail(sonicKey) {
         return this.findBySonicKey(sonicKey).then(data => {
@@ -398,7 +606,8 @@ SonickeyService = __decorate([
         config_2.ConfigService,
         detection_service_1.DetectionService,
         user_service_1.UserService,
-        queuejob_service_1.QueuejobService])
+        queuejob_service_1.QueuejobService,
+        track_service_1.TrackService])
 ], SonickeyService);
 exports.SonickeyService = SonickeyService;
 //# sourceMappingURL=sonickey.service.js.map

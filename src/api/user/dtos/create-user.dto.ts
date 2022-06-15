@@ -1,53 +1,75 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, Validate } from 'class-validator';
+import { IsEnum, IsNotEmpty, Validate,Matches } from 'class-validator';
 import { MFAOption } from '../schemas/user.db.schema';
-import { UserExists,UserExistsRule } from '../validations/userexists.validation';
+import {
+  UserExists,
+  UserExistsRule,
+} from '../validations/userexists.validation';
+import { SystemRoles } from 'src/constants/Enums';
+import { COGNITO_PASSWORD_REGULAR_EXPRESSION } from '../../../constants/index';
+import { Type, Transform } from 'class-transformer';
+import { Types } from "mongoose"
+import { BadRequestException } from '@nestjs/common';
 
 export class CreateUserDto {
-  constructor(data: CreateUserDto) {
-    Object.assign(this, data);
-  }
+  @ApiProperty()
   @IsNotEmpty()
-  @ApiProperty()
-  _id: string;
+  userName: string;
 
+  @ApiProperty()
+  name?: string;
+
+  @ApiProperty()
   @IsNotEmpty()
-  @ApiProperty()
-  username: string;
+  @Matches(COGNITO_PASSWORD_REGULAR_EXPRESSION, {
+    message: 'password too weak',
+  })
+  password: string;
 
+  @ApiProperty()
+  phoneNumber?: string;
+
+  @ApiProperty()
+  country?: string;
+
+  @ApiProperty()
   @IsNotEmpty()
-  @ApiProperty()
-  sub: string;
-
-  @ApiProperty()
-  email_verified?: boolean;
-
-  @ApiProperty()
-  phone_number_verified?: boolean;
-
-  @ApiProperty()
-  phone_number?: string;
-
-  @ApiProperty()
   email: string;
 
   @ApiProperty()
-  user_status?: string;
+  isEmailVerified?: boolean;
 
   @ApiProperty()
-  enabled?: boolean;
+  isPhoneNumberVerified?: boolean;
 
   @ApiProperty()
-  mfa_options?: any[];
+  @IsEnum(SystemRoles)
+  userRole?: SystemRoles;
+
+  @ApiProperty()
+  company?: string;
+
+  @ApiProperty()
+  partner?: string;
+
+  @ApiProperty()
+  sendInvitationByEmail?: boolean;
 }
 
-export class ValidationTestDto{
+function toMongoObjectId({ value, key }): Types.ObjectId {
+  if ( Types.ObjectId.isValid(value) && ( new Types.ObjectId(value).toString() === value)) {
+      return new Types.ObjectId(value);
+  } else {
+      throw new BadRequestException(`${key} is not a valid MongoId`);
+  }
+}
 
+export class ValidationTestDto {
   @ApiProperty()
   // @UserExists()
   @Validate(UserExistsRule)
-  user:string
+  user: string;
 
   @ApiProperty()
-  param1: string
+  param1: string;
 }

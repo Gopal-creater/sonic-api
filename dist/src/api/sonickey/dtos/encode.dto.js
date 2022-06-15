@@ -9,12 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EncodeFromQueueDto = exports.QueueFileSpecDto = exports.EncodeFromUrlDto = exports.EncodeDto = void 0;
+exports.EncodeFromQueueDto = exports.QueueFileSpecDto = exports.EncodeFromUrlDto = exports.EncodeFromTrackDto = exports.EncodeFromFileDto = exports.EncodeDto = void 0;
 const openapi = require("@nestjs/swagger");
 const sonicKey_dto_1 = require("./sonicKey.dto");
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
+const create_sonickey_dto_1 = require("./create-sonickey.dto");
 class EncodeDto {
     static _OPENAPI_METADATA_FACTORY() {
         return { mediaFile: { required: true, type: () => Object }, data: { required: true, type: () => require("./sonicKey.dto").SonicKeyDto } };
@@ -32,9 +33,43 @@ __decorate([
     __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
 ], EncodeDto.prototype, "data", void 0);
 exports.EncodeDto = EncodeDto;
+class EncodeFromFileDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { mediaFile: { required: true, type: () => Object }, data: { required: true, type: () => require("./create-sonickey.dto").CreateSonicKeyDto } };
+    }
+}
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty({ type: 'string', format: 'binary' }),
+    __metadata("design:type", Object)
+], EncodeFromFileDto.prototype, "mediaFile", void 0);
+__decorate([
+    class_validator_1.ValidateNested(),
+    class_transformer_1.Type(() => create_sonickey_dto_1.CreateSonicKeyDto),
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", create_sonickey_dto_1.CreateSonicKeyDto)
+], EncodeFromFileDto.prototype, "data", void 0);
+exports.EncodeFromFileDto = EncodeFromFileDto;
+class EncodeFromTrackDto {
+    static _OPENAPI_METADATA_FACTORY() {
+        return { track: { required: true, type: () => String }, data: { required: true, type: () => require("./create-sonickey.dto").CreateSonicKeyDto } };
+    }
+}
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], EncodeFromTrackDto.prototype, "track", void 0);
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    __metadata("design:type", create_sonickey_dto_1.CreateSonicKeyDto)
+], EncodeFromTrackDto.prototype, "data", void 0);
+exports.EncodeFromTrackDto = EncodeFromTrackDto;
 class EncodeFromUrlDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { mediaFile: { required: true, type: () => String }, data: { required: true, type: () => require("./sonicKey.dto").SonicKeyDto } };
+        return { mediaFile: { required: true, type: () => String }, data: { required: true, type: () => require("./create-sonickey.dto").CreateSonicKeyDto } };
     }
 }
 __decorate([
@@ -45,7 +80,7 @@ __decorate([
 __decorate([
     class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
-    __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
+    __metadata("design:type", create_sonickey_dto_1.CreateSonicKeyDto)
 ], EncodeFromUrlDto.prototype, "data", void 0);
 exports.EncodeFromUrlDto = EncodeFromUrlDto;
 class QueueFileSpecDto {

@@ -22,7 +22,7 @@ let ApiKeyAuthGuard = class ApiKeyAuthGuard {
         this.companyService = companyService;
     }
     async canActivate(context) {
-        var _a, _b;
+        var _a, _b, _c;
         const request = context.switchToHttp().getRequest();
         const apikey = request.headers['x-api-key'];
         if (!apikey)
@@ -48,9 +48,7 @@ let ApiKeyAuthGuard = class ApiKeyAuthGuard {
             const ownerCompany = await this.companyService.findById((_b = apikeyFromDb === null || apikeyFromDb === void 0 ? void 0 : apikeyFromDb.company) === null || _b === void 0 ? void 0 : _b._id);
             if (!ownerCompany)
                 throw new common_1.ForbiddenException('Company not found for this apikey');
-            ownerUser = await this.userService.findOne({
-                adminCompany: ownerCompany._id,
-            });
+            ownerUser = await this.userService.findOne({ _id: (_c = ownerCompany === null || ownerCompany === void 0 ? void 0 : ownerCompany.owner) === null || _c === void 0 ? void 0 : _c._id });
         }
         if (!ownerUser)
             throw new common_1.ForbiddenException('Admin user not found for this apikey');

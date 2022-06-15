@@ -18,12 +18,16 @@ const mongoose_1 = require("@nestjs/mongoose");
 const plan_schema_1 = require("./schemas/plan.schema");
 const licensekey_module_1 = require("../licensekey/licensekey.module");
 const payment_module_1 = require("../payment/payment.module");
+const config_1 = require("@nestjs/config");
 let PlanModule = class PlanModule {
-    constructor(planService) {
+    constructor(planService, configService) {
         this.planService = planService;
+        this.configService = configService;
     }
     onModuleInit() {
         this.planService.createDefaultPlans();
+        console.log("path", this.configService.get('ENCODER_EXE_PATH'));
+        console.log("path", this.configService.get('DECODER_EXE_PATH'));
     }
 };
 PlanModule = __decorate([
@@ -37,7 +41,7 @@ PlanModule = __decorate([
         providers: [plan_service_1.PlanService],
         exports: [plan_service_1.PlanService],
     }),
-    __metadata("design:paramtypes", [plan_service_1.PlanService])
+    __metadata("design:paramtypes", [plan_service_1.PlanService, config_1.ConfigService])
 ], PlanModule);
 exports.PlanModule = PlanModule;
 //# sourceMappingURL=plan.module.js.map

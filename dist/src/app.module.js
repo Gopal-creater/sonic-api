@@ -13,6 +13,7 @@ const platform_express_1 = require("@nestjs/platform-express");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const auth_module_1 = require("./api/auth/auth.module");
+const mail_module_1 = require("./api/mail/mail.module");
 const config_1 = require("@nestjs/config");
 const sonickey_module_1 = require("./api/sonickey/sonickey.module");
 const multer_1 = require("multer");
@@ -44,6 +45,8 @@ const plan_module_1 = require("./api/plan/plan.module");
 const bull_1 = require("@nestjs/bull");
 const queuejob_module_1 = require("./queuejob/queuejob.module");
 const chargebee_module_1 = require("./api/chargebee/chargebee.module");
+const partner_module_1 = require("./api/partner/partner.module");
+const track_module_1 = require("./api/track/track.module");
 const test_config_1 = require("./config/test.config");
 mongoosePaginate.paginate.options = {
     limit: 50,
@@ -56,6 +59,15 @@ AppModule = __decorate([
     common_1.Module({
         imports: [
             axios_1.HttpModule,
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+                cache: true,
+                envFilePath: [
+                    'override.env',
+                    process.env.NODE_ENV == 'production' ? 'production.env' : 'staging.env',
+                ],
+                load: [app_config_1.default, test_config_1.default],
+            }),
             auth_module_1.AuthModule,
             schedule_1.ScheduleModule.forRoot(),
             event_emitter_1.EventEmitterModule.forRoot(),
@@ -65,15 +77,7 @@ AppModule = __decorate([
                     port: 6379,
                 },
             }),
-            config_1.ConfigModule.forRoot({
-                isGlobal: true,
-                cache: true,
-                envFilePath: [
-                    '.env.override',
-                    process.env.NODE_ENV == 'production' ? 'production.env' : 'staging.env',
-                ],
-                load: [app_config_1.default, test_config_1.default],
-            }),
+            mail_module_1.MailModule,
             mongoose_1.MongooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 useFactory: async (configService) => ({
@@ -127,7 +131,9 @@ AppModule = __decorate([
             appversions_module_1.AppVersionModule,
             plan_module_1.PlanModule,
             queuejob_module_1.QueuejobModule,
-            chargebee_module_1.ChargebeeModule
+            chargebee_module_1.ChargebeeModule,
+            partner_module_1.PartnerModule,
+            track_module_1.TrackModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, app_gateway_1.AppGateway, ec2instance_service_1.Ec2InstanceService],

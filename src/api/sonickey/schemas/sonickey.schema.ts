@@ -5,7 +5,9 @@ import { Job, JobSchemaName } from '../../job/schemas/job.schema';
 import { ApiKeySchemaName } from '../../api-key/schemas/api-key.schema';
 import { ChannelEnums, FingerPrintStatus } from '../../../constants/Enums';
 import { S3FileUploadI } from '../../s3fileupload/interfaces';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsIn, IsEmpty } from 'class-validator';
+import  * as distributorTypes from '../constants/distributor.constant.json';
+import  * as  labelTypes from '../constants/label.constant.json';
 
 export const SonicKeySchemaName = 'SonicKey';
 @Schema()
@@ -47,21 +49,27 @@ export class SonicKey extends Document {
 
   @ApiProperty()
   @Prop({
-    required: true,
     type: String,
     ref: 'User',
     autopopulate: { maxDepth: 2 },
   })
-  owner: string;
+  owner: any;
 
   @ApiProperty()
   @Prop({
-    required: false,
     type: MogSchema.Types.ObjectId,
     ref: 'Company',
     autopopulate: { maxDepth: 2 },
   })
-  company: string;
+  company: any;
+
+  @ApiProperty()
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Partner',
+    autopopulate: { maxDepth: 2 },
+  })
+  partner: any;
 
   @ApiProperty()
   @Prop({ type: MogSchema.Types.ObjectId, ref: JobSchemaName })
@@ -220,6 +228,7 @@ export class SonicKey extends Document {
   isAuthorizedForEncode?: boolean;
 
   @IsOptional()
+  @IsIn(distributorTypes)
   @ApiProperty()
   @Prop()
   distributor: string;
@@ -230,6 +239,7 @@ export class SonicKey extends Document {
   version: string;
 
   @IsOptional()
+  @IsIn(labelTypes)
   @ApiProperty()
   @Prop()
   label: string;
@@ -257,17 +267,36 @@ export class SonicKey extends Document {
   @ApiProperty()
   @Prop()
   queueJobId: string; //Just to track the sonickeys encoded using queueJob
+
+  @ApiProperty()
+  @Prop({
+    type: String,
+    ref: 'User',
+    autopopulate: { maxDepth: 2 },
+  })
+  createdBy: any;
+
+  @ApiProperty()
+  @Prop({
+    type: String,
+    ref: 'User',
+    autopopulate: { maxDepth: 2 },
+  })
+  updatedBy: any;
+
+  @ApiProperty()
+  @Prop({
+    type: String,
+    ref: 'Track',
+    autopopulate: { maxDepth: 2 },
+  })
+  track: any;
 }
 
 export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);
-
+SonicKeySchema.set('toObject', { virtuals: true });
+SonicKeySchema.set('toJSON', { virtuals: true });
 SonicKeySchema.pre('save', function(next) {
   this._id = this.sonicKey;
   next();
 });
-
-// SonicKeySchema.pre('insertMany', function (next) {
-//   this.map((doc) =>
-//    console.log(doc)
-//   );
-// });

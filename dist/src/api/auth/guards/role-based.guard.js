@@ -14,7 +14,6 @@ const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const Enums_1 = require("../../../constants/Enums");
 const common_2 = require("@nestjs/common");
-const group_schema_1 = require("../../group/schemas/group.schema");
 let RoleBasedGuard = class RoleBasedGuard {
     constructor(reflector) {
         this.reflector = reflector;
@@ -28,20 +27,23 @@ let RoleBasedGuard = class RoleBasedGuard {
             context.getHandler(),
             context.getClass(),
         ]);
-        if (!roles || isPublic) {
+        if (!roles || roles.length <= 0 || isPublic) {
             return true;
         }
         const request = context.switchToHttp().getRequest();
         const currentUser = request === null || request === void 0 ? void 0 : request.user;
-        const userRoles = currentUser['groups'] || [];
-        const isAllowed = this.matchRoles(roles, userRoles);
+        const userRole = currentUser === null || currentUser === void 0 ? void 0 : currentUser.userRole;
+        if (currentUser.isSonicAdmin || currentUser.userRole == Enums_1.SystemRoles.ADMIN) {
+            return true;
+        }
+        if (!userRole) {
+            throw new common_2.ForbiddenException("User role not found");
+        }
+        const isAllowed = roles.includes(userRole);
         if (!isAllowed) {
             throw new common_2.ForbiddenException("You dont have permission to do this.");
         }
         return true;
-    }
-    matchRoles(definedRoles, userRoles) {
-        return userRoles.some((role) => definedRoles.includes(role.name));
     }
 };
 RoleBasedGuard = __decorate([

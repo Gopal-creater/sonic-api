@@ -2,12 +2,13 @@ import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { CreateCompanyDto } from './dtos/create-company.dto';
 import { UpdateCompanyDto } from './dtos/update-company.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, FilterQuery } from 'mongoose';
+import { Model, FilterQuery, AnyObject, AnyKeys, UpdateQuery } from 'mongoose';
 import { Company } from './schemas/company.schema';
 import { UserService } from '../user/services/user.service';
 import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
 import { UserDB } from '../user/schemas/user.db.schema';
 import { UserCompanyService } from '../user/services/user-company.service';
+import { SystemRoles } from 'src/constants/Enums';
 
 @Injectable()
 export class CompanyService {
@@ -21,22 +22,102 @@ export class CompanyService {
     @Inject(forwardRef(() => UserCompanyService))
     private readonly userCompanyService: UserCompanyService,
   ) {}
-  async create(createCompanyDto: CreateCompanyDto) {
-    const { name, owner } = createCompanyDto;
-    const newCompany = await this.companyModel.create(createCompanyDto);
+  async create(doc: AnyObject | AnyKeys<Company>) {
+    const { owner } = doc;
+    const newCompany = await this.companyModel.create(doc);
     const createdCompany = await newCompany.save();
-    //Once saved to db , also save it to cognito group as a company
-    const cognitoGroupName = `COM_${name}`;
-    await this.userService
-      .cognitoCreateGroup(cognitoGroupName)
-      .catch(err => console.warn('Warning: Error creating cognito group', err));
-    const userfromDb = await this.userService.findById(owner);
-    await this.userCompanyService.makeCompanyAdmin(userfromDb, createdCompany);
-    return createdCompany;
+    //Make this user as admin user for this company
+    if (owner) {
+      await this.userService.userModel.findByIdAndUpdate(owner, {
+        userRole: SystemRoles.COMPANY_ADMIN,
+        adminCompany: createdCompany._id,
+        company: createdCompany._id,
+      });
+    }
+    return this.findById(createdCompany._id);
   }
 
-  findAll() {
-    return this.companyModel.find();
+  async makeCompanyAdminUser(company: string, user: string) {
+    const companyFromDb = await this.companyModel.findById(company);
+    await this.companyModel.findByIdAndUpdate(
+      company,
+      {
+        owner: user,
+      },
+      {
+        new: true,
+      },
+    );
+    await this.userService.userModel.findByIdAndUpdate(user, {
+      userRole: SystemRoles.COMPANY_ADMIN,
+      adminCompany: company,
+      company: company,
+    });
+    if (companyFromDb.owner) {
+      //Remove ownership of old user
+      await this.userService.userModel.findByIdAndUpdate(companyFromDb.owner, {
+        userRole: SystemRoles.COMPANY_USER,
+        adminCompany: null,
+      });
+    }
+    return this.companyModel.findById(company);
+  }
+  findAll(queryDto: ParsedQueryDto) {
+    const {
+      limit,
+      skip,
+      sort,
+      page,
+      filter,
+      select,
+      populate,
+      relationalFilter,
+    } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    var aggregateArray: any[] = [
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+          ...sort,
+        },
+      },
+      {
+        $lookup: {
+          from: 'User',
+          localField: 'owner',
+          foreignField: '_id',
+          as: 'owner',
+        },
+      },
+      { $addFields: { owner: { $first: '$owner' } } },
+      {
+        $lookup: {
+          from: 'Partner',
+          localField: 'partner',
+          foreignField: '_id',
+          as: 'partner',
+        },
+      },
+      { $addFields: { partner: { $first: '$partner' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+    ];
+    const aggregate = this.companyModel.aggregate(aggregateArray);
+    return this.companyModel['aggregatePaginate'](aggregate, paginateOptions);
   }
 
   findOne(filter: FilterQuery<Company>) {
@@ -47,10 +128,19 @@ export class CompanyService {
     return this.companyModel.findById(id);
   }
 
-  update(id: string, updateCompanyDto: UpdateCompanyDto) {
-    return this.companyModel.findByIdAndUpdate(id, updateCompanyDto, {
+  async update(id: string, updateCompanyDto: UpdateQuery<Company>) {
+    const {owner}=updateCompanyDto
+    const updatedCompany = await this.companyModel.findByIdAndUpdate(id, updateCompanyDto, {
       new: true,
     });
+    if (owner) {
+      await this.userService.userModel.findByIdAndUpdate(owner, {
+        userRole: SystemRoles.COMPANY_ADMIN,
+        adminCompany: updatedCompany._id,
+        company: updatedCompany._id,
+      });
+    }
+    return updatedCompany
   }
 
   async getCount(queryDto: ParsedQueryDto) {

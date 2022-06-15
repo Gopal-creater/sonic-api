@@ -17,6 +17,8 @@ import { AuthModule } from '../auth/auth.module';
 import { BullModule } from '@nestjs/bull';
 import { SonicKeyProcessor } from './processors/sonickey.processor';
 import { QueuejobModule } from '../../queuejob/queuejob.module';
+import { TrackModule } from '../track/track.module';
+import { SonickeyUtils } from './processors/utils/sonickey.utils';
 
 @Module({
   imports: [
@@ -33,6 +35,7 @@ import { QueuejobModule } from '../../queuejob/queuejob.module';
       { name: SonicKeySchemaName, schema: SonicKeySchema },
     ]),
     QueuejobModule,
+    TrackModule
   ],
   controllers: [
     SonickeyController,
@@ -45,6 +48,7 @@ import { QueuejobModule } from '../../queuejob/queuejob.module';
     FileOperationService,
     FileHandlerService,
     SonicKeyProcessor,
+    SonickeyUtils
   ],
   exports: [SonickeyService],
 })

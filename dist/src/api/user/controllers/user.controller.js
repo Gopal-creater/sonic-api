@@ -16,7 +16,7 @@ exports.UserController = void 0;
 const openapi = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const swagger_1 = require("@nestjs/swagger");
-const index_1 = require("../dtos/index");
+const dtos_1 = require("../dtos");
 const _ = require("lodash");
 const user_service_1 = require("../services/user.service");
 const common_1 = require("@nestjs/common");
@@ -35,22 +35,136 @@ const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anya
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
 const create_user_dto_1 = require("../dtos/create-user.dto");
 const mongoose_utils_1 = require("../../../shared/utils/mongoose.utils");
+const partner_service_1 = require("../../partner/services/partner.service");
+const failedAlways_guard_1 = require("../../auth/guards/failedAlways.guard");
+const update_user_dto_1 = require("../dtos/update-user.dto");
+const update_user_security_guard_1 = require("../guards/update-user-security.guard");
+const create_user_security_guard_1 = require("../guards/create-user-security.guard");
+const enabledisable_user_security_guard_1 = require("../guards/enabledisable-user-security.guard");
+const update_profile_dto_1 = require("../dtos/update-profile.dto");
+const change_user_password_security_guard_copy_1 = require("../guards/change-user-password-security.guard copy");
 let UserController = class UserController {
-    constructor(userServices, groupService, companyService, licensekeyService) {
-        this.userServices = userServices;
+    constructor(userService, groupService, companyService, partnerService, licensekeyService) {
+        this.userService = userService;
         this.groupService = groupService;
         this.companyService = companyService;
+        this.partnerService = partnerService;
         this.licensekeyService = licensekeyService;
     }
-    async testVali(dto) {
-        return dto;
+    async create(loggedInUser, createUserDto) {
+        var { company, partner, userName, email } = createUserDto;
+        const userFromDb = await this.userService.findOne({
+            $or: [{ email: email }, { username: userName }],
+        });
+        if (userFromDb) {
+            throw new common_1.UnprocessableEntityException('User with given email or username already exists');
+        }
+        if (partner) {
+            const partnerFromDb = await this.partnerService.findById(partner);
+            if (!partnerFromDb)
+                throw new common_1.NotFoundException('Unknown partner');
+        }
+        if (company) {
+            const companyFormDb = await this.companyService.findById(company);
+            if (!companyFormDb)
+                throw new common_1.NotFoundException('Unknown company');
+        }
+        const createdUser = await this.userService.createUserInCognito(createUserDto, true, {
+            createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id,
+        });
+        return createdUser;
+    }
+    findAll(queryDto) {
+        return this.userService.listUsers(queryDto);
+    }
+    async findMe(user) {
+        return user;
+    }
+    async updateMe(loggedInUser, updateUserDto) {
+        const user = await this.userService.getUserProfile(loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub);
+        if (!user)
+            throw new common_1.NotFoundException('Unknown user');
+        return this.userService.update(loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id, Object.assign({}, updateUserDto));
+    }
+    async disableUser(loggedInUser, userId) {
+        const userFromDb = await this.partnerService.userService.getUserProfile(userId);
+        if (!userFromDb)
+            throw new common_1.NotFoundException('User not found');
+        await this.userService.adminDisableUser(userFromDb.username);
+        const updatedUser = await this.userService.userModel.findByIdAndUpdate(userFromDb._id, {
+            enabled: false,
+            updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id,
+        }, { new: true });
+        return updatedUser;
+    }
+    async changeUserPassword(loggedInUser, password, userId) {
+        const userFromDb = await this.partnerService.userService.getUserProfile(userId);
+        if (!userFromDb)
+            throw new common_1.NotFoundException('User not found');
+        await this.userService.adminSetUserPassword(userFromDb.username, password);
+        const updatedUser = await this.userService.userModel.findByIdAndUpdate(userFromDb._id, {
+            updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id,
+        }, { new: true });
+        return updatedUser;
+    }
+    async enableUser(loggedInUser, userId) {
+        const userFromDb = await this.partnerService.userService.getUserProfile(userId);
+        if (!userFromDb)
+            throw new common_1.NotFoundException('User not found');
+        await this.userService.adminEnableUser(userFromDb.username);
+        const updatedUser = await this.userService.userModel.findByIdAndUpdate(userFromDb._id, {
+            enabled: true,
+            updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id,
+        }, { new: true });
+        return updatedUser;
+    }
+    async update(id, loggedInUser, updateUserDto) {
+        var { company, partner, enabled, password } = updateUserDto;
+        if (partner) {
+            const partnerFromDb = await this.partnerService.findById(partner);
+            if (!partnerFromDb)
+                throw new common_1.NotFoundException('Unknown partner');
+        }
+        if (company) {
+            const companyFormDb = await this.companyService.findById(company);
+            if (!companyFormDb)
+                throw new common_1.NotFoundException('Unknown company');
+        }
+        const user = await this.userService.getUserProfile(id);
+        if (!user)
+            throw new common_1.NotFoundException('Unknown user');
+        if (updateUserDto.phoneNumber) {
+            await this.userService.updateUserWithCustomField(user.username, [
+                { Name: 'phone_number', Value: updateUserDto.phoneNumber }
+            ]);
+            updateUserDto['phone_number'] = updateUserDto.phoneNumber;
+        }
+        if (enabled && user.enabled !== enabled) {
+            if (enabled) {
+                await this.userService.adminEnableUser(user.username);
+            }
+            else {
+                await this.userService.adminDisableUser(user.username);
+            }
+        }
+        if (password) {
+            await this.userService.adminSetUserPassword(user.username, password);
+        }
+        return this.userService.update(id, Object.assign(Object.assign({}, updateUserDto), { updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id }));
+    }
+    async remove(id) {
+        const deletedUser = await this.userService.removeById(id);
+        if (!deletedUser) {
+            return new common_1.NotFoundException();
+        }
+        return deletedUser;
     }
     async getUserLicenses(userId, user, parsedQueryDto) {
         var includeCompanies = parsedQueryDto.filter['includeCompanies'];
         delete parsedQueryDto.filter['includeCompanies'];
         if (includeCompanies == false) {
             parsedQueryDto.filter = _.merge({}, parsedQueryDto.filter, {
-                users: user._id
+                users: user._id,
             });
         }
         else {
@@ -58,20 +172,20 @@ let UserController = class UserController {
             parsedQueryDto.relationalFilter = _.merge({}, parsedQueryDto.relationalFilter, {
                 $or: [
                     { 'users._id': user._id },
-                    { 'company': { $in: userCompaniesIds } },
+                    { company: { $in: userCompaniesIds } },
                 ],
             });
         }
         return this.licensekeyService.findAll(parsedQueryDto);
     }
     async listUsers(queryDto) {
-        return this.userServices.listUsers(queryDto);
+        return this.userService.listUsers(queryDto);
     }
     async getCount(queryDto) {
-        return this.userServices.getCount(queryDto);
+        return this.userService.getCount(queryDto);
     }
     async getEstimateCount() {
-        return this.userServices.getEstimateCount();
+        return this.userService.getEstimateCount();
     }
     async checkAuthorization(user) {
         return {
@@ -80,7 +194,7 @@ let UserController = class UserController {
         };
     }
     async addNewLicense(userIdOrUsername, addNewLicenseDto) {
-        return this.userServices
+        return this.userService
             .addNewLicense(addNewLicenseDto.licenseKey, userIdOrUsername)
             .catch(err => {
             if (err.status == 404) {
@@ -90,20 +204,20 @@ let UserController = class UserController {
         });
     }
     async addBulkNewLicense(userIdOrUsername, addBulkNewLicensesDto) {
-        return this.userServices.addBulkNewLicenses(addBulkNewLicensesDto.licenseKeys, userIdOrUsername);
+        return this.userService.addBulkNewLicenses(addBulkNewLicensesDto.licenseKeys, userIdOrUsername);
     }
     async getUserProfile(user) {
         return user;
     }
     async companyFindOrCreateUser(loggedInUser, companyFindOrCreateUser) {
-        const cognitoCreateUser = Object.assign({}, companyFindOrCreateUser, new index_1.CognitoCreateUserDTO());
+        const cognitoCreateUser = Object.assign({}, companyFindOrCreateUser, new dtos_1.CognitoCreateUserDTO());
         const { email, userName } = cognitoCreateUser;
-        var userInDb = await this.userServices.findByEmail(email);
+        var userInDb = await this.userService.findByEmail(email);
         if (!userInDb) {
-            const userCreated = await this.userServices.cognitoCreateUser(cognitoCreateUser);
+            const userCreated = await this.userService.cognitoCreateUser(cognitoCreateUser);
             userInDb = userCreated.userDb;
         }
-        const apiKey = await this.userServices.apiKeyService.findOrCreateApiKeyForCompanyUser(userInDb._id, loggedInUser._id);
+        const apiKey = await this.userService.apiKeyService.findOrCreateApiKeyForCompanyUser(userInDb._id, loggedInUser._id);
         return {
             user: userInDb,
             apiKey: apiKey,
@@ -124,41 +238,164 @@ let UserController = class UserController {
                 throw new common_1.BadRequestException(err.message || 'Invalid company');
             });
         }
-        return this.userServices.cognitoCreateUser(cognitoCreateUserDto);
+        return this.userService.cognitoCreateUser(cognitoCreateUserDto);
     }
     async syncUsers(user) {
         if (user) {
-            const cognitoUser = await this.userServices
+            const cognitoUser = await this.userService
                 .getCognitoUser(user)
                 .catch(err => {
                 throw new common_1.NotFoundException('Invalid user');
             });
             if (!cognitoUser)
                 throw new common_1.NotFoundException('User not found in cognito');
-            return this.userServices.syncUserFromCognitoToMongooDb(user);
+            return this.userService.syncUserFromCognitoToMongooDb(user);
         }
-        return this.userServices.syncUsersFromCognitoToMongooDb();
+        return this.userService.syncUsersFromCognitoToMongooDb();
     }
     async addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub) {
-        const user = await this.userServices.getUserProfile(usernameOrSub);
+        const user = await this.userService.getUserProfile(usernameOrSub);
         if (!user) {
             throw new common_1.NotFoundException('Invalid user');
         }
-        return this.userServices.addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub);
+        return this.userService.addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub);
+    }
+    async findById(userId) {
+        const user = await this.userService.getUserProfile(userId);
+        if (!user) {
+            return new common_1.NotFoundException();
+        }
+        return user;
     }
 };
 __decorate([
-    common_1.Post('/test-validation'),
-    openapi.ApiResponse({ status: 201, type: require("../dtos/create-user.dto").ValidationTestDto }),
-    __param(0, common_1.Body()),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.COMPANY_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, create_user_security_guard_1.CreateUserSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Create user' }),
+    common_1.Post(),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.ValidationTestDto]),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB,
+        create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "testVali", null);
+], UserController.prototype, "create", null);
+__decorate([
+    swagger_1.ApiOperation({
+        summary: 'Get users',
+    }),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.COMPANY_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Get(),
+    openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-user.dto").MongoosePaginateUserDto }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "findAll", null);
+__decorate([
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiOperation({ summary: 'Get User profile by token' }),
+    swagger_1.ApiBearerAuth(),
+    common_1.Get('/@me'),
+    openapi.ApiResponse({ status: 200, type: require("../schemas/user.db.schema").UserDB }),
+    __param(0, decorators_1.User()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "findMe", null);
+__decorate([
+    common_1.Put('/updateme'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Update user profile by token' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB,
+        update_profile_dto_1.UpdateProfileDto]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateMe", null);
+__decorate([
+    common_1.Put(':id/disable-user'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, enabledisable_user_security_guard_1.EnableDisableUserSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Disable user' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Param('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "disableUser", null);
+__decorate([
+    common_1.Put(':id/change-user-password'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    swagger_1.ApiBody({
+        type: dtos_1.ChangePassword,
+    }),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, change_user_password_security_guard_copy_1.ChangeUserPasswordSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Change user password' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Body('password')),
+    __param(2, common_1.Param('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB, String, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "changeUserPassword", null);
+__decorate([
+    common_1.Put(':id/enable-user'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, enabledisable_user_security_guard_1.EnableDisableUserSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Disable user' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Param('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_db_schema_1.UserDB, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "enableUser", null);
+__decorate([
+    common_1.Put(':id'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, update_user_security_guard_1.UpdateUserSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Update user' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('id')),
+    __param(1, decorators_1.User()),
+    __param(2, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
+        update_user_dto_1.UpdateUserDto]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "update", null);
+__decorate([
+    common_1.Delete(':id'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.COMPANY_ADMIN),
+    common_1.UseGuards(failedAlways_guard_1.FailedAlwaysGuard, jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Remove user' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "remove", null);
 __decorate([
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
     swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get all licenses of particular user or his belongs to companies' }),
+    swagger_1.ApiOperation({
+        summary: 'Get all licenses of particular user or his belongs to companies',
+    }),
     swagger_1.ApiQuery({ name: 'includeCompanies', type: Boolean, required: false }),
     swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
     common_1.Get('/:userId/licenses'),
@@ -230,7 +467,7 @@ __decorate([
     __param(0, common_1.Param('userIdOrUsername')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, index_1.AddNewLicenseDto]),
+    __metadata("design:paramtypes", [String, dtos_1.AddNewLicenseDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "addNewLicense", null);
 __decorate([
@@ -242,7 +479,7 @@ __decorate([
     __param(0, common_1.Param('userIdOrUsername')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, index_1.AddBulkNewLicensesDto]),
+    __metadata("design:paramtypes", [String, dtos_1.AddBulkNewLicensesDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "addBulkNewLicense", null);
 __decorate([
@@ -268,7 +505,7 @@ __decorate([
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_db_schema_1.UserDB,
-        index_1.CompanyFindOrCreateUser]),
+        dtos_1.CompanyFindOrCreateUser]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "companyFindOrCreateUser", null);
 __decorate([
@@ -279,7 +516,7 @@ __decorate([
     swagger_1.ApiOperation({ summary: 'Admin create user' }),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [index_1.CognitoCreateUserDTO]),
+    __metadata("design:paramtypes", [dtos_1.CognitoCreateUserDTO]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "cognitoCreateUser", null);
 __decorate([
@@ -309,12 +546,24 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "addMonitoringSubscriptionFromMonitoringGroup", null);
+__decorate([
+    roles_decorator_1.RolesAllowed(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Get(':id'),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Param('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "findById", null);
 UserController = __decorate([
-    swagger_1.ApiTags('User Controller'),
+    swagger_1.ApiTags('User Controller (D & M May 2022)'),
     common_1.Controller('users'),
     __metadata("design:paramtypes", [user_service_1.UserService,
         group_service_1.GroupService,
         company_service_1.CompanyService,
+        partner_service_1.PartnerService,
         licensekey_service_1.LicensekeyService])
 ], UserController);
 exports.UserController = UserController;

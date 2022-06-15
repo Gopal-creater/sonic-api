@@ -54,12 +54,27 @@ __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
+], Company.prototype, "companyType", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], Company.prototype, "companyUrnOrId", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
 ], Company.prototype, "email", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Company.prototype, "contactNo", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: true }),
+    __metadata("design:type", Boolean)
+], Company.prototype, "enabled", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ type: Address }),
@@ -76,6 +91,15 @@ __decorate([
 ], Company.prototype, "owner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'Partner',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], Company.prototype, "partner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Company.prototype, "createdBy", void 0);
@@ -89,4 +113,6 @@ Company = __decorate([
 ], Company);
 exports.Company = Company;
 exports.CompanySchema = mongoose_1.SchemaFactory.createForClass(Company);
+exports.CompanySchema.set('toObject', { virtuals: true });
+exports.CompanySchema.set('toJSON', { virtuals: true });
 //# sourceMappingURL=company.schema.js.map

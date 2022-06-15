@@ -79,12 +79,35 @@ __decorate([
 ], Detection.prototype, "licenseKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ required: true }),
-    __metadata("design:type", String)
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: String,
+        ref: 'User',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
 ], Detection.prototype, "owner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ required: true }),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'Partner',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], Detection.prototype, "partner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'Company',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], Detection.prototype, "company", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Detection.prototype, "sonicKeyOwnerId", void 0);
 __decorate([

@@ -7,9 +7,11 @@ import {
   IsArray,
   ArrayMinSize,
   ArrayMaxSize,
-  Length
+  Length,
 } from 'class-validator';
 import { Transform, plainToClass, Type } from 'class-transformer';
+import { CreateSonicKeyDto } from './create-sonickey.dto';
+import { BadRequestException } from '@nestjs/common';
 
 export class EncodeDto {
   @IsNotEmpty()
@@ -25,6 +27,36 @@ export class EncodeDto {
   data: SonicKeyDto;
 }
 
+export class EncodeFromFileDto {
+  @IsNotEmpty()
+  @ApiProperty({ type: 'string', format: 'binary' })
+  mediaFile: any;
+
+  @ValidateNested()
+  // @Transform(value => {
+  //   try {
+  //     console.log('value', value);
+  //     return value && JSON.parse(value);
+  //   } catch (error) {
+  //     throw new BadRequestException(error);
+  //   }
+  // })
+  @Type(() => CreateSonicKeyDto)
+  @IsNotEmpty()
+  @ApiProperty()
+  data: CreateSonicKeyDto;
+}
+
+export class EncodeFromTrackDto {
+  @IsNotEmpty()
+  @ApiProperty()
+  track: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  data: CreateSonicKeyDto;
+}
+
 export class EncodeFromUrlDto {
   @IsNotEmpty()
   @ApiProperty()
@@ -32,7 +64,7 @@ export class EncodeFromUrlDto {
 
   @IsNotEmpty()
   @ApiProperty()
-  data: SonicKeyDto;
+  data: CreateSonicKeyDto;
 }
 
 export class QueueFileSpecDto {

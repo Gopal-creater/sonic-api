@@ -17,6 +17,8 @@ const job_schema_1 = require("../../job/schemas/job.schema");
 const api_key_schema_1 = require("../../api-key/schemas/api-key.schema");
 const Enums_1 = require("../../../constants/Enums");
 const class_validator_1 = require("class-validator");
+const distributorTypes = require("../constants/distributor.constant.json");
+const labelTypes = require("../constants/label.constant.json");
 exports.SonicKeySchemaName = 'SonicKey';
 let S3FileMeta = class S3FileMeta {
 };
@@ -68,23 +70,30 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        required: true,
         type: String,
         ref: 'User',
         autopopulate: { maxDepth: 2 },
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Object)
 ], SonicKey.prototype, "owner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        required: false,
         type: mongoose_2.Schema.Types.ObjectId,
         ref: 'Company',
         autopopulate: { maxDepth: 2 },
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Object)
 ], SonicKey.prototype, "company", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'Partner',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], SonicKey.prototype, "partner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: job_schema_1.JobSchemaName }),
@@ -272,6 +281,7 @@ __decorate([
 ], SonicKey.prototype, "isAuthorizedForEncode", void 0);
 __decorate([
     class_validator_1.IsOptional(),
+    class_validator_1.IsIn(distributorTypes),
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
@@ -284,6 +294,7 @@ __decorate([
 ], SonicKey.prototype, "version", void 0);
 __decorate([
     class_validator_1.IsOptional(),
+    class_validator_1.IsIn(labelTypes),
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", String)
@@ -317,11 +328,40 @@ __decorate([
     mongoose_1.Prop(),
     __metadata("design:type", String)
 ], SonicKey.prototype, "queueJobId", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: String,
+        ref: 'User',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], SonicKey.prototype, "createdBy", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: String,
+        ref: 'User',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], SonicKey.prototype, "updatedBy", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
+        type: String,
+        ref: 'Track',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], SonicKey.prototype, "track", void 0);
 SonicKey = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.SonicKeySchemaName })
 ], SonicKey);
 exports.SonicKey = SonicKey;
 exports.SonicKeySchema = mongoose_1.SchemaFactory.createForClass(SonicKey);
+exports.SonicKeySchema.set('toObject', { virtuals: true });
+exports.SonicKeySchema.set('toJSON', { virtuals: true });
 exports.SonicKeySchema.pre('save', function (next) {
     this._id = this.sonicKey;
     next();

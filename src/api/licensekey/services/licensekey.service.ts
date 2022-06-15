@@ -8,7 +8,7 @@ import {
 import { CreateLicensekeyDto } from '../dto/create-licensekey.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { LicenseKey, LKOwner, LKReserve } from '../schemas/licensekey.schema';
-import { Model, FilterQuery } from 'mongoose';
+import { Model, FilterQuery, AnyObject, AnyKeys, UpdateQuery } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import * as _ from 'lodash';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
@@ -36,15 +36,12 @@ export class LicensekeyService {
     public readonly userService: UserService,
   ) {}
 
-  async create(createLicensekeyDto: CreateLicensekeyDto, createdBy: string) {
-    const { user, ...dtos } = createLicensekeyDto;
+  async create(doc: AnyObject | AnyKeys<LicenseKey>) {
     const key = uuidv4();
     const newLicenseKey = await this.licenseKeyModel.create({
-      ...dtos,
-      users: [user],
+      ...doc,
       _id: key,
-      key: key,
-      createdBy: createdBy,
+      key: key
     });
     return newLicenseKey.save();
   }
@@ -224,14 +221,46 @@ export class LicensekeyService {
       now.getMonth(),
       now.getDate(),
     );
-    var validLicenseForMonitor = await this.licenseKeyModel.findOne({
-      users: userId,
-      disabled: false,
-      suspended: false,
-      validity: { $gte: startOfToday },
-      $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }],
-    });
-    return validLicenseForMonitor;
+    // var validLicenseForMonitor = await this.licenseKeyModel.findOne({
+    //   users: userId,
+    //   disabled: false,
+    //   suspended: false,
+    //   validity: { $gte: startOfToday },
+    //   $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }],
+    // });
+    // return validLicenseForMonitor;
+
+    var validLicense: LicenseKey;
+    var userFromDb = await this.userService.userModel.findById(userId);
+    userFromDb = userFromDb.depopulate('companies');
+
+    var validLicenseForUserWithInCompany = await this.licenseKeyModel.findOne(
+        {
+            disabled: false,
+            suspended: false,
+            validity: { $gte: startOfToday },
+            $or:[
+              {company:userFromDb.company},
+              {company:{$in:userFromDb.companies}}, //TODO: Remove,
+              { isUnlimitedMonitor: true }, 
+              { maxMonitoringUses: { $gt: 0 } }
+            ],
+            isUnlimitedMonitor: true
+          }
+    );
+    if (validLicenseForUserWithInCompany) {
+      validLicense = validLicenseForUserWithInCompany;
+    } else {
+      var validLicenseForUser = await this.licenseKeyModel.findOne({
+        disabled: false,
+        suspended: false,
+        validity: { $gte: startOfToday },
+        users: userId,
+        $or: [{ isUnlimitedMonitor: true }, { maxMonitoringUses: { $gt: 0 } }]
+      });
+      validLicense = validLicenseForUser;
+    }
+    return validLicense;
   }
 
   async findValidLicesesForUser(
@@ -255,7 +284,10 @@ export class LicensekeyService {
             disabled: false,
             suspended: false,
             validity: { $gte: startOfToday },
-            company:{$in:userFromDb.companies},
+            $or:[
+              {company:userFromDb.company},
+              {company:{$in:userFromDb.companies}} //TODO: Remove
+            ],
             ...filter,
           },
         }
@@ -512,6 +544,78 @@ export class LicensekeyService {
     return this.licenseKeyModel.findOne(filter);
   }
 
+  async findOneAggregate(queryDto:ParsedQueryDto):Promise<LicenseKey> {
+    const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    const datas = await this.licenseKeyModel.aggregate([
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'User',
+          localField: 'users',
+          foreignField: '_id',
+          as: 'users',
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'Payment',
+          localField: 'payments',
+          foreignField: '_id',
+          as: 'payments',
+        },
+      },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'Company',
+          localField: 'company',
+          foreignField: '_id',
+          as: 'company',
+        },
+      },
+      { $addFields: { company: { $first: '$company' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'Plan',
+          localField: 'previousPlan',
+          foreignField: '_id',
+          as: 'previousPlan',
+        },
+      },
+      { $addFields: { previousPlan: { $first: '$previousPlan' } } },
+      {
+        $lookup: {
+          //populate radioStation from its relational table
+          from: 'Plan',
+          localField: 'activePlan',
+          foreignField: '_id',
+          as: 'activePlan',
+        },
+      },
+      { $addFields: { activePlan: { $first: '$activePlan' } } },
+      {
+        $match: {
+          ...relationalFilter,
+        },
+      },
+    ]);
+    return datas[0];
+}
+
   async decrementUses(id: string, usesFor: usesFor, decrementBy: number = 1) {
     const licenseKey = await this.licenseKeyModel.findById(id);
     if (!licenseKey) throw new NotFoundException();
@@ -645,5 +749,28 @@ export class LicensekeyService {
     });
     license.reserves = updatedReserves;
     return license.save();
+  }
+
+
+  findById(id: string) {
+    return this.licenseKeyModel.findById(id);
+  }
+
+  update(
+    id: string,
+    updateLicenseKeyDto: UpdateQuery<LicenseKey>
+  ) {
+    return this.licenseKeyModel.findByIdAndUpdate(
+      id,
+      updateLicenseKeyDto,
+      {
+        new: true,
+      },
+    );
+  }
+
+  async removeById(id: string) {
+    const deletedKey = await this.licenseKeyModel.findByIdAndRemove(id);
+    return deletedKey;
   }
 }

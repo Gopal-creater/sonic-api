@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AuthConfig } from './config/auth.config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -10,14 +10,16 @@ import { UserModule } from '../user/user.module';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ApiKeyAuthGuard } from './guards/apikey-auth.guard';
 import { CompanyModule } from '../company/company.module';
+import { PartnerModule } from '../partner/partner.module';
 
 @Module({
   imports: [
-  PassportModule.register({ defaultStrategy: 'jwt' }),
+PassportModule.register({ defaultStrategy: 'jwt' }),
     ApiKeyModule,
     LicensekeyModule,
     UserModule,
-    CompanyModule
+    CompanyModule,
+    PartnerModule
   ],
   providers: [
     AuthConfig,
@@ -29,4 +31,9 @@ import { CompanyModule } from '../company/company.module';
   controllers: [AuthController],
   exports: [JwtAuthGuard, ApiKeyAuthGuard,CompanyModule,ApiKeyModule],
 })
-export class AuthModule {}
+export class AuthModule implements OnModuleInit {
+  constructor(private readonly authService: AuthService) {}
+  onModuleInit() {
+    this.authService.createSonicAdmin();
+  }
+}

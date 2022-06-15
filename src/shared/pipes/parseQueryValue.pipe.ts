@@ -17,7 +17,11 @@ export class ParseQueryValue implements PipeTransform {
   transform(queries: any = {}, metadata: ArgumentMetadata) {
     try {
       const { aggregateSearch,relation_filter=JSON.stringify({}), ...query } = queries;
-      const parser = new MongooseQueryParser();
+      const parser = new MongooseQueryParser({
+        casters: {
+          objectId: val => toObjectId(val)
+        }
+      });
       const relationPrefix = 'relation_';
       const queryToParse = {
         page: 1,
@@ -114,13 +118,25 @@ export class ParseQueryValue implements PipeTransform {
     const res = {};
     for (const key in filter) {
       var value = filter[key];
-      console.log(`IsObjectId ${isObjectId(value)} :${value}`);
+      console.log(`IsObjectId ${isObjectId(value)} :${JSON.stringify(value)}`);
       if (isObjectId(value)) {
         res[key] = toObjectId(value);
       } else {
+        if(isArray(value)){
+          for (let index = 0; index < value.length; index++) {
+            const ele = value[index];
+            if(typeof(ele)=="object"){
+              const response = this.castToObjectId(ele)
+              console.log("inner obj conversion",response)
+              value[index]=response
+            }
+          }
+        }
+
         res[key] = value;
       }
     }
+    console.log("conversion",res)
     return res;
   }
 }

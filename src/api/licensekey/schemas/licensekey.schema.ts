@@ -132,16 +132,12 @@ export class LicenseKey extends Document {
   metaData?: Map<string, any>;
 
   @ApiProperty()
-  @Prop({ required: true })
+  @Prop({})
   createdBy?: string;
 
   @ApiProperty()
   @Prop()
   updatedBy?: string;
-
-  @ApiProperty()
-  @Prop([LKOwner])
-  owners?: LKOwner[];
 
   @ApiProperty()
   @Prop({

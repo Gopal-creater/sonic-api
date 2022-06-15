@@ -68,7 +68,7 @@ let UserCompanyController = class UserCompanyController {
         if (!validCompany) {
             throw new common_1.NotFoundException("Invalid company");
         }
-        return this.userCompanyService.makeCompanyAdmin(validUser, validCompany);
+        return this.companyService.makeCompanyAdminUser(company, user);
     }
     async getAdminCompany(user) {
         const validUser = await this.userServices.findById(user);
