@@ -95,7 +95,7 @@ let AuthService = class AuthService {
         return userCreatedResponse;
     }
     async createSonicAdmin() {
-        var _a, _b;
+        var _a, _b, _c, _d, _e, _f, _g;
         const createUserDto = {
             userName: this.configService.get('SONIC_ADMIN_USERNAME'),
             name: 'Sonic Admin',
@@ -113,14 +113,30 @@ let AuthService = class AuthService {
             userRole: Enums_1.SystemRoles.ADMIN,
         });
         if (alreadyUser) {
-            console.log('Sonic Admin Present Already');
+            console.log('Sonic Admin Present Already In Database');
             return;
         }
-        const userCreated = await this.userService.createUserInCognito(createUserDto, true, {
-            isSonicAdmin: true,
-        });
-        await this.userService.adminSetUserPassword((_b = (_a = userCreated === null || userCreated === void 0 ? void 0 : userCreated.cognitoUser) === null || _a === void 0 ? void 0 : _a.User) === null || _b === void 0 ? void 0 : _b.Username, createUserDto.password);
-        console.log('Sonic Admin User Created');
+        const userInCognito = await this.userService.getCognitoUser(createUserDto.userName);
+        if (userInCognito) {
+            const enabled = userInCognito.Enabled;
+            const userStatus = userInCognito.UserStatus;
+            const mfaOptions = userInCognito.MFAOptions;
+            const sub = (_a = userInCognito.Attributes.find(attr => attr.Name == 'sub')) === null || _a === void 0 ? void 0 : _a.Value;
+            const email_verified = (_b = userInCognito.Attributes.find(attr => attr.Name == 'email_verified')) === null || _b === void 0 ? void 0 : _b.Value;
+            const phone_number_verified = (_c = userInCognito.Attributes.find(attr => attr.Name == 'phone_number_verified')) === null || _c === void 0 ? void 0 : _c.Value;
+            const email = (_d = userInCognito.Attributes.find(attr => attr.Name == 'email')) === null || _d === void 0 ? void 0 : _d.Value;
+            const phone_number = (_e = userInCognito.Attributes.find(attr => attr.Name == 'phone_number')) === null || _e === void 0 ? void 0 : _e.Value;
+            const userToSaveInDb = await this.userService.userModel.create(Object.assign(Object.assign({ _id: sub, sub: sub, username: userInCognito.Username, email: email, email_verified: email_verified == 'true', phone_number: phone_number, phone_number_verified: phone_number_verified == 'true', user_status: userStatus, enabled: enabled, mfa_options: mfaOptions }, createUserDto), { isSonicAdmin: true }));
+            await userToSaveInDb.save();
+            console.log('Sonic Admin User Created in Db');
+        }
+        else {
+            const userCreated = await this.userService.createUserInCognito(createUserDto, true, {
+                isSonicAdmin: true,
+            });
+            await this.userService.adminSetUserPassword((_g = (_f = userCreated === null || userCreated === void 0 ? void 0 : userCreated.cognitoUser) === null || _f === void 0 ? void 0 : _f.User) === null || _g === void 0 ? void 0 : _g.Username, createUserDto.password);
+            console.log('Sonic Admin User Created');
+        }
     }
 };
 AuthService = __decorate([
