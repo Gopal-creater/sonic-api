@@ -19,6 +19,7 @@ import { UserDB } from '../../user/schemas/user.db.schema';
 import { CompanyService } from '../../company/company.service';
 import { PlanService } from '../../plan/plan.service';
 import { PlanType, ApiKeyType } from 'src/constants/Enums';
+import { toObjectId } from 'src/shared/utils/mongoose.utils';
 
 type usesFor = 'encode' | 'decode' | 'monitor';
 
@@ -285,8 +286,8 @@ export class LicensekeyService {
             suspended: false,
             validity: { $gte: startOfToday },
             $or:[
-              {company:userFromDb.company},
-              {company:{$in:userFromDb.companies}} //TODO: Remove
+              {company:toObjectId(userFromDb.company)},
+              {company:{$in:userFromDb?.companies?.map?.(com=>toObjectId(com))}} //TODO: Remove
             ],
             ...filter,
           },

@@ -23,6 +23,7 @@ const user_service_1 = require("../../user/services/user.service");
 const company_service_1 = require("../../company/company.service");
 const plan_service_1 = require("../../plan/plan.service");
 const Enums_1 = require("../../../constants/Enums");
+const mongoose_utils_1 = require("../../../shared/utils/mongoose.utils");
 let LicensekeyService = class LicensekeyService {
     constructor(licenseKeyModel, keygenService, companyService, planService, userService) {
         this.licenseKeyModel = licenseKeyModel;
@@ -210,6 +211,7 @@ let LicensekeyService = class LicensekeyService {
         return validLicense;
     }
     async findValidLicesesForUser(user, filter) {
+        var _a, _b;
         var now = new Date();
         var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         var validLicenses;
@@ -218,8 +220,8 @@ let LicensekeyService = class LicensekeyService {
         var validLicenseForUserWithInCompany = await this.licenseKeyModel.aggregate([
             {
                 $match: Object.assign({ disabled: false, suspended: false, validity: { $gte: startOfToday }, $or: [
-                        { company: userFromDb.company },
-                        { company: { $in: userFromDb.companies } }
+                        { company: mongoose_utils_1.toObjectId(userFromDb.company) },
+                        { company: { $in: (_b = (_a = userFromDb === null || userFromDb === void 0 ? void 0 : userFromDb.companies) === null || _a === void 0 ? void 0 : _a.map) === null || _b === void 0 ? void 0 : _b.call(_a, com => mongoose_utils_1.toObjectId(com)) } }
                     ] }, filter),
             }
         ]);
