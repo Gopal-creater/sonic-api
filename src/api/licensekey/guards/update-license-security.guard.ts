@@ -30,7 +30,7 @@ export class UpdateLicenseSecurityGuard implements CanActivate {
                 const partnerId = loggedInUser?.partner?.id;
                 const licenseKey = await this.licensekeyService.findOneAggregate({
                     filter: {
-
+                        _id: licenseKeyId,
                     },
                     relationalFilter: {
                         $or: [{ 'users.partner': partnerId }, { 'company.partner': partnerId }]

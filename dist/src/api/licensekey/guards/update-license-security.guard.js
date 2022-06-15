@@ -31,7 +31,9 @@ let UpdateLicenseSecurityGuard = class UpdateLicenseSecurityGuard {
             case Enums_1.SystemRoles.PARTNER_ADMIN:
                 const partnerId = (_b = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.partner) === null || _b === void 0 ? void 0 : _b.id;
                 const licenseKey = await this.licensekeyService.findOneAggregate({
-                    filter: {},
+                    filter: {
+                        _id: licenseKeyId,
+                    },
                     relationalFilter: {
                         $or: [{ 'users.partner': partnerId }, { 'company.partner': partnerId }]
                     }
