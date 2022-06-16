@@ -218,7 +218,6 @@ let LicensekeyService = class LicensekeyService {
         var userFromDb = await this.userService.userModel.findById(user);
         userFromDb = userFromDb.depopulate('companies');
         userFromDb = userFromDb.depopulate('company');
-        console.log("userFromDb in lic", userFromDb);
         var validLicenseForUserWithInCompany = await this.licenseKeyModel.aggregate([
             {
                 $match: Object.assign({ disabled: false, suspended: false, validity: { $gte: startOfToday }, $or: [
