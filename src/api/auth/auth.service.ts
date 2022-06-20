@@ -130,6 +130,7 @@ export class AuthService {
     const createUserDto: CreateUserDto = {
       userName: this.configService.get('SONIC_ADMIN_USERNAME'),
       name: 'Sonic Admin',
+      firstName:"Sonic Admin",
       password: this.configService.get('SONIC_ADMIN_PASSWORD'),
       email: this.configService.get('SONIC_ADMIN_EMAIL'),
       phoneNumber: this.configService.get('SONIC_ADMIN_PHONE'),

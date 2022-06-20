@@ -20,7 +20,7 @@ const mongoose_1 = require("mongoose");
 const common_1 = require("@nestjs/common");
 class CreateUserDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { userName: { required: true, type: () => String }, name: { required: false, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String }, isEmailVerified: { required: false, type: () => Boolean }, isPhoneNumberVerified: { required: false, type: () => Boolean }, userRole: { required: false, enum: require("../../../constants/Enums").SystemRoles }, company: { required: false, type: () => String }, partner: { required: false, type: () => String }, sendInvitationByEmail: { required: false, type: () => Boolean } };
+        return { userName: { required: true, type: () => String }, name: { required: false, type: () => String }, firstName: { required: false, type: () => String }, lastName: { required: false, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String }, isEmailVerified: { required: false, type: () => Boolean }, isPhoneNumberVerified: { required: false, type: () => Boolean }, userRole: { required: false, enum: require("../../../constants/Enums").SystemRoles }, company: { required: false, type: () => String }, partner: { required: false, type: () => String }, sendInvitationByEmail: { required: false, type: () => Boolean } };
     }
 }
 __decorate([
@@ -32,6 +32,14 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "name", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "firstName", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "lastName", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),

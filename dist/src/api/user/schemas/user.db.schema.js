@@ -52,6 +52,16 @@ __decorate([
 ], UserDB.prototype, "name", void 0);
 __decorate([
     swagger_1.ApiHideProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], UserDB.prototype, "firstName", void 0);
+__decorate([
+    swagger_1.ApiHideProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], UserDB.prototype, "lastName", void 0);
+__decorate([
+    swagger_1.ApiHideProperty(),
     mongoose_1.Prop({
         required: true,
         unique: true,

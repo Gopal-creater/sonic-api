@@ -17,7 +17,6 @@ export class CreateCompanyDto {
   companyType: string;
 
   @ApiProperty()
-  @IsNotEmpty()
   companyUrnOrId: string;
 
   @ApiProperty()

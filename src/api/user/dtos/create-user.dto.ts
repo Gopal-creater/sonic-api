@@ -20,6 +20,12 @@ export class CreateUserDto {
   name?: string;
 
   @ApiProperty()
+  firstName?: string;
+
+  @ApiProperty()
+  lastName?: string;
+
+  @ApiProperty()
   @IsNotEmpty()
   @Matches(COGNITO_PASSWORD_REGULAR_EXPRESSION, {
     message: 'password too weak',

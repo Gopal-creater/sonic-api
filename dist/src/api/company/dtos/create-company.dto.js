@@ -37,7 +37,6 @@ __decorate([
 ], CreateCompanyDto.prototype, "companyType", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "companyUrnOrId", void 0);
 __decorate([
