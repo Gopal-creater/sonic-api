@@ -66,6 +66,9 @@ export class TrackDto {
 
   @ApiProperty()
   updatedByUser: string;
+
+  @ApiProperty()
+  trackMetaData:Record<string,any>
   }
 
   export class UploadTrackDto {

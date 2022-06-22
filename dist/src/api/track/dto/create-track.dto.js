@@ -16,7 +16,7 @@ const class_validator_1 = require("class-validator");
 const sonickey_schema_1 = require("../../sonickey/schemas/sonickey.schema");
 class TrackDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { owner: { required: true, type: () => String }, company: { required: true, type: () => String }, partner: { required: true, type: () => String }, apiKey: { required: true, type: () => Object }, channel: { required: true, type: () => String }, channelUuid: { required: true, type: () => String }, license: { required: true, type: () => String }, mimeType: { required: true, type: () => String }, artist: { required: true, type: () => String }, title: { required: true, type: () => String }, duration: { required: false, type: () => Number }, fileSize: { required: false, type: () => Number }, localFilePath: { required: true, type: () => String }, s3OriginalFileMeta: { required: false, type: () => require("../../sonickey/schemas/sonickey.schema").S3FileMeta }, fileType: { required: true, type: () => String }, encoding: { required: true, type: () => String }, samplingFrequency: { required: true, type: () => String }, originalFileName: { required: true, type: () => String }, iExtractedMetaData: { required: true, type: () => Object }, createdByUser: { required: true, type: () => String }, updatedByUser: { required: true, type: () => String } };
+        return { owner: { required: true, type: () => String }, company: { required: true, type: () => String }, partner: { required: true, type: () => String }, apiKey: { required: true, type: () => Object }, channel: { required: true, type: () => String }, channelUuid: { required: true, type: () => String }, license: { required: true, type: () => String }, mimeType: { required: true, type: () => String }, artist: { required: true, type: () => String }, title: { required: true, type: () => String }, duration: { required: false, type: () => Number }, fileSize: { required: false, type: () => Number }, localFilePath: { required: true, type: () => String }, s3OriginalFileMeta: { required: false, type: () => require("../../sonickey/schemas/sonickey.schema").S3FileMeta }, fileType: { required: true, type: () => String }, encoding: { required: true, type: () => String }, samplingFrequency: { required: true, type: () => String }, originalFileName: { required: true, type: () => String }, iExtractedMetaData: { required: true, type: () => Object }, createdByUser: { required: true, type: () => String }, updatedByUser: { required: true, type: () => String }, trackMetaData: { required: true, type: () => Object } };
     }
 }
 __decorate([
@@ -103,6 +103,10 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], TrackDto.prototype, "updatedByUser", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Object)
+], TrackDto.prototype, "trackMetaData", void 0);
 exports.TrackDto = TrackDto;
 class UploadTrackDto {
     static _OPENAPI_METADATA_FACTORY() {
