@@ -414,7 +414,7 @@ export class SonickeyController {
     type: EncodeDto,
   })
   @RolesAllowed()
-  @UseGuards(JwtAuthGuard, RoleBasedGuard, LicenseValidationGuard)
+  @UseGuards(ConditionalAuthGuard, RoleBasedGuard, LicenseValidationGuard)
   @Post('/encode')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Encode File And save to database' })
@@ -484,9 +484,10 @@ export class SonickeyController {
     type: EncodeFromFileDto,
   })
   @RolesAllowed()
-  @UseGuards(JwtAuthGuard, RoleBasedGuard, LicenseValidationGuard)
+  @UseGuards(ConditionalAuthGuard, RoleBasedGuard, LicenseValidationGuard)
   @Post('/encode-from-file')
   @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
   @ApiOperation({
     summary: 'Encode File And save to database & into track table',
   })
@@ -526,13 +527,14 @@ export class SonickeyController {
   })
   @RolesAllowed()
   @UseGuards(
-    JwtAuthGuard,
+    ConditionalAuthGuard,
     RoleBasedGuard,
     LicenseValidationGuard,
     EncodeSecurityGuard,
   )
   @Post('/encode-from-track')
   @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
   @ApiOperation({
     summary: 'Encode File And save to database & into track table',
   })
@@ -589,6 +591,7 @@ export class SonickeyController {
   )
   @Post('/encode-from-url')
   @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
   @ApiOperation({ summary: 'Encode File From URL And save to database' })
   async encodeFromUrl(
     @Body('data') sonicKeyDto: CreateSonicKeyDto,
