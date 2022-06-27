@@ -48,6 +48,7 @@ let DetectionService = class DetectionService {
         const myArtistsCount = await this.countPlaysByArtists(queryDto);
         const myRadioStationCount = await this.countPlaysByRadioStations(queryDto);
         const myCountriesCount = await this.countPlaysByCountries(queryDto);
+        const myCompaniesCount = await this.countPlaysByCompanies(queryDto);
         const mostRecentPlays = await this.listPlays(queryDto, true);
         return {
             myPlaysCount,
@@ -55,6 +56,7 @@ let DetectionService = class DetectionService {
             myArtistsCount,
             myRadioStationCount,
             myCountriesCount,
+            myCompaniesCount,
             mostRecentPlays
         };
     }
@@ -1078,6 +1080,105 @@ let DetectionService = class DetectionService {
         const aggregate = await this.detectionModel.aggregate(aggregateArray);
         return ((_a = aggregate[0]) === null || _a === void 0 ? void 0 : _a.count) || 0;
     }
+    async countPlaysByCompanies(queryDto) {
+        var _a;
+        const { limit, skip, sort = { playsCount: -1 }, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ detectedAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'sonicKey.owner',
+                    foreignField: '_id',
+                    as: 'sonicKey.owner',
+                },
+            },
+            { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'sonicKey.company',
+                    foreignField: '_id',
+                    as: 'sonicKey.company',
+                },
+            },
+            { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'sonicKey.partner',
+                    foreignField: '_id',
+                    as: 'sonicKey.partner',
+                },
+            },
+            { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $group: {
+                    _id: {
+                        company: '$sonicKey.company._id'
+                    },
+                    plays: {
+                        $sum: 1
+                    },
+                    sonicKeys: {
+                        $addToSet: '$sonicKey.sonicKey',
+                    }
+                }
+            },
+            {
+                $match: {
+                    '_id.company': { $exists: true, $ne: null },
+                },
+            },
+            {
+                $count: "count"
+            }
+        ];
+        const aggregate = await this.detectionModel.aggregate(aggregateArray);
+        return ((_a = aggregate[0]) === null || _a === void 0 ? void 0 : _a.count) || 0;
+    }
     async exportPlays(queryDto, format) {
         var e_5, _a;
         var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
@@ -1884,6 +1985,121 @@ let DetectionService = class DetectionService {
                     uniquePlaysCount: { $size: '$sonicKeys' },
                     artistsCount: { $size: '$artists' },
                     countriesCount: { $size: '$countries' }
+                },
+            },
+        ];
+        const aggregate = this.detectionModel.aggregate(aggregateArray);
+        return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
+    }
+    async listPlaysByCompanies(queryDto) {
+        const { limit, skip, sort = { playsCount: -1 }, page, filter, select, populate, relationalFilter, } = queryDto;
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: Object.assign({ detectedAt: -1 }, sort),
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    localField: 'sonicKey',
+                    foreignField: '_id',
+                    as: 'sonicKey',
+                },
+            },
+            { $addFields: { sonicKey: { $first: '$sonicKey' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'sonicKey.owner',
+                    foreignField: '_id',
+                    as: 'sonicKey.owner',
+                },
+            },
+            { $addFields: { 'sonicKey.owner': { $first: '$sonicKey.owner' } } },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: 'sonicKey.company',
+                    foreignField: '_id',
+                    as: 'sonicKey.company',
+                },
+            },
+            { $addFields: { 'sonicKey.company': { $first: '$sonicKey.company' } } },
+            {
+                $lookup: {
+                    from: 'Partner',
+                    localField: 'sonicKey.partner',
+                    foreignField: '_id',
+                    as: 'sonicKey.partner',
+                },
+            },
+            { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
+            {
+                $lookup: {
+                    from: 'RadioStation',
+                    localField: 'radioStation',
+                    foreignField: '_id',
+                    as: 'radioStation',
+                },
+            },
+            { $addFields: { radioStation: { $first: '$radioStation' } } },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'owner',
+                },
+            },
+            { $addFields: { owner: { $first: '$owner' } } },
+            {
+                $match: Object.assign({}, relationalFilter),
+            },
+            {
+                $group: {
+                    _id: {
+                        company: '$sonicKey.company._id'
+                    },
+                    plays: {
+                        $sum: 1
+                    },
+                    sonicKeys: {
+                        $addToSet: '$sonicKey.sonicKey',
+                    },
+                    artists: {
+                        $addToSet: '$sonicKey.contentOwner',
+                    }
+                }
+            },
+            {
+                $match: {
+                    '_id.company': { $exists: true, $ne: null },
+                },
+            },
+            {
+                $lookup: {
+                    from: 'Company',
+                    localField: '_id.company',
+                    foreignField: '_id',
+                    as: 'company',
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    company: { $first: '$company' },
+                    playsCount: '$plays',
+                    uniquePlaysCount: { $size: '$sonicKeys' },
+                    artistsCount: { $size: '$artists' }
                 },
             },
         ];
