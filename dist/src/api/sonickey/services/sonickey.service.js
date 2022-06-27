@@ -200,6 +200,15 @@ let SonickeyService = class SonickeyService {
             },
             { $addFields: { owner: { $first: '$owner' } } },
             {
+                $lookup: {
+                    from: 'Track',
+                    localField: 'track',
+                    foreignField: '_id',
+                    as: 'track',
+                },
+            },
+            { $addFields: { track: { $first: '$track' } } },
+            {
                 $match: Object.assign({}, relationalFilter),
             },
         ]);
