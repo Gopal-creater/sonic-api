@@ -277,7 +277,7 @@ let SonickeyService = class SonickeyService {
         return datas[0];
     }
     async getCount(queryDto) {
-        const { filter, includeGroupData } = queryDto;
+        const { filter } = queryDto;
         return this.sonicKeyModel.find(filter || {}).count();
     }
     async getEstimateCount() {

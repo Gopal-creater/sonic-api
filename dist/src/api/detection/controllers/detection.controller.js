@@ -50,6 +50,8 @@ let DetectionController = class DetectionController {
                 return this.detectionService.listPlaysByTracks(queryDto);
             case 'RADIOSTATIONS':
                 return this.detectionService.listPlaysByRadioStations(queryDto);
+            case 'COMPANIES':
+                return this.detectionService.listPlaysByCompanies(queryDto);
             default:
                 return this.detectionService.listPlays(queryDto, queryDto.recentPlays);
         }
@@ -176,7 +178,7 @@ __decorate([
     common_1.Get('/list-plays'),
     swagger_1.ApiQuery({
         name: 'playsBy',
-        enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS'],
+        enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS', 'COMPANIES'],
         required: false,
     }),
     swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),

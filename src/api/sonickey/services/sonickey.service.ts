@@ -366,7 +366,7 @@ export class SonickeyService {
   }
 
   async getCount(queryDto: ParsedQueryDto) {
-    const { filter, includeGroupData } = queryDto;
+    const { filter } = queryDto;
     return this.sonicKeyModel.find(filter || {}).count();
   }
 

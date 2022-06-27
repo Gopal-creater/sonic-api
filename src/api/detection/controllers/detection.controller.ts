@@ -54,7 +54,7 @@ export class DetectionController {
   @Get('/list-plays')
   @ApiQuery({
     name: 'playsBy',
-    enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS'],
+    enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS','COMPANIES'],
     required: false,
   })
   @ApiQuery({ name: 'radioStation', type: String, required: false })
@@ -89,6 +89,8 @@ export class DetectionController {
         return this.detectionService.listPlaysByTracks(queryDto);
       case 'RADIOSTATIONS':
         return this.detectionService.listPlaysByRadioStations(queryDto);
+      case 'COMPANIES':
+        return this.detectionService.listPlaysByCompanies(queryDto);
       default:
         return this.detectionService.listPlays(queryDto, queryDto.recentPlays);
     }
