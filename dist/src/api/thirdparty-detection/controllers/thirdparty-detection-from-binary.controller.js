@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ThirdpartyDetectionFromBinaryController = void 0;
 const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
-const thirdparty_detection_service_1 = require("../thirdparty-detection.service");
 const create_thirdparty_detection_dto_1 = require("../dto/create-thirdparty-detection.dto");
 const swagger_1 = require("@nestjs/swagger");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
@@ -24,8 +23,7 @@ const Enums_1 = require("../../../constants/Enums");
 const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
 let ThirdpartyDetectionFromBinaryController = class ThirdpartyDetectionFromBinaryController {
-    constructor(thirdpartyDetectionService, sonickeyServive, detectionService) {
-        this.thirdpartyDetectionService = thirdpartyDetectionService;
+    constructor(sonickeyServive, detectionService) {
         this.sonickeyServive = sonickeyServive;
         this.detectionService = detectionService;
     }
@@ -42,7 +40,9 @@ let ThirdpartyDetectionFromBinaryController = class ThirdpartyDetectionFromBinar
             detectedAt: createThirdpartyDetectionDto.detectionTime,
             metadata: createThirdpartyDetectionDto.metaData,
             apiKey: apiKey,
-            owner: customer,
+            owner: isKeyFound.owner,
+            company: isKeyFound.company,
+            partner: isKeyFound.partner,
             sonicKeyOwnerId: isKeyFound.owner,
             sonicKeyOwnerName: isKeyFound.contentOwner,
             channel: Enums_1.ChannelEnums.BINARY,
@@ -66,8 +66,7 @@ ThirdpartyDetectionFromBinaryController = __decorate([
     swagger_1.ApiTags('ThirdParty-Binary Controller (protected by x-api-key)'),
     swagger_1.ApiSecurity('x-api-key'),
     common_1.Controller('thirdparty-detection-from-binary'),
-    __metadata("design:paramtypes", [thirdparty_detection_service_1.ThirdpartyDetectionService,
-        sonickey_service_1.SonickeyService,
+    __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
         detection_service_1.DetectionService])
 ], ThirdpartyDetectionFromBinaryController);
 exports.ThirdpartyDetectionFromBinaryController = ThirdpartyDetectionFromBinaryController;

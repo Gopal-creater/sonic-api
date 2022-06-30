@@ -18,7 +18,6 @@ const create_sonickey_dto_1 = require("../dtos/create-sonickey.dto");
 const common_1 = require("@nestjs/common");
 const sonickey_service_1 = require("../services/sonickey.service");
 const swagger_1 = require("@nestjs/swagger");
-const Enums_1 = require("../../../constants/Enums");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
@@ -27,17 +26,32 @@ const license_validation_guard_1 = require("../../licensekey/guards/license-vali
 const user_decorator_1 = require("../../auth/decorators/user.decorator");
 const utils_1 = require("../../../shared/utils");
 const user_db_schema_1 = require("../../user/schemas/user.db.schema");
+const track_schema_1 = require("../../track/schemas/track.schema");
+const Enums_1 = require("../../../constants/Enums");
 let SonickeyBinaryController = class SonickeyBinaryController {
     constructor(sonicKeyService, licensekeyService) {
         this.sonicKeyService = sonicKeyService;
         this.licensekeyService = licensekeyService;
     }
-    async createFormBinary(createSonicKeyDto, loggedInUser, apiKey, licenseKey) {
+    async createFormBinary(createSonicKeyDto, loggedInUser, apiKey, licenseId) {
+        createSonicKeyDto.channel = Enums_1.ChannelEnums.BINARY;
+        var { sonicKey, channel, contentFileType, contentName, contentOwner, contentType, contentDuration, contentSize, contentEncoding, contentSamplingFrequency, contentFilePath } = createSonicKeyDto;
+        if (!sonicKey) {
+            throw new common_1.BadRequestException('SonicKey is required');
+        }
         const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
-        const channel = Enums_1.ChannelEnums.BINARY;
-        const newSonicKey = Object.assign(Object.assign(Object.assign({}, createSonicKeyDto), resourceOwnerObj), { apiKey: apiKey, channel: channel, license: licenseKey, _id: createSonicKeyDto.sonicKey });
-        const savedSonicKey = await this.sonicKeyService.create(newSonicKey);
-        await this.licensekeyService.incrementUses(licenseKey, "encode", 1)
+        const newTrack = Object.assign(Object.assign({ channel: channel, artist: contentOwner, title: contentName, fileType: contentType, mimeType: contentFileType, duration: contentDuration, fileSize: contentSize, encoding: contentEncoding, localFilePath: contentFilePath, samplingFrequency: contentSamplingFrequency, trackMetaData: createSonicKeyDto }, resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
+        var track = await this.sonicKeyService.trackService.findOne({
+            mimeType: contentFileType,
+            fileSize: contentSize,
+            duration: contentDuration
+        });
+        if (!track) {
+            track = await this.sonicKeyService.trackService.create(newTrack);
+        }
+        const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, createSonicKeyDto), resourceOwnerObj), { _id: createSonicKeyDto.sonicKey, apiKey: apiKey, license: licenseId, createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub, track: track === null || track === void 0 ? void 0 : track._id });
+        const savedSonicKey = await this.sonicKeyService.create(sonickeyDoc);
+        await this.licensekeyService.incrementUses(licenseId, "encode", 1)
             .catch(async (err) => {
             await this.sonicKeyService.sonicKeyModel.deleteOne({ _id: savedSonicKey.id });
             throw new common_1.BadRequestException('Unable to increment the license usage!');
@@ -56,7 +70,7 @@ __decorate([
     __param(2, apikey_decorator_1.ApiKey('_id')),
     __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromBinaryDto,
+    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto,
         user_db_schema_1.UserDB, String, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyBinaryController.prototype, "createFormBinary", null);

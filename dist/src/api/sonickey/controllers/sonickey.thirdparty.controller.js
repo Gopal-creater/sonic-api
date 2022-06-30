@@ -32,6 +32,7 @@ const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
 const update_sonickey_dto_1 = require("../dtos/update-sonickey.dto");
 const user_db_schema_1 = require("../../user/schemas/user.db.schema");
 const utils_1 = require("../../../shared/utils");
+const track_schema_1 = require("../../track/schemas/track.schema");
 let SonickeyThirdPartyController = class SonickeyThirdPartyController {
     constructor(sonicKeyService, fileHandlerService, licensekeyService) {
         this.sonicKeyService = sonicKeyService;
@@ -51,13 +52,26 @@ let SonickeyThirdPartyController = class SonickeyThirdPartyController {
             s3destinationFolder: destinationFolder,
         });
     }
-    async createFormBinary(createSonicKeyDto, loggedInUser, apiKey, licenseKey) {
+    async createFormBinary(createSonicKeyDto, loggedInUser, apiKey, licenseId) {
+        createSonicKeyDto.channel = Enums_1.ChannelEnums.BINARY;
+        var { sonicKey, channel, contentFileType, contentName, contentOwner, contentType, contentDuration, contentSize, contentEncoding, contentSamplingFrequency, contentFilePath } = createSonicKeyDto;
+        if (!sonicKey) {
+            throw new common_2.BadRequestException('SonicKey is required');
+        }
         const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
-        const channel = Enums_1.ChannelEnums.BINARY;
-        const newSonicKey = Object.assign(Object.assign(Object.assign({}, createSonicKeyDto), resourceOwnerObj), { apiKey: apiKey, channel: channel, license: licenseKey, _id: createSonicKeyDto.sonicKey });
-        const savedSonicKey = await this.sonicKeyService.create(newSonicKey);
+        const newTrack = Object.assign(Object.assign({ channel: channel, artist: contentOwner, title: contentName, fileType: contentType, mimeType: contentFileType, duration: contentDuration, fileSize: contentSize, encoding: contentEncoding, localFilePath: contentFilePath, samplingFrequency: contentSamplingFrequency, trackMetaData: createSonicKeyDto }, resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
+        var track = await this.sonicKeyService.trackService.findOne({
+            mimeType: contentFileType,
+            fileSize: contentSize,
+            duration: contentDuration
+        });
+        if (!track) {
+            track = await this.sonicKeyService.trackService.create(newTrack);
+        }
+        const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, createSonicKeyDto), resourceOwnerObj), { _id: createSonicKeyDto.sonicKey, apiKey: apiKey, license: licenseId, createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub, track: track === null || track === void 0 ? void 0 : track._id });
+        const savedSonicKey = await this.sonicKeyService.create(sonickeyDoc);
         await this.licensekeyService
-            .incrementUses(licenseKey, 'encode', 1)
+            .incrementUses(licenseId, 'encode', 1)
             .catch(async (err) => {
             await this.sonicKeyService.sonicKeyModel.deleteOne({
                 _id: savedSonicKey.id,
@@ -105,7 +119,7 @@ __decorate([
     __param(2, apikey_decorator_1.ApiKey('_id')),
     __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromBinaryDto,
+    __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto,
         user_db_schema_1.UserDB, String, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyThirdPartyController.prototype, "createFormBinary", null);

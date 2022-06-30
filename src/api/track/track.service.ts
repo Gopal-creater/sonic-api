@@ -1,5 +1,4 @@
 import { Injectable, forwardRef, Inject } from '@nestjs/common';
-import { UpdateTrackDto } from './dto/update-track.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Track } from './schemas/track.schema';
 import { Model, FilterQuery, AnyObject, AnyKeys, UpdateQuery } from 'mongoose';
@@ -10,14 +9,10 @@ import { IUploadedFile } from '../../shared/interfaces/UploadedFile.interface';
 import { S3FileUploadService } from '../s3fileupload/s3fileupload.service';
 import { MongoosePaginateTrackDto } from './dto/mongoosepaginate-track.dto';
 import { customAlphabet, nanoid } from 'nanoid';
-import { UserDB } from '../user/schemas/user.db.schema';
 import { SystemRoles, S3ACL, ChannelEnums } from 'src/constants/Enums';
-import { UploadTrackDto } from './dto/create-track.dto';
-import { FileHandlerService } from '../../shared/services/file-handler.service';
 import * as AdmZip from 'adm-zip';
 import * as makeDir from 'make-dir';
 import * as xlsx from 'xlsx';
-import * as XLSXChart from 'xlsx-chart';
 import * as moment from 'moment';
 import { appConfig } from 'src/config';
 

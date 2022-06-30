@@ -142,8 +142,24 @@ let SonickeyController = class SonickeyController {
         return this.sonicKeyService.generateUniqueSonicKey();
     }
     async create(createSonicKeyDto, loggedInUser, apiKey, licenseId) {
+        const { sonicKey, channel, contentFileType, contentName, contentOwner, contentType, contentDuration, contentSize, contentEncoding, contentSamplingFrequency, contentFilePath } = createSonicKeyDto;
+        if (!sonicKey) {
+            throw new common_1.BadRequestException('SonicKey is required');
+        }
+        if (!channel) {
+            throw new common_1.BadRequestException('Channel is required');
+        }
         const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
-        const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, createSonicKeyDto), resourceOwnerObj), { _id: createSonicKeyDto.sonicKey, apiKey: apiKey, license: licenseId, createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
+        const newTrack = Object.assign(Object.assign({ channel: channel, artist: contentOwner, title: contentName, fileType: contentType, mimeType: contentFileType, duration: contentDuration, fileSize: contentSize, encoding: contentEncoding, localFilePath: contentFilePath, samplingFrequency: contentSamplingFrequency, trackMetaData: createSonicKeyDto }, resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
+        var track = await this.sonicKeyService.trackService.findOne({
+            mimeType: contentFileType,
+            fileSize: contentSize,
+            duration: contentDuration
+        });
+        if (!track) {
+            track = await this.sonicKeyService.trackService.create(newTrack);
+        }
+        const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, createSonicKeyDto), resourceOwnerObj), { _id: createSonicKeyDto.sonicKey, apiKey: apiKey, license: licenseId, createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub, track: track === null || track === void 0 ? void 0 : track._id });
         const savedSonicKey = await this.sonicKeyService.create(sonickeyDoc);
         await this.licensekeyService
             .incrementUses(licenseId, 'encode', 1)
@@ -505,7 +521,7 @@ __decorate([
     swagger_1.ApiQuery({
         name: 'query',
         type: 'object',
-        required: false
+        required: false,
     }),
     swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiOperation({ summary: 'get download url by metadata' }),
@@ -558,8 +574,9 @@ __decorate([
     common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, license_validation_guard_1.LicenseValidationGuard),
     common_1.Post('/create-from-outside'),
     swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiOperation({
-        summary: '[NEW]: Save to database after local encode from job. ',
+        summary: '[NEW]: Save to database after local encode. ',
     }),
     openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, common_1.Body()),

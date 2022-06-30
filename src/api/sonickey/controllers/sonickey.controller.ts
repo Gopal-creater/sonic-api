@@ -147,7 +147,7 @@ export class SonickeyController {
   @ApiQuery({
     name: 'query',
     type: 'object',
-    required: false
+    required: false,
   })
   @ApiSecurity('x-api-key')
   @ApiOperation({ summary: 'get download url by metadata' })
@@ -264,8 +264,9 @@ export class SonickeyController {
   @UseGuards(ConditionalAuthGuard, LicenseValidationGuard)
   @Post('/create-from-outside')
   @ApiBearerAuth()
+  @ApiSecurity('x-api-key')
   @ApiOperation({
-    summary: '[NEW]: Save to database after local encode from job. ',
+    summary: '[NEW]: Save to database after local encode. ',
   })
   async create(
     @Body() createSonicKeyDto: CreateSonicKeyDto,
@@ -274,8 +275,50 @@ export class SonickeyController {
     @ValidatedLicense('key') licenseId: string,
   ) {
     const {
+      sonicKey,
+      channel,
+      contentFileType,
+      contentName,
+      contentOwner,
+      contentType,
+      contentDuration,
+      contentSize,
+      contentEncoding,
+      contentSamplingFrequency,
+      contentFilePath
+    } = createSonicKeyDto;
+    if(!sonicKey){
+      throw new BadRequestException('SonicKey is required')
+    }
+    if(!channel){
+      throw new BadRequestException('Channel is required')
+    }
+    const {
       resourceOwnerObj,
     } = identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+    const newTrack: Partial<Track> = {
+      channel: channel,
+      artist: contentOwner,
+      title: contentName,
+      fileType: contentType,
+      mimeType: contentFileType,
+      duration:contentDuration,
+      fileSize:contentSize,
+      encoding:contentEncoding,
+      localFilePath:contentFilePath,
+      samplingFrequency:contentSamplingFrequency,
+      trackMetaData: createSonicKeyDto,
+      ...resourceOwnerObj,
+      createdBy: loggedInUser?.sub,
+    };
+    var track = await this.sonicKeyService.trackService.findOne({
+      mimeType:contentFileType,
+      fileSize:contentSize,
+      duration:contentDuration
+    })
+    if(!track){
+      track = await this.sonicKeyService.trackService.create(newTrack)
+    }
     const sonickeyDoc: Partial<SonicKey> = {
       ...createSonicKeyDto,
       ...resourceOwnerObj,
@@ -283,6 +326,7 @@ export class SonickeyController {
       apiKey: apiKey,
       license: licenseId,
       createdBy: loggedInUser?.sub,
+      track:track?._id
     };
     const savedSonicKey = await this.sonicKeyService.create(sonickeyDoc);
     await this.licensekeyService
