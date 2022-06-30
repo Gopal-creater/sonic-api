@@ -16,6 +16,9 @@ const class_validator_1 = require("class-validator");
 const sonickey_schema_1 = require("../../sonickey/schemas/sonickey.schema");
 const radiostation_schema_1 = require("../../radiostation/schemas/radiostation.schema");
 const detection_schema_1 = require("../schemas/detection.schema");
+const user_db_schema_1 = require("../../user/schemas/user.db.schema");
+const company_schema_1 = require("../../company/schemas/company.schema");
+const partner_schema_1 = require("../../partner/schemas/partner.schema");
 class TopRadioStation {
     static _OPENAPI_METADATA_FACTORY() {
         return { _id: { required: false, type: () => String }, totalKeysDetected: { required: false, type: () => Number }, radioStation: { required: true, type: () => require("../../radiostation/schemas/radiostation.schema").RadioStation } };
@@ -113,7 +116,7 @@ exports.PlaysGraphResponseDto = PlaysGraphResponseDto;
 ;
 class PlaysListResponseDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { _id: { required: false, type: () => String }, detectedAt: { required: false, type: () => Date }, owner: { required: false, type: () => String }, channel: { required: false, type: () => String }, detectedDuration: { required: false, type: () => Number }, radioStation: { required: true, type: () => require("../../radiostation/schemas/radiostation.schema").RadioStation }, sonicKey: { required: true, type: () => require("../../sonickey/schemas/sonickey.schema").SonicKey }, createdAt: { required: false, type: () => Date }, updatedAt: { required: false, type: () => Date } };
+        return { _id: { required: false, type: () => String }, detectedAt: { required: false, type: () => Date }, owner: { required: false, type: () => require("../../user/schemas/user.db.schema").UserDB }, company: { required: false, type: () => require("../../company/schemas/company.schema").Company }, partner: { required: false, type: () => require("../../partner/schemas/partner.schema").Partner }, channel: { required: false, type: () => String }, detectedDuration: { required: false, type: () => Number }, radioStation: { required: true, type: () => require("../../radiostation/schemas/radiostation.schema").RadioStation }, sonicKey: { required: true, type: () => require("../../sonickey/schemas/sonickey.schema").SonicKey }, createdAt: { required: false, type: () => Date }, updatedAt: { required: false, type: () => Date } };
     }
 }
 __decorate([
@@ -126,8 +129,16 @@ __decorate([
 ], PlaysListResponseDto.prototype, "detectedAt", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    __metadata("design:type", String)
+    __metadata("design:type", user_db_schema_1.UserDB)
 ], PlaysListResponseDto.prototype, "owner", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", company_schema_1.Company)
+], PlaysListResponseDto.prototype, "company", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", partner_schema_1.Partner)
+], PlaysListResponseDto.prototype, "partner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", String)

@@ -376,7 +376,7 @@ export class DetectionController {
      @Get('/export-plays-by/:format')
      @ApiQuery({
        name: 'playsBy',
-       enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS'],
+       enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS','COMPANIES'],
        required: false,
      })
      @ApiParam({ name: 'format', enum: ['xlsx', 'csv'] })
@@ -419,6 +419,12 @@ export class DetectionController {
            break;
          case 'RADIOSTATIONS':
            exportedFilePath = await this.detectionService.exportPlaysByRadioStations(
+             queryDto,
+             format,
+           );
+           break;
+          case 'COMPANIES':
+           exportedFilePath = await this.detectionService.exportPlaysByCompanies(
              queryDto,
              format,
            );

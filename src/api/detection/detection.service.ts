@@ -34,7 +34,7 @@ import {
 import { appConfig } from '../../config/app.config';
 import { FileHandlerService } from '../../shared/services/file-handler.service';
 import * as AdmZip from 'adm-zip';
-import * as utils from 'util'
+import * as utils from 'util';
 
 @Injectable()
 export class DetectionService {
@@ -44,26 +44,25 @@ export class DetectionService {
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     private readonly fileHandlerService: FileHandlerService,
-  ) {
-  }
+  ) {}
 
-  async getMonitorDashboardData(queryDto: ParsedQueryDto){
-    const myPlaysCount = await this.countPlays(queryDto)
-    const myTracksCount = await this.countPlaysByTracks(queryDto)
-    const myArtistsCount = await this.countPlaysByArtists(queryDto)
-    const myRadioStationCount = await this.countPlaysByRadioStations(queryDto)
-    const myCountriesCount = await this.countPlaysByCountries(queryDto)
-    const myCompaniesCount = await this.countPlaysByCompanies(queryDto)
-    const mostRecentPlays = await this.listPlays(queryDto,true)
-    return{
+  async getMonitorDashboardData(queryDto: ParsedQueryDto) {
+    const myPlaysCount = await this.countPlays(queryDto);
+    const myTracksCount = await this.countPlaysByTracks(queryDto);
+    const myArtistsCount = await this.countPlaysByArtists(queryDto);
+    const myRadioStationCount = await this.countPlaysByRadioStations(queryDto);
+    const myCountriesCount = await this.countPlaysByCountries(queryDto);
+    const myCompaniesCount = await this.countPlaysByCompanies(queryDto);
+    const mostRecentPlays = await this.listPlays(queryDto, true);
+    return {
       myPlaysCount,
       myTracksCount,
       myArtistsCount,
       myRadioStationCount,
       myCountriesCount,
       myCompaniesCount,
-      mostRecentPlays
-    }
+      mostRecentPlays,
+    };
   }
 
   async getPlaysDashboardData(filter: Record<any, any>) {
@@ -277,19 +276,19 @@ export class DetectionService {
     } as PlaysGraphResponseDto;
   }
 
-  async removeEntriesFromArBaTestRadio(){
+  async removeEntriesFromArBaTestRadio() {
     // const radioName="ArBa-Test-Radio";
-    const radioStationId="618bb1f83ac8d27c53b10d66"
-      return this.detectionModel.deleteMany({
-        radioStation:radioStationId
-      })
+    const radioStationId = '618bb1f83ac8d27c53b10d66';
+    return this.detectionModel.deleteMany({
+      radioStation: radioStationId,
+    });
   }
 
   async exportDashboardPlaysView(
     queryDto: ParsedQueryDto,
     format: string,
-  ):Promise<string> {
-    return new Promise(async (resolve,reject)=>{
+  ): Promise<string> {
+    return new Promise(async (resolve, reject) => {
       const playsLists = (await this.listPlays(
         queryDto,
         true,
@@ -305,7 +304,7 @@ export class DetectionService {
       for await (const plays of playsLists) {
         var playsExcelData = {
           SonicKey: plays?.sonicKey?._id,
-          'Radio Station': plays?.radioStation?.name || "--",
+          'Radio Station': plays?.radioStation?.name || '--',
           Date: moment(plays?.detectedAt || plays?.createdAt)
             .utc()
             .format('DD/MM/YYYY'),
@@ -313,20 +312,24 @@ export class DetectionService {
             .utc()
             .format('HH:mm'),
           Duration: moment
-            .utc((plays?.detectedDuration || plays?.sonicKey?.contentDuration) * 1000)
+            .utc(
+              (plays?.detectedDuration || plays?.sonicKey?.contentDuration) *
+                1000,
+            )
             .format('HH:mm:ss'),
-          'Track File Name': plays?.sonicKey?.originalFileName || "--",
-          Artist: plays?.sonicKey?.contentOwner || "--",
-          Country: plays?.radioStation?.country || "--",
-          ISRC: plays?.sonicKey?.isrcCode || "--",
-          ISWC: plays?.sonicKey?.iswcCode || "--",
-          "Tune Code": plays?.sonicKey?.tuneCode || "--",
-          "Quality Grade": plays?.sonicKey?.contentQuality || "--",
-          Desciption: plays?.sonicKey?.contentDescription || "--",
-          Distributor: plays?.sonicKey?.distributor || "--",
-          Version: plays?.sonicKey?.version || "--",
-          Label: plays?.sonicKey?.label || "--",
-          "Additional Metadata": plays?.sonicKey?.additionalMetadata?.['message'] || "--",
+          'Track File Name': plays?.sonicKey?.originalFileName || '--',
+          Artist: plays?.sonicKey?.contentOwner || '--',
+          Country: plays?.radioStation?.country || '--',
+          ISRC: plays?.sonicKey?.isrcCode || '--',
+          ISWC: plays?.sonicKey?.iswcCode || '--',
+          'Tune Code': plays?.sonicKey?.tuneCode || '--',
+          'Quality Grade': plays?.sonicKey?.contentQuality || '--',
+          Desciption: plays?.sonicKey?.contentDescription || '--',
+          Distributor: plays?.sonicKey?.distributor || '--',
+          Version: plays?.sonicKey?.version || '--',
+          Label: plays?.sonicKey?.label || '--',
+          'Additional Metadata':
+            plays?.sonicKey?.additionalMetadata?.['message'] || '--',
         };
         playsListInJsonFormat.push(playsExcelData);
       }
@@ -342,16 +345,16 @@ export class DetectionService {
           Country: '',
           ISRC: '',
           ISWC: '',
-          "Tune Code": '',
-          "Quality Grade": '',
+          'Tune Code': '',
+          'Quality Grade': '',
           Desciption: '',
           Distributor: '',
           Version: '',
           Label: '',
-          "Additional Metadata": '',
+          'Additional Metadata': '',
         });
       }
-  
+
       for await (const topRadioStation of topRadioStationsWithPlaysCount) {
         var topRadioStationExcelData = {
           'Radio Station': topRadioStation?.radioStation?.name,
@@ -359,9 +362,11 @@ export class DetectionService {
           Plays: topRadioStation?.playsCount.playsCount,
           'Unique Track Played': topRadioStation?.playsCount.uniquePlaysCount,
         };
-        topRadioStationsWithPlaysCountInJsonFormat.push(topRadioStationExcelData);
+        topRadioStationsWithPlaysCountInJsonFormat.push(
+          topRadioStationExcelData,
+        );
       }
-  
+
       if (topRadioStationsWithPlaysCountInJsonFormat.length <= 0) {
         topRadioStationsWithPlaysCountInJsonFormat.push({
           'Radio Station': '',
@@ -372,11 +377,11 @@ export class DetectionService {
       }
 
       const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
-      var finalFilePath:string=`${destination}/plays_view_${Date.now()}.zip`
+      var finalFilePath: string = `${destination}/plays_view_${Date.now()}.zip`;
 
       var zip = new AdmZip();
       try {
-        const file = xlsx.utils.book_new()
+        const file = xlsx.utils.book_new();
         const wsPlaysListInJsonFormat = xlsx.utils.json_to_sheet(
           playsListInJsonFormat,
         );
@@ -394,37 +399,42 @@ export class DetectionService {
           const chartsFilePath = `${destination}/${`charts_${Date.now()}`}.xlsx`;
           xlsx.writeFile(file, nonChartsFilePath);
           await this.addChartsToExcel(chartsFilePath, chartsData);
-          zip.addLocalFile(nonChartsFilePath,'','Plays.xlsx');
-          zip.addLocalFile(chartsFilePath,'','Radio Plays.xlsx');
-          zip.writeZip(finalFilePath,(err=>{
+          zip.addLocalFile(nonChartsFilePath, '', 'Plays.xlsx');
+          zip.addLocalFile(chartsFilePath, '', 'Radio Plays.xlsx');
+          zip.writeZip(finalFilePath, err => {
             this.fileHandlerService.deleteFileAtPath(nonChartsFilePath);
             this.fileHandlerService.deleteFileAtPath(chartsFilePath);
-            if(err){
-              reject(err)
+            if (err) {
+              reject(err);
             }
-            resolve(finalFilePath)
-          }));
+            resolve(finalFilePath);
+          });
         } else if (format == 'csv') {
           const playsCsvPath = `${destination}/${`plays_view_${Date.now()}`}.csv`;
           const topStationsCsvPath = `${destination}/${`topStations_${Date.now()}`}.csv`;
-          xlsx.writeFile(file, playsCsvPath,{bookType:'csv',sheet:"Plays"});
-          xlsx.writeFile(file, topStationsCsvPath,{bookType:'csv',sheet:"Radio Plays"});
-          zip.addLocalFile(playsCsvPath,'','Plays.csv');
-          zip.addLocalFile(topStationsCsvPath,'','Radio Plays.csv');
-          zip.writeZip(finalFilePath,(err=>{
+          xlsx.writeFile(file, playsCsvPath, {
+            bookType: 'csv',
+            sheet: 'Plays',
+          });
+          xlsx.writeFile(file, topStationsCsvPath, {
+            bookType: 'csv',
+            sheet: 'Radio Plays',
+          });
+          zip.addLocalFile(playsCsvPath, '', 'Plays.csv');
+          zip.addLocalFile(topStationsCsvPath, '', 'Radio Plays.csv');
+          zip.writeZip(finalFilePath, err => {
             this.fileHandlerService.deleteFileAtPath(playsCsvPath);
             this.fileHandlerService.deleteFileAtPath(topStationsCsvPath);
-            if(err){
-              reject(err)
+            if (err) {
+              reject(err);
             }
-            resolve(finalFilePath)
-          }));
+            resolve(finalFilePath);
+          });
         }
       } catch (error) {
         reject(error);
       }
-    })
-    
+    });
   }
 
   async addChartsToExcel(
@@ -500,8 +510,8 @@ export class DetectionService {
   async exportHistoryOfSonicKeyPlays(
     queryDto: ParsedQueryDto,
     format: string,
-  ):Promise<string> {
-    return new Promise(async (resolve,reject)=>{
+  ): Promise<string> {
+    return new Promise(async (resolve, reject) => {
       const playsLists = (await this.listPlays(
         queryDto,
         true,
@@ -515,7 +525,7 @@ export class DetectionService {
       for await (const plays of playsLists) {
         var playsExcelData = {
           SonicKey: plays?.sonicKey?._id,
-          'Radio Station': plays?.radioStation?.name || "--",
+          'Radio Station': plays?.radioStation?.name || '--',
           Date: moment(plays?.detectedAt || plays?.createdAt)
             .utc()
             .format('DD/MM/YYYY'),
@@ -523,20 +533,24 @@ export class DetectionService {
             .utc()
             .format('HH:mm'),
           Duration: moment
-            .utc((plays?.detectedDuration || plays?.sonicKey?.contentDuration) * 1000)
+            .utc(
+              (plays?.detectedDuration || plays?.sonicKey?.contentDuration) *
+                1000,
+            )
             .format('HH:mm:ss'),
-          'Track File Name': plays?.sonicKey?.originalFileName || "--",
+          'Track File Name': plays?.sonicKey?.originalFileName || '--',
           Artist: plays?.sonicKey?.contentOwner,
           Country: plays?.radioStation?.country,
-          ISRC: plays?.sonicKey?.isrcCode || "--",
-          ISWC: plays?.sonicKey?.iswcCode || "--",
-          "Tune Code": plays?.sonicKey?.tuneCode || "--",
-          "Quality Grade": plays?.sonicKey?.contentQuality || "--",
-          Desciption: plays?.sonicKey?.contentDescription || "--",
-          Distributor: plays?.sonicKey?.distributor || "--",
-          Version: plays?.sonicKey?.version || "--",
-          Label: plays?.sonicKey?.label || "--",
-          "Additional Metadata": plays?.sonicKey?.additionalMetadata?.['message'] || "--",
+          ISRC: plays?.sonicKey?.isrcCode || '--',
+          ISWC: plays?.sonicKey?.iswcCode || '--',
+          'Tune Code': plays?.sonicKey?.tuneCode || '--',
+          'Quality Grade': plays?.sonicKey?.contentQuality || '--',
+          Desciption: plays?.sonicKey?.contentDescription || '--',
+          Distributor: plays?.sonicKey?.distributor || '--',
+          Version: plays?.sonicKey?.version || '--',
+          Label: plays?.sonicKey?.label || '--',
+          'Additional Metadata':
+            plays?.sonicKey?.additionalMetadata?.['message'] || '--',
         };
         playsListInJsonFormat.push(playsExcelData);
       }
@@ -552,16 +566,16 @@ export class DetectionService {
           Country: '',
           ISRC: '',
           ISWC: '',
-          "Tune Code": '',
-          "Quality Grade": '',
+          'Tune Code': '',
+          'Quality Grade': '',
           Desciption: '',
           Distributor: '',
           Version: '',
           Label: '',
-          "Additional Metadata": '',
+          'Additional Metadata': '',
         });
       }
-  
+
       for await (const topRadioStation of topRadioStationsWithPlaysCount) {
         var topRadioStationExcelData = {
           'Radio Station': topRadioStation?.radioStation?.name,
@@ -569,9 +583,11 @@ export class DetectionService {
           Plays: topRadioStation?.playsCount.playsCount,
           'Unique Track Played': topRadioStation?.playsCount.uniquePlaysCount,
         };
-        topRadioStationsWithPlaysCountInJsonFormat.push(topRadioStationExcelData);
+        topRadioStationsWithPlaysCountInJsonFormat.push(
+          topRadioStationExcelData,
+        );
       }
-  
+
       if (topRadioStationsWithPlaysCountInJsonFormat.length <= 0) {
         topRadioStationsWithPlaysCountInJsonFormat.push({
           'Radio Station': '',
@@ -580,57 +596,68 @@ export class DetectionService {
           'Unique Track Played': '',
         });
       }
-  
+
       const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
-      var finalFilePath:string=''
+      var finalFilePath: string = '';
       var zip = new AdmZip();
       try {
-        const file = xlsx.utils.book_new()
+        const file = xlsx.utils.book_new();
         const wsPlaysListInJsonFormat = xlsx.utils.json_to_sheet(
           playsListInJsonFormat,
         );
         const wsTopRadioStationsWithPlaysCountInJsonFormat = xlsx.utils.json_to_sheet(
           topRadioStationsWithPlaysCountInJsonFormat,
         );
-        xlsx.utils.book_append_sheet(file, wsPlaysListInJsonFormat, 'SonicKey Plays');
+        xlsx.utils.book_append_sheet(
+          file,
+          wsPlaysListInJsonFormat,
+          'SonicKey Plays',
+        );
         xlsx.utils.book_append_sheet(
           file,
           wsTopRadioStationsWithPlaysCountInJsonFormat,
           'SonicKey Plays on Radio',
         );
-        if(format=="xlsx"){
-          const excelFilePath =`${destination}/${`history_of_sonickey${Date.now()}`}.xlsx`;
+        if (format == 'xlsx') {
+          const excelFilePath = `${destination}/${`history_of_sonickey${Date.now()}`}.xlsx`;
           xlsx.writeFile(file, excelFilePath);
-          finalFilePath=excelFilePath
-          resolve(excelFilePath)
-        }else if (format == 'csv') {
+          finalFilePath = excelFilePath;
+          resolve(excelFilePath);
+        } else if (format == 'csv') {
           const historyOfSonicKeyCsvPath = `${destination}/${`history_of_sonickey${Date.now()}`}.csv`;
           const topStationsCsvPath = `${destination}/${`topStations_${Date.now()}`}.csv`;
-          xlsx.writeFile(file, historyOfSonicKeyCsvPath,{bookType:'csv',sheet:"SonicKey Plays"});
-          xlsx.writeFile(file, topStationsCsvPath,{bookType:'csv',sheet:"SonicKey Plays on Radio"});
-          zip.addLocalFile(historyOfSonicKeyCsvPath,'','SonicKey Plays.csv');
-          zip.addLocalFile(topStationsCsvPath,'','SonicKey Plays on Radio.csv');
-          const zipFilePath =`${destination}/${`history_of_sonickey${Date.now()}`}.zip`;
-          finalFilePath=zipFilePath
-          zip.writeZip(zipFilePath,(err=>{
+          xlsx.writeFile(file, historyOfSonicKeyCsvPath, {
+            bookType: 'csv',
+            sheet: 'SonicKey Plays',
+          });
+          xlsx.writeFile(file, topStationsCsvPath, {
+            bookType: 'csv',
+            sheet: 'SonicKey Plays on Radio',
+          });
+          zip.addLocalFile(historyOfSonicKeyCsvPath, '', 'SonicKey Plays.csv');
+          zip.addLocalFile(
+            topStationsCsvPath,
+            '',
+            'SonicKey Plays on Radio.csv',
+          );
+          const zipFilePath = `${destination}/${`history_of_sonickey${Date.now()}`}.zip`;
+          finalFilePath = zipFilePath;
+          zip.writeZip(zipFilePath, err => {
             this.fileHandlerService.deleteFileAtPath(historyOfSonicKeyCsvPath);
             this.fileHandlerService.deleteFileAtPath(topStationsCsvPath);
-            if(err){
-              reject(err)
+            if (err) {
+              reject(err);
             }
-            resolve(zipFilePath)
-          }));
+            resolve(zipFilePath);
+          });
         }
       } catch (error) {
         return reject(error);
       }
-    })
-   
+    });
   }
 
-  async countPlays(
-    queryDto: ParsedQueryDto
-  ):Promise<number> {
+  async countPlays(queryDto: ParsedQueryDto): Promise<number> {
     const {
       limit,
       skip,
@@ -726,19 +753,17 @@ export class DetectionService {
         },
       },
       {
-        $count:"count"
-      }
+        $count: 'count',
+      },
     ];
     const aggregate = await this.detectionModel.aggregate(aggregateArray);
-    return aggregate[0]?.count || 0
+    return aggregate[0]?.count || 0;
   }
-  async countPlaysByArtists(
-    queryDto: ParsedQueryDto,
-  ):Promise<number> {
+  async countPlaysByArtists(queryDto: ParsedQueryDto): Promise<number> {
     const {
       limit,
       skip,
-      sort={playsCount:-1},
+      sort = { playsCount: -1 },
       page,
       filter,
       select,
@@ -830,12 +855,12 @@ export class DetectionService {
         },
       },
       {
-        $group:{
-          _id:{
-            artist:'$sonicKey.contentOwner'
+        $group: {
+          _id: {
+            artist: '$sonicKey.contentOwner',
           },
-          plays:{
-            $sum:1
+          plays: {
+            $sum: 1,
           },
           sonicKeys: {
             $addToSet: '$sonicKey.sonicKey',
@@ -846,7 +871,7 @@ export class DetectionService {
           countries: {
             $addToSet: '$radioStation.country',
           },
-        }
+        },
       },
       {
         $match: {
@@ -854,19 +879,17 @@ export class DetectionService {
         },
       },
       {
-        $count:"count"
-      }
+        $count: 'count',
+      },
     ];
     const aggregate = await this.detectionModel.aggregate(aggregateArray);
-    return aggregate[0]?.count || 0
+    return aggregate[0]?.count || 0;
   }
-  async countPlaysByCountries(
-    queryDto: ParsedQueryDto,
-  ):Promise<number>{
+  async countPlaysByCountries(queryDto: ParsedQueryDto): Promise<number> {
     const {
       limit,
       skip,
-      sort={playsCount:-1},
+      sort = { playsCount: -1 },
       page,
       filter,
       select,
@@ -958,12 +981,12 @@ export class DetectionService {
         },
       },
       {
-        $group:{
-          _id:{
-            country:'$radioStation.country'
+        $group: {
+          _id: {
+            country: '$radioStation.country',
           },
-          plays:{
-            $sum:1
+          plays: {
+            $sum: 1,
           },
           sonicKeys: {
             $addToSet: '$sonicKey.sonicKey',
@@ -974,7 +997,7 @@ export class DetectionService {
           artists: {
             $addToSet: '$sonicKey.contentOwner',
           },
-        }
+        },
       },
       {
         $match: {
@@ -982,19 +1005,17 @@ export class DetectionService {
         },
       },
       {
-        $count:"count"
-      }
+        $count: 'count',
+      },
     ];
     const aggregate = await this.detectionModel.aggregate(aggregateArray);
-    return aggregate[0]?.count || 0
+    return aggregate[0]?.count || 0;
   }
-  async countPlaysByTracks(
-    queryDto: ParsedQueryDto,
-  ):Promise<number>{
+  async countPlaysByTracks(queryDto: ParsedQueryDto): Promise<number> {
     const {
       limit,
       skip,
-      sort={playsCount:-1},
+      sort = { playsCount: -1 },
       page,
       filter,
       select,
@@ -1086,12 +1107,12 @@ export class DetectionService {
         },
       },
       {
-        $group:{
-          _id:{
-            trackName:'$sonicKey.contentName'
+        $group: {
+          _id: {
+            trackName: '$sonicKey.contentName',
           },
-          plays:{
-            $sum:1
+          plays: {
+            $sum: 1,
           },
           sonicKeys: {
             $addToSet: '$sonicKey.sonicKey',
@@ -1102,7 +1123,7 @@ export class DetectionService {
           countries: {
             $addToSet: '$radioStation.country',
           },
-        }
+        },
       },
       {
         $match: {
@@ -1110,19 +1131,17 @@ export class DetectionService {
         },
       },
       {
-        $count:"count"
-      }
+        $count: 'count',
+      },
     ];
     const aggregate = await this.detectionModel.aggregate(aggregateArray);
-    return aggregate[0]?.count || 0
+    return aggregate[0]?.count || 0;
   }
-  async countPlaysByRadioStations(
-    queryDto: ParsedQueryDto,
-  ):Promise<number>{
+  async countPlaysByRadioStations(queryDto: ParsedQueryDto): Promise<number> {
     const {
       limit,
       skip,
-      sort={playsCount:-1},
+      sort = { playsCount: -1 },
       page,
       filter,
       select,
@@ -1214,12 +1233,12 @@ export class DetectionService {
         },
       },
       {
-        $group:{
-          _id:{
-            radioStation:'$radioStation._id'
+        $group: {
+          _id: {
+            radioStation: '$radioStation._id',
           },
-          plays:{
-            $sum:1
+          plays: {
+            $sum: 1,
           },
           sonicKeys: {
             $addToSet: '$sonicKey.sonicKey',
@@ -1230,7 +1249,7 @@ export class DetectionService {
           countries: {
             $addToSet: '$radioStation.country',
           },
-        }
+        },
       },
       {
         $match: {
@@ -1238,20 +1257,18 @@ export class DetectionService {
         },
       },
       {
-        $count:"count"
-      }
+        $count: 'count',
+      },
     ];
     const aggregate = await this.detectionModel.aggregate(aggregateArray);
-    return aggregate[0]?.count || 0
+    return aggregate[0]?.count || 0;
   }
 
-  async countPlaysByCompanies(
-    queryDto: ParsedQueryDto,
-  ):Promise<number>{
+  async countPlaysByCompanies(queryDto: ParsedQueryDto): Promise<number> {
     const {
       limit,
       skip,
-      sort={playsCount:-1},
+      sort = { playsCount: -1 },
       page,
       filter,
       select,
@@ -1343,17 +1360,17 @@ export class DetectionService {
         },
       },
       {
-        $group:{
-          _id:{
-            company:'$sonicKey.company._id'
+        $group: {
+          _id: {
+            company: '$sonicKey.company._id',
           },
-          plays:{
-            $sum:1
+          plays: {
+            $sum: 1,
           },
           sonicKeys: {
             $addToSet: '$sonicKey.sonicKey',
-          }
-        }
+          },
+        },
       },
       {
         $match: {
@@ -1361,23 +1378,24 @@ export class DetectionService {
         },
       },
       {
-        $count:"count"
-      }
+        $count: 'count',
+      },
     ];
     const aggregate = await this.detectionModel.aggregate(aggregateArray);
-    return aggregate[0]?.count || 0
+    return aggregate[0]?.count || 0;
   }
-  async exportPlays(
-    queryDto: ParsedQueryDto,
-    format: string,
-  ) {
-    const playsLists = (await this.listPlays(queryDto)) as MongoosePaginatePlaysDto
+  async exportPlays(queryDto: ParsedQueryDto, format: string) {
+    const playsLists = (await this.listPlays(
+      queryDto,
+    )) as MongoosePaginatePlaysDto;
     var playsListInJsonFormat = [];
-    for await (const plays of playsLists?.docs||[]) {
+    for await (const plays of playsLists?.docs || []) {
       var playsExcelData = {
-        Artist: plays?.sonicKey?.contentOwner || "--",
-        Title: plays?.sonicKey?.contentName || "--",
-        'Radio Station': plays?.radioStation?.name || "--",
+        Company: plays?.company?.name || '--',
+        'Company Type': plays?.company?.companyType || '--',
+        Artist: plays?.sonicKey?.contentOwner || '--',
+        Title: plays?.sonicKey?.contentName || '--',
+        'Radio Station': plays?.radioStation?.name || '--',
         Date: moment(plays?.detectedAt || plays?.createdAt)
           .utc()
           .format('DD/MM/YYYY'),
@@ -1385,47 +1403,51 @@ export class DetectionService {
           .utc()
           .format('HH:mm'),
         Duration: moment
-          .utc((plays?.detectedDuration || plays?.sonicKey?.contentDuration) * 1000)
+          .utc(
+            (plays?.detectedDuration || plays?.sonicKey?.contentDuration) *
+              1000,
+          )
           .format('HH:mm:ss'),
-        
-        Country: plays?.radioStation?.country || "--",
+
+        Country: plays?.radioStation?.country || '--',
+        'Track Id': plays?.sonicKey?.track?._id || '--',
         SonicKey: plays?.sonicKey?._id,
-        ISRC: plays?.sonicKey?.isrcCode || "--",
-        ISWC: plays?.sonicKey?.iswcCode || "--",
-        "Tune Code": plays?.sonicKey?.tuneCode || "--",
-        "Quality Grade": plays?.sonicKey?.contentQuality || "--",
-        Desciption: plays?.sonicKey?.contentDescription || "--",
-        Distributor: plays?.sonicKey?.distributor || "--",
-        Version: plays?.sonicKey?.version || "--",
-        Label: plays?.sonicKey?.label || "--",
-        "Additional Metadata": plays?.sonicKey?.additionalMetadata?.['message'] || "--",
+        Version: plays?.sonicKey?.version || '--',
+        Distributor: plays?.sonicKey?.distributor || '--',
+        Label: plays?.sonicKey?.label || '--',
+        ISRC: plays?.sonicKey?.isrcCode || '--',
+        ISWC: plays?.sonicKey?.iswcCode || '--',
+        'Tune Code': plays?.sonicKey?.tuneCode || '--',
+        'File Type': plays?.sonicKey?.contentFileType || '--',
       };
       playsListInJsonFormat.push(playsExcelData);
     }
     if (playsListInJsonFormat.length <= 0) {
       playsListInJsonFormat.push({
+        Company: '',
+        'Company Type': '',
         Artist: '',
         Title: '',
         'Radio Station': '',
         Date: '',
         Time: '',
         Duration: '',
+
         Country: '',
+        'Track Id': '',
         SonicKey: '',
+        Version: '',
+        Distributor: '',
+        Label: '',
         ISRC: '',
         ISWC: '',
-        "Tune Code": '',
-        "Quality Grade": '',
-        Desciption: '',
-        Distributor: '',
-        Version: '',
-        Label: '',
-        "Additional Metadata": '',
+        'Tune Code': '',
+        'File Type': '',
       });
     }
     const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
-    var tobeStorePath:string ='' 
-    const file = xlsx.utils.book_new()
+    var tobeStorePath: string = '';
+    const file = xlsx.utils.book_new();
     const wsPlaysListInJsonFormat = xlsx.utils.json_to_sheet(
       playsListInJsonFormat,
     );
@@ -1433,25 +1455,25 @@ export class DetectionService {
     if (format == 'xlsx') {
       tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_My_Plays`}.xlsx`;
       xlsx.writeFile(file, tobeStorePath);
-    }else if(format=='csv'){
+    } else if (format == 'csv') {
       tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_My_Plays`}.csv`;
-      xlsx.writeFile(file, tobeStorePath,{bookType:'csv',sheet:"My Plays"});
+      xlsx.writeFile(file, tobeStorePath, {
+        bookType: 'csv',
+        sheet: 'My Plays',
+      });
     }
-    return tobeStorePath
+    return tobeStorePath;
   }
-  async exportPlaysByArtists(
-    queryDto: ParsedQueryDto,
-    format:string
-  ){
-    const playsListsByArtists = (await this.listPlaysByArtists(queryDto))
+  async exportPlaysByArtists(queryDto: ParsedQueryDto, format: string) {
+    const playsListsByArtists = await this.listPlaysByArtists(queryDto);
     var jsonFormat = [];
-    for await (const data of playsListsByArtists?.docs||[]) {
+    for await (const data of playsListsByArtists?.docs || []) {
       var excelData = {
-        Artist: data?.artist|| "--",
+        Artist: data?.artist || '--',
         Plays: data?.playsCount || 0,
         Tracks: data?.uniquePlaysCount || 0,
         'Radio Station': data?.radioStationCount || 0,
-        Country: data?.countriesCount || 0
+        Country: data?.countriesCount || 0,
       };
       jsonFormat.push(excelData);
     }
@@ -1461,37 +1483,35 @@ export class DetectionService {
         Plays: '',
         Tracks: '',
         'Radio Station': '',
-        Country: ''
+        Country: '',
       });
     }
     const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
-    var tobeStorePath:string ='' 
-    const file = xlsx.utils.book_new()
-    const jsonToWorkSheet = xlsx.utils.json_to_sheet(
-      jsonFormat,
-    );
+    var tobeStorePath: string = '';
+    const file = xlsx.utils.book_new();
+    const jsonToWorkSheet = xlsx.utils.json_to_sheet(jsonFormat);
     xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'Artists');
     if (format == 'xlsx') {
       tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Artists`}.xlsx`;
       xlsx.writeFile(file, tobeStorePath);
-    }else if(format=='csv'){
+    } else if (format == 'csv') {
       tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Artists`}.csv`;
-      xlsx.writeFile(file, tobeStorePath,{bookType:'csv',sheet:"Artists"});
+      xlsx.writeFile(file, tobeStorePath, {
+        bookType: 'csv',
+        sheet: 'Artists',
+      });
     }
-    return tobeStorePath
+    return tobeStorePath;
   }
-  async exportPlaysByCountries(
-    queryDto: ParsedQueryDto,
-    format:string
-  ){
-    const playsListsByCountries = (await this.listPlaysByCountries(queryDto))
+  async exportPlaysByCountries(queryDto: ParsedQueryDto, format: string) {
+    const playsListsByCountries = await this.listPlaysByCountries(queryDto);
     var jsonFormat = [];
-    for await (const data of playsListsByCountries?.docs||[]) {
+    for await (const data of playsListsByCountries?.docs || []) {
       var excelData = {
-        Country: data?.country || "--",
+        Country: data?.country || '--',
         Plays: data?.playsCount || 0,
         Tracks: data?.uniquePlaysCount || 0,
-        Artist: data?.artistsCount|| 0,
+        Artist: data?.artistsCount || 0,
         'Radio Station': data?.radioStationCount || 0,
       };
       jsonFormat.push(excelData);
@@ -1503,38 +1523,35 @@ export class DetectionService {
         Tracks: '',
         Artist: '',
         'Radio Station': '',
-       
       });
     }
     const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
-    var tobeStorePath:string ='' 
-    const file = xlsx.utils.book_new()
-    const jsonToWorkSheet = xlsx.utils.json_to_sheet(
-      jsonFormat,
-    );
+    var tobeStorePath: string = '';
+    const file = xlsx.utils.book_new();
+    const jsonToWorkSheet = xlsx.utils.json_to_sheet(jsonFormat);
     xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'Countries');
     if (format == 'xlsx') {
       tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Countries`}.xlsx`;
       xlsx.writeFile(file, tobeStorePath);
-    }else if(format=='csv'){
+    } else if (format == 'csv') {
       tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Countries`}.csv`;
-      xlsx.writeFile(file, tobeStorePath,{bookType:'csv',sheet:"Countries"});
+      xlsx.writeFile(file, tobeStorePath, {
+        bookType: 'csv',
+        sheet: 'Countries',
+      });
     }
-    return tobeStorePath
+    return tobeStorePath;
   }
-  async exportPlaysByTracks(
-    queryDto: ParsedQueryDto,
-    format:string
-  ){
-    const playsListsByTracks = (await this.listPlaysByTracks(queryDto))
+  async exportPlaysByTracks(queryDto: ParsedQueryDto, format: string) {
+    const playsListsByTracks = await this.listPlaysByTracks(queryDto);
     var jsonFormat = [];
-    for await (const data of playsListsByTracks?.docs||[]) {
+    for await (const data of playsListsByTracks?.docs || []) {
       var excelData = {
-        'Track Name': data?.trackName || "--",
+        'Track Name': data?.trackName || '--',
         Plays: data?.playsCount || 0,
         Tracks: data?.uniquePlaysCount || 0,
         'Radio Station': data?.radioStationCount || 0,
-        Country: data?.countriesCount|| 0,
+        Country: data?.countriesCount || 0,
       };
       jsonFormat.push(excelData);
     }
@@ -1544,67 +1561,104 @@ export class DetectionService {
         Plays: '',
         Tracks: '',
         'Radio Station': '',
-        Country:''
-       
+        Country: '',
       });
     }
     const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
-    var tobeStorePath:string ='' 
-    const file = xlsx.utils.book_new()
-    const jsonToWorkSheet = xlsx.utils.json_to_sheet(
-      jsonFormat,
-    );
+    var tobeStorePath: string = '';
+    const file = xlsx.utils.book_new();
+    const jsonToWorkSheet = xlsx.utils.json_to_sheet(jsonFormat);
     xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'My_Tracks');
     if (format == 'xlsx') {
       tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_My_Tracks`}.xlsx`;
       xlsx.writeFile(file, tobeStorePath);
-    }else if(format=='csv'){
+    } else if (format == 'csv') {
       tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_My_Tracks`}.csv`;
-      xlsx.writeFile(file, tobeStorePath,{bookType:'csv',sheet:"My_Tracks"});
+      xlsx.writeFile(file, tobeStorePath, {
+        bookType: 'csv',
+        sheet: 'My_Tracks',
+      });
     }
-    return tobeStorePath
+    return tobeStorePath;
   }
-  async exportPlaysByRadioStations(
-    queryDto: ParsedQueryDto,
-    format:string
-  ){
-    const playsListsByRadioStations = (await this.listPlaysByRadioStations(queryDto))
+  async exportPlaysByRadioStations(queryDto: ParsedQueryDto, format: string) {
+    const playsListsByRadioStations = await this.listPlaysByRadioStations(
+      queryDto,
+    );
     var jsonFormat = [];
-    for await (const data of playsListsByRadioStations?.docs||[]) {
+    for await (const data of playsListsByRadioStations?.docs || []) {
       var excelData = {
-        'Radio Station': data?.radioStation?.name || "--",
-        Country: data?.countriesCount|| 0,
+        'Radio Station': data?.radioStation?.name || '--',
+        Country: data?.countriesCount || 0,
         Plays: data?.playsCount || 0,
         Tracks: data?.uniquePlaysCount || 0,
-        Artist: data?.artistsCount|| 0,
+        Artist: data?.artistsCount || 0,
       };
       jsonFormat.push(excelData);
     }
     if (jsonFormat.length <= 0) {
       jsonFormat.push({
         'Radio Station': '',
-        Country:'',
+        Country: '',
         Plays: '',
         Tracks: '',
-        'Artist': ''
-       
+        Artist: '',
       });
     }
     const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
-    var tobeStorePath:string ='' 
-    const file = xlsx.utils.book_new()
-    const jsonToWorkSheet = xlsx.utils.json_to_sheet(
-      jsonFormat,
-    );
+    var tobeStorePath: string = '';
+    const file = xlsx.utils.book_new();
+    const jsonToWorkSheet = xlsx.utils.json_to_sheet(jsonFormat);
     xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'Radio_Stations');
     if (format == 'xlsx') {
       tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Radio_Stations`}.xlsx`;
       xlsx.writeFile(file, tobeStorePath);
-    }else if(format=='csv'){
+    } else if (format == 'csv') {
       tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Radio_Stations`}.csv`;
-      xlsx.writeFile(file, tobeStorePath,{bookType:'csv',sheet:"Radio_Stations"});
+      xlsx.writeFile(file, tobeStorePath, {
+        bookType: 'csv',
+        sheet: 'Radio_Stations',
+      });
     }
-    return tobeStorePath
+    return tobeStorePath;
+  }
+
+  async exportPlaysByCompanies(queryDto: ParsedQueryDto, format: string) {
+    const playsListsByCompanies = await this.listPlaysByCompanies(queryDto);
+    var jsonFormat = [];
+    for await (const data of playsListsByCompanies?.docs || []) {
+      var excelData = {
+        Company: data?.company?.name || '--',
+        Plays: data?.playsCount || 0,
+        Tracks: data?.uniquePlaysCount || 0,
+        Artist: data?.artistsCount || 0,
+      };
+      jsonFormat.push(excelData);
+    }
+    if (jsonFormat.length <= 0) {
+      jsonFormat.push({
+        Company: '',
+        Plays: '',
+        Tracks: '',
+        Artist: '',
+      });
+    }
+    const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
+    var tobeStorePath: string = '';
+    const file = xlsx.utils.book_new();
+    const jsonToWorkSheet = xlsx.utils.json_to_sheet(jsonFormat);
+    xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'Companies');
+    if (format == 'xlsx') {
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Companies`}.xlsx`;
+      xlsx.writeFile(file, tobeStorePath);
+    } else if (format == 'csv') {
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Companies`}.csv`;
+      xlsx.writeFile(file, tobeStorePath, {
+        bookType: 'csv',
+        sheet: 'Companies',
+      });
+    }
+    return tobeStorePath;
   }
 
   async listPlays(
@@ -1683,6 +1737,16 @@ export class DetectionService {
       { $addFields: { 'sonicKey.partner': { $first: '$sonicKey.partner' } } },
       {
         $lookup: {
+          //populate sonickey's company from its relational table
+          from: 'Track',
+          localField: 'sonicKey.track',
+          foreignField: '_id',
+          as: 'sonicKey.track',
+        },
+      },
+      { $addFields: { 'sonicKey.track': { $first: '$sonicKey.track' } } },
+      {
+        $lookup: {
           //populate radioStation from its relational table
           from: 'RadioStation',
           localField: 'radioStation',
@@ -1709,7 +1773,7 @@ export class DetectionService {
     ];
     if (recentPlays) {
       aggregateArray.push({
-        $limit: limit||10,
+        $limit: limit || 10,
       });
       if (select) {
         aggregateArray.push({
@@ -1728,7 +1792,7 @@ export class DetectionService {
     const {
       limit,
       skip,
-      sort={playsCount:-1},
+      sort = { playsCount: -1 },
       page,
       filter,
       select,
@@ -1820,12 +1884,12 @@ export class DetectionService {
         },
       },
       {
-        $group:{
-          _id:{
-            artist:'$sonicKey.contentOwner'
+        $group: {
+          _id: {
+            artist: '$sonicKey.contentOwner',
           },
-          plays:{
-            $sum:1
+          plays: {
+            $sum: 1,
           },
           sonicKeys: {
             $addToSet: '$sonicKey.sonicKey',
@@ -1836,7 +1900,7 @@ export class DetectionService {
           countries: {
             $addToSet: '$radioStation.country',
           },
-        }
+        },
       },
       {
         $match: {
@@ -1846,11 +1910,11 @@ export class DetectionService {
       {
         $project: {
           _id: 0,
-          artist:'$_id.artist',
+          artist: '$_id.artist',
           playsCount: '$plays',
           uniquePlaysCount: { $size: '$sonicKeys' },
           radioStationCount: { $size: '$radioStations' },
-          countriesCount: { $size: '$countries' }
+          countriesCount: { $size: '$countries' },
         },
       },
     ];
@@ -1863,7 +1927,7 @@ export class DetectionService {
     const {
       limit,
       skip,
-      sort={playsCount:-1},
+      sort = { playsCount: -1 },
       page,
       filter,
       select,
@@ -1955,12 +2019,12 @@ export class DetectionService {
         },
       },
       {
-        $group:{
-          _id:{
-            country:'$radioStation.country'
+        $group: {
+          _id: {
+            country: '$radioStation.country',
           },
-          plays:{
-            $sum:1
+          plays: {
+            $sum: 1,
           },
           sonicKeys: {
             $addToSet: '$sonicKey.sonicKey',
@@ -1971,7 +2035,7 @@ export class DetectionService {
           artists: {
             $addToSet: '$sonicKey.contentOwner',
           },
-        }
+        },
       },
       {
         $match: {
@@ -1981,11 +2045,11 @@ export class DetectionService {
       {
         $project: {
           _id: 0,
-          country:'$_id.country',
+          country: '$_id.country',
           playsCount: '$plays',
           uniquePlaysCount: { $size: '$sonicKeys' },
           radioStationCount: { $size: '$radioStations' },
-          artistsCount: { $size: '$artists' }
+          artistsCount: { $size: '$artists' },
         },
       },
     ];
@@ -1998,7 +2062,7 @@ export class DetectionService {
     const {
       limit,
       skip,
-      sort={playsCount:-1},
+      sort = { playsCount: -1 },
       page,
       filter,
       select,
@@ -2090,12 +2154,12 @@ export class DetectionService {
         },
       },
       {
-        $group:{
-          _id:{
-            trackName:'$sonicKey.contentName'
+        $group: {
+          _id: {
+            trackName: '$sonicKey.contentName',
           },
-          plays:{
-            $sum:1
+          plays: {
+            $sum: 1,
           },
           sonicKeys: {
             $addToSet: '$sonicKey.sonicKey',
@@ -2106,7 +2170,7 @@ export class DetectionService {
           countries: {
             $addToSet: '$radioStation.country',
           },
-        }
+        },
       },
       {
         $match: {
@@ -2116,13 +2180,13 @@ export class DetectionService {
       {
         $project: {
           _id: 0,
-          trackName:'$_id.trackName',
+          trackName: '$_id.trackName',
           playsCount: '$plays',
           uniquePlaysCount: { $size: '$sonicKeys' },
           radioStationCount: { $size: '$radioStations' },
-          countriesCount: { $size: '$countries' }
+          countriesCount: { $size: '$countries' },
         },
-      }
+      },
     ];
     const aggregate = this.detectionModel.aggregate(aggregateArray);
     return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
@@ -2133,7 +2197,7 @@ export class DetectionService {
     const {
       limit,
       skip,
-      sort={playsCount:-1},
+      sort = { playsCount: -1 },
       page,
       filter,
       select,
@@ -2225,12 +2289,12 @@ export class DetectionService {
         },
       },
       {
-        $group:{
-          _id:{
-            radioStation:'$radioStation._id'
+        $group: {
+          _id: {
+            radioStation: '$radioStation._id',
           },
-          plays:{
-            $sum:1
+          plays: {
+            $sum: 1,
           },
           sonicKeys: {
             $addToSet: '$sonicKey.sonicKey',
@@ -2241,7 +2305,7 @@ export class DetectionService {
           countries: {
             $addToSet: '$radioStation.country',
           },
-        }
+        },
       },
       {
         $match: {
@@ -2264,7 +2328,7 @@ export class DetectionService {
           playsCount: '$plays',
           uniquePlaysCount: { $size: '$sonicKeys' },
           artistsCount: { $size: '$artists' },
-          countriesCount: { $size: '$countries' }
+          countriesCount: { $size: '$countries' },
         },
       },
     ];
@@ -2272,13 +2336,11 @@ export class DetectionService {
     return this.detectionModel['aggregatePaginate'](aggregate, paginateOptions);
   }
 
-  async listPlaysByCompanies(
-    queryDto: ParsedQueryDto,
-  ): Promise<MongoosePaginatePlaysByRadioStationDto> {
+  async listPlaysByCompanies(queryDto: ParsedQueryDto): Promise<any> {
     const {
       limit,
       skip,
-      sort={playsCount:-1},
+      sort = { playsCount: -1 },
       page,
       filter,
       select,
@@ -2370,20 +2432,20 @@ export class DetectionService {
         },
       },
       {
-        $group:{
-          _id:{
-            company:'$sonicKey.company._id'
+        $group: {
+          _id: {
+            company: '$sonicKey.company._id',
           },
-          plays:{
-            $sum:1
+          plays: {
+            $sum: 1,
           },
           sonicKeys: {
             $addToSet: '$sonicKey.sonicKey',
           },
           artists: {
             $addToSet: '$sonicKey.contentOwner',
-          }
-        }
+          },
+        },
       },
       {
         $match: {
@@ -2405,7 +2467,7 @@ export class DetectionService {
           company: { $first: '$company' },
           playsCount: '$plays',
           uniquePlaysCount: { $size: '$sonicKeys' },
-          artistsCount: { $size: '$artists' }
+          artistsCount: { $size: '$artists' },
         },
       },
     ];
@@ -2541,13 +2603,11 @@ export class DetectionService {
 
   async getCount(queryDto: ParsedQueryDto) {
     const { filter } = queryDto;
-    return this.detectionModel
-      .find(filter || {})
-      .count()
+    return this.detectionModel.find(filter || {}).count();
   }
 
   async getEstimateCount() {
-    return this.detectionModel.estimatedDocumentCount()
+    return this.detectionModel.estimatedDocumentCount();
   }
 
   /*
@@ -2603,7 +2663,7 @@ export class DetectionService {
     topLimit: number,
     queryDto: ParsedQueryDto,
   ): Promise<TopRadioStationWithPlaysDetails[]> {
-    const {filter,relationalFilter}=queryDto;
+    const { filter, relationalFilter } = queryDto;
     return this.detectionModel.aggregate([
       {
         $match: {
@@ -2669,7 +2729,7 @@ export class DetectionService {
           },
         },
       },
-      {$match: {plays: {$gt: 0}}},
+      { $match: { plays: { $gt: 0 } } },
       {
         $sort: {
           plays: -1,

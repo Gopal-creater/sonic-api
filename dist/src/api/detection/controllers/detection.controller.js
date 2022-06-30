@@ -160,6 +160,9 @@ let DetectionController = class DetectionController {
             case 'RADIOSTATIONS':
                 exportedFilePath = await this.detectionService.exportPlaysByRadioStations(queryDto, format);
                 break;
+            case 'COMPANIES':
+                exportedFilePath = await this.detectionService.exportPlaysByCompanies(queryDto, format);
+                break;
             default:
                 exportedFilePath = await this.detectionService.exportPlays(queryDto, format);
                 break;
@@ -201,6 +204,7 @@ __decorate([
     <div>`,
     }),
     swagger_1.ApiOperation({ summary: 'Get All Plays' }),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
@@ -385,7 +389,7 @@ __decorate([
     common_1.Get('/export-plays-by/:format'),
     swagger_1.ApiQuery({
         name: 'playsBy',
-        enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS'],
+        enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS', 'COMPANIES'],
         required: false,
     }),
     swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),

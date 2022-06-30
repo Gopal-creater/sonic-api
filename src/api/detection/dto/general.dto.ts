@@ -3,6 +3,9 @@ import { IsNotEmpty } from 'class-validator';
 import { SonicKey } from 'src/api/sonickey/schemas/sonickey.schema';
 import { RadioStation } from '../../radiostation/schemas/radiostation.schema';
 import { DetectedTimeStamp } from '../schemas/detection.schema';
+import { UserDB } from '../../user/schemas/user.db.schema';
+import { Company } from '../../company/schemas/company.schema';
+import { Partner } from 'src/api/partner/schemas/partner.schema';
 
 export class TopRadioStation{
 
@@ -68,7 +71,13 @@ export class TopRadioStation{
     detectedAt?: Date;
 
     @ApiProperty()
-    owner?: string;
+    owner?: UserDB;
+
+    @ApiProperty()
+    company?: Company;
+
+    @ApiProperty()
+    partner?: Partner;
 
     @ApiProperty()
     channel?: string;
