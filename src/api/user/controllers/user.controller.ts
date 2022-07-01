@@ -241,7 +241,7 @@ export class UserController {
       ]);
       updateUserDto['phone_number']=updateUserDto.phoneNumber
     }
-    if (enabled && user.enabled !== enabled) {
+    if (typeof enabled !== 'undefined' && user.enabled !== enabled) {
       if (enabled) {
         await this.userService.adminEnableUser(user.username);
       } else {
