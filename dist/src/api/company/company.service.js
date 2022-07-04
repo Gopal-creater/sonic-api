@@ -11,6 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompanyService = void 0;
 const common_1 = require("@nestjs/common");
@@ -21,11 +28,16 @@ const user_service_1 = require("../user/services/user.service");
 const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 const user_company_service_1 = require("../user/services/user-company.service");
 const Enums_1 = require("../../constants/Enums");
+const makeDir = require("make-dir");
+const xlsx = require("xlsx");
+const file_handler_service_1 = require("../../shared/services/file-handler.service");
+const config_1 = require("../../config");
 let CompanyService = class CompanyService {
-    constructor(companyModel, userService, userCompanyService) {
+    constructor(companyModel, userService, userCompanyService, fileHandlerService) {
         this.companyModel = companyModel;
         this.userService = userService;
         this.userCompanyService = userCompanyService;
+        this.fileHandlerService = fileHandlerService;
     }
     async create(doc) {
         const { owner } = doc;
@@ -59,6 +71,95 @@ let CompanyService = class CompanyService {
             });
         }
         return this.companyModel.findById(company);
+    }
+    async getEncodesByCompaniesReport(queryDto) {
+        const { limit, skip, sort = { encodesCount: -1 }, page, filter, select, populate, relationalFilter, } = queryDto;
+        const sonickeyFilter = {};
+        if (filter === null || filter === void 0 ? void 0 : filter.createdAt) {
+            sonickeyFilter['createdAt'] = filter === null || filter === void 0 ? void 0 : filter.createdAt;
+        }
+        var paginateOptions = {};
+        paginateOptions['sort'] = sort;
+        paginateOptions['select'] = select;
+        paginateOptions['populate'] = populate;
+        paginateOptions['offset'] = skip;
+        paginateOptions['page'] = page;
+        paginateOptions['limit'] = limit;
+        var aggregateArray = [
+            {
+                $match: Object.assign({}, filter),
+            },
+            {
+                $sort: {
+                    createdAt: -1,
+                },
+            },
+            {
+                $lookup: {
+                    from: 'SonicKey',
+                    let: { id: '$_id' },
+                    pipeline: [
+                        {
+                            $match: Object.assign({ $expr: { $eq: ['$$id', '$company'] } }, sonickeyFilter),
+                        },
+                        { $count: 'total' },
+                    ],
+                    as: 'encodesCount',
+                },
+            },
+            {
+                $addFields: {
+                    encodesCount: { $sum: '$encodesCount.total' },
+                },
+            },
+        ];
+        const aggregate = this.companyModel.aggregate(aggregateArray);
+        return this.companyModel['aggregatePaginate'](aggregate, paginateOptions);
+    }
+    async exportEncodeByCompaniesReport(queryDto, format) {
+        var e_1, _a;
+        const getEncodesByCompaniesReport = await this.getEncodesByCompaniesReport(queryDto);
+        var jsonFormat = [];
+        try {
+            for (var _b = __asyncValues((getEncodesByCompaniesReport === null || getEncodesByCompaniesReport === void 0 ? void 0 : getEncodesByCompaniesReport.docs) || []), _c; _c = await _b.next(), !_c.done;) {
+                const data = _c.value;
+                var excelData = {
+                    Company: (data === null || data === void 0 ? void 0 : data.name) || '--',
+                    Encodes: (data === null || data === void 0 ? void 0 : data.encodesCount) || 0
+                };
+                jsonFormat.push(excelData);
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) await _a.call(_b);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        if (jsonFormat.length <= 0) {
+            jsonFormat.push({
+                Company: '',
+                Encodes: ''
+            });
+        }
+        const destination = await makeDir(config_1.appConfig.MULTER_EXPORT_DEST);
+        var tobeStorePath = '';
+        const file = xlsx.utils.book_new();
+        const jsonToWorkSheet = xlsx.utils.json_to_sheet(jsonFormat);
+        xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'Encodes By Companies');
+        if (format == 'xlsx') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Encodes_By_Companies`}.xlsx`;
+            xlsx.writeFile(file, tobeStorePath);
+        }
+        else if (format == 'csv') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Encodes_By_Companies`}.csv`;
+            xlsx.writeFile(file, tobeStorePath, {
+                bookType: 'csv',
+                sheet: 'Encodes By Companies',
+            });
+        }
+        return tobeStorePath;
     }
     findAll(queryDto) {
         const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
@@ -144,7 +245,8 @@ CompanyService = __decorate([
     __param(2, common_1.Inject(common_1.forwardRef(() => user_company_service_1.UserCompanyService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         user_service_1.UserService,
-        user_company_service_1.UserCompanyService])
+        user_company_service_1.UserCompanyService,
+        file_handler_service_1.FileHandlerService])
 ], CompanyService);
 exports.CompanyService = CompanyService;
 //# sourceMappingURL=company.service.js.map

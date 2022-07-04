@@ -9,6 +9,14 @@ import { ParsedQueryDto } from 'src/shared/dtos/parsedquery.dto';
 import { UserDB } from '../user/schemas/user.db.schema';
 import { UserCompanyService } from '../user/services/user-company.service';
 import { SystemRoles } from 'src/constants/Enums';
+import * as makeDir from 'make-dir';
+import * as appRootPath from 'app-root-path';
+import * as fs from 'fs';
+import * as xlsx from 'xlsx';
+import * as XLSXChart from 'xlsx-chart';
+import { FileHandlerService } from '../../shared/services/file-handler.service';
+import * as AdmZip from 'adm-zip';
+import { appConfig } from 'src/config';
 
 @Injectable()
 export class CompanyService {
@@ -21,6 +29,8 @@ export class CompanyService {
 
     @Inject(forwardRef(() => UserCompanyService))
     private readonly userCompanyService: UserCompanyService,
+
+    private readonly fileHandlerService: FileHandlerService,
   ) {}
   async create(doc: AnyObject | AnyKeys<Company>) {
     const { owner } = doc;
@@ -62,6 +72,109 @@ export class CompanyService {
     }
     return this.companyModel.findById(company);
   }
+
+  async getEncodesByCompaniesReport(queryDto: ParsedQueryDto) {
+    const {
+      limit,
+      skip,
+      sort = { encodesCount: -1 },
+      page,
+      filter,
+      select,
+      populate,
+      relationalFilter,
+    } = queryDto;
+    const sonickeyFilter = {};
+    if (filter?.createdAt) {
+      sonickeyFilter['createdAt'] = filter?.createdAt;
+    }
+    var paginateOptions = {};
+    paginateOptions['sort'] = sort;
+    paginateOptions['select'] = select;
+    paginateOptions['populate'] = populate;
+    paginateOptions['offset'] = skip;
+    paginateOptions['page'] = page;
+    paginateOptions['limit'] = limit;
+    var aggregateArray: any[] = [
+      {
+        $match: {
+          ...filter,
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+      {
+        $lookup: {
+          from: 'SonicKey',
+          let: { id: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$$id', '$company'] },
+                ...sonickeyFilter,
+              },
+            },
+            { $count: 'total' },
+          ],
+          as: 'encodesCount',
+        },
+      },
+      {
+        $addFields: {
+          encodesCount: { $sum: '$encodesCount.total' },
+        },
+      },
+      // {
+      //   $project: {
+      //     _id: 0,
+      //     company: { $first: '$company' },
+      //     playsCount: '$plays',
+      //     uniquePlaysCount: { $size: '$sonicKeys' },
+      //     artistsCount: { $size: '$artists' },
+      //   },
+      // }
+    ];
+    const aggregate = this.companyModel.aggregate(aggregateArray);
+    return this.companyModel['aggregatePaginate'](aggregate, paginateOptions);
+  }
+
+  async exportEncodeByCompaniesReport(queryDto: ParsedQueryDto, format: string) {
+    const getEncodesByCompaniesReport = await this.getEncodesByCompaniesReport(queryDto);
+    var jsonFormat = [];
+    for await (const data of getEncodesByCompaniesReport?.docs || []) {
+      var excelData = {
+        Company: data?.name || '--',
+        Encodes: data?.encodesCount || 0
+      };
+      jsonFormat.push(excelData);
+    }
+    if (jsonFormat.length <= 0) {
+      jsonFormat.push({
+        Company: '',
+        Encodes: ''
+      });
+    }
+    const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
+    var tobeStorePath: string = '';
+    const file = xlsx.utils.book_new();
+    const jsonToWorkSheet = xlsx.utils.json_to_sheet(jsonFormat);
+    xlsx.utils.book_append_sheet(file, jsonToWorkSheet, 'Encodes By Companies');
+    if (format == 'xlsx') {
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Encodes_By_Companies`}.xlsx`;
+      xlsx.writeFile(file, tobeStorePath);
+    } else if (format == 'csv') {
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_Encodes_By_Companies`}.csv`;
+      xlsx.writeFile(file, tobeStorePath, {
+        bookType: 'csv',
+        sheet: 'Encodes By Companies',
+      });
+    }
+    return tobeStorePath;
+  }
+
   findAll(queryDto: ParsedQueryDto) {
     const {
       limit,
@@ -129,10 +242,14 @@ export class CompanyService {
   }
 
   async update(id: string, updateCompanyDto: UpdateQuery<Company>) {
-    const {owner}=updateCompanyDto
-    const updatedCompany = await this.companyModel.findByIdAndUpdate(id, updateCompanyDto, {
-      new: true,
-    });
+    const { owner } = updateCompanyDto;
+    const updatedCompany = await this.companyModel.findByIdAndUpdate(
+      id,
+      updateCompanyDto,
+      {
+        new: true,
+      },
+    );
     if (owner) {
       await this.userService.userModel.findByIdAndUpdate(owner, {
         userRole: SystemRoles.COMPANY_ADMIN,
@@ -140,7 +257,7 @@ export class CompanyService {
         company: updatedCompany._id,
       });
     }
-    return updatedCompany
+    return updatedCompany;
   }
 
   async getCount(queryDto: ParsedQueryDto) {

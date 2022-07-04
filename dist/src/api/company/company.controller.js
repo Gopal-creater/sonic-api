@@ -32,9 +32,12 @@ const update_company_security_guard_1 = require("./guards/update-company-securit
 const delete_company_security_guard_1 = require("./guards/delete-company-security.guard");
 const user_decorator_1 = require("../auth/decorators/user.decorator");
 const user_db_schema_1 = require("../user/schemas/user.db.schema");
+const utils_1 = require("../../shared/utils");
+const file_handler_service_1 = require("../../shared/services/file-handler.service");
 let CompanyController = class CompanyController {
-    constructor(companyService) {
+    constructor(companyService, fileHandlerService) {
         this.companyService = companyService;
+        this.fileHandlerService = fileHandlerService;
     }
     async create(createCompanyDto, loggedInUser) {
         const { owner } = createCompanyDto;
@@ -52,6 +55,23 @@ let CompanyController = class CompanyController {
     }
     findAll(queryDto) {
         return this.companyService.findAll(queryDto);
+    }
+    getEncodesByCompaniesReport(queryDto) {
+        return this.companyService.getEncodesByCompaniesReport(queryDto);
+    }
+    async exportEncodesByCompaniesReport(res, format, queryDto) {
+        if (!['xlsx', 'csv'].includes(format))
+            throw new common_1.BadRequestException('Unsupported format');
+        queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
+        const filePath = await this.companyService.exportEncodeByCompaniesReport(queryDto, format);
+        const fileName = utils_1.extractFileName(filePath);
+        res.download(filePath, `exported_encodes_by_companies_${format}.${fileName.split('.')[1]}`, err => {
+            if (err) {
+                this.fileHandlerService.deleteFileAtPath(filePath);
+                res.send(err);
+            }
+            this.fileHandlerService.deleteFileAtPath(filePath);
+        });
     }
     async changeAdminUser(company, user, loggedInUser) {
         const companyFromDb = await this.companyService.findOne({
@@ -127,6 +147,29 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], CompanyController.prototype, "findAll", null);
+__decorate([
+    swagger_1.ApiOperation({
+        summary: 'Get companies',
+    }),
+    common_1.Get('/reports/get-encodes-by-companies'),
+    openapi.ApiResponse({ status: 200, type: Object }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", void 0)
+], CompanyController.prototype, "getEncodesByCompaniesReport", null);
+__decorate([
+    common_1.Get('/export/encodes-by-companies/:format'),
+    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
+    swagger_1.ApiOperation({ summary: 'Export Encodes By Company' }),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Param('format')),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], CompanyController.prototype, "exportEncodesByCompaniesReport", null);
 __decorate([
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
     common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, change_company_admin_security_guard_1.ChangeCompanyAdminSecurityGuard),
@@ -216,7 +259,8 @@ __decorate([
 CompanyController = __decorate([
     swagger_1.ApiTags('Company Controller (D & M May 2022)'),
     common_1.Controller('companies'),
-    __metadata("design:paramtypes", [company_service_1.CompanyService])
+    __metadata("design:paramtypes", [company_service_1.CompanyService,
+        file_handler_service_1.FileHandlerService])
 ], CompanyController);
 exports.CompanyController = CompanyController;
 //# sourceMappingURL=company.controller.js.map

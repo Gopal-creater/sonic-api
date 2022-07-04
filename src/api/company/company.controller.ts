@@ -8,18 +8,22 @@ import {
   Delete,
   UseGuards,
   Query,
+  Res,
   NotFoundException,
   Version,
+  BadRequestException,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { CreateCompanyDto } from './dtos/create-company.dto';
 import { UpdateCompanyDto } from './dtos/update-company.dto';
+import { Response } from 'express';
 import {
   ApiTags,
   ApiBearerAuth,
   ApiOperation,
   ApiQuery,
   ApiBody,
+  ApiParam,
 } from '@nestjs/swagger';
 import { RolesAllowed } from 'src/api/auth/decorators';
 import { JwtAuthGuard, RoleBasedGuard } from 'src/api/auth/guards';
@@ -34,11 +38,16 @@ import { UpdateCompanySecurityGuard } from './guards/update-company-security.gua
 import { DeleteCompanySecurityGuard } from './guards/delete-company-security.guard';
 import { User } from '../auth/decorators/user.decorator';
 import { UserDB } from '../user/schemas/user.db.schema';
+import { extractFileName } from 'src/shared/utils';
+import { FileHandlerService } from '../../shared/services/file-handler.service';
 
 @ApiTags('Company Controller (D & M May 2022)')
 @Controller('companies')
 export class CompanyController {
-  constructor(private readonly companyService: CompanyService) {}
+  constructor(
+    private readonly companyService: CompanyService,
+    private readonly fileHandlerService: FileHandlerService,
+  ) {}
 
   @RolesAllowed(Roles.ADMIN, Roles.PARTNER_ADMIN)
   @UseGuards(JwtAuthGuard, RoleBasedGuard, CreateCompanySecurityGuard)
@@ -83,6 +92,53 @@ export class CompanyController {
     return this.companyService.findAll(queryDto);
   }
 
+  @ApiOperation({
+    summary: 'Get companies',
+  })
+  // @RolesAllowed()
+  // @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  // @ApiBearerAuth()
+  @Get('/reports/get-encodes-by-companies')
+  getEncodesByCompaniesReport(
+    @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
+  ) {
+    return this.companyService.getEncodesByCompaniesReport(queryDto);
+  }
+
+  /**
+   * @param targetUser
+   * @param queryDto
+   * @returns
+   */
+  @Get('/export/encodes-by-companies/:format')
+  @ApiParam({ name: 'format', enum: ['xlsx', 'csv'] })
+  @ApiOperation({ summary: 'Export Encodes By Company' })
+  async exportEncodesByCompaniesReport(
+    @Res() res: Response,
+    @Param('format') format: string,
+    @Query(new ParseQueryValue()) queryDto?: ParsedQueryDto,
+  ) {
+    if (!['xlsx', 'csv'].includes(format))
+      throw new BadRequestException('Unsupported format');
+    queryDto.limit = queryDto?.limit <= 2000 ? queryDto?.limit : 2000;
+    const filePath = await this.companyService.exportEncodeByCompaniesReport(
+      queryDto,
+      format,
+    );
+    const fileName = extractFileName(filePath);
+    res.download(
+      filePath,
+      `exported_encodes_by_companies_${format}.${fileName.split('.')[1]}`,
+      err => {
+        if (err) {
+          this.fileHandlerService.deleteFileAtPath(filePath);
+          res.send(err);
+        }
+        this.fileHandlerService.deleteFileAtPath(filePath);
+      },
+    );
+  }
+
   @RolesAllowed(Roles.ADMIN, Roles.PARTNER_ADMIN)
   @UseGuards(JwtAuthGuard, RoleBasedGuard, ChangeCompanyAdminSecurityGuard)
   @Put(':id/change-company-admin-user')
@@ -107,9 +163,9 @@ export class CompanyController {
     if (!companyFromDb) throw new NotFoundException('Unknown company');
 
     await this.companyService.makeCompanyAdminUser(company, user);
-    return this.companyService.update(company,{
+    return this.companyService.update(company, {
       updatedBy: loggedInUser?._id,
-    })
+    });
   }
 
   @Put(':id')
@@ -137,7 +193,10 @@ export class CompanyController {
           'Given user already own the company, please choose different user',
         );
     }
-    return this.companyService.update(id, {...updateCompanyDto,updatedBy: loggedInUser?._id,});
+    return this.companyService.update(id, {
+      ...updateCompanyDto,
+      updatedBy: loggedInUser?._id,
+    });
   }
 
   @Get('/count')
