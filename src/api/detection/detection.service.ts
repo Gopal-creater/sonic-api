@@ -65,6 +65,21 @@ export class DetectionService {
     };
   }
 
+  async getMonitorCountData(queryDto: ParsedQueryDto) {
+    const myPlaysCount = await this.countPlays(queryDto);
+    const myTracksCount = await this.countPlaysByTracks(queryDto);
+    const myArtistsCount = await this.countPlaysByArtists(queryDto);
+    const myRadioStationCount = await this.countPlaysByRadioStations(queryDto);
+    const myCountriesCount = await this.countPlaysByCountries(queryDto);
+    return {
+      myPlaysCount,
+      myTracksCount,
+      myArtistsCount,
+      myRadioStationCount,
+      myCountriesCount
+    };
+  }
+
   async getPlaysDashboardData(filter: Record<any, any>) {
     const playsCount = await this.getTotalPlaysCount({ filter: filter });
     const radioStationsCount = await this.detectionModel.aggregate([

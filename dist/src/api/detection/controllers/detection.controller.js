@@ -65,6 +65,9 @@ let DetectionController = class DetectionController {
     async getMonitorDashboardData(queryDto) {
         return this.detectionService.getMonitorDashboardData(queryDto);
     }
+    async getMonitorCountData(queryDto) {
+        return this.detectionService.getMonitorCountData(queryDto);
+    }
     async createDetection(createDetectionDto, apiKey) {
         const keyFound = await this.sonickeyServive.findBySonicKey(createDetectionDto.sonicKey);
         if (!keyFound) {
@@ -248,6 +251,25 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "getMonitorDashboardData", null);
+__decorate([
+    common_1.Get('/get-monitor-high-level-count-data'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+        additionalHtmlDescription: `<div>
+      To Get plays for specific company ?relation_sonickey.company=companyId <br/>
+      To Get plays for specific partner ?relation_sonickey.partner=partnerId <br/>
+      To Get plays for specific user ?relation_sonickey.owner=ownerId
+    <div>`,
+    }),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get Monitor Count data such as PlaysCount, TracksCount etc.' }),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], DetectionController.prototype, "getMonitorCountData", null);
 __decorate([
     swagger_1.ApiSecurity('x-api-key'),
     swagger_1.ApiBearerAuth(),

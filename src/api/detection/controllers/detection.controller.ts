@@ -135,6 +135,24 @@ export class DetectionController {
     return this.detectionService.getMonitorDashboardData(queryDto);
   }
 
+  @Get('/get-monitor-high-level-count-data')
+  @AnyApiQueryTemplate({
+    additionalHtmlDescription: `<div>
+      To Get plays for specific company ?relation_sonickey.company=companyId <br/>
+      To Get plays for specific partner ?relation_sonickey.partner=partnerId <br/>
+      To Get plays for specific user ?relation_sonickey.owner=ownerId
+    <div>`,
+  })  
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Monitor Count data such as PlaysCount, TracksCount etc.' })
+  async getMonitorCountData(
+    @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
+  ) {    
+    return this.detectionService.getMonitorCountData(queryDto);
+  }
+
   @ApiSecurity('x-api-key')
   @ApiBearerAuth()
   @ApiOperation({

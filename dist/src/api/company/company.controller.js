@@ -149,7 +149,7 @@ __decorate([
 ], CompanyController.prototype, "findAll", null);
 __decorate([
     swagger_1.ApiOperation({
-        summary: 'Get companies',
+        summary: 'Get encodes by companies',
     }),
     common_1.Get('/reports/get-encodes-by-companies'),
     openapi.ApiResponse({ status: 200, type: Object }),

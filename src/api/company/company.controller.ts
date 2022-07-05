@@ -93,7 +93,7 @@ export class CompanyController {
   }
 
   @ApiOperation({
-    summary: 'Get companies',
+    summary: 'Get encodes by companies',
   })
   // @RolesAllowed()
   // @UseGuards(JwtAuthGuard, RoleBasedGuard)

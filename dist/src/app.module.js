@@ -47,6 +47,7 @@ const queuejob_module_1 = require("./queuejob/queuejob.module");
 const chargebee_module_1 = require("./api/chargebee/chargebee.module");
 const partner_module_1 = require("./api/partner/partner.module");
 const track_module_1 = require("./api/track/track.module");
+const report_module_1 = require("./api/report/report.module");
 const test_config_1 = require("./config/test.config");
 mongoosePaginate.paginate.options = {
     limit: 50,
@@ -134,6 +135,7 @@ AppModule = __decorate([
             chargebee_module_1.ChargebeeModule,
             partner_module_1.PartnerModule,
             track_module_1.TrackModule,
+            report_module_1.ReportModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, app_gateway_1.AppGateway, ec2instance_service_1.Ec2InstanceService],
