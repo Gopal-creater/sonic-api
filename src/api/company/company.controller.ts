@@ -95,9 +95,9 @@ export class CompanyController {
   @ApiOperation({
     summary: 'Get encodes by companies',
   })
-  // @RolesAllowed()
-  // @UseGuards(JwtAuthGuard, RoleBasedGuard)
-  // @ApiBearerAuth()
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
   @Get('/reports/get-encodes-by-companies')
   getEncodesByCompaniesReport(
     @Query(new ParseQueryValue()) queryDto: ParsedQueryDto,
@@ -113,6 +113,9 @@ export class CompanyController {
   @Get('/export/encodes-by-companies/:format')
   @ApiParam({ name: 'format', enum: ['xlsx', 'csv'] })
   @ApiOperation({ summary: 'Export Encodes By Company' })
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
   async exportEncodesByCompaniesReport(
     @Res() res: Response,
     @Param('format') format: string,
