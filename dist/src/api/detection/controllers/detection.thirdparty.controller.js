@@ -127,7 +127,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
                             ...detection.detectedTimestamps,
                             ...decodeRes.timestamps || [],
                         ];
-                        detection.metaData = Object.assign(Object.assign({}, detection.metaData), { metaData });
+                        detection.metaData = Object.assign(Object.assign({}, detection.metaData), metaData);
                     }
                     else {
                         detection = await this.detectionService.detectionModel.create({
@@ -218,7 +218,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
                             ...detection.detectedTimestamps,
                             ...decodeRes.timestamps || [],
                         ];
-                        detection.metaData = Object.assign(Object.assign({}, detection.metaData), { metaData });
+                        detection.metaData = Object.assign(Object.assign({}, detection.metaData), metaData);
                     }
                     else {
                         detection = await this.detectionService.detectionModel.create({

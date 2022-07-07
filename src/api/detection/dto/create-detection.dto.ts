@@ -131,7 +131,7 @@ export class CreateThirdPartyStreamReaderDetectionFromFingerPrintDto {
 
   @ApiProperty()
   @IsOptional()
-  metaData: Record<string, any>;
+  metaData: Map<string, any>;
 }
 
 export class CreateDetectionFromHardwareDto {

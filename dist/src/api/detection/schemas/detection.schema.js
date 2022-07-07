@@ -153,7 +153,7 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
-    __metadata("design:type", Object)
+    __metadata("design:type", Map)
 ], Detection.prototype, "metaData", void 0);
 __decorate([
     swagger_1.ApiProperty(),

@@ -167,7 +167,7 @@ class CreateThirdPartyStreamReaderDetectionFromFingerPrintDto {
         this.detectedAt = new Date();
     }
     static _OPENAPI_METADATA_FACTORY() {
-        return { decodeResponsesFromFingerPrint: { required: true, type: () => [require("./general.dto").DecodeResponseFromFingerPrintDto] }, radioStation: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date, default: new Date() }, streamDetectionInterval: { required: true, type: () => Number }, detectionSourceFileName: { required: true, type: () => String }, metaData: { required: true, type: () => Object } };
+        return { decodeResponsesFromFingerPrint: { required: true, type: () => [require("./general.dto").DecodeResponseFromFingerPrintDto] }, radioStation: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date, default: new Date() }, streamDetectionInterval: { required: true, type: () => Number }, detectionSourceFileName: { required: true, type: () => String }, metaData: { required: true } };
     }
 }
 __decorate([
@@ -201,7 +201,7 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsOptional(),
-    __metadata("design:type", Object)
+    __metadata("design:type", Map)
 ], CreateThirdPartyStreamReaderDetectionFromFingerPrintDto.prototype, "metaData", void 0);
 exports.CreateThirdPartyStreamReaderDetectionFromFingerPrintDto = CreateThirdPartyStreamReaderDetectionFromFingerPrintDto;
 class CreateDetectionFromHardwareDto {

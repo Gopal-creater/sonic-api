@@ -191,7 +191,7 @@ export class DetectionThirdPartyController {
             ...detection.detectedTimestamps,
             ...decodeRes.timestamps||[],
           ];
-          detection.metaData={...detection.metaData,metaData}
+          detection.metaData={...detection.metaData,...metaData}
         } else {
           //If not within its original contentDuration, just do insertation
           detection = await this.detectionService.detectionModel.create({
@@ -298,7 +298,7 @@ export class DetectionThirdPartyController {
             ...detection.detectedTimestamps,
             ...decodeRes.timestamps||[],
           ];
-          detection.metaData={...detection.metaData,metaData}
+          detection.metaData={...detection.metaData,...metaData}
         } else {
           //If not within its original contentDuration, just do insertation
           detection = await this.detectionService.detectionModel.create({

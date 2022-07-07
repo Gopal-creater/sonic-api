@@ -214,7 +214,7 @@ export class SonicKey extends Document {
   @IsOptional()
   @ApiProperty()
   @Prop()
-  additionalMetadata: Record<string, any>;
+  additionalMetadata: Map<string, any>;
 
   // client requirements
   @IsOptional()

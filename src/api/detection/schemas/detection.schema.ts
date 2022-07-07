@@ -116,7 +116,7 @@ export class Detection extends Document {
 
   @ApiProperty()
   @Prop()
-  metaData?: Record<string, any>;
+  metaData?: Map<string, any>;
 
   @ApiProperty()
   @Prop({ type: ThirdpartyStreamReaderDetection })
