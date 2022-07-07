@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.identifyDestinationFolderAndResourceOwnerFromUser = exports.enumToArrayOfObject = exports.isValidHttpUrl = exports.extractFileName = exports.promiseHandler = exports.isValidUUID = exports.JSONUtils = void 0;
+exports.convertToDotNotation = exports.identifyDestinationFolderAndResourceOwnerFromUser = exports.enumToArrayOfObject = exports.isValidHttpUrl = exports.extractFileName = exports.promiseHandler = exports.isValidUUID = exports.JSONUtils = void 0;
 exports.JSONUtils = require("./json.utils");
 const Enums_1 = require("../../constants/Enums");
 function isValidUUID(str) {
@@ -79,4 +79,16 @@ function identifyDestinationFolderAndResourceOwnerFromUser(user, keyNameForOwner
     };
 }
 exports.identifyDestinationFolderAndResourceOwnerFromUser = identifyDestinationFolderAndResourceOwnerFromUser;
+function convertToDotNotation(obj, newObj = {}, prefix = "") {
+    for (let key in obj) {
+        if (typeof obj[key] === "object") {
+            convertToDotNotation(obj[key], newObj, prefix + key + ".");
+        }
+        else {
+            newObj[prefix + key] = obj[key];
+        }
+    }
+    return newObj;
+}
+exports.convertToDotNotation = convertToDotNotation;
 //# sourceMappingURL=index.js.map

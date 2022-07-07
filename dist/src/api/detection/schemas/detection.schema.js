@@ -132,6 +132,16 @@ __decorate([
 ], Detection.prototype, "detectedAt", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: String }),
+    __metadata("design:type", String)
+], Detection.prototype, "detectionSourceFileName", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop([{ type: String }]),
+    __metadata("design:type", Array)
+], Detection.prototype, "detectionOrigins", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop([DetectedTimeStamp]),
     __metadata("design:type", Array)
 ], Detection.prototype, "detectedTimestamps", void 0);
@@ -143,7 +153,7 @@ __decorate([
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
-    __metadata("design:type", Map)
+    __metadata("design:type", Object)
 ], Detection.prototype, "metaData", void 0);
 __decorate([
     swagger_1.ApiProperty(),

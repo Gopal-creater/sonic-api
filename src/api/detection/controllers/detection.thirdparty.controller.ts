@@ -19,12 +19,13 @@ import {
 } from '@nestjs/swagger';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
 import { DetectionService } from '../../detection/detection.service';
-import { ChannelEnums } from 'src/constants/Enums';
+import { ChannelEnums, DETECTION_ORIGINS } from 'src/constants/Enums';
 import {
   CreateDetectionFromBinaryDto,
   CreateThirdPartyStreamReaderDetectionFromBinaryDto,
   CreateDetectionFromHardwareDto,
   CreateThirdPartyStreamReaderDetectionFromLamdaDto,
+  CreateThirdPartyStreamReaderDetectionFromFingerPrintDto,
 } from '../dto/create-detection.dto';
 import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
@@ -134,6 +135,7 @@ export class DetectionThirdPartyController {
       radioStation,
       detectedAt,
       metaData,
+      detectionSourceFileName,
       streamDetectionInterval,
     } = createThirdPartyStreamReaderDetectionFromLamdaDto;
     const isValidRadioStation = await this.radiostationService.radioStationModel.findById(
@@ -142,6 +144,19 @@ export class DetectionThirdPartyController {
     if (!isValidRadioStation) {
       throw new NotFoundException('Given radio doesnot exists in our database');
     }
+
+     //Identify the decode origins either from SonicKey or Fingerprint
+     var detectionOrigins:string[]=[]
+     var isAlreadyDetectionWithSameDetectionSourceFileName = await this.detectionService.detectionModel.findOne({
+       radioStation: radioStation,
+       detectionSourceFileName: detectionSourceFileName
+     });
+     if(isAlreadyDetectionWithSameDetectionSourceFileName){
+       detectionOrigins=isAlreadyDetectionWithSameDetectionSourceFileName.detectionOrigins
+     }
+     detectionOrigins.push(DETECTION_ORIGINS.SONICKEY)
+
+
     var savedKeys: string[] = [];
     var errorKeys: string[] = [];
     for await (const decodeRes of decodeResponsesFromBinary) {
@@ -170,10 +185,13 @@ export class DetectionThirdPartyController {
             sonicKeyContentDurationInSec
               ? sonicKeyContentDurationInSec
               : detection.detectedDuration + streamDetectionInterval;
+          detection.detectionSourceFileName=detectionSourceFileName;
+          detection.detectionOrigins=detectionOrigins;
           detection.detectedTimestamps = [
             ...detection.detectedTimestamps,
             ...decodeRes.timestamps||[],
           ];
+          detection.metaData={...detection.metaData,metaData}
         } else {
           //If not within its original contentDuration, just do insertation
           detection = await this.detectionService.detectionModel.create({
@@ -188,6 +206,8 @@ export class DetectionThirdPartyController {
             detectedDuration: streamDetectionInterval,
             detectedTimestamps: decodeRes.timestamps,
             detectedAt: detectedAt || new Date(),
+            detectionSourceFileName:detectionSourceFileName,
+            detectionOrigins:detectionOrigins,
             apiKey:apiKey,
             metaData: metaData,
           });
@@ -200,6 +220,113 @@ export class DetectionThirdPartyController {
           .catch(err => {});
       } else {
         errorKeys.push(decodeRes.sonicKey);
+      }
+    }
+    return{
+      savedSonicKeys:savedKeys,
+      errorOrNotFoundSonicKeys:errorKeys
+    }
+  }
+
+  @ApiOperation({ summary: 'Create Stream Detection From Fingerprint Function' })
+  @UseGuards(ApiKeyAuthGuard)
+  @ApiSecurity('x-api-key')
+  @Post('stream-detection-from-fingerprint')
+  async createThirdPartyRadioDetectionFromFingerPrint(
+    @Body()
+    createThirdPartyStreamReaderDetectionFromFingerPrintDto: CreateThirdPartyStreamReaderDetectionFromFingerPrintDto,
+    @User('sub') customer: string,
+    @ApiKey('_id') apiKey: string,
+  ) {
+    var {
+      decodeResponsesFromFingerPrint,
+      radioStation,
+      detectedAt,
+      metaData,
+      detectionSourceFileName,
+      streamDetectionInterval,
+    } = createThirdPartyStreamReaderDetectionFromFingerPrintDto;
+    const isValidRadioStation = await this.radiostationService.radioStationModel.findById(
+      radioStation,
+    );
+    if (!isValidRadioStation) {
+      throw new NotFoundException('Given radio doesnot exists in our database');
+    }
+
+    //Identify the decode origins either from SonicKey or Fingerprint
+    var detectionOrigins:string[]=[]
+    var isAlreadyDetectionWithSameDetectionSourceFileName = await this.detectionService.detectionModel.findOne({
+      radioStation: radioStation,
+      detectionSourceFileName: detectionSourceFileName
+    });
+    if(isAlreadyDetectionWithSameDetectionSourceFileName){
+      detectionOrigins=isAlreadyDetectionWithSameDetectionSourceFileName.detectionOrigins
+    }
+    detectionOrigins.push(DETECTION_ORIGINS.FINGERPRINT)
+
+    var savedKeys: string[] = [];
+    var errorKeys: string[] = [];
+    for await (const decodeRes of decodeResponsesFromFingerPrint) {
+      const isKeyPresent = await this.sonickeyServive.findOne({
+        "fingerPrintMetaData.soundId":decodeRes.soundId
+      });
+      if (isKeyPresent) {
+        const sonicKeyContentDurationInSec = isKeyPresent.contentDuration || 60;
+        //Get the old detection which is detected less than its original contentDuration
+        var detection = await this.detectionService.detectionModel.findOne({
+          radioStation: radioStation,
+          sonicKey: isKeyPresent.sonicKey,
+          detectedAt: {
+            $gt: new Date(
+              new Date().getTime() - 1000 * sonicKeyContentDurationInSec,
+            ),
+          },
+        });
+        if (
+          detection &&
+          detection.detectedDuration < sonicKeyContentDurationInSec
+        ) {
+          //If within its original contentDuration, just do updation
+          detection.detectedDuration =
+            detection.detectedDuration + streamDetectionInterval >
+            sonicKeyContentDurationInSec
+              ? sonicKeyContentDurationInSec
+              : detection.detectedDuration + streamDetectionInterval;
+          detection.detectionSourceFileName=detectionSourceFileName;
+          detection.detectionOrigins=detectionOrigins;
+          detection.detectedTimestamps = [
+            ...detection.detectedTimestamps,
+            ...decodeRes.timestamps||[],
+          ];
+          detection.metaData={...detection.metaData,metaData}
+        } else {
+          //If not within its original contentDuration, just do insertation
+          detection = await this.detectionService.detectionModel.create({
+            radioStation: radioStation,
+            sonicKey: isKeyPresent.sonicKey,
+            owner: isKeyPresent.owner,
+            company:isKeyPresent.company,
+            partner:isKeyPresent.partner,
+            sonicKeyOwnerId: isKeyPresent.owner,
+            sonicKeyOwnerName: isKeyPresent.contentOwner,
+            channel: ChannelEnums.STREAMREADER,
+            detectedDuration: streamDetectionInterval,
+            detectedTimestamps: decodeRes.timestamps,
+            detectedAt: detectedAt || new Date(),
+            detectionSourceFileName:detectionSourceFileName,
+            detectionOrigins:detectionOrigins,
+            apiKey:apiKey,
+            metaData: metaData,
+          });
+        }
+        await detection
+          .save()
+          .then(() => {
+            savedKeys.push(isKeyPresent.sonicKey);
+          })
+          .catch(err => {});
+      } else {
+        errorKeys.push(isKeyPresent.sonicKey);
       }
     }
     return{

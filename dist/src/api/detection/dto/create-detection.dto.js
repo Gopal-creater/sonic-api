@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateDetectionFromHardwareDto = exports.CreateThirdPartyStreamReaderDetectionFromLamdaDto = exports.CreateThirdPartyStreamReaderDetectionFromBinaryDto = exports.ThirdPartyStreamReaderDetectionDto = exports.CreateDetectionFromBinaryDto = exports.CreateDetectionDto = void 0;
+exports.CreateDetectionFromHardwareDto = exports.CreateThirdPartyStreamReaderDetectionFromFingerPrintDto = exports.CreateThirdPartyStreamReaderDetectionFromLamdaDto = exports.CreateThirdPartyStreamReaderDetectionFromBinaryDto = exports.ThirdPartyStreamReaderDetectionDto = exports.CreateDetectionFromBinaryDto = exports.CreateDetectionDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const Enums_1 = require("../../../constants/Enums");
@@ -125,7 +125,7 @@ class CreateThirdPartyStreamReaderDetectionFromLamdaDto {
         this.detectedAt = new Date();
     }
     static _OPENAPI_METADATA_FACTORY() {
-        return { decodeResponsesFromBinary: { required: true, type: () => [require("./general.dto").DecodeResponseFromBinaryDto] }, radioStation: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date, default: new Date() }, streamDetectionInterval: { required: true, type: () => Number }, metaData: { required: true } };
+        return { decodeResponsesFromBinary: { required: true, type: () => [require("./general.dto").DecodeResponseFromBinaryDto] }, radioStation: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date, default: new Date() }, streamDetectionInterval: { required: true, type: () => Number }, detectionSourceFileName: { required: true, type: () => String }, metaData: { required: true } };
     }
 }
 __decorate([
@@ -154,10 +154,56 @@ __decorate([
 ], CreateThirdPartyStreamReaderDetectionFromLamdaDto.prototype, "streamDetectionInterval", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateThirdPartyStreamReaderDetectionFromLamdaDto.prototype, "detectionSourceFileName", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     class_validator_1.IsOptional(),
     __metadata("design:type", Map)
 ], CreateThirdPartyStreamReaderDetectionFromLamdaDto.prototype, "metaData", void 0);
 exports.CreateThirdPartyStreamReaderDetectionFromLamdaDto = CreateThirdPartyStreamReaderDetectionFromLamdaDto;
+class CreateThirdPartyStreamReaderDetectionFromFingerPrintDto {
+    constructor() {
+        this.detectedAt = new Date();
+    }
+    static _OPENAPI_METADATA_FACTORY() {
+        return { decodeResponsesFromFingerPrint: { required: true, type: () => [require("./general.dto").DecodeResponseFromFingerPrintDto] }, radioStation: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date, default: new Date() }, streamDetectionInterval: { required: true, type: () => Number }, detectionSourceFileName: { required: true, type: () => String }, metaData: { required: true, type: () => Object } };
+    }
+}
+__decorate([
+    swagger_1.ApiProperty({ isArray: true, type: general_dto_1.DecodeResponseFromFingerPrintDto }),
+    class_validator_1.IsDefined(),
+    class_validator_1.IsNotEmpty(),
+    class_validator_1.IsArray(),
+    class_validator_1.ValidateNested({ each: true }),
+    class_transformer_1.Type(() => general_dto_1.DecodeResponseFromFingerPrintDto),
+    __metadata("design:type", Array)
+], CreateThirdPartyStreamReaderDetectionFromFingerPrintDto.prototype, "decodeResponsesFromFingerPrint", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], CreateThirdPartyStreamReaderDetectionFromFingerPrintDto.prototype, "radioStation", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsOptional(),
+    __metadata("design:type", Date)
+], CreateThirdPartyStreamReaderDetectionFromFingerPrintDto.prototype, "detectedAt", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", Number)
+], CreateThirdPartyStreamReaderDetectionFromFingerPrintDto.prototype, "streamDetectionInterval", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", String)
+], CreateThirdPartyStreamReaderDetectionFromFingerPrintDto.prototype, "detectionSourceFileName", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsOptional(),
+    __metadata("design:type", Object)
+], CreateThirdPartyStreamReaderDetectionFromFingerPrintDto.prototype, "metaData", void 0);
+exports.CreateThirdPartyStreamReaderDetectionFromFingerPrintDto = CreateThirdPartyStreamReaderDetectionFromFingerPrintDto;
 class CreateDetectionFromHardwareDto {
     constructor() {
         this.detectedAt = new Date();

@@ -2,7 +2,7 @@ import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 import { ChannelEnums } from 'src/constants/Enums';
 import { IsArray, IsDefined, IsIn, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
 import { DetectedTimeStamp } from '../schemas/detection.schema';
-import { DecodeResponseFromBinaryDto } from './general.dto';
+import { DecodeResponseFromBinaryDto, DecodeResponseFromFingerPrintDto } from './general.dto';
 import { Type } from 'class-transformer';
 
 export class CreateDetectionDto {
@@ -98,8 +98,40 @@ export class CreateThirdPartyStreamReaderDetectionFromLamdaDto {
   streamDetectionInterval:number
 
   @ApiProperty()
+  detectionSourceFileName:string
+
+  @ApiProperty()
   @IsOptional()
   metaData: Map<string, any>;
+}
+
+export class CreateThirdPartyStreamReaderDetectionFromFingerPrintDto {
+  @ApiProperty({isArray:true,type:DecodeResponseFromFingerPrintDto})
+  @IsDefined()
+  @IsNotEmpty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => DecodeResponseFromFingerPrintDto)
+  decodeResponsesFromFingerPrint: DecodeResponseFromFingerPrintDto[];
+
+  @ApiProperty()
+  @IsNotEmpty()
+  radioStation: string;
+
+  @ApiProperty()
+  @IsOptional()
+  detectedAt: Date = new Date();
+
+  @ApiProperty()
+  @IsNotEmpty()
+  streamDetectionInterval:number
+
+  @ApiProperty()
+  detectionSourceFileName:string
+
+  @ApiProperty()
+  @IsOptional()
+  metaData: Record<string, any>;
 }
 
 export class CreateDetectionFromHardwareDto {

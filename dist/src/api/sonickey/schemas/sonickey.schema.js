@@ -265,7 +265,7 @@ __decorate([
     class_validator_1.IsOptional(),
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
-    __metadata("design:type", Map)
+    __metadata("design:type", Object)
 ], SonicKey.prototype, "additionalMetadata", void 0);
 __decorate([
     class_validator_1.IsOptional(),

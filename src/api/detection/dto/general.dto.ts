@@ -205,3 +205,13 @@ export class TopRadioStation{
     @ApiProperty({isArray:true,type:DetectedTimeStamp})
     timestamps:DetectedTimeStamp[]
   }
+
+  export class DecodeResponseFromFingerPrintDto {
+
+    @ApiProperty()
+    @IsNotEmpty()
+    soundId: string;
+
+    @ApiProperty({isArray:true,type:DetectedTimeStamp})
+    timestamps:DetectedTimeStamp[]
+  }

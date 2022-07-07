@@ -99,6 +99,14 @@ export class Detection extends Document {
   detectedAt: Date;
 
   @ApiProperty()
+  @Prop({ type: String})
+  detectionSourceFileName: string
+
+  @ApiProperty()
+  @Prop([{ type: String}])
+  detectionOrigins: string[]
+
+  @ApiProperty()
   @Prop([DetectedTimeStamp])
   detectedTimestamps: DetectedTimeStamp[];
 
@@ -108,7 +116,7 @@ export class Detection extends Document {
 
   @ApiProperty()
   @Prop()
-  metaData?: Map<string, any>;
+  metaData?: Record<string, any>;
 
   @ApiProperty()
   @Prop({ type: ThirdpartyStreamReaderDetection })
