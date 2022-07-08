@@ -1565,6 +1565,7 @@ export class DetectionService {
         'Track Name': data?.trackName || '--',
         Plays: data?.playsCount || 0,
         Tracks: data?.uniquePlaysCount || 0,
+        Artist: data?.artistsCount || 0,
         'Radio Station': data?.radioStationCount || 0,
         Country: data?.countriesCount || 0,
       };
@@ -1575,6 +1576,7 @@ export class DetectionService {
         'Track Name': '',
         Plays: '',
         Tracks: '',
+        Artist: '',
         'Radio Station': '',
         Country: '',
       });
@@ -2179,6 +2181,9 @@ export class DetectionService {
           sonicKeys: {
             $addToSet: '$sonicKey.sonicKey',
           },
+          artists: {
+            $addToSet: '$sonicKey.contentOwner',
+          },
           radioStations: {
             $addToSet: '$radioStation._id',
           },
@@ -2199,6 +2204,7 @@ export class DetectionService {
           playsCount: '$plays',
           uniquePlaysCount: { $size: '$sonicKeys' },
           radioStationCount: { $size: '$radioStations' },
+          artistsCount: { $size: '$artists' },
           countriesCount: { $size: '$countries' },
         },
       },

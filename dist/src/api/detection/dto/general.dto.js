@@ -219,7 +219,7 @@ __decorate([
 exports.PlaysByCountryDto = PlaysByCountryDto;
 class PlaysByTrackDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { trackName: { required: true, type: () => String }, playsCount: { required: true, type: () => Number }, uniquePlaysCount: { required: true, type: () => Number }, radioStationCount: { required: true, type: () => Number }, countriesCount: { required: true, type: () => Number } };
+        return { trackName: { required: true, type: () => String }, playsCount: { required: true, type: () => Number }, uniquePlaysCount: { required: true, type: () => Number }, artistsCount: { required: true, type: () => Number }, radioStationCount: { required: true, type: () => Number }, countriesCount: { required: true, type: () => Number } };
     }
 }
 __decorate([
@@ -234,6 +234,10 @@ __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], PlaysByTrackDto.prototype, "uniquePlaysCount", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    __metadata("design:type", Number)
+], PlaysByTrackDto.prototype, "artistsCount", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     __metadata("design:type", Number)

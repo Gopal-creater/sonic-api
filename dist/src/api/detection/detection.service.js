@@ -1405,6 +1405,7 @@ let DetectionService = class DetectionService {
                     'Track Name': (data === null || data === void 0 ? void 0 : data.trackName) || '--',
                     Plays: (data === null || data === void 0 ? void 0 : data.playsCount) || 0,
                     Tracks: (data === null || data === void 0 ? void 0 : data.uniquePlaysCount) || 0,
+                    Artist: (data === null || data === void 0 ? void 0 : data.artistsCount) || 0,
                     'Radio Station': (data === null || data === void 0 ? void 0 : data.radioStationCount) || 0,
                     Country: (data === null || data === void 0 ? void 0 : data.countriesCount) || 0,
                 };
@@ -1423,6 +1424,7 @@ let DetectionService = class DetectionService {
                 'Track Name': '',
                 Plays: '',
                 Tracks: '',
+                Artist: '',
                 'Radio Station': '',
                 Country: '',
             });
@@ -1950,6 +1952,9 @@ let DetectionService = class DetectionService {
                     sonicKeys: {
                         $addToSet: '$sonicKey.sonicKey',
                     },
+                    artists: {
+                        $addToSet: '$sonicKey.contentOwner',
+                    },
                     radioStations: {
                         $addToSet: '$radioStation._id',
                     },
@@ -1970,6 +1975,7 @@ let DetectionService = class DetectionService {
                     playsCount: '$plays',
                     uniquePlaysCount: { $size: '$sonicKeys' },
                     radioStationCount: { $size: '$radioStations' },
+                    artistsCount: { $size: '$artists' },
                     countriesCount: { $size: '$countries' },
                 },
             },

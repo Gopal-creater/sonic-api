@@ -141,6 +141,9 @@ export class TopRadioStation{
 
     @ApiProperty()
     uniquePlaysCount:number
+    
+    @ApiProperty()
+    artistsCount:number
 
     @ApiProperty()
     radioStationCount:number
