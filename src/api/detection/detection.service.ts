@@ -35,6 +35,7 @@ import { appConfig } from '../../config/app.config';
 import { FileHandlerService } from '../../shared/services/file-handler.service';
 import * as AdmZip from 'adm-zip';
 import * as utils from 'util';
+import { DETECTION_ORIGINS_OBJ } from 'src/constants';
 
 @Injectable()
 export class DetectionService {
@@ -1427,6 +1428,7 @@ export class DetectionService {
         Country: plays?.radioStation?.country || '--',
         'Track Id': plays?.sonicKey?.track?._id || '--',
         SonicKey: plays?.sonicKey?._id,
+        "SK/SID":this.getSKSIDFromDetectionOrigin(plays?.detectionOrigins) || "--",
         Version: plays?.sonicKey?.version || '--',
         Distributor: plays?.sonicKey?.distributor || '--',
         Label: plays?.sonicKey?.label || '--',
@@ -1447,10 +1449,10 @@ export class DetectionService {
         Date: '',
         Time: '',
         Duration: '',
-
         Country: '',
         'Track Id': '',
         SonicKey: '',
+        "SK/SID": '',
         Version: '',
         Distributor: '',
         Label: '',
@@ -2926,5 +2928,19 @@ export class DetectionService {
       },
     ]);
     return graphData;
+  }
+
+
+ getSKSIDFromDetectionOrigin(detectionOriginsArr:string[]){
+    var skSid = []
+    if (detectionOriginsArr && detectionOriginsArr?.length > 0) {
+      detectionOriginsArr.forEach(origin => {
+        if (origin === DETECTION_ORIGINS_OBJ.SONICKEY.name) skSid.push(DETECTION_ORIGINS_OBJ.SONICKEY.shortName)
+        if (origin === DETECTION_ORIGINS_OBJ.FINGERPRINT.name) skSid.push(DETECTION_ORIGINS_OBJ.FINGERPRINT.shortName)
+      });
+    } else {
+      skSid = [DETECTION_ORIGINS_OBJ.SONICKEY.shortName]
+    }
+    return skSid.join(", ")
   }
 }

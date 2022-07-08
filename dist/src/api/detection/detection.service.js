@@ -36,6 +36,7 @@ const moment = require("moment");
 const app_config_1 = require("../../config/app.config");
 const file_handler_service_1 = require("../../shared/services/file-handler.service");
 const AdmZip = require("adm-zip");
+const constants_1 = require("../../constants");
 let DetectionService = class DetectionService {
     constructor(detectionModel, userService, fileHandlerService) {
         this.detectionModel = detectionModel;
@@ -1234,6 +1235,7 @@ let DetectionService = class DetectionService {
                     Country: ((_h = plays === null || plays === void 0 ? void 0 : plays.radioStation) === null || _h === void 0 ? void 0 : _h.country) || '--',
                     'Track Id': ((_k = (_j = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _j === void 0 ? void 0 : _j.track) === null || _k === void 0 ? void 0 : _k._id) || '--',
                     SonicKey: (_l = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _l === void 0 ? void 0 : _l._id,
+                    "SK/SID": this.getSKSIDFromDetectionOrigin(plays === null || plays === void 0 ? void 0 : plays.detectionOrigins) || "--",
                     Version: ((_m = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _m === void 0 ? void 0 : _m.version) || '--',
                     Distributor: ((_o = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _o === void 0 ? void 0 : _o.distributor) || '--',
                     Label: ((_p = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _p === void 0 ? void 0 : _p.label) || '--',
@@ -1265,6 +1267,7 @@ let DetectionService = class DetectionService {
                 Country: '',
                 'Track Id': '',
                 SonicKey: '',
+                "SK/SID": '',
                 Version: '',
                 Distributor: '',
                 Label: '',
@@ -2546,6 +2549,21 @@ let DetectionService = class DetectionService {
             },
         ]);
         return graphData;
+    }
+    getSKSIDFromDetectionOrigin(detectionOriginsArr) {
+        var skSid = [];
+        if (detectionOriginsArr && (detectionOriginsArr === null || detectionOriginsArr === void 0 ? void 0 : detectionOriginsArr.length) > 0) {
+            detectionOriginsArr.forEach(origin => {
+                if (origin === constants_1.DETECTION_ORIGINS_OBJ.SONICKEY.name)
+                    skSid.push(constants_1.DETECTION_ORIGINS_OBJ.SONICKEY.shortName);
+                if (origin === constants_1.DETECTION_ORIGINS_OBJ.FINGERPRINT.name)
+                    skSid.push(constants_1.DETECTION_ORIGINS_OBJ.FINGERPRINT.shortName);
+            });
+        }
+        else {
+            skSid = [constants_1.DETECTION_ORIGINS_OBJ.SONICKEY.shortName];
+        }
+        return skSid.join(", ");
     }
 };
 DetectionService = __decorate([

@@ -92,6 +92,9 @@ export class TopRadioStation{
     sonicKey: SonicKey;
 
     @ApiProperty()
+    detectionOrigins: string[]
+
+    @ApiProperty()
     createdAt?: Date;
 
     @ApiProperty()
@@ -141,7 +144,7 @@ export class TopRadioStation{
 
     @ApiProperty()
     uniquePlaysCount:number
-    
+
     @ApiProperty()
     artistsCount:number
 
