@@ -132,12 +132,12 @@ __decorate([
 ], Detection.prototype, "detectedAt", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String }),
+    mongoose_1.Prop({ type: String, default: '' }),
     __metadata("design:type", String)
 ], Detection.prototype, "detectionSourceFileName", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop([{ type: String }]),
+    mongoose_1.Prop([{ type: String, default: [] }]),
     __metadata("design:type", Array)
 ], Detection.prototype, "detectionOrigins", void 0);
 __decorate([

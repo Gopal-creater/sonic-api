@@ -99,11 +99,11 @@ export class Detection extends Document {
   detectedAt: Date;
 
   @ApiProperty()
-  @Prop({ type: String})
+  @Prop({ type: String,default:''})
   detectionSourceFileName: string
 
   @ApiProperty()
-  @Prop([{ type: String}])
+  @Prop([{ type: String,default:[]}])
   detectionOrigins: string[]
 
   @ApiProperty()
