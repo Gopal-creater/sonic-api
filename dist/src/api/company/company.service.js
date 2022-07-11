@@ -100,7 +100,7 @@ let CompanyService = class CompanyService {
                     let: { id: '$_id' },
                     pipeline: [
                         {
-                            $match: Object.assign({ $expr: { $eq: ['$$id', '$company'] } }, sonickeyFilter),
+                            $match: Object.assign(Object.assign({ $expr: { $eq: ['$$id', '$company'] } }, sonickeyFilter), relationalFilter),
                         },
                         { $count: 'total' },
                     ],

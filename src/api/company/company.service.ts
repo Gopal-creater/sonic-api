@@ -115,6 +115,7 @@ export class CompanyService {
               $match: {
                 $expr: { $eq: ['$$id', '$company'] },
                 ...sonickeyFilter,
+                ...relationalFilter
               },
             },
             { $count: 'total' },
