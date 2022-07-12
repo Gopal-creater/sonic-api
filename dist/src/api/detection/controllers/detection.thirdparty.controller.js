@@ -247,7 +247,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
                         .catch(err => { });
                 }
                 else {
-                    errorKeys.push(isKeyPresent.sonicKey);
+                    errorKeys.push(decodeRes.songId);
                 }
             }
         }
