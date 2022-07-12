@@ -331,7 +331,7 @@ export class DetectionThirdPartyController {
     }
     return{
       savedSonicKeys:savedKeys,
-      errorOrNotFoundSonicKeys:errorKeys
+      errorOrNotFoundSongIds:errorKeys
     }
   }
 

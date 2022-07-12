@@ -260,7 +260,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
         }
         return {
             savedSonicKeys: savedKeys,
-            errorOrNotFoundSonicKeys: errorKeys
+            errorOrNotFoundSongIds: errorKeys
         };
     }
     async createFromHardware(createDetectionFromHardwareDto, customer, apiKey) {
