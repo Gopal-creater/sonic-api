@@ -49,6 +49,12 @@ let PartnerController = class PartnerController {
     findAll(queryDto) {
         return this.partnerService.findAll(queryDto);
     }
+    async getCount(queryDto) {
+        return this.partnerService.getCount(queryDto);
+    }
+    async getEstimateCount() {
+        return this.partnerService.getEstimateCount();
+    }
     findById(id) {
         return this.partnerService.findById(id);
     }
@@ -69,12 +75,6 @@ let PartnerController = class PartnerController {
     }
     update(id, loggedInUser, updatePartnerDto) {
         return this.partnerService.update(id, Object.assign(Object.assign({}, updatePartnerDto), { updatedBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser._id }));
-    }
-    async getCount(queryDto) {
-        return this.partnerService.getCount(queryDto);
-    }
-    async getEstimateCount() {
-        return this.partnerService.getEstimateCount();
     }
     remove(id) {
         return this.partnerService.removeById(id);
@@ -108,6 +108,29 @@ __decorate([
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], PartnerController.prototype, "findAll", null);
+__decorate([
+    common_1.Get('/count'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get count of all partners also accept filter as query params',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], PartnerController.prototype, "getCount", null);
+__decorate([
+    common_1.Get('/estimate-count'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get all count of all partners',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], PartnerController.prototype, "getEstimateCount", null);
 __decorate([
     swagger_1.ApiOperation({
         summary: 'Get partner by id',
@@ -161,29 +184,6 @@ __decorate([
         update_partner_dto_1.UpdatePartnerDto]),
     __metadata("design:returntype", void 0)
 ], PartnerController.prototype, "update", null);
-__decorate([
-    common_1.Get('/count'),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({
-        summary: 'Get count of all partners also accept filter as query params',
-    }),
-    openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
-    __metadata("design:returntype", Promise)
-], PartnerController.prototype, "getCount", null);
-__decorate([
-    common_1.Get('/estimate-count'),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({
-        summary: 'Get all count of all partners',
-    }),
-    openapi.ApiResponse({ status: 200, type: Number }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], PartnerController.prototype, "getEstimateCount", null);
 __decorate([
     decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),

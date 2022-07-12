@@ -51,6 +51,12 @@ let TrackController = class TrackController {
     findAll(queryDto, loggedInUser) {
         return this.trackService.findAll(queryDto);
     }
+    async getCount(queryDto) {
+        return this.trackService.getCount(queryDto);
+    }
+    async getEstimateCount() {
+        return this.trackService.getEstimateCount();
+    }
     async exportTracks(res, format, queryDto, loggedInUser) {
         queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
         const filePath = await this.trackService.exportTracks(queryDto, format);
@@ -76,12 +82,6 @@ let TrackController = class TrackController {
             return new common_1.NotFoundException();
         }
         return this.trackService.update(id, Object.assign(Object.assign({}, updateTrackDto), { updatedBy: loggedInUser.sub }));
-    }
-    async getCount(queryDto) {
-        return this.trackService.getCount(queryDto);
-    }
-    async getEstimateCount() {
-        return this.trackService.getEstimateCount();
     }
     async remove(id) {
         const track = await this.trackService.findById(id);
@@ -161,6 +161,31 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TrackController.prototype, "findAll", null);
 __decorate([
+    common_1.Get('/count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get count of all tracks also accept filter as query params',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
+    __metadata("design:returntype", Promise)
+], TrackController.prototype, "getCount", null);
+__decorate([
+    common_1.Get('/estimate-count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
+        summary: 'Get all count of all tracks',
+    }),
+    openapi.ApiResponse({ status: 200, type: Number }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], TrackController.prototype, "getEstimateCount", null);
+__decorate([
     swagger_1.ApiOperation({ summary: 'List Tracks' }),
     common_1.Get('/export/:format'),
     swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
@@ -213,31 +238,6 @@ __decorate([
         update_track_dto_1.UpdateTrackDto]),
     __metadata("design:returntype", Promise)
 ], TrackController.prototype, "update", null);
-__decorate([
-    common_1.Get('/count'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({
-        summary: 'Get count of all tracks also accept filter as query params',
-    }),
-    openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
-    __metadata("design:returntype", Promise)
-], TrackController.prototype, "getCount", null);
-__decorate([
-    common_1.Get('/estimate-count'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({
-        summary: 'Get all count of all tracks',
-    }),
-    openapi.ApiResponse({ status: 200, type: Number }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], TrackController.prototype, "getEstimateCount", null);
 __decorate([
     common_1.Delete(':id'),
     decorators_1.RolesAllowed(),

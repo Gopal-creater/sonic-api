@@ -134,6 +134,26 @@ export class TrackController {
     return this.trackService.findAll(queryDto);
   }
 
+  @Get('/count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get count of all tracks also accept filter as query params',
+  })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
+    return this.trackService.getCount(queryDto);
+  }
+
+  @Get('/estimate-count')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get all count of all tracks',
+  })
+  async getEstimateCount() {
+    return this.trackService.getEstimateCount();
+  }
+
   @ApiOperation({ summary: 'List Tracks' })
   @Get('/export/:format')
   @ApiParam({ name: 'format', enum: ['xlsx', 'csv'] })
@@ -208,25 +228,7 @@ export class TrackController {
     });
   }
 
-  @Get('/count')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'Get count of all tracks also accept filter as query params',
-  })
-  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
-    return this.trackService.getCount(queryDto);
-  }
 
-  @Get('/estimate-count')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'Get all count of all tracks',
-  })
-  async getEstimateCount() {
-    return this.trackService.getEstimateCount();
-  }
 
   @Delete(':id')
   @RolesAllowed()

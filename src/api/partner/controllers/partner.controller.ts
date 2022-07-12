@@ -72,6 +72,24 @@ export class PartnerController {
     return this.partnerService.findAll(queryDto);
   }
 
+  @Get('/count')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get count of all partners also accept filter as query params',
+  })
+  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
+    return this.partnerService.getCount(queryDto);
+  }
+
+  @Get('/estimate-count')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get all count of all partners',
+  })
+  async getEstimateCount() {
+    return this.partnerService.getEstimateCount();
+  }
+
   @ApiOperation({
     summary: 'Get partner by id',
   })
@@ -136,23 +154,6 @@ export class PartnerController {
     });
   }
 
-  @Get('/count')
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'Get count of all partners also accept filter as query params',
-  })
-  async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
-    return this.partnerService.getCount(queryDto);
-  }
-
-  @Get('/estimate-count')
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'Get all count of all partners',
-  })
-  async getEstimateCount() {
-    return this.partnerService.getEstimateCount();
-  }
 
   @RolesAllowed(Roles.ADMIN)
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
