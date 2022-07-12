@@ -1020,11 +1020,6 @@ export class UserService {
     };
   }
 
-  async addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub: string) {
-    return this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(
-      usernameOrSub,
-    );
-  }
 
   async addDefaultLicenseToUser(ownerIdOrUsername: string) {
     const defaultLicense = await this.licensekeyService.createDefaultLicenseToAssignUser();

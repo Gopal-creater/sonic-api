@@ -216,7 +216,7 @@ export class TopRadioStation{
 
     @ApiProperty()
     @IsNotEmpty()
-    soundId: string;
+    songId: string;
 
     @ApiProperty({isArray:true,type:DetectedTimeStamp})
     timestamps:DetectedTimeStamp[]

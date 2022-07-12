@@ -1,8 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MogSchema } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { RadioStation, RadioStationSchemaName } from '../../radiostation/schemas/radiostation.schema';
+import {
+  RadioStation,
+  RadioStationSchemaName,
+} from '../../radiostation/schemas/radiostation.schema';
 import { LicenseKeySchemaName } from '../../licensekey/schemas/licensekey.schema';
+import { ApiKeySchemaName } from '../../api-key/schemas/api-key.schema';
 
 export const RadioMonitorSchemaName = 'RadioMonitor';
 
@@ -18,7 +22,7 @@ export class RadioMonitor extends Document {
   radio: any;
 
   @ApiProperty()
-  @Prop({type:RadioStation})
+  @Prop({ type: RadioStation })
   radioSearch: RadioStation;
 
   @ApiProperty()
@@ -27,42 +31,45 @@ export class RadioMonitor extends Document {
     ref: LicenseKeySchemaName,
     required: true,
     autopopulate: { maxDepth: 2 },
+    select: false,
   })
   license: any;
 
   @ApiProperty()
   @Prop({
-    required: true,
+    type: String,
+    ref: 'User',
+    autopopulate: { maxDepth: 2 },
   })
   owner: string;
 
   @ApiProperty()
-  @Prop({ type: Date })
-  startedAt: Date;
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Company',
+    autopopulate: { maxDepth: 2 },
+  })
+  company: any;
 
   @ApiProperty()
-  @Prop({ type: Date })
-  stopAt: Date;
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: 'Partner',
+    autopopulate: { maxDepth: 2 },
+  })
+  partner: any;
 
   @ApiProperty()
-  @Prop({ default: false })
-  isListeningStarted: boolean;
-
-  @ApiProperty()
-  @Prop({ default: false })
-  isError: boolean;
-
-  @ApiProperty()
-  @Prop({ default: null })
-  error: Map<string, any>;
+  @Prop({
+    type: MogSchema.Types.ObjectId,
+    ref: ApiKeySchemaName,
+    select: false,
+  })
+  apiKey: any;
 
   @ApiProperty()
   @Prop()
   metaData: Map<string, any>;
-
-  @ApiProperty()
-  @Prop([String])
-  groups?: [string];
 }
 
 export const RadioMonitorSchema = SchemaFactory.createForClass(RadioMonitor);

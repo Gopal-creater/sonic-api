@@ -476,26 +476,6 @@ export class UserController {
     return this.userService.syncUsersFromCognitoToMongooDb();
   }
 
-  @Post('add-monitoring-subscription-from-monitoring-group/:usernameOrSub')
-  @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard, RoleBasedGuard)
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'Add monitoring Subscription From Monitoring Group',
-  })
-  async addMonitoringSubscriptionFromMonitoringGroup(
-    @Param('usernameOrSub') usernameOrSub: string,
-  ) {
-    const user = await this.userService.getUserProfile(usernameOrSub);
-    if (!user) {
-      throw new NotFoundException('Invalid user');
-    }
-
-    return this.userService.addMonitoringSubscriptionFromMonitoringGroup(
-      usernameOrSub,
-    );
-  }
-
   @RolesAllowed()
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()

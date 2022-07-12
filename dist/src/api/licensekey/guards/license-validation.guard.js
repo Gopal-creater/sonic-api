@@ -161,9 +161,7 @@ let SubscribeRadioMonitorLicenseValidationGuard = class SubscribeRadioMonitorLic
         var e_2, _a;
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        const licenses = await this.licensekeyService.licenseKeyModel.find({
-            'users': user.sub,
-        });
+        const licenses = await this.licensekeyService.findValidLicesesForUser(user.sub);
         if (!licenses || licenses.length <= 0) {
             throw new common_1.UnprocessableEntityException('No License keys present. Please add a license key to subscribe for monitor.');
         }

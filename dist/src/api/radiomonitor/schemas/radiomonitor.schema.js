@@ -15,6 +15,7 @@ const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
 const radiostation_schema_1 = require("../../radiostation/schemas/radiostation.schema");
 const licensekey_schema_1 = require("../../licensekey/schemas/licensekey.schema");
+const api_key_schema_1 = require("../../api-key/schemas/api-key.schema");
 exports.RadioMonitorSchemaName = 'RadioMonitor';
 let RadioMonitor = class RadioMonitor extends mongoose_2.Document {
 };
@@ -40,51 +41,51 @@ __decorate([
         ref: licensekey_schema_1.LicenseKeySchemaName,
         required: true,
         autopopulate: { maxDepth: 2 },
+        select: false,
     }),
     __metadata("design:type", Object)
 ], RadioMonitor.prototype, "license", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop({
-        required: true,
+        type: String,
+        ref: 'User',
+        autopopulate: { maxDepth: 2 },
     }),
     __metadata("design:type", String)
 ], RadioMonitor.prototype, "owner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: Date }),
-    __metadata("design:type", Date)
-], RadioMonitor.prototype, "startedAt", void 0);
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'Company',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], RadioMonitor.prototype, "company", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: Date }),
-    __metadata("design:type", Date)
-], RadioMonitor.prototype, "stopAt", void 0);
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: 'Partner',
+        autopopulate: { maxDepth: 2 },
+    }),
+    __metadata("design:type", Object)
+], RadioMonitor.prototype, "partner", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: false }),
-    __metadata("design:type", Boolean)
-], RadioMonitor.prototype, "isListeningStarted", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: false }),
-    __metadata("design:type", Boolean)
-], RadioMonitor.prototype, "isError", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: null }),
-    __metadata("design:type", Map)
-], RadioMonitor.prototype, "error", void 0);
+    mongoose_1.Prop({
+        type: mongoose_2.Schema.Types.ObjectId,
+        ref: api_key_schema_1.ApiKeySchemaName,
+        select: false,
+    }),
+    __metadata("design:type", Object)
+], RadioMonitor.prototype, "apiKey", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     mongoose_1.Prop(),
     __metadata("design:type", Map)
 ], RadioMonitor.prototype, "metaData", void 0);
-__decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop([String]),
-    __metadata("design:type", Array)
-], RadioMonitor.prototype, "groups", void 0);
 RadioMonitor = __decorate([
     mongoose_1.Schema({ timestamps: true, collection: exports.RadioMonitorSchemaName })
 ], RadioMonitor);

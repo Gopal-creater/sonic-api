@@ -344,14 +344,14 @@ __decorate([
 exports.DecodeResponseFromBinaryDto = DecodeResponseFromBinaryDto;
 class DecodeResponseFromFingerPrintDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { soundId: { required: true, type: () => String }, timestamps: { required: true, type: () => [require("../schemas/detection.schema").DetectedTimeStamp] } };
+        return { songId: { required: true, type: () => String }, timestamps: { required: true, type: () => [require("../schemas/detection.schema").DetectedTimeStamp] } };
     }
 }
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
-], DecodeResponseFromFingerPrintDto.prototype, "soundId", void 0);
+], DecodeResponseFromFingerPrintDto.prototype, "songId", void 0);
 __decorate([
     swagger_1.ApiProperty({ isArray: true, type: detection_schema_1.DetectedTimeStamp }),
     __metadata("design:type", Array)

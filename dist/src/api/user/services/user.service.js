@@ -740,9 +740,6 @@ let UserService = class UserService {
             cognitoUserSignuped: cognitoUserCreated,
         };
     }
-    async addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub) {
-        return this.radioMonitorService.addUserFromHisMonitoringGroupToSubscribeRadioMonitoring(usernameOrSub);
-    }
     async addDefaultLicenseToUser(ownerIdOrUsername) {
         const defaultLicense = await this.licensekeyService.createDefaultLicenseToAssignUser();
         return this.addNewLicense(defaultLicense.key, ownerIdOrUsername);

@@ -13,7 +13,6 @@ const radiomonitor_controller_1 = require("./controllers/radiomonitor.controller
 const mongoose_1 = require("@nestjs/mongoose");
 const radiomonitor_schema_1 = require("./schemas/radiomonitor.schema");
 const radiostation_module_1 = require("../radiostation/radiostation.module");
-const radiomonitor_owner_controller_1 = require("./controllers/radiomonitor-owner.controller");
 const licensekey_module_1 = require("../licensekey/licensekey.module");
 const auth_module_1 = require("../auth/auth.module");
 const user_module_1 = require("../user/user.module");
@@ -30,7 +29,7 @@ RadiomonitorModule = __decorate([
             common_1.forwardRef(() => auth_module_1.AuthModule),
             common_1.forwardRef(() => user_module_1.UserModule)
         ],
-        controllers: [radiomonitor_controller_1.RadioMonitorController, radiomonitor_owner_controller_1.RadioMonitorOwnerController],
+        controllers: [radiomonitor_controller_1.RadioMonitorController],
         providers: [radiomonitor_service_1.RadioMonitorService],
         exports: [radiomonitor_service_1.RadioMonitorService]
     })

@@ -268,7 +268,7 @@ export class DetectionThirdPartyController {
     var errorKeys: string[] = [];
     for await (const decodeRes of decodeResponsesFromFingerPrint) {
       const isKeyPresent = await this.sonickeyServive.findOne({
-        "fingerPrintMetaData.soundId":decodeRes.soundId
+        "fingerPrintMetaData.song_id":decodeRes.songId
       });
       if (isKeyPresent) {
         const sonicKeyContentDurationInSec = isKeyPresent.contentDuration || 60;

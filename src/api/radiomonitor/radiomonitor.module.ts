@@ -7,7 +7,6 @@ import {
   RadioMonitorSchemaName,
 } from './schemas/radiomonitor.schema';
 import { RadiostationModule } from '../radiostation/radiostation.module';
-import { RadioMonitorOwnerController } from './controllers/radiomonitor-owner.controller';
 import { LicensekeyModule } from '../licensekey/licensekey.module';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
@@ -21,7 +20,7 @@ LicensekeyModule,
     forwardRef(()=>AuthModule),
     forwardRef(() => UserModule)
   ],
-  controllers: [RadioMonitorController, RadioMonitorOwnerController],
+  controllers: [RadioMonitorController],
   providers: [RadioMonitorService],
   exports:[RadioMonitorService]
 })

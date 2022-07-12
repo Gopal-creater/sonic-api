@@ -253,13 +253,6 @@ let UserController = class UserController {
         }
         return this.userService.syncUsersFromCognitoToMongooDb();
     }
-    async addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub) {
-        const user = await this.userService.getUserProfile(usernameOrSub);
-        if (!user) {
-            throw new common_1.NotFoundException('Invalid user');
-        }
-        return this.userService.addMonitoringSubscriptionFromMonitoringGroup(usernameOrSub);
-    }
     async findById(userId) {
         const user = await this.userService.getUserProfile(userId);
         if (!user) {
@@ -532,20 +525,6 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "syncUsers", null);
-__decorate([
-    common_1.Post('add-monitoring-subscription-from-monitoring-group/:usernameOrSub'),
-    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({
-        summary: 'Add monitoring Subscription From Monitoring Group',
-    }),
-    openapi.ApiResponse({ status: 201 }),
-    __param(0, common_1.Param('usernameOrSub')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "addMonitoringSubscriptionFromMonitoringGroup", null);
 __decorate([
     roles_decorator_1.RolesAllowed(),
     common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
