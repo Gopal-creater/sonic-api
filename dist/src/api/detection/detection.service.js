@@ -72,7 +72,7 @@ let DetectionService = class DetectionService {
             myTracksCount,
             myArtistsCount,
             myRadioStationCount,
-            myCountriesCount
+            myCountriesCount,
         };
     }
     async getPlaysDashboardData(filter) {
@@ -1210,12 +1210,12 @@ let DetectionService = class DetectionService {
     }
     async exportPlays(queryDto, format) {
         var e_5, _a;
-        var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
+        var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
         const playsLists = (await this.listPlays(queryDto));
         var playsListInJsonFormat = [];
         try {
-            for (var _u = __asyncValues((playsLists === null || playsLists === void 0 ? void 0 : playsLists.docs) || []), _v; _v = await _u.next(), !_v.done;) {
-                const plays = _v.value;
+            for (var _x = __asyncValues((playsLists === null || playsLists === void 0 ? void 0 : playsLists.docs) || []), _y; _y = await _x.next(), !_y.done;) {
+                const plays = _y.value;
                 var playsExcelData = {
                     Company: ((_b = plays === null || plays === void 0 ? void 0 : plays.company) === null || _b === void 0 ? void 0 : _b.name) || '--',
                     'Company Type': ((_c = plays === null || plays === void 0 ? void 0 : plays.company) === null || _c === void 0 ? void 0 : _c.companyType) || '--',
@@ -1235,14 +1235,18 @@ let DetectionService = class DetectionService {
                     Country: ((_h = plays === null || plays === void 0 ? void 0 : plays.radioStation) === null || _h === void 0 ? void 0 : _h.country) || '--',
                     'Track Id': ((_k = (_j = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _j === void 0 ? void 0 : _j.track) === null || _k === void 0 ? void 0 : _k._id) || '--',
                     SonicKey: (_l = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _l === void 0 ? void 0 : _l._id,
-                    "SK/SID": this.getSKSIDFromDetectionOrigin(plays === null || plays === void 0 ? void 0 : plays.detectionOrigins) || "--",
+                    'SK/SID': this.getSKSIDFromDetectionOrigin(plays === null || plays === void 0 ? void 0 : plays.detectionOrigins) || '--',
                     Version: ((_m = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _m === void 0 ? void 0 : _m.version) || '--',
                     Distributor: ((_o = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _o === void 0 ? void 0 : _o.distributor) || '--',
                     Label: ((_p = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _p === void 0 ? void 0 : _p.label) || '--',
                     ISRC: ((_q = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _q === void 0 ? void 0 : _q.isrcCode) || '--',
                     ISWC: ((_r = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _r === void 0 ? void 0 : _r.iswcCode) || '--',
                     'Tune Code': ((_s = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _s === void 0 ? void 0 : _s.tuneCode) || '--',
-                    'File Type': ((_t = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _t === void 0 ? void 0 : _t.contentFileType) || '--',
+                    Description: ((_t = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _t === void 0 ? void 0 : _t.contentDescription) || '--',
+                    'File Type': ((_u = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _u === void 0 ? void 0 : _u.contentFileType) || '--',
+                    'Additional Metadata': ((_v = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _v === void 0 ? void 0 : _v.additionalMetadata)
+                        ? JSON.stringify((_w = plays === null || plays === void 0 ? void 0 : plays.sonicKey) === null || _w === void 0 ? void 0 : _w.additionalMetadata)
+                        : '--',
                 };
                 playsListInJsonFormat.push(playsExcelData);
             }
@@ -1250,7 +1254,7 @@ let DetectionService = class DetectionService {
         catch (e_5_1) { e_5 = { error: e_5_1 }; }
         finally {
             try {
-                if (_v && !_v.done && (_a = _u.return)) await _a.call(_u);
+                if (_y && !_y.done && (_a = _x.return)) await _a.call(_x);
             }
             finally { if (e_5) throw e_5.error; }
         }
@@ -1267,14 +1271,16 @@ let DetectionService = class DetectionService {
                 Country: '',
                 'Track Id': '',
                 SonicKey: '',
-                "SK/SID": '',
+                'SK/SID': '',
                 Version: '',
                 Distributor: '',
                 Label: '',
                 ISRC: '',
                 ISWC: '',
                 'Tune Code': '',
+                Description: '',
                 'File Type': '',
+                'Additional Metadata': '',
             });
         }
         const destination = await makeDir(app_config_1.appConfig.MULTER_EXPORT_DEST);
@@ -2563,7 +2569,7 @@ let DetectionService = class DetectionService {
         else {
             skSid = [constants_1.DETECTION_ORIGINS_OBJ.SONICKEY.shortName];
         }
-        return skSid.join(", ");
+        return skSid.join(', ');
     }
 };
 DetectionService = __decorate([

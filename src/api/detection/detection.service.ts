@@ -77,7 +77,7 @@ export class DetectionService {
       myTracksCount,
       myArtistsCount,
       myRadioStationCount,
-      myCountriesCount
+      myCountriesCount,
     };
   }
 
@@ -1428,14 +1428,19 @@ export class DetectionService {
         Country: plays?.radioStation?.country || '--',
         'Track Id': plays?.sonicKey?.track?._id || '--',
         SonicKey: plays?.sonicKey?._id,
-        "SK/SID":this.getSKSIDFromDetectionOrigin(plays?.detectionOrigins) || "--",
+        'SK/SID':
+          this.getSKSIDFromDetectionOrigin(plays?.detectionOrigins) || '--',
         Version: plays?.sonicKey?.version || '--',
         Distributor: plays?.sonicKey?.distributor || '--',
         Label: plays?.sonicKey?.label || '--',
         ISRC: plays?.sonicKey?.isrcCode || '--',
         ISWC: plays?.sonicKey?.iswcCode || '--',
         'Tune Code': plays?.sonicKey?.tuneCode || '--',
+        Description: plays?.sonicKey?.contentDescription || '--',
         'File Type': plays?.sonicKey?.contentFileType || '--',
+        'Additional Metadata': plays?.sonicKey?.additionalMetadata
+          ? JSON.stringify(plays?.sonicKey?.additionalMetadata)
+          : '--',
       };
       playsListInJsonFormat.push(playsExcelData);
     }
@@ -1452,14 +1457,16 @@ export class DetectionService {
         Country: '',
         'Track Id': '',
         SonicKey: '',
-        "SK/SID": '',
+        'SK/SID': '',
         Version: '',
         Distributor: '',
         Label: '',
         ISRC: '',
         ISWC: '',
         'Tune Code': '',
+        Description: '',
         'File Type': '',
+        'Additional Metadata': '',
       });
     }
     const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
@@ -2930,17 +2937,18 @@ export class DetectionService {
     return graphData;
   }
 
-
- getSKSIDFromDetectionOrigin(detectionOriginsArr:string[]){
-    var skSid = []
+  getSKSIDFromDetectionOrigin(detectionOriginsArr: string[]) {
+    var skSid = [];
     if (detectionOriginsArr && detectionOriginsArr?.length > 0) {
       detectionOriginsArr.forEach(origin => {
-        if (origin === DETECTION_ORIGINS_OBJ.SONICKEY.name) skSid.push(DETECTION_ORIGINS_OBJ.SONICKEY.shortName)
-        if (origin === DETECTION_ORIGINS_OBJ.FINGERPRINT.name) skSid.push(DETECTION_ORIGINS_OBJ.FINGERPRINT.shortName)
+        if (origin === DETECTION_ORIGINS_OBJ.SONICKEY.name)
+          skSid.push(DETECTION_ORIGINS_OBJ.SONICKEY.shortName);
+        if (origin === DETECTION_ORIGINS_OBJ.FINGERPRINT.name)
+          skSid.push(DETECTION_ORIGINS_OBJ.FINGERPRINT.shortName);
       });
     } else {
-      skSid = [DETECTION_ORIGINS_OBJ.SONICKEY.shortName]
+      skSid = [DETECTION_ORIGINS_OBJ.SONICKEY.shortName];
     }
-    return skSid.join(", ")
+    return skSid.join(', ');
   }
 }
