@@ -229,14 +229,14 @@ export class DetectionThirdPartyController {
   }
 
   @ApiOperation({ summary: 'Create Stream Detection From Fingerprint Function' })
-  @UseGuards(ApiKeyAuthGuard)
-  @ApiSecurity('x-api-key')
+  // @UseGuards(ApiKeyAuthGuard)
+  // @ApiSecurity('x-api-key')
   @Post('stream-detection-from-fingerprint')
   async createThirdPartyRadioDetectionFromFingerPrint(
     @Body()
     createThirdPartyStreamReaderDetectionFromFingerPrintDto: CreateThirdPartyStreamReaderDetectionFromFingerPrintDto,
     @User('sub') customer: string,
-    @ApiKey('_id') apiKey: string,
+    // @ApiKey('_id') apiKey: string,
   ) {
     var {
       decodeResponsesFromFingerPrint,
@@ -315,7 +315,7 @@ export class DetectionThirdPartyController {
             detectedAt: detectedAt || new Date(),
             detectionSourceFileName:detectionSourceFileName,
             detectionOrigins:detectionOrigins,
-            apiKey:apiKey,
+            // apiKey:apiKey,
             metaData: metaData,
           });
         }

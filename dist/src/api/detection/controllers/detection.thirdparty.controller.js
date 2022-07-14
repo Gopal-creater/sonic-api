@@ -172,7 +172,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
             errorOrNotFoundSonicKeys: errorKeys
         };
     }
-    async createThirdPartyRadioDetectionFromFingerPrint(createThirdPartyStreamReaderDetectionFromFingerPrintDto, customer, apiKey) {
+    async createThirdPartyRadioDetectionFromFingerPrint(createThirdPartyStreamReaderDetectionFromFingerPrintDto, customer) {
         var e_2, _a;
         var { decodeResponsesFromFingerPrint, radioStation, detectedAt, metaData, detectionSourceFileName, streamDetectionInterval, } = createThirdPartyStreamReaderDetectionFromFingerPrintDto;
         const isValidRadioStation = await this.radiostationService.radioStationModel.findById(radioStation);
@@ -235,7 +235,6 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
                             detectedAt: detectedAt || new Date(),
                             detectionSourceFileName: detectionSourceFileName,
                             detectionOrigins: detectionOrigins,
-                            apiKey: apiKey,
                             metaData: metaData,
                         });
                     }
@@ -327,15 +326,12 @@ __decorate([
 ], DetectionThirdPartyController.prototype, "createThirdPartyRadioDetectionFromLamda", null);
 __decorate([
     swagger_1.ApiOperation({ summary: 'Create Stream Detection From Fingerprint Function' }),
-    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
-    swagger_1.ApiSecurity('x-api-key'),
     common_1.Post('stream-detection-from-fingerprint'),
     openapi.ApiResponse({ status: 201 }),
     __param(0, common_1.Body()),
     __param(1, user_decorator_1.User('sub')),
-    __param(2, apikey_decorator_1.ApiKey('_id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_detection_dto_1.CreateThirdPartyStreamReaderDetectionFromFingerPrintDto, String, String]),
+    __metadata("design:paramtypes", [create_detection_dto_1.CreateThirdPartyStreamReaderDetectionFromFingerPrintDto, String]),
     __metadata("design:returntype", Promise)
 ], DetectionThirdPartyController.prototype, "createThirdPartyRadioDetectionFromFingerPrint", null);
 __decorate([
