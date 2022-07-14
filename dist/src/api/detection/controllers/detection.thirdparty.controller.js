@@ -27,6 +27,7 @@ const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
 const detection_service_1 = require("../../detection/detection.service");
 const Enums_1 = require("../../../constants/Enums");
 const create_detection_dto_1 = require("../dto/create-detection.dto");
+const _ = require("lodash");
 const apikey_auth_guard_1 = require("../../auth/guards/apikey-auth.guard");
 const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
 const user_decorator_1 = require("../../auth/decorators/user.decorator");
@@ -122,7 +123,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
                                 ? sonicKeyContentDurationInSec
                                 : detection.detectedDuration + streamDetectionInterval;
                         detection.detectionSourceFileName = detectionSourceFileName;
-                        detection.detectionOrigins = detectionOrigins;
+                        detection.detectionOrigins = _.uniq(detectionOrigins);
                         detection.detectedTimestamps = [
                             ...detection.detectedTimestamps,
                             ...decodeRes.timestamps || [],
@@ -143,7 +144,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
                             detectedTimestamps: decodeRes.timestamps,
                             detectedAt: detectedAt || new Date(),
                             detectionSourceFileName: detectionSourceFileName,
-                            detectionOrigins: detectionOrigins,
+                            detectionOrigins: _.uniq(detectionOrigins),
                             apiKey: apiKey,
                             metaData: metaData,
                         });
@@ -213,7 +214,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
                                 ? sonicKeyContentDurationInSec
                                 : detection.detectedDuration + streamDetectionInterval;
                         detection.detectionSourceFileName = detectionSourceFileName;
-                        detection.detectionOrigins = detectionOrigins;
+                        detection.detectionOrigins = _.uniq(detectionOrigins);
                         detection.detectedTimestamps = [
                             ...detection.detectedTimestamps,
                             ...decodeRes.timestamps || [],
@@ -234,7 +235,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
                             detectedTimestamps: decodeRes.timestamps,
                             detectedAt: detectedAt || new Date(),
                             detectionSourceFileName: detectionSourceFileName,
-                            detectionOrigins: detectionOrigins,
+                            detectionOrigins: _.uniq(detectionOrigins),
                             metaData: metaData,
                         });
                     }

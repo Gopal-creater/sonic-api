@@ -27,6 +27,7 @@ import {
   CreateThirdPartyStreamReaderDetectionFromLamdaDto,
   CreateThirdPartyStreamReaderDetectionFromFingerPrintDto,
 } from '../dto/create-detection.dto';
+import * as _ from 'lodash';
 import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
 import { User } from '../../auth/decorators/user.decorator';
@@ -186,7 +187,7 @@ export class DetectionThirdPartyController {
               ? sonicKeyContentDurationInSec
               : detection.detectedDuration + streamDetectionInterval;
           detection.detectionSourceFileName=detectionSourceFileName;
-          detection.detectionOrigins=detectionOrigins;
+          detection.detectionOrigins=_.uniq(detectionOrigins);
           detection.detectedTimestamps = [
             ...detection.detectedTimestamps,
             ...decodeRes.timestamps||[],
@@ -207,7 +208,7 @@ export class DetectionThirdPartyController {
             detectedTimestamps: decodeRes.timestamps,
             detectedAt: detectedAt || new Date(),
             detectionSourceFileName:detectionSourceFileName,
-            detectionOrigins:detectionOrigins,
+            detectionOrigins:_.uniq(detectionOrigins),
             apiKey:apiKey,
             metaData: metaData,
           });
@@ -293,7 +294,7 @@ export class DetectionThirdPartyController {
               ? sonicKeyContentDurationInSec
               : detection.detectedDuration + streamDetectionInterval;
           detection.detectionSourceFileName=detectionSourceFileName;
-          detection.detectionOrigins=detectionOrigins;
+          detection.detectionOrigins=_.uniq(detectionOrigins);
           detection.detectedTimestamps = [
             ...detection.detectedTimestamps,
             ...decodeRes.timestamps||[],
@@ -314,7 +315,7 @@ export class DetectionThirdPartyController {
             detectedTimestamps: decodeRes.timestamps,
             detectedAt: detectedAt || new Date(),
             detectionSourceFileName:detectionSourceFileName,
-            detectionOrigins:detectionOrigins,
+            detectionOrigins:_.uniq(detectionOrigins),
             // apiKey:apiKey,
             metaData: metaData,
           });
