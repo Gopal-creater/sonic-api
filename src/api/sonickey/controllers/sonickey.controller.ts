@@ -69,7 +69,6 @@ import { DownloadDto } from '../dtos/download.dto';
 import * as appRootPath from 'app-root-path';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
-import { Response } from 'express';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import {
   ChannelEnums,
@@ -96,7 +95,7 @@ import { UserDB } from '../../user/schemas/user.db.schema';
 import * as _ from 'lodash';
 import { BulkEncodeWithQueueLicenseValidationGuard } from 'src/api/licensekey/guards/job-license-validation.guard';
 import { ApiKeyAuthGuard } from 'src/api/auth/guards/apikey-auth.guard';
-import { identifyDestinationFolderAndResourceOwnerFromUser } from 'src/shared/utils';
+import { extractFileName, identifyDestinationFolderAndResourceOwnerFromUser } from 'src/shared/utils';
 import { Track } from 'src/api/track/schemas/track.schema';
 import { EncodeSecurityGuard } from '../guards/encode-security.guard';
 import { UpdateSonicKeySecurityGuard } from '../guards/update-sonickey-security.guard';
@@ -105,6 +104,7 @@ import { EncodeSecurityInterceptor } from '../interceptors/encode-security.inter
 import { ApiKey } from 'src/api/api-key/decorators/apikey.decorator';
 import { S3FileUploadService } from '../../s3fileupload/s3fileupload.service';
 import { EncodeAgainJobDataI } from '../processors/sonickey.processor';
+import { Response } from 'express';
 
 @ApiTags('SonicKeys Controller')
 @Controller('sonic-keys')
@@ -139,6 +139,52 @@ export class SonickeyController {
     @User() loggedInUser: UserDB,
   ) {
     return this.sonicKeyService.getAll(parsedQueryDto);
+  }
+
+  @AnyApiQueryTemplate({
+    additionalHtmlDescription: `<div>
+      To Get sonickeys for specific company ?company=companyId <br/>
+      To Get sonickeys for specific partner ?partner=partnerId <br/>
+      To Get sonickeys for specific user ?owner=ownerId
+    <div>`,
+  })
+  @ApiQuery({
+    name: 'channel',
+    enum: [...Object.values(ChannelEnums), 'ALL'],
+    required: false,
+  })
+  @ApiParam({ name: 'format', enum: ['xlsx', 'csv'] })
+  @Get('/export-sonickeys/:format')
+  @RolesAllowed()
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Export Sonic Keys' })
+  async exportSonicKeys(
+    @Res() res: Response,
+    @Query(new ParseQueryValue()) parsedQueryDto: ParsedQueryDto,
+    @Param('format') format: string,
+    @User() loggedInUser: UserDB,
+  ) {
+    if (!['xlsx', 'csv'].includes(format))
+      throw new BadRequestException('Unsupported format');
+    parsedQueryDto.limit =
+      parsedQueryDto?.limit <= 2000 ? parsedQueryDto?.limit : 2000;
+      if(parsedQueryDto.filter?.channel=="ALL"){
+        delete parsedQueryDto.filter?.channel
+      }
+    const exportedFilePath =await this.sonicKeyService.exportSonicKeys(parsedQueryDto,format);
+    const fileName = extractFileName(exportedFilePath);
+    res.download(
+      exportedFilePath,
+      `${fileName.split('_nameseperator_')[1]}`,
+      err => {
+        if (err) {
+          this.fileHandlerService.deleteFileAtPath(exportedFilePath);
+          res.send(err);
+        }
+        this.fileHandlerService.deleteFileAtPath(exportedFilePath);
+      },
+    );
   }
 
   @Get('/get-download-url-by-metadata')
@@ -285,13 +331,13 @@ export class SonickeyController {
       contentSize,
       contentEncoding,
       contentSamplingFrequency,
-      contentFilePath
+      contentFilePath,
     } = createSonicKeyDto;
-    if(!sonicKey){
-      throw new BadRequestException('SonicKey is required')
+    if (!sonicKey) {
+      throw new BadRequestException('SonicKey is required');
     }
-    if(!channel){
-      throw new BadRequestException('Channel is required')
+    if (!channel) {
+      throw new BadRequestException('Channel is required');
     }
     const {
       resourceOwnerObj,
@@ -302,22 +348,22 @@ export class SonickeyController {
       title: contentName,
       fileType: contentType,
       mimeType: contentFileType,
-      duration:contentDuration,
-      fileSize:contentSize,
-      encoding:contentEncoding,
-      localFilePath:contentFilePath,
-      samplingFrequency:contentSamplingFrequency,
+      duration: contentDuration,
+      fileSize: contentSize,
+      encoding: contentEncoding,
+      localFilePath: contentFilePath,
+      samplingFrequency: contentSamplingFrequency,
       trackMetaData: createSonicKeyDto,
       ...resourceOwnerObj,
       createdBy: loggedInUser?.sub,
     };
     var track = await this.sonicKeyService.trackService.findOne({
-      mimeType:contentFileType,
-      fileSize:contentSize,
-      duration:contentDuration
-    })
-    if(!track){
-      track = await this.sonicKeyService.trackService.create(newTrack)
+      mimeType: contentFileType,
+      fileSize: contentSize,
+      duration: contentDuration,
+    });
+    if (!track) {
+      track = await this.sonicKeyService.trackService.create(newTrack);
     }
     const sonickeyDoc: Partial<SonicKey> = {
       ...createSonicKeyDto,
@@ -326,7 +372,7 @@ export class SonickeyController {
       apiKey: apiKey,
       license: licenseId,
       createdBy: loggedInUser?.sub,
-      track:track?._id
+      track: track?._id,
     };
     const savedSonicKey = await this.sonicKeyService.create(sonickeyDoc);
     await this.licensekeyService

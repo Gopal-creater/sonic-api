@@ -42,7 +42,8 @@ import { ConfigService } from '@nestjs/config';
 import { QueuejobService } from '../../../queuejob/queuejob.service';
 import { TrackService } from '../../track/track.service';
 import { Track } from 'src/api/track/schemas/track.schema';
-
+import * as moment from 'moment';
+import * as xlsx from 'xlsx';
 // PaginationQueryDtohttps://dev.to/tony133/simple-example-api-rest-with-nestjs-7-x-and-mongoose-37eo
 @Injectable()
 export class SonickeyService {
@@ -280,6 +281,82 @@ export class SonickeyService {
       },
     ]);
     return this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
+  }
+
+  async exportSonicKeys(queryDto: ParsedQueryDto, format: string) {
+    const sonicKeys = (await this.getAll(
+      queryDto,
+    )) as MongoosePaginateSonicKeyDto;
+    var sonicKeysListInJsonFormat = [];
+    for await (const sonicKeyDoc of sonicKeys?.docs || []) {
+      var sonicKeyExcelData = {
+        'Track ID': sonicKeyDoc?.track?._id || '--',
+        'SonicKey': sonicKeyDoc?.sonicKey || '--',
+        Title: sonicKeyDoc?.contentName || '--',
+        Version: sonicKeyDoc?.version || '--',
+        'Artist': sonicKeyDoc?.contentOwner || '--',
+        'Music Type': sonicKeyDoc?.contentType || '--',
+        'ISRC': sonicKeyDoc?.isrcCode || '--',
+        'ISWC': sonicKeyDoc?.iswcCode || '--',
+        'Tune Code': sonicKeyDoc?.tuneCode || '--',
+        'Label': sonicKeyDoc?.label || '--',
+        'Distributor': sonicKeyDoc?.distributor || '--',
+        'File Type': sonicKeyDoc?.contentFilePath || '--',
+        'Audio Length': moment.utc(sonicKeyDoc.contentDuration||0 * 1000).format("HH:mm:ss:SSS") || "--",
+        'AudioSize (MB)': sonicKeyDoc.contentSize ? (sonicKeyDoc.contentSize / 1024).toFixed(3) : "--",
+        'UnderlyingEncodingofFile': sonicKeyDoc?.contentEncoding || '--',
+        'SamplingFrequency': sonicKeyDoc?.contentSamplingFrequency || '--',
+        'QualityGrade': sonicKeyDoc?.contentQuality || '--',
+        'Description': sonicKeyDoc?.contentDescription || '--',
+        'Additional Metadata': JSON.stringify(sonicKeyDoc?.additionalMetadata||{}),
+        'Encoded Date': moment(sonicKeyDoc?.['createdAt'])
+          .utc()
+          .format('DD/MM/YYYY'),
+      };
+      sonicKeysListInJsonFormat.push(sonicKeyExcelData);
+    }
+    if (sonicKeysListInJsonFormat.length <= 0) {
+      sonicKeysListInJsonFormat.push({
+        'Track ID': '',
+        'SonicKey': '',
+        Title: '',
+        Version: '',
+        'Artist': '',
+        'Music Type': '',
+        'ISRC': '',
+        'ISWC': '',
+        'Tune Code': '',
+        'Label': '',
+        'Distributor': '',
+        'File Type': '',
+        'Audio Length': '',
+        'AudioSize (MB)': '',
+        'UnderlyingEncodingofFile': '',
+        'SamplingFrequency': '',
+        'QualityGrade': '',
+        'Description': '',
+        'Additional Metadata': '',
+        'Encoded Date': ''
+      });
+    }
+    const destination = await makeDir(appConfig.MULTER_EXPORT_DEST);
+    var tobeStorePath: string = '';
+    const file = xlsx.utils.book_new();
+    const wsSonicKeysListInJsonFormat = xlsx.utils.json_to_sheet(
+      sonicKeysListInJsonFormat,
+    );
+    xlsx.utils.book_append_sheet(file, wsSonicKeysListInJsonFormat, 'SonicKeys');
+    if (format == 'xlsx') {
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_SonicKeys`}.xlsx`;
+      xlsx.writeFile(file, tobeStorePath);
+    } else if (format == 'csv') {
+      tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_SonicKeys`}.csv`;
+      xlsx.writeFile(file, tobeStorePath, {
+        bookType: 'csv',
+        sheet: 'SonicKeys',
+      });
+    }
+    return tobeStorePath;
   }
 
   async findOneAggregate(queryDto: ParsedQueryDto): Promise<SonicKey> {

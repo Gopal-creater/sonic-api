@@ -44,6 +44,8 @@ const config_2 = require("@nestjs/config");
 const queuejob_service_1 = require("../../../queuejob/queuejob.service");
 const track_service_1 = require("../../track/track.service");
 const track_schema_1 = require("../../track/schemas/track.schema");
+const moment = require("moment");
+const xlsx = require("xlsx");
 let SonickeyService = class SonickeyService {
     constructor(sonicKeyModel, fileOperationService, licensekeyService, sonicKeyQueue, fileHandlerService, s3FileUploadService, configService, detectionService, userService, queuejobService, trackService) {
         this.sonicKeyModel = sonicKeyModel;
@@ -213,6 +215,90 @@ let SonickeyService = class SonickeyService {
             },
         ]);
         return this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
+    }
+    async exportSonicKeys(queryDto, format) {
+        var e_2, _a;
+        var _b;
+        const sonicKeys = (await this.getAll(queryDto));
+        var sonicKeysListInJsonFormat = [];
+        try {
+            for (var _c = __asyncValues((sonicKeys === null || sonicKeys === void 0 ? void 0 : sonicKeys.docs) || []), _d; _d = await _c.next(), !_d.done;) {
+                const sonicKeyDoc = _d.value;
+                var sonicKeyExcelData = {
+                    'Track ID': ((_b = sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.track) === null || _b === void 0 ? void 0 : _b._id) || '--',
+                    'SonicKey': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.sonicKey) || '--',
+                    Title: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentName) || '--',
+                    Version: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.version) || '--',
+                    'Artist': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentOwner) || '--',
+                    'Music Type': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentType) || '--',
+                    'ISRC': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.isrcCode) || '--',
+                    'ISWC': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.iswcCode) || '--',
+                    'Tune Code': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.tuneCode) || '--',
+                    'Label': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.label) || '--',
+                    'Distributor': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.distributor) || '--',
+                    'File Type': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentFilePath) || '--',
+                    'Audio Length': moment.utc(sonicKeyDoc.contentDuration || 0 * 1000).format("HH:mm:ss:SSS") || "--",
+                    'AudioSize (MB)': sonicKeyDoc.contentSize ? (sonicKeyDoc.contentSize / 1024).toFixed(3) : "--",
+                    'UnderlyingEncodingofFile': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentEncoding) || '--',
+                    'SamplingFrequency': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentSamplingFrequency) || '--',
+                    'QualityGrade': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentQuality) || '--',
+                    'Description': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentDescription) || '--',
+                    'Additional Metadata': JSON.stringify((sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.additionalMetadata) || {}),
+                    'Encoded Date': moment(sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc['createdAt'])
+                        .utc()
+                        .format('DD/MM/YYYY'),
+                };
+                sonicKeysListInJsonFormat.push(sonicKeyExcelData);
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (_d && !_d.done && (_a = _c.return)) await _a.call(_c);
+            }
+            finally { if (e_2) throw e_2.error; }
+        }
+        if (sonicKeysListInJsonFormat.length <= 0) {
+            sonicKeysListInJsonFormat.push({
+                'Track ID': '',
+                'SonicKey': '',
+                Title: '',
+                Version: '',
+                'Artist': '',
+                'Music Type': '',
+                'ISRC': '',
+                'ISWC': '',
+                'Tune Code': '',
+                'Label': '',
+                'Distributor': '',
+                'File Type': '',
+                'Audio Length': '',
+                'AudioSize (MB)': '',
+                'UnderlyingEncodingofFile': '',
+                'SamplingFrequency': '',
+                'QualityGrade': '',
+                'Description': '',
+                'Additional Metadata': '',
+                'Encoded Date': ''
+            });
+        }
+        const destination = await makeDir(config_1.appConfig.MULTER_EXPORT_DEST);
+        var tobeStorePath = '';
+        const file = xlsx.utils.book_new();
+        const wsSonicKeysListInJsonFormat = xlsx.utils.json_to_sheet(sonicKeysListInJsonFormat);
+        xlsx.utils.book_append_sheet(file, wsSonicKeysListInJsonFormat, 'SonicKeys');
+        if (format == 'xlsx') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_SonicKeys`}.xlsx`;
+            xlsx.writeFile(file, tobeStorePath);
+        }
+        else if (format == 'csv') {
+            tobeStorePath = `${destination}/${`${Date.now()}_nameseperator_SonicKeys`}.csv`;
+            xlsx.writeFile(file, tobeStorePath, {
+                bookType: 'csv',
+                sheet: 'SonicKeys',
+            });
+        }
+        return tobeStorePath;
     }
     async findOneAggregate(queryDto) {
         const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
@@ -520,7 +606,7 @@ let SonickeyService = class SonickeyService {
         });
     }
     async findAndGetValidSonicKeyFromRandomDecodedKeys(keys, saveDetection, detectionToSave) {
-        var e_2, _a;
+        var e_3, _a;
         var sonicKeys = [];
         try {
             for (var keys_1 = __asyncValues(keys), keys_1_1; keys_1_1 = await keys_1.next(), !keys_1_1.done;) {
@@ -536,12 +622,12 @@ let SonickeyService = class SonickeyService {
                 sonicKeys.push(sonickey);
             }
         }
-        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
         finally {
             try {
                 if (keys_1_1 && !keys_1_1.done && (_a = keys_1.return)) await _a.call(keys_1);
             }
-            finally { if (e_2) throw e_2.error; }
+            finally { if (e_3) throw e_3.error; }
         }
         return sonicKeys;
     }

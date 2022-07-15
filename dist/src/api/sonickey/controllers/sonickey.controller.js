@@ -76,6 +76,25 @@ let SonickeyController = class SonickeyController {
     async getAll(parsedQueryDto, loggedInUser) {
         return this.sonicKeyService.getAll(parsedQueryDto);
     }
+    async exportSonicKeys(res, parsedQueryDto, format, loggedInUser) {
+        var _a, _b;
+        if (!['xlsx', 'csv'].includes(format))
+            throw new common_1.BadRequestException('Unsupported format');
+        parsedQueryDto.limit =
+            (parsedQueryDto === null || parsedQueryDto === void 0 ? void 0 : parsedQueryDto.limit) <= 2000 ? parsedQueryDto === null || parsedQueryDto === void 0 ? void 0 : parsedQueryDto.limit : 2000;
+        if (((_a = parsedQueryDto.filter) === null || _a === void 0 ? void 0 : _a.channel) == "ALL") {
+            (_b = parsedQueryDto.filter) === null || _b === void 0 ? true : delete _b.channel;
+        }
+        const exportedFilePath = await this.sonicKeyService.exportSonicKeys(parsedQueryDto, format);
+        const fileName = utils_1.extractFileName(exportedFilePath);
+        res.download(exportedFilePath, `${fileName.split('_nameseperator_')[1]}`, err => {
+            if (err) {
+                this.fileHandlerService.deleteFileAtPath(exportedFilePath);
+                res.send(err);
+            }
+            this.fileHandlerService.deleteFileAtPath(exportedFilePath);
+        });
+    }
     async getDownloadUrlByMetadata(parsedQueryDto, loggedInUser) {
         var _a;
         const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
@@ -142,7 +161,7 @@ let SonickeyController = class SonickeyController {
         return this.sonicKeyService.generateUniqueSonicKey();
     }
     async create(createSonicKeyDto, loggedInUser, apiKey, licenseId) {
-        const { sonicKey, channel, contentFileType, contentName, contentOwner, contentType, contentDuration, contentSize, contentEncoding, contentSamplingFrequency, contentFilePath } = createSonicKeyDto;
+        const { sonicKey, channel, contentFileType, contentName, contentOwner, contentType, contentDuration, contentSize, contentEncoding, contentSamplingFrequency, contentFilePath, } = createSonicKeyDto;
         if (!sonicKey) {
             throw new common_1.BadRequestException('SonicKey is required');
         }
@@ -154,7 +173,7 @@ let SonickeyController = class SonickeyController {
         var track = await this.sonicKeyService.trackService.findOne({
             mimeType: contentFileType,
             fileSize: contentSize,
-            duration: contentDuration
+            duration: contentDuration,
         });
         if (!track) {
             track = await this.sonicKeyService.trackService.create(newTrack);
@@ -514,6 +533,34 @@ __decorate([
         user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getAll", null);
+__decorate([
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+        additionalHtmlDescription: `<div>
+      To Get sonickeys for specific company ?company=companyId <br/>
+      To Get sonickeys for specific partner ?partner=partnerId <br/>
+      To Get sonickeys for specific user ?owner=ownerId
+    <div>`,
+    }),
+    swagger_1.ApiQuery({
+        name: 'channel',
+        enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'],
+        required: false,
+    }),
+    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
+    common_1.Get('/export-sonickeys/:format'),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Export Sonic Keys' }),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(2, common_1.Param('format')),
+    __param(3, decorators_1.User()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, parsedquery_dto_1.ParsedQueryDto, String, user_db_schema_1.UserDB]),
+    __metadata("design:returntype", Promise)
+], SonickeyController.prototype, "exportSonicKeys", null);
 __decorate([
     common_1.Get('/get-download-url-by-metadata'),
     common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard),
