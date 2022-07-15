@@ -3,32 +3,91 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as xlsx from 'xlsx';
 import * as appRootPath from 'app-root-path';
-// Map global promise - get rid of warning
-// mongoose.Promise = global.Promise;
-// Connect to db
+import { SystemRoles } from '../src/constants/Enums';
+// Step 1
 console.log('process.env.MONGODB_URI', process.env.MONGODB_URI);
 const MONGODB_URI = process.env.MONGODB_URI;
 const client = new MongoClient(MONGODB_URI);
 const DATABASE_NAME = process.env.DATABASE_NAME;
 async function run() {
-  try {
     await client.connect();
     const db = client.db(DATABASE_NAME);
     const usercollection = db.collection('User');
     const companycollection = db.collection('Company');
     const partnercollection = db.collection('Partner');
-    const companiesFromExcel = extractDataFromExcel()
-    console.log("companiesFromExcel",companiesFromExcel);
-    
-    const cursor = companycollection.find();
-    await cursor.forEach(company => {
-      const matchedCompanyFromExcel=companiesFromExcel.find(com=>com["CompanyId In DB"]==company._id.toString())
-      console.log("matchedCompanyFromExcel",matchedCompanyFromExcel)
-    });
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
+    const companiesFromExcel = extractDataFromExcel();
+    const cursor =  companycollection.find();
+    for await (const company of cursor) {
+      const matchedCompanyFromExcel = companiesFromExcel.find(
+        com => com['CompanyId In DB'] == company._id.toString(),
+      );
+      console.log('matchedCompanyFromExcel', matchedCompanyFromExcel);
+      console.log('company from db', company);
+      if (matchedCompanyFromExcel) {
+        if (matchedCompanyFromExcel['Need To Make Partner'] == 'YES') {
+          //Insert New Partner
+          const insertedPartner = await partnercollection
+            .insertOne({
+              ...company,
+              partnerType: 'Distributor',
+            })
+            .catch(err => null);
+          if (insertedPartner) {
+            //Update Owner Role
+            await usercollection.findOneAndUpdate(
+              { _id: company.owner },
+              {
+                $unset: { adminCompany: '', company: '', companies: '' },
+                $set: {
+                  userRole: SystemRoles.PARTNER_ADMIN,
+                  partner: insertedPartner.insertedId,
+                  adminPartner: insertedPartner.insertedId,
+                },
+              },
+            );
+            //Delete Company
+            await companycollection.deleteOne({ _id: company._id });
+
+            //Update All Users Of Old Company as a Partner User
+            await usercollection.updateMany(
+              {
+                companies: { $in: [company._id] },
+                adminCompany: { $exists: false },
+              },
+              {
+                $unset: { adminCompany: '', company: '', companies: '' },
+                $set: {
+                  userRole: SystemRoles.PARTNER_USER,
+                  partner: insertedPartner.insertedId,
+                },
+              },
+            );
+          }
+        }
+      }
+    }
+
+    //Once all Migration To Partner Finished Lets check and do Relation with partner
+    for await (const companyFromExcel of companiesFromExcel) {
+      if (companyFromExcel['Need To Relate To Partner'] == 'YES') {
+        const tobePartner = companiesFromExcel.find(
+          com => com['Company Name'] == companyFromExcel['Related to Partner'],
+        );
+        console.log('tobePartner', tobePartner);
+        console.log('companyFromExcel', companyFromExcel);
+
+        if (tobePartner) {
+          await companycollection.updateOne(
+            { _id: companyFromExcel['CompanyId In DB'] },
+            {
+              $set: {
+                partner: tobePartner['CompanyId In DB'],
+              },
+            },
+          );
+        }
+      }
+    }
 }
 
 function extractDataFromExcel() {
@@ -43,7 +102,12 @@ function extractDataFromExcel() {
   return sheetToJson;
 }
 
-run().catch(err => {
-  console.log('error', err);
-  process.exit(0);
-});
+run()
+  .catch(err => {
+    console.log('error', err);
+    process.exit(0);
+  })
+  .finally(async () => {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  });
