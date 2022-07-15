@@ -301,7 +301,7 @@ export class SonickeyService {
         'Tune Code': sonicKeyDoc?.tuneCode || '--',
         'Label': sonicKeyDoc?.label || '--',
         'Distributor': sonicKeyDoc?.distributor || '--',
-        'File Type': sonicKeyDoc?.contentFilePath || '--',
+        'File Type': sonicKeyDoc?.contentFileType || '--',
         'Audio Length': moment.utc(sonicKeyDoc.contentDuration||0 * 1000).format("HH:mm:ss:SSS") || "--",
         'AudioSize (MB)': sonicKeyDoc.contentSize ? (sonicKeyDoc.contentSize / 1024).toFixed(3) : "--",
         'UnderlyingEncodingofFile': sonicKeyDoc?.contentEncoding || '--',
