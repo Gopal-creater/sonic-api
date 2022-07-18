@@ -1,8 +1,6 @@
 import { MongoClient } from 'mongodb';
-import * as fs from 'fs';
 import * as path from 'path';
 import * as xlsx from 'xlsx';
-import * as appRootPath from 'app-root-path';
 import { SystemRoles } from '../src/constants/Enums';
 // Step 1
 console.log('process.env.MONGODB_URI', process.env.MONGODB_URI);
