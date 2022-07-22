@@ -129,6 +129,31 @@ __decorate([
 ], RadioStation.prototype, "isError", void 0);
 __decorate([
     swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: false }),
+    __metadata("design:type", Boolean)
+], RadioStation.prototype, "running", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: false }),
+    __metadata("design:type", Boolean)
+], RadioStation.prototype, "shortListed", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: false }),
+    __metadata("design:type", Boolean)
+], RadioStation.prototype, "isFromAppGen", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    __metadata("design:type", String)
+], RadioStation.prototype, "appGenStationId", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop([{ type: String }]),
+    __metadata("design:type", Array)
+], RadioStation.prototype, "genres", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
     mongoose_1.Prop({ default: null }),
     __metadata("design:type", Map)
 ], RadioStation.prototype, "error", void 0);

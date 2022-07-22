@@ -94,6 +94,31 @@ export class RadioStation extends Document {
   @Prop({ default: false })
   isError: boolean;
 
+  //New Field
+  @ApiProperty()
+  @Prop({ default: false })
+  running: boolean;
+
+  //New Field
+  @ApiProperty()
+  @Prop({ default: false })
+  shortListed: boolean;
+
+   //New Field
+  @ApiProperty()
+  @Prop({ default: false })
+  isFromAppGen: boolean;
+
+  //New Field
+  @ApiProperty()
+  @Prop()
+  appGenStationId: string;
+
+   //New Field
+  @ApiProperty()
+  @Prop([{type:String}])
+  genres: string[];
+
   @ApiProperty()
   @Prop({ default: null })
   error: Map<string, any>;
