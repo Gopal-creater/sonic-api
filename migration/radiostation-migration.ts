@@ -12,32 +12,51 @@ async function run() {
   const radioStationCollection = db.collection('RadioStation');
   const radioStationsFromExcel = extractDataFromExcel();
 
-  console.log("Total Stations",radioStationsFromExcel?.length);
-  
-  var count=0
+  console.log('Total Stations', radioStationsFromExcel?.length);
+
+  var count = 0;
   for await (const radioStationFromExcel of radioStationsFromExcel) {
-      console.log("radioStationFromExcel['Station ID']",radioStationFromExcel['Station ID']);
-      console.log("radioStationFromExcel['Station Name']",radioStationFromExcel['Station Name']);
-      
-    await radioStationCollection.findOneAndUpdate(
-      { name: radioStationFromExcel['Station Name'] },
-      {
-        $set: {
-          shortListed: true,
+    console.log(
+      "radioStationFromExcel['Station ID']",
+      radioStationFromExcel['Station ID'],
+    );
+    console.log(
+      "radioStationFromExcel['Station Name']",
+      radioStationFromExcel['Station Name'],
+    );
+
+    const updateObj = {};
+    if (radioStationFromExcel['AppGenStation ID']) {
+      console.log(
+        "radioStationFromExcel['AppGenStation ID']",
+        radioStationFromExcel['AppGenStation ID'],
+      );
+      updateObj['appGenStationId'] = radioStationFromExcel['AppGenStation ID'];
+      updateObj['isFromAppGen'] = true;
+    }
+    await radioStationCollection
+      .findOneAndUpdate(
+        { name: radioStationFromExcel['Station Name'] },
+        {
+          $set: {
+            shortListed: true,
+            ...updateObj,
+          },
         },
-      },
-    )
-    .then(res=>{
-        count+=1
-    })
-    .catch(err=>{
-        console.log("radioStationFromExcel['Station ID']",radioStationFromExcel['Station ID']);
-        console.log("Error Updating",err); 
-    })
-    .finally(()=>{
-        console.log("Completd",count);
-        
-    })
+      )
+      .then(res => {
+        count += 1;
+      })
+      .catch(err => {
+        console.log(
+          "radioStationFromExcel['Station ID']",
+          radioStationFromExcel['Station ID'],
+        );
+        console.log('Error Updating', err);
+      })
+      .finally(() => {
+        console.log('Completd', count);
+      });
   }
 }
 
