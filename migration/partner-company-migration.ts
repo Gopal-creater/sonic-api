@@ -28,6 +28,7 @@ async function run() {
             .insertOne({
               ...company,
               partnerType: 'Distributor',
+              enabled:true
             })
             .catch(err => null);
           if (insertedPartner) {
@@ -80,6 +81,7 @@ async function run() {
             {
               $set: {
                 partner: tobePartner['CompanyId In DB'],
+                enabled:true
               },
             },
           );

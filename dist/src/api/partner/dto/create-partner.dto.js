@@ -36,7 +36,6 @@ __decorate([
     __metadata("design:type", String)
 ], CreatePartnerDto.prototype, "partnerType", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
     swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreatePartnerDto.prototype, "email", void 0);

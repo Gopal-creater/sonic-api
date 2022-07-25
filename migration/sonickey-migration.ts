@@ -18,6 +18,10 @@ async function run() {
   var count = 0;
   for await (const sonicKey of cursor) {
     const ownerDetail = await usercollection.findOne({ _id: sonicKey.owner });
+    console.log("ownerDetail Id",ownerDetail?._id)
+    if(!ownerDetail){
+      continue;
+    }
     const {
       resourceOwnerObj,
     } = identifyDestinationFolderAndResourceOwnerFromUser(ownerDetail);
@@ -96,26 +100,26 @@ function identifyDestinationFolderAndResourceOwnerFromUser(
     partner?: string;
     company?: string;
   } = {};
-  switch (user.userRole) {
+  switch (user?.userRole) {
     case SystemRoles.COMPANY_USER:
     case SystemRoles.COMPANY_ADMIN:
       if (user.company) {
-        destinationFolder = `companies/${user.company?._id}`;
-        resourceOwnerObj[keyNameForCompany] = user.company?._id;
+        destinationFolder = `companies/${user.company}`;
+        resourceOwnerObj[keyNameForCompany] = user.company;
       }
       break;
 
     case SystemRoles.PARTNER_USER:
     case SystemRoles.PARTNER_ADMIN:
       if (user.partner) {
-        destinationFolder = `partners/${user.partner?._id}`;
-        resourceOwnerObj[keyNameForPartner] = user.partner?._id;
+        destinationFolder = `partners/${user.partner}`;
+        resourceOwnerObj[keyNameForPartner] = user.partner;
       }
       break;
 
     default:
-      destinationFolder = `${user?.sub}`;
-      resourceOwnerObj[keyNameForOwner] = user?.sub;
+      destinationFolder = `${user?._id}`;
+      resourceOwnerObj[keyNameForOwner] = user?._id;
       break;
   }
   return {

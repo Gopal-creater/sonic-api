@@ -16,7 +16,7 @@ export class CreatePartnerDto {
   @IsIn(partnerTypes)
   partnerType: string;
 
-  @IsNotEmpty()
+  // @IsNotEmpty()
   @ApiProperty()
   email: string;
 
