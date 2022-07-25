@@ -93,6 +93,7 @@ AppModule = __decorate([
                         connection.on('connected', () => {
                             connectionNo += 1;
                             console.log('DB connected, current connectionNo', connectionNo);
+                            console.log("configService.get<string>('MONGODB_URI')", configService.get('MONGODB_URI'));
                         });
                         connection.on('disconnected', () => {
                             connectionNo -= 1;
