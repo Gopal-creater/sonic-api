@@ -135,7 +135,7 @@ export class AuthService {
       email: this.configService.get('SONIC_ADMIN_EMAIL'),
       phoneNumber: this.configService.get('SONIC_ADMIN_PHONE'),
       isEmailVerified: true,
-      isPhoneNumberVerified: true,
+      isPhoneNumberVerified: this.configService.get('SONIC_ADMIN_PHONE')?true:false,
       userRole: SystemRoles.ADMIN,
       sendInvitationByEmail: false,
     };
