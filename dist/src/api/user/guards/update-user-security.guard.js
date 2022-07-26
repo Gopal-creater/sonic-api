@@ -45,7 +45,7 @@ let UpdateUserSecurityGuard = class UpdateUserSecurityGuard {
                 if (!userFromDb) {
                     throw new common_1.NotFoundException('User not found');
                 }
-                if (userFromDb.userRole !== Enums_1.SystemRoles.PARTNER_USER && userFromDb.userRole !== Enums_1.SystemRoles.COMPANY_USER) {
+                if (userFromDb.userRole !== Enums_1.SystemRoles.PARTNER_USER && userFromDb.userRole !== Enums_1.SystemRoles.COMPANY_USER && userFromDb.userRole !== Enums_1.SystemRoles.COMPANY_ADMIN) {
                     throw new common_1.UnprocessableEntityException('User can not be modified');
                 }
                 if (userFromDb.userRole == Enums_1.SystemRoles.PARTNER_USER) {
@@ -53,7 +53,7 @@ let UpdateUserSecurityGuard = class UpdateUserSecurityGuard {
                         throw new common_1.NotFoundException('User not found');
                     }
                 }
-                if (userFromDb.userRole == Enums_1.SystemRoles.COMPANY_USER) {
+                if (userFromDb.userRole == Enums_1.SystemRoles.COMPANY_USER || userFromDb.userRole == Enums_1.SystemRoles.COMPANY_ADMIN) {
                     const isOwnUser = await this.userService.findOneAggregate({
                         filter: {
                             _id: userId
@@ -62,8 +62,6 @@ let UpdateUserSecurityGuard = class UpdateUserSecurityGuard {
                             'company.partner': mongoose_utils_1.toObjectId(partnerId)
                         }
                     });
-                    console.log("isOwnUser", isOwnUser);
-                    console.log("partnerId", partnerId);
                     if (!isOwnUser) {
                         throw new common_1.NotFoundException('User not found');
                     }

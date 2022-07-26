@@ -48,7 +48,7 @@ export class UpdateUserSecurityGuard implements CanActivate {
         if(!userFromDb){
           throw new NotFoundException('User not found')
         }
-        if(userFromDb.userRole!==SystemRoles.PARTNER_USER && userFromDb.userRole!==SystemRoles.COMPANY_USER){
+        if(userFromDb.userRole!==SystemRoles.PARTNER_USER && userFromDb.userRole!==SystemRoles.COMPANY_USER && userFromDb.userRole!==SystemRoles.COMPANY_ADMIN){
           throw new UnprocessableEntityException('User can not be modified')
         }
         if(userFromDb.userRole==SystemRoles.PARTNER_USER){
@@ -56,7 +56,7 @@ export class UpdateUserSecurityGuard implements CanActivate {
               throw new NotFoundException('User not found');
             }
         }
-        if(userFromDb.userRole==SystemRoles.COMPANY_USER){
+        if(userFromDb.userRole==SystemRoles.COMPANY_USER || userFromDb.userRole==SystemRoles.COMPANY_ADMIN ){
           const isOwnUser = await this.userService.findOneAggregate({
             filter:{
               _id:userId
@@ -65,8 +65,6 @@ export class UpdateUserSecurityGuard implements CanActivate {
               'company.partner':toObjectId(partnerId)
             }
           })
-          console.log("isOwnUser",isOwnUser)
-          console.log("partnerId",partnerId)
           if(!isOwnUser){
             throw new NotFoundException('User not found');
           }
