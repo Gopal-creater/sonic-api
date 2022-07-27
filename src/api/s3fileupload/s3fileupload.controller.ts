@@ -32,9 +32,9 @@ export class S3FileUploadController {
   @ApiOperation({ summary: 'Get Signed Url for download pass {key:string} in the body' })
   getSignedUrlFromPost(@Body('key') key: string,@User('sub') userId: string,) {
       /* Checks for authenticated user in order to download the file */
-      if (!key?.includes(userId)) {
-        throw new ForbiddenException('You are not the owner of this file');
-      }
+      // if (!key?.includes(userId)) {
+      //   throw new ForbiddenException('You are not the owner of this file');
+      // }
     return this.s3FileUploadService.getSignedUrl(key);
   }
 
@@ -44,9 +44,9 @@ export class S3FileUploadController {
   @ApiOperation({ summary: 'Download file' })
   async getFile(@Param('key') key: string,@User('sub') userId: string,) {
        /* Checks for authenticated user in order to download the file */
-       if (!key?.includes(userId)) {
-        throw new ForbiddenException('You are not the owner of this file');
-      }
+      //  if (!key?.includes(userId)) {
+      //   throw new ForbiddenException('You are not the owner of this file');
+      // }
     const file = await this.s3FileUploadService.getFile(key);
     return new StreamableFile(Buffer.from(file.Body))
   }
