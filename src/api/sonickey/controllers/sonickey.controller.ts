@@ -204,7 +204,9 @@ export class SonickeyController {
     const {
       resourceOwnerObj,
     } = identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+    console.log("resourceOwnerObj",resourceOwnerObj)
     parsedQueryDto.filter = { ...parsedQueryDto.filter, ...resourceOwnerObj };
+    console.log("parsedQueryDto.filter",parsedQueryDto.filter)
     parsedQueryDto.sort = {
       //Fetch the latest entry
       createdAt: -1,
@@ -217,6 +219,7 @@ export class SonickeyController {
     }
     const downloadSignedUrl = await this.s3FileUploadService.getSignedUrl(
       sonicKey.s3FileMeta.Key,
+      60*10
     );
 
     //Add Next Encode On Queue for next download
@@ -234,7 +237,7 @@ export class SonickeyController {
       { jobId: nanoid(15) },
     );
     return {
-      sonicKey: sonicKey,
+      sonicKey: sonicKey?._id,
       downloadUrl: downloadSignedUrl,
     };
   }

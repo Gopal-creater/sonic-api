@@ -361,23 +361,11 @@ export class SonickeyService {
 
   async findOneAggregate(queryDto: ParsedQueryDto): Promise<SonicKey> {
     const {
-      limit,
-      skip,
       sort,
-      page,
       filter,
-      select,
-      populate,
       relationalFilter,
     } = queryDto;
-    var paginateOptions = {};
-    paginateOptions['sort'] = sort;
-    paginateOptions['select'] = select;
-    paginateOptions['populate'] = populate;
-    paginateOptions['offset'] = skip;
-    paginateOptions['page'] = page;
-    paginateOptions['limit'] = limit;
-    const aggregate = this.sonicKeyModel.aggregate([
+    const aggregate = await this.sonicKeyModel.aggregate([
       {
         $match: {
           ...filter,
@@ -438,8 +426,7 @@ export class SonickeyService {
         $limit: 1
     }
     ]);
-    const datas =await this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
-    return datas[0]
+    return aggregate[0]
   }
 
   async getCount(queryDto: ParsedQueryDto) {

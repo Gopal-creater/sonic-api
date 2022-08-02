@@ -301,15 +301,8 @@ let SonickeyService = class SonickeyService {
         return tobeStorePath;
     }
     async findOneAggregate(queryDto) {
-        const { limit, skip, sort, page, filter, select, populate, relationalFilter, } = queryDto;
-        var paginateOptions = {};
-        paginateOptions['sort'] = sort;
-        paginateOptions['select'] = select;
-        paginateOptions['populate'] = populate;
-        paginateOptions['offset'] = skip;
-        paginateOptions['page'] = page;
-        paginateOptions['limit'] = limit;
-        const aggregate = this.sonicKeyModel.aggregate([
+        const { sort, filter, relationalFilter, } = queryDto;
+        const aggregate = await this.sonicKeyModel.aggregate([
             {
                 $match: Object.assign({}, filter),
             },
@@ -359,8 +352,7 @@ let SonickeyService = class SonickeyService {
                 $limit: 1
             }
         ]);
-        const datas = await this.sonicKeyModel['aggregatePaginate'](aggregate, paginateOptions);
-        return datas[0];
+        return aggregate[0];
     }
     async getCount(queryDto) {
         const { filter } = queryDto;

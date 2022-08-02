@@ -98,7 +98,9 @@ let SonickeyController = class SonickeyController {
     async getDownloadUrlByMetadata(parsedQueryDto, loggedInUser) {
         var _a;
         const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        console.log("resourceOwnerObj", resourceOwnerObj);
         parsedQueryDto.filter = Object.assign(Object.assign({}, parsedQueryDto.filter), resourceOwnerObj);
+        console.log("parsedQueryDto.filter", parsedQueryDto.filter);
         parsedQueryDto.sort = {
             createdAt: -1,
         };
@@ -106,7 +108,7 @@ let SonickeyController = class SonickeyController {
         if (!sonicKey) {
             throw new common_1.NotFoundException('Sonickey not found');
         }
-        const downloadSignedUrl = await this.s3FileUploadService.getSignedUrl(sonicKey.s3FileMeta.Key);
+        const downloadSignedUrl = await this.s3FileUploadService.getSignedUrl(sonicKey.s3FileMeta.Key, 60 * 10);
         const encodeAgainForNextDownloadJobData = {
             trackId: (_a = sonicKey === null || sonicKey === void 0 ? void 0 : sonicKey.track) === null || _a === void 0 ? void 0 : _a._id,
             user: loggedInUser,
@@ -117,7 +119,7 @@ let SonickeyController = class SonickeyController {
         };
         await this.sonicKeyService.sonicKeyQueue.add('encode_again', encodeAgainForNextDownloadJobData, { jobId: nanoid_1.nanoid(15) });
         return {
-            sonicKey: sonicKey,
+            sonicKey: sonicKey === null || sonicKey === void 0 ? void 0 : sonicKey._id,
             downloadUrl: downloadSignedUrl,
         };
     }
