@@ -111,9 +111,13 @@ export class SonicKeyProcessor {
       });
     var sonickeyDoc: Partial<SonicKey>;
     if (oldLatestSonicKey) {
-      sonickeyDoc = Object.assign(oldLatestSonicKey?.toObject?.(), sonicKeyDto, {
-        createdBy: user?.sub,
-      });
+      sonickeyDoc = Object.assign(
+        oldLatestSonicKey?.toObject?.(),
+        sonicKeyDto,
+        {
+          createdBy: user?.sub,
+        },
+      );
     } else {
       sonicKeyDto.contentFileType =
         sonicKeyDto.contentFileType || track.mimeType;
@@ -128,7 +132,7 @@ export class SonicKeyProcessor {
       sonicKeyDto.contentSamplingFrequency =
         sonicKeyDto.contentSamplingFrequency || track.samplingFrequency;
       sonicKeyDto.originalFileName =
-        sonicKeyDto.originalFileName || track.originalFileName;
+        track.originalFileName || sonicKeyDto.originalFileName;
       sonickeyDoc = Object.assign(sonicKeyDto, resourceOwnerObj, {
         createdBy: user?.sub,
       });

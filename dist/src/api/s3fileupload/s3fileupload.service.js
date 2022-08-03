@@ -70,11 +70,15 @@ let S3FileUploadService = class S3FileUploadService {
         };
         return this.s3.listObjectsV2(params).promise();
     }
-    getSignedUrl(key, expiry = 60 * 1) {
+    getSignedUrl(key, expiry = 60 * 1, fileName = "") {
+        if (!fileName) {
+            fileName = utils_1.extractFileName(key);
+        }
         const params = {
             Bucket: this.bucketName,
             Key: key,
             Expires: expiry,
+            ResponseContentDisposition: `attachment; filename*=UTF-8''${fileName}`
         };
         return this.s3.getSignedUrlPromise('getObject', params);
     }

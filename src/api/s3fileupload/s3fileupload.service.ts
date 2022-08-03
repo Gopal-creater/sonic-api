@@ -89,11 +89,15 @@ export class S3FileUploadService {
   }
 
   //Method to get all the files in S3 bucket, expiry in second default: 60sec
-  public getSignedUrl(key: string, expiry: number = 60 * 1) {
+  public getSignedUrl(key: string, expiry: number = 60 * 1,fileName:string="") {
+    if(!fileName){
+      fileName = extractFileName(key)
+    }
     const params = {
       Bucket: this.bucketName,
       Key: key,
       Expires: expiry,
+      ResponseContentDisposition: `attachment; filename*=UTF-8''${fileName}`
     };
     return this.s3.getSignedUrlPromise('getObject', params);
   }

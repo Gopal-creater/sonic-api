@@ -87,7 +87,7 @@ let SonicKeyProcessor = SonicKeyProcessor_1 = class SonicKeyProcessor {
             sonicKeyDto.contentSamplingFrequency =
                 sonicKeyDto.contentSamplingFrequency || track.samplingFrequency;
             sonicKeyDto.originalFileName =
-                sonicKeyDto.originalFileName || track.originalFileName;
+                track.originalFileName || sonicKeyDto.originalFileName;
             sonickeyDoc = Object.assign(sonicKeyDto, resourceOwnerObj, {
                 createdBy: user === null || user === void 0 ? void 0 : user.sub,
             });

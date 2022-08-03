@@ -219,7 +219,8 @@ export class SonickeyController {
     }
     const downloadSignedUrl = await this.s3FileUploadService.getSignedUrl(
       sonicKey.s3FileMeta.Key,
-      60*10
+      60*10,
+      sonicKey?.originalFileName || sonicKey?.contentFileName
     );
 
     //Add Next Encode On Queue for next download
@@ -238,7 +239,7 @@ export class SonickeyController {
     );
     return {
       sonicKey: sonicKey?._id,
-      downloadUrl: downloadSignedUrl,
+      downloadUrl: downloadSignedUrl
     };
   }
 
