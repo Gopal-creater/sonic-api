@@ -77,98 +77,103 @@ export class SonicKeyProcessor {
   async handleEncodeAgainForNextDownload(job: Job) {
     this.logger.debug(`Start encode again job for job id: ${job.id}`);
     this.logger.debug(job.data);
-    const {
-      user,
-      trackId,
-      sonicKeyDto,
-      metaData,
-    } = job.data as EncodeAgainJobDataI;
-    const license = await this.sonickeyUtils.checkAndGetValidLicenseForEncode(
-      user,
-    );
-    const {
-      fileUploadFromTrackResult: file,
-      currentTrack: track,
-    } = await this.sonickeyUtils.downloadFileFromTrack(trackId);
-    const oldLatestSonicKey = await this.sonicKeyService.findOneAggregate({
-      filter: { track: trackId },
-      sort: { createdAt: -1 },
-    });
-    const {
-      destinationFolder,
-      resourceOwnerObj,
-    } = identifyDestinationFolderAndResourceOwnerFromUser(user);
-    //Create Job in db
-    await this.queuejobService
-      .create({
-        _id: job.id,
-        name: job.name,
-        jobData: job.data,
-        ...resourceOwnerObj,
-      })
-      .catch(err => {
-        throw new Error("Can't save queue job details to db");
-      });
-    var sonickeyDoc: Partial<SonicKey>;
-    if (oldLatestSonicKey) {
-      sonickeyDoc = Object.assign(
-        oldLatestSonicKey?.toObject?.(),
+    try {
+      const {
+        user,
+        trackId,
         sonicKeyDto,
-        {
-          createdBy: user?.sub,
-        },
+        metaData,
+      } = job.data as EncodeAgainJobDataI;
+      const license = await this.sonickeyUtils.checkAndGetValidLicenseForEncode(
+        user,
       );
-    } else {
-      sonicKeyDto.contentFileType =
-        sonicKeyDto.contentFileType || track.mimeType;
-      sonicKeyDto.contentOwner = sonicKeyDto.contentOwner || track.artist;
-      sonicKeyDto.contentName = sonicKeyDto.contentName || track.title;
-      sonicKeyDto.contentDuration =
-        sonicKeyDto.contentDuration || track.duration;
-      sonicKeyDto.contentSize = sonicKeyDto.contentSize || track.fileSize;
-      sonicKeyDto.contentType = sonicKeyDto.contentType || track.fileType;
-      sonicKeyDto.contentEncoding =
-        sonicKeyDto.contentEncoding || track.encoding;
-      sonicKeyDto.contentSamplingFrequency =
-        sonicKeyDto.contentSamplingFrequency || track.samplingFrequency;
-      sonicKeyDto.originalFileName =
-        track.originalFileName || sonicKeyDto.originalFileName;
-      sonickeyDoc = Object.assign(sonicKeyDto, resourceOwnerObj, {
-        createdBy: user?.sub,
+      console.log('license', license);
+
+      const {
+        fileUploadFromTrackResult: file,
+        currentTrack: track,
+      } = await this.sonickeyUtils.downloadFileFromTrack(trackId);
+      console.log('fileUploadFromTrackResult', file);
+      const oldLatestSonicKey = await this.sonicKeyService.findOneAggregate({
+        filter: { track: trackId },
+        sort: { createdAt: -1 },
       });
-    }
-    const encodingStrength = sonickeyDoc.encodingStrength || 30;
-    await this.sonicKeyService
-      .encodeSonicKeyFromTrack({
+      console.log('oldLatestSonicKey', oldLatestSonicKey);
+      const {
+        destinationFolder,
+        resourceOwnerObj,
+      } = identifyDestinationFolderAndResourceOwnerFromUser(user);
+      //Create Job in db
+      await this.queuejobService
+        .create({
+          _id: job.id,
+          name: job.name,
+          jobData: job.data,
+          ...resourceOwnerObj,
+        })
+        .catch(err => {
+          throw new Error("Can't save queue job details to db");
+        });
+      var sonickeyDoc: Partial<SonicKey>;
+      if (oldLatestSonicKey) {
+        sonickeyDoc = Object.assign(oldLatestSonicKey, sonicKeyDto, {
+          createdBy: user?.sub,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      } else {
+        sonicKeyDto.contentFileType =
+          sonicKeyDto.contentFileType || track.mimeType;
+        sonicKeyDto.contentOwner = sonicKeyDto.contentOwner || track.artist;
+        sonicKeyDto.contentName = sonicKeyDto.contentName || track.title;
+        sonicKeyDto.contentDuration =
+          sonicKeyDto.contentDuration || track.duration;
+        sonicKeyDto.contentSize = sonicKeyDto.contentSize || track.fileSize;
+        sonicKeyDto.contentType = sonicKeyDto.contentType || track.fileType;
+        sonicKeyDto.contentEncoding =
+          sonicKeyDto.contentEncoding || track.encoding;
+        sonicKeyDto.contentSamplingFrequency =
+          sonicKeyDto.contentSamplingFrequency || track.samplingFrequency;
+        sonicKeyDto.originalFileName =
+          track.originalFileName || sonicKeyDto.originalFileName;
+        sonickeyDoc = Object.assign(sonicKeyDto, resourceOwnerObj, {
+          createdBy: user?.sub,
+        });
+      }
+      console.log('sonickeyDoc', sonickeyDoc);
+      const encodingStrength = sonickeyDoc.encodingStrength || 15;
+      await this.sonicKeyService.encodeSonicKeyFromTrack({
         trackId: track?.id,
         file,
         licenseId: license._id,
         sonickeyDoc,
         encodingStrength,
         s3destinationFolder: destinationFolder,
-      })
-      .then(async res => {
-        await this.queuejobService.queueJobModel.updateOne(
-          { _id: job.id },
-          {
-            completed: true,
-          },
-          { new: true },
-        );
-      })
-      .catch(async err => {
-        await this.queuejobService.queueJobModel.updateOne(
+      });
+      console.log('encode done, goining to update jobTable');
+      await this.queuejobService.queueJobModel.updateOne(
+        { _id: job.id },
+        {
+          completed: true,
+        },
+        { new: true },
+      );
+      this.logger.debug(
+        `Encode Again For next download job completed for job id: ${job.id}`,
+      );
+    } catch (error) {
+      console.log('Error occured while encoding again from Queue', error);
+      await this.queuejobService.queueJobModel
+        .updateOne(
           { _id: job.id },
           {
             error: true,
-            errorData: err,
+            errorData: error,
           },
           { new: true },
-        );
-      });
-    this.logger.debug(
-      `Encode Again For next download job completed for job id: ${job.id}`,
-    );
+        )
+        .catch(e => console.log('error', e));
+    }
   }
 
   async encodeFileFromJobData(encodeJobData: Job) {

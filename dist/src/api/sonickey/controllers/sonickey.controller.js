@@ -108,7 +108,7 @@ let SonickeyController = class SonickeyController {
         if (!sonicKey) {
             throw new common_1.NotFoundException('Sonickey not found');
         }
-        const downloadSignedUrl = await this.s3FileUploadService.getSignedUrl(sonicKey.s3FileMeta.Key, 60 * 10, (sonicKey === null || sonicKey === void 0 ? void 0 : sonicKey.originalFileName) || (sonicKey === null || sonicKey === void 0 ? void 0 : sonicKey.contentFileName));
+        const downloadSignedUrl = await this.s3FileUploadService.getSignedUrl(sonicKey.s3FileMeta.Key, 60 * 10, (sonicKey === null || sonicKey === void 0 ? void 0 : sonicKey.contentFileName) || (sonicKey === null || sonicKey === void 0 ? void 0 : sonicKey.originalFileName));
         const encodeAgainForNextDownloadJobData = {
             trackId: (_a = sonicKey === null || sonicKey === void 0 ? void 0 : sonicKey.track) === null || _a === void 0 ? void 0 : _a._id,
             user: loggedInUser,
