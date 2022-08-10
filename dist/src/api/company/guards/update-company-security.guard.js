@@ -52,7 +52,7 @@ let UpdateCompanySecurityGuard = class UpdateCompanySecurityGuard {
     }
 };
 UpdateCompanySecurityGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [company_service_1.CompanyService])
 ], UpdateCompanySecurityGuard);
 exports.UpdateCompanySecurityGuard = UpdateCompanySecurityGuard;

@@ -39,7 +39,7 @@ let UpdatePartnerSecurityGuard = class UpdatePartnerSecurityGuard {
     }
 };
 UpdatePartnerSecurityGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [core_1.Reflector])
 ], UpdatePartnerSecurityGuard);
 exports.UpdatePartnerSecurityGuard = UpdatePartnerSecurityGuard;

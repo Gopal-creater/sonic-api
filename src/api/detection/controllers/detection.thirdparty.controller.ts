@@ -32,6 +32,7 @@ import { ApiKeyAuthGuard } from '../../auth/guards/apikey-auth.guard';
 import { ApiKey } from '../../api-key/decorators/apikey.decorator';
 import { User } from '../../auth/decorators/user.decorator';
 import { RadiostationService } from '../../radiostation/services/radiostation.service';
+import { AppgenService } from '../../../shared/services/appgen.service';
 
 @ApiTags('ThirdParty Integration Controller, Protected By XAPI-Key')
 @ApiSecurity('x-api-key')
@@ -41,6 +42,7 @@ export class DetectionThirdPartyController {
     private readonly sonickeyServive: SonickeyService,
     private readonly detectionService: DetectionService,
     private readonly radiostationService: RadiostationService,
+		private readonly appGenService: AppgenService,
   ) {}
 
   @ApiOperation({ summary: 'Create Detection From Binary' })
@@ -139,13 +141,16 @@ export class DetectionThirdPartyController {
       detectionSourceFileName,
       streamDetectionInterval,
     } = createThirdPartyStreamReaderDetectionFromLamdaDto;
+
+		// For appgen.
+		const detectedTime = new Date(detectedAt);
+
     const isValidRadioStation = await this.radiostationService.radioStationModel.findById(
       radioStation,
     );
     if (!isValidRadioStation) {
       throw new NotFoundException('Given radio doesnot exists in our database');
     }
-
      //Identify the decode origins either from SonicKey or Fingerprint
      var detectionOrigins:string[]=[]
      var isAlreadyDetectionWithSameDetectionSourceFileName = await this.detectionService.detectionModel.findOne({
@@ -195,6 +200,17 @@ export class DetectionThirdPartyController {
           detection.metaData={...detection.metaData,...metaData}
         } else {
           //If not within its original contentDuration, just do insertation
+					
+					//First, find program details if this is a appgen station
+					var program = {title:'', subtitle: '',};
+					if(isValidRadioStation.isFromAppGen) {
+						program = await this.appGenService.appGenGetRadioProgramming(isValidRadioStation.appGenStationId, detectedTime);
+						console.log('Appgen station. program: ', program);
+					} else {
+						console.log('Non-Appgen station. No program details');
+					}
+
+					// TODO: Change schema to include appgen stuff
           detection = await this.detectionService.detectionModel.create({
             radioStation: radioStation,
             sonicKey: decodeRes.sonicKey,

@@ -25,15 +25,15 @@ class TopRadioStation {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], TopRadioStation.prototype, "_id", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], TopRadioStation.prototype, "totalKeysDetected", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", radiostation_schema_1.RadioStation)
 ], TopRadioStation.prototype, "radioStation", void 0);
 exports.TopRadioStation = TopRadioStation;
@@ -44,15 +44,15 @@ class TopSonicKey {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], TopSonicKey.prototype, "_id", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], TopSonicKey.prototype, "totalHits", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", sonickey_schema_1.SonicKey)
 ], TopSonicKey.prototype, "sonicKey", void 0);
 exports.TopSonicKey = TopSonicKey;
@@ -63,15 +63,15 @@ class PlaysCountResponseDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], PlaysCountResponseDto.prototype, "_id", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysCountResponseDto.prototype, "playsCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysCountResponseDto.prototype, "uniquePlaysCount", void 0);
 exports.PlaysCountResponseDto = PlaysCountResponseDto;
@@ -82,11 +82,11 @@ class PlaysGraphSingleResponseDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], PlaysGraphSingleResponseDto.prototype, "_id", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysGraphSingleResponseDto.prototype, "total", void 0);
 exports.PlaysGraphSingleResponseDto = PlaysGraphSingleResponseDto;
@@ -97,19 +97,19 @@ class PlaysGraphResponseDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Array)
 ], PlaysGraphResponseDto.prototype, "playsArtistWise", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Array)
 ], PlaysGraphResponseDto.prototype, "playsCountryWise", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Array)
 ], PlaysGraphResponseDto.prototype, "playsSongWise", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Array)
 ], PlaysGraphResponseDto.prototype, "playsStationWise", void 0);
 exports.PlaysGraphResponseDto = PlaysGraphResponseDto;
@@ -120,51 +120,51 @@ class PlaysListResponseDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], PlaysListResponseDto.prototype, "_id", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Date)
 ], PlaysListResponseDto.prototype, "detectedAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", user_db_schema_1.UserDB)
 ], PlaysListResponseDto.prototype, "owner", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", company_schema_1.Company)
 ], PlaysListResponseDto.prototype, "company", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", partner_schema_1.Partner)
 ], PlaysListResponseDto.prototype, "partner", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], PlaysListResponseDto.prototype, "channel", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysListResponseDto.prototype, "detectedDuration", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", radiostation_schema_1.RadioStation)
 ], PlaysListResponseDto.prototype, "radioStation", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", sonickey_schema_1.SonicKey)
 ], PlaysListResponseDto.prototype, "sonicKey", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Array)
 ], PlaysListResponseDto.prototype, "detectionOrigins", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Date)
 ], PlaysListResponseDto.prototype, "createdAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Date)
 ], PlaysListResponseDto.prototype, "updatedAt", void 0);
 exports.PlaysListResponseDto = PlaysListResponseDto;
@@ -175,23 +175,23 @@ class PlaysByArtistDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], PlaysByArtistDto.prototype, "artist", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByArtistDto.prototype, "playsCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByArtistDto.prototype, "uniquePlaysCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByArtistDto.prototype, "radioStationCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByArtistDto.prototype, "countriesCount", void 0);
 exports.PlaysByArtistDto = PlaysByArtistDto;
@@ -201,23 +201,23 @@ class PlaysByCountryDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], PlaysByCountryDto.prototype, "country", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByCountryDto.prototype, "playsCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByCountryDto.prototype, "uniquePlaysCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByCountryDto.prototype, "radioStationCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByCountryDto.prototype, "artistsCount", void 0);
 exports.PlaysByCountryDto = PlaysByCountryDto;
@@ -227,27 +227,27 @@ class PlaysByTrackDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], PlaysByTrackDto.prototype, "trackName", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByTrackDto.prototype, "playsCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByTrackDto.prototype, "uniquePlaysCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByTrackDto.prototype, "artistsCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByTrackDto.prototype, "radioStationCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByTrackDto.prototype, "countriesCount", void 0);
 exports.PlaysByTrackDto = PlaysByTrackDto;
@@ -257,23 +257,23 @@ class PlaysByRadioStationDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", radiostation_schema_1.RadioStation)
 ], PlaysByRadioStationDto.prototype, "radioStation", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByRadioStationDto.prototype, "playsCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByRadioStationDto.prototype, "uniquePlaysCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByRadioStationDto.prototype, "artistsCount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], PlaysByRadioStationDto.prototype, "countriesCount", void 0);
 exports.PlaysByRadioStationDto = PlaysByRadioStationDto;
@@ -283,23 +283,23 @@ class GraphData {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Object)
 ], GraphData.prototype, "_id", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], GraphData.prototype, "year", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], GraphData.prototype, "month", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], GraphData.prototype, "day", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], GraphData.prototype, "hits", void 0);
 exports.GraphData = GraphData;
@@ -309,11 +309,11 @@ class TopRadioStationWithTopSonicKey extends TopRadioStation {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Array)
 ], TopRadioStationWithTopSonicKey.prototype, "sonicKeys", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Array)
 ], TopRadioStationWithTopSonicKey.prototype, "graphsData", void 0);
 exports.TopRadioStationWithTopSonicKey = TopRadioStationWithTopSonicKey;
@@ -323,7 +323,7 @@ class TopRadioStationWithPlaysDetails extends TopRadioStation {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", PlaysCountResponseDto)
 ], TopRadioStationWithPlaysDetails.prototype, "playsCount", void 0);
 exports.TopRadioStationWithPlaysDetails = TopRadioStationWithPlaysDetails;
@@ -333,12 +333,12 @@ class DecodeResponseFromBinaryDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], DecodeResponseFromBinaryDto.prototype, "sonicKey", void 0);
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: detection_schema_1.DetectedTimeStamp }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: detection_schema_1.DetectedTimeStamp }),
     __metadata("design:type", Array)
 ], DecodeResponseFromBinaryDto.prototype, "timestamps", void 0);
 exports.DecodeResponseFromBinaryDto = DecodeResponseFromBinaryDto;
@@ -348,12 +348,12 @@ class DecodeResponseFromFingerPrintDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], DecodeResponseFromFingerPrintDto.prototype, "songId", void 0);
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: detection_schema_1.DetectedTimeStamp }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: detection_schema_1.DetectedTimeStamp }),
     __metadata("design:type", Array)
 ], DecodeResponseFromFingerPrintDto.prototype, "timestamps", void 0);
 exports.DecodeResponseFromFingerPrintDto = DecodeResponseFromFingerPrintDto;

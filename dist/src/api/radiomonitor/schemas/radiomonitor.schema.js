@@ -20,8 +20,8 @@ exports.RadioMonitorSchemaName = 'RadioMonitor';
 let RadioMonitor = class RadioMonitor extends mongoose_2.Document {
 };
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: radiostation_schema_1.RadioStationSchemaName,
         required: true,
@@ -30,13 +30,13 @@ __decorate([
     __metadata("design:type", Object)
 ], RadioMonitor.prototype, "radio", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: radiostation_schema_1.RadioStation }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: radiostation_schema_1.RadioStation }),
     __metadata("design:type", radiostation_schema_1.RadioStation)
 ], RadioMonitor.prototype, "radioSearch", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: mongoose_2.Schema.Types.String,
         ref: licensekey_schema_1.LicenseKeySchemaName,
         required: true,
@@ -46,8 +46,8 @@ __decorate([
     __metadata("design:type", Object)
 ], RadioMonitor.prototype, "license", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: String,
         ref: 'User',
         autopopulate: { maxDepth: 2 },
@@ -55,8 +55,8 @@ __decorate([
     __metadata("design:type", String)
 ], RadioMonitor.prototype, "owner", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: 'Company',
         autopopulate: { maxDepth: 2 },
@@ -64,8 +64,8 @@ __decorate([
     __metadata("design:type", Object)
 ], RadioMonitor.prototype, "company", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: 'Partner',
         autopopulate: { maxDepth: 2 },
@@ -73,8 +73,8 @@ __decorate([
     __metadata("design:type", Object)
 ], RadioMonitor.prototype, "partner", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: api_key_schema_1.ApiKeySchemaName,
         select: false,
@@ -82,12 +82,12 @@ __decorate([
     __metadata("design:type", Object)
 ], RadioMonitor.prototype, "apiKey", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Map)
 ], RadioMonitor.prototype, "metaData", void 0);
 RadioMonitor = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.RadioMonitorSchemaName })
+    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.RadioMonitorSchemaName })
 ], RadioMonitor);
 exports.RadioMonitor = RadioMonitor;
 exports.RadioMonitorSchema = mongoose_1.SchemaFactory.createForClass(RadioMonitor);

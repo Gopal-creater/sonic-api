@@ -16,9 +16,7 @@ const common_1 = require("@nestjs/common");
 const sonickey_service_1 = require("../services/sonickey.service");
 const Enums_1 = require("../../../constants/Enums");
 const queuejob_service_1 = require("../../../queuejob/queuejob.service");
-const user_db_schema_1 = require("../../user/schemas/user.db.schema");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
-const licensekey_schema_1 = require("../../licensekey/schemas/licensekey.schema");
 const sonickey_utils_1 = require("./utils/sonickey.utils");
 const utils_1 = require("../../../shared/utils");
 let SonicKeyProcessor = SonicKeyProcessor_1 = class SonicKeyProcessor {
@@ -64,7 +62,7 @@ let SonicKeyProcessor = SonicKeyProcessor_1 = class SonicKeyProcessor {
                 sort: { createdAt: -1 },
             });
             console.log('oldLatestSonicKey', oldLatestSonicKey);
-            const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(user);
+            const { destinationFolder, resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(user);
             await this.queuejobService
                 .create(Object.assign({ _id: job.id, name: job.name, jobData: job.data }, resourceOwnerObj))
                 .catch(err => {
@@ -147,19 +145,19 @@ let SonicKeyProcessor = SonicKeyProcessor_1 = class SonicKeyProcessor {
     }
 };
 __decorate([
-    bull_1.Process('bulk_encode'),
+    (0, bull_1.Process)('bulk_encode'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SonicKeyProcessor.prototype, "handleBulkEncode", null);
 __decorate([
-    bull_1.Process('encode_again'),
+    (0, bull_1.Process)('encode_again'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SonicKeyProcessor.prototype, "handleEncodeAgainForNextDownload", null);
 SonicKeyProcessor = SonicKeyProcessor_1 = __decorate([
-    bull_1.Processor('sonickey'),
+    (0, bull_1.Processor)('sonickey'),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
         sonickey_utils_1.SonickeyUtils,
         licensekey_service_1.LicensekeyService,

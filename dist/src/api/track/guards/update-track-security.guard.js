@@ -108,7 +108,7 @@ let UpdateTrackSecurityGuard = class UpdateTrackSecurityGuard {
     }
 };
 UpdateTrackSecurityGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [track_service_1.TrackService])
 ], UpdateTrackSecurityGuard);
 exports.UpdateTrackSecurityGuard = UpdateTrackSecurityGuard;

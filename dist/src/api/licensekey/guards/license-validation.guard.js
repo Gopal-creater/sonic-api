@@ -18,10 +18,8 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SubscribeRadioMonitorLicenseValidationGuard = exports.GetSubscribedRadioMonitorListLicenseValidationGuard = exports.LicenseValidationGuard = void 0;
 const common_1 = require("@nestjs/common");
-const licensekey_schema_1 = require("../schemas/licensekey.schema");
 const licensekey_service_1 = require("../services/licensekey.service");
 const common_2 = require("@nestjs/common");
-const Enums_1 = require("../../../constants/Enums");
 let LicenseValidationGuard = class LicenseValidationGuard {
     constructor(licensekeyService) {
         this.licensekeyService = licensekeyService;
@@ -129,7 +127,7 @@ let LicenseValidationGuard = class LicenseValidationGuard {
     }
 };
 LicenseValidationGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], LicenseValidationGuard);
 exports.LicenseValidationGuard = LicenseValidationGuard;
@@ -149,7 +147,7 @@ let GetSubscribedRadioMonitorListLicenseValidationGuard = class GetSubscribedRad
     }
 };
 GetSubscribedRadioMonitorListLicenseValidationGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], GetSubscribedRadioMonitorListLicenseValidationGuard);
 exports.GetSubscribedRadioMonitorListLicenseValidationGuard = GetSubscribedRadioMonitorListLicenseValidationGuard;
@@ -244,7 +242,7 @@ let SubscribeRadioMonitorLicenseValidationGuard = class SubscribeRadioMonitorLic
     }
 };
 SubscribeRadioMonitorLicenseValidationGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], SubscribeRadioMonitorLicenseValidationGuard);
 exports.SubscribeRadioMonitorLicenseValidationGuard = SubscribeRadioMonitorLicenseValidationGuard;

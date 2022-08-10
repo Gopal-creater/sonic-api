@@ -41,6 +41,7 @@ import { ChargebeeModule } from './api/chargebee/chargebee.module';
 import { PartnerModule } from './api/partner/partner.module';
 import { TrackModule } from './api/track/track.module';
 import { ReportModule } from './api/report/report.module';
+import { AppgenService } from './shared/services/appgen.service';
 import testConfig from './config/test.config';
 
 mongoosePaginate.paginate.options = {
@@ -130,6 +131,6 @@ var connectionNo = 0;
     ReportModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AppGateway, Ec2InstanceService],
+  providers: [AppService, AppGateway, Ec2InstanceService, AppgenService],
 })
 export class AppModule {}

@@ -63,7 +63,7 @@ let UpdateSonicKeySecurityGuard = class UpdateSonicKeySecurityGuard {
     }
 };
 UpdateSonicKeySecurityGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService])
 ], UpdateSonicKeySecurityGuard);
 exports.UpdateSonicKeySecurityGuard = UpdateSonicKeySecurityGuard;

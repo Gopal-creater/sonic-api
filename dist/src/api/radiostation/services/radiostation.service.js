@@ -431,8 +431,8 @@ let RadiostationService = class RadiostationService {
     }
 };
 RadiostationService = __decorate([
-    common_1.Injectable(),
-    __param(0, mongoose_1.InjectModel(radiostation_schema_1.RadioStation.name)),
+    (0, common_1.Injectable)(),
+    __param(0, (0, mongoose_1.InjectModel)(radiostation_schema_1.RadioStation.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         sonickey_service_1.SonickeyService,
         event_emitter_1.EventEmitter2])

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApiKey = void 0;
 const common_1 = require("@nestjs/common");
-exports.ApiKey = common_1.createParamDecorator((data, ctx) => {
+exports.ApiKey = (0, common_1.createParamDecorator)((data, ctx) => {
     var _a;
     const req = ctx.switchToHttp().getRequest();
     if (data) {

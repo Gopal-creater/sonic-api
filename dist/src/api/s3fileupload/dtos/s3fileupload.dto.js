@@ -19,8 +19,8 @@ class DownloadS3FileDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], DownloadS3FileDto.prototype, "key", void 0);
 exports.DownloadS3FileDto = DownloadS3FileDto;

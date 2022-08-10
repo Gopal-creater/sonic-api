@@ -44,8 +44,8 @@ let QueuejobService = class QueuejobService {
     }
 };
 QueuejobService = __decorate([
-    common_1.Injectable(),
-    __param(0, mongoose_2.InjectModel(queuejob_schema_1.QueueJob.name)),
+    (0, common_1.Injectable)(),
+    __param(0, (0, mongoose_2.InjectModel)(queuejob_schema_1.QueueJob.name)),
     __metadata("design:paramtypes", [mongoose_1.Model])
 ], QueuejobService);
 exports.QueuejobService = QueuejobService;

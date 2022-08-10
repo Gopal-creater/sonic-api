@@ -14,7 +14,7 @@ let FailedAlwaysGuard = class FailedAlwaysGuard {
     }
 };
 FailedAlwaysGuard = __decorate([
-    common_1.Injectable()
+    (0, common_1.Injectable)()
 ], FailedAlwaysGuard);
 exports.FailedAlwaysGuard = FailedAlwaysGuard;
 //# sourceMappingURL=failedAlways.guard.js.map

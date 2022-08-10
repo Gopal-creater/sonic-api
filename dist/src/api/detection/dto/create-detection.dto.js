@@ -18,30 +18,30 @@ const general_dto_1 = require("./general.dto");
 const class_transformer_1 = require("class-transformer");
 class CreateDetectionDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { radioStation: { required: true, type: () => String }, sonicKey: { required: true, type: () => String }, channel: { required: true, type: () => String }, detectedAt: { required: true, type: () => Date }, metaData: { required: false } };
+        return { radioStation: { required: true, type: () => String }, sonicKey: { required: true, type: () => String }, channel: { required: true, type: () => String, enum: [Object.values(Enums_1.ChannelEnums)] }, detectedAt: { required: true, type: () => Date }, metaData: { required: false } };
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateDetectionDto.prototype, "radioStation", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateDetectionDto.prototype, "sonicKey", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
-    class_validator_1.IsIn([Object.values(Enums_1.ChannelEnums)]),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsIn)([Object.values(Enums_1.ChannelEnums)]),
     __metadata("design:type", String)
 ], CreateDetectionDto.prototype, "channel", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Date)
 ], CreateDetectionDto.prototype, "detectedAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Map)
 ], CreateDetectionDto.prototype, "metaData", void 0);
 exports.CreateDetectionDto = CreateDetectionDto;
@@ -54,15 +54,15 @@ class CreateDetectionFromBinaryDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateDetectionFromBinaryDto.prototype, "sonicKey", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Date)
 ], CreateDetectionFromBinaryDto.prototype, "detectedAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Map)
 ], CreateDetectionFromBinaryDto.prototype, "metaData", void 0);
 exports.CreateDetectionFromBinaryDto = CreateDetectionFromBinaryDto;
@@ -72,22 +72,22 @@ class ThirdPartyStreamReaderDetectionDto {
     }
 }
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], ThirdPartyStreamReaderDetectionDto.prototype, "country", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], ThirdPartyStreamReaderDetectionDto.prototype, "name", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Date)
 ], ThirdPartyStreamReaderDetectionDto.prototype, "detectedAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Map)
 ], ThirdPartyStreamReaderDetectionDto.prototype, "metaData", void 0);
 exports.ThirdPartyStreamReaderDetectionDto = ThirdPartyStreamReaderDetectionDto;
@@ -100,23 +100,23 @@ class CreateThirdPartyStreamReaderDetectionFromBinaryDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateThirdPartyStreamReaderDetectionFromBinaryDto.prototype, "sonicKey", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Date)
 ], CreateThirdPartyStreamReaderDetectionFromBinaryDto.prototype, "detectedAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Map)
 ], CreateThirdPartyStreamReaderDetectionFromBinaryDto.prototype, "metaData", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", ThirdPartyStreamReaderDetectionDto)
 ], CreateThirdPartyStreamReaderDetectionFromBinaryDto.prototype, "thirdpartyStreamReaderDetection", void 0);
 exports.CreateThirdPartyStreamReaderDetectionFromBinaryDto = CreateThirdPartyStreamReaderDetectionFromBinaryDto;
@@ -129,36 +129,36 @@ class CreateThirdPartyStreamReaderDetectionFromLamdaDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: general_dto_1.DecodeResponseFromBinaryDto }),
-    class_validator_1.IsDefined(),
-    class_validator_1.IsNotEmpty(),
-    class_validator_1.IsArray(),
-    class_validator_1.ValidateNested({ each: true }),
-    class_transformer_1.Type(() => general_dto_1.DecodeResponseFromBinaryDto),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: general_dto_1.DecodeResponseFromBinaryDto }),
+    (0, class_validator_1.IsDefined)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => general_dto_1.DecodeResponseFromBinaryDto),
     __metadata("design:type", Array)
 ], CreateThirdPartyStreamReaderDetectionFromLamdaDto.prototype, "decodeResponsesFromBinary", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateThirdPartyStreamReaderDetectionFromLamdaDto.prototype, "radioStation", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Date)
 ], CreateThirdPartyStreamReaderDetectionFromLamdaDto.prototype, "detectedAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Number)
 ], CreateThirdPartyStreamReaderDetectionFromLamdaDto.prototype, "streamDetectionInterval", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateThirdPartyStreamReaderDetectionFromLamdaDto.prototype, "detectionSourceFileName", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Map)
 ], CreateThirdPartyStreamReaderDetectionFromLamdaDto.prototype, "metaData", void 0);
 exports.CreateThirdPartyStreamReaderDetectionFromLamdaDto = CreateThirdPartyStreamReaderDetectionFromLamdaDto;
@@ -171,36 +171,36 @@ class CreateThirdPartyStreamReaderDetectionFromFingerPrintDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: general_dto_1.DecodeResponseFromFingerPrintDto }),
-    class_validator_1.IsDefined(),
-    class_validator_1.IsNotEmpty(),
-    class_validator_1.IsArray(),
-    class_validator_1.ValidateNested({ each: true }),
-    class_transformer_1.Type(() => general_dto_1.DecodeResponseFromFingerPrintDto),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: general_dto_1.DecodeResponseFromFingerPrintDto }),
+    (0, class_validator_1.IsDefined)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => general_dto_1.DecodeResponseFromFingerPrintDto),
     __metadata("design:type", Array)
 ], CreateThirdPartyStreamReaderDetectionFromFingerPrintDto.prototype, "decodeResponsesFromFingerPrint", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateThirdPartyStreamReaderDetectionFromFingerPrintDto.prototype, "radioStation", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Date)
 ], CreateThirdPartyStreamReaderDetectionFromFingerPrintDto.prototype, "detectedAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Number)
 ], CreateThirdPartyStreamReaderDetectionFromFingerPrintDto.prototype, "streamDetectionInterval", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateThirdPartyStreamReaderDetectionFromFingerPrintDto.prototype, "detectionSourceFileName", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsOptional(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Map)
 ], CreateThirdPartyStreamReaderDetectionFromFingerPrintDto.prototype, "metaData", void 0);
 exports.CreateThirdPartyStreamReaderDetectionFromFingerPrintDto = CreateThirdPartyStreamReaderDetectionFromFingerPrintDto;
@@ -213,15 +213,15 @@ class CreateDetectionFromHardwareDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateDetectionFromHardwareDto.prototype, "sonicKey", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Date)
 ], CreateDetectionFromHardwareDto.prototype, "detectedAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Map)
 ], CreateDetectionFromHardwareDto.prototype, "metaData", void 0);
 exports.CreateDetectionFromHardwareDto = CreateDetectionFromHardwareDto;

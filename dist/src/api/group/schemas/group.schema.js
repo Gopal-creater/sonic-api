@@ -17,39 +17,39 @@ exports.GroupSchemaName = 'Group';
 let Group = class Group extends mongoose_2.Document {
 };
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         required: true
     }),
     __metadata("design:type", String)
 ], Group.prototype, "name", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Group.prototype, "description", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Group.prototype, "contactNo", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Group.prototype, "address", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Group.prototype, "createdBy", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Group.prototype, "updatedBy", void 0);
 Group = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.GroupSchemaName })
+    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.GroupSchemaName })
 ], Group);
 exports.Group = Group;
 exports.GroupSchema = mongoose_1.SchemaFactory.createForClass(Group);

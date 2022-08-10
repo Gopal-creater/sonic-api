@@ -19,156 +19,156 @@ exports.RadioStationSchemaName = 'RadioStation';
 let Credential = class Credential {
 };
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], Credential.prototype, "username", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], Credential.prototype, "password", void 0);
 Credential = __decorate([
-    mongoose_1.Schema()
+    (0, mongoose_1.Schema)()
 ], Credential);
 exports.Credential = Credential;
 let MonitorGroup = class MonitorGroup {
 };
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], MonitorGroup.prototype, "name", void 0);
 MonitorGroup = __decorate([
-    mongoose_1.Schema()
+    (0, mongoose_1.Schema)()
 ], MonitorGroup);
 exports.MonitorGroup = MonitorGroup;
 let RadioStation = class RadioStation extends mongoose_2.Document {
 };
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         required: true,
     }),
     __metadata("design:type", String)
 ], RadioStation.prototype, "name", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    isValidCountry_validation_1.IsValidCountry(),
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, isValidCountry_validation_1.IsValidCountry)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         required: true,
     }),
     __metadata("design:type", String)
 ], RadioStation.prototype, "country", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         required: true,
         unique: true,
     }),
     __metadata("design:type", String)
 ], RadioStation.prototype, "streamingUrl", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ required: true }),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], RadioStation.prototype, "adminEmail", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], RadioStation.prototype, "website", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], RadioStation.prototype, "logo", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop([MonitorGroup]),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)([MonitorGroup]),
     __metadata("design:type", Array)
 ], RadioStation.prototype, "monitorGroups", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: Credential }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: Credential }),
     __metadata("design:type", Credential)
 ], RadioStation.prototype, "credential", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], RadioStation.prototype, "createdBy", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], RadioStation.prototype, "updatedBy", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: Date }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: Date }),
     __metadata("design:type", Date)
 ], RadioStation.prototype, "startedAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: Date }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: Date }),
     __metadata("design:type", Date)
 ], RadioStation.prototype, "stopAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: false }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], RadioStation.prototype, "isStreamStarted", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: false }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], RadioStation.prototype, "isError", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: false }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], RadioStation.prototype, "running", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: false }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], RadioStation.prototype, "shortListed", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: false }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], RadioStation.prototype, "isFromAppGen", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], RadioStation.prototype, "appGenStationId", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop([{ type: String }]),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)([{ type: String }]),
     __metadata("design:type", Array)
 ], RadioStation.prototype, "genres", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: null }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ default: null }),
     __metadata("design:type", Map)
 ], RadioStation.prototype, "error", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], RadioStation.prototype, "notes", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Map)
 ], RadioStation.prototype, "metaData", void 0);
 RadioStation = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.RadioStationSchemaName })
+    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.RadioStationSchemaName })
 ], RadioStation);
 exports.RadioStation = RadioStation;
 exports.RadioStationSchema = mongoose_1.SchemaFactory.createForClass(RadioStation);

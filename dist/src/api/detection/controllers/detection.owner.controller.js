@@ -31,7 +31,6 @@ const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pi
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 const isTargetUserLoggedIn_guard_1 = require("../../auth/guards/isTargetUserLoggedIn.guard");
-const types_1 = require("../../../shared/types");
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
 const file_handler_service_1 = require("../../../shared/services/file-handler.service");
 const utils_1 = require("../../../shared/utils");
@@ -53,7 +52,7 @@ let DetectionOwnerController = class DetectionOwnerController {
     async getMonitorDashboardData(targetUser, user, queryDto) {
         var includeCompanies = queryDto.filter['includeCompanies'];
         delete queryDto.filter['includeCompanies'];
-        const userCompaniesIds = user.companies.map(com => mongoose_utils_1.toObjectId(com._id));
+        const userCompaniesIds = user.companies.map(com => (0, mongoose_utils_1.toObjectId)(com._id));
         if (includeCompanies == false) {
             queryDto.relationalFilter = _.merge({}, queryDto.relationalFilter, {
                 $or: [{ 'owner._id': user._id }],
@@ -129,7 +128,7 @@ let DetectionOwnerController = class DetectionOwnerController {
         queryDto.filter['owner'] = targetUser;
         queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
         const filePath = await this.detectionService.exportDashboardPlaysView(queryDto, format);
-        const fileName = utils_1.extractFileName(filePath);
+        const fileName = (0, utils_1.extractFileName)(filePath);
         res.download(filePath, `exported_dashboard_plays_view_${format}.${fileName.split('.')[1]}`, err => {
             if (err) {
                 this.fileHandlerService.deleteFileAtPath(filePath);
@@ -142,7 +141,7 @@ let DetectionOwnerController = class DetectionOwnerController {
         queryDto.filter['owner'] = targetUser;
         queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
         const filePath = await this.detectionService.exportHistoryOfSonicKeyPlays(queryDto, format);
-        const fileName = utils_1.extractFileName(filePath);
+        const fileName = (0, utils_1.extractFileName)(filePath);
         res.download(filePath, `exported_history_of_sonickey_${format}.${fileName.split('.')[1]}`, err => {
             if (err) {
                 this.fileHandlerService.deleteFileAtPath(filePath);
@@ -156,7 +155,7 @@ let DetectionOwnerController = class DetectionOwnerController {
         var includeCompanies = queryDto.filter['includeCompanies'];
         delete queryDto.filter['playsBy'];
         delete queryDto.filter['includeCompanies'];
-        const userCompaniesIds = user.companies.map(com => mongoose_utils_1.toObjectId(com._id));
+        const userCompaniesIds = user.companies.map(com => (0, mongoose_utils_1.toObjectId)(com._id));
         if (includeCompanies == false) {
             queryDto.relationalFilter = _.merge({}, queryDto.relationalFilter, {
                 $or: [{ 'owner._id': user._id }],
@@ -188,7 +187,7 @@ let DetectionOwnerController = class DetectionOwnerController {
         var includeCompanies = queryDto.filter['includeCompanies'];
         delete queryDto.filter['playsBy'];
         delete queryDto.filter['includeCompanies'];
-        const userCompaniesIds = user.companies.map(com => mongoose_utils_1.toObjectId(com._id));
+        const userCompaniesIds = user.companies.map(com => (0, mongoose_utils_1.toObjectId)(com._id));
         if (includeCompanies == false) {
             queryDto.relationalFilter = _.merge({}, queryDto.relationalFilter, {
                 $or: [{ 'owner._id': user._id }],
@@ -223,7 +222,7 @@ let DetectionOwnerController = class DetectionOwnerController {
         var includeCompanies = queryDto.filter['includeCompanies'];
         delete queryDto.filter['playsBy'];
         delete queryDto.filter['includeCompanies'];
-        const userCompaniesIds = user.companies.map(com => mongoose_utils_1.toObjectId(com._id));
+        const userCompaniesIds = user.companies.map(com => (0, mongoose_utils_1.toObjectId)(com._id));
         if (includeCompanies == false) {
             queryDto.relationalFilter = _.merge({}, queryDto.relationalFilter, {
                 $or: [{ 'owner._id': user._id }],
@@ -255,7 +254,7 @@ let DetectionOwnerController = class DetectionOwnerController {
                 exportedFilePath = await this.detectionService.exportPlays(queryDto, format);
                 break;
         }
-        const fileName = utils_1.extractFileName(exportedFilePath);
+        const fileName = (0, utils_1.extractFileName)(exportedFilePath);
         res.download(exportedFilePath, `${fileName.split('_nameseperator_')[1]}`, err => {
             if (err) {
                 this.fileHandlerService.deleteFileAtPath(exportedFilePath);
@@ -288,50 +287,50 @@ let DetectionOwnerController = class DetectionOwnerController {
     }
 };
 __decorate([
-    common_1.Get('/plays-dashboard-data'),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get Plays Dashboard data' }),
+    (0, common_1.Get)('/plays-dashboard-data'),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Plays Dashboard data' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "getPlaysDashboardData", null);
 __decorate([
-    common_1.Get('/get-monitor-dashboard-data'),
-    swagger_1.ApiQuery({ name: 'includeCompanies', type: Boolean, required: false }),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get Monitor Dashboard data' }),
+    (0, common_1.Get)('/get-monitor-dashboard-data'),
+    (0, swagger_1.ApiQuery)({ name: 'includeCompanies', type: Boolean, required: false }),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Monitor Dashboard data' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, user_decorator_1.User()),
-    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, user_decorator_1.User)()),
+    __param(2, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
         parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "getMonitorDashboardData", null);
 __decorate([
-    common_1.Get('/plays-dashboard-graph-data'),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get Plays Dashboard graph data' }),
+    (0, common_1.Get)('/plays-dashboard-graph-data'),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Plays Dashboard graph data' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/general.dto").PlaysGraphResponseDto }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "getPlaysDashboardGraphData", null);
 __decorate([
-    common_1.Get(`/radioStations/top-radiostations-with-top-sonickeys`),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+    (0, common_1.Get)(`/radioStations/top-radiostations-with-top-sonickeys`),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)({
         additionalHtmlDescription: `
   <fieldset>
   <legend><h1>Example:</h1></legend>
@@ -342,25 +341,25 @@ __decorate([
   </fieldset>
  `,
     }),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiQuery({ name: 'includeGraph', type: Boolean, required: false }),
-    swagger_1.ApiQuery({
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiQuery)({ name: 'includeGraph', type: Boolean, required: false }),
+    (0, swagger_1.ApiQuery)({
         name: 'groupByTime',
         enum: ['month', 'year', 'dayOfMonth'],
         required: false,
     }),
-    swagger_1.ApiOperation({ summary: 'Get Top radiostations with top sonickeys' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Top radiostations with top sonickeys' }),
     openapi.ApiResponse({ status: 200, type: [require("../dto/general.dto").TopRadioStationWithTopSonicKey] }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "getTopRadiostations", null);
 __decorate([
-    common_1.Get(`/radioStations/top-radiostations-with-plays-details`),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+    (0, common_1.Get)(`/radioStations/top-radiostations-with-plays-details`),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)({
         additionalHtmlDescription: `
   <fieldset>
   <legend><h1>Example:</h1></legend>
@@ -368,20 +367,20 @@ __decorate([
   </fieldset>
  `,
     }),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get Top radiostations with its plays details' }),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Top radiostations with its plays details' }),
     openapi.ApiResponse({ status: 200, type: [require("../dto/general.dto").TopRadioStationWithPlaysDetails] }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "getTopRadiostationsWithPlays", null);
 __decorate([
-    common_1.Get('/radioStations/:radioStation/sonickey-graph/:groupByTime'),
-    swagger_1.ApiParam({ name: 'groupByTime', enum: ['month', 'year', 'dayOfMonth'] }),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+    (0, common_1.Get)('/radioStations/:radioStation/sonickey-graph/:groupByTime'),
+    (0, swagger_1.ApiParam)({ name: 'groupByTime', enum: ['month', 'year', 'dayOfMonth'] }),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)({
         additionalHtmlDescription: `
   <fieldset>
   <legend><h1>Example:</h1></legend>
@@ -389,193 +388,193 @@ __decorate([
   </fieldset>
  `,
     }),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get Top radiostations with top sonickeys' }),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Top radiostations with top sonickeys' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Param('radioStation')),
-    __param(2, common_1.Param('groupByTime')),
-    __param(3, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Param)('radioStation')),
+    __param(2, (0, common_1.Param)('groupByTime')),
+    __param(3, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "getSonicKeyGraphs", null);
 __decorate([
-    common_1.Get('/:channel/data'),
-    swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
-    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({
+    (0, common_1.Get)('/:channel/data'),
+    (0, swagger_1.ApiQuery)({ name: 'radioStation', type: String, required: false }),
+    (0, swagger_1.ApiParam)({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, swagger_1.ApiQuery)({ name: 'includeGroupData', type: Boolean, required: false }),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, swagger_1.ApiOperation)({
         summary: 'Get All Detections for specific channel and specific user',
     }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDetectionDto }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Param('channel')),
-    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Param)('channel')),
+    __param(2, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], DetectionOwnerController.prototype, "findAll", null);
 __decorate([
-    common_1.Get('/export/dashboard-plays-view/:format'),
-    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiSecurity('x-api-key'),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({ summary: 'Export Dashboard Plays View' }),
+    (0, common_1.Get)('/export/dashboard-plays-view/:format'),
+    (0, swagger_1.ApiParam)({ name: 'format', enum: ['xlsx', 'csv'] }),
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Export Dashboard Plays View' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, common_1.Res()),
-    __param(1, common_1.Param('targetUser')),
-    __param(2, common_1.Param('format')),
-    __param(3, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('targetUser')),
+    __param(2, (0, common_1.Param)('format')),
+    __param(3, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "exportDashboardPlaysView", null);
 __decorate([
-    common_1.Get('/export/history-of-sonickey/:format'),
-    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
-    swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
-    swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
-    swagger_1.ApiQuery({ name: 'sonicKey', type: String, required: false }),
-    swagger_1.ApiQuery({
+    (0, common_1.Get)('/export/history-of-sonickey/:format'),
+    (0, swagger_1.ApiParam)({ name: 'format', enum: ['xlsx', 'csv'] }),
+    (0, swagger_1.ApiQuery)({ name: 'radioStation', type: String, required: false }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', type: Number, required: false }),
+    (0, swagger_1.ApiQuery)({ name: 'sonicKey', type: String, required: false }),
+    (0, swagger_1.ApiQuery)({
         name: 'channel',
         enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'],
         required: false,
     }),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiSecurity('x-api-key'),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({ summary: 'Export History Of Sonickey View' }),
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Export History Of Sonickey View' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, common_1.Res()),
-    __param(1, common_1.Param('targetUser')),
-    __param(2, common_1.Param('format')),
-    __param(3, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('targetUser')),
+    __param(2, (0, common_1.Param)('format')),
+    __param(3, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "exportHistoryOfSonicKeyView", null);
 __decorate([
-    common_1.Get('/list-plays'),
-    swagger_1.ApiQuery({
+    (0, common_1.Get)('/list-plays'),
+    (0, swagger_1.ApiQuery)({
         name: 'playsBy',
         enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS'],
         required: false,
     }),
-    swagger_1.ApiQuery({ name: 'includeCompanies', type: Boolean, required: false }),
-    swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
-    swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
-    swagger_1.ApiQuery({
+    (0, swagger_1.ApiQuery)({ name: 'includeCompanies', type: Boolean, required: false }),
+    (0, swagger_1.ApiQuery)({ name: 'radioStation', type: String, required: false }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', type: Number, required: false }),
+    (0, swagger_1.ApiQuery)({
         name: 'channel',
         enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'],
         required: false,
     }),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiSecurity('x-api-key'),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, swagger_1.ApiOperation)({
         summary: 'Get All Plays for specific user by specific groupBy Aggregation',
     }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, user_decorator_1.User()),
-    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, user_decorator_1.User)()),
+    __param(2, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
         parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], DetectionOwnerController.prototype, "listPlays", null);
 __decorate([
-    common_1.Get('/get-plays-count-by'),
-    swagger_1.ApiQuery({
+    (0, common_1.Get)('/get-plays-count-by'),
+    (0, swagger_1.ApiQuery)({
         name: 'playsBy',
         enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS'],
         required: false,
     }),
-    swagger_1.ApiQuery({ name: 'includeCompanies', type: Boolean, required: false }),
-    swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
-    swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
-    swagger_1.ApiQuery({
+    (0, swagger_1.ApiQuery)({ name: 'includeCompanies', type: Boolean, required: false }),
+    (0, swagger_1.ApiQuery)({ name: 'radioStation', type: String, required: false }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', type: Number, required: false }),
+    (0, swagger_1.ApiQuery)({
         name: 'channel',
         enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'],
         required: false,
     }),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiSecurity('x-api-key'),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, swagger_1.ApiOperation)({
         summary: 'Get  Plays count for specific user by specific groupBy Aggregation',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, user_decorator_1.User()),
-    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, user_decorator_1.User)()),
+    __param(2, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
         parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], DetectionOwnerController.prototype, "getPlaysCountBy", null);
 __decorate([
-    common_1.Get('/export-plays-by/:format'),
-    swagger_1.ApiQuery({
+    (0, common_1.Get)('/export-plays-by/:format'),
+    (0, swagger_1.ApiQuery)({
         name: 'playsBy',
         enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS'],
         required: false,
     }),
-    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiSecurity('x-api-key'),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({ summary: 'Export Plays View' }),
+    (0, swagger_1.ApiParam)({ name: 'format', enum: ['xlsx', 'csv'] }),
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Export Plays View' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, common_1.Res()),
-    __param(1, common_1.Param('targetUser')),
-    __param(2, user_decorator_1.User()),
-    __param(3, common_1.Param('format')),
-    __param(4, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('targetUser')),
+    __param(2, (0, user_decorator_1.User)()),
+    __param(3, (0, common_1.Param)('format')),
+    __param(4, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, user_db_schema_1.UserDB, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionOwnerController.prototype, "exportPlaysBy", null);
 __decorate([
-    common_1.Get('/:channel/sonicKeys/:sonicKey/detected-details'),
-    swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
-    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
-    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiSecurity('x-api-key'),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({
+    (0, common_1.Get)('/:channel/sonicKeys/:sonicKey/detected-details'),
+    (0, swagger_1.ApiQuery)({ name: 'radioStation', type: String, required: false }),
+    (0, swagger_1.ApiQuery)({ name: 'includeGroupData', type: Boolean, required: false }),
+    (0, swagger_1.ApiParam)({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, swagger_1.ApiOperation)({
         summary: 'Get Detected Details for specific channel and specific sonickey',
     }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDetectionDto }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Param('channel')),
-    __param(2, common_1.Param('sonicKey')),
-    __param(3, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Param)('channel')),
+    __param(2, (0, common_1.Param)('sonicKey')),
+    __param(3, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], DetectionOwnerController.prototype, "getDetectedDetailsOfSingleSonicKey", null);
 __decorate([
-    common_1.Get('/:channel/count'),
-    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
-    swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
-    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+    (0, common_1.Get)('/:channel/count'),
+    (0, swagger_1.ApiQuery)({ name: 'includeGroupData', type: Boolean, required: false }),
+    (0, swagger_1.ApiQuery)({ name: 'radioStation', type: String, required: false }),
+    (0, swagger_1.ApiParam)({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)({
         additionalHtmlDescription: `
   <fieldset>
   <legend><h1>Example:</h1></legend>
@@ -586,24 +585,24 @@ __decorate([
   </fieldset>
  `,
     }),
-    swagger_1.ApiOperation({ summary: 'Get Count' }),
-    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Count' }),
+    (0, swagger_1.ApiQuery)({ name: 'includeGroupData', type: Boolean, required: false }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Param('channel')),
-    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Param)('channel')),
+    __param(2, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], DetectionOwnerController.prototype, "getCount", null);
 __decorate([
-    common_1.Get('/:channel/count-plays'),
-    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
-    swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
-    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+    (0, common_1.Get)('/:channel/count-plays'),
+    (0, swagger_1.ApiQuery)({ name: 'includeGroupData', type: Boolean, required: false }),
+    (0, swagger_1.ApiQuery)({ name: 'radioStation', type: String, required: false }),
+    (0, swagger_1.ApiParam)({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'] }),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)({
         additionalHtmlDescription: `
   <fieldset>
   <legend><h1>Example:</h1></legend>
@@ -614,18 +613,18 @@ __decorate([
   </fieldset>
  `,
     }),
-    swagger_1.ApiOperation({ summary: 'Get Plays Count' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Plays Count' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/general.dto").PlaysCountResponseDto }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Param('channel')),
-    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Param)('channel')),
+    __param(2, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], DetectionOwnerController.prototype, "getPlaysCount", null);
 DetectionOwnerController = __decorate([
-    swagger_1.ApiTags('Detection Controller'),
-    common_1.Controller('detections/owners/:targetUser'),
+    (0, swagger_1.ApiTags)('Detection Controller'),
+    (0, common_1.Controller)('detections/owners/:targetUser'),
     __metadata("design:paramtypes", [detection_service_1.DetectionService,
         sonickey_service_1.SonickeyService,
         file_handler_service_1.FileHandlerService])

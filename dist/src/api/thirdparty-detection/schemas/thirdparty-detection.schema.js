@@ -18,32 +18,32 @@ exports.ThirdpartyDetectionSchemaName = 'ThirdpartyDetection';
 let ThirdpartyDetection = class ThirdpartyDetection extends mongoose_2.Document {
 };
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ required: true }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], ThirdpartyDetection.prototype, "customer", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], ThirdpartyDetection.prototype, "apiKey", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, ref: sonickey_schema_1.SonicKeySchemaName, required: true, autopopulate: { maxDepth: 2 } }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: String, ref: sonickey_schema_1.SonicKeySchemaName, required: true, autopopulate: { maxDepth: 2 } }),
     __metadata("design:type", Object)
 ], ThirdpartyDetection.prototype, "sonicKey", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: Date }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: Date }),
     __metadata("design:type", Date)
 ], ThirdpartyDetection.prototype, "detectionTime", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Map)
 ], ThirdpartyDetection.prototype, "metaData", void 0);
 ThirdpartyDetection = __decorate([
-    mongoose_1.Schema({ timestamps: true })
+    (0, mongoose_1.Schema)({ timestamps: true })
 ], ThirdpartyDetection);
 exports.ThirdpartyDetection = ThirdpartyDetection;
 exports.ThirdpartyDetectionSchema = mongoose_1.SchemaFactory.createForClass(ThirdpartyDetection);

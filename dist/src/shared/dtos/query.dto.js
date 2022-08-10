@@ -20,8 +20,8 @@ class QueryDto extends paginationquery_dto_1.PaginationQueryDto {
     }
 }
 __decorate([
-    class_validator_1.IsOptional(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsOptional)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Object)
 ], QueryDto.prototype, "filter", void 0);
 exports.QueryDto = QueryDto;

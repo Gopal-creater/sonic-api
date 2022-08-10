@@ -52,7 +52,6 @@ const FileFromTrack_interceptor_1 = require("../../../shared/interceptors/FileFr
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
-const detection_schema_1 = require("../../detection/schemas/detection.schema");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
 const user_db_schema_1 = require("../../user/schemas/user.db.schema");
 const job_license_validation_guard_1 = require("../../licensekey/guards/job-license-validation.guard");
@@ -86,7 +85,7 @@ let SonickeyController = class SonickeyController {
             (_b = parsedQueryDto.filter) === null || _b === void 0 ? true : delete _b.channel;
         }
         const exportedFilePath = await this.sonicKeyService.exportSonicKeys(parsedQueryDto, format);
-        const fileName = utils_1.extractFileName(exportedFilePath);
+        const fileName = (0, utils_1.extractFileName)(exportedFilePath);
         res.download(exportedFilePath, `${fileName.split('_nameseperator_')[1]}`, err => {
             if (err) {
                 this.fileHandlerService.deleteFileAtPath(exportedFilePath);
@@ -97,7 +96,7 @@ let SonickeyController = class SonickeyController {
     }
     async getDownloadUrlByMetadata(parsedQueryDto, loggedInUser) {
         var _a;
-        const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        const { resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(loggedInUser);
         console.log("resourceOwnerObj", resourceOwnerObj);
         parsedQueryDto.filter = Object.assign(Object.assign({}, parsedQueryDto.filter), resourceOwnerObj);
         console.log("parsedQueryDto.filter", parsedQueryDto.filter);
@@ -117,7 +116,7 @@ let SonickeyController = class SonickeyController {
                 purpose: 'Encode again for next download job',
             },
         };
-        await this.sonicKeyService.sonicKeyQueue.add('encode_again', encodeAgainForNextDownloadJobData, { jobId: nanoid_1.nanoid(15) });
+        await this.sonicKeyService.sonicKeyQueue.add('encode_again', encodeAgainForNextDownloadJobData, { jobId: (0, nanoid_1.nanoid)(15) });
         return {
             sonicKey: sonicKey === null || sonicKey === void 0 ? void 0 : sonicKey._id,
             downloadUrl: downloadSignedUrl
@@ -170,7 +169,7 @@ let SonickeyController = class SonickeyController {
         if (!channel) {
             throw new common_1.BadRequestException('Channel is required');
         }
-        const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        const { resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(loggedInUser);
         const newTrack = Object.assign(Object.assign({ channel: channel, artist: contentOwner, title: contentName, fileType: contentType, mimeType: contentFileType, duration: contentDuration, fileSize: contentSize, encoding: contentEncoding, localFilePath: contentFilePath, samplingFrequency: contentSamplingFrequency, trackMetaData: createSonicKeyDto }, resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
         var track = await this.sonicKeyService.trackService.findOne({
             mimeType: contentFileType,
@@ -193,7 +192,7 @@ let SonickeyController = class SonickeyController {
         return savedSonicKey;
     }
     async createForJob(createSonicKeyDto, loggedInUser) {
-        const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        const { resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(loggedInUser);
         const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, createSonicKeyDto), resourceOwnerObj), { _id: createSonicKeyDto.sonicKey, createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
         return this.sonicKeyService.create(sonickeyDoc);
     }
@@ -218,7 +217,7 @@ let SonickeyController = class SonickeyController {
         return key;
     }
     async encode(sonicKeyDto, file, loggedInUser, licenseId) {
-        const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        const { destinationFolder, resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(loggedInUser);
         const encodingStrength = sonicKeyDto.encodingStrength;
         const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
         const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
@@ -231,7 +230,7 @@ let SonickeyController = class SonickeyController {
         });
     }
     async encodeByFile(sonicKeyDto, file, loggedInUser, licenseId) {
-        const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        const { destinationFolder, resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(loggedInUser);
         const encodingStrength = sonicKeyDto.encodingStrength;
         const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
         const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
@@ -244,7 +243,7 @@ let SonickeyController = class SonickeyController {
         });
     }
     async encodeByTrack(sonicKeyDto, track, file, loggedInUser, licenseId) {
-        const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        const { destinationFolder, resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(loggedInUser);
         sonicKeyDto.contentFileType = sonicKeyDto.contentFileType || track.mimeType;
         sonicKeyDto.contentOwner = sonicKeyDto.contentOwner || track.artist;
         sonicKeyDto.contentName = sonicKeyDto.contentName || track.title;
@@ -268,7 +267,7 @@ let SonickeyController = class SonickeyController {
         });
     }
     async encodeFromUrl(sonicKeyDto, file, loggedInUser, owner, licenseId) {
-        const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        const { destinationFolder, resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(loggedInUser);
         const encodingStrength = sonicKeyDto.encodingStrength;
         const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
         const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
@@ -510,194 +509,194 @@ let SonickeyController = class SonickeyController {
     }
 };
 __decorate([
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)({
         additionalHtmlDescription: `<div>
       To Get sonickeys for specific company ?company=companyId <br/>
       To Get sonickeys for specific partner ?partner=partnerId <br/>
       To Get sonickeys for specific user ?owner=ownerId
     <div>`,
     }),
-    swagger_1.ApiQuery({
+    (0, swagger_1.ApiQuery)({
         name: 'channel',
         enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'],
         required: false,
     }),
-    common_1.Get('/'),
-    decorators_1.RolesAllowed(),
-    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'List Sonic Keys' }),
+    (0, common_1.Get)('/'),
+    (0, decorators_1.RolesAllowed)(),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'List Sonic Keys' }),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
-    __param(1, decorators_1.User()),
+    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(1, (0, decorators_1.User)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto,
         user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getAll", null);
 __decorate([
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)({
         additionalHtmlDescription: `<div>
       To Get sonickeys for specific company ?company=companyId <br/>
       To Get sonickeys for specific partner ?partner=partnerId <br/>
       To Get sonickeys for specific user ?owner=ownerId
     <div>`,
     }),
-    swagger_1.ApiQuery({
+    (0, swagger_1.ApiQuery)({
         name: 'channel',
         enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'],
         required: false,
     }),
-    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
-    common_1.Get('/export-sonickeys/:format'),
-    decorators_1.RolesAllowed(),
-    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Export Sonic Keys' }),
+    (0, swagger_1.ApiParam)({ name: 'format', enum: ['xlsx', 'csv'] }),
+    (0, common_1.Get)('/export-sonickeys/:format'),
+    (0, decorators_1.RolesAllowed)(),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Export Sonic Keys' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, common_1.Res()),
-    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
-    __param(2, common_1.Param('format')),
-    __param(3, decorators_1.User()),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(2, (0, common_1.Param)('format')),
+    __param(3, (0, decorators_1.User)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, parsedquery_dto_1.ParsedQueryDto, String, user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "exportSonicKeys", null);
 __decorate([
-    common_1.Get('/get-download-url-by-metadata'),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiQuery({
+    (0, common_1.Get)('/get-download-url-by-metadata'),
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiQuery)({
         name: 'query',
         type: 'object',
         required: false,
     }),
-    swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiOperation({ summary: 'get download url by metadata' }),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, swagger_1.ApiOperation)({ summary: 'get download url by metadata' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
-    __param(1, decorators_1.User()),
+    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(1, (0, decorators_1.User)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto,
         user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getDownloadUrlByMetadata", null);
 __decorate([
-    common_1.Post('/encode-bulk/companies/:companyId/clients/:clientId'),
-    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, job_license_validation_guard_1.BulkEncodeWithQueueLicenseValidationGuard),
-    swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiOperation({
+    (0, common_1.Post)('/encode-bulk/companies/:companyId/clients/:clientId'),
+    (0, common_1.UseGuards)(apikey_auth_guard_1.ApiKeyAuthGuard, job_license_validation_guard_1.BulkEncodeWithQueueLicenseValidationGuard),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, swagger_1.ApiOperation)({
         summary: 'API for companies to import their media to sonic on behalf of their user',
     }),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, common_1.Param('companyId')),
-    __param(1, common_1.Param('clientId')),
-    __param(2, decorators_1.User('sub')),
-    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
-    __param(4, common_1.Body()),
+    __param(0, (0, common_1.Param)('companyId')),
+    __param(1, (0, common_1.Param)('clientId')),
+    __param(2, (0, decorators_1.User)('sub')),
+    __param(3, (0, validatedlicense_decorator_1.ValidatedLicense)('key')),
+    __param(4, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String, String, encode_dto_1.EncodeFromQueueDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "encodeToSonicFromPath", null);
 __decorate([
-    common_1.Get('/encode-bulk/companies/:companyId/get-job-status/:jobId'),
-    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
-    swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiOperation({ summary: 'Get Job Status From Queue' }),
+    (0, common_1.Get)('/encode-bulk/companies/:companyId/get-job-status/:jobId'),
+    (0, common_1.UseGuards)(apikey_auth_guard_1.ApiKeyAuthGuard),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Job Status From Queue' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('companyId')),
-    __param(1, common_1.Param('jobId')),
+    __param(0, (0, common_1.Param)('companyId')),
+    __param(1, (0, common_1.Param)('jobId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getJobStatusFromQueue", null);
 __decorate([
-    common_1.Get('/generate-unique-sonic-key'),
-    swagger_1.ApiOperation({ summary: 'Generate unique sonic key' }),
+    (0, common_1.Get)('/generate-unique-sonic-key'),
+    (0, swagger_1.ApiOperation)({ summary: 'Generate unique sonic key' }),
     openapi.ApiResponse({ status: 200, type: String }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], SonickeyController.prototype, "generateUniqueSonicKey", null);
 __decorate([
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, license_validation_guard_1.LicenseValidationGuard),
-    common_1.Post('/create-from-outside'),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiOperation({
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, license_validation_guard_1.LicenseValidationGuard),
+    (0, common_1.Post)('/create-from-outside'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, swagger_1.ApiOperation)({
         summary: '[NEW]: Save to database after local encode. ',
     }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body()),
-    __param(1, decorators_1.User()),
-    __param(2, apikey_decorator_1.ApiKey('_id')),
-    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, decorators_1.User)()),
+    __param(2, (0, apikey_decorator_1.ApiKey)('_id')),
+    __param(3, (0, validatedlicense_decorator_1.ValidatedLicense)('key')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto,
         user_db_schema_1.UserDB, String, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "create", null);
 __decorate([
-    common_1.UseGuards(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
-    common_1.Post('/create-from-job'),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, license_validation_guard_1.LicenseValidationGuard),
+    (0, common_1.Post)('/create-from-job'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({
         summary: 'Save to database after local encode from job desktop app.',
     }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body()),
-    __param(1, decorators_1.User()),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, decorators_1.User)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyFromJobDto,
         user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "createForJob", null);
 __decorate([
-    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.Get('/list-sonickeys'),
-    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({ summary: 'List Sonic Keys' }),
+    (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN),
+    (0, common_1.Get)('/list-sonickeys'),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, swagger_1.ApiOperation)({ summary: 'List Sonic Keys' }),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "listSonickeys", null);
 __decorate([
-    common_1.Get('/jobs/:jobId'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({ summary: 'Get All Sonic Keys of particular job' }),
+    (0, common_1.Get)('/jobs/:jobId'),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get All Sonic Keys of particular job' }),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-sonickey.dto").MongoosePaginateSonicKeyDto }),
-    __param(0, common_1.Param('jobId')),
-    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('jobId')),
+    __param(1, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getKeysByJob", null);
 __decorate([
-    common_1.Get('/count'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({
+    (0, common_1.Get)('/count'),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, swagger_1.ApiQuery)({ name: 'includeGroupData', type: Boolean, required: false }),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({
         summary: 'Get count of all sonickeys also accept filter as query params',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getCount", null);
 __decorate([
-    common_1.Get('/estimate-count'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({
+    (0, common_1.Get)('/estimate-count'),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({
         summary: 'Get all count of all sonickeys',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
@@ -706,20 +705,20 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getEstimateCount", null);
 __decorate([
-    common_1.Get('/:sonickey'),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiOperation({ summary: 'Get Single SonicKey' }),
+    (0, common_1.Get)('/:sonickey'),
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Single SonicKey' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('sonickey')),
+    __param(0, (0, common_1.Param)('sonickey')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "getOne", null);
 __decorate([
-    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
-        storage: multer_1.diskStorage({
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('mediaFile', {
+        storage: (0, multer_1.diskStorage)({
             destination: async (req, file, cb) => {
                 var _a, _b;
                 const loggedInUser = req['user'];
@@ -742,28 +741,28 @@ __decorate([
             },
         }),
     }), encode_security_interceptor_1.EncodeSecurityInterceptor),
-    swagger_1.ApiConsumes('multipart/form-data'),
-    swagger_1.ApiBody({
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({
         description: 'File To Encode',
         type: encode_dto_1.EncodeDto,
     }),
-    decorators_1.RolesAllowed(),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard),
-    common_1.Post('/encode'),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Encode File And save to database' }),
+    (0, decorators_1.RolesAllowed)(),
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard),
+    (0, common_1.Post)('/encode'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Encode File And save to database' }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body('data', jsonparse_pipe_1.JsonParsePipe)),
-    __param(1, common_1.UploadedFile()),
-    __param(2, decorators_1.User()),
-    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __param(0, (0, common_1.Body)('data', jsonparse_pipe_1.JsonParsePipe)),
+    __param(1, (0, common_1.UploadedFile)()),
+    __param(2, (0, decorators_1.User)()),
+    __param(3, (0, validatedlicense_decorator_1.ValidatedLicense)('key')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [sonicKey_dto_1.SonicKeyDto, Object, user_db_schema_1.UserDB, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "encode", null);
 __decorate([
-    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
-        storage: multer_1.diskStorage({
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('mediaFile', {
+        storage: (0, multer_1.diskStorage)({
             destination: async (req, file, cb) => {
                 var _a, _b;
                 const loggedInUser = req['user'];
@@ -786,78 +785,78 @@ __decorate([
             },
         }),
     }), encode_security_interceptor_1.EncodeSecurityInterceptor),
-    swagger_1.ApiConsumes('multipart/form-data'),
-    swagger_1.ApiBody({
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({
         description: 'File To Encode',
         type: encode_dto_1.EncodeFromFileDto,
     }),
-    decorators_1.RolesAllowed(),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard),
-    common_1.Post('/encode-from-file'),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiOperation({
+    (0, decorators_1.RolesAllowed)(),
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard),
+    (0, common_1.Post)('/encode-from-file'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, swagger_1.ApiOperation)({
         summary: 'Encode File And save to database & into track table',
     }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body('data', jsonparse_pipe_1.JsonParsePipe)),
-    __param(1, common_1.UploadedFile()),
-    __param(2, decorators_1.User()),
-    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __param(0, (0, common_1.Body)('data', jsonparse_pipe_1.JsonParsePipe)),
+    __param(1, (0, common_1.UploadedFile)()),
+    __param(2, (0, decorators_1.User)()),
+    __param(3, (0, validatedlicense_decorator_1.ValidatedLicense)('key')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto, Object, user_db_schema_1.UserDB, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "encodeByFile", null);
 __decorate([
-    common_1.UseInterceptors(FileFromTrack_interceptor_1.FileFromTrackInterceptor('track')),
-    swagger_1.ApiBody({
+    (0, common_1.UseInterceptors)((0, FileFromTrack_interceptor_1.FileFromTrackInterceptor)('track')),
+    (0, swagger_1.ApiBody)({
         description: 'File To Encode',
         type: encode_dto_1.EncodeFromTrackDto,
     }),
-    decorators_1.RolesAllowed(),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard, encode_security_guard_1.EncodeSecurityGuard),
-    common_1.Post('/encode-from-track'),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiOperation({
+    (0, decorators_1.RolesAllowed)(),
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard, encode_security_guard_1.EncodeSecurityGuard),
+    (0, common_1.Post)('/encode-from-track'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, swagger_1.ApiOperation)({
         summary: 'Encode File And save to database & into track table',
     }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body('data')),
-    __param(1, FileFromTrack_interceptor_1.CurrentTrack()),
-    __param(2, FileFromTrack_interceptor_1.UploadedFileFromTrack()),
-    __param(3, decorators_1.User()),
-    __param(4, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __param(0, (0, common_1.Body)('data')),
+    __param(1, (0, FileFromTrack_interceptor_1.CurrentTrack)()),
+    __param(2, (0, FileFromTrack_interceptor_1.UploadedFileFromTrack)()),
+    __param(3, (0, decorators_1.User)()),
+    __param(4, (0, validatedlicense_decorator_1.ValidatedLicense)('key')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto,
         track_schema_1.Track, Object, user_db_schema_1.UserDB, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "encodeByTrack", null);
 __decorate([
-    common_1.UseInterceptors(FileFromUrl_interceptor_1.FileFromUrlInterceptor('mediaFile')),
-    swagger_1.ApiBody({
+    (0, common_1.UseInterceptors)((0, FileFromUrl_interceptor_1.FileFromUrlInterceptor)('mediaFile')),
+    (0, swagger_1.ApiBody)({
         description: 'File To Encode',
         type: encode_dto_1.EncodeFromUrlDto,
     }),
-    decorators_1.RolesAllowed(),
-    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard, encode_security_guard_1.EncodeSecurityGuard),
-    common_1.Post('/encode-from-url'),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiOperation({ summary: 'Encode File From URL And save to database' }),
+    (0, decorators_1.RolesAllowed)(),
+    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.LicenseValidationGuard, encode_security_guard_1.EncodeSecurityGuard),
+    (0, common_1.Post)('/encode-from-url'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, swagger_1.ApiOperation)({ summary: 'Encode File From URL And save to database' }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body('data')),
-    __param(1, FileFromUrl_interceptor_1.UploadedFileFromUrl()),
-    __param(2, decorators_1.User()),
-    __param(3, decorators_1.User('sub')),
-    __param(4, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __param(0, (0, common_1.Body)('data')),
+    __param(1, (0, FileFromUrl_interceptor_1.UploadedFileFromUrl)()),
+    __param(2, (0, decorators_1.User)()),
+    __param(3, (0, decorators_1.User)('sub')),
+    __param(4, (0, validatedlicense_decorator_1.ValidatedLicense)('key')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto, Object, user_db_schema_1.UserDB, String, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "encodeFromUrl", null);
 __decorate([
-    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
-        storage: multer_1.diskStorage({
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('mediaFile', {
+        storage: (0, multer_1.diskStorage)({
             destination: async (req, file, cb) => {
                 const currentUserId = req['user']['sub'];
                 const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
@@ -870,25 +869,25 @@ __decorate([
             },
         }),
     })),
-    swagger_1.ApiConsumes('multipart/form-data'),
-    swagger_1.ApiBody({
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({
         description: 'File To Decode',
         type: decode_dto_1.DecodeDto,
     }),
-    decorators_1.RolesAllowed(),
-    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    common_1.Post('/decode'),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
+    (0, decorators_1.RolesAllowed)(),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    (0, common_1.Post)('/decode'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Decode File and retrive key information' }),
     openapi.ApiResponse({ status: 201, type: [require("../schemas/sonickey.schema").SonicKey] }),
-    __param(0, common_1.UploadedFile()),
+    __param(0, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "decode", null);
 __decorate([
-    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
-        storage: multer_1.diskStorage({
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('mediaFile', {
+        storage: (0, multer_1.diskStorage)({
             destination: async (req, file, cb) => {
                 const currentUserId = req['user']['sub'];
                 const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
@@ -901,25 +900,25 @@ __decorate([
             },
         }),
     })),
-    swagger_1.ApiConsumes('multipart/form-data'),
-    swagger_1.ApiBody({
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({
         description: 'File To Decode',
         type: decode_dto_1.DecodeDto,
     }),
-    common_1.Version('2'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
-    common_1.Post('/decode'),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
+    (0, common_1.Version)('2'),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
+    (0, common_1.Post)('/decode'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Decode File and retrive key information' }),
     openapi.ApiResponse({ status: 201, type: [require("../../detection/schemas/detection.schema").Detection] }),
-    __param(0, common_1.UploadedFile()),
+    __param(0, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "decodeV2", null);
 __decorate([
-    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
-        storage: multer_1.diskStorage({
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('mediaFile', {
+        storage: (0, multer_1.diskStorage)({
             destination: async (req, file, cb) => {
                 const currentUserId = req['user']['sub'];
                 const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
@@ -932,26 +931,26 @@ __decorate([
             },
         }),
     })),
-    swagger_1.ApiConsumes('multipart/form-data'),
-    swagger_1.ApiBody({
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({
         description: 'File To Decode',
         type: decode_dto_1.DecodeDto,
     }),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
-    common_1.Post(':channel/decode'),
-    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums)] }),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: '[NEW]: Decode File and retrive key information' }),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
+    (0, common_1.Post)(':channel/decode'),
+    (0, swagger_1.ApiParam)({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums)] }),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: '[NEW]: Decode File and retrive key information' }),
     openapi.ApiResponse({ status: 201, type: [require("../schemas/sonickey.schema").SonicKey] }),
-    __param(0, common_1.UploadedFile()),
-    __param(1, common_1.Param('channel')),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.Param)('channel')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "decodeFromChannel", null);
 __decorate([
-    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
-        storage: multer_1.diskStorage({
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('mediaFile', {
+        storage: (0, multer_1.diskStorage)({
             destination: async (req, file, cb) => {
                 const currentUserId = req['user']['sub'];
                 const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
@@ -964,91 +963,91 @@ __decorate([
             },
         }),
     })),
-    swagger_1.ApiConsumes('multipart/form-data'),
-    swagger_1.ApiBody({
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({
         description: 'File To Decode',
         type: decode_dto_1.DecodeDto,
     }),
-    common_1.Version('2'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
-    common_1.Post(':channel/decode'),
-    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums)] }),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
+    (0, common_1.Version)('2'),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
+    (0, common_1.Post)(':channel/decode'),
+    (0, swagger_1.ApiParam)({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums)] }),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Decode File and retrive key information' }),
     openapi.ApiResponse({ status: 201, type: [require("../../detection/schemas/detection.schema").Detection] }),
-    __param(0, common_1.UploadedFile()),
-    __param(1, common_1.Param('channel')),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.Param)('channel')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "decodeFromChannelV2", null);
 __decorate([
-    common_1.Patch('/:sonickey'),
-    decorators_1.RolesAllowed(),
-    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, update_sonickey_security_guard_1.UpdateSonicKeySecurityGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Update Sonic Keys meta data' }),
+    (0, common_1.Patch)('/:sonickey'),
+    (0, decorators_1.RolesAllowed)(),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, update_sonickey_security_guard_1.UpdateSonicKeySecurityGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Update Sonic Keys meta data' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('sonickey')),
-    __param(1, common_1.Body()),
-    __param(2, decorators_1.User()),
+    __param(0, (0, common_1.Param)('sonickey')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, decorators_1.User)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_sonickey_dto_1.UpdateSonicKeyDto,
         user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "updateMeta", null);
 __decorate([
-    common_1.Patch('/fingerprint-events/:sonicKey/success'),
-    swagger_1.ApiOperation({
+    (0, common_1.Patch)('/fingerprint-events/:sonicKey/success'),
+    (0, swagger_1.ApiOperation)({
         summary: 'Call this endpoint on fingerprint success, only from fingerprint server',
     }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('sonicKey')),
-    __param(1, common_1.Body()),
+    __param(0, (0, common_1.Param)('sonicKey')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_sonickey_dto_1.UpdateSonicKeyFingerPrintMetaDataDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "onFingerPrintSuccess", null);
 __decorate([
-    common_1.Patch('/fingerprint-events/:sonicKey/failed'),
-    swagger_1.ApiOperation({
+    (0, common_1.Patch)('/fingerprint-events/:sonicKey/failed'),
+    (0, swagger_1.ApiOperation)({
         summary: 'Call this endpoint on fingerprint failed, only from fingerprint server',
     }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('sonicKey')),
-    __param(1, common_1.Body()),
+    __param(0, (0, common_1.Param)('sonicKey')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_sonickey_dto_1.UpdateSonicKeyFingerPrintMetaDataDto]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "onFingerPrintFailed", null);
 __decorate([
-    common_1.Delete('/:sonickey'),
-    common_1.UseGuards(guards_1.JwtAuthGuard, delete_sonickey_security_guard_1.DeleteSonicKeySecurityGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Delete Sonic Key data' }),
+    (0, common_1.Delete)('/:sonickey'),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, delete_sonickey_security_guard_1.DeleteSonicKeySecurityGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Delete Sonic Key data' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('sonickey')),
-    __param(1, decorators_1.User('sub')),
+    __param(0, (0, common_1.Param)('sonickey')),
+    __param(1, (0, decorators_1.User)('sub')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "delete", null);
 __decorate([
-    common_1.UseGuards(guards_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    common_1.Post('/download-file'),
-    swagger_1.ApiOperation({ summary: 'Secure Download of a file' }),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.Post)('/download-file'),
+    (0, swagger_1.ApiOperation)({ summary: 'Secure Download of a file' }),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, common_1.Body()),
-    __param(1, decorators_1.User('sub')),
-    __param(2, common_1.Res()),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, decorators_1.User)('sub')),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [download_dto_1.DownloadDto, String, Object]),
     __metadata("design:returntype", Promise)
 ], SonickeyController.prototype, "downloadFile", null);
 SonickeyController = __decorate([
-    swagger_1.ApiTags('SonicKeys Controller'),
-    common_1.Controller('sonic-keys'),
+    (0, swagger_1.ApiTags)('SonicKeys Controller'),
+    (0, common_1.Controller)('sonic-keys'),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
         licensekey_service_1.LicensekeyService,
         file_handler_service_1.FileHandlerService,

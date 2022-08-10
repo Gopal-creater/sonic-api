@@ -88,94 +88,94 @@ let ApiKeyCustomerController = class ApiKeyCustomerController {
     }
 };
 __decorate([
-    common_1.Post(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Create Api Key' }),
+    (0, common_1.Post)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Create Api Key' }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Body()),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, create_api_key_dto_1.CreateApiKeyDto]),
     __metadata("design:returntype", void 0)
 ], ApiKeyCustomerController.prototype, "create", null);
 __decorate([
-    common_1.Get(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiOperation({ summary: 'Get All ApiKeys' }),
+    (0, common_1.Get)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get All ApiKeys' }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-apikey.dto").MongoosePaginateApiKeyDto }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], ApiKeyCustomerController.prototype, "findAll", null);
 __decorate([
-    common_1.Get(':apikey'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Get Single Api key' }),
+    (0, common_1.Get)(':apikey'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Single Api key' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Param('apikey')),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Param)('apikey')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyCustomerController.prototype, "findOne", null);
 __decorate([
-    common_1.Put(':apikey'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Update Single Api key' }),
+    (0, common_1.Put)(':apikey'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Update Single Api key' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Param('apikey')),
-    __param(2, common_1.Body()),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Param)('apikey')),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, update_api_key_dto_1.UpdateApiKeyDto]),
     __metadata("design:returntype", Promise)
 ], ApiKeyCustomerController.prototype, "update", null);
 __decorate([
-    common_1.Put(':apikey/make-disabled'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Make this key disabled' }),
+    (0, common_1.Put)(':apikey/make-disabled'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Make this key disabled' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Param('apikey')),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Param)('apikey')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyCustomerController.prototype, "makeDiabled", null);
 __decorate([
-    common_1.Put(':apikey/make-enabled'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Make this key enabled' }),
+    (0, common_1.Put)(':apikey/make-enabled'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Make this key enabled' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Param('apikey')),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Param)('apikey')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyCustomerController.prototype, "makeEnabled", null);
 __decorate([
-    common_1.Delete(':apikey'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Delete Api key' }),
+    (0, common_1.Delete)(':apikey'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new isTargetUserLoggedIn_guard_1.IsTargetUserLoggedInGuard('Param')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Delete Api key' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('targetUser')),
-    __param(1, common_1.Param('apikey')),
+    __param(0, (0, common_1.Param)('targetUser')),
+    __param(1, (0, common_1.Param)('apikey')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyCustomerController.prototype, "remove", null);
 ApiKeyCustomerController = __decorate([
-    swagger_1.ApiTags('Apikey-Customer Management Controller'),
-    common_1.Controller('api-keys/customers/:targetUser'),
+    (0, swagger_1.ApiTags)('Apikey-Customer Management Controller'),
+    (0, common_1.Controller)('api-keys/customers/:targetUser'),
     __metadata("design:paramtypes", [api_key_service_1.ApiKeyService])
 ], ApiKeyCustomerController);
 exports.ApiKeyCustomerController = ApiKeyCustomerController;

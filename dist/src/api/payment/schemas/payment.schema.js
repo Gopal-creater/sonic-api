@@ -17,40 +17,40 @@ exports.PaymentSchemaName = 'Payment';
 let Payment = class Payment extends mongoose_2.Document {
 };
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         required: true,
     }),
     __metadata("design:type", String)
 ], Payment.prototype, "amount", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Payment.prototype, "paymentMethodNonce", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Payment.prototype, "deviceData", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Payment.prototype, "braintreeTransactionId", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.Mixed }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: mongoose_2.Schema.Types.Mixed }),
     __metadata("design:type", Object)
 ], Payment.prototype, "braintreeTransactionResult", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Payment.prototype, "braintreeTransactionStatus", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: String,
         ref: 'User',
         required: true,
@@ -59,8 +59,8 @@ __decorate([
     __metadata("design:type", Object)
 ], Payment.prototype, "user", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: 'Plan',
         autopopulate: { maxDepth: 2 },
@@ -68,8 +68,8 @@ __decorate([
     __metadata("design:type", Object)
 ], Payment.prototype, "plan", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: String,
         ref: 'LicenseKey',
         autopopulate: { maxDepth: 2 },
@@ -77,12 +77,12 @@ __decorate([
     __metadata("design:type", Object)
 ], Payment.prototype, "licenseKey", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Payment.prototype, "notes", void 0);
 Payment = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.PaymentSchemaName })
+    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.PaymentSchemaName })
 ], Payment);
 exports.Payment = Payment;
 exports.PaymentSchema = mongoose_1.SchemaFactory.createForClass(Payment);

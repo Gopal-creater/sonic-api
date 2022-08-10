@@ -14,7 +14,7 @@ const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const create_licensekey_dto_1 = require("./create-licensekey.dto");
-class UpdateLicensekeyDto extends swagger_1.PartialType(swagger_1.OmitType(create_licensekey_dto_1.CreateLicensekeyDto, ['type', 'company', 'user'])) {
+class UpdateLicensekeyDto extends (0, swagger_1.PartialType)((0, swagger_1.OmitType)(create_licensekey_dto_1.CreateLicensekeyDto, ['type', 'company', 'user'])) {
     static _OPENAPI_METADATA_FACTORY() {
         return {};
     }
@@ -26,8 +26,8 @@ class AddUserToLicense {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], AddUserToLicense.prototype, "user", void 0);
 exports.AddUserToLicense = AddUserToLicense;

@@ -12,7 +12,7 @@ const common_1 = require("@nestjs/common");
 let KeygenModule = class KeygenModule {
 };
 KeygenModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [],
         providers: [keygen_service_1.KeygenService],
         exports: [keygen_service_1.KeygenService]

@@ -48,6 +48,7 @@ const chargebee_module_1 = require("./api/chargebee/chargebee.module");
 const partner_module_1 = require("./api/partner/partner.module");
 const track_module_1 = require("./api/track/track.module");
 const report_module_1 = require("./api/report/report.module");
+const appgen_service_1 = require("./shared/services/appgen.service");
 const test_config_1 = require("./config/test.config");
 mongoosePaginate.paginate.options = {
     limit: 50,
@@ -57,7 +58,7 @@ var connectionNo = 0;
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [
             axios_1.HttpModule,
             config_1.ConfigModule.forRoot({
@@ -108,7 +109,7 @@ AppModule = __decorate([
                 inject: [config_1.ConfigService],
             }),
             platform_express_1.MulterModule.register({
-                storage: multer_1.diskStorage({
+                storage: (0, multer_1.diskStorage)({
                     destination: config_2.appConfig.MULTER_DEST,
                     filename: (req, file, cb) => {
                         const randomName = uniqid();
@@ -139,7 +140,7 @@ AppModule = __decorate([
             report_module_1.ReportModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService, app_gateway_1.AppGateway, ec2instance_service_1.Ec2InstanceService],
+        providers: [app_service_1.AppService, app_gateway_1.AppGateway, ec2instance_service_1.Ec2InstanceService, appgen_service_1.AppgenService],
     })
 ], AppModule);
 exports.AppModule = AppModule;

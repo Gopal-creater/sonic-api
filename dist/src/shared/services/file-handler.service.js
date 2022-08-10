@@ -91,7 +91,7 @@ let FileHandlerService = class FileHandlerService {
     async getFileDetailsFromFile(pathFromRoot) {
         return new Promise(async (resolve, reject) => {
             try {
-                const originalname = utils_1.extractFileName(pathFromRoot);
+                const originalname = (0, utils_1.extractFileName)(pathFromRoot);
                 const fileStat = fs.statSync(pathFromRoot);
                 const mimeType = mime.getType(pathFromRoot);
                 const fileDetails = {
@@ -112,7 +112,7 @@ let FileHandlerService = class FileHandlerService {
     }
 };
 FileHandlerService = __decorate([
-    common_1.Injectable()
+    (0, common_1.Injectable)()
 ], FileHandlerService);
 exports.FileHandlerService = FileHandlerService;
 //# sourceMappingURL=file-handler.service.js.map

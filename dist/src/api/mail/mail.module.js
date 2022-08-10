@@ -17,15 +17,15 @@ const config_1 = require("@nestjs/config");
 let MailModule = class MailModule {
 };
 MailModule = __decorate([
-    common_1.Global(),
-    common_1.Module({
+    (0, common_1.Global)(),
+    (0, common_1.Module)({
         imports: [
             mailer_1.MailerModule.forRootAsync({
                 useFactory: async (config) => ({
                     transport: config.get(`mail.[${config.get('mail.default')}].transport`),
                     defaults: config.get(`mail.[${config.get('mail.default')}].defaults`),
                     template: {
-                        dir: path_1.join(__dirname, 'templates'),
+                        dir: (0, path_1.join)(__dirname, 'templates'),
                         adapter: new handlebars_adapter_1.HandlebarsAdapter(),
                         options: {
                             strict: true,
