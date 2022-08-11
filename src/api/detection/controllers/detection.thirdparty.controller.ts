@@ -186,6 +186,7 @@ export class DetectionThirdPartyController {
           detection.detectedDuration < sonicKeyContentDurationInSec
         ) {
           //If within its original contentDuration, just do updation
+					//Lets not update the AppGen program details because we are not sure what is the scenario.
           detection.detectedDuration =
             detection.detectedDuration + streamDetectionInterval >
             sonicKeyContentDurationInSec
@@ -202,7 +203,7 @@ export class DetectionThirdPartyController {
           //If not within its original contentDuration, just do insertation
 					
 					//First, find program details if this is a appgen station
-					var program = {title:'', subtitle: '',};
+					var program = {title:'', subtitle: '', dj:''};
 					if(isValidRadioStation.isFromAppGen) {
 						program = await this.appGenService.appGenGetRadioProgramming(isValidRadioStation.appGenStationId, detectedTime);
 						console.log('Appgen station. program: ', program);
@@ -210,7 +211,6 @@ export class DetectionThirdPartyController {
 						console.log('Non-Appgen station. No program details');
 					}
 
-					// TODO: Change schema to include appgen stuff
           detection = await this.detectionService.detectionModel.create({
             radioStation: radioStation,
             sonicKey: decodeRes.sonicKey,
@@ -227,6 +227,7 @@ export class DetectionThirdPartyController {
             detectionOrigins:_.uniq(detectionOrigins),
             apiKey:apiKey,
             metaData: metaData,
+						program: program,
           });
         }
         await detection
@@ -269,6 +270,9 @@ export class DetectionThirdPartyController {
     if (!isValidRadioStation) {
       throw new NotFoundException('Given radio doesnot exists in our database');
     }
+
+		// For appgen.
+		const detectedTime = new Date(detectedAt);
 
     //Identify the decode origins either from SonicKey or Fingerprint
     var detectionOrigins:string[]=[]
@@ -318,6 +322,14 @@ export class DetectionThirdPartyController {
           detection.metaData={...detection.metaData,...metaData}
         } else {
           //If not within its original contentDuration, just do insertation
+					//First, find program details if this is a appgen station
+					var program = {title:'', subtitle: '', dj:''};
+					if(isValidRadioStation.isFromAppGen) {
+						program = await this.appGenService.appGenGetRadioProgramming(isValidRadioStation.appGenStationId, detectedTime);
+						console.log('Appgen station. program: ', program);
+					} else {
+						console.log('Non-Appgen station. No program details');
+					}
           detection = await this.detectionService.detectionModel.create({
             radioStation: radioStation,
             sonicKey: isKeyPresent.sonicKey,
@@ -334,6 +346,7 @@ export class DetectionThirdPartyController {
             detectionOrigins:_.uniq(detectionOrigins),
             // apiKey:apiKey,
             metaData: metaData,
+						program:program,
           });
         }
         await detection

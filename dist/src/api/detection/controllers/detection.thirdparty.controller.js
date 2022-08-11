@@ -134,7 +134,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
                         detection.metaData = Object.assign(Object.assign({}, detection.metaData), metaData);
                     }
                     else {
-                        var program = { title: '', subtitle: '', };
+                        var program = { title: '', subtitle: '', dj: '' };
                         if (isValidRadioStation.isFromAppGen) {
                             program = await this.appGenService.appGenGetRadioProgramming(isValidRadioStation.appGenStationId, detectedTime);
                             console.log('Appgen station. program: ', program);
@@ -158,6 +158,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
                             detectionOrigins: _.uniq(detectionOrigins),
                             apiKey: apiKey,
                             metaData: metaData,
+                            program: program,
                         });
                     }
                     await detection
@@ -191,6 +192,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
         if (!isValidRadioStation) {
             throw new common_1.NotFoundException('Given radio doesnot exists in our database');
         }
+        const detectedTime = new Date(detectedAt);
         var detectionOrigins = [];
         var isAlreadyDetectionWithSameDetectionSourceFileName = await this.detectionService.detectionModel.findOne({
             radioStation: radioStation,
@@ -233,6 +235,14 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
                         detection.metaData = Object.assign(Object.assign({}, detection.metaData), metaData);
                     }
                     else {
+                        var program = { title: '', subtitle: '', dj: '' };
+                        if (isValidRadioStation.isFromAppGen) {
+                            program = await this.appGenService.appGenGetRadioProgramming(isValidRadioStation.appGenStationId, detectedTime);
+                            console.log('Appgen station. program: ', program);
+                        }
+                        else {
+                            console.log('Non-Appgen station. No program details');
+                        }
                         detection = await this.detectionService.detectionModel.create({
                             radioStation: radioStation,
                             sonicKey: isKeyPresent.sonicKey,
@@ -248,6 +258,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
                             detectionSourceFileName: detectionSourceFileName,
                             detectionOrigins: _.uniq(detectionOrigins),
                             metaData: metaData,
+                            program: program,
                         });
                     }
                     await detection

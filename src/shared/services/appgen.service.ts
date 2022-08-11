@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import * as moment from 'moment';
 import 'moment-timezone';
 import axios from 'axios';
+import { IAppGenRadioProgram } from '../interfaces/common.interface';
 
 @Injectable()
 export class AppgenService {
@@ -64,7 +65,7 @@ export class AppgenService {
           }
         }
 
-        return { title: title, subtitle: subtitle };
+        return { title: title, subtitle: subtitle, dj:'' } as IAppGenRadioProgram;
       });
   }
 }

@@ -4,6 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { RadioStationSchemaName } from '../../radiostation/schemas/radiostation.schema';
 import { SonicKeySchemaName } from '../../sonickey/schemas/sonickey.schema';
 import { ChannelEnums } from 'src/constants/Enums';
+import { IAppGenRadioProgram } from 'src/shared/interfaces/common.interface';
 
 
 export const DetectionSchemaName="Detection"
@@ -17,6 +18,21 @@ export class DetectedTimeStamp{
   @ApiProperty()
   @Prop()
   end: number;
+}
+
+@Schema()
+export class RadioProgram implements IAppGenRadioProgram {
+	@ApiProperty()
+  @Prop()
+  title: string;
+
+  @ApiProperty()
+  @Prop()
+  subtitle: string;
+
+	@ApiProperty()
+  @Prop()
+  dj: string;
 }
 
 @Schema()
@@ -121,6 +137,10 @@ export class Detection extends Document {
   @ApiProperty()
   @Prop({ type: ThirdpartyStreamReaderDetection })
   thirdpartyStreamReaderDetection: ThirdpartyStreamReaderDetection;
+
+	@ApiProperty()
+	@Prop({ type: RadioProgram })
+  program: RadioProgram;
 
   @ApiProperty()
   @Prop([String])

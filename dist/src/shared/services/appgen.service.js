@@ -51,7 +51,7 @@ let AppgenService = class AppgenService {
                         res = true;
                     if (program.tue && day == 'tue')
                         res = true;
-                    if (!program.wed && day == 'wed')
+                    if (program.wed && day == 'wed')
                         res = true;
                     if (program.thu && day == 'thu')
                         res = true;
@@ -68,7 +68,7 @@ let AppgenService = class AppgenService {
                     break;
                 }
             }
-            return { title: title, subtitle: subtitle };
+            return { title: title, subtitle: subtitle, dj: '' };
         });
     }
 };

@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DetectionSchema = exports.Detection = exports.ThirdpartyStreamReaderDetection = exports.DetectedTimeStamp = exports.DetectionSchemaName = void 0;
+exports.DetectionSchema = exports.Detection = exports.ThirdpartyStreamReaderDetection = exports.RadioProgram = exports.DetectedTimeStamp = exports.DetectionSchemaName = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
@@ -33,6 +33,27 @@ DetectedTimeStamp = __decorate([
     (0, mongoose_1.Schema)()
 ], DetectedTimeStamp);
 exports.DetectedTimeStamp = DetectedTimeStamp;
+let RadioProgram = class RadioProgram {
+};
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], RadioProgram.prototype, "title", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], RadioProgram.prototype, "subtitle", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], RadioProgram.prototype, "dj", void 0);
+RadioProgram = __decorate([
+    (0, mongoose_1.Schema)()
+], RadioProgram);
+exports.RadioProgram = RadioProgram;
 let ThirdpartyStreamReaderDetection = class ThirdpartyStreamReaderDetection {
 };
 __decorate([
@@ -160,6 +181,11 @@ __decorate([
     (0, mongoose_1.Prop)({ type: ThirdpartyStreamReaderDetection }),
     __metadata("design:type", ThirdpartyStreamReaderDetection)
 ], Detection.prototype, "thirdpartyStreamReaderDetection", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: RadioProgram }),
+    __metadata("design:type", RadioProgram)
+], Detection.prototype, "program", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, mongoose_1.Prop)([String]),
