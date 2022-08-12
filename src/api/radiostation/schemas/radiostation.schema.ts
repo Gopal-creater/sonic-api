@@ -44,8 +44,8 @@ export class RadioStation extends Document {
   @IsNotEmpty()
   @ApiProperty()
   @Prop({
-    required: true,
-    unique: true,
+    // required: true,
+    // unique: true,
   })
   streamingUrl: string;
 

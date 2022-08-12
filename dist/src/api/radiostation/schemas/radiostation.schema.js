@@ -65,10 +65,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
-        required: true,
-        unique: true,
-    }),
+    (0, mongoose_1.Prop)({}),
     __metadata("design:type", String)
 ], RadioStation.prototype, "streamingUrl", void 0);
 __decorate([

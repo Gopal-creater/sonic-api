@@ -21,6 +21,7 @@ const plan_service_1 = require("../plan.service");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const user_decorator_1 = require("../../auth/decorators/user.decorator");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
+const plan_schema_1 = require("../schemas/plan.schema");
 const Enums_1 = require("../../../constants/Enums");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");

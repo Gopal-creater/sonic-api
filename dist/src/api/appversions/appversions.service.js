@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppVersionService = void 0;
 const file_handler_service_1 = require("../../shared/services/file-handler.service");
 const file_operation_service_1 = require("../../shared/services/file-operation.service");
+const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 const common_1 = require("@nestjs/common");
 const appversions_schema_1 = require("./schemas/appversions.schema");
 const mongoose_1 = require("@nestjs/mongoose");

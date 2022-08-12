@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParsedQueryDto = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
+const types_1 = require("../types");
 class ParsedQueryDto {
     static _OPENAPI_METADATA_FACTORY() {
         return {};

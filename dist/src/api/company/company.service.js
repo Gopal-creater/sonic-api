@@ -25,6 +25,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const company_schema_1 = require("./schemas/company.schema");
 const user_service_1 = require("../user/services/user.service");
+const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 const user_company_service_1 = require("../user/services/user-company.service");
 const Enums_1 = require("../../constants/Enums");
 const makeDir = require("make-dir");

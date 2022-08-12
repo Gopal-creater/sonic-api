@@ -26,6 +26,7 @@ const detection_schema_1 = require("./schemas/detection.schema");
 const mongoose_2 = require("mongoose");
 const Enums_1 = require("../../constants/Enums");
 const mongoose_utils_1 = require("../../shared/utils/mongoose.utils");
+const types_1 = require("../../shared/types");
 const user_service_1 = require("../user/services/user.service");
 const makeDir = require("make-dir");
 const fs = require("fs");

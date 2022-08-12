@@ -19,6 +19,7 @@ const radiomonitor_service_1 = require("../radiomonitor.service");
 const radiostation_service_1 = require("../../radiostation/services/radiostation.service");
 const swagger_1 = require("@nestjs/swagger");
 const guards_1 = require("../../auth/guards");
+const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const anyapiquerytemplate_decorator_1 = require("../../../shared/decorators/anyapiquerytemplate.decorator");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
@@ -31,7 +32,7 @@ const utils_1 = require("../../../shared/utils");
 const unsubscribe_radiomonitor_dto_1 = require("../dto/unsubscribe-radiomonitor.dto");
 const roles_decorator_1 = require("../../auth/decorators/roles.decorator");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
-const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
+const license_validation_guard_2 = require("../../licensekey/guards/license-validation.guard");
 let RadioMonitorController = class RadioMonitorController {
     constructor(radiomonitorService, radiostationService) {
         this.radiomonitorService = radiomonitorService;
@@ -151,7 +152,7 @@ __decorate([
         summary: 'Subscribe radio stations',
     }),
     (0, roles_decorator_1.RolesAllowed)(),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_1.SubscribeRadioMonitorLicenseValidationGuard),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, license_validation_guard_2.SubscribeRadioMonitorLicenseValidationGuard),
     (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiBody)({ type: subscribe_radiomonitor_dto_1.SubscribeRadioMonitorDto, isArray: true }),
     (0, common_1.Post)('/subscribe-radios'),

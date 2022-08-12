@@ -24,6 +24,7 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const user_db_schema_1 = require("../schemas/user.db.schema");
+const group_schema_1 = require("../../group/schemas/group.schema");
 const group_service_1 = require("../../group/group.service");
 const user_service_1 = require("./user.service");
 let UserGroupService = class UserGroupService {
