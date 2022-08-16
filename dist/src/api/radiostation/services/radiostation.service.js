@@ -324,8 +324,46 @@ let RadiostationService = class RadiostationService {
             duplicatesByStreamingUrl_InExcel: duplicatesByStreamingUrl,
         };
     }
+    async importFromAppgenExcel(appgenExcelPath) {
+        var e_5, _a;
+        console.log("Starting reading");
+        const appgenExcel = xlsx.readFile(appgenExcelPath);
+        const sheetNamesArr = appgenExcel.SheetNames;
+        let totalCreatedStations = [];
+        let totalDuplicateStations = [];
+        for (let i = 0; i < sheetNamesArr.length; i++) {
+            let tempStations = xlsx.utils.sheet_to_json(appgenExcel.Sheets[sheetNamesArr[i]]);
+            try {
+                for (var tempStations_1 = (e_5 = void 0, __asyncValues(tempStations)), tempStations_1_1; tempStations_1_1 = await tempStations_1.next(), !tempStations_1_1.done;) {
+                    const station = tempStations_1_1.value;
+                    const duplicateStation = await this.radioStationModel.findOne({
+                        streamingUrl: station['streamingUrl'],
+                    });
+                    if (!duplicateStation) {
+                        const newStation = Object.assign(Object.assign({}, station), { genres: station.genres.includes(",") ? station.genres.split(",") : [station.genres], isFromAppGen: true });
+                        const createdStation = await this.radioStationModel.create(newStation);
+                        await createdStation.save();
+                        console.log("new radio", newStation);
+                        totalCreatedStations.push(newStation);
+                    }
+                    else {
+                        totalDuplicateStations.push(duplicateStation);
+                    }
+                }
+            }
+            catch (e_5_1) { e_5 = { error: e_5_1 }; }
+            finally {
+                try {
+                    if (tempStations_1_1 && !tempStations_1_1.done && (_a = tempStations_1.return)) await _a.call(tempStations_1);
+                }
+                finally { if (e_5) throw e_5.error; }
+            }
+        }
+        console.log("Stopped reading");
+        return { totalCreatedStations, totalDuplicateStations };
+    }
     async addMonitorGroupsFromExcel() {
-        var e_5, _a, e_6, _b, e_7, _c, e_8, _d;
+        var e_6, _a, e_7, _b, e_8, _c, e_9, _d;
         const europestationsAIM = xlsx.readFile(`${appRootPath.toString()}/sample_test/Europe 500 Stations_Working_list_AIM.xlsx`);
         const radiodancestationsAFEM = xlsx.readFile(`${appRootPath.toString()}/sample_test/Radio - Dance. Multi Territory_AFEM.xlsx`);
         const sheetsNameAIM = europestationsAIM.SheetNames;
@@ -337,7 +375,7 @@ let RadiostationService = class RadiostationService {
                 const aimJson = xlsx.utils.sheet_to_json(europestationsAIM.Sheets[sheetNameAIM]);
                 console.log(aimJson);
                 try {
-                    for (var aimJson_1 = (e_6 = void 0, __asyncValues(aimJson)), aimJson_1_1; aimJson_1_1 = await aimJson_1.next(), !aimJson_1_1.done;) {
+                    for (var aimJson_1 = (e_7 = void 0, __asyncValues(aimJson)), aimJson_1_1; aimJson_1_1 = await aimJson_1.next(), !aimJson_1_1.done;) {
                         const data = aimJson_1_1.value;
                         const monitorGroup = new radiostation_schema_1.MonitorGroup();
                         monitorGroup.name = Enums_1.MonitorGroupsEnum.AIM;
@@ -354,21 +392,21 @@ let RadiostationService = class RadiostationService {
                         }
                     }
                 }
-                catch (e_6_1) { e_6 = { error: e_6_1 }; }
+                catch (e_7_1) { e_7 = { error: e_7_1 }; }
                 finally {
                     try {
                         if (aimJson_1_1 && !aimJson_1_1.done && (_b = aimJson_1.return)) await _b.call(aimJson_1);
                     }
-                    finally { if (e_6) throw e_6.error; }
+                    finally { if (e_7) throw e_7.error; }
                 }
             }
         }
-        catch (e_5_1) { e_5 = { error: e_5_1 }; }
+        catch (e_6_1) { e_6 = { error: e_6_1 }; }
         finally {
             try {
                 if (sheetsNameAIM_1_1 && !sheetsNameAIM_1_1.done && (_a = sheetsNameAIM_1.return)) await _a.call(sheetsNameAIM_1);
             }
-            finally { if (e_5) throw e_5.error; }
+            finally { if (e_6) throw e_6.error; }
         }
         try {
             for (var sheetsNameAFEM_1 = __asyncValues(sheetsNameAFEM), sheetsNameAFEM_1_1; sheetsNameAFEM_1_1 = await sheetsNameAFEM_1.next(), !sheetsNameAFEM_1_1.done;) {
@@ -376,7 +414,7 @@ let RadiostationService = class RadiostationService {
                 const afemJson = xlsx.utils.sheet_to_json(radiodancestationsAFEM.Sheets[sheetNameAFEM]);
                 console.log(afemJson);
                 try {
-                    for (var afemJson_1 = (e_8 = void 0, __asyncValues(afemJson)), afemJson_1_1; afemJson_1_1 = await afemJson_1.next(), !afemJson_1_1.done;) {
+                    for (var afemJson_1 = (e_9 = void 0, __asyncValues(afemJson)), afemJson_1_1; afemJson_1_1 = await afemJson_1.next(), !afemJson_1_1.done;) {
                         const data = afemJson_1_1.value;
                         const monitorGroup = new radiostation_schema_1.MonitorGroup();
                         monitorGroup.name = Enums_1.MonitorGroupsEnum.AFEM;
@@ -393,21 +431,21 @@ let RadiostationService = class RadiostationService {
                         }
                     }
                 }
-                catch (e_8_1) { e_8 = { error: e_8_1 }; }
+                catch (e_9_1) { e_9 = { error: e_9_1 }; }
                 finally {
                     try {
                         if (afemJson_1_1 && !afemJson_1_1.done && (_d = afemJson_1.return)) await _d.call(afemJson_1);
                     }
-                    finally { if (e_8) throw e_8.error; }
+                    finally { if (e_9) throw e_9.error; }
                 }
             }
         }
-        catch (e_7_1) { e_7 = { error: e_7_1 }; }
+        catch (e_8_1) { e_8 = { error: e_8_1 }; }
         finally {
             try {
                 if (sheetsNameAFEM_1_1 && !sheetsNameAFEM_1_1.done && (_c = sheetsNameAFEM_1.return)) await _c.call(sheetsNameAFEM_1);
             }
-            finally { if (e_7) throw e_7.error; }
+            finally { if (e_8) throw e_8.error; }
         }
         const undonRadios = await this.radioStationModel.find({
             monitorGroups: null,

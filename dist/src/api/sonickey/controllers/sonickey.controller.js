@@ -52,7 +52,6 @@ const FileFromTrack_interceptor_1 = require("../../../shared/interceptors/FileFr
 const license_validation_guard_1 = require("../../licensekey/guards/license-validation.guard");
 const validatedlicense_decorator_1 = require("../../licensekey/decorators/validatedlicense.decorator");
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
-const detection_schema_1 = require("../../detection/schemas/detection.schema");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
 const user_db_schema_1 = require("../../user/schemas/user.db.schema");
 const job_license_validation_guard_1 = require("../../licensekey/guards/job-license-validation.guard");

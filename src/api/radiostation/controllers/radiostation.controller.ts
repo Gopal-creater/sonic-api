@@ -49,6 +49,7 @@ import { RolesAllowed } from 'src/api/auth/decorators';
 import { Roles } from 'src/constants/Enums';
 import { RoleBasedGuard } from 'src/api/auth/guards';
 import { ConditionalAuthGuard } from '../../auth/guards/conditional-auth.guard';
+import { appGenMulterOptions } from '../appGenMulterOption';
       
 @ApiTags('Radio Station Controller')
 @Controller('radiostations')
@@ -145,7 +146,24 @@ export class RadiostationController {
     });
   }
 
-
+  //Bulk import from excel file-------------------------------------------------
+  @ApiOperation({ summary: 'Import list of radio stations from excel file' })
+  @UseInterceptors(FileInterceptor('importFile', appGenMulterOptions))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({schema: {type: 'object',properties: {importFile: {type: 'string',format: 'binary'}}}})
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
+  @Post("/import-from-appgen-excel")
+  async uploadExcel (@UploadedFile( ) file: Express.Multer.File){
+    const excelPath = upath.toUnix(file.path);
+    console.log("file",file)
+    console.log("Excel Path",excelPath)
+    this.radiostationService.importFromAppgenExcel(excelPath).finally(() => {
+      fs.unlinkSync(excelPath);
+    })
+  }
+  //----------------------------------------------------------------------------
 
   @Get('/count')
   @UseGuards(JwtAuthGuard)
@@ -305,56 +323,5 @@ export class RadiostationController {
       }
       throw err;
     });
-  }
-
-  //Bulk import from excel file
-  @ApiOperation({ summary: 'Import list of radio stations from excel file' })
-  @UseInterceptors(
-    FileInterceptor('importFile', {
-      // Check the mimetypes to allow for upload
-      fileFilter: (req: any, file: any, cb: any) => {
-        if (file?.originalname?.match?.(/\.(xlsx|xlsb|xls|xlsm)$/)) {
-          // Allow storage of file
-          cb(null, true);
-        } else {
-          // Reject file
-          cb(
-            new BadRequestException(
-              'Unsupported file type, only support excel for now',
-            ),
-            false,
-          );
-        }
-      },
-      storage: diskStorage({
-        destination: async (req, file, cb) => {
-          const filePath = await makeDir(`${appConfig.MULTER_IMPORT_DEST}`);
-          cb(null, filePath);
-        },
-        filename: (req, file, cb) => {
-          let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-          cb(null, `${Date.now()}_${orgName}`);
-        },
-      }),
-    }),
-  )
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        importFile: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
-  @RolesAllowed(Roles.ADMIN)
-  @UseGuards(JwtAuthGuard, RoleBasedGuard)
-  @ApiBearerAuth()
-  @Post("/import-from-appgen-excel")
-  async uploadExcel (@UploadedFile( ) file: Express.Multer.File){
-    console.log("file",file)
   }
 }

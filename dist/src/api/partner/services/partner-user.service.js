@@ -18,7 +18,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const partner_schema_1 = require("../schemas/partner.schema");
 const mongoose_2 = require("mongoose");
 const user_service_1 = require("../../user/services/user.service");
-const Enums_1 = require("../../../constants/Enums");
 let PartnerUserService = class PartnerUserService {
     constructor(partnerModel, userService) {
         this.partnerModel = partnerModel;

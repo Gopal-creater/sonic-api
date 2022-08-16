@@ -26,7 +26,6 @@ const license_validation_guard_1 = require("../../licensekey/guards/license-vali
 const user_decorator_1 = require("../../auth/decorators/user.decorator");
 const utils_1 = require("../../../shared/utils");
 const user_db_schema_1 = require("../../user/schemas/user.db.schema");
-const track_schema_1 = require("../../track/schemas/track.schema");
 const Enums_1 = require("../../../constants/Enums");
 let SonickeyBinaryController = class SonickeyBinaryController {
     constructor(sonicKeyService, licensekeyService) {

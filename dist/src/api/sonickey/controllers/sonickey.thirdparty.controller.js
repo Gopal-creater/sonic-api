@@ -32,7 +32,6 @@ const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
 const update_sonickey_dto_1 = require("../dtos/update-sonickey.dto");
 const user_db_schema_1 = require("../../user/schemas/user.db.schema");
 const utils_1 = require("../../../shared/utils");
-const track_schema_1 = require("../../track/schemas/track.schema");
 let SonickeyThirdPartyController = class SonickeyThirdPartyController {
     constructor(sonicKeyService, fileHandlerService, licensekeyService) {
         this.sonicKeyService = sonicKeyService;

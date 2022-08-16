@@ -28,6 +28,7 @@ export class RadiostationService {
     public readonly sonickeyService: SonickeyService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
+
   create(
     createRadiostationDto: CreateRadiostationDto,
     additionalAttribute?: Object,
@@ -363,6 +364,55 @@ export class RadiostationService {
       duplicatesByStreamingUrlLength_InExcel: duplicatesByStreamingUrl.length,
       duplicatesByStreamingUrl_InExcel: duplicatesByStreamingUrl,
     };
+  }
+
+  //Import radio stations from appgen excel
+  async importFromAppgenExcel (appgenExcelPath:string){
+    console.log("Starting reading")
+    const appgenExcel:xlsx.WorkBook = xlsx.readFile(appgenExcelPath)
+    const sheetNamesArr:string[] = appgenExcel.SheetNames
+
+    //Arrays to hold total uploaded and duplicate radio stations at the end
+    let totalCreatedStations:any[] =[];
+    let totalDuplicateStations:any[] =[];
+
+    for(let i = 0; i < sheetNamesArr.length; i++)
+    {
+      let tempStations: any[] = xlsx.utils.sheet_to_json(appgenExcel.Sheets[sheetNamesArr[i]])
+
+      for await(const station of tempStations){
+        //Checking for duplicate stations
+        const duplicateStation = await this.radioStationModel.findOne({
+          streamingUrl: station['streamingUrl'],
+          // appGenStationId: station['appGenStationId'],
+        });
+
+        //If no duplicateStation then save in database one by one
+        if(!duplicateStation){
+          const newStation = {
+            ...station,
+            genres:station.genres.includes(",") ? station.genres.split(",") : [station.genres],
+            isFromAppGen:true
+          }
+
+          const createdStation = await this.radioStationModel.create(newStation)
+          await createdStation.save()
+          console.log("new radio",newStation)
+
+          totalCreatedStations.push(newStation)
+
+          // To Do------------------------
+          // Start listening the stream
+        }
+        else{
+          totalDuplicateStations.push(duplicateStation)
+        }
+      }
+    }
+
+    console.log("Stopped reading")
+
+    return {totalCreatedStations,totalDuplicateStations}
   }
 
   async addMonitorGroupsFromExcel() {

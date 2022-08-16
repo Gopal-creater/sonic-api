@@ -15,7 +15,6 @@ const auth_config_1 = require("./config/auth.config");
 const common_1 = require("@nestjs/common");
 const amazon_cognito_identity_js_1 = require("amazon-cognito-identity-js");
 const user_service_1 = require("../user/services/user.service");
-const register_dto_1 = require("./dto/register.dto");
 const partner_service_1 = require("../partner/services/partner.service");
 const Enums_1 = require("../../constants/Enums");
 const config_1 = require("@nestjs/config");

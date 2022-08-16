@@ -18,7 +18,6 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonickeyUtils = void 0;
 const common_1 = require("@nestjs/common");
-const licensekey_schema_1 = require("../../../licensekey/schemas/licensekey.schema");
 const licensekey_service_1 = require("../../../licensekey/services/licensekey.service");
 const track_service_1 = require("../../../track/track.service");
 const s3fileupload_service_1 = require("../../../s3fileupload/s3fileupload.service");
@@ -29,7 +28,6 @@ const uniqid = require("uniqid");
 const fs = require("fs");
 const http = require("https");
 const mime = require("mime");
-const UploadedFile_interface_1 = require("../../../../shared/interfaces/UploadedFile.interface");
 let SonickeyUtils = class SonickeyUtils {
     constructor(licensekeyService, trackService, s3FileUploadService) {
         this.licensekeyService = licensekeyService;

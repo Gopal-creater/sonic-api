@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const detection_schema_1 = require("./schemas/detection.schema");
 const mongoose_2 = require("mongoose");
-const Enums_1 = require("../../constants/Enums");
 const user_service_1 = require("../user/services/user.service");
 const file_handler_service_1 = require("../../shared/services/file-handler.service");
 let ThirdPartyDetectionService = class ThirdPartyDetectionService {

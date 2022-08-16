@@ -35,6 +35,7 @@ const decorators_1 = require("../../auth/decorators");
 const Enums_1 = require("../../../constants/Enums");
 const guards_1 = require("../../auth/guards");
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
+const appGenMulterOption_1 = require("../appGenMulterOption");
 let RadiostationController = class RadiostationController {
     constructor(radiostationService) {
         this.radiostationService = radiostationService;
@@ -63,6 +64,14 @@ let RadiostationController = class RadiostationController {
     async importFromExcel(file) {
         const excelPath = upath.toUnix(file.path);
         return this.radiostationService.importFromExcel(excelPath).finally(() => {
+            fs.unlinkSync(excelPath);
+        });
+    }
+    async uploadExcel(file) {
+        const excelPath = upath.toUnix(file.path);
+        console.log("file", file);
+        console.log("Excel Path", excelPath);
+        this.radiostationService.importFromAppgenExcel(excelPath).finally(() => {
             fs.unlinkSync(excelPath);
         });
     }
@@ -133,9 +142,6 @@ let RadiostationController = class RadiostationController {
             throw err;
         });
     }
-    async uploadExcel(file) {
-        console.log("file", file);
-    }
 };
 __decorate([
     (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN),
@@ -198,6 +204,21 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], RadiostationController.prototype, "importFromExcel", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Import list of radio stations from excel file' }),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('importFile', appGenMulterOption_1.appGenMulterOptions)),
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({ schema: { type: 'object', properties: { importFile: { type: 'string', format: 'binary' } } } }),
+    (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.Post)("/import-from-appgen-excel"),
+    openapi.ApiResponse({ status: 201 }),
+    __param(0, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], RadiostationController.prototype, "uploadExcel", null);
 __decorate([
     (0, common_1.Get)('/count'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
@@ -347,51 +368,6 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], RadiostationController.prototype, "remove", null);
-__decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Import list of radio stations from excel file' }),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('importFile', {
-        fileFilter: (req, file, cb) => {
-            var _a, _b;
-            if ((_b = (_a = file === null || file === void 0 ? void 0 : file.originalname) === null || _a === void 0 ? void 0 : _a.match) === null || _b === void 0 ? void 0 : _b.call(_a, /\.(xlsx|xlsb|xls|xlsm)$/)) {
-                cb(null, true);
-            }
-            else {
-                cb(new common_1.BadRequestException('Unsupported file type, only support excel for now'), false);
-            }
-        },
-        storage: (0, multer_1.diskStorage)({
-            destination: async (req, file, cb) => {
-                const filePath = await makeDir(`${app_config_1.appConfig.MULTER_IMPORT_DEST}`);
-                cb(null, filePath);
-            },
-            filename: (req, file, cb) => {
-                let orgName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-                cb(null, `${Date.now()}_${orgName}`);
-            },
-        }),
-    })),
-    (0, swagger_1.ApiConsumes)('multipart/form-data'),
-    (0, swagger_1.ApiBody)({
-        schema: {
-            type: 'object',
-            properties: {
-                importFile: {
-                    type: 'string',
-                    format: 'binary',
-                },
-            },
-        },
-    }),
-    (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, guards_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.Post)("/import-from-appgen-excel"),
-    openapi.ApiResponse({ status: 201 }),
-    __param(0, (0, common_1.UploadedFile)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], RadiostationController.prototype, "uploadExcel", null);
 RadiostationController = __decorate([
     (0, swagger_1.ApiTags)('Radio Station Controller'),
     (0, common_1.Controller)('radiostations'),

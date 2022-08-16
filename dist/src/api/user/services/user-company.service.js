@@ -24,11 +24,9 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const user_db_schema_1 = require("../schemas/user.db.schema");
-const company_schema_1 = require("../../company/schemas/company.schema");
 const company_service_1 = require("../../company/company.service");
 const user_service_1 = require("./user.service");
 const user_group_service_1 = require("./user-group.service");
-const Enums_1 = require("../../../constants/Enums");
 let UserCompanyService = class UserCompanyService {
     constructor(userService, userGroupService, companyService, userModel) {
         this.userService = userService;

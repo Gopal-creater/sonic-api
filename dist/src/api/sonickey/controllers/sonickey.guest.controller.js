@@ -36,7 +36,6 @@ const public_encode_dto_1 = require("../dtos/public-encode.dto");
 const public_decode_dto_1 = require("../dtos/public-decode.dto");
 const Enums_1 = require("../../../constants/Enums");
 const detection_service_1 = require("../../detection/detection.service");
-const detection_schema_1 = require("../../detection/schemas/detection.schema");
 let SonickeyGuestController = class SonickeyGuestController {
     constructor(sonicKeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;

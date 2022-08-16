@@ -28,7 +28,6 @@ const Enums_1 = require("../../../constants/Enums");
 const role_based_guard_1 = require("../../auth/guards/role-based.guard");
 const decorators_1 = require("../../auth/decorators");
 const user_db_schema_1 = require("../../user/schemas/user.db.schema");
-const api_key_schema_1 = require("../schemas/api-key.schema");
 let ApiKeyController = class ApiKeyController {
     constructor(apiKeyService) {
         this.apiKeyService = apiKeyService;

@@ -52,7 +52,40 @@ __decorate([
         required: true,
     }),
     __metadata("design:type", String)
+], RadioStation.prototype, "appGenStationId", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
+        required: true,
+        unique: true,
+    }),
+    __metadata("design:type", String)
 ], RadioStation.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({}),
+    __metadata("design:type", String)
+], RadioStation.prototype, "streamingUrl", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], RadioStation.prototype, "subTitle", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], RadioStation.prototype, "logo", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
+        required: true,
+    }),
+    __metadata("design:type", String)
+], RadioStation.prototype, "continent", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, isValidCountry_validation_1.IsValidCountry)(),
@@ -65,9 +98,24 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({}),
+    (0, mongoose_1.Prop)({
+        required: true,
+    }),
     __metadata("design:type", String)
-], RadioStation.prototype, "streamingUrl", void 0);
+], RadioStation.prototype, "state", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
+        required: true,
+    }),
+    __metadata("design:type", String)
+], RadioStation.prototype, "city", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)([{ type: String }]),
+    __metadata("design:type", Array)
+], RadioStation.prototype, "genres", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, swagger_1.ApiProperty)(),
@@ -79,11 +127,6 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], RadioStation.prototype, "website", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], RadioStation.prototype, "logo", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, mongoose_1.Prop)([MonitorGroup]),
@@ -139,16 +182,6 @@ __decorate([
     (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], RadioStation.prototype, "isFromAppGen", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], RadioStation.prototype, "appGenStationId", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)([{ type: String }]),
-    __metadata("design:type", Array)
-], RadioStation.prototype, "genres", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, mongoose_1.Prop)({ default: null }),

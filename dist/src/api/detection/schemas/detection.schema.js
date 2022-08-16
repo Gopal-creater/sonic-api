@@ -16,7 +16,6 @@ const swagger_1 = require("@nestjs/swagger");
 const radiostation_schema_1 = require("../../radiostation/schemas/radiostation.schema");
 const sonickey_schema_1 = require("../../sonickey/schemas/sonickey.schema");
 const Enums_1 = require("../../../constants/Enums");
-const common_interface_1 = require("../../../shared/interfaces/common.interface");
 exports.DetectionSchemaName = "Detection";
 let DetectedTimeStamp = class DetectedTimeStamp {
 };

@@ -16,9 +16,7 @@ const common_1 = require("@nestjs/common");
 const sonickey_service_1 = require("../services/sonickey.service");
 const Enums_1 = require("../../../constants/Enums");
 const queuejob_service_1 = require("../../../queuejob/queuejob.service");
-const user_db_schema_1 = require("../../user/schemas/user.db.schema");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
-const licensekey_schema_1 = require("../../licensekey/schemas/licensekey.schema");
 const sonickey_utils_1 = require("./utils/sonickey.utils");
 const utils_1 = require("../../../shared/utils");
 let SonicKeyProcessor = SonicKeyProcessor_1 = class SonicKeyProcessor {

@@ -20,7 +20,6 @@ const mongoose_2 = require("mongoose");
 const Enums_1 = require("../../constants/Enums");
 const payment_service_1 = require("../payment/services/payment.service");
 const licensekey_service_1 = require("../licensekey/services/licensekey.service");
-const licensekey_schema_1 = require("../licensekey/schemas/licensekey.schema");
 let PlanService = class PlanService {
     constructor(planModel, paymentService, licenseKeyService) {
         this.planModel = planModel;

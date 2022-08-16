@@ -45,10 +45,7 @@ const user_company_service_1 = require("./user-company.service");
 const group_service_1 = require("../../group/group.service");
 const company_service_1 = require("../../company/company.service");
 const Enums_1 = require("../../../constants/Enums");
-const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const api_key_service_1 = require("../../api-key/api-key.service");
-const register_dto_1 = require("../../auth/dto/register.dto");
-const licensekey_schema_1 = require("../../licensekey/schemas/licensekey.schema");
 let UserService = class UserService {
     constructor(licensekeyService, apiKeyService, globalAwsService, groupService, companyService, userModel, configService, userGroupService, userCompanyService, radioMonitorService) {
         this.licensekeyService = licensekeyService;
