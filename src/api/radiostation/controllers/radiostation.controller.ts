@@ -146,7 +146,7 @@ export class RadiostationController {
     });
   }
 
-  //Bulk import from excel file-------------------------------------------------
+  //Bulk import of radio stations from excel file------------------------------------------------
   @ApiOperation({ summary: 'Import list of radio stations from excel file' })
   @UseInterceptors(FileInterceptor('importFile', appGenMulterOptions))
   @ApiConsumes('multipart/form-data')
@@ -159,7 +159,7 @@ export class RadiostationController {
     const excelPath = upath.toUnix(file.path);
     console.log("file",file)
     console.log("Excel Path",excelPath)
-    this.radiostationService.importFromAppgenExcel(excelPath).finally(() => {
+    return this.radiostationService.importFromAppgenExcel(excelPath).finally(() => {
       fs.unlinkSync(excelPath);
     })
   }
