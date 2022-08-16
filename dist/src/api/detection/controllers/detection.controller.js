@@ -122,7 +122,7 @@ let DetectionController = class DetectionController {
             throw new common_1.BadRequestException('Unsupported format');
         queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
         const filePath = await this.detectionService.exportDashboardPlaysView(queryDto, format);
-        const fileName = (0, utils_1.extractFileName)(filePath);
+        const fileName = utils_1.extractFileName(filePath);
         res.download(filePath, `exported_dashboard_plays_view_${format}.${fileName.split('.')[1]}`, err => {
             if (err) {
                 this.fileHandlerService.deleteFileAtPath(filePath);
@@ -134,7 +134,7 @@ let DetectionController = class DetectionController {
     async exportHistoryOfSonicKeyView(res, targetUser, format, queryDto) {
         queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
         const filePath = await this.detectionService.exportHistoryOfSonicKeyPlays(queryDto, format);
-        const fileName = (0, utils_1.extractFileName)(filePath);
+        const fileName = utils_1.extractFileName(filePath);
         res.download(filePath, `exported_history_of_sonickey_${format}.${fileName.split('.')[1]}`, err => {
             if (err) {
                 this.fileHandlerService.deleteFileAtPath(filePath);
@@ -170,7 +170,7 @@ let DetectionController = class DetectionController {
                 exportedFilePath = await this.detectionService.exportPlays(queryDto, format);
                 break;
         }
-        const fileName = (0, utils_1.extractFileName)(exportedFilePath);
+        const fileName = utils_1.extractFileName(exportedFilePath);
         res.download(exportedFilePath, `${fileName.split('_nameseperator_')[1]}`, err => {
             if (err) {
                 this.fileHandlerService.deleteFileAtPath(exportedFilePath);
@@ -181,172 +181,172 @@ let DetectionController = class DetectionController {
     }
 };
 __decorate([
-    (0, common_1.Get)('/list-plays'),
-    (0, swagger_1.ApiQuery)({
+    common_1.Get('/list-plays'),
+    swagger_1.ApiQuery({
         name: 'playsBy',
         enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS', 'COMPANIES'],
         required: false,
     }),
-    (0, swagger_1.ApiQuery)({ name: 'radioStation', type: String, required: false }),
-    (0, swagger_1.ApiQuery)({ name: 'limit', type: Number, required: false }),
-    (0, swagger_1.ApiQuery)({ name: 'recentPlays', type: Boolean, required: false }),
-    (0, swagger_1.ApiQuery)({
+    swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
+    swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
+    swagger_1.ApiQuery({ name: 'recentPlays', type: Boolean, required: false }),
+    swagger_1.ApiQuery({
         name: 'channel',
         enum: [...Object.values(Enums_1.ChannelEnums)],
         required: false,
     }),
-    (0, decorators_1.RolesAllowed)(),
-    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)({
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
         additionalHtmlDescription: `<div>
       To Get plays for specific company ?relation_sonickey.company=companyId <br/>
       To Get plays for specific partner ?relation_sonickey.partner=partnerId <br/>
       To Get plays for specific user ?relation_sonickey.owner=ownerId
     <div>`,
     }),
-    (0, swagger_1.ApiOperation)({ summary: 'Get All Plays' }),
+    swagger_1.ApiOperation({ summary: 'Get All Plays' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], DetectionController.prototype, "listPlays", null);
 __decorate([
-    (0, common_1.Get)('/:channel/data'),
-    (0, swagger_1.ApiQuery)({ name: 'radioStation', type: String, required: false }),
-    (0, swagger_1.ApiParam)({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums)] }),
-    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, swagger_1.ApiQuery)({ name: 'includeGroupData', type: Boolean, required: false }),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
-    (0, swagger_1.ApiOperation)({
+    common_1.Get('/:channel/data'),
+    swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
+    swagger_1.ApiParam({ name: 'channel', enum: [...Object.values(Enums_1.ChannelEnums)] }),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiQuery({ name: 'includeGroupData', type: Boolean, required: false }),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({
         summary: 'Get All Detections for specific channel and specific user',
     }),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-radiostationsonickey.dto").MongoosePaginateDetectionDto }),
-    __param(0, (0, common_1.Param)('channel')),
-    __param(1, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Param('channel')),
+    __param(1, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], DetectionController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)('/get-monitor-dashboard-data'),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)({
+    common_1.Get('/get-monitor-dashboard-data'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
         additionalHtmlDescription: `<div>
       To Get plays for specific company ?relation_sonickey.company=companyId <br/>
       To Get plays for specific partner ?relation_sonickey.partner=partnerId <br/>
       To Get plays for specific user ?relation_sonickey.owner=ownerId
     <div>`,
     }),
-    (0, decorators_1.RolesAllowed)(),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get Monitor Dashboard data' }),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get Monitor Dashboard data' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "getMonitorDashboardData", null);
 __decorate([
-    (0, common_1.Get)('/get-monitor-high-level-count-data'),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)({
+    common_1.Get('/get-monitor-high-level-count-data'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
         additionalHtmlDescription: `<div>
       To Get plays for specific company ?relation_sonickey.company=companyId <br/>
       To Get plays for specific partner ?relation_sonickey.partner=partnerId <br/>
       To Get plays for specific user ?relation_sonickey.owner=ownerId
     <div>`,
     }),
-    (0, decorators_1.RolesAllowed)(),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get Monitor Count data such as PlaysCount, TracksCount etc.' }),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get Monitor Count data such as PlaysCount, TracksCount etc.' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "getMonitorCountData", null);
 __decorate([
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
         summary: '[NEW]: Create Detection from specific channel',
     }),
-    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard),
-    (0, common_1.Post)(`/create`),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
+    common_1.Post(`/create`),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, apikey_decorator_1.ApiKey)('_id')),
+    __param(0, common_1.Body()),
+    __param(1, apikey_decorator_1.ApiKey('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_detection_dto_1.CreateDetectionDto, String]),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "createDetection", null);
 __decorate([
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, swagger_1.ApiOperation)({
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiOperation({
         summary: 'Create Detection From Binary [protected by x-api-key]',
     }),
-    (0, common_1.UseGuards)(apikey_auth_guard_1.ApiKeyAuthGuard),
-    (0, common_1.Post)(`/channels/${Enums_1.ChannelEnums.BINARY}`),
+    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
+    common_1.Post(`/channels/${Enums_1.ChannelEnums.BINARY}`),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, apikey_decorator_1.ApiKey)('customer')),
-    __param(2, (0, apikey_decorator_1.ApiKey)('_id')),
+    __param(0, common_1.Body()),
+    __param(1, apikey_decorator_1.ApiKey('customer')),
+    __param(2, apikey_decorator_1.ApiKey('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_detection_dto_1.CreateDetectionFromBinaryDto, String, String]),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "createFromBinary", null);
 __decorate([
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, swagger_1.ApiOperation)({
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiOperation({
         summary: 'Create Detection From Hardware [protected by x-api-key]',
     }),
-    (0, common_1.UseGuards)(apikey_auth_guard_1.ApiKeyAuthGuard),
-    (0, common_1.Post)(`/channels/${Enums_1.ChannelEnums.HARDWARE}`),
+    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
+    common_1.Post(`/channels/${Enums_1.ChannelEnums.HARDWARE}`),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, apikey_decorator_1.ApiKey)('customer')),
-    __param(2, (0, apikey_decorator_1.ApiKey)('_id')),
+    __param(0, common_1.Body()),
+    __param(1, apikey_decorator_1.ApiKey('customer')),
+    __param(2, apikey_decorator_1.ApiKey('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_detection_dto_1.CreateDetectionFromHardwareDto, String, String]),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "createFromHardware", null);
 __decorate([
-    (0, common_1.Get)('/count'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({
+    common_1.Get('/count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
         summary: 'Get count of all detection also accept filter as query params',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "getTotalHitsCount", null);
 __decorate([
-    (0, common_1.Get)('/count'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({
+    common_1.Get('/count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
         summary: 'Get count of all detections also accept filter as query params',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "getCount", null);
 __decorate([
-    (0, common_1.Get)('/estimate-count'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({
+    common_1.Get('/estimate-count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
         summary: 'Get all count of all detections',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
@@ -355,83 +355,83 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "getEstimateCount", null);
 __decorate([
-    (0, common_1.Delete)('/:detectionId'),
-    (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Delete Detection data' }),
+    common_1.Delete('/:detectionId'),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Delete Detection data' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('detectionId')),
+    __param(0, common_1.Param('detectionId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "delete", null);
 __decorate([
-    (0, common_1.Get)('/export/dashboard-plays-view/:format'),
-    (0, swagger_1.ApiParam)({ name: 'format', enum: ['xlsx', 'csv'] }),
-    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Export Dashboard Plays View' }),
+    common_1.Get('/export/dashboard-plays-view/:format'),
+    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({ summary: 'Export Dashboard Plays View' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_1.Res)()),
-    __param(1, (0, common_1.Param)('format')),
-    __param(2, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Param('format')),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "exportDashboardPlaysView", null);
 __decorate([
-    (0, common_1.Get)('/export/history-of-sonickey/:format'),
-    (0, swagger_1.ApiParam)({ name: 'format', enum: ['xlsx', 'csv'] }),
-    (0, swagger_1.ApiQuery)({ name: 'radioStation', type: String, required: false }),
-    (0, swagger_1.ApiQuery)({ name: 'limit', type: Number, required: false }),
-    (0, swagger_1.ApiQuery)({ name: 'sonicKey', type: String, required: false }),
-    (0, swagger_1.ApiQuery)({
+    common_1.Get('/export/history-of-sonickey/:format'),
+    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
+    swagger_1.ApiQuery({ name: 'radioStation', type: String, required: false }),
+    swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
+    swagger_1.ApiQuery({ name: 'sonicKey', type: String, required: false }),
+    swagger_1.ApiQuery({
         name: 'channel',
         enum: [...Object.values(Enums_1.ChannelEnums)],
         required: false,
     }),
-    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Export History Of Sonickey View' }),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({ summary: 'Export History Of Sonickey View' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_1.Res)()),
-    __param(1, (0, common_1.Param)('targetUser')),
-    __param(2, (0, common_1.Param)('format')),
-    __param(3, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Param('targetUser')),
+    __param(2, common_1.Param('format')),
+    __param(3, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "exportHistoryOfSonicKeyView", null);
 __decorate([
-    (0, common_1.Get)('/export-plays-by/:format'),
-    (0, swagger_1.ApiQuery)({
+    common_1.Get('/export-plays-by/:format'),
+    swagger_1.ApiQuery({
         name: 'playsBy',
         enum: ['ARTISTS', 'COUNTRIES', 'TRACKS', 'RADIOSTATIONS', 'COMPANIES'],
         required: false,
     }),
-    (0, swagger_1.ApiParam)({ name: 'format', enum: ['xlsx', 'csv'] }),
-    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Export Plays View' }),
+    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({ summary: 'Export Plays View' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_1.Res)()),
-    __param(1, (0, decorators_1.User)()),
-    __param(2, (0, common_1.Param)('format')),
-    __param(3, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Res()),
+    __param(1, decorators_1.User()),
+    __param(2, common_1.Param('format')),
+    __param(3, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, user_db_schema_1.UserDB, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], DetectionController.prototype, "exportPlaysBy", null);
 DetectionController = __decorate([
-    (0, swagger_1.ApiTags)('Detection Controller'),
-    (0, common_1.Controller)('detections'),
+    swagger_1.ApiTags('Detection Controller'),
+    common_1.Controller('detections'),
     __metadata("design:paramtypes", [detection_service_1.DetectionService,
         sonickey_service_1.SonickeyService,
         file_handler_service_1.FileHandlerService])

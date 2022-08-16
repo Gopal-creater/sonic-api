@@ -66,7 +66,7 @@ let CreateLicenseSecurityGuard = class CreateLicenseSecurityGuard {
     }
 };
 CreateLicenseSecurityGuard = __decorate([
-    (0, common_1.Injectable)(),
+    common_1.Injectable(),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], CreateLicenseSecurityGuard);
 exports.CreateLicenseSecurityGuard = CreateLicenseSecurityGuard;

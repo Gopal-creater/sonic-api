@@ -21,6 +21,7 @@ const plan_service_1 = require("../plan.service");
 const jwt_auth_guard_1 = require("../../auth/guards/jwt-auth.guard");
 const user_decorator_1 = require("../../auth/decorators/user.decorator");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
+const plan_schema_1 = require("../schemas/plan.schema");
 const Enums_1 = require("../../../constants/Enums");
 const parseQueryValue_pipe_1 = require("../../../shared/pipes/parseQueryValue.pipe");
 const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
@@ -116,68 +117,68 @@ let PlansOwnerController = class PlansOwnerController {
     }
 };
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.Get)('/my-plans'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Get('/my-plans'),
     openapi.ApiResponse({ status: 200, type: require("../../licensekey/dto/mongoosepaginate-licensekey.dto").MongoosePaginateLicensekeyDto }),
-    __param(0, (0, user_decorator_1.User)('sub')),
-    __param(1, (0, common_1.Param)('ownerId')),
-    __param(2, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, user_decorator_1.User('sub')),
+    __param(1, common_1.Param('ownerId')),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], PlansOwnerController.prototype, "myPlans", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.Post)('/buy-plan'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Post('/buy-plan'),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, user_decorator_1.User)('sub')),
-    __param(2, (0, common_1.Param)('ownerId')),
+    __param(0, common_1.Body()),
+    __param(1, user_decorator_1.User('sub')),
+    __param(2, common_1.Param('ownerId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_plan_dto_1.BuyPlanDto, String, String]),
     __metadata("design:returntype", Promise)
 ], PlansOwnerController.prototype, "buyPlan", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.Put)('/upgrade-plan'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Put('/upgrade-plan'),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, user_decorator_1.User)('sub')),
-    __param(2, (0, common_1.Param)('ownerId')),
+    __param(0, common_1.Body()),
+    __param(1, user_decorator_1.User('sub')),
+    __param(2, common_1.Param('ownerId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_plan_dto_1.UpgradePlanDto, String, String]),
     __metadata("design:returntype", Promise)
 ], PlansOwnerController.prototype, "upgradePlan", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.Put)('/renew-plan'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Put('/renew-plan'),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, user_decorator_1.User)('sub')),
-    __param(2, (0, common_1.Param)('ownerId')),
+    __param(0, common_1.Body()),
+    __param(1, user_decorator_1.User('sub')),
+    __param(2, common_1.Param('ownerId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_plan_dto_1.RenewPlanDto, String, String]),
     __metadata("design:returntype", Promise)
 ], PlansOwnerController.prototype, "renewPlan", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.Put)('/buy-extra-sonickeys'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Put('/buy-extra-sonickeys'),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, user_decorator_1.User)('sub')),
-    __param(2, (0, common_1.Param)('ownerId')),
+    __param(0, common_1.Body()),
+    __param(1, user_decorator_1.User('sub')),
+    __param(2, common_1.Param('ownerId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_plan_dto_1.BuyExtraKeysForExistingPlanDto, String, String]),
     __metadata("design:returntype", Promise)
 ], PlansOwnerController.prototype, "buyExtraKeys", null);
 PlansOwnerController = __decorate([
-    (0, swagger_1.ApiTags)('Plans Controller'),
-    (0, common_1.Controller)('plans/owners/:ownerId'),
+    swagger_1.ApiTags('Plans Controller'),
+    common_1.Controller('plans/owners/:ownerId'),
     __metadata("design:paramtypes", [plan_service_1.PlanService,
         licensekey_service_1.LicensekeyService])
 ], PlansOwnerController);

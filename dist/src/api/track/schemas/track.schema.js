@@ -20,16 +20,16 @@ exports.TrackSchemaName = 'Track';
 let Track = class Track extends mongoose_2.Document {
 };
 __decorate([
-    (0, swagger_1.ApiHideProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiHideProperty(),
+    mongoose_1.Prop({
         required: true,
         unique: true,
     }),
     __metadata("design:type", String)
 ], Track.prototype, "_id", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         type: String,
         ref: 'User',
         autopopulate: { maxDepth: 2 },
@@ -37,8 +37,8 @@ __decorate([
     __metadata("design:type", String)
 ], Track.prototype, "owner", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: 'Company',
         autopopulate: { maxDepth: 2 },
@@ -46,8 +46,8 @@ __decorate([
     __metadata("design:type", Object)
 ], Track.prototype, "company", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: 'Partner',
         autopopulate: { maxDepth: 2 },
@@ -55,8 +55,8 @@ __decorate([
     __metadata("design:type", Object)
 ], Track.prototype, "partner", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: api_key_schema_1.ApiKeySchemaName,
         select: false,
@@ -64,90 +64,90 @@ __decorate([
     __metadata("design:type", Object)
 ], Track.prototype, "apiKey", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ type: String, enum: Enums_1.ChannelEnums, required: true, default: Enums_1.ChannelEnums.PORTAL }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: String, enum: Enums_1.ChannelEnums, required: true, default: Enums_1.ChannelEnums.PORTAL }),
     __metadata("design:type", String)
 ], Track.prototype, "channel", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ type: String }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: String }),
     __metadata("design:type", String)
 ], Track.prototype, "channelUuid", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         select: false,
     }),
     __metadata("design:type", String)
 ], Track.prototype, "license", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Track.prototype, "mimeType", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Track.prototype, "artist", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Track.prototype, "title", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", Number)
 ], Track.prototype, "duration", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", Number)
 ], Track.prototype, "fileSize", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Track.prototype, "localFilePath", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ type: sonickey_schema_1.S3FileMeta }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: sonickey_schema_1.S3FileMeta }),
     __metadata("design:type", sonickey_schema_1.S3FileMeta)
 ], Track.prototype, "s3OriginalFileMeta", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Track.prototype, "fileType", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Track.prototype, "encoding", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Track.prototype, "samplingFrequency", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Track.prototype, "originalFileName", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ type: mongoose_2.Schema.Types.Mixed }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.Mixed }),
     __metadata("design:type", Object)
 ], Track.prototype, "iExtractedMetaData", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ type: mongoose_2.Schema.Types.Mixed }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.Mixed }),
     __metadata("design:type", Object)
 ], Track.prototype, "trackMetaData", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         type: String,
         ref: 'User',
         autopopulate: { maxDepth: 2 },
@@ -155,8 +155,8 @@ __decorate([
     __metadata("design:type", Object)
 ], Track.prototype, "createdBy", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         type: String,
         ref: 'User',
         autopopulate: { maxDepth: 2 },
@@ -164,7 +164,7 @@ __decorate([
     __metadata("design:type", Object)
 ], Track.prototype, "updatedBy", void 0);
 Track = __decorate([
-    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.TrackSchemaName })
+    mongoose_1.Schema({ timestamps: true, collection: exports.TrackSchemaName })
 ], Track);
 exports.Track = Track;
 exports.TrackSchema = mongoose_1.SchemaFactory.createForClass(Track);

@@ -20,6 +20,7 @@ const mongoose_2 = require("mongoose");
 const Enums_1 = require("../../constants/Enums");
 const payment_service_1 = require("../payment/services/payment.service");
 const licensekey_service_1 = require("../licensekey/services/licensekey.service");
+const licensekey_schema_1 = require("../licensekey/schemas/licensekey.schema");
 let PlanService = class PlanService {
     constructor(planModel, paymentService, licenseKeyService) {
         this.planModel = planModel;
@@ -283,10 +284,10 @@ let PlanService = class PlanService {
     }
 };
 PlanService = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(plan_schema_1.Plan.name)),
-    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => payment_service_1.PaymentService))),
-    __param(2, (0, common_1.Inject)((0, common_1.forwardRef)(() => licensekey_service_1.LicensekeyService))),
+    common_1.Injectable(),
+    __param(0, mongoose_1.InjectModel(plan_schema_1.Plan.name)),
+    __param(1, common_1.Inject(common_1.forwardRef(() => payment_service_1.PaymentService))),
+    __param(2, common_1.Inject(common_1.forwardRef(() => licensekey_service_1.LicensekeyService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         payment_service_1.PaymentService,
         licensekey_service_1.LicensekeyService])

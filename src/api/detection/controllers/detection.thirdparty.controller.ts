@@ -201,7 +201,7 @@ export class DetectionThirdPartyController {
           detection.metaData={...detection.metaData,...metaData}
         } else {
           //If not within its original contentDuration, just do insertation
-					
+
 					//First, find program details if this is a appgen station
 					var program = {title:'', subtitle: '', dj:''};
 					if(isValidRadioStation.isFromAppGen) {
@@ -289,7 +289,7 @@ export class DetectionThirdPartyController {
     var errorKeys: string[] = [];
     for await (const decodeRes of decodeResponsesFromFingerPrint) {
       const isKeyPresent = await this.sonickeyServive.findOne({
-        "fingerPrintMetaData.song_id":decodeRes.songId
+        "fingerPrintMetaData.soundId":decodeRes.soundId
       });
       if (isKeyPresent) {
         const sonicKeyContentDurationInSec = isKeyPresent.contentDuration || 60;
@@ -356,7 +356,7 @@ export class DetectionThirdPartyController {
           })
           .catch(err => {});
       } else {
-        errorKeys.push(decodeRes.songId);
+        errorKeys.push(decodeRes.soundId);
       }
     }
     return{

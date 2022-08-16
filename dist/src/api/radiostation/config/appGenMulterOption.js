@@ -4,7 +4,7 @@ exports.appGenMulterOptions = void 0;
 const common_1 = require("@nestjs/common");
 const multer_1 = require("multer");
 const makeDir = require("make-dir");
-const config_1 = require("../../config");
+const config_1 = require("../../../config");
 exports.appGenMulterOptions = {
     fileFilter: (req, file, cb) => {
         var _a, _b;
@@ -15,7 +15,7 @@ exports.appGenMulterOptions = {
             cb(new common_1.BadRequestException('Unsupported file type, only support excel for now'), false);
         }
     },
-    storage: (0, multer_1.diskStorage)({
+    storage: multer_1.diskStorage({
         destination: async (req, file, cb) => {
             const filePath = await makeDir(`${config_1.appConfig.MULTER_IMPORT_DEST}`);
             cb(null, filePath);

@@ -18,7 +18,7 @@ class BulkByIdsDto {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: [String] }),
+    swagger_1.ApiProperty({ type: [String] }),
     __metadata("design:type", Array)
 ], BulkByIdsDto.prototype, "ids", void 0);
 exports.BulkByIdsDto = BulkByIdsDto;

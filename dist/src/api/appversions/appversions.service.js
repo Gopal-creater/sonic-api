@@ -149,8 +149,8 @@ let AppVersionService = class AppVersionService {
     }
 };
 AppVersionService = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(appversions_schema_1.AppVersion.name)),
+    common_1.Injectable(),
+    __param(0, mongoose_1.InjectModel(appversions_schema_1.AppVersion.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         file_operation_service_1.FileOperationService,
         file_handler_service_1.FileHandlerService,

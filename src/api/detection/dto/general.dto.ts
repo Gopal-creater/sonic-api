@@ -11,21 +11,21 @@ export class TopRadioStation{
 
     @ApiProperty()
     _id?: string;
-  
+
     @ApiProperty()
     totalKeysDetected?: number;
-  
+
     @ApiProperty()
     radioStation: RadioStation;
   };
-  
+
   export class TopSonicKey {
     @ApiProperty()
     _id: string;
-  
+
     @ApiProperty()
     totalHits: number;
-  
+
     @ApiProperty()
     sonicKey: SonicKey;
   };
@@ -33,10 +33,10 @@ export class TopRadioStation{
   export class PlaysCountResponseDto {
     @ApiProperty()
     _id?: string;
-  
+
     @ApiProperty()
     playsCount: number;
-  
+
     @ApiProperty()
     uniquePlaysCount: number;
   };
@@ -44,7 +44,7 @@ export class TopRadioStation{
   export class PlaysGraphSingleResponseDto {
     @ApiProperty()
     _id: string;
-  
+
     @ApiProperty()
     total: number;
   };
@@ -52,13 +52,13 @@ export class TopRadioStation{
   export class PlaysGraphResponseDto {
     @ApiProperty()
     playsArtistWise?: PlaysGraphSingleResponseDto[];
-  
+
     @ApiProperty()
     playsCountryWise?: PlaysGraphSingleResponseDto[];
 
     @ApiProperty()
     playsSongWise?: PlaysGraphSingleResponseDto[];
-  
+
     @ApiProperty()
     playsStationWise?: PlaysGraphSingleResponseDto[];
   };
@@ -84,10 +84,10 @@ export class TopRadioStation{
 
     @ApiProperty()
     detectedDuration?: number;
-  
+
     @ApiProperty()
     radioStation: RadioStation;
-  
+
     @ApiProperty()
     sonicKey: SonicKey;
 
@@ -171,31 +171,31 @@ export class TopRadioStation{
     @ApiProperty()
     countriesCount:number
   }
-  
+
   export class GraphData{
     @ApiProperty()
     _id: any;
-  
+
     @ApiProperty()
     year: number;
-  
+
     @ApiProperty()
     month: number;
-  
+
     @ApiProperty()
     day: number;
-  
+
     @ApiProperty()
     hits: number;
   }
-  
+
   export class TopRadioStationWithTopSonicKey extends TopRadioStation {
     @ApiProperty()
     sonicKeys:TopSonicKey[]
-  
+
     @ApiProperty()
     graphsData?:GraphData[]
-  } 
+  }
 
   export class TopRadioStationWithPlaysDetails extends TopRadioStation {
     @ApiProperty()
@@ -216,7 +216,7 @@ export class TopRadioStation{
 
     @ApiProperty()
     @IsNotEmpty()
-    songId: string;
+    soundId: string;
 
     @ApiProperty({isArray:true,type:DetectedTimeStamp})
     timestamps:DetectedTimeStamp[]

@@ -15,7 +15,7 @@ const queuejob_schema_1 = require("./schemas/queuejob.schema");
 let QueuejobModule = class QueuejobModule {
 };
 QueuejobModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: queuejob_schema_1.QueueJobSchemaName, schema: queuejob_schema_1.QueueJobSchema },

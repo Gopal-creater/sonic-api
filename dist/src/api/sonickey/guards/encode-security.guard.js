@@ -65,7 +65,7 @@ let EncodeSecurityGuard = class EncodeSecurityGuard {
     }
 };
 EncodeSecurityGuard = __decorate([
-    (0, common_1.Injectable)(),
+    common_1.Injectable(),
     __metadata("design:paramtypes", [])
 ], EncodeSecurityGuard);
 exports.EncodeSecurityGuard = EncodeSecurityGuard;

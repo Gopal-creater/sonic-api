@@ -15,7 +15,7 @@ const payment_schema_1 = require("./schemas/payment.schema");
 let PaymentModule = class PaymentModule {
 };
 PaymentModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: payment_schema_1.PaymentSchemaName, schema: payment_schema_1.PaymentSchema },

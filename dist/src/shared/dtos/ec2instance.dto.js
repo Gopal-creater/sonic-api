@@ -18,39 +18,39 @@ class Ec2InstanceInfo {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Ec2InstanceInfo.prototype, "ami_id", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Ec2InstanceInfo.prototype, "hostname", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Ec2InstanceInfo.prototype, "instance_id", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Ec2InstanceInfo.prototype, "instance_type", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Ec2InstanceInfo.prototype, "local_hostname", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Ec2InstanceInfo.prototype, "local_ipv4", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Ec2InstanceInfo.prototype, "mac", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Ec2InstanceInfo.prototype, "public_hostname", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Ec2InstanceInfo.prototype, "public_ipv4", void 0);
 exports.Ec2InstanceInfo = Ec2InstanceInfo;
@@ -60,11 +60,11 @@ class Ec2RunningServerWithInstanceInfo extends Ec2InstanceInfo {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Ec2RunningServerWithInstanceInfo.prototype, "domain_hostname", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], Ec2RunningServerWithInstanceInfo.prototype, "server_running_port_number", void 0);
 exports.Ec2RunningServerWithInstanceInfo = Ec2RunningServerWithInstanceInfo;

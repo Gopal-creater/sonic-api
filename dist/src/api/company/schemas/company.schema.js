@@ -17,72 +17,72 @@ exports.CompanySchemaName = 'Company';
 let Address = class Address {
 };
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Address.prototype, "country", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Address.prototype, "city", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Address.prototype, "line1", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], Address.prototype, "line2", void 0);
 Address = __decorate([
-    (0, mongoose_1.Schema)()
+    mongoose_1.Schema()
 ], Address);
 exports.Address = Address;
 let Company = class Company extends mongoose_2.Document {
 };
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         required: true
     }),
     __metadata("design:type", String)
 ], Company.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Company.prototype, "description", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Company.prototype, "companyType", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Company.prototype, "companyUrnOrId", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Company.prototype, "email", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Company.prototype, "contactNo", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ default: true }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: true }),
     __metadata("design:type", Boolean)
 ], Company.prototype, "enabled", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ type: Address }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: Address }),
     __metadata("design:type", Address)
 ], Company.prototype, "address", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         type: String,
         ref: 'User',
         autopopulate: { maxDepth: 2 },
@@ -90,8 +90,8 @@ __decorate([
     __metadata("design:type", Object)
 ], Company.prototype, "owner", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: 'Partner',
         autopopulate: { maxDepth: 2 },
@@ -99,17 +99,17 @@ __decorate([
     __metadata("design:type", Object)
 ], Company.prototype, "partner", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Company.prototype, "createdBy", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Company.prototype, "updatedBy", void 0);
 Company = __decorate([
-    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.CompanySchemaName })
+    mongoose_1.Schema({ timestamps: true, collection: exports.CompanySchemaName })
 ], Company);
 exports.Company = Company;
 exports.CompanySchema = mongoose_1.SchemaFactory.createForClass(Company);

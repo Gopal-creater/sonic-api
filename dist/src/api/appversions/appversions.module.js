@@ -18,7 +18,7 @@ const file_operation_service_1 = require("../../shared/services/file-operation.s
 let AppVersionModule = class AppVersionModule {
 };
 AppVersionModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
             s3fileupload_module_1.S3FileUploadModule,
             mongoose_1.MongooseModule.forFeature([

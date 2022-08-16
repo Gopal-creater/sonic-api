@@ -18,16 +18,16 @@ const company_module_1 = require("../company/company.module");
 let ApiKeyModule = class ApiKeyModule {
 };
 ApiKeyModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
-            (0, common_1.forwardRef)(() => user_module_1.UserModule),
+            common_1.forwardRef(() => user_module_1.UserModule),
             mongoose_1.MongooseModule.forFeature([
                 {
                     name: api_key_schema_1.ApiKeySchemaName,
                     schema: api_key_schema_1.ApiKeySchema,
                 },
             ]),
-            (0, common_1.forwardRef)(() => company_module_1.CompanyModule),
+            common_1.forwardRef(() => company_module_1.CompanyModule),
         ],
         controllers: [api_key_controller_1.ApiKeyController, api_key_customer_controller_1.ApiKeyCustomerController],
         providers: [api_key_service_1.ApiKeyService],

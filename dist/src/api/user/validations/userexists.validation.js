@@ -32,15 +32,15 @@ let UserExistsRule = class UserExistsRule {
     }
 };
 UserExistsRule = __decorate([
-    (0, class_validator_1.ValidatorConstraint)({ name: 'UserExists', async: true }),
-    (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
+    class_validator_1.ValidatorConstraint({ name: 'UserExists', async: true }),
+    common_1.Injectable(),
+    __param(0, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserExistsRule);
 exports.UserExistsRule = UserExistsRule;
 function UserExists(validationOptions) {
     return function (object, propertyName) {
-        (0, class_validator_1.registerDecorator)({
+        class_validator_1.registerDecorator({
             name: 'UserExists',
             target: object.constructor,
             propertyName: propertyName,

@@ -112,9 +112,9 @@ let PartnerService = class PartnerService {
     }
 };
 PartnerService = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(partner_schema_1.Partner.name)),
-    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
+    common_1.Injectable(),
+    __param(0, mongoose_1.InjectModel(partner_schema_1.Partner.name)),
+    __param(1, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         user_service_1.UserService])
 ], PartnerService);

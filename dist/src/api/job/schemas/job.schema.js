@@ -18,45 +18,45 @@ exports.JobSchemaName = "Job";
 let Job = class Job extends mongoose_2.Document {
 };
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         required: true
     }),
     __metadata("design:type", String)
 ], Job.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         required: true
     }),
     __metadata("design:type", String)
 ], Job.prototype, "owner", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ default: 10 }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: 10 }),
     __metadata("design:type", Number)
 ], Job.prototype, "encodingStrength", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         required: true,
         select: false
     }),
     __metadata("design:type", String)
 ], Job.prototype, "license", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ default: false }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: false }),
     __metadata("design:type", Boolean)
 ], Job.prototype, "isComplete", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ type: [{ type: mongoose_2.Schema.Types.ObjectId, ref: 'JobFile', autopopulate: { maxDepth: 2 } }] }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: [{ type: mongoose_2.Schema.Types.ObjectId, ref: 'JobFile', autopopulate: { maxDepth: 2 } }] }),
     __metadata("design:type", Array)
 ], Job.prototype, "jobFiles", void 0);
 Job = __decorate([
-    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.JobSchemaName })
+    mongoose_1.Schema({ timestamps: true, collection: exports.JobSchemaName })
 ], Job);
 exports.Job = Job;
 exports.JobSchema = mongoose_1.SchemaFactory.createForClass(Job);

@@ -18,8 +18,8 @@ exports.UserGroupSchemaName = 'UserGroup';
 let UserGroup = class UserGroup extends mongoose_2.Document {
 };
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: group_schema_1.GroupSchemaName,
         autopopulate: true,
@@ -28,7 +28,7 @@ __decorate([
     __metadata("design:type", Object)
 ], UserGroup.prototype, "group", void 0);
 UserGroup = __decorate([
-    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.UserGroupSchemaName })
+    mongoose_1.Schema({ timestamps: true, collection: exports.UserGroupSchemaName })
 ], UserGroup);
 exports.UserGroup = UserGroup;
 exports.UserGroupSchema = mongoose_1.SchemaFactory.createForClass(UserGroup);

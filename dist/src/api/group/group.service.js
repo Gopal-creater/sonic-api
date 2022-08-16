@@ -26,6 +26,7 @@ const mongoose_2 = require("mongoose");
 const group_schema_1 = require("./schemas/group.schema");
 const Enums_1 = require("../../constants/Enums");
 const user_service_1 = require("../user/services/user.service");
+const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 let GroupService = class GroupService {
     constructor(groupModel, userService) {
         this.groupModel = groupModel;
@@ -91,9 +92,9 @@ let GroupService = class GroupService {
     }
 };
 GroupService = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(group_schema_1.Group.name)),
-    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
+    common_1.Injectable(),
+    __param(0, mongoose_1.InjectModel(group_schema_1.Group.name)),
+    __param(1, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         user_service_1.UserService])
 ], GroupService);

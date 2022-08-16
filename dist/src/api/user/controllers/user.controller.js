@@ -168,7 +168,7 @@ let UserController = class UserController {
             });
         }
         else {
-            const userCompaniesIds = user.companies.map(com => (0, mongoose_utils_1.toObjectId)(com._id));
+            const userCompaniesIds = user.companies.map(com => mongoose_utils_1.toObjectId(com._id));
             parsedQueryDto.relationalFilter = _.merge({}, parsedQueryDto.relationalFilter, {
                 $or: [
                     { 'users._id': user._id },
@@ -262,177 +262,177 @@ let UserController = class UserController {
     }
 };
 __decorate([
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.COMPANY_ADMIN),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, create_user_security_guard_1.CreateUserSecurityGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Create user' }),
-    (0, common_1.Post)(),
-    __param(0, (0, decorators_1.User)()),
-    __param(1, (0, common_1.Body)()),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.COMPANY_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, create_user_security_guard_1.CreateUserSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Create user' }),
+    common_1.Post(),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_db_schema_1.UserDB,
         create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "create", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({
+    swagger_1.ApiOperation({
         summary: 'Get users',
     }),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.COMPANY_ADMIN),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.Get)(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.COMPANY_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Get(),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-user.dto").MongoosePaginateUserDto }),
-    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiOperation)({ summary: 'Get User profile by token' }),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.Get)('/@me'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiOperation({ summary: 'Get User profile by token' }),
+    swagger_1.ApiBearerAuth(),
+    common_1.Get('/@me'),
     openapi.ApiResponse({ status: 200, type: require("../schemas/user.db.schema").UserDB }),
-    __param(0, (0, decorators_1.User)()),
+    __param(0, decorators_1.User()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "findMe", null);
 __decorate([
-    (0, common_1.Put)('/updateme'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Update user profile by token' }),
+    common_1.Put('/updateme'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Update user profile by token' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, decorators_1.User)()),
-    __param(1, (0, common_1.Body)()),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_db_schema_1.UserDB,
         update_profile_dto_1.UpdateProfileDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateMe", null);
 __decorate([
-    (0, common_1.Put)(':id/disable-user'),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, enabledisable_user_security_guard_1.EnableDisableUserSecurityGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Disable user' }),
+    common_1.Put(':id/disable-user'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, enabledisable_user_security_guard_1.EnableDisableUserSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Disable user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, decorators_1.User)()),
-    __param(1, (0, common_1.Param)('id')),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_db_schema_1.UserDB, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "disableUser", null);
 __decorate([
-    (0, common_1.Put)(':id/change-user-password'),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
-    (0, swagger_1.ApiBody)({
+    common_1.Put(':id/change-user-password'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    swagger_1.ApiBody({
         type: dtos_1.ChangePassword,
     }),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, change_user_password_security_guard_copy_1.ChangeUserPasswordSecurityGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Change user password' }),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, change_user_password_security_guard_copy_1.ChangeUserPasswordSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Change user password' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, decorators_1.User)()),
-    __param(1, (0, common_1.Body)('password')),
-    __param(2, (0, common_1.Param)('id')),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Body('password')),
+    __param(2, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_db_schema_1.UserDB, String, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "changeUserPassword", null);
 __decorate([
-    (0, common_1.Put)(':id/enable-user'),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, enabledisable_user_security_guard_1.EnableDisableUserSecurityGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Disable user' }),
+    common_1.Put(':id/enable-user'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, enabledisable_user_security_guard_1.EnableDisableUserSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Disable user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, decorators_1.User)()),
-    __param(1, (0, common_1.Param)('id')),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_db_schema_1.UserDB, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "enableUser", null);
 __decorate([
-    (0, common_1.Put)(':id'),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, update_user_security_guard_1.UpdateUserSecurityGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Update user' }),
+    common_1.Put(':id'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, update_user_security_guard_1.UpdateUserSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Update user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, decorators_1.User)()),
-    __param(2, (0, common_1.Body)()),
+    __param(0, common_1.Param('id')),
+    __param(1, decorators_1.User()),
+    __param(2, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
         update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)(':id'),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.COMPANY_ADMIN),
-    (0, common_1.UseGuards)(failedAlways_guard_1.FailedAlwaysGuard, jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Remove user' }),
+    common_1.Delete(':id'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN, Enums_1.Roles.COMPANY_ADMIN),
+    common_1.UseGuards(failedAlways_guard_1.FailedAlwaysGuard, jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Remove user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "remove", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
         summary: 'Get all licenses of particular user or his belongs to companies',
     }),
-    (0, swagger_1.ApiQuery)({ name: 'includeCompanies', type: Boolean, required: false }),
-    (0, swagger_1.ApiQuery)({ name: 'limit', type: Number, required: false }),
-    (0, common_1.Get)('/:userId/licenses'),
+    swagger_1.ApiQuery({ name: 'includeCompanies', type: Boolean, required: false }),
+    swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
+    common_1.Get('/:userId/licenses'),
     openapi.ApiResponse({ status: 200, type: require("../../licensekey/dto/mongoosepaginate-licensekey.dto").MongoosePaginateLicensekeyDto }),
-    __param(0, (0, common_1.Param)('userId')),
-    __param(1, (0, decorators_1.User)()),
-    __param(2, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Param('userId')),
+    __param(1, decorators_1.User()),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
         parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserLicenses", null);
 __decorate([
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'list users' }),
-    (0, common_1.Get)('/list-users'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'list users' }),
+    common_1.Get('/list-users'),
     openapi.ApiResponse({ status: 200, type: require("../dtos/mongoosepaginate-user.dto").MongoosePaginateUserDto }),
-    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "listUsers", null);
 __decorate([
-    (0, common_1.Get)('/count'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({
+    common_1.Get('/count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
         summary: 'Get count of all users also accept filter as query params',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getCount", null);
 __decorate([
-    (0, common_1.Get)('/estimate-count'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({
+    common_1.Get('/estimate-count'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
         summary: 'Get all count of all users',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
@@ -441,104 +441,104 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getEstimateCount", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'authorize user with their token' }),
-    (0, common_1.Get)('/authorize'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'authorize user with their token' }),
+    common_1.Get('/authorize'),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, decorators_1.User)()),
+    __param(0, decorators_1.User()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_aws_schema_1.CognitoUserSession]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "checkAuthorization", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Add Single License Key' }),
-    (0, common_1.Post)('/:userIdOrUsername/add-new-license'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Add Single License Key' }),
+    common_1.Post('/:userIdOrUsername/add-new-license'),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, (0, common_1.Param)('userIdOrUsername')),
-    __param(1, (0, common_1.Body)()),
+    __param(0, common_1.Param('userIdOrUsername')),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, dtos_1.AddNewLicenseDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "addNewLicense", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Add Bulk License Keys' }),
-    (0, common_1.Post)('/:userIdOrUsername/add-new-licenses'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Add Bulk License Keys' }),
+    common_1.Post('/:userIdOrUsername/add-new-licenses'),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, (0, common_1.Param)('userIdOrUsername')),
-    __param(1, (0, common_1.Body)()),
+    __param(0, common_1.Param('userIdOrUsername')),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, dtos_1.AddBulkNewLicensesDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "addBulkNewLicense", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get User profile by username or sub id' }),
-    (0, common_1.Get)('/:username/profile'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get User profile by username or sub id' }),
+    common_1.Get('/:username/profile'),
     openapi.ApiResponse({ status: 200, type: require("../schemas/user.db.schema").UserDB }),
-    __param(0, (0, decorators_1.User)()),
+    __param(0, decorators_1.User()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserProfile", null);
 __decorate([
-    (0, common_1.Post)('/company-find-or-create-user'),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.COMPANY_ADMIN),
-    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Company find or create user' }),
+    common_1.Post('/company-find-or-create-user'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.COMPANY_ADMIN),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Company find or create user' }),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, (0, decorators_1.User)()),
-    __param(1, (0, common_1.Body)()),
+    __param(0, decorators_1.User()),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_db_schema_1.UserDB,
         dtos_1.CompanyFindOrCreateUser]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "companyFindOrCreateUser", null);
 __decorate([
-    (0, common_1.Post)('admin-create-user'),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.THIRDPARTY_ADMIN),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Admin create user' }),
-    __param(0, (0, common_1.Body)()),
+    common_1.Post('admin-create-user'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.THIRDPARTY_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Admin create user' }),
+    __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [dtos_1.CognitoCreateUserDTO]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "cognitoCreateUser", null);
 __decorate([
-    (0, common_1.Get)('sync-with-cognito'),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.THIRDPARTY_ADMIN),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiQuery)({ name: 'user', type: String, required: false }),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Sync user from cognito to our database' }),
+    common_1.Get('sync-with-cognito'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.THIRDPARTY_ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiQuery({ name: 'user', type: String, required: false }),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Sync user from cognito to our database' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Query)('user')),
+    __param(0, common_1.Query('user')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "syncUsers", null);
 __decorate([
-    (0, roles_decorator_1.RolesAllowed)(),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.Get)(':id'),
+    roles_decorator_1.RolesAllowed(),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Get(':id'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "findById", null);
 UserController = __decorate([
-    (0, swagger_1.ApiTags)('User Controller (D & M May 2022)'),
-    (0, common_1.Controller)('users'),
+    swagger_1.ApiTags('User Controller (D & M May 2022)'),
+    common_1.Controller('users'),
     __metadata("design:paramtypes", [user_service_1.UserService,
         group_service_1.GroupService,
         company_service_1.CompanyService,

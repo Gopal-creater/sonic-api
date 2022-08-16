@@ -32,23 +32,23 @@ let PaymentController = class PaymentController {
     }
 };
 __decorate([
-    (0, common_1.Get)('generate-client-token'),
+    common_1.Get('generate-client-token'),
     openapi.ApiResponse({ status: 200 }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], PaymentController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Post)('/create-transaction'),
+    common_1.Post('/create-transaction'),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, (0, common_1.Body)()),
+    __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_payment_dto_1.CreatePaymentDto]),
     __metadata("design:returntype", Promise)
 ], PaymentController.prototype, "create", null);
 PaymentController = __decorate([
-    (0, swagger_1.ApiTags)("Payment Gateway Controller"),
-    (0, common_1.Controller)('payments'),
+    swagger_1.ApiTags("Payment Gateway Controller"),
+    common_1.Controller('payments'),
     __metadata("design:paramtypes", [payment_service_1.PaymentService])
 ], PaymentController);
 exports.PaymentController = PaymentController;

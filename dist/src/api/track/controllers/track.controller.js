@@ -44,7 +44,7 @@ let TrackController = class TrackController {
         this.fileHandlerService = fileHandlerService;
     }
     async uploadTrack(uploadTrackDto, file, loggedInUser) {
-        const { destinationFolder, resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(loggedInUser);
+        const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
         const doc = Object.assign(Object.assign(Object.assign({}, uploadTrackDto), resourceOwnerObj), { fileType: 'Audio', createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
         return this.trackService.uploadAndCreate(file, doc, destinationFolder);
     }
@@ -60,7 +60,7 @@ let TrackController = class TrackController {
     async exportTracks(res, format, queryDto, loggedInUser) {
         queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
         const filePath = await this.trackService.exportTracks(queryDto, format);
-        const fileName = (0, utils_1.extractFileName)(filePath);
+        const fileName = utils_1.extractFileName(filePath);
         res.download(filePath, `tracks_${format}.${fileName.split('.')[1]}`, err => {
             if (err) {
                 this.fileHandlerService.deleteFileAtPath(filePath);
@@ -92,8 +92,8 @@ let TrackController = class TrackController {
     }
 };
 __decorate([
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('mediaFile', {
-        storage: (0, multer_1.diskStorage)({
+    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
+        storage: multer_1.diskStorage({
             destination: async (req, file, cb) => {
                 var _a, _b;
                 const loggedInUser = req['user'];
@@ -116,68 +116,68 @@ __decorate([
             },
         }),
     })),
-    (0, swagger_1.ApiConsumes)('multipart/form-data'),
-    (0, swagger_1.ApiBody)({
+    swagger_1.ApiConsumes('multipart/form-data'),
+    swagger_1.ApiBody({
         description: 'File To Encode',
         type: create_track_dto_1.UploadTrackDto,
     }),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Upload Track' }),
-    (0, decorators_1.RolesAllowed)(),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, upload_track_security_guard_1.UploadTrackSecurityGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.Post)('/upload'),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiOperation({ summary: 'Upload Track' }),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, upload_track_security_guard_1.UploadTrackSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Post('/upload'),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.UploadedFile)()),
-    __param(2, (0, decorators_1.User)()),
+    __param(0, common_1.Body()),
+    __param(1, common_1.UploadedFile()),
+    __param(2, decorators_1.User()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_track_dto_1.UploadTrackDto, Object, user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], TrackController.prototype, "uploadTrack", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'List Tracks' }),
-    (0, common_1.Get)(),
-    (0, swagger_1.ApiQuery)({
+    swagger_1.ApiOperation({ summary: 'List Tracks' }),
+    common_1.Get(),
+    swagger_1.ApiQuery({
         name: 'channel',
         enum: [...Object.values(Enums_1.ChannelEnums), 'ALL'],
         required: false,
     }),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)({
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate({
         additionalHtmlDescription: `<div>
       To Get tracks for specific company ?company=companyId <br/>
       To Get tracks for specific partner ?partner=partnerId <br/>
       To Get plays for specific user ?owner=ownerId
     <div>`,
     }),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-track.dto").MongoosePaginateTrackDto }),
-    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
-    __param(1, (0, decorators_1.User)()),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(1, decorators_1.User()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto,
         user_db_schema_1.UserDB]),
     __metadata("design:returntype", void 0)
 ], TrackController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)('/count'),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({
+    common_1.Get('/count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
         summary: 'Get count of all tracks also accept filter as query params',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], TrackController.prototype, "getCount", null);
 __decorate([
-    (0, common_1.Get)('/estimate-count'),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({
+    common_1.Get('/estimate-count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
         summary: 'Get all count of all tracks',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
@@ -186,73 +186,73 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TrackController.prototype, "getEstimateCount", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'List Tracks' }),
-    (0, common_1.Get)('/export/:format'),
-    (0, swagger_1.ApiParam)({ name: 'format', enum: ['xlsx', 'csv'] }),
-    (0, swagger_1.ApiQuery)({ name: 'limit', type: Number, required: false }),
-    (0, swagger_1.ApiQuery)({
+    swagger_1.ApiOperation({ summary: 'List Tracks' }),
+    common_1.Get('/export/:format'),
+    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
+    swagger_1.ApiQuery({ name: 'limit', type: Number, required: false }),
+    swagger_1.ApiQuery({
         name: 'channel',
         enum: [...Object.values(Enums_1.ChannelEnums)],
         required: false,
     }),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_1.Res)()),
-    __param(1, (0, common_1.Param)('format')),
-    __param(2, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
-    __param(3, (0, decorators_1.User)()),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Param('format')),
+    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(3, decorators_1.User()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, parsedquery_dto_1.ParsedQueryDto,
         user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], TrackController.prototype, "exportTracks", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({
+    swagger_1.ApiOperation({
         summary: 'Get track by id',
     }),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.Get)(':id'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Get(':id'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TrackController.prototype, "findById", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({
+    swagger_1.ApiOperation({
         summary: 'Update track by id',
     }),
-    (0, decorators_1.RolesAllowed)(),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, update_track_security_guard_1.UpdateTrackSecurityGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.Put)(':id'),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, update_track_security_guard_1.UpdateTrackSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    common_1.Put(':id'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, decorators_1.User)()),
-    __param(2, (0, common_1.Body)()),
+    __param(0, common_1.Param('id')),
+    __param(1, decorators_1.User()),
+    __param(2, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, user_db_schema_1.UserDB,
         update_track_dto_1.UpdateTrackDto]),
     __metadata("design:returntype", Promise)
 ], TrackController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)(':id'),
-    (0, decorators_1.RolesAllowed)(),
-    (0, common_1.UseGuards)(failedAlways_guard_1.FailedAlwaysGuard, guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, delete_track_security_guard_1.DeleteTrackSecurityGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Remove track' }),
+    common_1.Delete(':id'),
+    decorators_1.RolesAllowed(),
+    common_1.UseGuards(failedAlways_guard_1.FailedAlwaysGuard, guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard, delete_track_security_guard_1.DeleteTrackSecurityGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Remove track' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TrackController.prototype, "remove", null);
 TrackController = __decorate([
-    (0, swagger_1.ApiTags)("Track Controller (D & M May 2022)"),
-    (0, common_1.Controller)('tracks'),
+    swagger_1.ApiTags("Track Controller (D & M May 2022)"),
+    common_1.Controller('tracks'),
     __metadata("design:paramtypes", [track_service_1.TrackService, file_handler_service_1.FileHandlerService])
 ], TrackController);
 exports.TrackController = TrackController;

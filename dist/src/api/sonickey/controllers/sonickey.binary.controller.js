@@ -26,6 +26,7 @@ const license_validation_guard_1 = require("../../licensekey/guards/license-vali
 const user_decorator_1 = require("../../auth/decorators/user.decorator");
 const utils_1 = require("../../../shared/utils");
 const user_db_schema_1 = require("../../user/schemas/user.db.schema");
+const track_schema_1 = require("../../track/schemas/track.schema");
 const Enums_1 = require("../../../constants/Enums");
 let SonickeyBinaryController = class SonickeyBinaryController {
     constructor(sonicKeyService, licensekeyService) {
@@ -38,7 +39,7 @@ let SonickeyBinaryController = class SonickeyBinaryController {
         if (!sonicKey) {
             throw new common_1.BadRequestException('SonicKey is required');
         }
-        const { resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(loggedInUser);
+        const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
         const newTrack = Object.assign(Object.assign({ channel: channel, artist: contentOwner, title: contentName, fileType: contentType, mimeType: contentFileType, duration: contentDuration, fileSize: contentSize, encoding: contentEncoding, localFilePath: contentFilePath, samplingFrequency: contentSamplingFrequency, trackMetaData: createSonicKeyDto }, resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
         var track = await this.sonicKeyService.trackService.findOne({
             mimeType: contentFileType,
@@ -59,24 +60,24 @@ let SonickeyBinaryController = class SonickeyBinaryController {
     }
 };
 __decorate([
-    (0, common_1.UseGuards)(apikey_auth_guard_1.ApiKeyAuthGuard, license_validation_guard_1.LicenseValidationGuard),
-    (0, common_1.Post)('/create-from-binary'),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, swagger_1.ApiOperation)({ summary: 'Save to database after local encode from binary.' }),
+    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, license_validation_guard_1.LicenseValidationGuard),
+    common_1.Post('/create-from-binary'),
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiOperation({ summary: 'Save to database after local encode from binary.' }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, user_decorator_1.User)()),
-    __param(2, (0, apikey_decorator_1.ApiKey)('_id')),
-    __param(3, (0, validatedlicense_decorator_1.ValidatedLicense)('key')),
+    __param(0, common_1.Body()),
+    __param(1, user_decorator_1.User()),
+    __param(2, apikey_decorator_1.ApiKey('_id')),
+    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto,
         user_db_schema_1.UserDB, String, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyBinaryController.prototype, "createFormBinary", null);
 SonickeyBinaryController = __decorate([
-    (0, swagger_1.ApiTags)('SonicKeys ThirdParty-Binary Controller (protected by x-api-key)'),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, common_1.Controller)('sonic-keys/binary'),
+    swagger_1.ApiTags('SonicKeys ThirdParty-Binary Controller (protected by x-api-key)'),
+    swagger_1.ApiSecurity('x-api-key'),
+    common_1.Controller('sonic-keys/binary'),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
         licensekey_service_1.LicensekeyService])
 ], SonickeyBinaryController);

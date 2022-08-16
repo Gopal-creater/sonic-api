@@ -19,8 +19,8 @@ class DecodeDto {
     }
 }
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, swagger_1.ApiProperty)({ type: 'string', format: 'binary' }),
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty({ type: 'string', format: 'binary' }),
     __metadata("design:type", Object)
 ], DecodeDto.prototype, "mediaFile", void 0);
 exports.DecodeDto = DecodeDto;

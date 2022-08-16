@@ -94,50 +94,50 @@ let PartnerUserController = class PartnerUserController {
     }
 };
 __decorate([
-    (0, common_1.Post)('/create-partner-user'),
-    (0, swagger_1.ApiOperation)({
+    common_1.Post('/create-partner-user'),
+    swagger_1.ApiOperation({
         summary: 'Create partner user can also be company user id company field is present',
     }),
-    __param(0, (0, common_1.Param)('partner')),
-    __param(1, (0, common_1.Body)()),
+    __param(0, common_1.Param('partner')),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, partner_user_1.CreatePartnerUserDto]),
     __metadata("design:returntype", Promise)
 ], PartnerUserController.prototype, "createUser", null);
 __decorate([
-    (0, common_1.Put)(':usernameOrSub/update-partner-user'),
-    (0, swagger_1.ApiOperation)({ summary: 'Update partner user' }),
+    common_1.Put(':usernameOrSub/update-partner-user'),
+    swagger_1.ApiOperation({ summary: 'Update partner user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('partner')),
-    __param(1, (0, common_1.Param)('usernameOrSub')),
-    __param(2, (0, common_1.Body)()),
+    __param(0, common_1.Param('partner')),
+    __param(1, common_1.Param('usernameOrSub')),
+    __param(2, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, partner_user_1.EditPartnerUserDto]),
     __metadata("design:returntype", Promise)
 ], PartnerUserController.prototype, "updatePartnerUser", null);
 __decorate([
-    (0, common_1.Put)(':usernameOrSub/disable-user'),
-    (0, swagger_1.ApiOperation)({ summary: 'Disable partner user' }),
+    common_1.Put(':usernameOrSub/disable-user'),
+    swagger_1.ApiOperation({ summary: 'Disable partner user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('partner')),
-    __param(1, (0, common_1.Param)('usernameOrSub')),
+    __param(0, common_1.Param('partner')),
+    __param(1, common_1.Param('usernameOrSub')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], PartnerUserController.prototype, "disablePartnerUser", null);
 __decorate([
-    (0, common_1.Put)(':usernameOrSub/enable-user'),
-    (0, swagger_1.ApiOperation)({ summary: 'Disable partner user' }),
+    common_1.Put(':usernameOrSub/enable-user'),
+    swagger_1.ApiOperation({ summary: 'Disable partner user' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('partner')),
-    __param(1, (0, common_1.Param)('usernameOrSub')),
+    __param(0, common_1.Param('partner')),
+    __param(1, common_1.Param('usernameOrSub')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], PartnerUserController.prototype, "enablePartnerUser", null);
 PartnerUserController = __decorate([
-    (0, swagger_1.ApiTags)('Partners Controller'),
-    (0, common_1.Controller)('partners/:partner/users'),
+    swagger_1.ApiTags('Partners Controller'),
+    common_1.Controller('partners/:partner/users'),
     __metadata("design:paramtypes", [partner_service_1.PartnerService,
         company_service_1.CompanyService,
         partner_user_service_1.PartnerUserService])

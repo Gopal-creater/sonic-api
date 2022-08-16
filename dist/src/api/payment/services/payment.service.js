@@ -94,8 +94,8 @@ let PaymentService = class PaymentService {
     }
 };
 PaymentService = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(payment_schema_1.Payment.name)),
+    common_1.Injectable(),
+    __param(0, mongoose_1.InjectModel(payment_schema_1.Payment.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         config_1.ConfigService])
 ], PaymentService);

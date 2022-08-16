@@ -24,23 +24,23 @@ class PaginationQueryDto {
     }
 }
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, swagger_1.ApiProperty)(),
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], PaginationQueryDto.prototype, "_limit", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, swagger_1.ApiProperty)(),
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], PaginationQueryDto.prototype, "_offset", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, swagger_1.ApiProperty)({ description: "Eg: createdAt:desc Or createdAt:desc,email:asc" }),
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty({ description: "Eg: createdAt:desc Or createdAt:desc,email:asc" }),
     __metadata("design:type", String)
 ], PaginationQueryDto.prototype, "_sort", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, swagger_1.ApiProperty)(),
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], PaginationQueryDto.prototype, "_page", void 0);
 exports.PaginationQueryDto = PaginationQueryDto;

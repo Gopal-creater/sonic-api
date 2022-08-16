@@ -11,6 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BulkEncodeWithQueueLicenseValidationGuard = exports.JobLicenseValidationGuard = void 0;
 const common_1 = require("@nestjs/common");
+const api_key_schema_1 = require("../../api-key/schemas/api-key.schema");
+const encode_dto_1 = require("../../sonickey/dtos/encode.dto");
+const Enums_1 = require("../../../constants/Enums");
 const licensekey_service_1 = require("../services/licensekey.service");
 let JobLicenseValidationGuard = class JobLicenseValidationGuard {
     constructor(licensekeyService) {
@@ -73,7 +76,7 @@ let JobLicenseValidationGuard = class JobLicenseValidationGuard {
     }
 };
 JobLicenseValidationGuard = __decorate([
-    (0, common_1.Injectable)(),
+    common_1.Injectable(),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], JobLicenseValidationGuard);
 exports.JobLicenseValidationGuard = JobLicenseValidationGuard;
@@ -146,7 +149,7 @@ let BulkEncodeWithQueueLicenseValidationGuard = class BulkEncodeWithQueueLicense
     }
 };
 BulkEncodeWithQueueLicenseValidationGuard = __decorate([
-    (0, common_1.Injectable)(),
+    common_1.Injectable(),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], BulkEncodeWithQueueLicenseValidationGuard);
 exports.BulkEncodeWithQueueLicenseValidationGuard = BulkEncodeWithQueueLicenseValidationGuard;

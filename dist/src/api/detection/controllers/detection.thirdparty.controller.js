@@ -208,7 +208,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
             for (var decodeResponsesFromFingerPrint_1 = __asyncValues(decodeResponsesFromFingerPrint), decodeResponsesFromFingerPrint_1_1; decodeResponsesFromFingerPrint_1_1 = await decodeResponsesFromFingerPrint_1.next(), !decodeResponsesFromFingerPrint_1_1.done;) {
                 const decodeRes = decodeResponsesFromFingerPrint_1_1.value;
                 const isKeyPresent = await this.sonickeyServive.findOne({
-                    "fingerPrintMetaData.song_id": decodeRes.songId
+                    "fingerPrintMetaData.soundId": decodeRes.soundId
                 });
                 if (isKeyPresent) {
                     const sonicKeyContentDurationInSec = isKeyPresent.contentDuration || 60;
@@ -269,7 +269,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
                         .catch(err => { });
                 }
                 else {
-                    errorKeys.push(decodeRes.songId);
+                    errorKeys.push(decodeRes.soundId);
                 }
             }
         }
@@ -309,71 +309,71 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
     }
 };
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Create Detection From Binary' }),
-    (0, common_1.UseGuards)(apikey_auth_guard_1.ApiKeyAuthGuard),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, common_1.Post)('detection-from-binary'),
+    swagger_1.ApiOperation({ summary: 'Create Detection From Binary' }),
+    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
+    swagger_1.ApiSecurity('x-api-key'),
+    common_1.Post('detection-from-binary'),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, user_decorator_1.User)('sub')),
-    __param(2, (0, apikey_decorator_1.ApiKey)('_id')),
+    __param(0, common_1.Body()),
+    __param(1, user_decorator_1.User('sub')),
+    __param(2, apikey_decorator_1.ApiKey('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_detection_dto_1.CreateDetectionFromBinaryDto, String, String]),
     __metadata("design:returntype", Promise)
 ], DetectionThirdPartyController.prototype, "create", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Create Radio Detection From Binary' }),
-    (0, common_1.UseGuards)(apikey_auth_guard_1.ApiKeyAuthGuard),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, common_1.Post)('stream-detection-from-binary'),
+    swagger_1.ApiOperation({ summary: 'Create Radio Detection From Binary' }),
+    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
+    swagger_1.ApiSecurity('x-api-key'),
+    common_1.Post('stream-detection-from-binary'),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, user_decorator_1.User)('sub')),
-    __param(2, (0, apikey_decorator_1.ApiKey)('_id')),
+    __param(0, common_1.Body()),
+    __param(1, user_decorator_1.User('sub')),
+    __param(2, apikey_decorator_1.ApiKey('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_detection_dto_1.CreateThirdPartyStreamReaderDetectionFromBinaryDto, String, String]),
     __metadata("design:returntype", Promise)
 ], DetectionThirdPartyController.prototype, "createThirdPartyRadioDetectionFromBinary", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Create Stream Detection From Lamda Function' }),
-    (0, common_1.UseGuards)(apikey_auth_guard_1.ApiKeyAuthGuard),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, common_1.Post)('stream-detection-from-lamda'),
+    swagger_1.ApiOperation({ summary: 'Create Stream Detection From Lamda Function' }),
+    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
+    swagger_1.ApiSecurity('x-api-key'),
+    common_1.Post('stream-detection-from-lamda'),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, user_decorator_1.User)('sub')),
-    __param(2, (0, apikey_decorator_1.ApiKey)('_id')),
+    __param(0, common_1.Body()),
+    __param(1, user_decorator_1.User('sub')),
+    __param(2, apikey_decorator_1.ApiKey('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_detection_dto_1.CreateThirdPartyStreamReaderDetectionFromLamdaDto, String, String]),
     __metadata("design:returntype", Promise)
 ], DetectionThirdPartyController.prototype, "createThirdPartyRadioDetectionFromLamda", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Create Stream Detection From Fingerprint Function' }),
-    (0, common_1.Post)('stream-detection-from-fingerprint'),
+    swagger_1.ApiOperation({ summary: 'Create Stream Detection From Fingerprint Function' }),
+    common_1.Post('stream-detection-from-fingerprint'),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, user_decorator_1.User)('sub')),
+    __param(0, common_1.Body()),
+    __param(1, user_decorator_1.User('sub')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_detection_dto_1.CreateThirdPartyStreamReaderDetectionFromFingerPrintDto, String]),
     __metadata("design:returntype", Promise)
 ], DetectionThirdPartyController.prototype, "createThirdPartyRadioDetectionFromFingerPrint", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Create Detection From Hardware' }),
-    (0, common_1.UseGuards)(apikey_auth_guard_1.ApiKeyAuthGuard),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, common_1.Post)('detection-from-hardware'),
+    swagger_1.ApiOperation({ summary: 'Create Detection From Hardware' }),
+    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
+    swagger_1.ApiSecurity('x-api-key'),
+    common_1.Post('detection-from-hardware'),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, user_decorator_1.User)('sub')),
-    __param(2, (0, apikey_decorator_1.ApiKey)('_id')),
+    __param(0, common_1.Body()),
+    __param(1, user_decorator_1.User('sub')),
+    __param(2, apikey_decorator_1.ApiKey('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_detection_dto_1.CreateDetectionFromHardwareDto, String, String]),
     __metadata("design:returntype", Promise)
 ], DetectionThirdPartyController.prototype, "createFromHardware", null);
 DetectionThirdPartyController = __decorate([
-    (0, swagger_1.ApiTags)('ThirdParty Integration Controller, Protected By XAPI-Key'),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, common_1.Controller)('thirdparty/detection'),
+    swagger_1.ApiTags('ThirdParty Integration Controller, Protected By XAPI-Key'),
+    swagger_1.ApiSecurity('x-api-key'),
+    common_1.Controller('thirdparty/detection'),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
         detection_service_1.DetectionService,
         radiostation_service_1.RadiostationService,

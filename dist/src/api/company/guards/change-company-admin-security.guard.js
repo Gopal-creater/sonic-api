@@ -40,7 +40,7 @@ let ChangeCompanyAdminSecurityGuard = class ChangeCompanyAdminSecurityGuard {
     }
 };
 ChangeCompanyAdminSecurityGuard = __decorate([
-    (0, common_1.Injectable)(),
+    common_1.Injectable(),
     __metadata("design:paramtypes", [company_service_1.CompanyService])
 ], ChangeCompanyAdminSecurityGuard);
 exports.ChangeCompanyAdminSecurityGuard = ChangeCompanyAdminSecurityGuard;

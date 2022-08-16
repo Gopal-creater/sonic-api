@@ -43,8 +43,8 @@ let ThirdpartyDetectionService = class ThirdpartyDetectionService {
     }
 };
 ThirdpartyDetectionService = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(thirdparty_detection_schema_1.ThirdpartyDetection.name)),
+    common_1.Injectable(),
+    __param(0, mongoose_1.InjectModel(thirdparty_detection_schema_1.ThirdpartyDetection.name)),
     __metadata("design:paramtypes", [mongoose_2.Model])
 ], ThirdpartyDetectionService);
 exports.ThirdpartyDetectionService = ThirdpartyDetectionService;

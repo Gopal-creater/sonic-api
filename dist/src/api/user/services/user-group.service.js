@@ -24,6 +24,7 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const user_db_schema_1 = require("../schemas/user.db.schema");
+const group_schema_1 = require("../../group/schemas/group.schema");
 const group_service_1 = require("../../group/group.service");
 const user_service_1 = require("./user.service");
 let UserGroupService = class UserGroupService {
@@ -104,9 +105,9 @@ let UserGroupService = class UserGroupService {
     }
 };
 UserGroupService = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
-    __param(2, (0, mongoose_1.InjectModel)(user_db_schema_1.UserSchemaName)),
+    common_1.Injectable(),
+    __param(0, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
+    __param(2, mongoose_1.InjectModel(user_db_schema_1.UserSchemaName)),
     __metadata("design:paramtypes", [user_service_1.UserService,
         group_service_1.GroupService,
         mongoose_2.Model])

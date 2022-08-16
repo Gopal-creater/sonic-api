@@ -19,15 +19,15 @@ const user_module_1 = require("../user/user.module");
 let RadiomonitorModule = class RadiomonitorModule {
 };
 RadiomonitorModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
             licensekey_module_1.LicensekeyModule,
-            (0, common_1.forwardRef)(() => radiostation_module_1.RadiostationModule),
+            common_1.forwardRef(() => radiostation_module_1.RadiostationModule),
             mongoose_1.MongooseModule.forFeature([
                 { name: radiomonitor_schema_1.RadioMonitorSchemaName, schema: radiomonitor_schema_1.RadioMonitorSchema },
             ]),
-            (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
-            (0, common_1.forwardRef)(() => user_module_1.UserModule)
+            common_1.forwardRef(() => auth_module_1.AuthModule),
+            common_1.forwardRef(() => user_module_1.UserModule)
         ],
         controllers: [radiomonitor_controller_1.RadioMonitorController],
         providers: [radiomonitor_service_1.RadioMonitorService],

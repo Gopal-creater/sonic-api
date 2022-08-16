@@ -14,7 +14,7 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, {
         bodyParser: true,
     });
-    (0, class_validator_1.useContainer)(app.select(app_module_1.AppModule), { fallbackOnErrors: true });
+    class_validator_1.useContainer(app.select(app_module_1.AppModule), { fallbackOnErrors: true });
     app.use(['/swagger-api/*', '/swagger-api-json'], basicAuth({
         challenge: true,
         users: {

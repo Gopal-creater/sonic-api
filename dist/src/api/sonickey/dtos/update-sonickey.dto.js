@@ -15,7 +15,7 @@ const sonicKey_dto_1 = require("./sonicKey.dto");
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const sonickey_schema_1 = require("../schemas/sonickey.schema");
-class UpdateSonicKeyDto extends (0, swagger_1.PartialType)((0, swagger_1.PickType)(sonicKey_dto_1.SonicKeyDto, [
+class UpdateSonicKeyDto extends swagger_1.PartialType(swagger_1.PickType(sonicKey_dto_1.SonicKeyDto, [
     'contentName',
     'version',
     'isrcCode',
@@ -31,7 +31,7 @@ class UpdateSonicKeyDto extends (0, swagger_1.PartialType)((0, swagger_1.PickTyp
     }
 }
 exports.UpdateSonicKeyDto = UpdateSonicKeyDto;
-class UpdateSonicKeyFromBinaryDto extends (0, swagger_1.PartialType)((0, swagger_1.PickType)(sonicKey_dto_1.SonicKeyDto, [
+class UpdateSonicKeyFromBinaryDto extends swagger_1.PartialType(swagger_1.PickType(sonicKey_dto_1.SonicKeyDto, [
     'contentName',
     'version',
     'isrcCode',
@@ -47,13 +47,13 @@ class UpdateSonicKeyFromBinaryDto extends (0, swagger_1.PartialType)((0, swagger
     }
 }
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, swagger_1.ApiProperty)(),
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", sonickey_schema_1.S3FileMeta)
 ], UpdateSonicKeyFromBinaryDto.prototype, "s3FileMeta", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, swagger_1.ApiProperty)(),
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", sonickey_schema_1.S3FileMeta)
 ], UpdateSonicKeyFromBinaryDto.prototype, "s3OriginalFileMeta", void 0);
 exports.UpdateSonicKeyFromBinaryDto = UpdateSonicKeyFromBinaryDto;
@@ -63,8 +63,8 @@ class UpdateSonicKeyFingerPrintMetaDataDto {
     }
 }
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, swagger_1.ApiProperty)(),
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Object)
 ], UpdateSonicKeyFingerPrintMetaDataDto.prototype, "fingerPrintMetaData", void 0);
 exports.UpdateSonicKeyFingerPrintMetaDataDto = UpdateSonicKeyFingerPrintMetaDataDto;

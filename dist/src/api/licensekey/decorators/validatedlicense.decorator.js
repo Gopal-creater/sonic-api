@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ValidatedLicense = void 0;
 const common_1 = require("@nestjs/common");
-exports.ValidatedLicense = (0, common_1.createParamDecorator)((data, ctx) => {
+exports.ValidatedLicense = common_1.createParamDecorator((data, ctx) => {
     var _a;
     const req = ctx.switchToHttp().getRequest();
     if (data) {

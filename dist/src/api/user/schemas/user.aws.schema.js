@@ -14,27 +14,27 @@ const swagger_1 = require("@nestjs/swagger");
 class UserAttributesObj {
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], UserAttributesObj.prototype, "sub", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Array)
 ], UserAttributesObj.prototype, "cognito:groups", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Boolean)
 ], UserAttributesObj.prototype, "email_verified", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Boolean)
 ], UserAttributesObj.prototype, "phone_number_verified", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], UserAttributesObj.prototype, "phone_number", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], UserAttributesObj.prototype, "email", void 0);
 exports.UserAttributesObj = UserAttributesObj;

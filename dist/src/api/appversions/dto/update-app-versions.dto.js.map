@@ -1,1 +1,1 @@
-{"version":3,"file":"update-app-versions.dto.js","sourceRoot":"","sources":["../../../../../src/api/appversions/dto/update-app-versions.dto.ts"],"names":[],"mappings":";;;;AAAA,uDAAmD;AACnD,+CAAwC;AAExC,MAAa,mBAAoB,SAAQ,IAAA,0BAAW,EAAC,qBAAO,CAAC;;;;CAAG;AAAhE,kDAAgE"}
+{"version":3,"file":"update-app-versions.dto.js","sourceRoot":"","sources":["../../../../../src/api/appversions/dto/update-app-versions.dto.ts"],"names":[],"mappings":";;;;AAAA,uDAAmD;AACnD,+CAAwC;AAExC,MAAa,mBAAoB,SAAQ,0BAAW,CAAC,qBAAO,CAAC;;;;CAAG;AAAhE,kDAAgE"}

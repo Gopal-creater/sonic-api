@@ -13,7 +13,7 @@ const chargebee_controller_1 = require("./chargebee.controller");
 let ChargebeeModule = class ChargebeeModule {
 };
 ChargebeeModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         controllers: [chargebee_controller_1.ChargebeeController],
         providers: [chargebee_service_1.ChargebeeService]
     })

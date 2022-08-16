@@ -51,21 +51,21 @@ let ThirdpartyDetectionFromBinaryController = class ThirdpartyDetectionFromBinar
     }
 };
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Create Detection' }),
-    (0, common_1.UseGuards)(apikey_auth_guard_1.ApiKeyAuthGuard),
-    (0, common_1.Post)(),
+    swagger_1.ApiOperation({ summary: 'Create Detection' }),
+    common_1.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
+    common_1.Post(),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, apikey_decorator_1.ApiKey)('customer')),
-    __param(2, (0, apikey_decorator_1.ApiKey)('_id')),
+    __param(0, common_1.Body()),
+    __param(1, apikey_decorator_1.ApiKey('customer')),
+    __param(2, apikey_decorator_1.ApiKey('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_thirdparty_detection_dto_1.CreateThirdpartyDetectionDto, String, String]),
     __metadata("design:returntype", Promise)
 ], ThirdpartyDetectionFromBinaryController.prototype, "create", null);
 ThirdpartyDetectionFromBinaryController = __decorate([
-    (0, swagger_1.ApiTags)('ThirdParty-Binary Controller (protected by x-api-key)'),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, common_1.Controller)('thirdparty-detection-from-binary'),
+    swagger_1.ApiTags('ThirdParty-Binary Controller (protected by x-api-key)'),
+    swagger_1.ApiSecurity('x-api-key'),
+    common_1.Controller('thirdparty-detection-from-binary'),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
         detection_service_1.DetectionService])
 ], ThirdpartyDetectionFromBinaryController);

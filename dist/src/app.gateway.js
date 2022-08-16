@@ -31,17 +31,17 @@ let AppGateway = class AppGateway {
     }
 };
 __decorate([
-    (0, websockets_1.WebSocketServer)(),
+    websockets_1.WebSocketServer(),
     __metadata("design:type", socket_io_1.Server)
 ], AppGateway.prototype, "server", void 0);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('msgToServer'),
+    websockets_1.SubscribeMessage('msgToServer'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [socket_io_1.Socket, String]),
     __metadata("design:returntype", void 0)
 ], AppGateway.prototype, "handleMessage", null);
 AppGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)()
+    websockets_1.WebSocketGateway()
 ], AppGateway);
 exports.AppGateway = AppGateway;
 //# sourceMappingURL=app.gateway.js.map

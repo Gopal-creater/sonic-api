@@ -19,17 +19,17 @@ class CreatePaymentDto {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], CreatePaymentDto.prototype, "paymentMethodNonce", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], CreatePaymentDto.prototype, "amount", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreatePaymentDto.prototype, "deviceData", void 0);
 exports.CreatePaymentDto = CreatePaymentDto;
@@ -39,31 +39,31 @@ class BrainTreeCustomerDto {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], BrainTreeCustomerDto.prototype, "id", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], BrainTreeCustomerDto.prototype, "firstName", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], BrainTreeCustomerDto.prototype, "lastName", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], BrainTreeCustomerDto.prototype, "company", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], BrainTreeCustomerDto.prototype, "email", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], BrainTreeCustomerDto.prototype, "phone", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], BrainTreeCustomerDto.prototype, "website", void 0);
 exports.BrainTreeCustomerDto = BrainTreeCustomerDto;
@@ -73,22 +73,22 @@ class BuyPlanDto {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], BuyPlanDto.prototype, "paymentMethodNonce", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], BuyPlanDto.prototype, "amount", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], BuyPlanDto.prototype, "deviceData", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], BuyPlanDto.prototype, "plan", void 0);
 exports.BuyPlanDto = BuyPlanDto;
@@ -98,27 +98,27 @@ class UpgradePlanDto {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], UpgradePlanDto.prototype, "paymentMethodNonce", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], UpgradePlanDto.prototype, "amount", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], UpgradePlanDto.prototype, "deviceData", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], UpgradePlanDto.prototype, "oldPlanLicenseKey", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], UpgradePlanDto.prototype, "upgradedPlan", void 0);
 exports.UpgradePlanDto = UpgradePlanDto;
@@ -128,27 +128,27 @@ class BuyExtraKeysForExistingPlanDto {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], BuyExtraKeysForExistingPlanDto.prototype, "paymentMethodNonce", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], BuyExtraKeysForExistingPlanDto.prototype, "amount", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], BuyExtraKeysForExistingPlanDto.prototype, "deviceData", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], BuyExtraKeysForExistingPlanDto.prototype, "oldPlanLicenseKey", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", Number)
 ], BuyExtraKeysForExistingPlanDto.prototype, "extraKeys", void 0);
 exports.BuyExtraKeysForExistingPlanDto = BuyExtraKeysForExistingPlanDto;

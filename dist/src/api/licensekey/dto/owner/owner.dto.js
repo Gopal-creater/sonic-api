@@ -18,7 +18,7 @@ class AddOwnerDto {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], AddOwnerDto.prototype, "usernameOrSub", void 0);
 exports.AddOwnerDto = AddOwnerDto;

@@ -19,32 +19,32 @@ exports.JobFileSchemaName = "JobFile";
 let JobFile = class JobFile extends mongoose_2.Document {
 };
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ required: true }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ required: true }),
     __metadata("design:type", String)
 ], JobFile.prototype, "sonicKeyToBe", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: String }),
-    (0, mongoose_1.Prop)({ type: String, ref: sonickey_schema_1.SonicKeySchemaName, autopopulate: { maxDepth: 2 } }),
+    swagger_1.ApiProperty({ type: String }),
+    mongoose_1.Prop({ type: String, ref: sonickey_schema_1.SonicKeySchemaName, autopopulate: { maxDepth: 2 } }),
     __metadata("design:type", String)
 ], JobFile.prototype, "sonicKey", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ default: false }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: false }),
     __metadata("design:type", Boolean)
 ], JobFile.prototype, "isComplete", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", Map)
 ], JobFile.prototype, "metaData", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: String }),
-    (0, mongoose_1.Prop)({ type: mongoose_2.Schema.Types.ObjectId, ref: job_schema_1.JobSchemaName, required: true }),
+    swagger_1.ApiProperty({ type: String }),
+    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: job_schema_1.JobSchemaName, required: true }),
     __metadata("design:type", Object)
 ], JobFile.prototype, "job", void 0);
 JobFile = __decorate([
-    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.JobFileSchemaName, toJSON: { virtuals: true } })
+    mongoose_1.Schema({ timestamps: true, collection: exports.JobFileSchemaName, toJSON: { virtuals: true } })
 ], JobFile);
 exports.JobFile = JobFile;
 exports.JobFileSchema = mongoose_1.SchemaFactory.createForClass(JobFile);

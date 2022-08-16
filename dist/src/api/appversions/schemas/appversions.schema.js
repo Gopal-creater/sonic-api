@@ -19,77 +19,77 @@ const Enums_1 = require("../../../constants/Enums");
 let S3FileMeta = class S3FileMeta {
 };
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], S3FileMeta.prototype, "ETag", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], S3FileMeta.prototype, "Location", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], S3FileMeta.prototype, "key", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], S3FileMeta.prototype, "Key", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], S3FileMeta.prototype, "Bucket", void 0);
 S3FileMeta = __decorate([
-    (0, mongoose_1.Schema)()
+    mongoose_1.Schema()
 ], S3FileMeta);
 exports.S3FileMeta = S3FileMeta;
 let AppVersion = class AppVersion extends mongoose_2.Document {
 };
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         required: true
     }),
     __metadata("design:type", Number)
 ], AppVersion.prototype, "versionCode", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
-    (0, class_validator_1.IsOptional)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    class_validator_1.IsOptional(),
     __metadata("design:type", String)
 ], AppVersion.prototype, "contentVersionFilePath", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
-    (0, class_validator_1.IsOptional)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
+    class_validator_1.IsOptional(),
     __metadata("design:type", String)
 ], AppVersion.prototype, "originalVersionFileName", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         required: true
     }),
     __metadata("design:type", String)
 ], AppVersion.prototype, "releaseNote", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         default: false
     }),
     __metadata("design:type", Boolean)
 ], AppVersion.prototype, "latest", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ type: String, enum: Enums_1.Platform }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: String, enum: Enums_1.Platform }),
     __metadata("design:type", String)
 ], AppVersion.prototype, "platform", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ type: S3FileMeta }),
+    class_validator_1.IsOptional(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: S3FileMeta }),
     __metadata("design:type", S3FileMeta)
 ], AppVersion.prototype, "s3FileMeta", void 0);
 AppVersion = __decorate([
-    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.AppVersionSchemaName })
+    mongoose_1.Schema({ timestamps: true, collection: exports.AppVersionSchemaName })
 ], AppVersion);
 exports.AppVersion = AppVersion;
 exports.AppVersionSchema = mongoose_1.SchemaFactory.createForClass(AppVersion);

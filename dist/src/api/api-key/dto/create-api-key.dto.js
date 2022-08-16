@@ -19,39 +19,39 @@ class CreateApiKeyDto {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateApiKeyDto.prototype, "customer", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: String, isArray: true }),
+    swagger_1.ApiProperty({ type: String, isArray: true }),
     __metadata("design:type", Array)
 ], CreateApiKeyDto.prototype, "groups", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateApiKeyDto.prototype, "company", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Date)
 ], CreateApiKeyDto.prototype, "validity", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Boolean)
 ], CreateApiKeyDto.prototype, "disabled", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateApiKeyDto.prototype, "type", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Boolean)
 ], CreateApiKeyDto.prototype, "suspended", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Boolean)
 ], CreateApiKeyDto.prototype, "revoked", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Map)
 ], CreateApiKeyDto.prototype, "metaData", void 0);
 exports.CreateApiKeyDto = CreateApiKeyDto;
@@ -61,39 +61,39 @@ class AdminCreateApiKeyDto {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], AdminCreateApiKeyDto.prototype, "customer", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: String, isArray: true }),
+    swagger_1.ApiProperty({ type: String, isArray: true }),
     __metadata("design:type", Array)
 ], AdminCreateApiKeyDto.prototype, "groups", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], AdminCreateApiKeyDto.prototype, "company", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Date)
 ], AdminCreateApiKeyDto.prototype, "validity", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Boolean)
 ], AdminCreateApiKeyDto.prototype, "disabled", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ enum: Enums_1.ApiKeyType }),
+    swagger_1.ApiProperty({ enum: Enums_1.ApiKeyType }),
     __metadata("design:type", String)
 ], AdminCreateApiKeyDto.prototype, "type", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Boolean)
 ], AdminCreateApiKeyDto.prototype, "suspended", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Boolean)
 ], AdminCreateApiKeyDto.prototype, "revoked", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Map)
 ], AdminCreateApiKeyDto.prototype, "metaData", void 0);
 exports.AdminCreateApiKeyDto = AdminCreateApiKeyDto;
