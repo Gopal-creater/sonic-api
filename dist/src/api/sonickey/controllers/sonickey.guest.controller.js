@@ -36,7 +36,6 @@ const public_encode_dto_1 = require("../dtos/public-encode.dto");
 const public_decode_dto_1 = require("../dtos/public-decode.dto");
 const Enums_1 = require("../../../constants/Enums");
 const detection_service_1 = require("../../detection/detection.service");
-const detection_schema_1 = require("../../detection/schemas/detection.schema");
 let SonickeyGuestController = class SonickeyGuestController {
     constructor(sonicKeyService, fileHandlerService, detectionService) {
         this.sonicKeyService = sonicKeyService;
@@ -139,9 +138,9 @@ let SonickeyGuestController = class SonickeyGuestController {
     }
 };
 __decorate([
-    swagger_1.ApiExcludeEndpoint(true),
-    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
-        storage: multer_1.diskStorage({
+    (0, swagger_1.ApiExcludeEndpoint)(true),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('mediaFile', {
+        storage: (0, multer_1.diskStorage)({
             destination: async (req, file, cb) => {
                 const currentUserId = 'guest';
                 const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
@@ -155,25 +154,25 @@ __decorate([
             },
         }),
     })),
-    swagger_1.ApiConsumes('multipart/form-data'),
-    swagger_1.ApiBody({
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({
         description: 'File To Encode',
         type: public_encode_dto_1.PublicEncodeDto,
     }),
-    common_1.Post('/encode'),
-    swagger_1.ApiOperation({ summary: 'Encode File And save to database' }),
+    (0, common_1.Post)('/encode'),
+    (0, swagger_1.ApiOperation)({ summary: 'Encode File And save to database' }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body('sonickey', jsonparse_pipe_1.JsonParsePipe)),
-    __param(1, common_1.UploadedFile()),
-    __param(2, common_1.Req()),
+    __param(0, (0, common_1.Body)('sonickey', jsonparse_pipe_1.JsonParsePipe)),
+    __param(1, (0, common_1.UploadedFile)()),
+    __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [sonicKey_dto_1.SonicKeyDto, Object, Object]),
     __metadata("design:returntype", void 0)
 ], SonickeyGuestController.prototype, "encode", null);
 __decorate([
-    swagger_1.ApiExcludeEndpoint(true),
-    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
-        storage: multer_1.diskStorage({
+    (0, swagger_1.ApiExcludeEndpoint)(true),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('mediaFile', {
+        storage: (0, multer_1.diskStorage)({
             destination: async (req, file, cb) => {
                 const currentUserId = 'guest';
                 const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
@@ -186,24 +185,24 @@ __decorate([
             },
         }),
     })),
-    swagger_1.ApiConsumes('multipart/form-data'),
-    swagger_1.ApiBody({
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({
         description: 'File To Decode',
         type: public_decode_dto_1.PublicDecodeDto,
     }),
-    common_1.Post('/decode'),
-    common_1.UseInterceptors(common_1.ClassSerializerInterceptor),
-    swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
+    (0, common_1.Post)('/decode'),
+    (0, common_1.UseInterceptors)(common_1.ClassSerializerInterceptor),
+    (0, swagger_1.ApiOperation)({ summary: 'Decode File and retrive key information' }),
     openapi.ApiResponse({ status: 201, type: [require("../schemas/sonickey.schema").SonicKey] }),
-    __param(0, common_1.UploadedFile()),
+    __param(0, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SonickeyGuestController.prototype, "decode", null);
 __decorate([
-    swagger_1.ApiExcludeEndpoint(true),
-    common_1.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
-        storage: multer_1.diskStorage({
+    (0, swagger_1.ApiExcludeEndpoint)(true),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('mediaFile', {
+        storage: (0, multer_1.diskStorage)({
             destination: async (req, file, cb) => {
                 const currentUserId = 'guest';
                 const imagePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/${currentUserId}`);
@@ -216,24 +215,24 @@ __decorate([
             },
         }),
     })),
-    swagger_1.ApiConsumes('multipart/form-data'),
-    swagger_1.ApiBody({
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({
         description: 'File To Decode',
         type: public_decode_dto_1.PublicDecodeDto,
     }),
-    common_1.Version('2'),
-    common_1.Post('/decode'),
-    common_1.UseInterceptors(common_1.ClassSerializerInterceptor),
-    swagger_1.ApiOperation({ summary: 'Decode File and retrive key information' }),
+    (0, common_1.Version)('2'),
+    (0, common_1.Post)('/decode'),
+    (0, common_1.UseInterceptors)(common_1.ClassSerializerInterceptor),
+    (0, swagger_1.ApiOperation)({ summary: 'Decode File and retrive key information' }),
     openapi.ApiResponse({ status: 201, type: [require("../../detection/schemas/detection.schema").Detection] }),
-    __param(0, common_1.UploadedFile()),
+    __param(0, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SonickeyGuestController.prototype, "decodeV2", null);
 SonickeyGuestController = __decorate([
-    swagger_1.ApiTags('Public Controller'),
-    common_1.Controller('sonic-keys-guest'),
+    (0, swagger_1.ApiTags)('Public Controller'),
+    (0, common_1.Controller)('sonic-keys-guest'),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
         file_handler_service_1.FileHandlerService,
         detection_service_1.DetectionService])

@@ -32,7 +32,7 @@ let S3FileUploadService = class S3FileUploadService {
     }
     async uploadFromPath(filePath, destinationFolder, acl = Enums_1.S3ACL.PRIVATE) {
         const fileContect = fs.createReadStream(filePath);
-        const fileName = utils_1.extractFileName(filePath);
+        const fileName = (0, utils_1.extractFileName)(filePath);
         const bucketS3Destination = destinationFolder
             ? `${this.bucketName}/${destinationFolder}`
             : this.bucketName;
@@ -72,7 +72,7 @@ let S3FileUploadService = class S3FileUploadService {
     }
     getSignedUrl(key, expiry = 60 * 1, fileName = "") {
         if (!fileName) {
-            fileName = utils_1.extractFileName(key);
+            fileName = (0, utils_1.extractFileName)(key);
         }
         const params = {
             Bucket: this.bucketName,
@@ -91,7 +91,7 @@ let S3FileUploadService = class S3FileUploadService {
     }
 };
 S3FileUploadService = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [global_aws_service_1.GlobalAwsService])
 ], S3FileUploadService);
 exports.S3FileUploadService = S3FileUploadService;

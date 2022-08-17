@@ -40,17 +40,17 @@ let MailController = class MailController {
     }
 };
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Send test email' }),
-    common_1.Post('/send-test-mail'),
+    (0, swagger_1.ApiOperation)({ summary: 'Send test email' }),
+    (0, common_1.Post)('/send-test-mail'),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, common_1.Body()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [test_mail_dto_1.TestMailDto]),
     __metadata("design:returntype", Promise)
 ], MailController.prototype, "sendTestMail", null);
 MailController = __decorate([
-    swagger_1.ApiTags('Mail Controller'),
-    common_1.Controller('mail'),
+    (0, swagger_1.ApiTags)('Mail Controller'),
+    (0, common_1.Controller)('mail'),
     __metadata("design:paramtypes", [mail_service_1.MailService])
 ], MailController);
 exports.MailController = MailController;

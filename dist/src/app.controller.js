@@ -37,29 +37,29 @@ let AppController = class AppController {
     }
 };
 __decorate([
-    common_1.Get(),
+    (0, common_1.Get)(),
     openapi.ApiResponse({ status: 200, type: String }),
-    __param(0, common_1.Req()),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", String)
 ], AppController.prototype, "getHello", null);
 __decorate([
-    common_1.Get('/get-insance-details'),
+    (0, common_1.Get)('/get-insance-details'),
     openapi.ApiResponse({ status: 200, type: require("./shared/dtos/ec2instance.dto").Ec2RunningServerWithInstanceInfo }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], AppController.prototype, "getInstanceDetails", null);
 __decorate([
-    common_1.Get('/test-appgen'),
+    (0, common_1.Get)('/test-appgen'),
     openapi.ApiResponse({ status: 200, type: Object }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], AppController.prototype, "getRadioProgram", null);
 AppController = __decorate([
-    common_1.Controller(),
+    (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService,
         axios_1.HttpService,
         ec2instance_service_1.Ec2InstanceService,

@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppVersionService = void 0;
 const file_handler_service_1 = require("../../shared/services/file-handler.service");
 const file_operation_service_1 = require("../../shared/services/file-operation.service");
-const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 const common_1 = require("@nestjs/common");
 const appversions_schema_1 = require("./schemas/appversions.schema");
 const mongoose_1 = require("@nestjs/mongoose");
@@ -149,8 +148,8 @@ let AppVersionService = class AppVersionService {
     }
 };
 AppVersionService = __decorate([
-    common_1.Injectable(),
-    __param(0, mongoose_1.InjectModel(appversions_schema_1.AppVersion.name)),
+    (0, common_1.Injectable)(),
+    __param(0, (0, mongoose_1.InjectModel)(appversions_schema_1.AppVersion.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         file_operation_service_1.FileOperationService,
         file_handler_service_1.FileHandlerService,

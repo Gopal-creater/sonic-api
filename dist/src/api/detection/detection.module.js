@@ -25,7 +25,7 @@ const appgen_service_1 = require("../../shared/services/appgen.service");
 let DetectionModule = class DetectionModule {
 };
 DetectionModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 {
@@ -33,12 +33,12 @@ DetectionModule = __decorate([
                     schema: detection_schema_1.DetectionSchema,
                 },
             ]),
-            common_1.forwardRef(() => api_key_module_1.ApiKeyModule),
-            common_1.forwardRef(() => user_module_1.UserModule),
-            common_1.forwardRef(() => company_module_1.CompanyModule),
-            common_1.forwardRef(() => auth_module_1.AuthModule),
-            common_1.forwardRef(() => sonickey_module_1.SonickeyModule),
-            common_1.forwardRef(() => radiostation_module_1.RadiostationModule)
+            (0, common_1.forwardRef)(() => api_key_module_1.ApiKeyModule),
+            (0, common_1.forwardRef)(() => user_module_1.UserModule),
+            (0, common_1.forwardRef)(() => company_module_1.CompanyModule),
+            (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
+            (0, common_1.forwardRef)(() => sonickey_module_1.SonickeyModule),
+            (0, common_1.forwardRef)(() => radiostation_module_1.RadiostationModule)
         ],
         controllers: [
             detection_controller_1.DetectionController,

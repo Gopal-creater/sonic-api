@@ -58,7 +58,7 @@ let ApiKeyAuthGuard = class ApiKeyAuthGuard {
     }
 };
 ApiKeyAuthGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [api_key_service_1.ApiKeyService,
         user_service_1.UserService,
         company_service_1.CompanyService])

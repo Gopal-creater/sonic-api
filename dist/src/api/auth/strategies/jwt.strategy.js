@@ -17,10 +17,10 @@ const auth_service_1 = require("../auth.service");
 const jwks_rsa_1 = require("jwks-rsa");
 const auth_config_1 = require("../config/auth.config");
 const user_service_1 = require("../../user/services/user.service");
-let JwtStrategy = class JwtStrategy extends passport_1.PassportStrategy(passport_jwt_1.Strategy) {
+let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
     constructor(authService, userService, authConfig) {
         super({
-            secretOrKeyProvider: jwks_rsa_1.passportJwtSecret({
+            secretOrKeyProvider: (0, jwks_rsa_1.passportJwtSecret)({
                 cache: true,
                 rateLimit: true,
                 jwksRequestsPerMinute: 5,
@@ -44,7 +44,7 @@ let JwtStrategy = class JwtStrategy extends passport_1.PassportStrategy(passport
     }
 };
 JwtStrategy = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [auth_service_1.AuthService,
         user_service_1.UserService,
         auth_config_1.AuthConfig])

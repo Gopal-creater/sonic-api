@@ -18,62 +18,62 @@ exports.ApiKeySchemaName = 'ApiKey';
 let ApiKey = class ApiKey extends mongoose_2.Document {
 };
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, ref: 'User', required: true, autopopulate: { maxDepth: 2 } }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: String, ref: 'User', required: true, autopopulate: { maxDepth: 2 } }),
     __metadata("design:type", Object)
 ], ApiKey.prototype, "customer", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop([String]),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)([String]),
     __metadata("design:type", Array)
 ], ApiKey.prototype, "groups", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Company', autopopulate: { maxDepth: 2 } }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: mongoose_2.Schema.Types.ObjectId, ref: 'Company', autopopulate: { maxDepth: 2 } }),
     __metadata("design:type", Object)
 ], ApiKey.prototype, "company", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: Date, default: new Date(new Date().setFullYear(new Date().getFullYear() + 1)) }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: Date, default: new Date(new Date().setFullYear(new Date().getFullYear() + 1)) }),
     __metadata("design:type", Date)
 ], ApiKey.prototype, "validity", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: Boolean, default: false }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: Boolean, default: false }),
     __metadata("design:type", Boolean)
 ], ApiKey.prototype, "disabled", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, enum: Enums_1.ApiKeyType, default: "Individual" }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: String, enum: Enums_1.ApiKeyType, default: "Individual" }),
     __metadata("design:type", String)
 ], ApiKey.prototype, "type", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: Boolean, default: false }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: Boolean, default: false }),
     __metadata("design:type", Boolean)
 ], ApiKey.prototype, "suspended", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: Boolean, default: false }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: Boolean, default: false }),
     __metadata("design:type", Boolean)
 ], ApiKey.prototype, "revoked", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], ApiKey.prototype, "createdBy", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], ApiKey.prototype, "updatedBy", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Map)
 ], ApiKey.prototype, "metaData", void 0);
 ApiKey = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.ApiKeySchemaName })
+    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.ApiKeySchemaName })
 ], ApiKey);
 exports.ApiKey = ApiKey;
 exports.ApiKeySchema = mongoose_1.SchemaFactory.createForClass(ApiKey);

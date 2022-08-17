@@ -20,12 +20,12 @@ class UploadAppVersionDto {
     }
 }
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty({ type: 'string', format: 'binary' }),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)({ type: 'string', format: 'binary' }),
     __metadata("design:type", Object)
 ], UploadAppVersionDto.prototype, "mediaFile", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", version_dto_1.Version)
 ], UploadAppVersionDto.prototype, "data", void 0);
 exports.UploadAppVersionDto = UploadAppVersionDto;

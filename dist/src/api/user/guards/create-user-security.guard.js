@@ -66,7 +66,7 @@ let CreateUserSecurityGuard = class CreateUserSecurityGuard {
     }
 };
 CreateUserSecurityGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [user_service_1.UserService,
         company_service_1.CompanyService])
 ], CreateUserSecurityGuard);

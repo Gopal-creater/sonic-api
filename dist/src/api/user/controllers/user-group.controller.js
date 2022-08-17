@@ -63,43 +63,43 @@ let UserGroupController = class UserGroupController {
     }
 };
 __decorate([
-    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'add user to group' }),
-    common_1.Post('/groups/add-user-to-group'),
+    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'add user to group' }),
+    (0, common_1.Post)('/groups/add-user-to-group'),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [index_1.AddUserToGroupDto]),
     __metadata("design:returntype", Promise)
 ], UserGroupController.prototype, "addUserToGroup", null);
 __decorate([
-    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'remove user from group' }),
-    common_1.Delete('/groups/remove-user-from-group'),
+    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'remove user from group' }),
+    (0, common_1.Delete)('/groups/remove-user-from-group'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Body()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [index_1.RemoveUserFromGroupDto]),
     __metadata("design:returntype", Promise)
 ], UserGroupController.prototype, "removeUserFromGroup", null);
 __decorate([
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'list groups of particular user' }),
-    common_1.Get('/groups/list-groups/:user'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'list groups of particular user' }),
+    (0, common_1.Get)('/groups/list-groups/:user'),
     openapi.ApiResponse({ status: 200, type: [require("../../group/schemas/group.schema").Group] }),
-    __param(0, common_1.Param('user')),
+    __param(0, (0, common_1.Param)('user')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserGroupController.prototype, "listAllGroupsForUser", null);
 UserGroupController = __decorate([
-    swagger_1.ApiTags('User Controller'),
-    common_1.Controller('users'),
+    (0, swagger_1.ApiTags)('User Controller'),
+    (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [user_service_1.UserService,
         group_service_1.GroupService,
         user_group_service_1.UserGroupService])

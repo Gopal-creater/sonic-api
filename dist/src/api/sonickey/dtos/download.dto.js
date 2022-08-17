@@ -19,12 +19,12 @@ class DownloadDto {
     }
 }
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], DownloadDto.prototype, "fileURL", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], DownloadDto.prototype, "contentType", void 0);
 exports.DownloadDto = DownloadDto;
@@ -34,8 +34,8 @@ class S3DownloadDto {
     }
 }
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], S3DownloadDto.prototype, "key", void 0);
 exports.S3DownloadDto = S3DownloadDto;

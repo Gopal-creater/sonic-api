@@ -20,7 +20,7 @@ const licensekey_module_1 = require("../licensekey/licensekey.module");
 let JobModule = class JobModule {
 };
 JobModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [
             sonickey_module_1.SonickeyModule,
             licensekey_module_1.LicensekeyModule,

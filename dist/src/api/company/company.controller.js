@@ -64,7 +64,7 @@ let CompanyController = class CompanyController {
             throw new common_1.BadRequestException('Unsupported format');
         queryDto.limit = (queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit) <= 2000 ? queryDto === null || queryDto === void 0 ? void 0 : queryDto.limit : 2000;
         const filePath = await this.companyService.exportEncodeByCompaniesReport(queryDto, format);
-        const fileName = utils_1.extractFileName(filePath);
+        const fileName = (0, utils_1.extractFileName)(filePath);
         res.download(filePath, `exported_encodes_by_companies_${format}.${fileName.split('.')[1]}`, err => {
             if (err) {
                 this.fileHandlerService.deleteFileAtPath(filePath);
@@ -120,69 +120,69 @@ let CompanyController = class CompanyController {
     }
 };
 __decorate([
-    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, create_company_guard_1.CreateCompanySecurityGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Create company' }),
-    common_1.Post(),
+    (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, create_company_guard_1.CreateCompanySecurityGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Create company' }),
+    (0, common_1.Post)(),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body()),
-    __param(1, user_decorator_1.User()),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, user_decorator_1.User)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_company_dto_1.CreateCompanyDto,
         user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "create", null);
 __decorate([
-    swagger_1.ApiOperation({
+    (0, swagger_1.ApiOperation)({
         summary: 'Get companies',
     }),
-    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    common_1.Get(),
+    (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.Get)(),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], CompanyController.prototype, "findAll", null);
 __decorate([
-    swagger_1.ApiOperation({
+    (0, swagger_1.ApiOperation)({
         summary: 'Get encodes by companies',
     }),
-    decorators_1.RolesAllowed(),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    common_1.Get('/reports/get-encodes-by-companies'),
+    (0, decorators_1.RolesAllowed)(),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.Get)('/reports/get-encodes-by-companies'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], CompanyController.prototype, "getEncodesByCompaniesReport", null);
 __decorate([
-    common_1.Get('/export/encodes-by-companies/:format'),
-    swagger_1.ApiParam({ name: 'format', enum: ['xlsx', 'csv'] }),
-    swagger_1.ApiOperation({ summary: 'Export Encodes By Company' }),
-    decorators_1.RolesAllowed(),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
+    (0, common_1.Get)('/export/encodes-by-companies/:format'),
+    (0, swagger_1.ApiParam)({ name: 'format', enum: ['xlsx', 'csv'] }),
+    (0, swagger_1.ApiOperation)({ summary: 'Export Encodes By Company' }),
+    (0, decorators_1.RolesAllowed)(),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, common_1.Res()),
-    __param(1, common_1.Param('format')),
-    __param(2, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('format')),
+    __param(2, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "exportEncodesByCompaniesReport", null);
 __decorate([
-    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, change_company_admin_security_guard_1.ChangeCompanyAdminSecurityGuard),
-    common_1.Put(':id/change-company-admin-user'),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Change admin user' }),
-    swagger_1.ApiBody({
+    (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, change_company_admin_security_guard_1.ChangeCompanyAdminSecurityGuard),
+    (0, common_1.Put)(':id/change-company-admin-user'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Change admin user' }),
+    (0, swagger_1.ApiBody)({
         schema: {
             type: 'object',
             properties: {
@@ -191,47 +191,47 @@ __decorate([
         },
     }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('id')),
-    __param(1, common_1.Body('user')),
-    __param(2, user_decorator_1.User()),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)('user')),
+    __param(2, (0, user_decorator_1.User)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "changeAdminUser", null);
 __decorate([
-    common_1.Put(':id'),
-    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, update_company_security_guard_1.UpdateCompanySecurityGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Update company' }),
+    (0, common_1.Put)(':id'),
+    (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.COMPANY_ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, update_company_security_guard_1.UpdateCompanySecurityGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Update company' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('id')),
-    __param(1, common_1.Body()),
-    __param(2, user_decorator_1.User()),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, user_decorator_1.User)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_company_dto_1.UpdateCompanyDto,
         user_db_schema_1.UserDB]),
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "update", null);
 __decorate([
-    common_1.Get('/count'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({
+    (0, common_1.Get)('/count'),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({
         summary: 'Get count of all companies also accept filter as query params',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "getCount", null);
 __decorate([
-    common_1.Get('/estimate-count'),
-    common_1.UseGuards(guards_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({
+    (0, common_1.Get)('/estimate-count'),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({
         summary: 'Get all count of all companies',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
@@ -240,31 +240,31 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "getEstimateCount", null);
 __decorate([
-    common_1.Delete(':id'),
-    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, delete_company_security_guard_1.DeleteCompanySecurityGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'Remove company' }),
+    (0, common_1.Delete)(':id'),
+    (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN, Enums_1.Roles.PARTNER_ADMIN),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, delete_company_security_guard_1.DeleteCompanySecurityGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Remove company' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('id')),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "remove", null);
 __decorate([
-    decorators_1.RolesAllowed(),
-    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, get_company_security_guard_1.GetCompanySecurityGuard),
-    swagger_1.ApiBearerAuth(),
-    common_1.Get(':id'),
+    (0, decorators_1.RolesAllowed)(),
+    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard, get_company_security_guard_1.GetCompanySecurityGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.Get)(':id'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('id')),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "findById", null);
 CompanyController = __decorate([
-    swagger_1.ApiTags('Company Controller (D & M May 2022)'),
-    common_1.Controller('companies'),
+    (0, swagger_1.ApiTags)('Company Controller (D & M May 2022)'),
+    (0, common_1.Controller)('companies'),
     __metadata("design:paramtypes", [company_service_1.CompanyService,
         file_handler_service_1.FileHandlerService])
 ], CompanyController);

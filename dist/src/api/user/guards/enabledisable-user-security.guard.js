@@ -52,7 +52,7 @@ let EnableDisableUserSecurityGuard = class EnableDisableUserSecurityGuard {
                             _id: userId
                         },
                         relationalFilter: {
-                            'company.partner': mongoose_utils_1.toObjectId(partnerId)
+                            'company.partner': (0, mongoose_utils_1.toObjectId)(partnerId)
                         }
                     });
                     if (!isOwnUser) {
@@ -64,7 +64,7 @@ let EnableDisableUserSecurityGuard = class EnableDisableUserSecurityGuard {
                 const companyId = (_d = loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.adminCompany) === null || _d === void 0 ? void 0 : _d.id;
                 const userFromDatabase = await this.userService.findOne({
                     _id: userId,
-                    'company': mongoose_utils_1.toObjectId(companyId)
+                    'company': (0, mongoose_utils_1.toObjectId)(companyId)
                 });
                 if (!userFromDatabase) {
                     throw new common_1.NotFoundException('User not found');
@@ -80,7 +80,7 @@ let EnableDisableUserSecurityGuard = class EnableDisableUserSecurityGuard {
     }
 };
 EnableDisableUserSecurityGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [user_service_1.UserService,
         company_service_1.CompanyService])
 ], EnableDisableUserSecurityGuard);

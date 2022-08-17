@@ -19,47 +19,47 @@ class MongoosePaginateRadioStationDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: radiostation_schema_1.RadioStation }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: radiostation_schema_1.RadioStation }),
     __metadata("design:type", Array)
 ], MongoosePaginateRadioStationDto.prototype, "docs", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateRadioStationDto.prototype, "totalDocs", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateRadioStationDto.prototype, "offset", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateRadioStationDto.prototype, "limit", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateRadioStationDto.prototype, "totalPages", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateRadioStationDto.prototype, "page", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateRadioStationDto.prototype, "pagingCounter", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], MongoosePaginateRadioStationDto.prototype, "hasPrevPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], MongoosePaginateRadioStationDto.prototype, "hasNextPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateRadioStationDto.prototype, "prevPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateRadioStationDto.prototype, "nextPage", void 0);
 exports.MongoosePaginateRadioStationDto = MongoosePaginateRadioStationDto;

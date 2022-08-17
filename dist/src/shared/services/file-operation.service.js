@@ -16,7 +16,7 @@ let FileOperationService = class FileOperationService {
     encodeFile(sonicEncodeCmd, outFilePath) {
         return new Promise((resolve, reject) => {
             try {
-                child_process_1.execSync('bash ' + sonicEncodeCmd);
+                (0, child_process_1.execSync)('bash ' + sonicEncodeCmd);
                 resolve(outFilePath);
             }
             catch (_a) {
@@ -29,7 +29,7 @@ let FileOperationService = class FileOperationService {
     decodeFile(sonicDecodeCmd, logFilePath) {
         return new Promise((resolve, reject) => {
             try {
-                child_process_1.execSync('bash ' + sonicDecodeCmd);
+                (0, child_process_1.execSync)('bash ' + sonicDecodeCmd);
                 var fileSizeInBytes = fs.statSync(logFilePath).size;
                 if (fileSizeInBytes <= 0) {
                     console.error('empty logfile while decoding. no key found!');
@@ -56,7 +56,7 @@ let FileOperationService = class FileOperationService {
     decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath) {
         return new Promise((resolve, reject) => {
             try {
-                child_process_1.execSync('bash ' + sonicDecodeCmd);
+                (0, child_process_1.execSync)('bash ' + sonicDecodeCmd);
                 var decodeResponses = [];
                 let rawdata = fs.readFileSync(logFilePath, { encoding: 'utf8' });
                 console.log('rawdata', rawdata);
@@ -80,7 +80,7 @@ let FileOperationService = class FileOperationService {
     }
 };
 FileOperationService = __decorate([
-    common_1.Injectable()
+    (0, common_1.Injectable)()
 ], FileOperationService);
 exports.FileOperationService = FileOperationService;
 //# sourceMappingURL=file-operation.service.js.map

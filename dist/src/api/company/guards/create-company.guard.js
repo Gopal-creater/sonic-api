@@ -44,7 +44,7 @@ let CreateCompanySecurityGuard = class CreateCompanySecurityGuard {
     }
 };
 CreateCompanySecurityGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [core_1.Reflector])
 ], CreateCompanySecurityGuard);
 exports.CreateCompanySecurityGuard = CreateCompanySecurityGuard;

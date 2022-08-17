@@ -43,7 +43,7 @@ function parsedQueryValueFromQuery(queries) {
         }
         if (aggregateSearch) {
             const parsedAggregate = JSON.parse(aggregateSearch);
-            if (!lodash_1.isArray(parsedAggregate)) {
+            if (!(0, lodash_1.isArray)(parsedAggregate)) {
                 throw new common_1.BadRequestException('aggregateSearch params must be an array of object type in stringify format');
             }
             console.log('passed========>');
@@ -95,9 +95,9 @@ function castToObjectId(filter) {
     const res = {};
     for (const key in filter) {
         var value = filter[key];
-        console.log(`IsObjectId ${mongoose_utils_1.isObjectId(value)} :${value}`);
-        if (mongoose_utils_1.isObjectId(value)) {
-            res[key] = mongoose_utils_1.toObjectId(value);
+        console.log(`IsObjectId ${(0, mongoose_utils_1.isObjectId)(value)} :${value}`);
+        if ((0, mongoose_utils_1.isObjectId)(value)) {
+            res[key] = (0, mongoose_utils_1.toObjectId)(value);
         }
         else {
             res[key] = value;

@@ -19,7 +19,7 @@ let ReportController = class ReportController {
     }
 };
 ReportController = __decorate([
-    common_1.Controller('report'),
+    (0, common_1.Controller)('report'),
     __metadata("design:paramtypes", [report_service_1.ReportService])
 ], ReportController);
 exports.ReportController = ReportController;

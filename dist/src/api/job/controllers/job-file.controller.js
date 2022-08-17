@@ -100,97 +100,97 @@ let JobFileController = class JobFileController {
     }
 };
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Get All Job Files' }),
-    swagger_1.ApiBearerAuth(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
-    common_1.Get('/job-files'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get All Job Files' }),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
+    (0, common_1.Get)('/job-files'),
     openapi.ApiResponse({ status: 200, type: require("../dto/mongoosepaginate-jobfile.dto").MongoosePaginateJobFileDto }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], JobFileController.prototype, "findAll", null);
 __decorate([
-    common_1.Get('/count'),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({
+    (0, common_1.Get)('/count'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({
         summary: 'Get count of all job-file also accept filter as query params',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], JobFileController.prototype, "getCount", null);
 __decorate([
-    swagger_1.ApiOperation({
+    (0, swagger_1.ApiOperation)({
         summary: 'Add new sonic key and update the file details using fileId upon successfull encode locally',
     }),
-    swagger_1.ApiBearerAuth(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    common_1.Put('jobs/:jobId/job-files/addkey-updatejobfile/:fileId'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Put)('jobs/:jobId/job-files/addkey-updatejobfile/:fileId'),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, common_1.Param('jobId')),
-    __param(1, common_1.Param('fileId')),
-    __param(2, common_1.Body()),
+    __param(0, (0, common_1.Param)('jobId')),
+    __param(1, (0, common_1.Param)('fileId')),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, update_job_file_dto_1.AddKeyAndUpdateJobFileDto]),
     __metadata("design:returntype", void 0)
 ], JobFileController.prototype, "addKeyToDbAndUpdateJobFile", null);
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Update the single file details using fileId' }),
-    swagger_1.ApiBearerAuth(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    common_1.Put('/job-files/:id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Update the single file details using fileId' }),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Put)('/job-files/:id'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('id')),
-    __param(1, common_1.Body()),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_job_file_dto_1.UpdateJobFileDto]),
     __metadata("design:returntype", Promise)
 ], JobFileController.prototype, "updateJobFile", null);
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Create and Add new jobfile to the job' }),
-    swagger_1.ApiBearerAuth(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    common_1.Post('jobs/:jobId/job-files'),
+    (0, swagger_1.ApiOperation)({ summary: 'Create and Add new jobfile to the job' }),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('jobs/:jobId/job-files'),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, common_1.Param('jobId')),
-    __param(1, common_1.Body()),
+    __param(0, (0, common_1.Param)('jobId')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, create_job_file_dto_1.CreateJobFileDto]),
     __metadata("design:returntype", Promise)
 ], JobFileController.prototype, "createJobFile", null);
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Create and Add many new jobfiles to the job' }),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiBody({ type: [create_job_file_dto_1.CreateJobFileDto] }),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    common_1.Post('jobs/:jobId/job-files/create-bulk'),
+    (0, swagger_1.ApiOperation)({ summary: 'Create and Add many new jobfiles to the job' }),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiBody)({ type: [create_job_file_dto_1.CreateJobFileDto] }),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('jobs/:jobId/job-files/create-bulk'),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, common_1.Param('jobId')),
-    __param(1, common_1.Body()),
+    __param(0, (0, common_1.Param)('jobId')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Array]),
     __metadata("design:returntype", Promise)
 ], JobFileController.prototype, "addFilesToJob", null);
 __decorate([
-    swagger_1.ApiOperation({ summary: 'Delete the job file using fileId' }),
-    swagger_1.ApiBearerAuth(),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    common_1.Delete('jobs/:jobId/job-files/:fileId'),
+    (0, swagger_1.ApiOperation)({ summary: 'Delete the job file using fileId' }),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Delete)('jobs/:jobId/job-files/:fileId'),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, common_1.Param('jobId')),
-    __param(1, common_1.Param('fileId')),
+    __param(0, (0, common_1.Param)('jobId')),
+    __param(1, (0, common_1.Param)('fileId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], JobFileController.prototype, "deleteJobFile", null);
 JobFileController = __decorate([
-    swagger_1.ApiTags('Jobs Files Controller'),
-    common_1.Controller(),
+    (0, swagger_1.ApiTags)('Jobs Files Controller'),
+    (0, common_1.Controller)(),
     __metadata("design:paramtypes", [job_file_service_1.JobFileService,
         job_service_1.JobService,
         licensekey_service_1.LicensekeyService])

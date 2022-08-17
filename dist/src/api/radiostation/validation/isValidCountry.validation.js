@@ -22,12 +22,12 @@ let IsValidCountryConstraint = class IsValidCountryConstraint {
     }
 };
 IsValidCountryConstraint = __decorate([
-    class_validator_1.ValidatorConstraint({ async: true })
+    (0, class_validator_1.ValidatorConstraint)({ async: true })
 ], IsValidCountryConstraint);
 exports.IsValidCountryConstraint = IsValidCountryConstraint;
 function IsValidCountry(validationOptions) {
     return function (object, propertyName) {
-        class_validator_1.registerDecorator({
+        (0, class_validator_1.registerDecorator)({
             target: object.constructor,
             propertyName: propertyName,
             options: validationOptions,

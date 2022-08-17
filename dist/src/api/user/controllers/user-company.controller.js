@@ -79,65 +79,65 @@ let UserCompanyController = class UserCompanyController {
     }
 };
 __decorate([
-    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'add user to company' }),
-    common_1.Post('/companies/add-user-to-company'),
+    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'add user to company' }),
+    (0, common_1.Post)('/companies/add-user-to-company'),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [index_1.AddUserToCompanyDto]),
     __metadata("design:returntype", Promise)
 ], UserCompanyController.prototype, "addUserToCompany", null);
 __decorate([
-    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'remove user from company' }),
-    common_1.Delete('/companies/remove-user-from-company'),
+    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'remove user from company' }),
+    (0, common_1.Delete)('/companies/remove-user-from-company'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Body()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [index_1.RemoveUserFromCompanyDto]),
     __metadata("design:returntype", Promise)
 ], UserCompanyController.prototype, "removeUserFromCompany", null);
 __decorate([
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'get company of particular user' }),
-    common_1.Get('/companies/list-companies/:user'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'get company of particular user' }),
+    (0, common_1.Get)('/companies/list-companies/:user'),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, common_1.Param('user')),
+    __param(0, (0, common_1.Param)('user')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserCompanyController.prototype, "listAllGroupsForUser", null);
 __decorate([
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'make admin company' }),
-    common_1.Post('/companies/make-admin-company'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'make admin company' }),
+    (0, common_1.Post)('/companies/make-admin-company'),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [index_1.MakeAdminCompanyDto]),
     __metadata("design:returntype", Promise)
 ], UserCompanyController.prototype, "makeAdminCompany", null);
 __decorate([
-    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
-    swagger_1.ApiBearerAuth(),
-    swagger_1.ApiOperation({ summary: 'make admin company' }),
-    common_1.Get('/companies/get-admin-company/:user'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'make admin company' }),
+    (0, common_1.Get)('/companies/get-admin-company/:user'),
     openapi.ApiResponse({ status: 200, type: require("../../company/schemas/company.schema").Company }),
-    __param(0, common_1.Param('user')),
+    __param(0, (0, common_1.Param)('user')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserCompanyController.prototype, "getAdminCompany", null);
 UserCompanyController = __decorate([
-    swagger_1.ApiTags('User Controller'),
-    common_1.Controller('users'),
+    (0, swagger_1.ApiTags)('User Controller'),
+    (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [user_service_1.UserService,
         company_service_1.CompanyService,
         user_company_service_1.UserCompanyService])

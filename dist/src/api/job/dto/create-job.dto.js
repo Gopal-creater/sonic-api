@@ -14,7 +14,7 @@ const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const job_schema_1 = require("../schemas/job.schema");
 const create_job_file_dto_1 = require("./create-job-file.dto");
-class CreateJobDto extends swagger_1.OmitType(job_schema_1.Job, [
+class CreateJobDto extends (0, swagger_1.OmitType)(job_schema_1.Job, [
     'isComplete',
     'jobFiles'
 ]) {
@@ -23,11 +23,11 @@ class CreateJobDto extends swagger_1.OmitType(job_schema_1.Job, [
     }
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: create_job_file_dto_1.CreateJobFileDto, required: false }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: create_job_file_dto_1.CreateJobFileDto, required: false }),
     __metadata("design:type", Array)
 ], CreateJobDto.prototype, "jobFiles", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateJobDto.prototype, "licenseId", void 0);
 exports.CreateJobDto = CreateJobDto;

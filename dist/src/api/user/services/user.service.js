@@ -45,10 +45,7 @@ const user_company_service_1 = require("./user-company.service");
 const group_service_1 = require("../../group/group.service");
 const company_service_1 = require("../../company/company.service");
 const Enums_1 = require("../../../constants/Enums");
-const parsedquery_dto_1 = require("../../../shared/dtos/parsedquery.dto");
 const api_key_service_1 = require("../../api-key/api-key.service");
-const register_dto_1 = require("../../auth/dto/register.dto");
-const licensekey_schema_1 = require("../../licensekey/schemas/licensekey.schema");
 let UserService = class UserService {
     constructor(licensekeyService, apiKeyService, globalAwsService, groupService, companyService, userModel, configService, userGroupService, userCompanyService, radioMonitorService) {
         this.licensekeyService = licensekeyService;
@@ -115,7 +112,7 @@ let UserService = class UserService {
         });
     }
     async getUserProfile(usernameOrSub) {
-        if (index_1.isValidUUID(usernameOrSub)) {
+        if ((0, index_1.isValidUUID)(usernameOrSub)) {
             return this.findById(usernameOrSub);
         }
         else {
@@ -127,7 +124,7 @@ let UserService = class UserService {
             UserPoolId: this.cognitoUserPoolId,
             Username: usernameOrSub,
         };
-        if (index_1.isValidUUID(usernameOrSub)) {
+        if ((0, index_1.isValidUUID)(usernameOrSub)) {
             const { username } = await this.getCognitoUserFromSub(usernameOrSub);
             params.Username = username;
         }
@@ -183,7 +180,7 @@ let UserService = class UserService {
             GroupName: groupName,
             Username: usernameOrSub,
         };
-        if (index_1.isValidUUID(usernameOrSub)) {
+        if ((0, index_1.isValidUUID)(usernameOrSub)) {
             const { username } = await this.getCognitoUserFromSub(usernameOrSub);
             params.Username = username;
         }
@@ -198,7 +195,7 @@ let UserService = class UserService {
             GroupName: groupName,
             Username: usernameOrSub,
         };
-        if (index_1.isValidUUID(usernameOrSub)) {
+        if ((0, index_1.isValidUUID)(usernameOrSub)) {
             const { username } = await this.getCognitoUserFromSub(usernameOrSub);
             params.Username = username;
         }
@@ -214,7 +211,7 @@ let UserService = class UserService {
             Username: usernameOrSub,
             UserPoolId: this.cognitoUserPoolId,
         };
-        if (index_1.isValidUUID(usernameOrSub)) {
+        if ((0, index_1.isValidUUID)(usernameOrSub)) {
             const { username } = await this.getCognitoUserFromSub(usernameOrSub);
             params.Username = username;
         }
@@ -228,7 +225,7 @@ let UserService = class UserService {
             UserPoolId: this.cognitoUserPoolId,
             Username: usernameOrSub,
         };
-        if (index_1.isValidUUID(usernameOrSub)) {
+        if ((0, index_1.isValidUUID)(usernameOrSub)) {
             const { username } = await this.getCognitoUserFromSub(usernameOrSub);
             params.Username = username;
         }
@@ -383,7 +380,7 @@ let UserService = class UserService {
     async getCognitoUser(usernameOrSub) {
         var _a;
         var user;
-        if (index_1.isValidUUID(usernameOrSub)) {
+        if ((0, index_1.isValidUUID)(usernameOrSub)) {
             const users = await this.cognitoIdentityServiceProvider
                 .listUsers({
                 UserPoolId: this.cognitoUserPoolId,
@@ -888,11 +885,11 @@ let UserService = class UserService {
     }
 };
 UserService = __decorate([
-    common_1.Injectable(),
-    __param(0, common_1.Inject(common_1.forwardRef(() => licensekey_service_1.LicensekeyService))),
-    __param(1, common_1.Inject(common_1.forwardRef(() => api_key_service_1.ApiKeyService))),
-    __param(5, mongoose_1.InjectModel(user_db_schema_1.UserSchemaName)),
-    __param(9, common_1.Inject(common_1.forwardRef(() => radiomonitor_service_1.RadioMonitorService))),
+    (0, common_1.Injectable)(),
+    __param(0, (0, common_1.Inject)((0, common_1.forwardRef)(() => licensekey_service_1.LicensekeyService))),
+    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => api_key_service_1.ApiKeyService))),
+    __param(5, (0, mongoose_1.InjectModel)(user_db_schema_1.UserSchemaName)),
+    __param(9, (0, common_1.Inject)((0, common_1.forwardRef)(() => radiomonitor_service_1.RadioMonitorService))),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService,
         api_key_service_1.ApiKeyService,
         global_aws_service_1.GlobalAwsService,

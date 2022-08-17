@@ -40,7 +40,7 @@ let DeleteCompanySecurityGuard = class DeleteCompanySecurityGuard {
     }
 };
 DeleteCompanySecurityGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [company_service_1.CompanyService])
 ], DeleteCompanySecurityGuard);
 exports.DeleteCompanySecurityGuard = DeleteCompanySecurityGuard;

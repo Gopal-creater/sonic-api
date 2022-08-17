@@ -25,7 +25,7 @@ let Ec2InstanceService = class Ec2InstanceService {
         });
     }
     async getInstanceDetails() {
-        const metadataArr = utils_1.enumToArrayOfObject(Enums_1.EC2InstanceMetadata);
+        const metadataArr = (0, utils_1.enumToArrayOfObject)(Enums_1.EC2InstanceMetadata);
         const promises = metadataArr.map(({ key, value }) => {
             return this.getInstanceDetailsForMetaData(value)
                 .then(data => {
@@ -51,7 +51,7 @@ let Ec2InstanceService = class Ec2InstanceService {
     }
 };
 Ec2InstanceService = __decorate([
-    common_1.Injectable()
+    (0, common_1.Injectable)()
 ], Ec2InstanceService);
 exports.Ec2InstanceService = Ec2InstanceService;
 //# sourceMappingURL=ec2instance.service.js.map

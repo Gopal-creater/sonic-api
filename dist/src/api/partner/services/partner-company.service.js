@@ -18,7 +18,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const partner_schema_1 = require("../schemas/partner.schema");
 const mongoose_2 = require("mongoose");
 const user_service_1 = require("../../user/services/user.service");
-const Enums_1 = require("../../../constants/Enums");
 const company_service_1 = require("../../company/company.service");
 let PartnerCompanyService = class PartnerCompanyService {
     constructor(partnerModel, userService, companyService) {
@@ -28,10 +27,10 @@ let PartnerCompanyService = class PartnerCompanyService {
     }
 };
 PartnerCompanyService = __decorate([
-    common_1.Injectable(),
-    __param(0, mongoose_1.InjectModel(partner_schema_1.Partner.name)),
-    __param(1, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
-    __param(2, common_1.Inject(common_1.forwardRef(() => company_service_1.CompanyService))),
+    (0, common_1.Injectable)(),
+    __param(0, (0, mongoose_1.InjectModel)(partner_schema_1.Partner.name)),
+    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
+    __param(2, (0, common_1.Inject)((0, common_1.forwardRef)(() => company_service_1.CompanyService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         user_service_1.UserService,
         company_service_1.CompanyService])

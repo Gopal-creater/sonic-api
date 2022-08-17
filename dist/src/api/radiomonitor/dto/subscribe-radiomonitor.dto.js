@@ -19,8 +19,8 @@ class SubscribeRadioMonitorDto {
     }
 }
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], SubscribeRadioMonitorDto.prototype, "radio", void 0);
 exports.SubscribeRadioMonitorDto = SubscribeRadioMonitorDto;

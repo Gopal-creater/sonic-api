@@ -58,7 +58,7 @@ let DeleteLicenseSecurityGuard = class DeleteLicenseSecurityGuard {
     }
 };
 DeleteLicenseSecurityGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], DeleteLicenseSecurityGuard);
 exports.DeleteLicenseSecurityGuard = DeleteLicenseSecurityGuard;

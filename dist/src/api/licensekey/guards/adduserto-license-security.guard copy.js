@@ -72,7 +72,7 @@ let AddUserToLicenseSecurityGuard = class AddUserToLicenseSecurityGuard {
     }
 };
 AddUserToLicenseSecurityGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], AddUserToLicenseSecurityGuard);
 exports.AddUserToLicenseSecurityGuard = AddUserToLicenseSecurityGuard;

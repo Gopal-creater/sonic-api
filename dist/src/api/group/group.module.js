@@ -25,10 +25,10 @@ let GroupModule = class GroupModule {
     }
 };
 GroupModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: group_schema_1.GroupSchemaName, schema: group_schema_1.GroupSchema }]),
-            common_1.forwardRef(() => user_module_1.UserModule),
+            (0, common_1.forwardRef)(() => user_module_1.UserModule),
         ],
         controllers: [group_controller_1.GroupController],
         providers: [group_service_1.GroupService],

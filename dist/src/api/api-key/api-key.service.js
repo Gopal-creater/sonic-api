@@ -141,9 +141,9 @@ let ApiKeyService = class ApiKeyService {
     }
 };
 ApiKeyService = __decorate([
-    common_1.Injectable(),
-    __param(0, mongoose_1.InjectModel(api_key_schema_1.ApiKey.name)),
-    __param(1, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
+    (0, common_1.Injectable)(),
+    __param(0, (0, mongoose_1.InjectModel)(api_key_schema_1.ApiKey.name)),
+    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         user_service_1.UserService,
         company_service_1.CompanyService])

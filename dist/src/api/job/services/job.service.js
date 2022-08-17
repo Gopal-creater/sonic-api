@@ -96,9 +96,9 @@ let JobService = class JobService {
     }
 };
 JobService = __decorate([
-    common_1.Injectable(),
-    __param(0, mongoose_1.InjectModel(job_schema_1.Job.name)),
-    __param(1, mongoose_1.InjectModel(jobfile_schema_1.JobFile.name)),
+    (0, common_1.Injectable)(),
+    __param(0, (0, mongoose_1.InjectModel)(job_schema_1.Job.name)),
+    __param(1, (0, mongoose_1.InjectModel)(jobfile_schema_1.JobFile.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model,
         licensekey_service_1.LicensekeyService])

@@ -32,7 +32,6 @@ const apikey_decorator_1 = require("../../api-key/decorators/apikey.decorator");
 const update_sonickey_dto_1 = require("../dtos/update-sonickey.dto");
 const user_db_schema_1 = require("../../user/schemas/user.db.schema");
 const utils_1 = require("../../../shared/utils");
-const track_schema_1 = require("../../track/schemas/track.schema");
 let SonickeyThirdPartyController = class SonickeyThirdPartyController {
     constructor(sonicKeyService, fileHandlerService, licensekeyService) {
         this.sonicKeyService = sonicKeyService;
@@ -40,7 +39,7 @@ let SonickeyThirdPartyController = class SonickeyThirdPartyController {
         this.licensekeyService = licensekeyService;
     }
     async encodeFromUrl(sonicKeyDto, file, loggedInUser, owner, licenseId) {
-        const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        const { destinationFolder, resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(loggedInUser);
         const encodingStrength = sonicKeyDto.encodingStrength;
         const sonicKeyDtoWithAudioData = await this.sonicKeyService.autoPopulateSonicContentWithMusicMetaForFile(file, sonicKeyDto);
         const sonickeyDoc = Object.assign(Object.assign(Object.assign({}, sonicKeyDtoWithAudioData), resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
@@ -58,7 +57,7 @@ let SonickeyThirdPartyController = class SonickeyThirdPartyController {
         if (!sonicKey) {
             throw new common_2.BadRequestException('SonicKey is required');
         }
-        const { resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+        const { resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(loggedInUser);
         const newTrack = Object.assign(Object.assign({ channel: channel, artist: contentOwner, title: contentName, fileType: contentType, mimeType: contentFileType, duration: contentDuration, fileSize: contentSize, encoding: contentEncoding, localFilePath: contentFilePath, samplingFrequency: contentSamplingFrequency, trackMetaData: createSonicKeyDto }, resourceOwnerObj), { createdBy: loggedInUser === null || loggedInUser === void 0 ? void 0 : loggedInUser.sub });
         var track = await this.sonicKeyService.trackService.findOne({
             mimeType: contentFileType,
@@ -89,59 +88,59 @@ let SonickeyThirdPartyController = class SonickeyThirdPartyController {
     }
 };
 __decorate([
-    common_1.UseInterceptors(FileFromUrl_interceptor_1.FileFromUrlInterceptor('mediaFile')),
-    swagger_1.ApiBody({
+    (0, common_1.UseInterceptors)((0, FileFromUrl_interceptor_1.FileFromUrlInterceptor)('mediaFile')),
+    (0, swagger_1.ApiBody)({
         description: 'File To Encode',
         type: encode_dto_1.EncodeFromUrlDto,
     }),
-    common_2.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, license_validation_guard_1.LicenseValidationGuard),
-    swagger_1.ApiSecurity('x-api-key'),
-    common_1.Post('/encode-from-url'),
-    swagger_1.ApiOperation({ summary: 'Encode File From URL And save to database' }),
+    (0, common_2.UseGuards)(apikey_auth_guard_1.ApiKeyAuthGuard, license_validation_guard_1.LicenseValidationGuard),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, common_1.Post)('/encode-from-url'),
+    (0, swagger_1.ApiOperation)({ summary: 'Encode File From URL And save to database' }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body('data')),
-    __param(1, FileFromUrl_interceptor_1.UploadedFileFromUrl()),
-    __param(2, decorators_1.User()),
-    __param(3, decorators_1.User('sub')),
-    __param(4, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __param(0, (0, common_1.Body)('data')),
+    __param(1, (0, FileFromUrl_interceptor_1.UploadedFileFromUrl)()),
+    __param(2, (0, decorators_1.User)()),
+    __param(3, (0, decorators_1.User)('sub')),
+    __param(4, (0, validatedlicense_decorator_1.ValidatedLicense)('key')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto, Object, user_db_schema_1.UserDB, String, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyThirdPartyController.prototype, "encodeFromUrl", null);
 __decorate([
-    common_2.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard, license_validation_guard_1.LicenseValidationGuard),
-    common_1.Post('/create-from-binary'),
-    swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiOperation({ summary: 'Save to database after local encode from binary.' }),
+    (0, common_2.UseGuards)(apikey_auth_guard_1.ApiKeyAuthGuard, license_validation_guard_1.LicenseValidationGuard),
+    (0, common_1.Post)('/create-from-binary'),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, swagger_1.ApiOperation)({ summary: 'Save to database after local encode from binary.' }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, common_1.Body()),
-    __param(1, decorators_1.User()),
-    __param(2, apikey_decorator_1.ApiKey('_id')),
-    __param(3, validatedlicense_decorator_1.ValidatedLicense('key')),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, decorators_1.User)()),
+    __param(2, (0, apikey_decorator_1.ApiKey)('_id')),
+    __param(3, (0, validatedlicense_decorator_1.ValidatedLicense)('key')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_sonickey_dto_1.CreateSonicKeyDto,
         user_db_schema_1.UserDB, String, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyThirdPartyController.prototype, "createFormBinary", null);
 __decorate([
-    common_1.Patch('/:sonickey'),
-    common_2.UseGuards(apikey_auth_guard_1.ApiKeyAuthGuard),
-    swagger_1.ApiSecurity('x-api-key'),
-    swagger_1.ApiOperation({
+    (0, common_1.Patch)('/:sonickey'),
+    (0, common_2.UseGuards)(apikey_auth_guard_1.ApiKeyAuthGuard),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, swagger_1.ApiOperation)({
         summary: 'Update Sonic Keys meta data from binary including s3FileMeta',
     }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_2.Param('sonickey')),
-    __param(1, common_1.Body()),
-    __param(2, decorators_1.User('sub')),
+    __param(0, (0, common_2.Param)('sonickey')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, decorators_1.User)('sub')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_sonickey_dto_1.UpdateSonicKeyFromBinaryDto, String]),
     __metadata("design:returntype", Promise)
 ], SonickeyThirdPartyController.prototype, "updateMeta", null);
 SonickeyThirdPartyController = __decorate([
-    swagger_1.ApiTags('ThirdParty Integration Controller, Protected By XAPI-Key'),
-    swagger_1.ApiSecurity('x-api-key'),
-    common_1.Controller('thirdparty/sonic-keys'),
+    (0, swagger_1.ApiTags)('ThirdParty Integration Controller, Protected By XAPI-Key'),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
+    (0, common_1.Controller)('thirdparty/sonic-keys'),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService,
         file_handler_service_1.FileHandlerService,
         licensekey_service_1.LicensekeyService])

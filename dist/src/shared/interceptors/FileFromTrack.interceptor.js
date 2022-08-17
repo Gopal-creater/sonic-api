@@ -38,10 +38,10 @@ const FileFromTrackInterceptor = (fieldName = 'track') => {
             }
             const signedUrlForTrack = await this.s3FileUploadService.getSignedUrl(trackFromDb.s3OriginalFileMeta.Key, 10 * 60);
             const loggedInUser = req['user'];
-            const { destinationFolder, resourceOwnerObj, } = utils_1.identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
+            const { destinationFolder, resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(loggedInUser);
             const filePath = await makeDir(`${app_config_1.appConfig.MULTER_DEST}/${destinationFolder}`);
             await makeDir(`${filePath}/encodedFiles`);
-            const originalname = utils_1.extractFileName(signedUrlForTrack);
+            const originalname = (0, utils_1.extractFileName)(signedUrlForTrack);
             const filename = `${uniqid()}-${originalname}`;
             const destination = `${filePath}/${filename}`;
             const uploaded = await download(signedUrlForTrack, destination);
@@ -63,14 +63,14 @@ const FileFromTrackInterceptor = (fieldName = 'track') => {
         }
     };
     FileFromUrlInterceptorClass = __decorate([
-        common_1.Injectable(),
+        (0, common_1.Injectable)(),
         __metadata("design:paramtypes", [track_service_1.TrackService,
             s3fileupload_service_1.S3FileUploadService])
     ], FileFromUrlInterceptorClass);
-    return common_1.mixin(FileFromUrlInterceptorClass);
+    return (0, common_1.mixin)(FileFromUrlInterceptorClass);
 };
 exports.FileFromTrackInterceptor = FileFromTrackInterceptor;
-exports.UploadedFileFromTrack = common_1.createParamDecorator((data, ctx) => {
+exports.UploadedFileFromTrack = (0, common_1.createParamDecorator)((data, ctx) => {
     const req = ctx.switchToHttp().getRequest();
     if (data) {
         return req.fileUploadFromTrackResult[data];
@@ -79,7 +79,7 @@ exports.UploadedFileFromTrack = common_1.createParamDecorator((data, ctx) => {
         return req.fileUploadFromTrackResult;
     }
 });
-exports.CurrentTrack = common_1.createParamDecorator((data, ctx) => {
+exports.CurrentTrack = (0, common_1.createParamDecorator)((data, ctx) => {
     const req = ctx.switchToHttp().getRequest();
     if (data) {
         return req.currentTrack[data];

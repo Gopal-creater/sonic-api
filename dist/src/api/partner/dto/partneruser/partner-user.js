@@ -15,57 +15,57 @@ const class_validator_1 = require("class-validator");
 class CreatePartnerUserDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreatePartnerUserDto.prototype, "userName", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreatePartnerUserDto.prototype, "password", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreatePartnerUserDto.prototype, "phoneNumber", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreatePartnerUserDto.prototype, "email", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], CreatePartnerUserDto.prototype, "isEmailVerified", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], CreatePartnerUserDto.prototype, "isPhoneNumberVerified", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreatePartnerUserDto.prototype, "company", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], CreatePartnerUserDto.prototype, "sendInvitationByEmail", void 0);
 exports.CreatePartnerUserDto = CreatePartnerUserDto;
 class EditPartnerUserDto {
 }
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], EditPartnerUserDto.prototype, "name", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], EditPartnerUserDto.prototype, "phoneNumber", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], EditPartnerUserDto.prototype, "country", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], EditPartnerUserDto.prototype, "enabled", void 0);
 exports.EditPartnerUserDto = EditPartnerUserDto;

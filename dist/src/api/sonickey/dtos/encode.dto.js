@@ -22,14 +22,14 @@ class EncodeDto {
     }
 }
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty({ type: 'string', format: 'binary' }),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)({ type: 'string', format: 'binary' }),
     __metadata("design:type", Object)
 ], EncodeDto.prototype, "mediaFile", void 0);
 __decorate([
-    class_validator_1.ValidateNested(),
-    class_transformer_1.Transform(value => class_transformer_1.plainToClass(sonicKey_dto_1.SonicKeyDto, JSON.parse(value))),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Transform)(value => (0, class_transformer_1.plainToClass)(sonicKey_dto_1.SonicKeyDto, JSON.parse(value))),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
 ], EncodeDto.prototype, "data", void 0);
 exports.EncodeDto = EncodeDto;
@@ -39,15 +39,15 @@ class EncodeFromFileDto {
     }
 }
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty({ type: 'string', format: 'binary' }),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)({ type: 'string', format: 'binary' }),
     __metadata("design:type", Object)
 ], EncodeFromFileDto.prototype, "mediaFile", void 0);
 __decorate([
-    class_validator_1.ValidateNested(),
-    class_transformer_1.Type(() => create_sonickey_dto_1.CreateSonicKeyDto),
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => create_sonickey_dto_1.CreateSonicKeyDto),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", create_sonickey_dto_1.CreateSonicKeyDto)
 ], EncodeFromFileDto.prototype, "data", void 0);
 exports.EncodeFromFileDto = EncodeFromFileDto;
@@ -57,13 +57,13 @@ class EncodeFromTrackDto {
     }
 }
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], EncodeFromTrackDto.prototype, "track", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", create_sonickey_dto_1.CreateSonicKeyDto)
 ], EncodeFromTrackDto.prototype, "data", void 0);
 exports.EncodeFromTrackDto = EncodeFromTrackDto;
@@ -73,13 +73,13 @@ class EncodeFromUrlDto {
     }
 }
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], EncodeFromUrlDto.prototype, "mediaFile", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", create_sonickey_dto_1.CreateSonicKeyDto)
 ], EncodeFromUrlDto.prototype, "data", void 0);
 exports.EncodeFromUrlDto = EncodeFromUrlDto;
@@ -89,12 +89,12 @@ class QueueFileSpecDto {
     }
 }
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], QueueFileSpecDto.prototype, "filePath", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", sonicKey_dto_1.SonicKeyDto)
 ], QueueFileSpecDto.prototype, "metaData", void 0);
 exports.QueueFileSpecDto = QueueFileSpecDto;
@@ -104,18 +104,18 @@ class EncodeFromQueueDto {
     }
 }
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    class_validator_1.IsArray(),
-    class_validator_1.ValidateNested({ each: true }),
-    class_transformer_1.Type(() => QueueFileSpecDto),
-    class_validator_1.ArrayMinSize(1),
-    class_validator_1.ArrayMaxSize(100),
-    swagger_1.ApiProperty({ type: [QueueFileSpecDto] }),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => QueueFileSpecDto),
+    (0, class_validator_1.ArrayMinSize)(1),
+    (0, class_validator_1.ArrayMaxSize)(100),
+    (0, swagger_1.ApiProperty)({ type: [QueueFileSpecDto] }),
     __metadata("design:type", Array)
 ], EncodeFromQueueDto.prototype, "fileSpecs", void 0);
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], EncodeFromQueueDto.prototype, "license", void 0);
 exports.EncodeFromQueueDto = EncodeFromQueueDto;
