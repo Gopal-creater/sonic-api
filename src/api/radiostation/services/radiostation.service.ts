@@ -61,7 +61,7 @@ export class RadiostationService {
 
     // this.eventEmitter.emit(STOP_LISTENING_STREAM, radioStation);
     //Do Stop Listening Stuff
-    console.log("stopping......")
+    console.log("stopping......*")
     await axios({
       method:"post",
       url:this.configService.get<string>('API_STOP_URL'),
@@ -69,8 +69,7 @@ export class RadiostationService {
         streamId:id
       },
       headers: {  
-        Authorization: 'Apikey ' + this.configService.get<string>('API_KEY'),
-        Accept: 'application/json'
+        Authorization: `x-api-key ${this.configService.get<string>('API_KEY')}`
       }
     })
     console.log("stopped radio")
@@ -109,7 +108,7 @@ export class RadiostationService {
         streamId:id
       },
       headers: {  
-        Authorization: 'Apikey ' + this.configService.get<string>('API_KEY'),
+        Authorization: 'x-api-key ' + this.configService.get<string>('API_KEY'),
         Accept: 'application/json'
       }
     })

@@ -55,7 +55,7 @@ let RadiostationService = class RadiostationService {
                 message: 'Item not found',
             });
         }
-        console.log("stopping......");
+        console.log("stopping......*");
         await (0, axios_1.default)({
             method: "post",
             url: this.configService.get('API_STOP_URL'),
@@ -63,8 +63,7 @@ let RadiostationService = class RadiostationService {
                 streamId: id
             },
             headers: {
-                Authorization: 'Apikey ' + this.configService.get('API_KEY'),
-                Accept: 'application/json'
+                Authorization: `x-api-key ${this.configService.get('API_KEY')}`
             }
         });
         console.log("stopped radio");
@@ -91,7 +90,7 @@ let RadiostationService = class RadiostationService {
             url: this.configService.get('API_START_URL'),
             data: Object.assign(Object.assign({}, streamUrl), { streamId: id }),
             headers: {
-                Authorization: 'Apikey ' + this.configService.get('API_KEY'),
+                Authorization: 'x-api-key ' + this.configService.get('API_KEY'),
                 Accept: 'application/json'
             }
         });
