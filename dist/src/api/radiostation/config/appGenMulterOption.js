@@ -15,7 +15,7 @@ exports.appGenMulterOptions = {
             cb(new common_1.BadRequestException('Unsupported file type, only support excel for now'), false);
         }
     },
-    storage: multer_1.diskStorage({
+    storage: (0, multer_1.diskStorage)({
         destination: async (req, file, cb) => {
             const filePath = await makeDir(`${config_1.appConfig.MULTER_IMPORT_DEST}`);
             cb(null, filePath);

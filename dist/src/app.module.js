@@ -58,7 +58,7 @@ var connectionNo = 0;
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [
             axios_1.HttpModule,
             config_1.ConfigModule.forRoot({
@@ -109,7 +109,7 @@ AppModule = __decorate([
                 inject: [config_1.ConfigService],
             }),
             platform_express_1.MulterModule.register({
-                storage: multer_1.diskStorage({
+                storage: (0, multer_1.diskStorage)({
                     destination: config_2.appConfig.MULTER_DEST,
                     filename: (req, file, cb) => {
                         const randomName = uniqid();

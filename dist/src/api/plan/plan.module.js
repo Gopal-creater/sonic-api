@@ -31,11 +31,11 @@ let PlanModule = class PlanModule {
     }
 };
 PlanModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: plan_schema_1.PlanSchemaName, schema: plan_schema_1.PlanSchema }]),
-            common_1.forwardRef(() => licensekey_module_1.LicensekeyModule),
-            common_1.forwardRef(() => payment_module_1.PaymentModule),
+            (0, common_1.forwardRef)(() => licensekey_module_1.LicensekeyModule),
+            (0, common_1.forwardRef)(() => payment_module_1.PaymentModule),
         ],
         controllers: [plan_controller_1.PlanController, plan_owner_controller_1.PlansOwnerController],
         providers: [plan_service_1.PlanService],

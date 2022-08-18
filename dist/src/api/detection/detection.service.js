@@ -26,7 +26,6 @@ const detection_schema_1 = require("./schemas/detection.schema");
 const mongoose_2 = require("mongoose");
 const Enums_1 = require("../../constants/Enums");
 const mongoose_utils_1 = require("../../shared/utils/mongoose.utils");
-const types_1 = require("../../shared/types");
 const user_service_1 = require("../user/services/user.service");
 const makeDir = require("make-dir");
 const fs = require("fs");
@@ -2492,7 +2491,7 @@ let DetectionService = class DetectionService {
         return topRadioStations;
     }
     async findTopSonicKeysForRadioStation(radioStationId, topLimit, filter = {}) {
-        const stationId = mongoose_utils_1.toObjectId(radioStationId);
+        const stationId = (0, mongoose_utils_1.toObjectId)(radioStationId);
         const topSonicKeys = await this.detectionModel.aggregate([
             {
                 $match: Object.assign(Object.assign({}, filter), { radioStation: stationId }),
@@ -2519,7 +2518,7 @@ let DetectionService = class DetectionService {
         return topSonicKeys;
     }
     async findGraphOfSonicKeysForRadioStationInSpecificTime(radioStationId, groupByTime, filter = {}) {
-        const stationId = mongoose_utils_1.toObjectId(radioStationId);
+        const stationId = (0, mongoose_utils_1.toObjectId)(radioStationId);
         var group_id = {};
         if (groupByTime == 'year') {
             group_id['year'] = { $year: '$detectedAt' };
@@ -2573,9 +2572,9 @@ let DetectionService = class DetectionService {
     }
 };
 DetectionService = __decorate([
-    common_1.Injectable(),
-    __param(0, mongoose_1.InjectModel(detection_schema_1.Detection.name)),
-    __param(1, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
+    (0, common_1.Injectable)(),
+    __param(0, (0, mongoose_1.InjectModel)(detection_schema_1.Detection.name)),
+    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         user_service_1.UserService,
         file_handler_service_1.FileHandlerService])

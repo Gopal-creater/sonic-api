@@ -23,13 +23,13 @@ const update_partner_security_guard_1 = require("./guards/update-partner-securit
 let PartnerModule = class PartnerModule {
 };
 PartnerModule = __decorate([
-    common_1.Module({
+    (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: partner_schema_1.PartnerSchemaName, schema: partner_schema_1.PartnerSchema },
             ]),
-            common_1.forwardRef(() => user_module_1.UserModule),
-            common_1.forwardRef(() => company_module_1.CompanyModule),
+            (0, common_1.forwardRef)(() => user_module_1.UserModule),
+            (0, common_1.forwardRef)(() => company_module_1.CompanyModule),
         ],
         controllers: [
             partner_controller_1.PartnerController,

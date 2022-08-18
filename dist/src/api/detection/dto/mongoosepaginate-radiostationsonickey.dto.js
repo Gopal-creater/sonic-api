@@ -20,47 +20,47 @@ class MongoosePaginateDetectionDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: detection_schema_1.Detection }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: detection_schema_1.Detection }),
     __metadata("design:type", Array)
 ], MongoosePaginateDetectionDto.prototype, "docs", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateDetectionDto.prototype, "totalDocs", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateDetectionDto.prototype, "offset", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateDetectionDto.prototype, "limit", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateDetectionDto.prototype, "totalPages", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateDetectionDto.prototype, "page", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateDetectionDto.prototype, "pagingCounter", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], MongoosePaginateDetectionDto.prototype, "hasPrevPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], MongoosePaginateDetectionDto.prototype, "hasNextPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateDetectionDto.prototype, "prevPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateDetectionDto.prototype, "nextPage", void 0);
 exports.MongoosePaginateDetectionDto = MongoosePaginateDetectionDto;
@@ -70,87 +70,87 @@ class MongoosePaginatePlaysDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: general_dto_1.PlaysListResponseDto }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: general_dto_1.PlaysListResponseDto }),
     __metadata("design:type", Array)
 ], MongoosePaginatePlaysDto.prototype, "docs", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginatePlaysDto.prototype, "totalDocs", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginatePlaysDto.prototype, "offset", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginatePlaysDto.prototype, "limit", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginatePlaysDto.prototype, "totalPages", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginatePlaysDto.prototype, "page", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginatePlaysDto.prototype, "pagingCounter", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], MongoosePaginatePlaysDto.prototype, "hasPrevPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], MongoosePaginatePlaysDto.prototype, "hasNextPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginatePlaysDto.prototype, "prevPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginatePlaysDto.prototype, "nextPage", void 0);
 exports.MongoosePaginatePlaysDto = MongoosePaginatePlaysDto;
-class MongoosePaginatePlaysByArtistDto extends swagger_1.OmitType(MongoosePaginatePlaysDto, ['docs']) {
+class MongoosePaginatePlaysByArtistDto extends (0, swagger_1.OmitType)(MongoosePaginatePlaysDto, ['docs']) {
     static _OPENAPI_METADATA_FACTORY() {
         return { docs: { required: true } };
     }
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: general_dto_1.PlaysByArtistDto }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: general_dto_1.PlaysByArtistDto }),
     __metadata("design:type", Array)
 ], MongoosePaginatePlaysByArtistDto.prototype, "docs", void 0);
 exports.MongoosePaginatePlaysByArtistDto = MongoosePaginatePlaysByArtistDto;
-class MongoosePaginatePlaysByCountryDto extends swagger_1.OmitType(MongoosePaginatePlaysDto, ['docs']) {
+class MongoosePaginatePlaysByCountryDto extends (0, swagger_1.OmitType)(MongoosePaginatePlaysDto, ['docs']) {
     static _OPENAPI_METADATA_FACTORY() {
         return { docs: { required: true } };
     }
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: general_dto_1.PlaysByCountryDto }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: general_dto_1.PlaysByCountryDto }),
     __metadata("design:type", Array)
 ], MongoosePaginatePlaysByCountryDto.prototype, "docs", void 0);
 exports.MongoosePaginatePlaysByCountryDto = MongoosePaginatePlaysByCountryDto;
-class MongoosePaginatePlaysByTrackDto extends swagger_1.OmitType(MongoosePaginatePlaysDto, ['docs']) {
+class MongoosePaginatePlaysByTrackDto extends (0, swagger_1.OmitType)(MongoosePaginatePlaysDto, ['docs']) {
     static _OPENAPI_METADATA_FACTORY() {
         return { docs: { required: true } };
     }
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: general_dto_1.PlaysByTrackDto }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: general_dto_1.PlaysByTrackDto }),
     __metadata("design:type", Array)
 ], MongoosePaginatePlaysByTrackDto.prototype, "docs", void 0);
 exports.MongoosePaginatePlaysByTrackDto = MongoosePaginatePlaysByTrackDto;
-class MongoosePaginatePlaysByRadioStationDto extends swagger_1.OmitType(MongoosePaginatePlaysDto, ['docs']) {
+class MongoosePaginatePlaysByRadioStationDto extends (0, swagger_1.OmitType)(MongoosePaginatePlaysDto, ['docs']) {
     static _OPENAPI_METADATA_FACTORY() {
         return { docs: { required: true } };
     }
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: general_dto_1.PlaysByRadioStationDto }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: general_dto_1.PlaysByRadioStationDto }),
     __metadata("design:type", Array)
 ], MongoosePaginatePlaysByRadioStationDto.prototype, "docs", void 0);
 exports.MongoosePaginatePlaysByRadioStationDto = MongoosePaginatePlaysByRadioStationDto;
