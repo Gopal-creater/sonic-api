@@ -21,6 +21,7 @@ import * as makeDir from 'make-dir';
 import { appConfig } from '../../../config/app.config';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
+import { ListeningStreamDto } from '../dto/listen-radiostation.dto';
 
 @Injectable()
 export class RadiostationService {
@@ -60,11 +61,10 @@ export class RadiostationService {
 
     // this.eventEmitter.emit(STOP_LISTENING_STREAM, radioStation);
     //Do Stop Listening Stuff
+    console.log("stopping......")
     await axios({
       method:"post",
-      url:process.env.NODE_ENV === "production" ?
-       "https://yv6vg6okd7.execute-api.eu-west-2.amazonaws.com/prod/stop" :
-       "https://4s8f3c6iia.execute-api.eu-west-2.amazonaws.com/prod/stop",
+      url:this.configService.get<string>('API_STOP_URL'),
       data:{
         streamId:id
       },
@@ -85,7 +85,7 @@ export class RadiostationService {
     );
   }
 
-  async startListeningStream(id: string,streamUrl:string) {
+  async startListeningStream(id: string,streamUrl?:ListeningStreamDto) {
     const radioStation = await this.radioStationModel.findById(id);
     if (!radioStation) {
       return Promise.reject({
@@ -100,13 +100,12 @@ export class RadiostationService {
     //https://nodejs.org/api/worker_threads.html
     //Do Start Listening Stuff
     // this.eventEmitter.emit(START_LISTENING_STREAM, radioStation);
+    console.log("starting.........")
     await axios({
       method:"post",
-      url:process.env.NODE_ENV === "production" ?
-       "https://yv6vg6okd7.execute-api.eu-west-2.amazonaws.com/prod/start" :
-       "https://4s8f3c6iia.execute-api.eu-west-2.amazonaws.com/prod/start",
+      url:this.configService.get<string>('API_START_URL'),
       data:{
-        streamUrl:streamUrl,
+        ...streamUrl,
         streamId:id
       },
       headers: {  
@@ -189,7 +188,7 @@ export class RadiostationService {
 
   async bulkStartListeningStream(ids: [string]) {
     const promises = ids.map(id =>
-      this.startListeningStream(id,"").catch(err => ({
+      this.startListeningStream(id).catch(err => ({
         promiseError: err,
         data: id,
       })),
@@ -551,9 +550,5 @@ export class RadiostationService {
     // }
     await this.radioStationModel.updateMany({}, { $unset: { owner: '' } });
     return 'Done';
-  }
-
-  async appGenStopRadio(id:string){
-    return 
   }
 }

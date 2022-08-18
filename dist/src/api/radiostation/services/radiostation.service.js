@@ -55,11 +55,10 @@ let RadiostationService = class RadiostationService {
                 message: 'Item not found',
             });
         }
+        console.log("stopping......");
         await (0, axios_1.default)({
             method: "post",
-            url: process.env.NODE_ENV === "production" ?
-                "https://yv6vg6okd7.execute-api.eu-west-2.amazonaws.com/prod/stop" :
-                "https://4s8f3c6iia.execute-api.eu-west-2.amazonaws.com/prod/stop",
+            url: this.configService.get('API_STOP_URL'),
             data: {
                 streamId: id
             },
@@ -86,15 +85,11 @@ let RadiostationService = class RadiostationService {
         if (radioStation.isStreamStarted) {
             return radioStation;
         }
+        console.log("starting.........");
         await (0, axios_1.default)({
             method: "post",
-            url: process.env.NODE_ENV === "production" ?
-                "https://yv6vg6okd7.execute-api.eu-west-2.amazonaws.com/prod/start" :
-                "https://4s8f3c6iia.execute-api.eu-west-2.amazonaws.com/prod/start",
-            data: {
-                streamUrl: streamUrl,
-                streamId: id
-            },
+            url: this.configService.get('API_START_URL'),
+            data: Object.assign(Object.assign({}, streamUrl), { streamId: id }),
             headers: {
                 Authorization: 'Apikey ' + this.configService.get('API_KEY'),
                 Accept: 'application/json'
@@ -148,7 +143,7 @@ let RadiostationService = class RadiostationService {
         });
     }
     async bulkStartListeningStream(ids) {
-        const promises = ids.map(id => this.startListeningStream(id, "").catch(err => ({
+        const promises = ids.map(id => this.startListeningStream(id).catch(err => ({
             promiseError: err,
             data: id,
         })));
@@ -491,9 +486,6 @@ let RadiostationService = class RadiostationService {
     async updateFromJson() {
         await this.radioStationModel.updateMany({}, { $unset: { owner: '' } });
         return 'Done';
-    }
-    async appGenStopRadio(id) {
-        return;
     }
 };
 RadiostationService = __decorate([
