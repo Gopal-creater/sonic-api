@@ -20,70 +20,70 @@ const mongoose_1 = require("mongoose");
 const common_1 = require("@nestjs/common");
 class CreateUserDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { userName: { required: true, type: () => String }, name: { required: false, type: () => String }, firstName: { required: false, type: () => String }, lastName: { required: false, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String }, isEmailVerified: { required: false, type: () => Boolean }, isPhoneNumberVerified: { required: false, type: () => Boolean }, userRole: { required: false, enum: require("../../../constants/Enums").SystemRoles }, company: { required: false, type: () => String }, partner: { required: false, type: () => String }, sendInvitationByEmail: { required: false, type: () => Boolean } };
+        return { userName: { required: true, type: () => String }, name: { required: false, type: () => String }, firstName: { required: false, type: () => String }, lastName: { required: false, type: () => String }, password: { required: true, type: () => String, pattern: index_1.COGNITO_PASSWORD_REGULAR_EXPRESSION }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String }, isEmailVerified: { required: false, type: () => Boolean }, isPhoneNumberVerified: { required: false, type: () => Boolean }, userRole: { required: false, enum: require("../../../constants/Enums").SystemRoles }, company: { required: false, type: () => String }, partner: { required: false, type: () => String }, sendInvitationByEmail: { required: false, type: () => Boolean } };
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "userName", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "name", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "firstName", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "lastName", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
-    class_validator_1.Matches(index_1.COGNITO_PASSWORD_REGULAR_EXPRESSION, {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.Matches)(index_1.COGNITO_PASSWORD_REGULAR_EXPRESSION, {
         message: 'password too weak',
     }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "password", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "phoneNumber", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "country", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "email", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], CreateUserDto.prototype, "isEmailVerified", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], CreateUserDto.prototype, "isPhoneNumberVerified", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsEnum(Enums_1.SystemRoles),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsEnum)(Enums_1.SystemRoles),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "userRole", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "company", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "partner", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], CreateUserDto.prototype, "sendInvitationByEmail", void 0);
 exports.CreateUserDto = CreateUserDto;
@@ -101,12 +101,12 @@ class ValidationTestDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.Validate(userexists_validation_1.UserExistsRule),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.Validate)(userexists_validation_1.UserExistsRule),
     __metadata("design:type", String)
 ], ValidationTestDto.prototype, "user", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], ValidationTestDto.prototype, "param1", void 0);
 exports.ValidationTestDto = ValidationTestDto;

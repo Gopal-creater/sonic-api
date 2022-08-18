@@ -26,7 +26,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const event_emitter_1 = require("@nestjs/event-emitter");
 const sonickey_service_1 = require("../../sonickey/services/sonickey.service");
-const constants_1 = require("../listeners/constants");
 const fs = require("fs");
 const xlsx = require("xlsx");
 const _ = require("lodash");
@@ -34,11 +33,14 @@ const appRootPath = require("app-root-path");
 const Enums_1 = require("../../../constants/Enums");
 const makeDir = require("make-dir");
 const app_config_1 = require("../../../config/app.config");
+const axios_1 = require("axios");
+const config_1 = require("@nestjs/config");
 let RadiostationService = class RadiostationService {
-    constructor(radioStationModel, sonickeyService, eventEmitter) {
+    constructor(radioStationModel, sonickeyService, eventEmitter, configService) {
         this.radioStationModel = radioStationModel;
         this.sonickeyService = sonickeyService;
         this.eventEmitter = eventEmitter;
+        this.configService = configService;
     }
     create(createRadiostationDto, additionalAttribute) {
         const newRadioStation = new this.radioStationModel(Object.assign(Object.assign({}, createRadiostationDto), additionalAttribute));
@@ -53,16 +55,26 @@ let RadiostationService = class RadiostationService {
                 message: 'Item not found',
             });
         }
-        if (!radioStation.isStreamStarted) {
-            return radioStation;
-        }
-        this.eventEmitter.emit(constants_1.STOP_LISTENING_STREAM, radioStation);
+        await (0, axios_1.default)({
+            method: "post",
+            url: process.env.NODE_ENV === "production" ?
+                "https://yv6vg6okd7.execute-api.eu-west-2.amazonaws.com/prod/stop" :
+                "https://4s8f3c6iia.execute-api.eu-west-2.amazonaws.com/prod/stop",
+            data: {
+                streamId: id
+            },
+            headers: {
+                Authorization: 'Apikey ' + this.configService.get('API_KEY'),
+                Accept: 'application/json'
+            }
+        });
+        console.log("stopped radio");
         return this.radioStationModel.findOneAndUpdate({ _id: id }, {
             stopAt: new Date(),
             isStreamStarted: false,
         }, { new: true });
     }
-    async startListeningStream(id) {
+    async startListeningStream(id, streamUrl) {
         const radioStation = await this.radioStationModel.findById(id);
         if (!radioStation) {
             return Promise.reject({
@@ -74,7 +86,20 @@ let RadiostationService = class RadiostationService {
         if (radioStation.isStreamStarted) {
             return radioStation;
         }
-        this.eventEmitter.emit(constants_1.START_LISTENING_STREAM, radioStation);
+        await (0, axios_1.default)({
+            method: "post",
+            url: process.env.NODE_ENV === "production" ?
+                "https://yv6vg6okd7.execute-api.eu-west-2.amazonaws.com/prod/start" :
+                "https://4s8f3c6iia.execute-api.eu-west-2.amazonaws.com/prod/start",
+            data: {
+                streamUrl: streamUrl,
+                streamId: id
+            },
+            headers: {
+                Authorization: 'Apikey ' + this.configService.get('API_KEY'),
+                Accept: 'application/json'
+            }
+        });
         return this.radioStationModel.findOneAndUpdate({ _id: id }, {
             startedAt: new Date(),
             isStreamStarted: true,
@@ -123,7 +148,7 @@ let RadiostationService = class RadiostationService {
         });
     }
     async bulkStartListeningStream(ids) {
-        const promises = ids.map(id => this.startListeningStream(id).catch(err => ({
+        const promises = ids.map(id => this.startListeningStream(id, "").catch(err => ({
             promiseError: err,
             data: id,
         })));
@@ -467,13 +492,17 @@ let RadiostationService = class RadiostationService {
         await this.radioStationModel.updateMany({}, { $unset: { owner: '' } });
         return 'Done';
     }
+    async appGenStopRadio(id) {
+        return;
+    }
 };
 RadiostationService = __decorate([
-    common_1.Injectable(),
-    __param(0, mongoose_1.InjectModel(radiostation_schema_1.RadioStation.name)),
+    (0, common_1.Injectable)(),
+    __param(0, (0, mongoose_1.InjectModel)(radiostation_schema_1.RadioStation.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         sonickey_service_1.SonickeyService,
-        event_emitter_1.EventEmitter2])
+        event_emitter_1.EventEmitter2,
+        config_1.ConfigService])
 ], RadiostationService);
 exports.RadiostationService = RadiostationService;
 //# sourceMappingURL=radiostation.service.js.map

@@ -33,12 +33,12 @@ let LicensekeyService = class LicensekeyService {
         this.userService = userService;
     }
     async create(doc) {
-        const key = uuid_1.v4();
+        const key = (0, uuid_1.v4)();
         const newLicenseKey = await this.licenseKeyModel.create(Object.assign(Object.assign({}, doc), { _id: key, key: key }));
         return newLicenseKey.save();
     }
     async createLicenseFromPlanAndAssignToUser(user, plan, payment) {
-        const key = uuid_1.v4();
+        const key = (0, uuid_1.v4)();
         const planFromDb = await this.planService.findById(plan);
         const validity = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
         var newLicense;
@@ -106,7 +106,7 @@ let LicensekeyService = class LicensekeyService {
         return keyFromDb.save();
     }
     createUnlimitedMonitoringLicense() {
-        const key = uuid_1.v4();
+        const key = (0, uuid_1.v4)();
         const newLicenseKey = new this.licenseKeyModel({
             _id: key,
             key: key,
@@ -118,7 +118,7 @@ let LicensekeyService = class LicensekeyService {
         return newLicenseKey.save();
     }
     createDefaultLicenseToAssignUser() {
-        const key = uuid_1.v4();
+        const key = (0, uuid_1.v4)();
         const newLicenseKey = new this.licenseKeyModel({
             _id: key,
             key: key,
@@ -221,8 +221,8 @@ let LicensekeyService = class LicensekeyService {
         var validLicenseForUserWithInCompany = await this.licenseKeyModel.aggregate([
             {
                 $match: Object.assign({ disabled: false, suspended: false, validity: { $gte: startOfToday }, $or: [
-                        { company: mongoose_utils_1.toObjectId(userFromDb.company) },
-                        { company: { $in: (_b = (_a = userFromDb === null || userFromDb === void 0 ? void 0 : userFromDb.companies) === null || _a === void 0 ? void 0 : _a.map) === null || _b === void 0 ? void 0 : _b.call(_a, com => mongoose_utils_1.toObjectId(com)) } }
+                        { company: (0, mongoose_utils_1.toObjectId)(userFromDb.company) },
+                        { company: { $in: (_b = (_a = userFromDb === null || userFromDb === void 0 ? void 0 : userFromDb.companies) === null || _a === void 0 ? void 0 : _a.map) === null || _b === void 0 ? void 0 : _b.call(_a, com => (0, mongoose_utils_1.toObjectId)(com)) } }
                     ] }, filter),
             }
         ]);
@@ -613,10 +613,10 @@ let LicensekeyService = class LicensekeyService {
     }
 };
 LicensekeyService = __decorate([
-    common_1.Injectable(),
-    __param(0, mongoose_1.InjectModel(licensekey_schema_1.LicenseKey.name)),
-    __param(3, common_1.Inject(common_1.forwardRef(() => plan_service_1.PlanService))),
-    __param(4, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
+    (0, common_1.Injectable)(),
+    __param(0, (0, mongoose_1.InjectModel)(licensekey_schema_1.LicenseKey.name)),
+    __param(3, (0, common_1.Inject)((0, common_1.forwardRef)(() => plan_service_1.PlanService))),
+    __param(4, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         keygen_service_1.KeygenService,
         company_service_1.CompanyService,

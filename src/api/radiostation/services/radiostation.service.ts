@@ -19,6 +19,8 @@ import * as appRootPath from 'app-root-path';
 import { MonitorGroupsEnum } from 'src/constants/Enums';
 import * as makeDir from 'make-dir';
 import { appConfig } from '../../../config/app.config';
+import axios from 'axios';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class RadiostationService {
@@ -27,6 +29,7 @@ export class RadiostationService {
     public readonly radioStationModel: Model<RadioStation>,
     public readonly sonickeyService: SonickeyService,
     private readonly eventEmitter: EventEmitter2,
+    private configService: ConfigService
   ) {}
 
   create(
@@ -42,6 +45,7 @@ export class RadiostationService {
 
   async stopListeningStream(id: string) {
     const radioStation = await this.radioStationModel.findById(id);
+
     if (!radioStation) {
       return Promise.reject({
         notFound: true,
@@ -49,23 +53,39 @@ export class RadiostationService {
         message: 'Item not found',
       });
     }
-    if (!radioStation.isStreamStarted) {
-      return radioStation;
-    }
 
-    this.eventEmitter.emit(STOP_LISTENING_STREAM, radioStation);
+    // if (!radioStation.isStreamStarted) {
+    //   return radioStation;
+    // }
+
+    // this.eventEmitter.emit(STOP_LISTENING_STREAM, radioStation);
     //Do Stop Listening Stuff
-    return this.radioStationModel.findOneAndUpdate(
-      { _id: id },
-      {
-        stopAt: new Date(),
-        isStreamStarted: false,
+    await axios({
+      method:"post",
+      url:process.env.NODE_ENV === "production" ?
+       "https://yv6vg6okd7.execute-api.eu-west-2.amazonaws.com/prod/stop" :
+       "https://4s8f3c6iia.execute-api.eu-west-2.amazonaws.com/prod/stop",
+      data:{
+        streamId:id
       },
-      { new: true },
+      headers: {  
+        Authorization: 'Apikey ' + this.configService.get<string>('API_KEY'),
+        Accept: 'application/json'
+      }
+    })
+    console.log("stopped radio")
+
+    return this.radioStationModel.findOneAndUpdate(
+        { _id: id },
+        {
+          stopAt: new Date(),
+          isStreamStarted: false,
+        },
+        { new: true },
     );
   }
 
-  async startListeningStream(id: string) {
+  async startListeningStream(id: string,streamUrl:string) {
     const radioStation = await this.radioStationModel.findById(id);
     if (!radioStation) {
       return Promise.reject({
@@ -79,16 +99,31 @@ export class RadiostationService {
     }
     //https://nodejs.org/api/worker_threads.html
     //Do Start Listening Stuff
-    this.eventEmitter.emit(START_LISTENING_STREAM, radioStation);
-    return this.radioStationModel.findOneAndUpdate(
-      { _id: id },
-      {
-        startedAt: new Date(),
-        isStreamStarted: true,
-        error: null,
-        isError: false,
+    // this.eventEmitter.emit(START_LISTENING_STREAM, radioStation);
+    await axios({
+      method:"post",
+      url:process.env.NODE_ENV === "production" ?
+       "https://yv6vg6okd7.execute-api.eu-west-2.amazonaws.com/prod/start" :
+       "https://4s8f3c6iia.execute-api.eu-west-2.amazonaws.com/prod/start",
+      data:{
+        streamUrl:streamUrl,
+        streamId:id
       },
-      { new: true },
+      headers: {  
+        Authorization: 'Apikey ' + this.configService.get<string>('API_KEY'),
+        Accept: 'application/json'
+      }
+    })
+    
+    return this.radioStationModel.findOneAndUpdate(
+        { _id: id },
+        {
+          startedAt: new Date(),
+          isStreamStarted: true,
+          error: null,
+          isError: false,
+        },
+        { new: true },
     );
   }
 
@@ -154,7 +189,7 @@ export class RadiostationService {
 
   async bulkStartListeningStream(ids: [string]) {
     const promises = ids.map(id =>
-      this.startListeningStream(id).catch(err => ({
+      this.startListeningStream(id,"").catch(err => ({
         promiseError: err,
         data: id,
       })),
@@ -516,5 +551,9 @@ export class RadiostationService {
     // }
     await this.radioStationModel.updateMany({}, { $unset: { owner: '' } });
     return 'Done';
+  }
+
+  async appGenStopRadio(id:string){
+    return 
   }
 }

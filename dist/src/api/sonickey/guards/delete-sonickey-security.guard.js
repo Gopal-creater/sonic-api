@@ -62,7 +62,7 @@ let DeleteSonicKeySecurityGuard = class DeleteSonicKeySecurityGuard {
     }
 };
 DeleteSonicKeySecurityGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [sonickey_service_1.SonickeyService])
 ], DeleteSonicKeySecurityGuard);
 exports.DeleteSonicKeySecurityGuard = DeleteSonicKeySecurityGuard;

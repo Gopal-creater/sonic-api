@@ -157,9 +157,9 @@ let RadioMonitorService = class RadioMonitorService {
     }
 };
 RadioMonitorService = __decorate([
-    common_1.Injectable(),
-    __param(0, mongoose_1.InjectModel(radiomonitor_schema_1.RadioMonitor.name)),
-    __param(3, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
+    (0, common_1.Injectable)(),
+    __param(0, (0, mongoose_1.InjectModel)(radiomonitor_schema_1.RadioMonitor.name)),
+    __param(3, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         radiostation_service_1.RadiostationService,
         licensekey_service_1.LicensekeyService,

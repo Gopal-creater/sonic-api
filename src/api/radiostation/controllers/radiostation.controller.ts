@@ -249,8 +249,8 @@ export class RadiostationController {
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'start listening stream' })
-  startListeningStream(@Param('id') id: string) {
-    return this.radiostationService.startListeningStream(id).catch(err => {
+  startListeningStream(@Param('id') id: string,@Body() streamUrl:string) {
+    return this.radiostationService.startListeningStream(id,streamUrl).catch(err => {
       if (err.status == 404) {
         throw new NotFoundException();
       }

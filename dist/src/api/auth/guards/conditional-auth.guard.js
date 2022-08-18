@@ -31,7 +31,7 @@ let ConditionalAuthGuard = class ConditionalAuthGuard {
     }
 };
 ConditionalAuthGuard = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [jwt_auth_guard_1.JwtAuthGuard,
         apikey_auth_guard_1.ApiKeyAuthGuard])
 ], ConditionalAuthGuard);

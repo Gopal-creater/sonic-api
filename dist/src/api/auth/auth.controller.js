@@ -43,26 +43,26 @@ let AuthController = class AuthController {
     }
 };
 __decorate([
-    common_1.Post('login'),
-    swagger_1.ApiOperation({ summary: 'User Login' }),
+    (0, common_1.Post)('login'),
+    (0, swagger_1.ApiOperation)({ summary: 'User Login' }),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, common_1.Body()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [login_dto_1.LoginDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
-    common_1.Post('/wpms/signup'),
-    swagger_1.ApiOperation({ summary: 'User Signup from WPMS website under WPMS Partner' }),
+    (0, common_1.Post)('/wpms/signup'),
+    (0, swagger_1.ApiOperation)({ summary: 'User Signup from WPMS website under WPMS Partner' }),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, common_1.Body()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [register_dto_1.WpmsUserRegisterDTO]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "wpmsSignup", null);
 AuthController = __decorate([
-    swagger_1.ApiTags('Authentication Controller (D & M May 2022)'),
-    common_1.Controller('auth'),
+    (0, swagger_1.ApiTags)('Authentication Controller (D & M May 2022)'),
+    (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService,
         user_service_1.UserService,
         partner_service_1.PartnerService])
