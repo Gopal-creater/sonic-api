@@ -1,1 +1,1 @@
-{"version":3,"file":"version.dto.js","sourceRoot":"","sources":["../../../../../src/api/appversions/dto/version.dto.ts"],"names":[],"mappings":";;;;AAAA,6CAAwD;AACxD,sEAA2D;AAC3D,MAAa,OAAQ,SAAQ,kBAAQ,CAAC,+BAAU,EAAG;IACjD,YAAY;IACZ,wBAAwB;IACxB,yBAAyB;CAC1B,CAAC;;;;CAAG;AAJL,0BAIK"}
+{"version":3,"file":"version.dto.js","sourceRoot":"","sources":["../../../../../src/api/appversions/dto/version.dto.ts"],"names":[],"mappings":";;;;AAAA,6CAAwD;AACxD,sEAA2D;AAC3D,MAAa,OAAQ,SAAQ,IAAA,kBAAQ,EAAC,+BAAU,EAAG;IACjD,YAAY;IACZ,wBAAwB;IACxB,yBAAyB;CAC1B,CAAC;;;;CAAG;AAJL,0BAIK"}

@@ -18,8 +18,8 @@ exports.UserCompanySchemaName = 'UserCompany';
 let UserCompany = class UserCompany extends mongoose_2.Document {
 };
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: company_schema_1.CompanySchemaName,
         autopopulate: true,
@@ -28,15 +28,15 @@ __decorate([
     __metadata("design:type", Object)
 ], UserCompany.prototype, "company", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: mongoose_2.Schema.Types.Boolean,
         default: false,
     }),
     __metadata("design:type", Boolean)
 ], UserCompany.prototype, "isAdmin", void 0);
 UserCompany = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.UserCompanySchemaName })
+    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.UserCompanySchemaName })
 ], UserCompany);
 exports.UserCompany = UserCompany;
 exports.UserCompanySchema = mongoose_1.SchemaFactory.createForClass(UserCompany);

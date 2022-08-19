@@ -19,47 +19,47 @@ class MongoosePaginateJobFileDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: jobfile_schema_1.JobFile }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: jobfile_schema_1.JobFile }),
     __metadata("design:type", Array)
 ], MongoosePaginateJobFileDto.prototype, "docs", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateJobFileDto.prototype, "totalDocs", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateJobFileDto.prototype, "offset", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateJobFileDto.prototype, "limit", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateJobFileDto.prototype, "totalPages", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateJobFileDto.prototype, "page", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateJobFileDto.prototype, "pagingCounter", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], MongoosePaginateJobFileDto.prototype, "hasPrevPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], MongoosePaginateJobFileDto.prototype, "hasNextPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateJobFileDto.prototype, "prevPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateJobFileDto.prototype, "nextPage", void 0);
 exports.MongoosePaginateJobFileDto = MongoosePaginateJobFileDto;

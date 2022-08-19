@@ -22,7 +22,7 @@ let KeygenService = class KeygenService {
         this.adminToken = this.configService.get('KEYGEN_ADMIN_TOKEN');
     }
     async generateToken() {
-        return node_fetch_1.default(`${this.apiBaseUrl}/tokens`, {
+        return (0, node_fetch_1.default)(`${this.apiBaseUrl}/tokens`, {
             method: 'POST',
             headers: {
                 Accept: 'application/vnd.api+json',
@@ -31,7 +31,7 @@ let KeygenService = class KeygenService {
         }).then(response => response.json());
     }
     async createLicense(license) {
-        return node_fetch_1.default(this.licenceEndPoint, {
+        return (0, node_fetch_1.default)(this.licenceEndPoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/vnd.api+json',
@@ -61,7 +61,7 @@ let KeygenService = class KeygenService {
         }).then(response => response.json());
     }
     async getAllLicenses(query) {
-        return node_fetch_1.default(`${this.licenceEndPoint}?${query}`, {
+        return (0, node_fetch_1.default)(`${this.licenceEndPoint}?${query}`, {
             method: 'GET',
             headers: {
                 Accept: 'application/vnd.api+json',
@@ -70,7 +70,7 @@ let KeygenService = class KeygenService {
         }).then(response => response.json());
     }
     async getLicenseById(id) {
-        return node_fetch_1.default(`${this.licenceEndPoint}/${id}`, {
+        return (0, node_fetch_1.default)(`${this.licenceEndPoint}/${id}`, {
             method: 'GET',
             headers: {
                 Accept: 'application/vnd.api+json',
@@ -79,7 +79,7 @@ let KeygenService = class KeygenService {
         }).then(response => response.json());
     }
     async validateLicence(id) {
-        return node_fetch_1.default(`${this.licenceEndPoint}/${id}/actions/validate`, {
+        return (0, node_fetch_1.default)(`${this.licenceEndPoint}/${id}/actions/validate`, {
             method: 'POST',
             headers: {
                 Accept: 'application/vnd.api+json',
@@ -88,7 +88,7 @@ let KeygenService = class KeygenService {
         }).then(response => response.json());
     }
     async updateLicense(id, license) {
-        return node_fetch_1.default(`${this.licenceEndPoint}/${id}`, {
+        return (0, node_fetch_1.default)(`${this.licenceEndPoint}/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/vnd.api+json',
@@ -104,7 +104,7 @@ let KeygenService = class KeygenService {
         }).then(response => response.json());
     }
     async incrementUsage(id, increment = 1) {
-        return node_fetch_1.default(`${this.licenceEndPoint}/${id}/actions/increment-usage`, {
+        return (0, node_fetch_1.default)(`${this.licenceEndPoint}/${id}/actions/increment-usage`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/vnd.api+json',
@@ -119,7 +119,7 @@ let KeygenService = class KeygenService {
         }).then(response => response.json());
     }
     async decrementUsage(id, decrementBy = 1) {
-        return node_fetch_1.default(`${this.licenceEndPoint}/${id}/actions/decrement-usage`, {
+        return (0, node_fetch_1.default)(`${this.licenceEndPoint}/${id}/actions/decrement-usage`, {
             method: 'POST',
             headers: {
                 Accept: 'application/vnd.api+json',
@@ -133,7 +133,7 @@ let KeygenService = class KeygenService {
         }).then(response => response.json());
     }
     async resetUsage(id) {
-        return node_fetch_1.default(`${this.licenceEndPoint}/${id}/actions/reset-usage`, {
+        return (0, node_fetch_1.default)(`${this.licenceEndPoint}/${id}/actions/reset-usage`, {
             method: 'POST',
             headers: {
                 Accept: 'application/vnd.api+json',
@@ -142,7 +142,7 @@ let KeygenService = class KeygenService {
         }).then(response => response.json());
     }
     async deleteLicense(id) {
-        return node_fetch_1.default(`${this.licenceEndPoint}/${id}`, {
+        return (0, node_fetch_1.default)(`${this.licenceEndPoint}/${id}`, {
             method: 'DELETE',
             headers: {
                 Accept: 'application/vnd.api+json',
@@ -152,7 +152,7 @@ let KeygenService = class KeygenService {
     }
 };
 KeygenService = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [config_1.ConfigService])
 ], KeygenService);
 exports.KeygenService = KeygenService;

@@ -17,50 +17,50 @@ const constant_1 = require("../constant");
 const company_schema_1 = require("../schemas/company.schema");
 class CreateCompanyDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, description: { required: true, type: () => String }, companyType: { required: true, type: () => String }, companyUrnOrId: { required: true, type: () => String }, email: { required: true, type: () => String }, enabled: { required: true, type: () => Boolean }, contactNo: { required: true, type: () => String }, address: { required: true, type: () => require("../schemas/company.schema").Address }, owner: { required: true, type: () => String }, partner: { required: true, type: () => String } };
+        return { name: { required: true, type: () => String }, description: { required: true, type: () => String }, companyType: { required: true, type: () => String, enum: constant_1.companyTypes }, companyUrnOrId: { required: true, type: () => String }, email: { required: true, type: () => String }, enabled: { required: true, type: () => Boolean }, contactNo: { required: true, type: () => String }, address: { required: true, type: () => require("../schemas/company.schema").Address }, owner: { required: true, type: () => String }, partner: { required: true, type: () => String } };
     }
 }
 __decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "name", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "description", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    class_validator_1.IsNotEmpty(),
-    class_validator_1.IsIn(constant_1.companyTypes),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsIn)(constant_1.companyTypes),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "companyType", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "companyUrnOrId", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "email", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], CreateCompanyDto.prototype, "enabled", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "contactNo", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", company_schema_1.Address)
 ], CreateCompanyDto.prototype, "address", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "owner", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "partner", void 0);
 exports.CreateCompanyDto = CreateCompanyDto;

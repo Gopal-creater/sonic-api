@@ -19,7 +19,7 @@ let QueuejobController = class QueuejobController {
     }
 };
 QueuejobController = __decorate([
-    common_1.Controller('queuejob'),
+    (0, common_1.Controller)('queuejob'),
     __metadata("design:paramtypes", [queuejob_service_1.QueuejobService])
 ], QueuejobController);
 exports.QueuejobController = QueuejobController;

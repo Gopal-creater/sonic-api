@@ -19,47 +19,47 @@ class MongoosePaginateUserDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: user_db_schema_1.UserDB }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: user_db_schema_1.UserDB }),
     __metadata("design:type", Array)
 ], MongoosePaginateUserDto.prototype, "docs", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateUserDto.prototype, "totalDocs", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateUserDto.prototype, "offset", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateUserDto.prototype, "limit", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateUserDto.prototype, "totalPages", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateUserDto.prototype, "page", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateUserDto.prototype, "pagingCounter", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], MongoosePaginateUserDto.prototype, "hasPrevPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], MongoosePaginateUserDto.prototype, "hasNextPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateUserDto.prototype, "prevPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateUserDto.prototype, "nextPage", void 0);
 exports.MongoosePaginateUserDto = MongoosePaginateUserDto;

@@ -16,93 +16,92 @@ const swagger_1 = require("@nestjs/swagger");
 const radiostation_schema_1 = require("../../radiostation/schemas/radiostation.schema");
 const sonickey_schema_1 = require("../../sonickey/schemas/sonickey.schema");
 const Enums_1 = require("../../../constants/Enums");
-const common_interface_1 = require("../../../shared/interfaces/common.interface");
 exports.DetectionSchemaName = "Detection";
 let DetectedTimeStamp = class DetectedTimeStamp {
 };
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
 ], DetectedTimeStamp.prototype, "start", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
 ], DetectedTimeStamp.prototype, "end", void 0);
 DetectedTimeStamp = __decorate([
-    mongoose_1.Schema()
+    (0, mongoose_1.Schema)()
 ], DetectedTimeStamp);
 exports.DetectedTimeStamp = DetectedTimeStamp;
 let RadioProgram = class RadioProgram {
 };
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], RadioProgram.prototype, "title", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], RadioProgram.prototype, "subtitle", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], RadioProgram.prototype, "dj", void 0);
 RadioProgram = __decorate([
-    mongoose_1.Schema()
+    (0, mongoose_1.Schema)()
 ], RadioProgram);
 exports.RadioProgram = RadioProgram;
 let ThirdpartyStreamReaderDetection = class ThirdpartyStreamReaderDetection {
 };
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], ThirdpartyStreamReaderDetection.prototype, "country", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], ThirdpartyStreamReaderDetection.prototype, "name", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Date)
 ], ThirdpartyStreamReaderDetection.prototype, "detectedAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Map)
 ], ThirdpartyStreamReaderDetection.prototype, "metaData", void 0);
 ThirdpartyStreamReaderDetection = __decorate([
-    mongoose_1.Schema()
+    (0, mongoose_1.Schema)()
 ], ThirdpartyStreamReaderDetection);
 exports.ThirdpartyStreamReaderDetection = ThirdpartyStreamReaderDetection;
 let Detection = class Detection extends mongoose_2.Document {
 };
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, ref: radiostation_schema_1.RadioStationSchemaName, autopopulate: { maxDepth: 2 } }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: mongoose_2.Schema.Types.ObjectId, ref: radiostation_schema_1.RadioStationSchemaName, autopopulate: { maxDepth: 2 } }),
     __metadata("design:type", Object)
 ], Detection.prototype, "radioStation", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, ref: sonickey_schema_1.SonicKeySchemaName, required: true, autopopulate: { maxDepth: 2 } }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: String, ref: sonickey_schema_1.SonicKeySchemaName, required: true, autopopulate: { maxDepth: 2 } }),
     __metadata("design:type", Object)
 ], Detection.prototype, "sonicKey", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ select: false }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ select: false }),
     __metadata("design:type", String)
 ], Detection.prototype, "apiKey", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ select: false }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ select: false }),
     __metadata("design:type", String)
 ], Detection.prototype, "licenseKey", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: String,
         ref: 'User',
         autopopulate: { maxDepth: 2 },
@@ -110,8 +109,8 @@ __decorate([
     __metadata("design:type", Object)
 ], Detection.prototype, "owner", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: 'Partner',
         autopopulate: { maxDepth: 2 },
@@ -119,8 +118,8 @@ __decorate([
     __metadata("design:type", Object)
 ], Detection.prototype, "partner", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({
         type: mongoose_2.Schema.Types.ObjectId,
         ref: 'Company',
         autopopulate: { maxDepth: 2 },
@@ -128,72 +127,72 @@ __decorate([
     __metadata("design:type", Object)
 ], Detection.prototype, "company", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Detection.prototype, "sonicKeyOwnerId", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Detection.prototype, "sonicKeyOwnerName", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, enum: Enums_1.ChannelEnums, required: true }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: String, enum: Enums_1.ChannelEnums, required: true }),
     __metadata("design:type", String)
 ], Detection.prototype, "channel", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: String }),
     __metadata("design:type", String)
 ], Detection.prototype, "channelUuid", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ default: Date.now() }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ default: Date.now() }),
     __metadata("design:type", Date)
 ], Detection.prototype, "detectedAt", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: String, default: '' }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: String, default: '' }),
     __metadata("design:type", String)
 ], Detection.prototype, "detectionSourceFileName", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop([{ type: String, default: [] }]),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)([{ type: String, default: [] }]),
     __metadata("design:type", Array)
 ], Detection.prototype, "detectionOrigins", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop([DetectedTimeStamp]),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)([DetectedTimeStamp]),
     __metadata("design:type", Array)
 ], Detection.prototype, "detectedTimestamps", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Number)
 ], Detection.prototype, "detectedDuration", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop(),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Map)
 ], Detection.prototype, "metaData", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: ThirdpartyStreamReaderDetection }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: ThirdpartyStreamReaderDetection }),
     __metadata("design:type", ThirdpartyStreamReaderDetection)
 ], Detection.prototype, "thirdpartyStreamReaderDetection", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop({ type: RadioProgram }),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: RadioProgram }),
     __metadata("design:type", RadioProgram)
 ], Detection.prototype, "program", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
-    mongoose_1.Prop([String]),
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)([String]),
     __metadata("design:type", Array)
 ], Detection.prototype, "groups", void 0);
 Detection = __decorate([
-    mongoose_1.Schema({ timestamps: true, collection: exports.DetectionSchemaName })
+    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.DetectionSchemaName })
 ], Detection);
 exports.Detection = Detection;
 exports.DetectionSchema = mongoose_1.SchemaFactory.createForClass(Detection);

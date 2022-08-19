@@ -1,1 +1,1 @@
-{"version":3,"file":"bulk.dto.js","sourceRoot":"","sources":["../../../../src/shared/dtos/bulk.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;;AAAA,6CAA8C;AAE9C,MAAa,YAAY;;;;CAGtB;AADC;IADC,qBAAW,CAAC,EAAE,IAAI,EAAE,CAAC,MAAM,CAAC,EAAE,CAAC;;yCAClB;AAFlB,oCAGG"}
+{"version":3,"file":"bulk.dto.js","sourceRoot":"","sources":["../../../../src/shared/dtos/bulk.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;;AAAA,6CAA8C;AAE9C,MAAa,YAAY;;;;CAGtB;AADC;IADC,IAAA,qBAAW,EAAC,EAAE,IAAI,EAAE,CAAC,MAAM,CAAC,EAAE,CAAC;;yCAClB;AAFlB,oCAGG"}

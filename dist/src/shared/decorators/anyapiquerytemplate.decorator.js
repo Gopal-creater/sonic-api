@@ -4,7 +4,7 @@ exports.AnyApiQueryTemplate = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 function AnyApiQueryTemplate(options) {
-    return common_1.applyDecorators(swagger_1.ApiQuery(Object.assign({ name: 'query', type: 'object', required: false, description: `<b>Here you can add any query string as you need for your query options, 
+    return (0, common_1.applyDecorators)((0, swagger_1.ApiQuery)(Object.assign({ name: 'query', type: 'object', required: false, description: `<b>Here you can add any query string as you need for your query options, 
       But please follow the standard here</b> <a target="_blank" href="https://www.npmjs.com/package/mongoose-query-parser">https://www.npmjs.com/package/mongoose-query-parser</a>
       <ul>
       <li><b>Eg-Basic:</b> BASE_URL?limit=100&skip=0&page=1&email=test@gmail.com</li><br/>

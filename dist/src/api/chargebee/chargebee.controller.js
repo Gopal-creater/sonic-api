@@ -42,52 +42,52 @@ let ChargebeeController = class ChargebeeController {
     }
 };
 __decorate([
-    common_1.Get('/plans'),
+    (0, common_1.Get)('/plans'),
     openapi.ApiResponse({ status: 200, type: Object }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ChargebeeController.prototype, "findPlans", null);
 __decorate([
-    common_1.Post('/webhook'),
+    (0, common_1.Post)('/webhook'),
     openapi.ApiResponse({ status: 201, type: String }),
-    __param(0, common_1.Body()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ChargebeeController.prototype, "webHook", null);
 __decorate([
-    common_1.Get('/plans/:id/get-price'),
+    (0, common_1.Get)('/plans/:id/get-price'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, common_1.Param('id')),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], ChargebeeController.prototype, "getPlanPrice", null);
 __decorate([
-    common_1.Get('/plans/get-hosted-page'),
+    (0, common_1.Get)('/plans/get-hosted-page'),
     openapi.ApiResponse({ status: 200, type: Object }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ChargebeeController.prototype, "getHostedPage", null);
 __decorate([
-    common_1.Get('/plans/get-hosted-page-for-addon'),
+    (0, common_1.Get)('/plans/get-hosted-page-for-addon'),
     openapi.ApiResponse({ status: 200, type: Object }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ChargebeeController.prototype, "getHostedPageForAddon", null);
 __decorate([
-    common_1.Get('/plans/get-hosted-page-for-upgrade'),
+    (0, common_1.Get)('/plans/get-hosted-page-for-upgrade'),
     openapi.ApiResponse({ status: 200, type: Object }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ChargebeeController.prototype, "getHostedPageForUpgrade", null);
 ChargebeeController = __decorate([
-    swagger_1.ApiTags('Chargebee'),
-    common_1.Controller('chargebee'),
+    (0, swagger_1.ApiTags)('Chargebee'),
+    (0, common_1.Controller)('chargebee'),
     __metadata("design:paramtypes", [chargebee_service_1.ChargebeeService])
 ], ChargebeeController);
 exports.ChargebeeController = ChargebeeController;

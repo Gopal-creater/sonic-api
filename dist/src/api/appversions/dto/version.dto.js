@@ -4,7 +4,7 @@ exports.Version = void 0;
 const openapi = require("@nestjs/swagger");
 const swagger_1 = require("@nestjs/swagger");
 const appversions_schema_1 = require("../schemas/appversions.schema");
-class Version extends swagger_1.OmitType(appversions_schema_1.AppVersion, [
+class Version extends (0, swagger_1.OmitType)(appversions_schema_1.AppVersion, [
     's3FileMeta',
     'contentVersionFilePath',
     'originalVersionFileName'

@@ -73,7 +73,7 @@ let AppgenService = class AppgenService {
     }
 };
 AppgenService = __decorate([
-    common_1.Injectable()
+    (0, common_1.Injectable)()
 ], AppgenService);
 exports.AppgenService = AppgenService;
 //# sourceMappingURL=appgen.service.js.map

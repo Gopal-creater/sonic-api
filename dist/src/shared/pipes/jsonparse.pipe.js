@@ -20,7 +20,7 @@ let JsonParsePipe = class JsonParsePipe {
     }
 };
 JsonParsePipe = __decorate([
-    common_1.Injectable()
+    (0, common_1.Injectable)()
 ], JsonParsePipe);
 exports.JsonParsePipe = JsonParsePipe;
 //# sourceMappingURL=jsonparse.pipe.js.map

@@ -19,47 +19,47 @@ class MongoosePaginateThirdPartyDetectionDto {
     }
 }
 __decorate([
-    swagger_1.ApiProperty({ isArray: true, type: thirdparty_detection_schema_1.ThirdpartyDetection }),
+    (0, swagger_1.ApiProperty)({ isArray: true, type: thirdparty_detection_schema_1.ThirdpartyDetection }),
     __metadata("design:type", Array)
 ], MongoosePaginateThirdPartyDetectionDto.prototype, "docs", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateThirdPartyDetectionDto.prototype, "totalDocs", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateThirdPartyDetectionDto.prototype, "offset", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateThirdPartyDetectionDto.prototype, "limit", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateThirdPartyDetectionDto.prototype, "totalPages", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateThirdPartyDetectionDto.prototype, "page", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateThirdPartyDetectionDto.prototype, "pagingCounter", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], MongoosePaginateThirdPartyDetectionDto.prototype, "hasPrevPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Boolean)
 ], MongoosePaginateThirdPartyDetectionDto.prototype, "hasNextPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateThirdPartyDetectionDto.prototype, "prevPage", void 0);
 __decorate([
-    swagger_1.ApiProperty(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], MongoosePaginateThirdPartyDetectionDto.prototype, "nextPage", void 0);
 exports.MongoosePaginateThirdPartyDetectionDto = MongoosePaginateThirdPartyDetectionDto;

@@ -35,7 +35,7 @@ let ParseQueryValue = class ParseQueryValue {
             const { aggregateSearch, relation_filter = JSON.stringify({}) } = queries, query = __rest(queries, ["aggregateSearch", "relation_filter"]);
             const parser = new mongoose_query_parser_1.MongooseQueryParser({
                 casters: {
-                    objectId: val => mongoose_utils_1.toObjectId(val)
+                    objectId: val => (0, mongoose_utils_1.toObjectId)(val)
                 }
             });
             const relationPrefix = 'relation_';
@@ -60,7 +60,7 @@ let ParseQueryValue = class ParseQueryValue {
             }
             if (aggregateSearch) {
                 const parsedAggregate = JSON.parse(aggregateSearch);
-                if (!lodash_1.isArray(parsedAggregate)) {
+                if (!(0, lodash_1.isArray)(parsedAggregate)) {
                     throw new common_1.BadRequestException('aggregateSearch params must be an array of object type in stringify format');
                 }
                 console.log('passed========>');
@@ -111,12 +111,12 @@ let ParseQueryValue = class ParseQueryValue {
         const res = {};
         for (const key in filter) {
             var value = filter[key];
-            console.log(`IsObjectId ${mongoose_utils_1.isObjectId(value)} :${JSON.stringify(value)}`);
-            if (mongoose_utils_1.isObjectId(value)) {
-                res[key] = mongoose_utils_1.toObjectId(value);
+            console.log(`IsObjectId ${(0, mongoose_utils_1.isObjectId)(value)} :${JSON.stringify(value)}`);
+            if ((0, mongoose_utils_1.isObjectId)(value)) {
+                res[key] = (0, mongoose_utils_1.toObjectId)(value);
             }
             else {
-                if (lodash_1.isArray(value)) {
+                if ((0, lodash_1.isArray)(value)) {
                     for (let index = 0; index < value.length; index++) {
                         const ele = value[index];
                         if (typeof (ele) == "object") {
@@ -134,7 +134,7 @@ let ParseQueryValue = class ParseQueryValue {
     }
 };
 ParseQueryValue = __decorate([
-    common_1.Injectable(),
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [Array])
 ], ParseQueryValue);
 exports.ParseQueryValue = ParseQueryValue;

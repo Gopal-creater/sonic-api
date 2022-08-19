@@ -208,7 +208,7 @@ let DetectionThirdPartyController = class DetectionThirdPartyController {
             for (var decodeResponsesFromFingerPrint_1 = __asyncValues(decodeResponsesFromFingerPrint), decodeResponsesFromFingerPrint_1_1; decodeResponsesFromFingerPrint_1_1 = await decodeResponsesFromFingerPrint_1.next(), !decodeResponsesFromFingerPrint_1_1.done;) {
                 const decodeRes = decodeResponsesFromFingerPrint_1_1.value;
                 const isKeyPresent = await this.sonickeyServive.findOne({
-                    "fingerPrintMetaData.soundId": decodeRes.soundId
+                    "fingerPrintMetaData.song_id": decodeRes.soundId
                 });
                 if (isKeyPresent) {
                     const sonicKeyContentDurationInSec = isKeyPresent.contentDuration || 60;
