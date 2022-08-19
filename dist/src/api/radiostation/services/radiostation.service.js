@@ -61,12 +61,12 @@ let RadiostationService = class RadiostationService {
         console.log("stopping......*");
         const stoppedRadio = await (0, axios_1.default)({
             method: "post",
-            url: this.configService.get('API_STOP_URL'),
+            url: this.configService.get('STREAMREADER_API_STOP_URL'),
             data: {
                 streamId: id
             },
             headers: {
-                'x-api-key': this.configService.get('API_KEY')
+                'x-api-key': this.configService.get('STREAMREADER_API_KEY')
             }
         });
         console.log("stopped radio.....", stoppedRadio);
@@ -90,13 +90,13 @@ let RadiostationService = class RadiostationService {
         console.log("starting.........");
         const startedRadio = await (0, axios_1.default)({
             method: "post",
-            url: this.configService.get('API_START_URL'),
+            url: this.configService.get('STREAMREADER_API_START_URL'),
             data: {
                 streamUrl: radioStation.streamingUrl,
                 streamId: id
             },
             headers: {
-                'x-api-key': this.configService.get('API_KEY')
+                'x-api-key': this.configService.get('STREAMREADER_API_KEY')
             }
         });
         console.log("Finished........", startedRadio);
