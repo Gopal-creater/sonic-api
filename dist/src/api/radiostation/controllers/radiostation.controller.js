@@ -71,7 +71,9 @@ let RadiostationController = class RadiostationController {
         const excelPath = upath.toUnix(file.path);
         console.log("file", file);
         console.log("Excel Path", excelPath);
-        return this.radiostationService.importFromAppgenExcel(excelPath).finally(() => {
+        return this.radiostationService.importFromAppgenExcel(excelPath).catch((err) => {
+            throw err;
+        }).finally(() => {
             fs.unlinkSync(excelPath);
         });
     }
