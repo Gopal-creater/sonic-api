@@ -3,13 +3,8 @@ import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
 import { MonitorGroup, RadioStation } from '../schemas/radiostation.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { QueryDto } from '../../../shared/dtos/query.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SonickeyService } from '../../sonickey/services/sonickey.service';
-import {
-  STOP_LISTENING_STREAM,
-  START_LISTENING_STREAM,
-} from '../listeners/constants';
 import { MongoosePaginateRadioStationDto } from '../dto/mongoosepaginate-radiostation.dto';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import * as fs from 'fs';
@@ -21,7 +16,6 @@ import * as makeDir from 'make-dir';
 import { appConfig } from '../../../config/app.config';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
-import { ListeningStreamDto } from '../dto/listen-radiostation.dto';
 
 @Injectable()
 export class RadiostationService {
@@ -47,6 +41,7 @@ export class RadiostationService {
   async stopListeningStream(id: string) {
     const radioStation = await this.radioStationModel.findById(id);
 
+    //If radioStation not found then throw 404 error
     if (!radioStation) {
       return Promise.reject({
         notFound: true,
@@ -55,25 +50,29 @@ export class RadiostationService {
       });
     }
 
-    // if (!radioStation.isStreamStarted) {
-    //   return radioStation;
-    // }
+    //If Radio station is already stopped then return same radio
+    if (!radioStation.isStreamStarted) {
+      return radioStation;
+    }
 
     // this.eventEmitter.emit(STOP_LISTENING_STREAM, radioStation);
-    //Do Stop Listening Stuff
+
+    //Third pary api call for stopping the radio-------------------
     console.log("stopping......*")
-    await axios({
+    const stoppedRadio = await axios({
       method:"post",
       url:this.configService.get<string>('API_STOP_URL'),
       data:{
         streamId:id
       },
       headers: {  
-        Authorization: `x-api-key ${this.configService.get<string>('API_KEY')}`
+        'x-api-key': this.configService.get<string>('API_KEY')
       }
     })
-    console.log("stopped radio")
+    console.log("stopped radio.....",stoppedRadio)
+    //--------------------------------------------------------------
 
+    //If stopping succes then update the station in our database and return the same.
     return this.radioStationModel.findOneAndUpdate(
         { _id: id },
         {
@@ -84,8 +83,10 @@ export class RadiostationService {
     );
   }
 
-  async startListeningStream(id: string,streamUrl?:ListeningStreamDto) {
+  async startListeningStream(id: string) {
     const radioStation = await this.radioStationModel.findById(id);
+
+    //If radioStation not found then throw 404 error
     if (!radioStation) {
       return Promise.reject({
         notFound: true,
@@ -93,26 +94,32 @@ export class RadiostationService {
         message: 'Item not found',
       });
     }
+
+    //If Radio station is already started then return same radio
     if (radioStation.isStreamStarted) {
       return radioStation;
     }
+
     //https://nodejs.org/api/worker_threads.html
-    //Do Start Listening Stuff
     // this.eventEmitter.emit(START_LISTENING_STREAM, radioStation);
+
+    //Third pary api call for starting the radio-------------------
     console.log("starting.........")
-    await axios({
+    const startedRadio = await axios({
       method:"post",
       url:this.configService.get<string>('API_START_URL'),
       data:{
-        ...streamUrl,
+        streamUrl:radioStation.streamingUrl,
         streamId:id
       },
       headers: {  
-        Authorization: 'x-api-key ' + this.configService.get<string>('API_KEY'),
-        Accept: 'application/json'
+       'x-api-key': this.configService.get<string>('API_KEY')
       }
     })
+    console.log("Finished........",startedRadio)
+    //-------------------------------------------------------------
     
+    //If starting succes then update the station in our database and return the same.
     return this.radioStationModel.findOneAndUpdate(
         { _id: id },
         {
@@ -436,6 +443,7 @@ export class RadiostationService {
 
           // To Do------------------------
           // Start listening the stream
+          await this.startListeningStream(createdStation._id)
         }
         else{
           totalDuplicateStations.push(duplicateStation)

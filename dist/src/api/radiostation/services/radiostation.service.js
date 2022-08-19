@@ -55,24 +55,27 @@ let RadiostationService = class RadiostationService {
                 message: 'Item not found',
             });
         }
+        if (!radioStation.isStreamStarted) {
+            return radioStation;
+        }
         console.log("stopping......*");
-        await (0, axios_1.default)({
+        const stoppedRadio = await (0, axios_1.default)({
             method: "post",
             url: this.configService.get('API_STOP_URL'),
             data: {
                 streamId: id
             },
             headers: {
-                Authorization: `x-api-key ${this.configService.get('API_KEY')}`
+                'x-api-key': this.configService.get('API_KEY')
             }
         });
-        console.log("stopped radio");
+        console.log("stopped radio.....", stoppedRadio);
         return this.radioStationModel.findOneAndUpdate({ _id: id }, {
             stopAt: new Date(),
             isStreamStarted: false,
         }, { new: true });
     }
-    async startListeningStream(id, streamUrl) {
+    async startListeningStream(id) {
         const radioStation = await this.radioStationModel.findById(id);
         if (!radioStation) {
             return Promise.reject({
@@ -85,15 +88,18 @@ let RadiostationService = class RadiostationService {
             return radioStation;
         }
         console.log("starting.........");
-        await (0, axios_1.default)({
+        const startedRadio = await (0, axios_1.default)({
             method: "post",
             url: this.configService.get('API_START_URL'),
-            data: Object.assign(Object.assign({}, streamUrl), { streamId: id }),
+            data: {
+                streamUrl: radioStation.streamingUrl,
+                streamId: id
+            },
             headers: {
-                Authorization: 'x-api-key ' + this.configService.get('API_KEY'),
-                Accept: 'application/json'
+                'x-api-key': this.configService.get('API_KEY')
             }
         });
+        console.log("Finished........", startedRadio);
         return this.radioStationModel.findOneAndUpdate({ _id: id }, {
             startedAt: new Date(),
             isStreamStarted: true,
@@ -364,6 +370,7 @@ let RadiostationService = class RadiostationService {
                         await createdStation.save();
                         console.log("new radio", newStation);
                         totalCreatedStations.push(newStation);
+                        await this.startListeningStream(createdStation._id);
                     }
                     else {
                         totalDuplicateStations.push(duplicateStation);

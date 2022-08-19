@@ -45,7 +45,6 @@ import { Roles } from 'src/constants/Enums';
 import { RoleBasedGuard } from 'src/api/auth/guards';
 import { ConditionalAuthGuard } from '../../auth/guards/conditional-auth.guard';
 import { appGenMulterOptions } from '../config/appGenMulterOption';
-import { ListeningStreamDto } from '../dto/listen-radiostation.dto';
 
 @ApiTags('Radio Station Controller')
 @Controller('radiostations')
@@ -250,8 +249,8 @@ export class RadiostationController {
   @UseGuards(JwtAuthGuard, RoleBasedGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'start listening stream' })
-  startListeningStream(@Param('id') id: string,@Body() streamUrl:ListeningStreamDto) {
-    return this.radiostationService.startListeningStream(id,streamUrl).catch(err => {
+  startListeningStream(@Param('id') id: string) {
+    return this.radiostationService.startListeningStream(id).catch(err => {
       if (err.status == 404) {
         throw new NotFoundException();
       }

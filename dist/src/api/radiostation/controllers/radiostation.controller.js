@@ -36,7 +36,6 @@ const Enums_1 = require("../../../constants/Enums");
 const guards_1 = require("../../auth/guards");
 const conditional_auth_guard_1 = require("../../auth/guards/conditional-auth.guard");
 const appGenMulterOption_1 = require("../config/appGenMulterOption");
-const listen_radiostation_dto_1 = require("../dto/listen-radiostation.dto");
 let RadiostationController = class RadiostationController {
     constructor(radiostationService) {
         this.radiostationService = radiostationService;
@@ -111,8 +110,8 @@ let RadiostationController = class RadiostationController {
             throw err;
         });
     }
-    startListeningStream(id, streamUrl) {
-        return this.radiostationService.startListeningStream(id, streamUrl).catch(err => {
+    startListeningStream(id) {
+        return this.radiostationService.startListeningStream(id).catch(err => {
             if (err.status == 404) {
                 throw new common_1.NotFoundException();
             }
@@ -303,9 +302,8 @@ __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'start listening stream' }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, listen_radiostation_dto_1.ListeningStreamDto]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], RadiostationController.prototype, "startListeningStream", null);
 __decorate([
