@@ -68,6 +68,20 @@ let RadiostationService = class RadiostationService {
             headers: {
                 'x-api-key': this.configService.get('STREAMREADER_API_KEY')
             }
+        }).catch((error) => {
+            if (error.response) {
+                return Promise.reject(error.response.data);
+            }
+            else if (error.request) {
+                return Promise.reject({
+                    message: "Unable to communicate with stream reader"
+                });
+            }
+            else {
+                return Promise.reject({
+                    message: "Something happened in setting up the request that triggered an Error"
+                });
+            }
         });
         console.log("stopped radio.....", stoppedRadio);
         return this.radioStationModel.findOneAndUpdate({ _id: id }, {
@@ -81,7 +95,7 @@ let RadiostationService = class RadiostationService {
             return Promise.reject({
                 notFound: true,
                 status: 404,
-                message: 'Item not found',
+                message: 'Station not found',
             });
         }
         if (radioStation.isStreamStarted) {
@@ -97,6 +111,20 @@ let RadiostationService = class RadiostationService {
             },
             headers: {
                 'x-api-key': this.configService.get('STREAMREADER_API_KEY')
+            }
+        }).catch((error) => {
+            if (error.response) {
+                return Promise.reject(error.response.data);
+            }
+            else if (error.request) {
+                return Promise.reject({
+                    message: "Unable to communicate with stream reader"
+                });
+            }
+            else {
+                return Promise.reject({
+                    message: "Something happened in setting up the request that triggered an Error"
+                });
             }
         });
         console.log("Finished........", startedRadio);

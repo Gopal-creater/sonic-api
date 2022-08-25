@@ -68,6 +68,22 @@ export class RadiostationService {
       headers: {  
         'x-api-key': this.configService.get<string>('STREAMREADER_API_KEY')
       }
+    }).catch((error) => {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        return Promise.reject(error.response.data)
+      } else if (error.request) {
+        // The request was made but no response was received
+        // http.ClientRequest in node.js
+        return Promise.reject({
+          message:"Unable to communicate with stream reader"
+        })
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        return Promise.reject({
+          message:"Something happened in setting up the request that triggered an Error"
+        })
+      }
     })
     console.log("stopped radio.....",stoppedRadio)
     //--------------------------------------------------------------
@@ -91,7 +107,7 @@ export class RadiostationService {
       return Promise.reject({
         notFound: true,
         status: 404,
-        message: 'Item not found',
+        message: 'Station not found',
       });
     }
 
@@ -114,6 +130,22 @@ export class RadiostationService {
       },
       headers: {  
        'x-api-key': this.configService.get<string>('STREAMREADER_API_KEY')
+      }
+    }).catch((error) => {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        return Promise.reject(error.response.data)
+      } else if (error.request) {
+        // The request was made but no response was received
+        // http.ClientRequest in node.js
+        return Promise.reject({
+          message:"Unable to communicate with stream reader"
+        })
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        return Promise.reject({
+          message:"Something happened in setting up the request that triggered an Error"
+        })
       }
     })
     console.log("Finished........",startedRadio)
