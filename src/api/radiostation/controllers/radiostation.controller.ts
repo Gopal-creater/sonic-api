@@ -12,7 +12,7 @@ import {
   BadRequestException,
   Query,
   UseInterceptors,
-  UploadedFile,
+  UploadedFile
 } from '@nestjs/common';
 import { RadiostationService } from '../services/radiostation.service';
 import { CreateRadiostationDto } from '../dto/create-radiostation.dto';
@@ -21,7 +21,6 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiTags,
-  ApiQuery,
   ApiParam,
   ApiConsumes,
   ApiBody,
@@ -36,10 +35,8 @@ import { ParseQueryValue } from '../../../shared/pipes/parseQueryValue.pipe';
 import { ParsedQueryDto } from '../../../shared/dtos/parsedquery.dto';
 import { AnyApiQueryTemplate } from '../../../shared/decorators/anyapiquerytemplate.decorator';
 import { User } from '../../auth/decorators/user.decorator';
-import { forEach, subtract } from 'lodash';
 import * as fs from 'fs';
 import * as upath from 'upath';
-import * as appRootPath from 'app-root-path';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { appConfig } from '../../../config/app.config';
 import { IUploadedFile } from '../../../shared/interfaces/UploadedFile.interface';
@@ -47,7 +44,8 @@ import { RolesAllowed } from 'src/api/auth/decorators';
 import { Roles } from 'src/constants/Enums';
 import { RoleBasedGuard } from 'src/api/auth/guards';
 import { ConditionalAuthGuard } from '../../auth/guards/conditional-auth.guard';
-      
+import { appGenMulterOptions } from '../config/appGenMulterOption';
+
 @ApiTags('Radio Station Controller')
 @Controller('radiostations')
 export class RadiostationController {
@@ -142,6 +140,27 @@ export class RadiostationController {
 
     });
   }
+
+  //Bulk import of radio stations from excel file------------------------------------------------
+  @ApiOperation({ summary: 'Import list of radio stations from appgen excel file' })
+  @UseInterceptors(FileInterceptor('importFile', appGenMulterOptions))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({schema: {type: 'object',properties: {importFile: {type: 'string',format: 'binary'}}}})
+  @RolesAllowed(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleBasedGuard)
+  @ApiBearerAuth()
+  @Post("/import-from-appgen-excel")
+  async uploadExcel (@UploadedFile( ) file: Express.Multer.File){
+    const excelPath = upath.toUnix(file.path);
+    console.log("file",file)
+    console.log("Excel Path",excelPath)
+    return this.radiostationService.importFromAppgenExcel(excelPath).catch((err)=>{
+      throw err
+    }).finally(() => {
+      fs.unlinkSync(excelPath);
+    })
+  }
+  //----------------------------------------------------------------------------
 
   @Get('/count')
   @UseGuards(JwtAuthGuard)

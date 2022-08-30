@@ -31,7 +31,38 @@ export class RadioStation extends Document {
   @Prop({
     required: true,
   })
+  appGenStationId:string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @Prop({
+    required: true,
+    unique: true,
+  })
   name: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @Prop({
+    // required: true,
+    // unique: true,
+  })
+  streamingUrl: string;
+
+  @ApiProperty()
+  @Prop()
+  subTitle: string;
+
+  @ApiProperty()
+  @Prop()
+  logo: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @Prop({
+    required: true,
+  })
+  continent:string
 
   @IsNotEmpty()
   @IsValidCountry()
@@ -45,22 +76,30 @@ export class RadioStation extends Document {
   @ApiProperty()
   @Prop({
     required: true,
-    unique: true,
   })
-  streamingUrl: string;
+  state:string
+
+  @IsNotEmpty()
+  @ApiProperty()
+  @Prop({
+    required: true,
+  })
+  city:string
+
+  @ApiProperty()
+  @Prop([{type:String}])
+  genres: string[];
 
   @IsNotEmpty()
   @ApiProperty()
   @Prop({ required: true })
   adminEmail: string;
 
+
+  //Other items which are not in provided excel--------------------------------
   @ApiProperty()
   @Prop()
   website: string;
-
-  @ApiProperty()
-  @Prop()
-  logo: string;
 
   @ApiProperty()
   @Prop([MonitorGroup])
@@ -108,16 +147,6 @@ export class RadioStation extends Document {
   @ApiProperty()
   @Prop({ default: false })
   isFromAppGen: boolean;
-
-  //New Field
-  @ApiProperty()
-  @Prop()
-  appGenStationId: string;
-
-   //New Field
-  @ApiProperty()
-  @Prop([{type:String}])
-  genres: string[];
 
   @ApiProperty()
   @Prop({ default: null })

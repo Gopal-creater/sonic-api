@@ -12,7 +12,7 @@ import { AuthModule } from '../auth/auth.module';
 import { FileHandlerService } from '../../shared/services/file-handler.service';
 import { CompanyModule } from '../company/company.module';
 import { RadiostationModule } from '../radiostation/radiostation.module';
-
+import { AppgenService } from '../../shared/services/appgen.service';
 @Module({
   imports: [
 MongooseModule.forFeature([
@@ -33,7 +33,7 @@ MongooseModule.forFeature([
     DetectionOwnerController,
     DetectionThirdPartyController,
   ],
-  providers: [DetectionService, FileHandlerService],
+  providers: [DetectionService, FileHandlerService, AppgenService],
   exports: [DetectionService],
 })
 export class DetectionModule {}
