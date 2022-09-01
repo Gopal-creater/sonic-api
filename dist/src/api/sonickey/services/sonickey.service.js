@@ -224,23 +224,27 @@ let SonickeyService = class SonickeyService {
                 const sonicKeyDoc = _d.value;
                 var sonicKeyExcelData = {
                     'Track ID': ((_b = sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.track) === null || _b === void 0 ? void 0 : _b._id) || '--',
-                    'SonicKey': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.sonicKey) || '--',
+                    SonicKey: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.sonicKey) || '--',
                     Title: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentName) || '--',
                     Version: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.version) || '--',
-                    'Artist': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentOwner) || '--',
+                    Artist: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentOwner) || '--',
                     'Music Type': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentType) || '--',
-                    'ISRC': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.isrcCode) || '--',
-                    'ISWC': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.iswcCode) || '--',
+                    ISRC: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.isrcCode) || '--',
+                    ISWC: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.iswcCode) || '--',
                     'Tune Code': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.tuneCode) || '--',
-                    'Label': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.label) || '--',
-                    'Distributor': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.distributor) || '--',
+                    Label: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.label) || '--',
+                    Distributor: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.distributor) || '--',
                     'File Type': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentFileType) || '--',
-                    'Audio Length': moment.utc(sonicKeyDoc.contentDuration || 0 * 1000).format("HH:mm:ss:SSS") || "--",
-                    'AudioSize (MB)': sonicKeyDoc.contentSize ? (sonicKeyDoc.contentSize / 1024).toFixed(3) : "--",
-                    'UnderlyingEncodingofFile': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentEncoding) || '--',
-                    'SamplingFrequency': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentSamplingFrequency) || '--',
-                    'QualityGrade': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentQuality) || '--',
-                    'Description': (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentDescription) || '--',
+                    'Audio Length': moment
+                        .utc(sonicKeyDoc.contentDuration || 0 * 1000)
+                        .format('HH:mm:ss:SSS') || '--',
+                    'AudioSize (MB)': sonicKeyDoc.contentSize
+                        ? (sonicKeyDoc.contentSize / 1024).toFixed(3)
+                        : '--',
+                    UnderlyingEncodingofFile: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentEncoding) || '--',
+                    SamplingFrequency: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentSamplingFrequency) || '--',
+                    QualityGrade: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentQuality) || '--',
+                    Description: (sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.contentDescription) || '--',
                     'Additional Metadata': JSON.stringify((sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc.additionalMetadata) || {}),
                     'Encoded Date': moment(sonicKeyDoc === null || sonicKeyDoc === void 0 ? void 0 : sonicKeyDoc['createdAt'])
                         .utc()
@@ -259,25 +263,25 @@ let SonickeyService = class SonickeyService {
         if (sonicKeysListInJsonFormat.length <= 0) {
             sonicKeysListInJsonFormat.push({
                 'Track ID': '',
-                'SonicKey': '',
+                SonicKey: '',
                 Title: '',
                 Version: '',
-                'Artist': '',
+                Artist: '',
                 'Music Type': '',
-                'ISRC': '',
-                'ISWC': '',
+                ISRC: '',
+                ISWC: '',
                 'Tune Code': '',
-                'Label': '',
-                'Distributor': '',
+                Label: '',
+                Distributor: '',
                 'File Type': '',
                 'Audio Length': '',
                 'AudioSize (MB)': '',
-                'UnderlyingEncodingofFile': '',
-                'SamplingFrequency': '',
-                'QualityGrade': '',
-                'Description': '',
+                UnderlyingEncodingofFile: '',
+                SamplingFrequency: '',
+                QualityGrade: '',
+                Description: '',
                 'Additional Metadata': '',
-                'Encoded Date': ''
+                'Encoded Date': '',
             });
         }
         const destination = await makeDir(config_1.appConfig.MULTER_EXPORT_DEST);
@@ -299,7 +303,7 @@ let SonickeyService = class SonickeyService {
         return tobeStorePath;
     }
     async findOneAggregate(queryDto) {
-        const { sort, filter, relationalFilter, } = queryDto;
+        const { sort, filter, relationalFilter } = queryDto;
         const aggregate = await this.sonicKeyModel.aggregate([
             {
                 $match: Object.assign({}, filter),
@@ -347,8 +351,8 @@ let SonickeyService = class SonickeyService {
                 $match: Object.assign({}, relationalFilter),
             },
             {
-                $limit: 1
-            }
+                $limit: 1,
+            },
         ]);
         return aggregate[0];
     }
@@ -366,6 +370,7 @@ let SonickeyService = class SonickeyService {
         const inFilePath = file.path;
         await makeDir(`${file.destination}/encodedFiles`);
         const outFilePath = file.destination + '/' + 'encodedFiles' + '/' + file.filename;
+        const logFilePath = outFilePath + '.txt';
         const argList = ' -h ' +
             encodingStrength +
             ' ' +
@@ -373,19 +378,23 @@ let SonickeyService = class SonickeyService {
             ' ' +
             outFilePath +
             ' ' +
+            logFilePath +
+            ' ' +
             random11CharKey;
         const sonicEncodeCmd = this.configService.get('ENCODER_EXE_PATH') + argList;
         return this.fileOperationService
-            .encodeFile(sonicEncodeCmd, outFilePath)
-            .then(async () => {
+            .encodeFile(sonicEncodeCmd, outFilePath, logFilePath)
+            .then(encodeResponse => {
             return {
                 downloadFileUrl: `storage/${outFilePath.split('storage/').pop()}`,
                 outFilePath: outFilePath,
                 sonicKey: random11CharKey,
+                encodeResponse,
             };
         })
             .finally(() => {
             this.fileHandlerService.deleteFileAtPath(inFilePath);
+            this.fileHandlerService.deleteFileAtPath(logFilePath);
         });
     }
     async encodeAndUploadToS3(file, user, encodingStrength = 15, s3Acl, fingerPrint = true) {
@@ -500,38 +509,10 @@ let SonickeyService = class SonickeyService {
             createdBy: sonickeyDoc.createdBy,
         };
         console.log('Saving Track');
-        const track = await this.trackService.uploadAndCreate(file, trackDoc, s3destinationFolder);
         console.log('Track Saved');
         console.log('Encoding....');
-        const { outFilePath, sonicKey } = await this.encode(file, encodingStrength);
-        console.log('Encoding Done');
-        console.log('Uploading encoded file to s3');
-        const s3EncodedUploadResult = await this.s3FileUploadService.uploadFromPath(outFilePath, `${s3destinationFolder}/encodedFiles`, s3Acl)
-            .finally(() => {
-            this.fileHandlerService.deleteFileAtPath(outFilePath);
-        });
-        console.log('Uploading encoded file to s3 Done');
-        const newSonicKey = Object.assign(Object.assign({}, sonickeyDoc), { contentFilePath: s3EncodedUploadResult.Location, originalFileName: file === null || file === void 0 ? void 0 : file.originalname, sonicKey: sonicKey, downloadable: true, license: licenseId, channel: sonickeyDoc.channel || Enums_1.ChannelEnums.PORTAL, track: track === null || track === void 0 ? void 0 : track._id, s3FileMeta: s3EncodedUploadResult, fingerPrintStatus: Enums_1.FingerPrintStatus.PENDING, _id: sonicKey });
-        if (fingerPrint) {
-            await this.fingerPrintRequestToFPServer(track.s3OriginalFileMeta, sonicKey, file.originalname, file.size).then(data => {
-                newSonicKey.fingerPrintStatus = Enums_1.FingerPrintStatus.PROCESSING;
-            })
-                .catch(err => {
-                var _a;
-                newSonicKey.fingerPrintStatus = Enums_1.FingerPrintStatus.FAILED;
-                newSonicKey.fingerPrintErrorData = {
-                    message: err === null || err === void 0 ? void 0 : err.message,
-                    data: (_a = err === null || err === void 0 ? void 0 : err.response) === null || _a === void 0 ? void 0 : _a.data,
-                };
-            });
-        }
-        console.log('Going to save key in db.');
-        const savedSonnicKey = await this.create(newSonicKey);
-        console.log('Sonickey saved.');
-        console.log('Increment License Usages upon successfull encode & save');
-        await this.licensekeyService.incrementUses(licenseId, 'encode', 1);
-        console.log('Increment License Usages upon successfull encode & save Done');
-        return this.findById(savedSonnicKey._id);
+        const { outFilePath, sonicKey, encodeResponse } = await this.encode(file, encodingStrength);
+        console.log('Encoding Done', encodeResponse);
     }
     async encodeSonicKeyFromTrack(config) {
         const { trackId, file, licenseId, s3destinationFolder, sonickeyDoc, encodingStrength = 15, s3Acl, fingerPrint = true, } = config;
@@ -542,14 +523,16 @@ let SonickeyService = class SonickeyService {
         const { outFilePath, sonicKey } = await this.encode(file, encodingStrength);
         console.log('Encoding Done');
         console.log('Uploading encoded file to s3');
-        const s3EncodedUploadResult = await this.s3FileUploadService.uploadFromPath(outFilePath, `${s3destinationFolder}/encodedFiles`, s3Acl)
+        const s3EncodedUploadResult = await this.s3FileUploadService
+            .uploadFromPath(outFilePath, `${s3destinationFolder}/encodedFiles`, s3Acl)
             .finally(() => {
             this.fileHandlerService.deleteFileAtPath(outFilePath);
         });
         console.log('Uploading encoded file to s3 Done');
         const newSonicKey = Object.assign(Object.assign({}, sonickeyDoc), { contentFilePath: s3EncodedUploadResult.Location, originalFileName: track === null || track === void 0 ? void 0 : track.originalFileName, sonicKey: sonicKey, downloadable: true, license: licenseId, channel: sonickeyDoc.channel || Enums_1.ChannelEnums.PORTAL, track: track === null || track === void 0 ? void 0 : track._id, s3FileMeta: s3EncodedUploadResult, fingerPrintStatus: Enums_1.FingerPrintStatus.PENDING, _id: sonicKey });
         if (fingerPrint) {
-            await this.fingerPrintRequestToFPServer(track.s3OriginalFileMeta, sonicKey, file.originalname, file.size).then(data => {
+            await this.fingerPrintRequestToFPServer(track.s3OriginalFileMeta, sonicKey, file.originalname, file.size)
+                .then(data => {
                 newSonicKey.fingerPrintStatus = Enums_1.FingerPrintStatus.PROCESSING;
             })
                 .catch(err => {

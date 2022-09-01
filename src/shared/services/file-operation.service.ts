@@ -10,11 +10,31 @@ import { IDecodeResponse } from '../interfaces/DecodeResponse.interface';
 
 @Injectable()
 export class FileOperationService {
-  encodeFile(sonicEncodeCmd: string, outFilePath: string) {
+  encodeFile(
+    sonicEncodeCmd: string,
+    outFilePath: string,
+    logFilePath?: string,
+  ) {
     return new Promise((resolve, reject) => {
       try {
         execSync('bash ' + sonicEncodeCmd);
-        resolve(outFilePath);
+
+        // see if there is anything in the loFile.
+        var fileSizeInBytes = fs.statSync(logFilePath).size;
+        if (fileSizeInBytes <= 0) {
+          console.error('empty logfile while encoding.');
+          reject({
+            message: 'no encode response found',
+          });
+        }
+
+        //Read the logfile synchronously
+        let rawdata = fs.readFileSync(logFilePath).toString();
+        const encodeResponse = JSON.parse(rawdata);
+
+        console.log('encodeResponse', encodeResponse);
+
+        resolve(encodeResponse);
       } catch {
         reject({
           message: 'Error encountered during encoding!',

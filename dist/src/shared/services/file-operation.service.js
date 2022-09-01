@@ -13,11 +13,21 @@ const fs = require("fs");
 const _ = require("lodash");
 const readline = require("line-reader");
 let FileOperationService = class FileOperationService {
-    encodeFile(sonicEncodeCmd, outFilePath) {
+    encodeFile(sonicEncodeCmd, outFilePath, logFilePath) {
         return new Promise((resolve, reject) => {
             try {
                 (0, child_process_1.execSync)('bash ' + sonicEncodeCmd);
-                resolve(outFilePath);
+                var fileSizeInBytes = fs.statSync(logFilePath).size;
+                if (fileSizeInBytes <= 0) {
+                    console.error('empty logfile while encoding.');
+                    reject({
+                        message: 'no encode response found',
+                    });
+                }
+                let rawdata = fs.readFileSync(logFilePath).toString();
+                const encodeResponse = JSON.parse(rawdata);
+                console.log('encodeResponse', encodeResponse);
+                resolve(encodeResponse);
             }
             catch (_a) {
                 reject({
