@@ -6,10 +6,29 @@ import { ApiKeySchemaName } from '../../api-key/schemas/api-key.schema';
 import { ChannelEnums, FingerPrintStatus } from '../../../constants/Enums';
 import { S3FileUploadI } from '../../s3fileupload/interfaces';
 import { IsNotEmpty, IsOptional, IsIn, IsEmpty } from 'class-validator';
-import  * as distributorTypes from '../constants/distributor.constant.json';
-import  * as  labelTypes from '../constants/label.constant.json';
+import * as distributorTypes from '../constants/distributor.constant.json';
+import * as labelTypes from '../constants/label.constant.json';
+import { IEncodeResponse } from '../interfaces';
 
 export const SonicKeySchemaName = 'SonicKey';
+
+export class EncodeResponse implements IEncodeResponse {
+  @ApiProperty()
+  result: boolean;
+
+  @ApiProperty()
+  errorno: number;
+
+  @ApiProperty()
+  sonicKey: string;
+
+  @ApiProperty()
+  score: number;
+
+  @ApiProperty()
+  message: string;
+}
+
 @Schema()
 export class S3FileMeta implements S3FileUploadI {
   @ApiProperty()
@@ -291,6 +310,10 @@ export class SonicKey extends Document {
     autopopulate: { maxDepth: 2 },
   })
   track: any;
+
+  @ApiProperty()
+  @Prop({ type: EncodeResponse })
+  encodeResponse: EncodeResponse;
 }
 
 export const SonicKeySchema = SchemaFactory.createForClass(SonicKey);

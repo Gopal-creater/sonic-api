@@ -16,6 +16,7 @@ let FileOperationService = class FileOperationService {
     encodeFile(sonicEncodeCmd, outFilePath, logFilePath) {
         return new Promise((resolve, reject) => {
             try {
+                console.log('sonicEncodeCmd', sonicEncodeCmd);
                 (0, child_process_1.execSync)('bash ' + sonicEncodeCmd);
                 var fileSizeInBytes = fs.statSync(logFilePath).size;
                 if (fileSizeInBytes <= 0) {

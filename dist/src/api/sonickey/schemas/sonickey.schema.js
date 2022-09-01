@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SonicKeySchema = exports.SonicKey = exports.S3FileMeta = exports.SonicKeySchemaName = void 0;
+exports.SonicKeySchema = exports.SonicKey = exports.S3FileMeta = exports.EncodeResponse = exports.SonicKeySchemaName = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
@@ -20,6 +20,29 @@ const class_validator_1 = require("class-validator");
 const distributorTypes = require("../constants/distributor.constant.json");
 const labelTypes = require("../constants/label.constant.json");
 exports.SonicKeySchemaName = 'SonicKey';
+class EncodeResponse {
+}
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", Boolean)
+], EncodeResponse.prototype, "result", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", Number)
+], EncodeResponse.prototype, "errorno", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], EncodeResponse.prototype, "sonicKey", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", Number)
+], EncodeResponse.prototype, "score", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], EncodeResponse.prototype, "message", void 0);
+exports.EncodeResponse = EncodeResponse;
 let S3FileMeta = class S3FileMeta {
 };
 __decorate([
@@ -355,6 +378,11 @@ __decorate([
     }),
     __metadata("design:type", Object)
 ], SonicKey.prototype, "track", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, mongoose_1.Prop)({ type: EncodeResponse }),
+    __metadata("design:type", EncodeResponse)
+], SonicKey.prototype, "encodeResponse", void 0);
 SonicKey = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true, collection: exports.SonicKeySchemaName })
 ], SonicKey);

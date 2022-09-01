@@ -97,7 +97,7 @@ __decorate([
     (0, swagger_1.ApiSecurity)('x-api-key'),
     (0, common_1.Post)('/encode-from-url'),
     (0, swagger_1.ApiOperation)({ summary: 'Encode File From URL And save to database' }),
-    openapi.ApiResponse({ status: 201 }),
+    openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, (0, common_1.Body)('data')),
     __param(1, (0, FileFromUrl_interceptor_1.UploadedFileFromUrl)()),
     __param(2, (0, decorators_1.User)()),

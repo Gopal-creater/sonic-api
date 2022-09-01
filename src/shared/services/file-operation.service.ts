@@ -7,6 +7,7 @@ import * as path from 'path';
 import * as readline from 'line-reader';
 import * as readlineByline from 'readline';
 import { IDecodeResponse } from '../interfaces/DecodeResponse.interface';
+import { IEncodeResponse } from 'src/api/sonickey/interfaces';
 
 @Injectable()
 export class FileOperationService {
@@ -17,6 +18,7 @@ export class FileOperationService {
   ) {
     return new Promise((resolve, reject) => {
       try {
+        console.log('sonicEncodeCmd', sonicEncodeCmd);
         execSync('bash ' + sonicEncodeCmd);
 
         // see if there is anything in the loFile.
@@ -30,7 +32,7 @@ export class FileOperationService {
 
         //Read the logfile synchronously
         let rawdata = fs.readFileSync(logFilePath).toString();
-        const encodeResponse = JSON.parse(rawdata);
+        const encodeResponse: IEncodeResponse = JSON.parse(rawdata);
 
         console.log('encodeResponse', encodeResponse);
 
