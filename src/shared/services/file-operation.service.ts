@@ -7,7 +7,7 @@ import * as path from 'path';
 import * as readline from 'line-reader';
 import * as readlineByline from 'readline';
 import { IDecodeResponse } from '../interfaces/DecodeResponse.interface';
-import { IEncodeResponse } from 'src/api/sonickey/interfaces';
+import { EncodeResponse } from 'src/api/sonickey/schemas/sonickey.schema';
 
 @Injectable()
 export class FileOperationService {
@@ -32,7 +32,7 @@ export class FileOperationService {
 
         //Read the logfile synchronously
         let rawdata = fs.readFileSync(logFilePath).toString();
-        const encodeResponse: IEncodeResponse = JSON.parse(rawdata);
+        const encodeResponse: EncodeResponse = JSON.parse(rawdata);
 
         console.log('encodeResponse', encodeResponse);
 

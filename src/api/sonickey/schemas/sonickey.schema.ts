@@ -8,11 +8,10 @@ import { S3FileUploadI } from '../../s3fileupload/interfaces';
 import { IsNotEmpty, IsOptional, IsIn, IsEmpty } from 'class-validator';
 import * as distributorTypes from '../constants/distributor.constant.json';
 import * as labelTypes from '../constants/label.constant.json';
-import { IEncodeResponse } from '../interfaces';
 
 export const SonicKeySchemaName = 'SonicKey';
 
-export class EncodeResponse implements IEncodeResponse {
+export class EncodeResponse {
   @ApiProperty()
   result: boolean;
 

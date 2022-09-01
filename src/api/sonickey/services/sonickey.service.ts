@@ -9,7 +9,7 @@ import {
   forwardRef,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { SonicKey } from '../schemas/sonickey.schema';
+import { EncodeResponse, SonicKey } from '../schemas/sonickey.schema';
 import * as mm from 'music-metadata';
 import * as upath from 'upath';
 import { nanoid } from 'nanoid';
@@ -494,7 +494,7 @@ export class SonickeyService {
     // })
     return this.fileOperationService
       .encodeFile(sonicEncodeCmd, outFilePath, logFilePath)
-      .then(encodeResponse => {
+      .then((encodeResponse: EncodeResponse) => {
         return {
           downloadFileUrl: `storage/${outFilePath.split('storage/').pop()}`,
           outFilePath: outFilePath,
@@ -729,7 +729,7 @@ export class SonickeyService {
       s3FileMeta: s3EncodedUploadResult,
       fingerPrintStatus: FingerPrintStatus.PENDING,
       _id: sonicKey,
-      encodeResponse: encodeResponse,
+      encodeResponse,
     };
 
     if (fingerPrint) {
