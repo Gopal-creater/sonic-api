@@ -370,7 +370,7 @@ let SonickeyService = class SonickeyService {
         const inFilePath = file.path;
         await makeDir(`${file.destination}/encodedFiles`);
         const outFilePath = file.destination + '/' + 'encodedFiles' + '/' + file.filename;
-        const logFilePath = outFilePath + '.txt';
+        const logFilePath = outFilePath + '.log';
         const argList = ' -h ' +
             encodingStrength +
             ' ' +
@@ -378,9 +378,9 @@ let SonickeyService = class SonickeyService {
             ' ' +
             outFilePath +
             ' ' +
-            logFilePath +
+            random11CharKey +
             ' ' +
-            random11CharKey;
+            logFilePath;
         const sonicEncodeCmd = this.configService.get('ENCODER_EXE_PATH') + argList;
         return this.fileOperationService
             .encodeFile(sonicEncodeCmd, outFilePath, logFilePath)

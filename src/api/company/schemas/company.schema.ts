@@ -21,10 +21,9 @@ export class Address {
 
 @Schema({ timestamps: true, collection: CompanySchemaName })
 export class Company extends Document {
-
   @ApiProperty()
   @Prop({
-    required: true
+    required: true,
   })
   name: string;
 
@@ -49,14 +48,13 @@ export class Company extends Document {
   contactNo: string;
 
   @ApiProperty()
-  @Prop({default:true})
+  @Prop({ default: true })
   enabled: boolean;
-
 
   @ApiProperty()
   @Prop({ type: Address })
   address: Address;
-  
+
   @ApiProperty()
   @Prop({
     type: String,
@@ -80,7 +78,6 @@ export class Company extends Document {
   @ApiProperty()
   @Prop()
   updatedBy: string;
-  
 }
 
 export const CompanySchema = SchemaFactory.createForClass(Company);

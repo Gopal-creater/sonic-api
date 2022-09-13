@@ -26,15 +26,18 @@ export class FileOperationService {
         if (fileSizeInBytes <= 0) {
           console.error('empty logfile while encoding.');
           reject({
-            message: 'no encode response found',
+            message: 'No encode response found',
           });
         }
 
-        //Read the logfile synchronously
+        //Read the txtfile synchronously
         let rawdata = fs.readFileSync(logFilePath).toString();
         const encodeResponse: EncodeResponse = JSON.parse(rawdata);
 
         console.log('encodeResponse', encodeResponse);
+
+        //TODO Check if response json object has result = true
+        //If result is false throw error
 
         resolve(encodeResponse);
       } catch {

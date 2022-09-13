@@ -22,7 +22,7 @@ let FileOperationService = class FileOperationService {
                 if (fileSizeInBytes <= 0) {
                     console.error('empty logfile while encoding.');
                     reject({
-                        message: 'no encode response found',
+                        message: 'No encode response found',
                     });
                 }
                 let rawdata = fs.readFileSync(logFilePath).toString();

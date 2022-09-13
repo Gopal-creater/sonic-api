@@ -41,7 +41,7 @@ let Company = class Company extends mongoose_2.Document {
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, mongoose_1.Prop)({
-        required: true
+        required: true,
     }),
     __metadata("design:type", String)
 ], Company.prototype, "name", void 0);

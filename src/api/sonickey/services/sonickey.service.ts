@@ -468,7 +468,7 @@ export class SonickeyService {
       file.destination + '/' + 'encodedFiles' + '/' + file.filename;
 
     //Log file will contain encode response json object
-    const logFilePath = outFilePath + '.txt';
+    const logFilePath = outFilePath + '.log';
 
     const argList =
       ' -h ' +
@@ -478,9 +478,9 @@ export class SonickeyService {
       ' ' +
       outFilePath +
       ' ' +
-      logFilePath +
+      random11CharKey +
       ' ' +
-      random11CharKey;
+      logFilePath;
 
     const sonicEncodeCmd =
       this.configService.get<string>('ENCODER_EXE_PATH') + argList;
