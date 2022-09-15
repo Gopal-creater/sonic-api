@@ -4,6 +4,7 @@ import { UpdateChargebeeDto } from './dto/update-chargebee.dto';
 import { ChargeBee } from 'chargebee-typescript';
 import { ConfigService } from '@nestjs/config';
 import * as moment from 'moment';
+import { SubscriptionDto } from './dto/subscription.dto';
 const chargebee = require('chargebee');
 
 /**
@@ -27,6 +28,7 @@ export class ChargebeeService {
       api_key: this.configService.get('CHARGEBEE_API_KEY'),
     });
   }
+
   findPlans() {
     return chargebee.item
       .list({ 'type[is]': 'plan' })
@@ -51,23 +53,15 @@ export class ChargebeeService {
       });
   }
 
-  getHostedPage() {
+  getHostedPage_NewSubscription(data: SubscriptionDto) {
+    //TODO-Check if already the same subscription present or not
     return chargebee.hosted_page
       .checkout_new_for_items({
-        shipping_address: {
-          first_name: 'Arun',
-          last_name: 'TA',
-          // city: 'Bangalore',
-          // state: 'Karnataka',
-          // zip: '560038',
-          // country: 'In',
-        },
-        customer: {
-          id: '5728f50d-146b-47d2-aa7b-a50bc37d641d',
-        },
+        customer: { id: data.customerId, email: data.customerEmail },
+        redirect_url: 'https://sonicportal.arba-dev.uk/',
         subscription_items: [
           {
-            item_price_id: 'Basic-Plan-GBP-Yearly',
+            item_price_id: 'Sonic-Basic-GBP-Yearly',
           },
         ],
         currency_code: 'GBP',

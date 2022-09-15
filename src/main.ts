@@ -6,29 +6,28 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import * as multer from 'multer'
+import * as multer from 'multer';
 import * as basicAuth from 'express-basic-auth';
-import {useContainer, Validator} from "class-validator";
+import { useContainer, Validator } from 'class-validator';
 
 global['fetch'] = require('node-fetch');
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bodyParser: true,
-    
   });
-  useContainer(app.select(AppModule), { fallbackOnErrors: true })
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.use(
     ['/swagger-api/*', '/swagger-api-json'],
     basicAuth({
-        challenge: true,
-        users: {
-          swaggeruser: 'swaggeruser@2021',
-        },
+      challenge: true,
+      users: {
+        swaggeruser: 'swaggeruser@2021',
+      },
     }),
-);
+  );
   // app.use(multer)
-  app.enableVersioning()
+  app.enableVersioning();
   const configService = app.get(ConfigService);
   // app.enableCors()
   app.enableCors({
@@ -58,10 +57,14 @@ async function bootstrap() {
     ],
   });
   app.useGlobalFilters(new HttpExceptionFilter());
-  app.useStaticAssets(appRootPath.path.toString()+'/storage/uploads/guest',{prefix:'/storage/uploads/guest'})
-  app.useStaticAssets(appRootPath.path.toString()+'/storage/uploads/public',{prefix:'/storage/uploads/public'})
-  app.useGlobalPipes(new ValidationPipe({ transform: true}));
-  const PORT = configService.get('PORT')||8000;
+  app.useStaticAssets(appRootPath.path.toString() + '/storage/uploads/guest', {
+    prefix: '/storage/uploads/guest',
+  });
+  app.useStaticAssets(appRootPath.path.toString() + '/storage/uploads/public', {
+    prefix: '/storage/uploads/public',
+  });
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  const PORT = configService.get('PORT') || 8000;
 
   //Swagger Integration
   const options = new DocumentBuilder()
@@ -70,11 +73,14 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('Sonic End Points')
     .addBearerAuth()
-    .addApiKey({
-      type:'apiKey',
-      in:'header',
-      name:'x-api-key'
-    },'x-api-key')
+    .addApiKey(
+      {
+        type: 'apiKey',
+        in: 'header',
+        name: 'x-api-key',
+      },
+      'x-api-key',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/swagger-api', app, document);

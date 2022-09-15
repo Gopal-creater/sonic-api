@@ -50,19 +50,14 @@ let ChargebeeService = class ChargebeeService {
             return Promise.resolve(result);
         });
     }
-    getHostedPage() {
+    getHostedPage_NewSubscription(data) {
         return chargebee.hosted_page
             .checkout_new_for_items({
-            shipping_address: {
-                first_name: 'Arun',
-                last_name: 'TA',
-            },
-            customer: {
-                id: '5728f50d-146b-47d2-aa7b-a50bc37d641d',
-            },
+            customer: { id: data.customerId, email: data.customerEmail },
+            redirect_url: 'https://sonicportal.arba-dev.uk/',
             subscription_items: [
                 {
-                    item_price_id: 'Basic-Plan-GBP-Yearly',
+                    item_price_id: 'Sonic-Basic-GBP-Yearly',
                 },
             ],
             currency_code: 'GBP',
