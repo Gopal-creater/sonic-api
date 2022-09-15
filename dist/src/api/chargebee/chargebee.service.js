@@ -50,10 +50,10 @@ let ChargebeeService = class ChargebeeService {
             return Promise.resolve(result);
         });
     }
-    getHostedPage_NewSubscription(data) {
+    getHostedPage_NewSubscription(customerId) {
         return chargebee.hosted_page
             .checkout_new_for_items({
-            customer: { id: data.customerId, email: data.customerEmail },
+            customer: { id: customerId },
             redirect_url: 'https://sonicportal.arba-dev.uk/',
             subscription_items: [
                 {

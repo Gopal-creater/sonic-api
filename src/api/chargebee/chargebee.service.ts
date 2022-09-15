@@ -53,11 +53,11 @@ export class ChargebeeService {
       });
   }
 
-  getHostedPage_NewSubscription(data: SubscriptionDto) {
+  getHostedPage_NewSubscription(customerId) {
     //TODO-Check if already the same subscription present or not
     return chargebee.hosted_page
       .checkout_new_for_items({
-        customer: { id: data.customerId, email: data.customerEmail },
+        customer: { id: customerId },
         redirect_url: 'https://sonicportal.arba-dev.uk/',
         subscription_items: [
           {

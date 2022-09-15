@@ -35,10 +35,10 @@ export class ChargebeeController {
     return this.chargebeeService.getPlanPrice(plan);
   }
 
-  @Post('/plans/get-hosted-page')
+  @Get('/plans/checkout/:customer_id')
   @ApiOperation({ summary: 'Generates checkout page for new subscription.' })
-  getHostedPage(@Body() data: SubscriptionDto) {
-    return this.chargebeeService.getHostedPage_NewSubscription(data);
+  getHostedPage(@Param('customer-id') id: string) {
+    return this.chargebeeService.getHostedPage_NewSubscription(id);
   }
 
   @Get('/plans/get-hosted-page-for-addon')
