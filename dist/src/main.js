@@ -50,8 +50,12 @@ async function bootstrap() {
         ],
     });
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());
-    app.useStaticAssets(appRootPath.path.toString() + '/storage/uploads/guest', { prefix: '/storage/uploads/guest' });
-    app.useStaticAssets(appRootPath.path.toString() + '/storage/uploads/public', { prefix: '/storage/uploads/public' });
+    app.useStaticAssets(appRootPath.path.toString() + '/storage/uploads/guest', {
+        prefix: '/storage/uploads/guest',
+    });
+    app.useStaticAssets(appRootPath.path.toString() + '/storage/uploads/public', {
+        prefix: '/storage/uploads/public',
+    });
     app.useGlobalPipes(new common_1.ValidationPipe({ transform: true }));
     const PORT = configService.get('PORT') || 8000;
     const options = new swagger_1.DocumentBuilder()
@@ -63,7 +67,7 @@ async function bootstrap() {
         .addApiKey({
         type: 'apiKey',
         in: 'header',
-        name: 'x-api-key'
+        name: 'x-api-key',
     }, 'x-api-key')
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, options);

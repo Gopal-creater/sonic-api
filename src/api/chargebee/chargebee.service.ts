@@ -4,13 +4,14 @@ import { UpdateChargebeeDto } from './dto/update-chargebee.dto';
 import { ChargeBee } from 'chargebee-typescript';
 import { ConfigService } from '@nestjs/config';
 import * as moment from 'moment';
+import { SubscriptionDto } from './dto/subscription.dto';
 const chargebee = require('chargebee');
 
 /**
  * https://sonicarba-test.chargebee.com/checkout_and_portal_settings/configuration
  * https://apidocs.chargebee.com/docs/api/hosted_pages#create_checkout_to_update_a_subscription
  * https://www.chargebee.com/docs/2.0/inapp-self-serve-portal.html
- * 
+ *
  */
 @Injectable()
 export class ChargebeeService {
@@ -27,6 +28,7 @@ export class ChargebeeService {
       api_key: this.configService.get('CHARGEBEE_API_KEY'),
     });
   }
+
   findPlans() {
     return chargebee.item
       .list({ 'type[is]': 'plan' })
@@ -51,26 +53,18 @@ export class ChargebeeService {
       });
   }
 
-  getHostedPage() {
+  getHostedPage_NewSubscription(data: SubscriptionDto) {
+    //TODO-Check if already the same subscription present or not
     return chargebee.hosted_page
       .checkout_new_for_items({
-        shipping_address: {
-          first_name: 'Arun',
-          last_name: 'TA',
-          // city: 'Bangalore',
-          // state: 'Karnataka',
-          // zip: '560038',
-          // country: 'In',
-        },
-        customer: {
-          id: '5728f50d-146b-47d2-aa7b-a50bc37d641d',
-        },
+        customer: { id: data.customerId, email: data.customerEmail },
+        redirect_url: 'https://sonicportal.arba-dev.uk/',
         subscription_items: [
           {
-            item_price_id: 'Basic-Plan-GBP-Yearly',
+            item_price_id: 'Sonic-Basic-GBP-Yearly',
           },
         ],
-        currency_code:"GBP"
+        currency_code: 'GBP',
       })
       .request((error, result) => {
         console.log('result', result);
@@ -94,7 +88,7 @@ export class ChargebeeService {
             // unit_price : 1000
           },
         ],
-        currency_code:"GBP"
+        currency_code: 'GBP',
       })
       .request((error, result) => {
         console.log('result', result);
@@ -111,7 +105,7 @@ export class ChargebeeService {
         subscription: {
           id: 'AzyzejT4J1cuEDhc',
         },
-        replace_items_list:true,
+        replace_items_list: true,
         subscription_items: [
           {
             item_price_id: 'sonickey_standard_plan-USD-Yearly',
@@ -119,8 +113,8 @@ export class ChargebeeService {
             // unit_price : 1000
           },
         ],
-        start_date:(new Date(moment.utc().format()).getTime())/1000,
-        currency_code:"GBP"
+        start_date: new Date(moment.utc().format()).getTime() / 1000,
+        currency_code: 'GBP',
       })
       .request((error, result) => {
         console.log('result', result);

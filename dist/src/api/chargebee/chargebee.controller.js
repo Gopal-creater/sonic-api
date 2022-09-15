@@ -17,6 +17,7 @@ const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const chargebee_service_1 = require("./chargebee.service");
 const swagger_1 = require("@nestjs/swagger");
+const subscription_dto_1 = require("./dto/subscription.dto");
 let ChargebeeController = class ChargebeeController {
     constructor(chargebeeService) {
         this.chargebeeService = chargebeeService;
@@ -25,14 +26,14 @@ let ChargebeeController = class ChargebeeController {
         return this.chargebeeService.findPlans();
     }
     webHook(data) {
-        console.log("data", data);
-        return "done";
+        console.log('data', data);
+        return 'done';
     }
     getPlanPrice(plan) {
         return this.chargebeeService.getPlanPrice(plan);
     }
-    getHostedPage() {
-        return this.chargebeeService.getHostedPage();
+    getHostedPage(data) {
+        return this.chargebeeService.getHostedPage_NewSubscription(data);
     }
     getHostedPageForAddon() {
         return this.chargebeeService.getHostedPageForAddon();
@@ -65,10 +66,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ChargebeeController.prototype, "getPlanPrice", null);
 __decorate([
-    (0, common_1.Get)('/plans/get-hosted-page'),
-    openapi.ApiResponse({ status: 200, type: Object }),
+    (0, common_1.Post)('/plans/get-hosted-page'),
+    (0, swagger_1.ApiOperation)({ summary: 'Generates checkout page for new subscription.' }),
+    openapi.ApiResponse({ status: 201, type: Object }),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [subscription_dto_1.SubscriptionDto]),
     __metadata("design:returntype", void 0)
 ], ChargebeeController.prototype, "getHostedPage", null);
 __decorate([
