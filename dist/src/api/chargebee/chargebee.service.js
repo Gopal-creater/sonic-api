@@ -65,7 +65,7 @@ let ChargebeeService = class ChargebeeService {
                     item_price_id: 'Basic-Plan-GBP-Yearly',
                 },
             ],
-            currency_code: "GBP"
+            currency_code: 'GBP',
         })
             .request((error, result) => {
             console.log('result', result);
@@ -87,7 +87,7 @@ let ChargebeeService = class ChargebeeService {
                     quantity: 10,
                 },
             ],
-            currency_code: "GBP"
+            currency_code: 'GBP',
         })
             .request((error, result) => {
             console.log('result', result);
@@ -109,8 +109,8 @@ let ChargebeeService = class ChargebeeService {
                     item_price_id: 'sonickey_standard_plan-USD-Yearly',
                 },
             ],
-            start_date: (new Date(moment.utc().format()).getTime()) / 1000,
-            currency_code: "GBP"
+            start_date: new Date(moment.utc().format()).getTime() / 1000,
+            currency_code: 'GBP',
         })
             .request((error, result) => {
             console.log('result', result);

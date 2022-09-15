@@ -26,7 +26,13 @@ let FileOperationService = class FileOperationService {
                     });
                 }
                 let rawdata = fs.readFileSync(logFilePath).toString();
-                const encodeResponse = JSON.parse(rawdata);
+                let encodeResponse;
+                try {
+                    encodeResponse = JSON.parse(rawdata);
+                }
+                catch (error) {
+                    console.log('error parsing decoded data', error);
+                }
                 console.log('encodeResponse', encodeResponse);
                 resolve(encodeResponse);
             }

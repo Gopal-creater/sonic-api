@@ -32,7 +32,12 @@ export class FileOperationService {
 
         //Read the txtfile synchronously
         let rawdata = fs.readFileSync(logFilePath).toString();
-        const encodeResponse: EncodeResponse = JSON.parse(rawdata);
+        let encodeResponse: EncodeResponse;
+        try {
+          encodeResponse = JSON.parse(rawdata);
+        } catch (error) {
+          console.log('error parsing decoded data', error);
+        }
 
         console.log('encodeResponse', encodeResponse);
 

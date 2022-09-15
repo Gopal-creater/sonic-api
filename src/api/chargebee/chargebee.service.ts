@@ -10,7 +10,7 @@ const chargebee = require('chargebee');
  * https://sonicarba-test.chargebee.com/checkout_and_portal_settings/configuration
  * https://apidocs.chargebee.com/docs/api/hosted_pages#create_checkout_to_update_a_subscription
  * https://www.chargebee.com/docs/2.0/inapp-self-serve-portal.html
- * 
+ *
  */
 @Injectable()
 export class ChargebeeService {
@@ -70,7 +70,7 @@ export class ChargebeeService {
             item_price_id: 'Basic-Plan-GBP-Yearly',
           },
         ],
-        currency_code:"GBP"
+        currency_code: 'GBP',
       })
       .request((error, result) => {
         console.log('result', result);
@@ -94,7 +94,7 @@ export class ChargebeeService {
             // unit_price : 1000
           },
         ],
-        currency_code:"GBP"
+        currency_code: 'GBP',
       })
       .request((error, result) => {
         console.log('result', result);
@@ -111,7 +111,7 @@ export class ChargebeeService {
         subscription: {
           id: 'AzyzejT4J1cuEDhc',
         },
-        replace_items_list:true,
+        replace_items_list: true,
         subscription_items: [
           {
             item_price_id: 'sonickey_standard_plan-USD-Yearly',
@@ -119,8 +119,8 @@ export class ChargebeeService {
             // unit_price : 1000
           },
         ],
-        start_date:(new Date(moment.utc().format()).getTime())/1000,
-        currency_code:"GBP"
+        start_date: new Date(moment.utc().format()).getTime() / 1000,
+        currency_code: 'GBP',
       })
       .request((error, result) => {
         console.log('result', result);
