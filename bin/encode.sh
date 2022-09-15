@@ -13,6 +13,7 @@
 # $3 : input file full path
 # $4 : output file full path
 # $5 : the sonic key
+# $6 : the log file path (added 15 sep 2022)
 # -----------------------------------------------------------------------------------------
 # !!! IMPORANT: Change BIN_PATH according to the installation folder.
 # -----------------------------------------------------------------------------------------
@@ -78,7 +79,7 @@ if [[ $inext == "wavx" || $inext == "WAVX" || $inext == "wav" || $inext == "WAV"
 
     echo "Watermarking..."
 
-    $WATERMARK $1 $2 $in_tmpfile_path $4 $5
+    $WATERMARK $1 $2 $in_tmpfile_path $4 $5 $6
     RESULT=$?
     if [ $RESULT -eq 0 ]; then
       echo "Watermark binary succeeded"
@@ -152,7 +153,7 @@ else
     fi
 
     echo "Watermarking..."
-    $WATERMARK $1 $ENC_STRENGTH $in_tmpfile_path $out_tmpfile_path $5 /dev/null
+    $WATERMARK $1 $ENC_STRENGTH $in_tmpfile_path $out_tmpfile_path $5 $6
     RESULT=$?
     if [ $RESULT -eq 0 ]; then
       echo "Watermark binary succeeded"
