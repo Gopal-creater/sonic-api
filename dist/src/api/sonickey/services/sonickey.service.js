@@ -550,7 +550,7 @@ let SonickeyService = class SonickeyService {
         const track = await this.trackService.findById(trackId);
         console.log('Track Fetched');
         console.log('Encoding....');
-        const { outFilePath, sonicKey } = await this.encode(file, encodingStrength);
+        const { outFilePath, sonicKey, encodeResponse } = await this.encode(file, encodingStrength);
         console.log('Encoding Done');
         console.log('Uploading encoded file to s3');
         const s3EncodedUploadResult = await this.s3FileUploadService
@@ -559,7 +559,7 @@ let SonickeyService = class SonickeyService {
             this.fileHandlerService.deleteFileAtPath(outFilePath);
         });
         console.log('Uploading encoded file to s3 Done');
-        const newSonicKey = Object.assign(Object.assign({}, sonickeyDoc), { contentFilePath: s3EncodedUploadResult.Location, originalFileName: track === null || track === void 0 ? void 0 : track.originalFileName, sonicKey: sonicKey, downloadable: true, license: licenseId, channel: sonickeyDoc.channel || Enums_1.ChannelEnums.PORTAL, track: track === null || track === void 0 ? void 0 : track._id, s3FileMeta: s3EncodedUploadResult, fingerPrintStatus: Enums_1.FingerPrintStatus.PENDING, _id: sonicKey });
+        const newSonicKey = Object.assign(Object.assign({}, sonickeyDoc), { contentFilePath: s3EncodedUploadResult.Location, originalFileName: track === null || track === void 0 ? void 0 : track.originalFileName, sonicKey: sonicKey, downloadable: true, license: licenseId, channel: sonickeyDoc.channel || Enums_1.ChannelEnums.PORTAL, track: track === null || track === void 0 ? void 0 : track._id, s3FileMeta: s3EncodedUploadResult, fingerPrintStatus: Enums_1.FingerPrintStatus.PENDING, _id: sonicKey, encodeResponse });
         if (fingerPrint) {
             await this.fingerPrintRequestToFPServer(track.s3OriginalFileMeta, sonicKey, file.originalname, file.size)
                 .then(data => {

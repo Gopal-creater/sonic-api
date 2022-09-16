@@ -785,7 +785,10 @@ export class SonickeyService {
     const track = await this.trackService.findById(trackId);
     console.log('Track Fetched');
     console.log('Encoding....');
-    const { outFilePath, sonicKey } = await this.encode(file, encodingStrength);
+    const { outFilePath, sonicKey, encodeResponse } = await this.encode(
+      file,
+      encodingStrength,
+    );
     console.log('Encoding Done');
     console.log('Uploading encoded file to s3');
     const s3EncodedUploadResult = await this.s3FileUploadService
@@ -806,6 +809,7 @@ export class SonickeyService {
       s3FileMeta: s3EncodedUploadResult,
       fingerPrintStatus: FingerPrintStatus.PENDING,
       _id: sonicKey,
+      encodeResponse,
     };
 
     if (fingerPrint) {

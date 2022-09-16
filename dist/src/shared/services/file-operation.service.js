@@ -34,6 +34,10 @@ let FileOperationService = class FileOperationService {
                     console.log('error parsing decoded data', error);
                 }
                 console.log('encodeResponse', encodeResponse);
+                if (!encodeResponse.result)
+                    reject({
+                        message: 'Error encountered during encoding from binary.!',
+                    });
                 resolve(encodeResponse);
             }
             catch (_a) {

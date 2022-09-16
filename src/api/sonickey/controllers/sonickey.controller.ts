@@ -35,14 +35,10 @@ import {
   NotFoundException,
   Query,
   UnauthorizedException,
-  InternalServerErrorException,
   Version,
-  MessageEvent,
-  Sse,
-  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { SonickeyService } from '../services/sonickey.service';
-import { S3FileMeta, SonicKey } from '../schemas/sonickey.schema';
+import { SonicKey } from '../schemas/sonickey.schema';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as makeDir from 'make-dir';
 import { diskStorage } from 'multer';
@@ -53,9 +49,6 @@ import {
   ApiTags,
   ApiConsumes,
   ApiBody,
-  ApiAcceptedResponse,
-  ApiOkResponse,
-  ApiResponse,
   ApiQuery,
   ApiParam,
   ApiSecurity,
@@ -95,7 +88,10 @@ import { UserDB } from '../../user/schemas/user.db.schema';
 import * as _ from 'lodash';
 import { BulkEncodeWithQueueLicenseValidationGuard } from 'src/api/licensekey/guards/job-license-validation.guard';
 import { ApiKeyAuthGuard } from 'src/api/auth/guards/apikey-auth.guard';
-import { extractFileName, identifyDestinationFolderAndResourceOwnerFromUser } from 'src/shared/utils';
+import {
+  extractFileName,
+  identifyDestinationFolderAndResourceOwnerFromUser,
+} from 'src/shared/utils';
 import { Track } from 'src/api/track/schemas/track.schema';
 import { EncodeSecurityGuard } from '../guards/encode-security.guard';
 import { UpdateSonicKeySecurityGuard } from '../guards/update-sonickey-security.guard';
@@ -140,6 +136,7 @@ export class SonickeyController {
   ) {
     return this.sonicKeyService.getAll(parsedQueryDto);
   }
+  //--------------------------------------------
 
   @AnyApiQueryTemplate({
     additionalHtmlDescription: `<div>
@@ -169,10 +166,13 @@ export class SonickeyController {
       throw new BadRequestException('Unsupported format');
     parsedQueryDto.limit =
       parsedQueryDto?.limit <= 2000 ? parsedQueryDto?.limit : 2000;
-      if(parsedQueryDto.filter?.channel=="ALL"){
-        delete parsedQueryDto.filter?.channel
-      }
-    const exportedFilePath =await this.sonicKeyService.exportSonicKeys(parsedQueryDto,format);
+    if (parsedQueryDto.filter?.channel == 'ALL') {
+      delete parsedQueryDto.filter?.channel;
+    }
+    const exportedFilePath = await this.sonicKeyService.exportSonicKeys(
+      parsedQueryDto,
+      format,
+    );
     const fileName = extractFileName(exportedFilePath);
     res.download(
       exportedFilePath,
@@ -186,6 +186,7 @@ export class SonickeyController {
       },
     );
   }
+  //---------------------------------------------
 
   @Get('/get-download-url-by-metadata')
   @UseGuards(ConditionalAuthGuard, RoleBasedGuard)
@@ -204,9 +205,9 @@ export class SonickeyController {
     const {
       resourceOwnerObj,
     } = identifyDestinationFolderAndResourceOwnerFromUser(loggedInUser);
-    console.log("resourceOwnerObj",resourceOwnerObj)
+    console.log('resourceOwnerObj', resourceOwnerObj);
     parsedQueryDto.filter = { ...parsedQueryDto.filter, ...resourceOwnerObj };
-    console.log("parsedQueryDto.filter",parsedQueryDto.filter)
+    console.log('parsedQueryDto.filter', parsedQueryDto.filter);
     parsedQueryDto.sort = {
       //Fetch the latest entry
       createdAt: -1,
@@ -219,8 +220,8 @@ export class SonickeyController {
     }
     const downloadSignedUrl = await this.s3FileUploadService.getSignedUrl(
       sonicKey.s3FileMeta.Key,
-      60*10,
-      sonicKey?.contentFileName || sonicKey?.originalFileName
+      60 * 10,
+      sonicKey?.contentFileName || sonicKey?.originalFileName,
     );
 
     //Add Next Encode On Queue for next download
@@ -239,9 +240,10 @@ export class SonickeyController {
     );
     return {
       sonicKey: sonicKey?._id,
-      downloadUrl: downloadSignedUrl
+      downloadUrl: downloadSignedUrl,
     };
   }
+  //-------------------------------------------------------
 
   @Post('/encode-bulk/companies/:companyId/clients/:clientId')
   @UseGuards(ApiKeyAuthGuard, BulkEncodeWithQueueLicenseValidationGuard)
@@ -270,6 +272,7 @@ export class SonickeyController {
       encodeFromQueueDto,
     );
   }
+  //----------------------------------------------------------
 
   @Get('/encode-bulk/companies/:companyId/get-job-status/:jobId')
   @UseGuards(ApiKeyAuthGuard)
@@ -304,12 +307,14 @@ export class SonickeyController {
       };
     }
   }
+  //-----------------------------------------------------------
 
   @Get('/generate-unique-sonic-key')
   @ApiOperation({ summary: 'Generate unique sonic key' })
   generateUniqueSonicKey() {
     return this.sonicKeyService.generateUniqueSonicKey();
   }
+  //------------------------------------------------------------
 
   @UseGuards(ConditionalAuthGuard, LicenseValidationGuard)
   @Post('/create-from-outside')
@@ -389,6 +394,7 @@ export class SonickeyController {
       });
     return savedSonicKey;
   }
+  //------------------------------------------------------------
 
   @UseGuards(JwtAuthGuard, LicenseValidationGuard)
   @Post('/create-from-job')
@@ -411,6 +417,7 @@ export class SonickeyController {
     };
     return this.sonicKeyService.create(sonickeyDoc);
   }
+  //-------------------------------------------------------------
 
   @RolesAllowed(Roles.ADMIN)
   @Get('/list-sonickeys')
@@ -423,6 +430,7 @@ export class SonickeyController {
   ) {
     return this.sonicKeyService.getAll(parsedQueryDto);
   }
+  //-------------------------------------------------------
 
   @Get('/jobs/:jobId')
   @UseGuards(JwtAuthGuard)
@@ -436,6 +444,7 @@ export class SonickeyController {
     parsedQueryDto.filter['job'] = jobId;
     return this.sonicKeyService.getAll(parsedQueryDto);
   }
+  //-----------------------------------------------------------------
 
   @Get('/count')
   @UseGuards(JwtAuthGuard)
@@ -448,6 +457,7 @@ export class SonickeyController {
   async getCount(@Query(new ParseQueryValue()) queryDto: ParsedQueryDto) {
     return this.sonicKeyService.getCount(queryDto);
   }
+  //------------------------------------------------------------------------
 
   @Get('/estimate-count')
   @UseGuards(JwtAuthGuard)
@@ -458,6 +468,7 @@ export class SonickeyController {
   async getEstimateCount() {
     return this.sonicKeyService.getEstimateCount();
   }
+  //------------------------------------------------------------------------
 
   @Get('/:sonickey')
   @UseGuards(ConditionalAuthGuard)
@@ -471,6 +482,7 @@ export class SonickeyController {
     }
     return key;
   }
+  //-----------------------------------------------------
 
   @UseInterceptors(
     FileInterceptor('mediaFile', {
@@ -541,6 +553,7 @@ export class SonickeyController {
       s3destinationFolder: destinationFolder,
     });
   }
+  //-------------------------------------------------------------------------
 
   @UseInterceptors(
     FileInterceptor('mediaFile', {
@@ -613,6 +626,7 @@ export class SonickeyController {
       s3destinationFolder: destinationFolder,
     });
   }
+  //--------------------------------------------------------------------------
 
   @UseInterceptors(FileFromTrackInterceptor('track'))
   @ApiBody({
@@ -670,6 +684,7 @@ export class SonickeyController {
       s3destinationFolder: destinationFolder,
     });
   }
+  //--------------------------------------------------------------------------
 
   @UseInterceptors(FileFromUrlInterceptor('mediaFile'))
   @ApiBody({
@@ -716,6 +731,7 @@ export class SonickeyController {
       s3destinationFolder: destinationFolder,
     });
   }
+  //----------------------------------------------------------------------
 
   @UseInterceptors(
     FileInterceptor('mediaFile', {
@@ -782,6 +798,7 @@ export class SonickeyController {
         throw new BadRequestException(err);
       });
   }
+  //------------------------------------------------------------------------
 
   @UseInterceptors(
     FileInterceptor('mediaFile', {
@@ -849,6 +866,7 @@ export class SonickeyController {
         throw new BadRequestException(err);
       });
   }
+  //------------------------------------------------------------------------
 
   @UseInterceptors(
     FileInterceptor('mediaFile', {
@@ -918,6 +936,7 @@ export class SonickeyController {
         throw new BadRequestException(err);
       });
   }
+  //--------------------------------------------------------------------------
 
   @UseInterceptors(
     FileInterceptor('mediaFile', {
@@ -989,6 +1008,7 @@ export class SonickeyController {
         throw new BadRequestException(err);
       });
   }
+  //---------------------------------------------------------------------------
 
   @Patch('/:sonickey')
   @RolesAllowed()
@@ -1009,6 +1029,7 @@ export class SonickeyController {
       updatedBy: loggedInUser.sub,
     });
   }
+  //----------------------------------------------------------------------------
 
   @Patch('/fingerprint-events/:sonicKey/success')
   @ApiOperation({
@@ -1034,6 +1055,7 @@ export class SonickeyController {
     }
     return updatedSonickey;
   }
+  //-------------------------------------------------
 
   @Patch('/fingerprint-events/:sonicKey/failed')
   @ApiOperation({
@@ -1059,6 +1081,7 @@ export class SonickeyController {
     }
     return updatedSonickey;
   }
+  //-------------------------------------------------
 
   @Delete('/:sonickey')
   @UseGuards(JwtAuthGuard, DeleteSonicKeySecurityGuard)
@@ -1074,6 +1097,7 @@ export class SonickeyController {
     }
     return this.sonicKeyService.sonicKeyModel.findByIdAndRemove(key._id);
   }
+  //----------------------------------------------------
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

@@ -43,6 +43,10 @@ export class FileOperationService {
 
         //TODO Check if response json object has result = true
         //If result is false throw error
+        if (!encodeResponse.result)
+          reject({
+            message: 'Error encountered during encoding from binary.!',
+          });
 
         resolve(encodeResponse);
       } catch {

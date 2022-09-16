@@ -81,7 +81,7 @@ let SonickeyController = class SonickeyController {
             throw new common_1.BadRequestException('Unsupported format');
         parsedQueryDto.limit =
             (parsedQueryDto === null || parsedQueryDto === void 0 ? void 0 : parsedQueryDto.limit) <= 2000 ? parsedQueryDto === null || parsedQueryDto === void 0 ? void 0 : parsedQueryDto.limit : 2000;
-        if (((_a = parsedQueryDto.filter) === null || _a === void 0 ? void 0 : _a.channel) == "ALL") {
+        if (((_a = parsedQueryDto.filter) === null || _a === void 0 ? void 0 : _a.channel) == 'ALL') {
             (_b = parsedQueryDto.filter) === null || _b === void 0 ? true : delete _b.channel;
         }
         const exportedFilePath = await this.sonicKeyService.exportSonicKeys(parsedQueryDto, format);
@@ -97,9 +97,9 @@ let SonickeyController = class SonickeyController {
     async getDownloadUrlByMetadata(parsedQueryDto, loggedInUser) {
         var _a;
         const { resourceOwnerObj, } = (0, utils_1.identifyDestinationFolderAndResourceOwnerFromUser)(loggedInUser);
-        console.log("resourceOwnerObj", resourceOwnerObj);
+        console.log('resourceOwnerObj', resourceOwnerObj);
         parsedQueryDto.filter = Object.assign(Object.assign({}, parsedQueryDto.filter), resourceOwnerObj);
-        console.log("parsedQueryDto.filter", parsedQueryDto.filter);
+        console.log('parsedQueryDto.filter', parsedQueryDto.filter);
         parsedQueryDto.sort = {
             createdAt: -1,
         };
@@ -119,7 +119,7 @@ let SonickeyController = class SonickeyController {
         await this.sonicKeyService.sonicKeyQueue.add('encode_again', encodeAgainForNextDownloadJobData, { jobId: (0, nanoid_1.nanoid)(15) });
         return {
             sonicKey: sonicKey === null || sonicKey === void 0 ? void 0 : sonicKey._id,
-            downloadUrl: downloadSignedUrl
+            downloadUrl: downloadSignedUrl,
         };
     }
     async encodeToSonicFromPath(company, client, owner, license, encodeFromQueueDto) {
