@@ -26,8 +26,7 @@ export class ChargebeeController {
   //Inorder to work with webhook, we need to add this web url into Chargebee webhook setting
   @Post('/webhook')
   webHook(@Body() data: any) {
-    console.log('data', data);
-    return 'done';
+    return this.chargebeeService.webhookCheckout(data);
   }
 
   @Get('/plans/:id/get-price')
@@ -37,7 +36,7 @@ export class ChargebeeController {
 
   @Get('/plans/checkout/:customer_id')
   @ApiOperation({ summary: 'Generates checkout page for new subscription.' })
-  getHostedPage(@Param('customer-id') id: string) {
+  getHostedPage(@Param('customer_id') id: string) {
     return this.chargebeeService.getHostedPage_NewSubscription(id);
   }
 

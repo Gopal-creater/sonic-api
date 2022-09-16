@@ -115,6 +115,25 @@ let ChargebeeService = class ChargebeeService {
             return Promise.resolve(result);
         });
     }
+    webhookCheckout(data) {
+        console.log('webhookCheckout data', data);
+        chargebee.event
+            .list({
+            event_type: { in: "['subscription_created','customer_created']" },
+        })
+            .request(function (error, result) {
+            if (error) {
+                console.log(error);
+            }
+            else {
+                for (var i = 0; i < result.list.length; i++) {
+                    var entry = result.list[i];
+                    console.log(entry);
+                    var event = entry.event;
+                }
+            }
+        });
+    }
 };
 ChargebeeService = __decorate([
     (0, common_1.Injectable)(),

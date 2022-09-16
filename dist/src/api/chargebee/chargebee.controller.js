@@ -25,8 +25,7 @@ let ChargebeeController = class ChargebeeController {
         return this.chargebeeService.findPlans();
     }
     webHook(data) {
-        console.log('data', data);
-        return 'done';
+        return this.chargebeeService.webhookCheckout(data);
     }
     getPlanPrice(plan) {
         return this.chargebeeService.getPlanPrice(plan);
@@ -50,7 +49,7 @@ __decorate([
 ], ChargebeeController.prototype, "findPlans", null);
 __decorate([
     (0, common_1.Post)('/webhook'),
-    openapi.ApiResponse({ status: 201, type: String }),
+    openapi.ApiResponse({ status: 201 }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -68,7 +67,7 @@ __decorate([
     (0, common_1.Get)('/plans/checkout/:customer_id'),
     (0, swagger_1.ApiOperation)({ summary: 'Generates checkout page for new subscription.' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('customer-id')),
+    __param(0, (0, common_1.Param)('customer_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)

@@ -53,7 +53,7 @@ export class ChargebeeService {
       });
   }
 
-  getHostedPage_NewSubscription(customerId) {
+  getHostedPage_NewSubscription(customerId: string) {
     //TODO-Check if already the same subscription present or not
     return chargebee.hosted_page
       .checkout_new_for_items({
@@ -122,6 +122,26 @@ export class ChargebeeService {
           return Promise.reject(error);
         }
         return Promise.resolve(result);
+      });
+  }
+
+  webhookCheckout(data) {
+    console.log('webhookCheckout data', data);
+    chargebee.event
+      .list({
+        event_type: { in: "['subscription_created','customer_created']" },
+      })
+      .request(function(error, result) {
+        if (error) {
+          //handle error
+          console.log(error);
+        } else {
+          for (var i = 0; i < result.list.length; i++) {
+            var entry = result.list[i];
+            console.log(entry);
+            var event: typeof chargebee.event = entry.event;
+          }
+        }
       });
   }
 }
