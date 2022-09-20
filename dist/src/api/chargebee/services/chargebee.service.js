@@ -145,7 +145,7 @@ let ChargebeeService = class ChargebeeService {
             var event = data.event;
             console.log('webhook event', event);
             let oldEvent = await this.chargeBeeModal.findOne({ paymentId: event.id });
-            if (!oldEvent) {
+            if (!oldEvent && event.event_type === 'subscription_created') {
                 let payload = {
                     customerId: event.content.customer.id,
                     paymentId: event.id,

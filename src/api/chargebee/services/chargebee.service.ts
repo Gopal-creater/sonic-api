@@ -156,7 +156,7 @@ export class ChargebeeService {
       //check if the event is already stored in database
       let oldEvent = await this.chargeBeeModal.findOne({ paymentId: event.id });
 
-      if (!oldEvent) {
+      if (!oldEvent && event.event_type === 'subscription_created') {
         //create chargebee Payload
         let payload: ChargebeePaymentDto = {
           customerId: event.content.customer.id,
