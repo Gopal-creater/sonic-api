@@ -56,17 +56,16 @@ let ChargebeeService = class ChargebeeService {
             return Promise.resolve(result);
         });
     }
-    getHostedPage_NewSubscription(customerId) {
+    getHostedPage_NewSubscription(customerId, planPriceId) {
         return chargebee.hosted_page
             .checkout_new_for_items({
             customer: { id: customerId },
             redirect_url: 'https://sonicportal.arba-dev.uk/',
             subscription_items: [
                 {
-                    item_price_id: 'Sonic-Basic-GBP-Yearly',
+                    item_price_id: planPriceId,
                 },
             ],
-            currency_code: 'GBP',
         })
             .request((error, result) => {
             console.log('result', result);
@@ -121,19 +120,6 @@ let ChargebeeService = class ChargebeeService {
             return Promise.resolve(result);
         });
     }
-    async createChargebeePayment(datas) {
-        for (var i = 0; i < datas.list.length; i++) {
-            var data = datas.list[i];
-            var event = data.event;
-            console.log('webhook event', event);
-            let payload = {
-                customerId: event.content.customer.id,
-                paymentId: event.id,
-            };
-            let newPayment = await this.chargeBeeModal.create(payload);
-            await newPayment.save();
-        }
-    }
     webhookCheckout(data) {
         console.log('webhookCheckout data', data);
         chargebee.event
@@ -152,6 +138,22 @@ let ChargebeeService = class ChargebeeService {
                 });
             }
         });
+    }
+    async createChargebeePayment(datas) {
+        for (var i = 0; i < datas.list.length; i++) {
+            var data = datas.list[i];
+            var event = data.event;
+            console.log('webhook event', event);
+            let oldEvent = await this.chargeBeeModal.find({ paymentId: event.id });
+            if (!oldEvent) {
+                let payload = {
+                    customerId: event.content.customer.id,
+                    paymentId: event.id,
+                };
+                let newPayment = await this.chargeBeeModal.create(payload);
+                await newPayment.save();
+            }
+        }
     }
 };
 ChargebeeService = __decorate([

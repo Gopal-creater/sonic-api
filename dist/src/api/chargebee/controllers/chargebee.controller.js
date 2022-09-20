@@ -31,8 +31,8 @@ let ChargebeeController = class ChargebeeController {
     getPlanPrice(plan) {
         return this.chargebeeService.getPlanPrice(plan);
     }
-    getHostedPage(id) {
-        return this.chargebeeService.getHostedPage_NewSubscription(id);
+    getHostedPage(id, planPriceId) {
+        return this.chargebeeService.getHostedPage_NewSubscription(id, planPriceId);
     }
     getHostedPageForAddon() {
         return this.chargebeeService.getHostedPageForAddon();
@@ -67,12 +67,13 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ChargebeeController.prototype, "getPlanPrice", null);
 __decorate([
-    (0, common_1.Get)('/plans/checkout/:customer_id'),
+    (0, common_1.Get)('/plans/checkout/:customer_id/:plan_price_id'),
     (0, swagger_1.ApiOperation)({ summary: 'Generates checkout page for new subscription.' }),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, (0, common_1.Param)('customer_id')),
+    __param(1, (0, common_1.Param)('plan_price_id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], ChargebeeController.prototype, "getHostedPage", null);
 __decorate([

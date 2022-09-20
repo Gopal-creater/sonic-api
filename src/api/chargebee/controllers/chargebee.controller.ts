@@ -26,10 +26,13 @@ export class ChargebeeController {
     return this.chargebeeService.getPlanPrice(plan);
   }
 
-  @Get('/plans/checkout/:customer_id')
+  @Get('/plans/checkout/:customer_id/:plan_price_id')
   @ApiOperation({ summary: 'Generates checkout page for new subscription.' })
-  getHostedPage(@Param('customer_id') id: string) {
-    return this.chargebeeService.getHostedPage_NewSubscription(id);
+  getHostedPage(
+    @Param('customer_id') id: string,
+    @Param('plan_price_id') planPriceId: string,
+  ) {
+    return this.chargebeeService.getHostedPage_NewSubscription(id, planPriceId);
   }
 
   @Get('/plans/get-hosted-page-for-addon')
