@@ -17,7 +17,7 @@ let ChargebeeModule = class ChargebeeModule {
 ChargebeeModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: 'ChargeBee', schema: chargebee_schema_1.ChargeBeeSchema }]),
+            mongoose_1.MongooseModule.forFeature([{ name: 'Chargebee', schema: chargebee_schema_1.ChargeBeeSchema }]),
         ],
         controllers: [chargebee_controller_1.ChargebeeController],
         providers: [chargebee_service_1.ChargebeeService],

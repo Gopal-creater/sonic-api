@@ -18,7 +18,7 @@ const chargebee = require('chargebee');
 export class ChargebeeService {
   chargebee1: ChargeBee;
   constructor(
-    @InjectModel('ChargeBee') private chargeBeeModal: Model<ChargeBeeDocument>,
+    @InjectModel('Chargebee') private chargeBeeModal: Model<ChargeBeeDocument>,
     private readonly configService: ConfigService,
   ) {
     this.chargebee1 = new ChargeBee();
