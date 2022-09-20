@@ -6,7 +6,7 @@ import { ChargeBeeSchema } from './schemas/chargebee.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'ChargeBee', schema: ChargeBeeSchema }]),
+    MongooseModule.forFeature([{ name: 'Chargebee', schema: ChargeBeeSchema }]),
   ],
   controllers: [ChargebeeController],
   providers: [ChargebeeService],
