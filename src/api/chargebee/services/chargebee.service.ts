@@ -154,7 +154,7 @@ export class ChargebeeService {
       console.log('webhook event', event);
 
       //check if the event is already stored in database
-      let oldEvent = await this.chargeBeeModal.find({ paymentId: event.id });
+      let oldEvent = await this.chargeBeeModal.findOne({ paymentId: event.id });
 
       if (!oldEvent) {
         //create chargebee Payload

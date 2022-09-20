@@ -144,7 +144,7 @@ let ChargebeeService = class ChargebeeService {
             var data = datas.list[i];
             var event = data.event;
             console.log('webhook event', event);
-            let oldEvent = await this.chargeBeeModal.find({ paymentId: event.id });
+            let oldEvent = await this.chargeBeeModal.findOne({ paymentId: event.id });
             if (!oldEvent) {
                 let payload = {
                     customerId: event.content.customer.id,
