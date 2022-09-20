@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateChargebeeDto } from './dto/create-chargebee.dto';
-import { UpdateChargebeeDto } from './dto/update-chargebee.dto';
 import { ChargeBee } from 'chargebee-typescript';
 import { ConfigService } from '@nestjs/config';
 import * as moment from 'moment';
-import { SubscriptionDto } from './dto/subscription.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { ChargeBeeDocument } from '../schemas/chargebee.schema';
+import { ChargebeePaymentDto } from '../dto/chargebeePayment.dto';
 const chargebee = require('chargebee');
 
 /**
@@ -16,7 +17,10 @@ const chargebee = require('chargebee');
 @Injectable()
 export class ChargebeeService {
   chargebee1: ChargeBee;
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    @InjectModel('ChargeBee') private chargeBeeModal: Model<ChargeBeeDocument>,
+    private readonly configService: ConfigService,
+  ) {
     this.chargebee1 = new ChargeBee();
     this.chargebee1.configure({
       site: this.configService.get('CHARGEBEE_SITE'),
@@ -125,22 +129,39 @@ export class ChargebeeService {
       });
   }
 
+  async createChargebeePayment(datas) {
+    for (var i = 0; i < datas.list.length; i++) {
+      var data = datas.list[i];
+      var event: typeof chargebee.event = data.event;
+      console.log('webhook datas', event, data);
+
+      //create chargebee Payload
+      let payload: ChargebeePaymentDto = {
+        customerId: '',
+        paymentId: '',
+      };
+
+      //Save in chargebee document
+      let newPayment = await this.chargeBeeModal.create(payload);
+      await newPayment.save();
+    }
+  }
+
   webhookCheckout(data) {
     console.log('webhookCheckout data', data);
     chargebee.event
       .list({
-        event_type: { in: "['subscription_created','customer_created']" },
+        event_type: { in: "['subscription_created']" },
       })
-      .request(function(error, result) {
+      .request((error, result) => {
         if (error) {
-          //handle error
-          console.log(error);
+          console.log('webhook error', error);
+          return Promise.reject(error);
         } else {
-          for (var i = 0; i < result.list.length; i++) {
-            var entry = result.list[i];
-            console.log(entry);
-            var event: typeof chargebee.event = entry.event;
-          }
+          this.createChargebeePayment(result);
+          return Promise.resolve({
+            message: 'chargebee webhook call successsful.',
+          });
         }
       });
   }

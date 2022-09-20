@@ -8,17 +8,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChargebeeService = void 0;
 const common_1 = require("@nestjs/common");
 const chargebee_typescript_1 = require("chargebee-typescript");
 const config_1 = require("@nestjs/config");
 const moment = require("moment");
+const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
 const chargebee = require('chargebee');
 let ChargebeeService = class ChargebeeService {
-    constructor(configService, readonly) {
+    constructor(chargeBeeModal, configService) {
+        this.chargeBeeModal = chargeBeeModal;
         this.configService = configService;
-        this.readonly = readonly;
         this.chargebee1 = new chargebee_typescript_1.ChargeBee();
         this.chargebee1.configure({
             site: this.configService.get('CHARGEBEE_SITE'),
@@ -120,7 +125,13 @@ let ChargebeeService = class ChargebeeService {
         for (var i = 0; i < datas.list.length; i++) {
             var data = datas.list[i];
             var event = data.event;
-            console.log('webhook event', event);
+            console.log('webhook datas', event, data);
+            let payload = {
+                customerId: '',
+                paymentId: '',
+            };
+            let newPayment = await this.chargeBeeModal.create(payload);
+            await newPayment.save();
         }
     }
     webhookCheckout(data) {
@@ -145,7 +156,9 @@ let ChargebeeService = class ChargebeeService {
 };
 ChargebeeService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [config_1.ConfigService, Object])
+    __param(0, (0, mongoose_1.InjectModel)('ChargeBee')),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        config_1.ConfigService])
 ], ChargebeeService);
 exports.ChargebeeService = ChargebeeService;
 //# sourceMappingURL=chargebee.service.js.map

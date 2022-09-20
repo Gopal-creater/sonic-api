@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChargebeeController = void 0;
 const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
-const chargebee_service_1 = require("./chargebee.service");
+const chargebee_service_1 = require("../services/chargebee.service");
 const swagger_1 = require("@nestjs/swagger");
 let ChargebeeController = class ChargebeeController {
     constructor(chargebeeService) {
@@ -24,8 +24,9 @@ let ChargebeeController = class ChargebeeController {
     findPlans() {
         return this.chargebeeService.findPlans();
     }
-    webHook(data) {
-        return this.chargebeeService.webhookCheckout(data);
+    async webHook(response, data) {
+        const success = await this.chargebeeService.webhookCheckout(data);
+        return response.status(200).send();
     }
     getPlanPrice(plan) {
         return this.chargebeeService.getPlanPrice(plan);
@@ -48,12 +49,14 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ChargebeeController.prototype, "findPlans", null);
 __decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Saves the payment to our database.' }),
     (0, common_1.Post)('/chargebee-webhook'),
     openapi.ApiResponse({ status: 201 }),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
 ], ChargebeeController.prototype, "webHook", null);
 __decorate([
     (0, common_1.Get)('/plans/:id/get-price'),

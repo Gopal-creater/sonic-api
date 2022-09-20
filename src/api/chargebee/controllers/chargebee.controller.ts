@@ -1,17 +1,7 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Put,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { ChargebeeService } from './chargebee.service';
-import { CreateChargebeeDto } from './dto/create-chargebee.dto';
-import { UpdateChargebeeDto } from './dto/update-chargebee.dto';
+import { Controller, Get, Post, Body, Param, Res } from '@nestjs/common';
+import { ChargebeeService } from '../services/chargebee.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { SubscriptionDto } from './dto/subscription.dto';
+import { Response } from 'express';
 
 @ApiTags('Chargebee')
 @Controller('chargebee')
@@ -24,9 +14,11 @@ export class ChargebeeController {
   }
 
   //Inorder to work with webhook, we need to add this web url into Chargebee webhook setting
-  @Post('/webhook')
-  webHook(@Body() data: any) {
-    return this.chargebeeService.webhookCheckout(data);
+  @ApiOperation({ summary: 'Saves the payment to our database.' })
+  @Post('/chargebee-webhook')
+  async webHook(@Res() response: Response, @Body() data: any) {
+    const success = await this.chargebeeService.webhookCheckout(data);
+    return response.status(200).send();
   }
 
   @Get('/plans/:id/get-price')

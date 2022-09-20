@@ -8,14 +8,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChargebeeModule = void 0;
 const common_1 = require("@nestjs/common");
-const chargebee_service_1 = require("./chargebee.service");
-const chargebee_controller_1 = require("./chargebee.controller");
+const chargebee_service_1 = require("./services/chargebee.service");
+const chargebee_controller_1 = require("./controllers/chargebee.controller");
+const mongoose_1 = require("@nestjs/mongoose");
+const chargebee_schema_1 = require("./schemas/chargebee.schema");
 let ChargebeeModule = class ChargebeeModule {
 };
 ChargebeeModule = __decorate([
     (0, common_1.Module)({
+        imports: [
+            mongoose_1.MongooseModule.forFeature([{ name: 'ChargeBee', schema: chargebee_schema_1.ChargeBeeSchema }]),
+        ],
         controllers: [chargebee_controller_1.ChargebeeController],
-        providers: [chargebee_service_1.ChargebeeService]
+        providers: [chargebee_service_1.ChargebeeService],
     })
 ], ChargebeeModule);
 exports.ChargebeeModule = ChargebeeModule;
