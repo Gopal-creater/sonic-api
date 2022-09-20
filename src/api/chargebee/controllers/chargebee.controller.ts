@@ -15,8 +15,8 @@ export class ChargebeeController {
 
   //Inorder to work with webhook, we need to add this web url into Chargebee webhook setting
   @ApiOperation({ summary: 'Saves the payment to our database.' })
-  @Post('/chargebee-webhook')
-  async webHook(@Res() response: Response, @Body() data: any) {
+  @Post('/webhook')
+  async chargebeeWebHook(@Res() response: Response, @Body() data: any) {
     const success = await this.chargebeeService.webhookCheckout(data);
     return response.status(200).send();
   }
