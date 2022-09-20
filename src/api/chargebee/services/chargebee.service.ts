@@ -133,12 +133,12 @@ export class ChargebeeService {
     for (var i = 0; i < datas.list.length; i++) {
       var data = datas.list[i];
       var event: typeof chargebee.event = data.event;
-      console.log('webhook datas', event, data);
+      console.log('webhook event', event);
 
       //create chargebee Payload
       let payload: ChargebeePaymentDto = {
-        customerId: '',
-        paymentId: '',
+        customerId: event.content.customer.id,
+        paymentId: event.id,
       };
 
       //Save in chargebee document

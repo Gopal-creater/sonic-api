@@ -125,10 +125,10 @@ let ChargebeeService = class ChargebeeService {
         for (var i = 0; i < datas.list.length; i++) {
             var data = datas.list[i];
             var event = data.event;
-            console.log('webhook datas', event, data);
+            console.log('webhook event', event);
             let payload = {
-                customerId: '',
-                paymentId: '',
+                customerId: event.content.customer.id,
+                paymentId: event.id,
             };
             let newPayment = await this.chargeBeeModal.create(payload);
             await newPayment.save();
