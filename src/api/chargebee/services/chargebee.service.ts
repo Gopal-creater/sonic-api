@@ -128,45 +128,27 @@ export class ChargebeeService {
       });
   }
 
-  webhookCheckout(data) {
-    console.log('webhookCheckout data', data);
-    chargebee.event
-      .list({
-        event_type: { in: "['subscription_created']" },
-      })
-      .request((error, result) => {
-        if (error) {
-          console.log('webhook error', error);
-          return Promise.reject(error);
-        } else {
-          this.createChargebeePayment(result);
-          return Promise.resolve({
-            message: 'chargebee webhook call successsful.',
-          });
-        }
-      });
-  }
-
-  async createChargebeePayment(datas) {
-    for (var i = 0; i < datas.list.length; i++) {
-      var data = datas.list[i];
-      var event: typeof chargebee.event = data.event;
-      console.log('webhook event', event);
-
+  async webhookCheckout(response, event) {
+    if (event.event_type === 'subscription_created') {
       //check if the event is already stored in database
       let oldEvent = await this.chargeBeeModal.findOne({ paymentId: event.id });
 
-      if (!oldEvent && event.event_type === 'subscription_created') {
-        //create chargebee Payload
-        let payload: ChargebeePaymentDto = {
-          customerId: event.content.customer.id,
-          paymentId: event.id,
-        };
+      if (oldEvent) return response.status(400).send('Duplicate event');
 
-        //Save in chargebee document
-        let newPayment = await this.chargeBeeModal.create(payload);
-        await newPayment.save();
-      }
+      //create chargebee Payload
+      let payload: ChargebeePaymentDto = {
+        customerId: event.content.customer.id,
+        paymentId: event.id,
+      };
+
+      //Save in chargebee document
+      let newPayment = await this.chargeBeeModal.create(payload);
+      await newPayment.save();
+
+      //send 200 ok response
+      return response.status(200).send('Webhook success');
+    } else {
+      return response.status(400).send('Webhook error');
     }
   }
 }

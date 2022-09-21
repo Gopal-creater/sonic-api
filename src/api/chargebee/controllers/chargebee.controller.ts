@@ -17,8 +17,7 @@ export class ChargebeeController {
   @ApiOperation({ summary: 'Saves the payment to our database.' })
   @Post('/webhook')
   async chargebeeWebHook(@Res() response: Response, @Body() data: any) {
-    const success = await this.chargebeeService.webhookCheckout(data);
-    return response.status(200).send();
+    return this.chargebeeService.webhookCheckout(response, data);
   }
 
   @Get('/plans/:id/get-price')

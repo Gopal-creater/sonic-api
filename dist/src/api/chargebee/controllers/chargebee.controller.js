@@ -25,8 +25,7 @@ let ChargebeeController = class ChargebeeController {
         return this.chargebeeService.findPlans();
     }
     async chargebeeWebHook(response, data) {
-        const success = await this.chargebeeService.webhookCheckout(data);
-        return response.status(200).send();
+        return this.chargebeeService.webhookCheckout(response, data);
     }
     getPlanPrice(plan) {
         return this.chargebeeService.getPlanPrice(plan);
@@ -51,7 +50,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Saves the payment to our database.' }),
     (0, common_1.Post)('/webhook'),
-    openapi.ApiResponse({ status: 201 }),
+    openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),

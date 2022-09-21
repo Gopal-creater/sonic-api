@@ -120,39 +120,21 @@ let ChargebeeService = class ChargebeeService {
             return Promise.resolve(result);
         });
     }
-    webhookCheckout(data) {
-        console.log('webhookCheckout data', data);
-        chargebee.event
-            .list({
-            event_type: { in: "['subscription_created']" },
-        })
-            .request((error, result) => {
-            if (error) {
-                console.log('webhook error', error);
-                return Promise.reject(error);
-            }
-            else {
-                this.createChargebeePayment(result);
-                return Promise.resolve({
-                    message: 'chargebee webhook call successsful.',
-                });
-            }
-        });
-    }
-    async createChargebeePayment(datas) {
-        for (var i = 0; i < datas.list.length; i++) {
-            var data = datas.list[i];
-            var event = data.event;
-            console.log('webhook event', event);
+    async webhookCheckout(response, event) {
+        if (event.event_type === 'subscription_created') {
             let oldEvent = await this.chargeBeeModal.findOne({ paymentId: event.id });
-            if (!oldEvent && event.event_type === 'subscription_created') {
-                let payload = {
-                    customerId: event.content.customer.id,
-                    paymentId: event.id,
-                };
-                let newPayment = await this.chargeBeeModal.create(payload);
-                await newPayment.save();
-            }
+            if (oldEvent)
+                return response.status(400).send('Duplicate event');
+            let payload = {
+                customerId: event.content.customer.id,
+                paymentId: event.id,
+            };
+            let newPayment = await this.chargeBeeModal.create(payload);
+            await newPayment.save();
+            return response.status(200).send('Webhook success');
+        }
+        else {
+            return response.status(400).send('Webhook error');
         }
     }
 };
