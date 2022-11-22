@@ -6,57 +6,14 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import * as multer from 'multer';
 import * as basicAuth from 'express-basic-auth';
-import { useContainer, Validator } from 'class-validator';
+import { useContainer } from 'class-validator';
 
 global['fetch'] = require('node-fetch');
-
-var allowOriginList = [
-  //AmazingTag
-  'https://amazingportal.arba-dev.uk',
-  'http://amazingportal.arba-dev.uk',
-  'https://amazingadmin.arba-dev.uk',
-  'http://amazingadmin.arba-dev.uk',
-  'https://portal.sonicdata.com',
-  'https://admin.sonicdata.com',
-  'http://admin.sonicdata.com',
-  'https://sonicportal.arba-dev.uk',
-  'http://sonicportal.arba-dev.uk',
-  'https://sonictempportal.arba-dev.uk',
-  'https://sonicadminportal.arba-dev.uk',
-  'http://sonicadminportal.arba-dev.uk',
-  'https://sonicwpms.arba-dev.uk',
-  'http://sonicwpms.arba-dev.uk',
-  'http://fpserver.sonicdata.com',
-  'https://fpserver.sonicdata.com',
-  'http://localhost:3000',
-  'https://localhost:3000',
-  'http://localhost:8001',
-  'https://localhost:8001',
-  'http://localhost:8002',
-  'https://localhost:8002',
-  'http://localhost:8003',
-  'https://localhost:8003',
-  'http://localhost:8004',
-  'https://localhost:8004',
-];
-var corsOptionsDelegate = function(req, callback) {
- var corsOptions;
- if (allowOriginList.indexOf(req.header('Origin')) !== -1) {
-   corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
- } else {
-   corsOptions = { origin: false }; // disable CORS for this request
- }
- callback(null, corsOptions); // callback expects two parameters: error and options
-};
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bodyParser: true,
-    cors:{
-      origin:'*'
-    }
   });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.use(
@@ -71,40 +28,37 @@ async function bootstrap() {
   // app.use(multer)
   app.enableVersioning();
   const configService = app.get(ConfigService);
-  app.enableCors()
-
-  // app.enableCors(corsOptionsDelegate)
-  // app.enableCors({
-  //   origin: [
-  //     //AmazingTag
-  //     'https://amazingportal.arba-dev.uk',
-  //     'http://amazingportal.arba-dev.uk',
-  //     'https://amazingadmin.arba-dev.uk',
-  //     'http://amazingadmin.arba-dev.uk',
-  //     'https://portal.sonicdata.com',
-  //     'https://admin.sonicdata.com',
-  //     'http://admin.sonicdata.com',
-  //     'https://sonicportal.arba-dev.uk',
-  //     'http://sonicportal.arba-dev.uk',
-  //     'https://sonictempportal.arba-dev.uk',
-  //     'https://sonicadminportal.arba-dev.uk',
-  //     'http://sonicadminportal.arba-dev.uk',
-  //     'https://sonicwpms.arba-dev.uk',
-  //     'http://sonicwpms.arba-dev.uk',
-  //     'http://fpserver.sonicdata.com',
-  //     'https://fpserver.sonicdata.com',
-  //     'http://localhost:3000',
-  //     'https://localhost:3000',
-  //     'http://localhost:8001',
-  //     'https://localhost:8001',
-  //     'http://localhost:8002',
-  //     'https://localhost:8002',
-  //     'http://localhost:8003',
-  //     'https://localhost:8003',
-  //     'http://localhost:8004',
-  //     'https://localhost:8004',
-  //   ],
-  // });
+  app.enableCors({
+    origin: [
+      //AmazingTag
+      'https://amazingportal.arba-dev.uk',
+      'http://amazingportal.arba-dev.uk',
+      'https://amazingadmin.arba-dev.uk',
+      'http://amazingadmin.arba-dev.uk',
+      'https://portal.sonicdata.com',
+      'https://admin.sonicdata.com',
+      'http://admin.sonicdata.com',
+      'https://sonicportal.arba-dev.uk',
+      'http://sonicportal.arba-dev.uk',
+      'https://sonictempportal.arba-dev.uk',
+      'https://sonicadminportal.arba-dev.uk',
+      'http://sonicadminportal.arba-dev.uk',
+      'https://sonicwpms.arba-dev.uk',
+      'http://sonicwpms.arba-dev.uk',
+      'http://fpserver.sonicdata.com',
+      'https://fpserver.sonicdata.com',
+      'http://localhost:3000',
+      'https://localhost:3000',
+      'http://localhost:8001',
+      'https://localhost:8001',
+      'http://localhost:8002',
+      'https://localhost:8002',
+      'http://localhost:8003',
+      'https://localhost:8003',
+      'http://localhost:8004',
+      'https://localhost:8004'
+    ],
+  });
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useStaticAssets(appRootPath.path.toString() + '/storage/uploads/guest', {
     prefix: '/storage/uploads/guest',
