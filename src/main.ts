@@ -54,6 +54,12 @@ async function bootstrap() {
       'https://localhost:8003',
       'http://localhost:8004',
       'https://localhost:8004',
+
+      //AmazingTag
+      'http://amazingportal.arba-dev.uk',
+      'https://amazingportal.arba-dev.uk',
+      'http://amazingadmin.arba-dev.uk',
+      'https://amazingadmin.arba-dev.uk'
     ],
   });
   app.useGlobalFilters(new HttpExceptionFilter());
