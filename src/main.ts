@@ -32,6 +32,11 @@ async function bootstrap() {
   // app.enableCors()
   app.enableCors({
     origin: [
+      //AmazingTag
+      'http://amazingportal.arba-dev.uk',
+      'https://amazingportal.arba-dev.uk',
+      'http://amazingadmin.arba-dev.uk',
+      'https://amazingadmin.arba-dev.uk',
       'https://portal.sonicdata.com',
       'https://admin.sonicdata.com',
       'http://admin.sonicdata.com',
@@ -53,13 +58,7 @@ async function bootstrap() {
       'http://localhost:8003',
       'https://localhost:8003',
       'http://localhost:8004',
-      'https://localhost:8004',
-
-      //AmazingTag
-      'http://amazingportal.arba-dev.uk',
-      'https://amazingportal.arba-dev.uk',
-      'http://amazingadmin.arba-dev.uk',
-      'https://amazingadmin.arba-dev.uk'
+      'https://localhost:8004'
     ],
   });
   app.useGlobalFilters(new HttpExceptionFilter());
