@@ -29,38 +29,38 @@ async function bootstrap() {
   // app.use(multer)
   app.enableVersioning();
   const configService = app.get(ConfigService);
-  app.enableCors()
-  // app.enableCors({
-  //   origin: [
-  //     //AmazingTag
-  //     'http://amazingportal.arba-dev.uk',
-  //     'https://amazingportal.arba-dev.uk',
-  //     'http://amazingadmin.arba-dev.uk',
-  //     'https://amazingadmin.arba-dev.uk',
-  //     'https://portal.sonicdata.com',
-  //     'https://admin.sonicdata.com',
-  //     'http://admin.sonicdata.com',
-  //     'https://sonicportal.arba-dev.uk',
-  //     'http://sonicportal.arba-dev.uk',
-  //     'https://sonictempportal.arba-dev.uk',
-  //     'https://sonicadminportal.arba-dev.uk',
-  //     'http://sonicadminportal.arba-dev.uk',
-  //     'https://sonicwpms.arba-dev.uk',
-  //     'http://sonicwpms.arba-dev.uk',
-  //     'http://fpserver.sonicdata.com',
-  //     'https://fpserver.sonicdata.com',
-  //     'http://localhost:3000',
-  //     'https://localhost:3000',
-  //     'http://localhost:8001',
-  //     'https://localhost:8001',
-  //     'http://localhost:8002',
-  //     'https://localhost:8002',
-  //     'http://localhost:8003',
-  //     'https://localhost:8003',
-  //     'http://localhost:8004',
-  //     'https://localhost:8004'
-  //   ],
-  // });
+  // app.enableCors()
+  app.enableCors({
+    origin: [
+      //AmazingTag
+      'http://amazingportal.arba-dev.uk',
+      'https://amazingportal.arba-dev.uk',
+      'http://amazingadmin.arba-dev.uk',
+      'https://amazingadmin.arba-dev.uk',
+      'https://portal.sonicdata.com',
+      'https://admin.sonicdata.com',
+      'http://admin.sonicdata.com',
+      'https://sonicportal.arba-dev.uk',
+      'http://sonicportal.arba-dev.uk',
+      'https://sonictempportal.arba-dev.uk',
+      'https://sonicadminportal.arba-dev.uk',
+      'http://sonicadminportal.arba-dev.uk',
+      'https://sonicwpms.arba-dev.uk',
+      'http://sonicwpms.arba-dev.uk',
+      'http://fpserver.sonicdata.com',
+      'https://fpserver.sonicdata.com',
+      'http://localhost:3000',
+      'https://localhost:3000',
+      'http://localhost:8001',
+      'https://localhost:8001',
+      'http://localhost:8002',
+      'https://localhost:8002',
+      'http://localhost:8003',
+      'https://localhost:8003',
+      'http://localhost:8004',
+      'https://localhost:8004'
+    ],
+  });
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useStaticAssets(appRootPath.path.toString() + '/storage/uploads/guest', {
     prefix: '/storage/uploads/guest',
