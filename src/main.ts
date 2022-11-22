@@ -54,7 +54,9 @@ var corsOptionsDelegate = function(req, callback) {
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bodyParser: true,
-    cors:corsOptionsDelegate
+    cors:{
+      origin:'*'
+    }
   });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.use(
@@ -69,7 +71,7 @@ async function bootstrap() {
   // app.use(multer)
   app.enableVersioning();
   const configService = app.get(ConfigService);
-  // app.enableCors()
+  app.enableCors()
 
   // app.enableCors(corsOptionsDelegate)
   // app.enableCors({
