@@ -33,10 +33,10 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       //AmazingTag
-      'http://amazingportal.arba-dev.uk',
       'https://amazingportal.arba-dev.uk',
-      'http://amazingadmin.arba-dev.uk',
+      'http://amazingportal.arba-dev.uk',
       'https://amazingadmin.arba-dev.uk',
+      'http://amazingadmin.arba-dev.uk',
       'https://portal.sonicdata.com',
       'https://admin.sonicdata.com',
       'http://admin.sonicdata.com',
