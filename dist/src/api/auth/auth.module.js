@@ -32,7 +32,7 @@ let AuthModule = class AuthModule {
     }
 };
 AuthModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
             passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
             api_key_module_1.ApiKeyModule,

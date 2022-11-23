@@ -18,93 +18,93 @@ class CreateLicensekeyDto {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateLicensekeyDto.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ default: false }),
+    swagger_1.ApiProperty({ default: false }),
     __metadata("design:type", Boolean)
 ], CreateLicensekeyDto.prototype, "disabled", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ default: false }),
+    swagger_1.ApiProperty({ default: false }),
     __metadata("design:type", Boolean)
 ], CreateLicensekeyDto.prototype, "suspended", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], CreateLicensekeyDto.prototype, "maxEncodeUses", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ default: false }),
+    swagger_1.ApiProperty({ default: false }),
     __metadata("design:type", Boolean)
 ], CreateLicensekeyDto.prototype, "isUnlimitedEncode", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], CreateLicensekeyDto.prototype, "encodeUses", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ default: false }),
+    swagger_1.ApiProperty({ default: false }),
     __metadata("design:type", Boolean)
 ], CreateLicensekeyDto.prototype, "isUnlimitedDecode", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], CreateLicensekeyDto.prototype, "maxDecodeUses", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], CreateLicensekeyDto.prototype, "decodeUses", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], CreateLicensekeyDto.prototype, "maxMonitoringUses", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ default: false }),
+    swagger_1.ApiProperty({ default: false }),
     __metadata("design:type", Boolean)
 ], CreateLicensekeyDto.prototype, "isUnlimitedMonitor", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Number)
 ], CreateLicensekeyDto.prototype, "monitoringUses", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Date)
 ], CreateLicensekeyDto.prototype, "validity", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Map)
 ], CreateLicensekeyDto.prototype, "metaData", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateLicensekeyDto.prototype, "user", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateLicensekeyDto.prototype, "company", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateLicensekeyDto.prototype, "type", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateLicensekeyDto.prototype, "createdBy", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateLicensekeyDto.prototype, "updatedBy", void 0);
 exports.CreateLicensekeyDto = CreateLicensekeyDto;
-class AdminUpdateLicensekeyDto extends (0, swagger_1.PartialType)((0, swagger_1.OmitType)(CreateLicensekeyDto, ['company', 'type'])) {
+class AdminUpdateLicensekeyDto extends swagger_1.PartialType(swagger_1.OmitType(CreateLicensekeyDto, ['company', 'type'])) {
     static _OPENAPI_METADATA_FACTORY() {
         return { users: { required: false, type: () => [String] }, reserves: { required: false, type: () => [require("../schemas/licensekey.schema").LKReserve] } };
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Array)
 ], AdminUpdateLicensekeyDto.prototype, "users", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Array)
 ], AdminUpdateLicensekeyDto.prototype, "reserves", void 0);
 exports.AdminUpdateLicensekeyDto = AdminUpdateLicensekeyDto;

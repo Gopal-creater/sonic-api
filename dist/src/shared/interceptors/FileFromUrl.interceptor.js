@@ -24,13 +24,13 @@ const FileFromUrlInterceptor = (fieldName) => {
             if (!url) {
                 throw new common_1.BadRequestException(`${fieldName} is missing in request body`);
             }
-            if (!(0, utils_1.isValidHttpUrl)(url)) {
+            if (!utils_1.isValidHttpUrl(url)) {
                 throw new common_1.BadRequestException('Invalid mediaFile Url');
             }
             const currentUserId = ((_a = req['user']) === null || _a === void 0 ? void 0 : _a['sub']) || 'guestUser';
             const imagePath = await makeDir(`${app_config_1.appConfig.MULTER_DEST}/${currentUserId}`);
             await makeDir(`${app_config_1.appConfig.MULTER_DEST}/${currentUserId}/encodedFiles`);
-            const originalname = (0, utils_1.extractFileName)(url);
+            const originalname = utils_1.extractFileName(url);
             const filename = `${uniqid()}-${originalname}`;
             const destination = `${imagePath}/${filename}`;
             const uploaded = await this.download(url, destination);
@@ -71,12 +71,12 @@ const FileFromUrlInterceptor = (fieldName) => {
         }
     };
     FileFromUrlInterceptorClass = __decorate([
-        (0, common_1.Injectable)()
+        common_1.Injectable()
     ], FileFromUrlInterceptorClass);
-    return (0, common_1.mixin)(FileFromUrlInterceptorClass);
+    return common_1.mixin(FileFromUrlInterceptorClass);
 };
 exports.FileFromUrlInterceptor = FileFromUrlInterceptor;
-exports.UploadedFileFromUrl = (0, common_1.createParamDecorator)((data, ctx) => {
+exports.UploadedFileFromUrl = common_1.createParamDecorator((data, ctx) => {
     const req = ctx.switchToHttp().getRequest();
     if (data) {
         return req.fileUploadResult[data];

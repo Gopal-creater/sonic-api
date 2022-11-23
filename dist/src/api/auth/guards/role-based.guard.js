@@ -47,7 +47,7 @@ let RoleBasedGuard = class RoleBasedGuard {
     }
 };
 RoleBasedGuard = __decorate([
-    (0, common_1.Injectable)(),
+    common_1.Injectable(),
     __metadata("design:paramtypes", [core_1.Reflector])
 ], RoleBasedGuard);
 exports.RoleBasedGuard = RoleBasedGuard;

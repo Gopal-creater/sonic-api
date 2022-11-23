@@ -18,6 +18,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SonickeyUtils = void 0;
 const common_1 = require("@nestjs/common");
+const licensekey_schema_1 = require("../../../licensekey/schemas/licensekey.schema");
 const licensekey_service_1 = require("../../../licensekey/services/licensekey.service");
 const track_service_1 = require("../../../track/track.service");
 const s3fileupload_service_1 = require("../../../s3fileupload/s3fileupload.service");
@@ -28,6 +29,7 @@ const uniqid = require("uniqid");
 const fs = require("fs");
 const http = require("https");
 const mime = require("mime");
+const UploadedFile_interface_1 = require("../../../../shared/interfaces/UploadedFile.interface");
 let SonickeyUtils = class SonickeyUtils {
     constructor(licensekeyService, trackService, s3FileUploadService) {
         this.licensekeyService = licensekeyService;
@@ -139,7 +141,7 @@ let SonickeyUtils = class SonickeyUtils {
         const signedUrlForTrack = await this.s3FileUploadService.getSignedUrl(trackFromDb.s3OriginalFileMeta.Key, 10 * 60);
         const filePath = await makeDir(`${config_1.appConfig.MULTER_DEST}/fileFromTrackStore`);
         await makeDir(`${filePath}/encodedFiles`);
-        const originalname = (0, utils_1.extractFileName)(signedUrlForTrack);
+        const originalname = utils_1.extractFileName(signedUrlForTrack);
         const filename = `${uniqid()}-${originalname}`;
         const destination = `${filePath}/${filename}`;
         const uploaded = await this.download(signedUrlForTrack, destination);
@@ -181,7 +183,7 @@ let SonickeyUtils = class SonickeyUtils {
     }
 };
 SonickeyUtils = __decorate([
-    (0, common_1.Injectable)(),
+    common_1.Injectable(),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService,
         track_service_1.TrackService,
         s3fileupload_service_1.S3FileUploadService])

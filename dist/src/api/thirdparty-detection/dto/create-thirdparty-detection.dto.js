@@ -21,15 +21,15 @@ class CreateThirdpartyDetectionDto {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateThirdpartyDetectionDto.prototype, "sonicKey", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Date)
 ], CreateThirdpartyDetectionDto.prototype, "detectionTime", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Map)
 ], CreateThirdpartyDetectionDto.prototype, "metaData", void 0);
 exports.CreateThirdpartyDetectionDto = CreateThirdpartyDetectionDto;

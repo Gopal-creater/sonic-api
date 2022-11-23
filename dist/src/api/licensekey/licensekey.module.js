@@ -20,9 +20,9 @@ const plan_module_1 = require("../plan/plan.module");
 let LicensekeyModule = class LicensekeyModule {
 };
 LicensekeyModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
-            (0, common_1.forwardRef)(() => user_module_1.UserModule),
+            common_1.forwardRef(() => user_module_1.UserModule),
             keygen_module_1.KeygenModule,
             company_module_1.CompanyModule,
             mongoose_1.MongooseModule.forFeature([
@@ -31,7 +31,7 @@ LicensekeyModule = __decorate([
                     schema: licensekey_schema_1.LicenseKeySchema,
                 },
             ]),
-            (0, common_1.forwardRef)(() => plan_module_1.PlanModule),
+            common_1.forwardRef(() => plan_module_1.PlanModule),
         ],
         controllers: [licensekey_controller_1.LicensekeyController, licensekey_owner_controller_1.LicensekeyOwnerController],
         providers: [licensekey_service_1.LicensekeyService],

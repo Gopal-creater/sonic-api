@@ -30,7 +30,7 @@ let CustomSonicKeyValidationInterceptor = class CustomSonicKeyValidationIntercep
     }
 };
 CustomSonicKeyValidationInterceptor = __decorate([
-    (0, common_1.Injectable)()
+    common_1.Injectable()
 ], CustomSonicKeyValidationInterceptor);
 exports.CustomSonicKeyValidationInterceptor = CustomSonicKeyValidationInterceptor;
 //# sourceMappingURL=customsonickeyvalidation.interceptor.js.map

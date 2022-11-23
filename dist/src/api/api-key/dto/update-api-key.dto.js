@@ -4,13 +4,13 @@ exports.AdminUpdateApiKeyDto = exports.UpdateApiKeyDto = void 0;
 const openapi = require("@nestjs/swagger");
 const create_api_key_dto_1 = require("./create-api-key.dto");
 const swagger_1 = require("@nestjs/swagger");
-class UpdateApiKeyDto extends (0, swagger_1.PartialType)((0, swagger_1.OmitType)(create_api_key_dto_1.CreateApiKeyDto, ['company', 'customer', 'type'])) {
+class UpdateApiKeyDto extends swagger_1.PartialType(swagger_1.OmitType(create_api_key_dto_1.CreateApiKeyDto, ['company', 'customer', 'type'])) {
     static _OPENAPI_METADATA_FACTORY() {
         return {};
     }
 }
 exports.UpdateApiKeyDto = UpdateApiKeyDto;
-class AdminUpdateApiKeyDto extends (0, swagger_1.PartialType)(create_api_key_dto_1.AdminCreateApiKeyDto) {
+class AdminUpdateApiKeyDto extends swagger_1.PartialType(create_api_key_dto_1.AdminCreateApiKeyDto) {
     static _OPENAPI_METADATA_FACTORY() {
         return {};
     }

@@ -18,45 +18,45 @@ exports.PartnerSchemaName = 'Partner';
 let Partner = class Partner extends mongoose_2.Document {
 };
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         required: true
     }),
     __metadata("design:type", String)
 ], Partner.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Partner.prototype, "description", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Partner.prototype, "partnerType", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Partner.prototype, "email", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Partner.prototype, "contactNo", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ default: true }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ default: true }),
     __metadata("design:type", Boolean)
 ], Partner.prototype, "enabled", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ type: company_schema_1.Address }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: company_schema_1.Address }),
     __metadata("design:type", company_schema_1.Address)
 ], Partner.prototype, "address", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({
         type: String,
         ref: 'User',
         autopopulate: { maxDepth: 2 },
@@ -64,17 +64,17 @@ __decorate([
     __metadata("design:type", Object)
 ], Partner.prototype, "owner", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Partner.prototype, "createdBy", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Partner.prototype, "updatedBy", void 0);
 Partner = __decorate([
-    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.PartnerSchemaName })
+    mongoose_1.Schema({ timestamps: true, collection: exports.PartnerSchemaName })
 ], Partner);
 exports.Partner = Partner;
 exports.PartnerSchema = mongoose_1.SchemaFactory.createForClass(Partner);

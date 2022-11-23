@@ -12,7 +12,7 @@ const mongoose_utils_1 = require("../utils/mongoose.utils");
 let ToObjectIdPipe = class ToObjectIdPipe {
     transform(value, metadata) {
         try {
-            return value && (0, mongoose_utils_1.toObjectId)(value);
+            return value && mongoose_utils_1.toObjectId(value);
         }
         catch (error) {
             throw new common_1.BadRequestException(error);
@@ -20,7 +20,7 @@ let ToObjectIdPipe = class ToObjectIdPipe {
     }
 };
 ToObjectIdPipe = __decorate([
-    (0, common_1.Injectable)()
+    common_1.Injectable()
 ], ToObjectIdPipe);
 exports.ToObjectIdPipe = ToObjectIdPipe;
 //# sourceMappingURL=toObjectId.pipe.js.map

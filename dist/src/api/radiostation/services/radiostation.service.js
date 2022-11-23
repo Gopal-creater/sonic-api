@@ -59,7 +59,7 @@ let RadiostationService = class RadiostationService {
             return radioStation;
         }
         console.log("stopping......*");
-        const stoppedRadio = await (0, axios_1.default)({
+        const stoppedRadio = await axios_1.default({
             method: "post",
             url: this.configService.get('STREAMREADER_API_STOP_URL'),
             data: {
@@ -69,19 +69,7 @@ let RadiostationService = class RadiostationService {
                 'x-api-key': this.configService.get('STREAMREADER_API_KEY')
             }
         }).catch((error) => {
-            if (error.response) {
-                return Promise.reject(error.response.data);
-            }
-            else if (error.request) {
-                return Promise.reject({
-                    message: "Unable to communicate with stream reader"
-                });
-            }
-            else {
-                return Promise.reject({
-                    message: "Something happened in setting up the request that triggered an Error"
-                });
-            }
+            console.log("STREAMREADER_API_STOP_URL FAILED", error);
         });
         console.log("stopped radio.....", stoppedRadio);
         return this.radioStationModel.findOneAndUpdate({ _id: id }, {
@@ -102,7 +90,7 @@ let RadiostationService = class RadiostationService {
             return radioStation;
         }
         console.log("starting.........");
-        const startedRadio = await (0, axios_1.default)({
+        const startedRadio = await axios_1.default({
             method: "post",
             url: this.configService.get('STREAMREADER_API_START_URL'),
             data: {
@@ -113,19 +101,7 @@ let RadiostationService = class RadiostationService {
                 'x-api-key': this.configService.get('STREAMREADER_API_KEY')
             }
         }).catch((error) => {
-            if (error.response) {
-                return Promise.reject(error.response.data);
-            }
-            else if (error.request) {
-                return Promise.reject({
-                    message: "Unable to communicate with stream reader"
-                });
-            }
-            else {
-                return Promise.reject({
-                    message: "Something happened in setting up the request that triggered an Error"
-                });
-            }
+            console.log("STREAMREADER_API_START_URL FAILED", error);
         });
         console.log("Finished........", startedRadio);
         return this.radioStationModel.findOneAndUpdate({ _id: id }, {
@@ -523,8 +499,8 @@ let RadiostationService = class RadiostationService {
     }
 };
 RadiostationService = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(radiostation_schema_1.RadioStation.name)),
+    common_1.Injectable(),
+    __param(0, mongoose_1.InjectModel(radiostation_schema_1.RadioStation.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         sonickey_service_1.SonickeyService,
         event_emitter_1.EventEmitter2,

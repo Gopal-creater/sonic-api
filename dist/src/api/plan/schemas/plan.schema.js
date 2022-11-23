@@ -18,57 +18,57 @@ exports.PlanSchemaName = 'Plan';
 let Plan = class Plan extends mongoose_2.Document {
 };
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ type: String, enum: Enums_1.PlanName, required: true }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: String, enum: Enums_1.PlanName, required: true }),
     __metadata("design:type", String)
 ], Plan.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ type: String, enum: Enums_1.PlanType, default: 'Encode', required: true }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: String, enum: Enums_1.PlanType, default: 'Encode', required: true }),
     __metadata("design:type", String)
 ], Plan.prototype, "type", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Plan.prototype, "description", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", Number)
 ], Plan.prototype, "availableSonicKeys", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", Number)
 ], Plan.prototype, "limitedSonicKeys", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ required: true }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ required: true }),
     __metadata("design:type", Number)
 ], Plan.prototype, "cost", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", Number)
 ], Plan.prototype, "perExtraCost", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)({ type: String, enum: Enums_1.PaymentInterval, default: 'Annual' }),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop({ type: String, enum: Enums_1.PaymentInterval, default: 'Annual' }),
     __metadata("design:type", String)
 ], Plan.prototype, "paymentInterval", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)([String]),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop([String]),
     __metadata("design:type", Array)
 ], Plan.prototype, "featureLists", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, mongoose_1.Prop)(),
+    swagger_1.ApiProperty(),
+    mongoose_1.Prop(),
     __metadata("design:type", String)
 ], Plan.prototype, "notes", void 0);
 Plan = __decorate([
-    (0, mongoose_1.Schema)({ timestamps: true, collection: exports.PlanSchemaName })
+    mongoose_1.Schema({ timestamps: true, collection: exports.PlanSchemaName })
 ], Plan);
 exports.Plan = Plan;
 exports.PlanSchema = mongoose_1.SchemaFactory.createForClass(Plan);

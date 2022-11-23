@@ -70,7 +70,7 @@ let EncodeSecurityInterceptor = class EncodeSecurityInterceptor {
     }
 };
 EncodeSecurityInterceptor = __decorate([
-    (0, common_1.Injectable)()
+    common_1.Injectable()
 ], EncodeSecurityInterceptor);
 exports.EncodeSecurityInterceptor = EncodeSecurityInterceptor;
 //# sourceMappingURL=encode-security.interceptor.js.map

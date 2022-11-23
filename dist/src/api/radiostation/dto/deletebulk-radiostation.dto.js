@@ -18,7 +18,7 @@ class DeleteBulkRadiostationDto {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Array)
 ], DeleteBulkRadiostationDto.prototype, "ids", void 0);
 exports.DeleteBulkRadiostationDto = DeleteBulkRadiostationDto;

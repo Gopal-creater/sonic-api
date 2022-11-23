@@ -20,7 +20,7 @@ const company_module_1 = require("../company/company.module");
 let ThirdpartyDetectionModule = class ThirdpartyDetectionModule {
 };
 ThirdpartyDetectionModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 {

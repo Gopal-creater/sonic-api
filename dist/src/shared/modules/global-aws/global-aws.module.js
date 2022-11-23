@@ -12,8 +12,8 @@ const common_1 = require("@nestjs/common");
 let GlobalAwsModule = class GlobalAwsModule {
 };
 GlobalAwsModule = __decorate([
-    (0, common_1.Global)(),
-    (0, common_1.Module)({
+    common_1.Global(),
+    common_1.Module({
         imports: [],
         providers: [global_aws_service_1.GlobalAwsService],
         exports: [global_aws_service_1.GlobalAwsService]

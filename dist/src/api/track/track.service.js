@@ -57,7 +57,7 @@ let TrackService = class TrackService {
         return createdTrack;
     }
     generateTrackId() {
-        return `T${(0, nanoid_1.customAlphabet)('1234567890', 10)(8)}`;
+        return `T${nanoid_1.customAlphabet('1234567890', 10)(8)}`;
     }
     async exportTracks(queryDto, format) {
         return new Promise(async (resolve, reject) => {
@@ -214,9 +214,9 @@ let TrackService = class TrackService {
     }
 };
 TrackService = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(track_schema_1.Track.name)),
-    __param(2, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
+    common_1.Injectable(),
+    __param(0, mongoose_1.InjectModel(track_schema_1.Track.name)),
+    __param(2, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         s3fileupload_service_1.S3FileUploadService,
         user_service_1.UserService])

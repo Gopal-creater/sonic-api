@@ -18,11 +18,11 @@ class ChargebeePaymentDto {
     }
 }
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], ChargebeePaymentDto.prototype, "customerId", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], ChargebeePaymentDto.prototype, "paymentId", void 0);
 exports.ChargebeePaymentDto = ChargebeePaymentDto;

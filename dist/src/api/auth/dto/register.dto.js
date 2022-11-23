@@ -16,77 +16,77 @@ const class_validator_1 = require("class-validator");
 const constants_1 = require("../../../constants");
 class RegisterDTO {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, userName: { required: true, type: () => String }, password: { required: true, type: () => String, pattern: constants_1.COGNITO_PASSWORD_REGULAR_EXPRESSION }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String } };
+        return { name: { required: true, type: () => String }, userName: { required: true, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String } };
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], RegisterDTO.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], RegisterDTO.prototype, "userName", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.Matches)(constants_1.COGNITO_PASSWORD_REGULAR_EXPRESSION, {
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    class_validator_1.Matches(constants_1.COGNITO_PASSWORD_REGULAR_EXPRESSION, {
         message: 'password too weak',
     }),
     __metadata("design:type", String)
 ], RegisterDTO.prototype, "password", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], RegisterDTO.prototype, "phoneNumber", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], RegisterDTO.prototype, "country", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsEmail)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    class_validator_1.IsEmail(),
     __metadata("design:type", String)
 ], RegisterDTO.prototype, "email", void 0);
 exports.RegisterDTO = RegisterDTO;
 class WpmsUserRegisterDTO {
     static _OPENAPI_METADATA_FACTORY() {
-        return { name: { required: true, type: () => String }, userName: { required: true, type: () => String }, password: { required: true, type: () => String, pattern: constants_1.COGNITO_PASSWORD_REGULAR_EXPRESSION }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String } };
+        return { name: { required: true, type: () => String }, userName: { required: true, type: () => String }, password: { required: true, type: () => String }, phoneNumber: { required: false, type: () => String }, country: { required: false, type: () => String }, email: { required: true, type: () => String } };
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], WpmsUserRegisterDTO.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], WpmsUserRegisterDTO.prototype, "userName", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.Matches)(constants_1.COGNITO_PASSWORD_REGULAR_EXPRESSION, {
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    class_validator_1.Matches(constants_1.COGNITO_PASSWORD_REGULAR_EXPRESSION, {
         message: 'password too weak',
     }),
     __metadata("design:type", String)
 ], WpmsUserRegisterDTO.prototype, "password", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], WpmsUserRegisterDTO.prototype, "phoneNumber", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], WpmsUserRegisterDTO.prototype, "country", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsEmail)(),
+    swagger_1.ApiProperty(),
+    class_validator_1.IsNotEmpty(),
+    class_validator_1.IsEmail(),
     __metadata("design:type", String)
 ], WpmsUserRegisterDTO.prototype, "email", void 0);
 exports.WpmsUserRegisterDTO = WpmsUserRegisterDTO;

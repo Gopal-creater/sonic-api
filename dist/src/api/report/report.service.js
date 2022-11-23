@@ -11,6 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReportService = void 0;
 const common_1 = require("@nestjs/common");
+const Enums_1 = require("../../constants/Enums");
+const mongoose_utils_1 = require("../../shared/utils/mongoose.utils");
+const types_1 = require("../../shared/types");
 const user_service_1 = require("../user/services/user.service");
 const file_handler_service_1 = require("../../shared/services/file-handler.service");
 const company_service_1 = require("../company/company.service");
@@ -26,7 +29,7 @@ let ReportService = class ReportService {
     }
 };
 ReportService = __decorate([
-    (0, common_1.Injectable)(),
+    common_1.Injectable(),
     __metadata("design:paramtypes", [user_service_1.UserService,
         file_handler_service_1.FileHandlerService,
         company_service_1.CompanyService,

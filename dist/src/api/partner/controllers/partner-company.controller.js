@@ -93,32 +93,32 @@ let PartnerCompanyController = class PartnerCompanyController {
     }
 };
 __decorate([
-    (0, common_1.Put)('/create-new-company'),
-    (0, swagger_1.ApiOperation)({ summary: 'Create new company under given partner' }),
+    common_1.Put('/create-new-company'),
+    swagger_1.ApiOperation({ summary: 'Create new company under given partner' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('partner')),
-    __param(1, (0, common_1.Body)()),
+    __param(0, common_1.Param('partner')),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, partner_company_1.CreatePartnerCompanyDto]),
     __metadata("design:returntype", Promise)
 ], PartnerCompanyController.prototype, "createNewCompany", null);
 __decorate([
-    (0, common_1.Put)('/:company/update-company'),
-    (0, swagger_1.ApiOperation)({
+    common_1.Put('/:company/update-company'),
+    swagger_1.ApiOperation({
         summary: 'Update company details under given partner',
     }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('partner')),
-    __param(1, (0, common_1.Param)('company')),
-    __param(2, (0, common_1.Body)()),
+    __param(0, common_1.Param('partner')),
+    __param(1, common_1.Param('company')),
+    __param(2, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, partner_company_1.UpdatePartnerCompanyDto]),
     __metadata("design:returntype", Promise)
 ], PartnerCompanyController.prototype, "updateCompany", null);
 __decorate([
-    (0, common_1.Put)('/:company/change-company-admin-user'),
-    (0, swagger_1.ApiOperation)({ summary: 'Change admin user' }),
-    (0, swagger_1.ApiBody)({
+    common_1.Put('/:company/change-company-admin-user'),
+    swagger_1.ApiOperation({ summary: 'Change admin user' }),
+    swagger_1.ApiBody({
         schema: {
             type: 'object',
             properties: {
@@ -127,40 +127,40 @@ __decorate([
         },
     }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('partner')),
-    __param(1, (0, common_1.Param)('company')),
-    __param(2, (0, common_1.Body)('user')),
+    __param(0, common_1.Param('partner')),
+    __param(1, common_1.Param('company')),
+    __param(2, common_1.Body('user')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], PartnerCompanyController.prototype, "changeAdminUser", null);
 __decorate([
-    (0, common_1.Put)('/:company/disable-company'),
-    (0, swagger_1.ApiOperation)({
+    common_1.Put('/:company/disable-company'),
+    swagger_1.ApiOperation({
         summary: 'Disable company',
     }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('partner')),
-    __param(1, (0, common_1.Param)('company')),
+    __param(0, common_1.Param('partner')),
+    __param(1, common_1.Param('company')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], PartnerCompanyController.prototype, "disableCompany", null);
 __decorate([
-    (0, common_1.Put)('/:company/enable-company'),
-    (0, swagger_1.ApiOperation)({
+    common_1.Put('/:company/enable-company'),
+    swagger_1.ApiOperation({
         summary: 'Enable Company',
     }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('partner')),
-    __param(1, (0, common_1.Param)('company')),
+    __param(0, common_1.Param('partner')),
+    __param(1, common_1.Param('company')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], PartnerCompanyController.prototype, "enableCompany", null);
 PartnerCompanyController = __decorate([
-    (0, swagger_1.ApiTags)('Partners Controller'),
-    (0, common_1.Controller)('partners/:partner/companies'),
+    swagger_1.ApiTags('Partners Controller'),
+    common_1.Controller('partners/:partner/companies'),
     __metadata("design:paramtypes", [partner_service_1.PartnerService,
         company_service_1.CompanyService,
         partner_company_service_1.PartnerCompanyService])

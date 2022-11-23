@@ -18,7 +18,7 @@ class PublicDecodeDto {
     }
 }
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: 'string', format: 'binary' }),
+    swagger_1.ApiProperty({ type: 'string', format: 'binary' }),
     __metadata("design:type", Object)
 ], PublicDecodeDto.prototype, "mediaFile", void 0);
 exports.PublicDecodeDto = PublicDecodeDto;

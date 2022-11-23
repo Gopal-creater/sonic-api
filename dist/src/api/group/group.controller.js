@@ -52,72 +52,72 @@ let GroupController = class GroupController {
     }
 };
 __decorate([
-    (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Create Group' }),
-    (0, common_1.Post)(),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Create Group' }),
+    common_1.Post(),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, (0, common_1.Body)()),
+    __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_group_dto_1.CreateGroupDto]),
     __metadata("design:returntype", void 0)
 ], GroupController.prototype, "create", null);
 __decorate([
-    (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get Groups' }),
-    (0, common_1.Get)(),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get Groups' }),
+    common_1.Get(),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], GroupController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get Single Group' }),
-    (0, common_1.Get)(':id'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Get Single Group' }),
+    common_1.Get(':id'),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], GroupController.prototype, "findOne", null);
 __decorate([
-    (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Update Group' }),
-    (0, common_1.Put)(':id'),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Update Group' }),
+    common_1.Put(':id'),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
+    __param(0, common_1.Param('id')),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_group_dto_1.UpdateGroupDto]),
     __metadata("design:returntype", void 0)
 ], GroupController.prototype, "update", null);
 __decorate([
-    (0, common_1.Get)('/count'),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
-    (0, anyapiquerytemplate_decorator_1.AnyApiQueryTemplate)(),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({
+    common_1.Get('/count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    anyapiquerytemplate_decorator_1.AnyApiQueryTemplate(),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
         summary: 'Get count of all groups also accept filter as query params',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
-    __param(0, (0, common_1.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_1.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", Promise)
 ], GroupController.prototype, "getCount", null);
 __decorate([
-    (0, common_1.Get)('/estimate-count'),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({
+    common_1.Get('/estimate-count'),
+    common_1.UseGuards(guards_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({
         summary: 'Get all count of all groups',
     }),
     openapi.ApiResponse({ status: 200, type: Number }),
@@ -126,20 +126,20 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GroupController.prototype, "getEstimateCount", null);
 __decorate([
-    (0, decorators_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_1.UseGuards)(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Delete Group' }),
-    (0, common_1.Delete)(':id'),
+    decorators_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(guards_1.JwtAuthGuard, guards_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Delete Group' }),
+    common_1.Delete(':id'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], GroupController.prototype, "remove", null);
 GroupController = __decorate([
-    (0, swagger_1.ApiTags)('Group Controller'),
-    (0, common_1.Controller)('groups'),
+    swagger_1.ApiTags('Group Controller'),
+    common_1.Controller('groups'),
     __metadata("design:paramtypes", [group_service_1.GroupService])
 ], GroupController);
 exports.GroupController = GroupController;

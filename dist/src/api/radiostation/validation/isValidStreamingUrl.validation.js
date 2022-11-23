@@ -22,12 +22,12 @@ let IsValidStreamingURLConstraint = class IsValidStreamingURLConstraint {
     }
 };
 IsValidStreamingURLConstraint = __decorate([
-    (0, class_validator_1.ValidatorConstraint)({ async: true })
+    class_validator_1.ValidatorConstraint({ async: true })
 ], IsValidStreamingURLConstraint);
 exports.IsValidStreamingURLConstraint = IsValidStreamingURLConstraint;
 function IsValidStreamingURL(validationOptions) {
     return function (object, propertyName) {
-        (0, class_validator_1.registerDecorator)({
+        class_validator_1.registerDecorator({
             target: object.constructor,
             propertyName: propertyName,
             options: validationOptions,

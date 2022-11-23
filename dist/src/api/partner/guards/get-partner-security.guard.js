@@ -42,7 +42,7 @@ let GetPartnerSecurityGuard = class GetPartnerSecurityGuard {
     }
 };
 GetPartnerSecurityGuard = __decorate([
-    (0, common_1.Injectable)(),
+    common_1.Injectable(),
     __metadata("design:paramtypes", [core_1.Reflector])
 ], GetPartnerSecurityGuard);
 exports.GetPartnerSecurityGuard = GetPartnerSecurityGuard;

@@ -19,8 +19,8 @@ class CreateRadioMonitorDto {
     }
 }
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, swagger_1.ApiProperty)(),
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreateRadioMonitorDto.prototype, "radio", void 0);
 exports.CreateRadioMonitorDto = CreateRadioMonitorDto;

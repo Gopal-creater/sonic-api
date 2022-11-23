@@ -108,111 +108,111 @@ let AppVersionController = class AppVersionController {
     }
 };
 __decorate([
-    (0, common_2.UseInterceptors)((0, platform_express_1.FileInterceptor)('mediaFile', {
+    common_2.UseInterceptors(platform_express_1.FileInterceptor('mediaFile', {
         fileFilter: version_file_filter_1.versionFileFilter,
     })),
-    (0, swagger_1.ApiConsumes)('multipart/form-data'),
-    (0, swagger_1.ApiBody)({
+    swagger_1.ApiConsumes('multipart/form-data'),
+    swagger_1.ApiBody({
         description: 'File To Upload',
         type: upload_app_version_dto_1.UploadAppVersionDto,
     }),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_2.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, common_2.Post)('/upload'),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'upload  version File And save to database' }),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_2.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    common_2.Post('/upload'),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'upload  version File And save to database' }),
     openapi.ApiResponse({ status: 201, type: Object }),
-    __param(0, (0, common_2.Body)('data', jsonparse_pipe_1.JsonParsePipe)),
-    __param(1, (0, common_2.UploadedFile)()),
-    __param(2, (0, common_2.Req)()),
+    __param(0, common_2.Body('data', jsonparse_pipe_1.JsonParsePipe)),
+    __param(1, common_2.UploadedFile()),
+    __param(2, common_2.Req()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [version_dto_1.Version, Object, Object]),
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "uploadVersion", null);
 __decorate([
-    (0, common_2.Get)('/download-file-from-version-code'),
+    common_2.Get('/download-file-from-version-code'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_2.Query)('versioncode')),
-    __param(1, (0, common_2.Query)('platform')),
-    __param(2, (0, common_2.Res)()),
+    __param(0, common_2.Query('versioncode')),
+    __param(1, common_2.Query('platform')),
+    __param(2, common_2.Res()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, String, Object]),
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "downloadFromVersionCode", null);
 __decorate([
-    (0, common_2.Get)('/download-file/latest/:platform'),
+    common_2.Get('/download-file/latest/:platform'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_2.Param)('platform')),
-    __param(1, (0, common_2.Res)()),
+    __param(0, common_2.Param('platform')),
+    __param(1, common_2.Res()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "downloadLatest", null);
 __decorate([
-    (0, common_2.Get)('/download-file/:id'),
+    common_2.Get('/download-file/:id'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_2.Param)('id')),
-    __param(1, (0, common_2.Res)()),
+    __param(0, common_2.Param('id')),
+    __param(1, common_2.Res()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "downloadFromVersionId", null);
 __decorate([
-    (0, common_2.Get)('/:id'),
+    common_2.Get('/:id'),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_2.Param)('id')),
+    __param(0, common_2.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "getVersionById", null);
 __decorate([
-    (0, common_2.Get)(),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_2.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
+    common_2.Get(),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_2.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_2.Query)(new parseQueryValue_pipe_1.ParseQueryValue())),
+    __param(0, common_2.Query(new parseQueryValue_pipe_1.ParseQueryValue())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [parsedquery_dto_1.ParsedQueryDto]),
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "getAllVersions", null);
 __decorate([
-    (0, common_2.Put)('/mark-latest/:id'),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_2.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
+    common_2.Put('/mark-latest/:id'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_2.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_2.Param)('id')),
+    __param(0, common_2.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "makeLatest", null);
 __decorate([
-    (0, common_2.Put)('/:id'),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_2.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
+    common_2.Put('/:id'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_2.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_2.Param)('id')),
-    __param(1, (0, common_2.Body)()),
+    __param(0, common_2.Param('id')),
+    __param(1, common_2.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_app_versions_dto_1.UpdateAppVersionDto]),
     __metadata("design:returntype", Promise)
 ], AppVersionController.prototype, "update", null);
 __decorate([
-    (0, common_2.Delete)('/:id'),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_2.UseGuards)(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
+    common_2.Delete('/:id'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_2.UseGuards(guards_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_2.Param)('id')),
+    __param(0, common_2.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AppVersionController.prototype, "deleteFile", null);
 AppVersionController = __decorate([
-    (0, swagger_1.ApiTags)('AppVersion Controller'),
-    (0, common_2.Controller)('app-version'),
+    swagger_1.ApiTags('AppVersion Controller'),
+    common_2.Controller('app-version'),
     __metadata("design:paramtypes", [appversions_service_1.AppVersionService])
 ], AppVersionController);
 exports.AppVersionController = AppVersionController;

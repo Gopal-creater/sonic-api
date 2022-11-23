@@ -14,15 +14,15 @@ const mongoose_1 = require("@nestjs/mongoose");
 let ChargeBee = class ChargeBee {
 };
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    mongoose_1.Prop({ required: true }),
     __metadata("design:type", String)
 ], ChargeBee.prototype, "customerId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    mongoose_1.Prop({ required: true }),
     __metadata("design:type", String)
 ], ChargeBee.prototype, "paymentId", void 0);
 ChargeBee = __decorate([
-    (0, mongoose_1.Schema)()
+    mongoose_1.Schema()
 ], ChargeBee);
 exports.ChargeBee = ChargeBee;
 exports.ChargeBeeSchema = mongoose_1.SchemaFactory.createForClass(ChargeBee);

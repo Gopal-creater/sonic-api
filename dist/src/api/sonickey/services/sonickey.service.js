@@ -35,6 +35,7 @@ const makeDir = require("make-dir");
 const Enums_1 = require("../../../constants/Enums");
 const s3fileupload_service_1 = require("../../s3fileupload/s3fileupload.service");
 const detection_service_1 = require("../../detection/detection.service");
+const detection_schema_1 = require("../../detection/schemas/detection.schema");
 const user_service_1 = require("../../user/services/user.service");
 const licensekey_service_1 = require("../../licensekey/services/licensekey.service");
 const bull_1 = require("@nestjs/bull");
@@ -42,6 +43,7 @@ const path = require("path");
 const config_2 = require("@nestjs/config");
 const queuejob_service_1 = require("../../../queuejob/queuejob.service");
 const track_service_1 = require("../../track/track.service");
+const track_schema_1 = require("../../track/schemas/track.schema");
 const moment = require("moment");
 const xlsx = require("xlsx");
 let SonickeyService = class SonickeyService {
@@ -60,7 +62,7 @@ let SonickeyService = class SonickeyService {
         console.log(`FingerPrint BASE URL: ${this.configService.get('FINGERPRINT_SERVER.baseUrl')}`);
     }
     generateUniqueSonicKey() {
-        return (0, nanoid_1.nanoid)(11);
+        return nanoid_1.nanoid(11);
     }
     async testUploadFromPath() {
         const filePath = `${config_1.appConfig.MULTER_DEST}/guest/4fqq9xz8ckosgjzea-SonicTest_Detect.wav`;
@@ -703,10 +705,10 @@ let SonickeyService = class SonickeyService {
     }
 };
 SonickeyService = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(sonickey_schema_1.SonicKey.name)),
-    __param(3, (0, bull_1.InjectQueue)('sonickey')),
-    __param(8, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
+    common_1.Injectable(),
+    __param(0, mongoose_1.InjectModel(sonickey_schema_1.SonicKey.name)),
+    __param(3, bull_1.InjectQueue('sonickey')),
+    __param(8, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         file_operation_service_1.FileOperationService,
         licensekey_service_1.LicensekeyService, Object, file_handler_service_1.FileHandlerService,

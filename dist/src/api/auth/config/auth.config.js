@@ -17,7 +17,7 @@ let AuthConfig = class AuthConfig {
     }
 };
 AuthConfig = __decorate([
-    (0, common_1.Injectable)()
+    common_1.Injectable()
 ], AuthConfig);
 exports.AuthConfig = AuthConfig;
 //# sourceMappingURL=auth.config.js.map

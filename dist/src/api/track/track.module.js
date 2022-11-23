@@ -18,10 +18,10 @@ const file_handler_service_1 = require("../../shared/services/file-handler.servi
 let TrackModule = class TrackModule {
 };
 TrackModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: track_schema_1.TrackSchemaName, schema: track_schema_1.TrackSchema }]),
-            (0, common_1.forwardRef)(() => user_module_1.UserModule),
+            common_1.forwardRef(() => user_module_1.UserModule),
             s3fileupload_module_1.S3FileUploadModule,
         ],
         controllers: [track_controller_1.TrackController],

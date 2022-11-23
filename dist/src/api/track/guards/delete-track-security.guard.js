@@ -62,7 +62,7 @@ let DeleteTrackSecurityGuard = class DeleteTrackSecurityGuard {
     }
 };
 DeleteTrackSecurityGuard = __decorate([
-    (0, common_1.Injectable)(),
+    common_1.Injectable(),
     __metadata("design:paramtypes", [track_service_1.TrackService])
 ], DeleteTrackSecurityGuard);
 exports.DeleteTrackSecurityGuard = DeleteTrackSecurityGuard;

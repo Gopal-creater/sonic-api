@@ -15,7 +15,7 @@ const chargebee_schema_1 = require("./schemas/chargebee.schema");
 let ChargebeeModule = class ChargebeeModule {
 };
 ChargebeeModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: 'Chargebee', schema: chargebee_schema_1.ChargeBeeSchema }]),
         ],

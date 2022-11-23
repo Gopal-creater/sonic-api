@@ -12,12 +12,13 @@ const child_process_1 = require("child_process");
 const fs = require("fs");
 const _ = require("lodash");
 const readline = require("line-reader");
+const sonickey_schema_1 = require("../../api/sonickey/schemas/sonickey.schema");
 let FileOperationService = class FileOperationService {
     encodeFile(sonicEncodeCmd, outFilePath, logFilePath) {
         return new Promise((resolve, reject) => {
             try {
                 console.log('sonicEncodeCmd', sonicEncodeCmd);
-                (0, child_process_1.execSync)('bash ' + sonicEncodeCmd);
+                child_process_1.execSync('bash ' + sonicEncodeCmd);
                 var fileSizeInBytes = fs.statSync(logFilePath).size;
                 if (fileSizeInBytes <= 0) {
                     console.error('empty logfile while encoding.');
@@ -50,7 +51,7 @@ let FileOperationService = class FileOperationService {
     decodeFile(sonicDecodeCmd, logFilePath) {
         return new Promise((resolve, reject) => {
             try {
-                (0, child_process_1.execSync)('bash ' + sonicDecodeCmd);
+                child_process_1.execSync('bash ' + sonicDecodeCmd);
                 var fileSizeInBytes = fs.statSync(logFilePath).size;
                 if (fileSizeInBytes <= 0) {
                     console.error('empty logfile while decoding. no key found!');
@@ -77,7 +78,7 @@ let FileOperationService = class FileOperationService {
     decodeFileForMultipleKeys(sonicDecodeCmd, logFilePath) {
         return new Promise((resolve, reject) => {
             try {
-                (0, child_process_1.execSync)('bash ' + sonicDecodeCmd);
+                child_process_1.execSync('bash ' + sonicDecodeCmd);
                 var decodeResponses = [];
                 let rawdata = fs.readFileSync(logFilePath, { encoding: 'utf8' });
                 console.log('rawdata', rawdata);
@@ -101,7 +102,7 @@ let FileOperationService = class FileOperationService {
     }
 };
 FileOperationService = __decorate([
-    (0, common_1.Injectable)()
+    common_1.Injectable()
 ], FileOperationService);
 exports.FileOperationService = FileOperationService;
 //# sourceMappingURL=file-operation.service.js.map

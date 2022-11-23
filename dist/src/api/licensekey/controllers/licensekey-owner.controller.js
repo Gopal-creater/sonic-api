@@ -49,35 +49,35 @@ let LicensekeyOwnerController = class LicensekeyOwnerController {
     }
 };
 __decorate([
-    (0, common_1.Put)(),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Add Owner to the license' }),
+    common_1.Put(),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Add Owner to the license' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Param)('licenseId')),
-    __param(2, (0, decorators_1.User)('sub')),
+    __param(0, common_1.Body()),
+    __param(1, common_1.Param('licenseId')),
+    __param(2, decorators_1.User('sub')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [owner_dto_1.AddOwnerDto, String, String]),
     __metadata("design:returntype", Promise)
 ], LicensekeyOwnerController.prototype, "create", null);
 __decorate([
-    (0, common_1.Delete)(':usernameOrSub'),
-    (0, roles_decorator_1.RolesAllowed)(Enums_1.Roles.ADMIN),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Delete User from this license' }),
+    common_1.Delete(':usernameOrSub'),
+    roles_decorator_1.RolesAllowed(Enums_1.Roles.ADMIN),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, role_based_guard_1.RoleBasedGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Delete User from this license' }),
     openapi.ApiResponse({ status: 200, type: Object }),
-    __param(0, (0, common_1.Param)('licenseId')),
-    __param(1, (0, common_1.Param)('usernameOrSub')),
+    __param(0, common_1.Param('licenseId')),
+    __param(1, common_1.Param('usernameOrSub')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], LicensekeyOwnerController.prototype, "remove", null);
 LicensekeyOwnerController = __decorate([
-    (0, swagger_1.ApiTags)('License Keys Owner Management Controller'),
-    (0, common_1.Controller)('license-keys/:licenseId/owners'),
+    swagger_1.ApiTags('License Keys Owner Management Controller'),
+    common_1.Controller('license-keys/:licenseId/owners'),
     __metadata("design:paramtypes", [licensekey_service_1.LicensekeyService])
 ], LicensekeyOwnerController);
 exports.LicensekeyOwnerController = LicensekeyOwnerController;

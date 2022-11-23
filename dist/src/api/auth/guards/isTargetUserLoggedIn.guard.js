@@ -57,7 +57,7 @@ let IsTargetUserLoggedInGuard = class IsTargetUserLoggedInGuard {
     }
 };
 IsTargetUserLoggedInGuard = __decorate([
-    (0, common_1.Injectable)(),
+    common_1.Injectable(),
     __metadata("design:paramtypes", [String, String])
 ], IsTargetUserLoggedInGuard);
 exports.IsTargetUserLoggedInGuard = IsTargetUserLoggedInGuard;

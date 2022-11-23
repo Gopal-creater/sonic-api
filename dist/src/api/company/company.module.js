@@ -18,10 +18,10 @@ const file_handler_service_1 = require("../../shared/services/file-handler.servi
 let CompanyModule = class CompanyModule {
 };
 CompanyModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: company_schema_1.CompanySchemaName, schema: company_schema_1.CompanySchema }]),
-            (0, common_1.forwardRef)(() => user_module_1.UserModule)
+            common_1.forwardRef(() => user_module_1.UserModule)
         ],
         controllers: [company_controller_1.CompanyController],
         providers: [company_service_1.CompanyService, create_company_guard_1.CreateCompanySecurityGuard, file_handler_service_1.FileHandlerService],

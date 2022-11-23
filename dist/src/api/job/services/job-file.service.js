@@ -92,8 +92,8 @@ let JobFileService = class JobFileService {
     }
 };
 JobFileService = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_2.InjectModel)(jobfile_schema_1.JobFile.name)),
+    common_1.Injectable(),
+    __param(0, mongoose_2.InjectModel(jobfile_schema_1.JobFile.name)),
     __metadata("design:paramtypes", [mongoose_1.Model,
         job_service_1.JobService,
         sonickey_service_1.SonickeyService,

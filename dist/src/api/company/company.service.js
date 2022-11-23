@@ -25,6 +25,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const company_schema_1 = require("./schemas/company.schema");
 const user_service_1 = require("../user/services/user.service");
+const parsedquery_dto_1 = require("../../shared/dtos/parsedquery.dto");
 const user_company_service_1 = require("../user/services/user-company.service");
 const Enums_1 = require("../../constants/Enums");
 const makeDir = require("make-dir");
@@ -238,10 +239,10 @@ let CompanyService = class CompanyService {
     }
 };
 CompanyService = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(company_schema_1.Company.name)),
-    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
-    __param(2, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_company_service_1.UserCompanyService))),
+    common_1.Injectable(),
+    __param(0, mongoose_1.InjectModel(company_schema_1.Company.name)),
+    __param(1, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
+    __param(2, common_1.Inject(common_1.forwardRef(() => user_company_service_1.UserCompanyService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         user_service_1.UserService,
         user_company_service_1.UserCompanyService,

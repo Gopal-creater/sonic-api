@@ -14,7 +14,7 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, {
         bodyParser: true,
     });
-    (0, class_validator_1.useContainer)(app.select(app_module_1.AppModule), { fallbackOnErrors: true });
+    class_validator_1.useContainer(app.select(app_module_1.AppModule), { fallbackOnErrors: true });
     app.use(['/swagger-api/*', '/swagger-api-json'], basicAuth({
         challenge: true,
         users: {
@@ -25,6 +25,10 @@ async function bootstrap() {
     const configService = app.get(config_1.ConfigService);
     app.enableCors({
         origin: [
+            'https://amazingportal.arba-dev.uk',
+            'http://amazingportal.arba-dev.uk',
+            'https://amazingadmin.arba-dev.uk',
+            'http://amazingadmin.arba-dev.uk',
             'https://portal.sonicdata.com',
             'https://admin.sonicdata.com',
             'http://admin.sonicdata.com',
@@ -39,6 +43,8 @@ async function bootstrap() {
             'https://fpserver.sonicdata.com',
             'http://localhost:3000',
             'https://localhost:3000',
+            'http://localhost:3001',
+            'https://localhost:3001',
             'http://localhost:8001',
             'https://localhost:8001',
             'http://localhost:8002',
@@ -46,7 +52,7 @@ async function bootstrap() {
             'http://localhost:8003',
             'https://localhost:8003',
             'http://localhost:8004',
-            'https://localhost:8004',
+            'https://localhost:8004'
         ],
     });
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());

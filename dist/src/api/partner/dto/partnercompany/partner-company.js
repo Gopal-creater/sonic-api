@@ -16,59 +16,59 @@ const company_schema_1 = require("../../../company/schemas/company.schema");
 class CreatePartnerCompanyDto {
 }
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, swagger_1.ApiProperty)(),
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreatePartnerCompanyDto.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreatePartnerCompanyDto.prototype, "description", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreatePartnerCompanyDto.prototype, "email", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreatePartnerCompanyDto.prototype, "contactNo", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", company_schema_1.Address)
 ], CreatePartnerCompanyDto.prototype, "address", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreatePartnerCompanyDto.prototype, "companyType", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreatePartnerCompanyDto.prototype, "companyUrnOrId", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, swagger_1.ApiProperty)(),
+    class_validator_1.IsNotEmpty(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], CreatePartnerCompanyDto.prototype, "owner", void 0);
 exports.CreatePartnerCompanyDto = CreatePartnerCompanyDto;
-class UpdatePartnerCompanyDto extends (0, swagger_1.OmitType)((0, swagger_1.PartialType)(CreatePartnerCompanyDto), ['owner']) {
+class UpdatePartnerCompanyDto extends swagger_1.OmitType(swagger_1.PartialType(CreatePartnerCompanyDto), ['owner']) {
 }
 exports.UpdatePartnerCompanyDto = UpdatePartnerCompanyDto;
 class EditPartnerUserDto {
 }
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], EditPartnerUserDto.prototype, "name", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], EditPartnerUserDto.prototype, "phoneNumber", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", String)
 ], EditPartnerUserDto.prototype, "country", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    swagger_1.ApiProperty(),
     __metadata("design:type", Boolean)
 ], EditPartnerUserDto.prototype, "enabled", void 0);
 exports.EditPartnerUserDto = EditPartnerUserDto;

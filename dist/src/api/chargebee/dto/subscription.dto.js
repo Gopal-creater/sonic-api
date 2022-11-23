@@ -18,11 +18,11 @@ class SubscriptionDto {
     }
 }
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], SubscriptionDto.prototype, "customerId", void 0);
 __decorate([
-    (0, class_validator_1.IsEmail)(),
+    class_validator_1.IsEmail(),
     __metadata("design:type", String)
 ], SubscriptionDto.prototype, "customerEmail", void 0);
 exports.SubscriptionDto = SubscriptionDto;

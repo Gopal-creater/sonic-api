@@ -4,7 +4,7 @@ exports.appConfig = void 0;
 const appRootPath = require("app-root-path");
 const config_1 = require("@nestjs/config");
 const path = require("path");
-const registeredConfig = (0, config_1.registerAs)('', () => ({
+const registeredConfig = config_1.registerAs('', () => ({
     PORT: parseInt(process.env.PORT),
     MULTER_DEST: `${appRootPath.toString()}/storage/uploads`,
     MULTER_EXPORT_DEST: `${appRootPath.toString()}/storage/exports`,

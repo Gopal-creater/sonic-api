@@ -19,15 +19,15 @@ const auth_module_1 = require("../auth/auth.module");
 let RadiostationModule = class RadiostationModule {
 };
 RadiostationModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: radiostation_schema_1.RadioStationSchemaName, schema: radiostation_schema_1.RadioStationSchema },
             ]),
             sonickey_module_1.SonickeyModule,
-            (0, common_1.forwardRef)(() => radiomonitor_module_1.RadiomonitorModule),
+            common_1.forwardRef(() => radiomonitor_module_1.RadiomonitorModule),
             detection_module_1.DetectionModule,
-            (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
+            common_1.forwardRef(() => auth_module_1.AuthModule),
         ],
         controllers: [radiostation_controller_1.RadiostationController],
         providers: [radiostation_service_1.RadiostationService],

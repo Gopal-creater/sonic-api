@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const detection_schema_1 = require("./schemas/detection.schema");
 const mongoose_2 = require("mongoose");
+const Enums_1 = require("../../constants/Enums");
 const user_service_1 = require("../user/services/user.service");
 const file_handler_service_1 = require("../../shared/services/file-handler.service");
 let ThirdPartyDetectionService = class ThirdPartyDetectionService {
@@ -29,9 +30,9 @@ let ThirdPartyDetectionService = class ThirdPartyDetectionService {
     }
 };
 ThirdPartyDetectionService = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(detection_schema_1.Detection.name)),
-    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
+    common_1.Injectable(),
+    __param(0, mongoose_1.InjectModel(detection_schema_1.Detection.name)),
+    __param(1, common_1.Inject(common_1.forwardRef(() => user_service_1.UserService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
         user_service_1.UserService,
         file_handler_service_1.FileHandlerService])

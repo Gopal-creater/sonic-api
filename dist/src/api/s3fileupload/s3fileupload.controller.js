@@ -40,54 +40,54 @@ let S3FileUploadController = class S3FileUploadController {
     }
 };
 __decorate([
-    (0, common_1.Get)('/signed-url/:key'),
-    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get Signed Url for download' }),
+    common_1.Get('/signed-url/:key'),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiOperation({ summary: 'Get Signed Url for download' }),
     openapi.ApiResponse({ status: 200, type: String }),
-    __param(0, (0, common_1.Param)('key')),
-    __param(1, (0, user_decorator_1.User)('sub')),
+    __param(0, common_1.Param('key')),
+    __param(1, user_decorator_1.User('sub')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], S3FileUploadController.prototype, "getSignedUrl", null);
 __decorate([
-    (0, common_1.Post)('/get-signed-url'),
-    (0, common_1.UseGuards)(conditional_auth_guard_1.ConditionalAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiBody)({ type: s3fileupload_dto_1.DownloadS3FileDto }),
-    (0, swagger_1.ApiSecurity)('x-api-key'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get Signed Url for download pass {key:string} in the body' }),
+    common_1.Post('/get-signed-url'),
+    common_1.UseGuards(conditional_auth_guard_1.ConditionalAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiBody({ type: s3fileupload_dto_1.DownloadS3FileDto }),
+    swagger_1.ApiSecurity('x-api-key'),
+    swagger_1.ApiOperation({ summary: 'Get Signed Url for download pass {key:string} in the body' }),
     openapi.ApiResponse({ status: 201, type: String }),
-    __param(0, (0, common_1.Body)('key')),
-    __param(1, (0, user_decorator_1.User)('sub')),
+    __param(0, common_1.Body('key')),
+    __param(1, user_decorator_1.User('sub')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], S3FileUploadController.prototype, "getSignedUrlFromPost", null);
 __decorate([
-    (0, common_1.Get)(':key'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Download file' }),
+    common_1.Get(':key'),
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard),
+    swagger_1.ApiBearerAuth(),
+    swagger_1.ApiOperation({ summary: 'Download file' }),
     openapi.ApiResponse({ status: 200 }),
-    __param(0, (0, common_1.Param)('key')),
-    __param(1, (0, user_decorator_1.User)('sub')),
+    __param(0, common_1.Param('key')),
+    __param(1, user_decorator_1.User('sub')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], S3FileUploadController.prototype, "getFile", null);
 __decorate([
-    (0, common_1.Delete)(':key'),
-    __param(0, (0, common_1.Param)('key')),
+    common_1.Delete(':key'),
+    __param(0, common_1.Param('key')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], S3FileUploadController.prototype, "remove", null);
 S3FileUploadController = __decorate([
-    (0, swagger_1.ApiTags)('S3 File Upload Controller'),
-    (0, common_1.Controller)('s3-file-uploads'),
+    swagger_1.ApiTags('S3 File Upload Controller'),
+    common_1.Controller('s3-file-uploads'),
     __metadata("design:paramtypes", [s3fileupload_service_1.S3FileUploadService])
 ], S3FileUploadController);
 exports.S3FileUploadController = S3FileUploadController;

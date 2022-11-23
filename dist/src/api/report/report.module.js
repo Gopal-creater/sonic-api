@@ -19,11 +19,11 @@ const file_handler_service_1 = require("../../shared/services/file-handler.servi
 let ReportModule = class ReportModule {
 };
 ReportModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
-            (0, common_1.forwardRef)(() => user_module_1.UserModule),
-            (0, common_1.forwardRef)(() => company_module_1.CompanyModule),
-            (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
+            common_1.forwardRef(() => user_module_1.UserModule),
+            common_1.forwardRef(() => company_module_1.CompanyModule),
+            common_1.forwardRef(() => auth_module_1.AuthModule),
             detection_module_1.DetectionModule,
             sonickey_module_1.SonickeyModule
         ],

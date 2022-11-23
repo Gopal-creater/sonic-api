@@ -31,16 +31,16 @@ const sonickey_utils_1 = require("./processors/utils/sonickey.utils");
 let SonickeyModule = class SonickeyModule {
 };
 SonickeyModule = __decorate([
-    (0, common_1.Module)({
+    common_1.Module({
         imports: [
             bull_1.BullModule.registerQueue({
                 name: 'sonickey',
             }),
-            (0, common_1.forwardRef)(() => api_key_module_1.ApiKeyModule),
+            common_1.forwardRef(() => api_key_module_1.ApiKeyModule),
             licensekey_module_1.LicensekeyModule,
-            (0, common_1.forwardRef)(() => user_module_1.UserModule),
-            (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
-            (0, common_1.forwardRef)(() => detection_module_1.DetectionModule),
+            common_1.forwardRef(() => user_module_1.UserModule),
+            common_1.forwardRef(() => auth_module_1.AuthModule),
+            common_1.forwardRef(() => detection_module_1.DetectionModule),
             s3fileupload_module_1.S3FileUploadModule,
             mongoose_1.MongooseModule.forFeature([
                 { name: sonickey_schema_1.SonicKeySchemaName, schema: sonickey_schema_1.SonicKeySchema },
