@@ -49,6 +49,8 @@ async function bootstrap() {
       'https://fpserver.sonicdata.com',
       'http://localhost:3000',
       'https://localhost:3000',
+      'http://localhost:3001',
+      'https://localhost:3001',
       'http://localhost:8001',
       'https://localhost:8001',
       'http://localhost:8002',
