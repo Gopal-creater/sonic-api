@@ -79,5 +79,24 @@ We Can install all these library using apt get as follows
 ```sh
 $ sudo apt install ffmpeg libsndfile1-dev zita-resampler libfftw3-dev
 ```
+
+# In the new EC2 Instance
+- Install Node Js
+```sh
+ $ curl -s https://deb.nodesource.com/setup_16.x | sudo bash
+ $ sudo apt install nodejs -y
+```
+
+- Install Binary to work with encode/decode
+```sh
+ $ sudo apt install ffmpeg libsndfile1-dev zita-resampler libfftw3-dev
+```
+
+- Install Git
+```sh
+ $ sudo apt-get install git-all
+ $ git config --global credential.helper 'cache --timeout 86400' (to remember credentials)
+```
+
 # For More
 see the package.json file :)
