@@ -25,10 +25,7 @@ async function bootstrap() {
     const configService = app.get(config_1.ConfigService);
     app.enableCors({
         origin: [
-            'https://portal.amazingrecognition.com',
-            'http://portal.amazingrecognition.com',
-            'https://admin.amazingrecognition.com',
-            'http://admin.amazingrecognition.com',
+            /\.amazingrecognition\.com$/,
             'https://amazingportal.arba-dev.uk',
             'http://amazingportal.arba-dev.uk',
             'https://amazingadmin.arba-dev.uk',
