@@ -32,10 +32,6 @@ async function bootstrap() {
     origin: [
       //AmazingRecogniition
       /\.amazingrecognition\.com$/,
-      // 'https://portal.amazingrecognition.com',
-      // 'http://portal.amazingrecognition.com',
-      // 'https://admin.amazingrecognition.com',
-      // 'http://admin.amazingrecognition.com',
       //AmazingTag-ArBa
       'https://amazingportal.arba-dev.uk',
       'http://amazingportal.arba-dev.uk',
