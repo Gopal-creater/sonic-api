@@ -96,32 +96,39 @@ let AuthService = class AuthService {
     }
     async createSonicAdmin() {
         var _a, _b;
-        const createUserDto = {
-            userName: this.configService.get('SONIC_ADMIN_USERNAME'),
-            name: 'Sonic Admin',
-            firstName: "Sonic Admin",
-            password: this.configService.get('SONIC_ADMIN_PASSWORD'),
-            email: this.configService.get('SONIC_ADMIN_EMAIL'),
-            phoneNumber: this.configService.get('SONIC_ADMIN_PHONE'),
-            isEmailVerified: true,
-            isPhoneNumberVerified: this.configService.get('SONIC_ADMIN_PHONE') ? true : false,
-            userRole: Enums_1.SystemRoles.ADMIN,
-            sendInvitationByEmail: false,
-        };
-        const alreadyUser = await this.userService.findOne({
-            username: createUserDto.userName,
-            isSonicAdmin: true,
-            userRole: Enums_1.SystemRoles.ADMIN,
-        });
-        if (alreadyUser) {
-            console.log('Sonic Admin Present Already');
-            return;
+        try {
+            const createUserDto = {
+                userName: this.configService.get('SONIC_ADMIN_USERNAME'),
+                name: 'Sonic Admin',
+                firstName: 'Sonic Admin',
+                password: this.configService.get('SONIC_ADMIN_PASSWORD'),
+                email: this.configService.get('SONIC_ADMIN_EMAIL'),
+                phoneNumber: this.configService.get('SONIC_ADMIN_PHONE'),
+                isEmailVerified: true,
+                isPhoneNumberVerified: this.configService.get('SONIC_ADMIN_PHONE')
+                    ? true
+                    : false,
+                userRole: Enums_1.SystemRoles.ADMIN,
+                sendInvitationByEmail: false,
+            };
+            const alreadyUser = await this.userService.findOne({
+                username: createUserDto.userName,
+                isSonicAdmin: true,
+                userRole: Enums_1.SystemRoles.ADMIN,
+            });
+            if (alreadyUser) {
+                console.log('Sonic Admin Present Already');
+                return;
+            }
+            const userCreated = await this.userService.createUserInCognito(createUserDto, true, {
+                isSonicAdmin: true,
+            });
+            await this.userService.adminSetUserPassword((_b = (_a = userCreated === null || userCreated === void 0 ? void 0 : userCreated.cognitoUser) === null || _a === void 0 ? void 0 : _a.User) === null || _b === void 0 ? void 0 : _b.Username, createUserDto.password);
+            console.log('Sonic Admin User Created');
         }
-        const userCreated = await this.userService.createUserInCognito(createUserDto, true, {
-            isSonicAdmin: true,
-        });
-        await this.userService.adminSetUserPassword((_b = (_a = userCreated === null || userCreated === void 0 ? void 0 : userCreated.cognitoUser) === null || _a === void 0 ? void 0 : _a.User) === null || _b === void 0 ? void 0 : _b.Username, createUserDto.password);
-        console.log('Sonic Admin User Created');
+        catch (error) {
+            console.log("Error creating initial user");
+        }
     }
 };
 AuthService = __decorate([
